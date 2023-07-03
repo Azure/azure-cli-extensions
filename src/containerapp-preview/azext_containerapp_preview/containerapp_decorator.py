@@ -34,6 +34,7 @@ class ContainerAppPreviewCreateDecorator(_get_azext_module(GA_CONTAINERAPP_EXTEN
     ):
         super().__init__(cmd, client, raw_parameters, models)
         self.azext_decorator_utils = _get_azext_module(GA_CONTAINERAPP_EXTENSION_NAME, "azext_containerapp._decorator_utils")
+        self.azext_default_utils = _get_azext_module(GA_CONTAINERAPP_EXTENSION_NAME, "azext_containerapp._utils")
 
     def construct_containerapp(self):
         containerapp_def = super().construct_containerapp()
