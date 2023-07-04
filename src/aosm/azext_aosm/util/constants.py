@@ -84,4 +84,4 @@ DEPLOYMENT_PARAMETER_MAPPING_REGEX = r"\{deployParameters.(.+?)\}"
 SOURCE_ACR_REGEX = (
     r".*\/resourceGroups\/(?P<resource_group>[^\/]*)\/providers\/Microsoft."
     r"ContainerRegistry\/registries\/(?P<registry_name>[^\/]*)"
-    )
+)

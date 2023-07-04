@@ -192,7 +192,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         logger.debug(
             "Creating chart value mappings file for %s", helm_package.path_to_chart
         )
-        print("Creating chart value mappings file for %s", helm_package.path_to_chart)
+        print(f"Creating chart value mappings file for {helm_package.path_to_chart}.")
 
         # Get all the values files in the chart
         top_level_values_yaml = self._read_top_level_values_yaml(helm_package)
@@ -414,7 +414,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                             logger.debug(
                                 "Regex match for name and version is %s",
                                 name_and_version
-                                )
+                            )
 
                             if name_and_version and len(name_and_version.groups()) == 2:
                                 logger.debug(
@@ -517,7 +517,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
     def traverse_dict(
         dict_to_search: Dict[Any, Any],
         target_regex: str
-        ) -> Dict[str, List[str]]:
+    ) -> Dict[str, List[str]]:
         """
         Traverse the dictionary that is loaded from the file provided by path_to_mappings in the input.json.
 
@@ -571,7 +571,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
     def search_schema(
         deployParams_paths: Dict[str, List[str]],
         full_schema
-        ) -> Dict[str, Dict[str, str]]:
+    ) -> Dict[str, Dict[str, str]]:
         """
         Search through provided schema for the types of the deployment parameters.
         This assumes that the type of the key will be the type of the deployment parameter.
@@ -591,7 +591,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         for deploy_param, path_list in deployParams_paths.items():
             logger.debug(
                 "Searching for %s in schema at path %s", deploy_param, path_list
-                )
+            )
             node = full_schema
             for path in path_list:
                 if "properties" in node.keys():

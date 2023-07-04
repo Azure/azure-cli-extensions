@@ -5,7 +5,6 @@
 
 import os
 import unittest
-from unittest.mock import Mock, patch
 from tempfile import TemporaryDirectory
 
 from azext_aosm.custom import build_definition, generate_definition_config
@@ -27,7 +26,7 @@ class TestVNF(unittest.TestCase):
                 assert os.path.exists("input.json")
             finally:
                 os.chdir(starting_directory)
-    
+
     def test_build(self):
         """
         Test building an NFDV for a VNF.
@@ -38,6 +37,23 @@ class TestVNF(unittest.TestCase):
 
             try:
                 build_definition("vnf", os.path.join(mock_vnf_folder, "input.json"))
+                assert os.path.exists("nfd-bicep-ubuntu-template")
+            finally:
+                os.chdir(starting_directory)
+                
+    def test_build_with_ordered_params(self):
+        """
+        Test building an NFDV for a VNF.
+        """
+        starting_directory = os.getcwd()
+        with TemporaryDirectory() as test_dir:
+            os.chdir(test_dir)
+
+            try:
+                build_definition(
+                    "vnf", 
+                    os.path.join(mock_vnf_folder, "input.json"),
+                    order_params=True)
                 assert os.path.exists("nfd-bicep-ubuntu-template")
             finally:
                 os.chdir(starting_directory)

@@ -27,6 +27,7 @@ from azext_aosm.util.constants import (
     NSD_DEFINITION_JINJA2_SOURCE_TEMPLATE,
     SCHEMAS_DIR_NAME,
     TEMPLATES_DIR_NAME,
+    VNF
 )
 from azext_aosm.util.management_clients import ApiClients
 from azext_aosm.vendored_sdks.models import NetworkFunctionDefinitionVersion, NFVIType
@@ -138,7 +139,7 @@ class NSDGenerator:
             "type": "string",
             "description": description_string,
         }
-        cgs_dict["required"].append(self.nfdv_parameter_name)
+        cgs_dict.setdefault("required", []).append(self.nfdv_parameter_name)
 
         managed_identity_description_string = (
             "The managed identity to use to deploy NFs within this SNS.  This should "
@@ -301,7 +302,7 @@ class NSDGenerator:
     def generate_bicep(self, 
                        template_name: str,
                        output_file_name: str,
-                       params: Dict[Any,Any]) -> None:
+                       params: Dict[Any, Any]) -> None:
         """
         Render the bicep templates with the correct parameters and copy them into the build output folder.
 

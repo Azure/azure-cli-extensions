@@ -175,3 +175,25 @@ Delete a published design
 Delete a published design and the publisher, artifact stores and NSD group
 
 `az aosm nsd delete --config-file input.json --clean`
+
+# Development
+
+## Unit tests
+To run unit tests run `azdev test aosm`.
+
+To get code coverage run:
+```bash
+pip install coverage 
+cd src/aosm
+coverage erase
+coverage run -m pytest .
+coverage report --include="*/src/aosm/*" --omit="*/src/aosm/azext_aosm/vendored_sdks/*","*/src/aosm/azext_aosm/tests/*" -m
+```
+
+## Pipelines
+The pipelines for the Azure CLI run in ADO, not in github.
+To trigger a pipeline you need to create a PR against main.
+Until we do the initial merge to main we don't want to have a PR to main for every code review.
+Instead we have a single PR for the `add-aosm-extension` branch: https://github.com/Azure/azure-cli-extensions/pull/6426
+Once you have merged your changes to `add-aosm-extension` then look at the Azure Pipelines under https://github.com/Azure/azure-cli-extensions/pull/6426/checks, click on the link that says `<X> errors / <Y> warnings`.
+

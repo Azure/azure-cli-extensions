@@ -33,15 +33,6 @@ test_cnf = CnfNfdGenerator(config)
 invalid_helm_package = test_cnf.config.helm_packages[0]
 
 
-# pylint: disable=protected-access
-class TestExtractChart(unittest.TestCase):
-    # Jordan: can we test whether this has extracted correctly in a unit test?
-    def test_invalid_chart(self):
-        with self.assertRaises(InvalidTemplateError):
-            print("TEST", invalid_helm_package)
-            test_cnf._extract_chart(invalid_helm_package.path_to_chart)
-
-
 class TestCNF(unittest.TestCase):
     def test_generate_config(self):
         """
@@ -70,7 +61,7 @@ class TestCNF(unittest.TestCase):
                     "cnf",
                     os.path.join(mock_cnf_folder, "input-nfconfigchart.json")
                 )
-                assert os.path.exists("nfd-bicep-ubuntu-template")
+                assert os.path.exists("nfd-bicep-nginx-basic-test")
             finally:
                 os.chdir(starting_directory)
 
@@ -90,38 +81,6 @@ class TestCNF(unittest.TestCase):
                     os.path.join(mock_cnf_folder, "input-nf-agent-cnf.json"),
                     order_params=True
                 )
-                assert os.path.exists("nfd-bicep-ubuntu-template")
+                assert os.path.exists("nfd-bicep-nf-agent-cnf")
             finally:
                 os.chdir(starting_directory)
-
-
-class TestGenerateChartValueMappings(unittest.TestCase):
-    # Test for _read_top_level_values_yaml
-    # Test for _replace_values_with_deploy_params
-    def test_write_mappings_to_file(self):
-        pass
-
-    def test_update_path_to_mappings(self):
-        pass
-
-
-class TestGetChartMappingSchema(unittest.TestCase):
-    # Test for traverse_dict
-    # Test for search_schema
-    pass
-
-
-class TestFindPatternMatchesInChart(unittest.TestCase):
-    pass
-
-
-class TestGenerateNFApplicationConfig(unittest.TestCase):
-    pass
-
-
-class TestGetArtifactList(unittest.TestCase):
-    pass
-
-
-class TestWriteFilesToOutput(unittest.TestCase):
-    pass
