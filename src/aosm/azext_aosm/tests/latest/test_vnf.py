@@ -8,13 +8,30 @@ import unittest
 from unittest.mock import Mock, patch
 from tempfile import TemporaryDirectory
 
-from azext_aosm.custom import build_definition
+from azext_aosm.custom import build_definition, generate_definition_config
 
 mock_vnf_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mock_vnf")
 
 
 class TestVNF(unittest.TestCase):
+    def test_generate_config(self):
+        """
+        Test generating a config file for a VNF.
+        """
+        starting_directory = os.getcwd()
+        with TemporaryDirectory() as test_dir:
+            os.chdir(test_dir)
+
+            try:
+                generate_definition_config("vnf")
+                assert os.path.exists("input.json")
+            finally:
+                os.chdir(starting_directory)
+    
     def test_build(self):
+        """
+        Test building an NFDV for a VNF.
+        """
         starting_directory = os.getcwd()
         with TemporaryDirectory() as test_dir:
             os.chdir(test_dir)

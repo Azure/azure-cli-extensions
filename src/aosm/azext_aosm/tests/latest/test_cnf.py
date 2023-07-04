@@ -13,7 +13,7 @@ from tempfile import TemporaryDirectory
 
 from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
 from azext_aosm._configuration import CNFConfiguration, HelmPackageConfig
-from azext_aosm.custom import build_definition
+from azext_aosm.custom import build_definition, generate_definition_config
 
 from azure.cli.core.azclierror import (
     BadRequestError,
@@ -43,6 +43,20 @@ class TestExtractChart(unittest.TestCase):
 
 
 class TestCNF(unittest.TestCase):
+    def test_generate_config(self):
+        """
+        Test generating a config file for a VNF.
+        """
+        starting_directory = os.getcwd()
+        with TemporaryDirectory() as test_dir:
+            os.chdir(test_dir)
+
+            try:
+                generate_definition_config("cnf")
+                assert os.path.exists("input.json")
+            finally:
+                os.chdir(starting_directory)
+
     def test_build(self):
         """
         Test the build command for CNFs.
@@ -59,8 +73,8 @@ class TestCNF(unittest.TestCase):
                 assert os.path.exists("nfd-bicep-ubuntu-template")
             finally:
                 os.chdir(starting_directory)
-                
-    def test_no_mapping(self):
+
+    def test_build_no_mapping(self):
         """
         Test the build command for CNFs where no mapping file is supplied.
 

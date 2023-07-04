@@ -249,7 +249,7 @@ def _generate_config(configuration_type: str, output_file: str = "input.json"):
     # be included here.
     config = asdict(get_configuration(configuration_type))
     config.pop("config_file")
-    
+
     config_as_dict = json.dumps(config, indent=4)
 
     if os.path.exists(output_file):
