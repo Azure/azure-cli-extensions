@@ -96,7 +96,8 @@ def get_backup_frequency_string(frequency, count):
 def validate_backup_schedule(datasource_type, schedule):
     manifest = load_manifest(datasource_type)
     if not manifest["policySettings"]["backupScheduleSupported"]:
-        raise InvalidArgumentValueError("Adding Backup Schedule is not supported for Datasource Type " + datasource_type)
+        raise InvalidArgumentValueError("Adding Backup Schedule is not supported for Datasource Type " +
+                                        datasource_type)
 
     backup_freq_map = {"D": "Daily", "H": "Hourly", "W": "Weekly"}
     if backup_freq_map[schedule[0][-1]] not in manifest["policySettings"]["supportedBackupFrequency"]:
@@ -387,4 +388,6 @@ def validate_recovery_point_datetime_format(aaz_str):
         dt_iso = dt_val.strftime("%Y-%m-%dT%H:%M:%S.%f0Z")  # Format datetime string
         return dt_iso
     except ValueError:
-        raise InvalidArgumentValueError(f"Input '{date_str}' not valid datetime. Valid example: 2017-12-31T05:30:00") from ValueError
+        raise InvalidArgumentValueError(
+            f"Input '{date_str}' not valid datetime. Valid example: 2017-12-31T05:30:00"
+        ) from ValueError

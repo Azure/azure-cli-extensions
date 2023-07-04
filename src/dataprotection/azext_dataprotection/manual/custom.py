@@ -306,7 +306,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
 
         if backup_instance['properties']['data_source_info']['resource_location'] != backup_vault['location']:
             raise InvalidArgumentValueError("Location of data source needs to be the same as backup vault.\nMake sure the datasource "
-                           "and vault are chosen properly")
+                                            "and vault are chosen properly")
 
         keyvault_client = None
         keyvault = None
@@ -347,8 +347,8 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
 
             if not valid_secret:
                 raise InvalidArgumentValueError("The secret URI provided in the --backup-instance is not associated with the "
-                               "--keyvault-id provided. Please input a valid combination of secret URI and "
-                               "--keyvault-id.")
+                                                "--keyvault-id provided. Please input a valid combination of secret URI and "
+                                                "--keyvault-id.")
 
             keyvault_permission_models = manifest['secretStorePermissions']
             if keyvault.properties.enable_rbac_authorization:
@@ -827,7 +827,7 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
     # Restore mode (assigned during RP/point-in-time validation earlier) should be supported for the workload
     if manifest is not None and manifest["allowedRestoreModes"] is not None and restore_mode not in manifest["allowedRestoreModes"]:
         raise InvalidArgumentValueError(restore_mode + " restore mode is not supported for datasource type " + datasource_type +
-                       ". Supported restore modes are " + ','.join(manifest["allowedRestoreModes"]))
+                                        ". Supported restore modes are " + ','.join(manifest["allowedRestoreModes"]))
 
     # If the source datastore (type) is allowed for the workload, we start creating the restore request object.
     # We also check for rehydration priority/duration in here for some reason? It could be shifted out.
@@ -841,7 +841,7 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
             restore_request["rehydration_retention_duration"] = "P" + str(rehydration_duration) + "D"
     else:
         raise InvalidArgumentValueError(source_datastore + " datastore type is not supported for datasource type " + datasource_type +
-                       ". Supported datastore types are " + ','.join(manifest["policySettings"]["supportedDatastoreTypes"]))
+                                        ". Supported datastore types are " + ','.join(manifest["policySettings"]["supportedDatastoreTypes"]))
 
     restore_request["restore_target_info"] = {}
     restore_request["restore_target_info"]["restore_location"] = restore_location
@@ -886,7 +886,7 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
             restore_criteria = restore_configuration
         else:
             raise RequiredArgumentMissingError("Please input parameter restore_configuration for AKS cluster restore.\n\
-                           Use command initialize-restoreconfig for creating the RestoreConfiguration")
+                                                Use command initialize-restoreconfig for creating the RestoreConfiguration")
         restore_criteria_list.append(restore_criteria)
         restore_request["restore_target_info"]["restore_criteria"] = restore_criteria_list
 
@@ -939,7 +939,7 @@ def restore_initialize_for_data_recovery_as_files(target_blob_container_url, tar
     # Restore mode (assigned during RP/point-in-time validation earlier) should be supported for the workload
     if manifest is not None and manifest["allowedRestoreModes"] is not None and restore_mode not in manifest["allowedRestoreModes"]:
         raise InvalidArgumentValueError(restore_mode + " restore mode is not supported for datasource type " + datasource_type +
-                       ". Supported restore modes are " + ','.join(manifest["allowedRestoreModes"]))
+                                        ". Supported restore modes are " + ','.join(manifest["allowedRestoreModes"]))
 
     # If the source datastore (type) is allowed for the workload, we start creating the restore request object.
     # We also check for rehydration priority/duration in here for some reason? It could be shifted out.
@@ -953,7 +953,7 @@ def restore_initialize_for_data_recovery_as_files(target_blob_container_url, tar
             restore_request["rehydration_retention_duration"] = "P" + str(rehydration_duration) + "D"
     else:
         raise InvalidArgumentValueError(source_datastore + " datastore type is not supported for datasource type " + datasource_type +
-                       ". Supported datastore types are " + ','.join(manifest["policySettings"]["supportedDatastoreTypes"]))
+                                        ". Supported datastore types are " + ','.join(manifest["policySettings"]["supportedDatastoreTypes"]))
 
     # Constructing the rest of the restore request object. No further validation is being done.
     # Currently, restore_target_info.target_details.restore_target_location_type is fixed to AzureBlobs
@@ -1003,7 +1003,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
     # Restore mode (assigned during RP/point-in-time validation earlier) should be supported for the workload
     if manifest is not None and manifest["allowedRestoreModes"] is not None and restore_mode not in manifest["allowedRestoreModes"]:
         raise InvalidArgumentValueError(restore_mode + " restore mode is not supported for datasource type " + datasource_type +
-                       ". Supported restore modes are " + ','.join(manifest["allowedRestoreModes"]))
+                                        ". Supported restore modes are " + ','.join(manifest["allowedRestoreModes"]))
 
     # Workload should allow for item level recovery
     if manifest is not None and not manifest["itemLevelRecoveyEnabled"]:
@@ -1024,7 +1024,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
             restore_criteria = restore_configuration
         else:
             raise RequiredArgumentMissingError("Please input parameter restore_configuration for AKS cluster restore.\n\
-                           Use command initialize-restoreconfig for creating the RestoreConfiguration")
+                                               Use command initialize-restoreconfig for creating the RestoreConfiguration")
         restore_criteria_list.append(restore_criteria)
     else:
         # For non-AKS workloads, we need either a prefix-pattern or a container-list. Accordingly, the restore
