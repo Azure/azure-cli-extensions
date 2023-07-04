@@ -12,7 +12,7 @@ Clone both azure-cli and azure-cli-extensions
 Note for azure-cli-extensions we are currently on a fork : https://github.com/jddarby/azure-cli-extensions
 ```bash
 # Go into your git clone of az-cli-extensions
-cd az-cli-extensions
+cd azure-cli-extensions
 
 # Create a virtual environment to run in
 python3.8 -m venv ~/.virtualenvs/az-cli-env
@@ -23,6 +23,8 @@ python -m pip install -U pip
 
 # Install azdev
 pip install azdev
+
+git checkout add-aosm-extension
 
 # Install all the python dependencies you need
 azdev setup --cli /home/developer/code/azure-cli --repo .

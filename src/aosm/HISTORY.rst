@@ -16,6 +16,7 @@ unreleased
 * Add the ability to skip bicep publish or artifact upload during publish commands.
 * Fix Manifest name for NSDs so it isn't the same as that for NFDs
 * Add validation of source_registry_id format for CNF configuration
+* Workaround Oras client bug (#90) on Windows for Artifact upload to ACR
 
 0.2.0
 ++++++
