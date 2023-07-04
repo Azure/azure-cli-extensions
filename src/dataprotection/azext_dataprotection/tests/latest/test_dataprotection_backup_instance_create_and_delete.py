@@ -8,7 +8,6 @@
 
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-import time, sys
 from ..utils import track_job_to_completion
 
 def backup_instance_validate_create(test):
@@ -87,7 +86,7 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
         test.kwargs.update({
             'dataSourceType': "AzureBlob",
             'permissionsScope': "Resource",
-            'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/opBlobPolicy',
+            'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/blobpolicy',
             'storageAccountName': 'clitestsadonotdelete',
             'storageAccountId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Storage/storageAccounts/clitestsadonotdelete',
             'policyRuleName': "BackupWeekly"
