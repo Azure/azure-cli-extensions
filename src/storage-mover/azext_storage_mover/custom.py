@@ -101,8 +101,9 @@ def endpoint_update_for_nfs(cmd, endpoint_name, resource_group, storage_mover_na
                                           export, host, nfs_version)
     return Update_Endpoint(args)
 
+
 def _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_name, description,
-                                         host, share_name, username_uri=None, password_uri=None):
+                                   host, share_name, username_uri=None, password_uri=None):
     args = {
         "endpoint_name": endpoint_name, "resource_group": resource_group, "storage_mover_name": storage_mover_name,
         "description": description,
@@ -121,16 +122,16 @@ def _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_
 
 
 def endpoint_create_for_smb(cmd, endpoint_name, resource_group, storage_mover_name, description,
-                                  host, share_name, username_uri=None, password_uri=None):
+                            host, share_name, username_uri=None, password_uri=None):
     Create_Endpoint = Create(cmd.loader)
     args = _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_name, description,
-                                                host, share_name, username_uri, password_uri)
+                                          host, share_name, username_uri, password_uri)
     return Create_Endpoint(args)
 
 
 def endpoint_update_for_smb(cmd, endpoint_name, resource_group, storage_mover_name, description,
-                                  host, share_name, username_uri=None, password_uri=None):
+                            host, share_name, username_uri=None, password_uri=None):
     Update_Endpoint = Update(cmd.loader)
     args = _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_name, description,
-                                                host, share_name, username_uri, password_uri)
+                                          host, share_name, username_uri, password_uri)
     return Update_Endpoint(args)
