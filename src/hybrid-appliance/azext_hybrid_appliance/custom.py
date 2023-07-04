@@ -63,7 +63,7 @@ def validate_hybrid_appliance(cmd, resource_group_name, name, validate_connected
         logger.warning("Failed to identify how many cpu cores are available on this server. Please ensure the server has at least 4 cpu cores available to ensure the appliance can perform its operations.")
         telemetry.set_exception(exception="Unable to identify cpu core count", fault_type=consts.CPU_CoreCount_None, summary="Unable to identify cpu core count")
 
-    elif cpu_count is None or cpu_count < consts.CPU_Threshold:
+    elif cpu_count < consts.CPU_Threshold:
         all_validations_passed = False
         telemetry.set_exception(exception="The server doesn't meet minimum cpu count requirement", fault_type=consts.CPU_Validation_Failed, summary="Server doesn't meet CPU core count threshold")
         logger.warning("The server requires at least {} cpu cores to perform its operations".format(consts.CPU_Threshold))
