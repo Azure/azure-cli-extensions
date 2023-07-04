@@ -9,6 +9,13 @@ unreleased
 * NFDV version exposed as a CGV on an SNS.
 * `az aosm nfd publish` option added for `--definition-type cnf` to publish the CNF bicep templates, upload helm charts from disk to the ACR and copy the images from a source ACR to the target ACR.
 * Managed Identity added to VNF NF templates - requires subscription to be registered for the feature flag.
+* Various fixes to NFD build of deployParameters schema and interactive mode create of deployParameters mappings file.
+* Fix CNF NFD publish so that it doesn't render the ACR unuseable for future Artifact publishing.
+* Allow CNF NFD image copy from a source ACR using a namespace.
+* Fix - Add new CGSchema parameters not from the NFD to the `required` section of the schema.
+* Add the ability to skip bicep publish or artifact upload during publish commands.
+* Fix Manifest name for NSDs so it isn't the same as that for NFDs
+* Add validation of source_registry_id format for CNF configuration
 
 0.2.0
 ++++++

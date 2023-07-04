@@ -98,12 +98,11 @@ resource nsdVersion 'Microsoft.Hybridnetwork/publishers/networkservicedesigngrou
           templateType: 'ArmTemplate'
           // The parameter values map values from the CG schema, to values required by the template
           // deployed by this resource element.
-          // outputParameters from the disk RET are used in these parameterValues
           // This NSD does not support the NF-Agent as it has no Configuration Resource Elements.
-          // If Configuration resource elements (SDFs, Perimeta config) are added, the simplNfConfigMapping
+          // If Configuration resource elements (SDFs, Perimeta config) are added, the configMapping
           // must be edited to have these lines (instead of blank values. SNSSelf is null if there are no Configuration elements)
-          // "nfAgentServiceBusNamespace": "{configurationparameters('SNSSelf').nfAgentConfiguration.resourceNamespace}",
-          // "nfAgentUserAssignedIdentityResourceId": "{configurationparameters('SNSSelf').nfAgentConfiguration.userAssignedIdentityResourceId}",
+          // "<name of service bus param>": "{configurationparameters('SNSSelf').nfAgentConfiguration.resourceNamespace}",
+          // "<name of nf agent UAMI param>": "{configurationparameters('SNSSelf').nfAgentConfiguration.userAssignedIdentityResourceId}",
           parameterValues: string(loadJsonContent('configMappings/configMappings.json'))
         }
         dependsOnProfile: {
