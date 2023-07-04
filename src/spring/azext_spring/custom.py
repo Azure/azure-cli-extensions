@@ -600,7 +600,7 @@ def _validate_instance_count(sku, instance_count=None):
         sku = sku.upper()
         if sku == "ENTERPRISE":
             if instance_count > 1000:
-                raise CLIError(
+                raise InvalidArgumentValueError(
                     "Enterprise SKU can have at most 1000 app instances in total, but got '{}'".format(instance_count))
         if sku == "STANDARD":
             if instance_count > 500:
