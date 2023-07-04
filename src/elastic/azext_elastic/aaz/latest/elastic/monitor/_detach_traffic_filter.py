@@ -28,11 +28,10 @@ class DetachTrafficFilter(AAZCommand):
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return None
 
     _args_schema = None
 
@@ -62,7 +61,7 @@ class DetachTrafficFilter(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.DetachTrafficFilterUpdate(ctx=self.ctx)()
+        self.DetachTrafficFilterUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -80,14 +79,7 @@ class DetachTrafficFilter(AAZCommand):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    None,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_202(session)
 
             return self.on_error(session.http_response)
 
@@ -136,6 +128,9 @@ class DetachTrafficFilter(AAZCommand):
                 ),
             }
             return parameters
+
+        def on_202(self, session):
+            pass
 
 
 class _DetachTrafficFilterHelper:

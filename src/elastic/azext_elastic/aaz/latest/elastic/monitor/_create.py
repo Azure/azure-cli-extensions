@@ -57,11 +57,6 @@ class Create(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.identity = AAZObjectArg(
-            options=["--identity"],
-            arg_group="Body",
-            help="Identity properties of the monitor resource.",
-        )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Body",
             help="The location of the monitor resource",
@@ -78,13 +73,6 @@ class Create(AAZCommand):
             options=["--tags"],
             arg_group="Body",
             help="The tags of the monitor resource.",
-        )
-
-        identity = cls._args_schema.identity
-        identity.type = AAZStrArg(
-            options=["type"],
-            help="Managed identity type.",
-            enum={"SystemAssigned": "SystemAssigned"},
         )
 
         sku = cls._args_schema.sku
@@ -300,15 +288,10 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("sku", AAZObjectType, ".sku")
             _builder.set_prop("tags", AAZDictType, ".tags")
-
-            identity = _builder.get(".identity")
-            if identity is not None:
-                identity.set_prop("type", AAZStrType, ".type")
 
             properties = _builder.get(".properties")
             if properties is not None:
