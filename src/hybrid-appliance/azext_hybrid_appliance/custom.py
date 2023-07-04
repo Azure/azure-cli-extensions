@@ -52,6 +52,22 @@ def validate_hybrid_appliance(cmd, resource_group_name, name, validate_connected
         telemetry.set_exception(exception="Machine doesn't meet min {} GB memory requirement".format(consts.Memory_Threshold), fault_type=consts.Memory_Validation_Failed, summary="Machine doesn't meet min memory threshold")
         logger.warning("The appliance requires at least {} GB of memory to perform its operations. ".format(consts.Memory_Threshold))
     
+    # Check if the machine has at least 4 cores of CPU
+    try:
+        cpu_count = os.cpu_count()
+    except:
+        cpu_count = None
+
+    # This should be rare, this will only happen if the OS doesn't support the syscall to find out the number of CPU cores. Most standard OSes should support this.
+    if cpu_count is None:
+        logger.warning("Failed to identify how many cpu cores are available on this server. Please ensure the server has at least 4 cpu cores available to ensure the appliance can perform its operations.")
+        telemetry.set_exception(exception="Unable to identify cpu core count", fault_type=consts.CPU_CoreCount_None, summary="Unable to identify cpu core count")
+
+    elif cpu_count is None or cpu_count < consts.CPU_Threshold:
+        all_validations_passed = False
+        telemetry.set_exception(exception="The server doesn't meet minimum cpu count requirement", fault_type=consts.CPU_Validation_Failed, summary="Server doesn't meet CPU core count threshold")
+        logger.warning("The server requires at least {} cpu cores to perform its operations".format(consts.CPU_Threshold))
+
     # Check if pre-req endpoints are reachable
     endpoints = ["{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name), consts.Snap_Pull_Public_Api_Endpoint, consts.Snap_Pull_Public_Storage_Endpoint, consts.App_Insights_Endpoint, consts.MCR_Endpoint]
 

@@ -15,6 +15,7 @@ App_Insights_Endpoint = "https://dc.services.visualstudio.com/v2/track"
 MCR_Endpoint = "https://mcr.microsoft.com"
 Memory_Threshold = 4
 Disk_Threshold = 20
+CPU_Threshold = 4
 diagnostics_folder_name = "diagnostics_logs"
 onboarding_logs_folder_name = "onboarding_logs"
 # Fault types
@@ -22,6 +23,8 @@ Download_And_Install_Kubectl_Fault_Type = "Failed to download and install kubect
 Non_Linux_Machine = "User's machine is not a Linux machine"
 DiskSpace_Validation_Failed = "DiskSpace threshold not met"
 Memory_Validation_Failed = "Memory threshold not met"
+CPU_CoreCount_None = "Unable to identify cpu core count"
+CPU_Validation_Failed = "CPU core count threshold not met"
 Validations_Failed = "Pre-requisite validations failed"
 MicroK8s_Setup_Failed = "MicroK8s cluster setup failed"
 Microk8s_Inspect_Failed = "Microk8s Inspect failed"
