@@ -63,6 +63,9 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
             test.exists('properties.extendedInfo.recoveryDestination')
         ])
 
+        # Track restore to completion
+        track_job_to_completion(test)
+
     @AllowLargeResponse()
     def test_dataprotection_backup_instance_restore_blob_point_in_time(test):
         test.kwargs.update({
@@ -104,7 +107,6 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
             test.check('properties.dataSourceName', "{dataSourceName}"),
             test.exists('properties.extendedInfo.recoveryDestination')
         ])
-
 
     @AllowLargeResponse()
     def test_dataprotection_backup_instance_restore_blob_recovery_point(test):
@@ -153,6 +155,3 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
             test.check('properties.dataSourceName', "{dataSourceName}"),
             test.exists('properties.extendedInfo.recoveryDestination')
         ])
-
-        # Track restore to completion
-        track_job_to_completion(test)
