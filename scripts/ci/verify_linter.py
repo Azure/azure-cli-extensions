@@ -70,9 +70,13 @@ class AzdevExtensionHelper:
         check_call(cmd, shell=True)
 
     def add_from_code(self):
+        if self.extension_name == 'containerapp-preview':
+            self._cmd('azdev extension add containerapp')
         self._cmd('azdev extension add {}'.format(self.extension_name))
 
     def remove(self):
+        if self.extension_name == 'containerapp-preview':
+            self._cmd('azdev extension remove containerapp')
         self._cmd('azdev extension remove {}'.format(self.extension_name))
 
     def linter(self):
