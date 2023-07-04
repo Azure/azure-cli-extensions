@@ -239,9 +239,15 @@ def validate_nodepool_taints(namespace):
     if taints is None:
         return
 
-    if taints is not None:
-        for taint in taints.split(','):
-            validate_taint(taint)
+    taints = []
+    for taint in taints.split(','):
+        validate_taint(taint)
+        taints.append(taint)
+
+    if hasattr(namespace, 'nodepool_taints'):
+        namespace.nodepool_taints = taints
+    else:
+        namespace.node_taints = taints
 
 def validate_taint(taint):
     """Validates that provided taint is a valid format"""

@@ -2276,17 +2276,18 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
 
         # read the original value passed by the command
-        node_taints_str = self.raw_param.get("nodepool_taints")
-
-        if node_taints_str is not None:
-            node_taints = []
-            for taint in node_taints_str.split(','):
-                taint = taint.strip()
-                node_taints.append(taint)
-            # this parameter does not need validation
-            return node_taints
-        return None
-
+        raw_value = self.raw_param.get("nodepool_taints")
+        value_obtained_from_mc = None
+        if self.mc and self.mc.agent_pool_profiles and len(self.mc.agent_pool_profiles) > 0:
+            value_obtained_from_mc = self.mc.agent_pool_profiles[0].node_taints
+        # set default value
+        if value_obtained_from_mc is not None:
+            nodepool_taints = value_obtained_from_mc
+        else:
+            nodepool_taints = raw_value
+        # this parameter does not need validation
+        return nodepool_taints
+    
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
         self, cmd: AzCliCommand, client: ContainerServiceClient, raw_parameters: Dict, resource_type: ResourceType
@@ -3588,7 +3589,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
     def update_nodepool_taints_mc(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
         taints = self.context.get_nodepool_taints()
-        taints = ["taint1=value1:NoSchedule", "taint2=value2:NoSchedule"]
         if taints is not None and mc.agent_pool_profiles is not None and len(mc.agent_pool_profiles) > 1:
             for agent_pool_profile in mc.agent_pool_profiles:
                 agent_pool_profile.node_taints = taints
