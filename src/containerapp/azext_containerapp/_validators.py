@@ -41,9 +41,13 @@ def _is_number(s):
 
 def validate_revision_suffix(value):
     if value is not None:
-        matched = re.match(r"^[a-z](?!.*-{2})([-a-z0-9]*[a-z0-9])?$", value)
+        # what does the following regex check?
+        # 1. ^[a-z0-9] - starts with a letter or number
+        # 2. (?!.*-{2}) - does not contain '--'
+        # 3. ([-a-z0-9]*[a-z0-9])? - ends with a letter or number and can contain '-' in between
+        matched = re.match(r"^[a-z0-9](?!.*-{2})([-a-z0-9]*[a-z0-9])?$", value)
         if not matched:
-            raise ValidationError(f"Invalid Container App revision name '{value}'. A revision name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character and cannot have '--'.")
+            raise ValidationError(f"Invalid Container App revision suffix '{value}'. A revision suffix must consist of lower case alphanumeric characters or '-', start with a letter or number, end with an alphanumeric character and cannot have '--'.")
 
 
 def validate_memory(namespace):
@@ -201,3 +205,16 @@ def validate_ssh(cmd, namespace):
         _validate_revision_exists(cmd, namespace)
         _validate_replica_exists(cmd, namespace)
         _validate_container_exists(cmd, namespace)
+
+
+def validate_cors_max_age(cmd, namespace):
+    if namespace.max_age:
+        try:
+            if namespace.max_age == "":
+                return
+
+            max_age = int(namespace.max_age)
+            if max_age < 0:
+                raise InvalidArgumentValueError("max-age must be a positive integer.")
+        except ValueError:
+            raise InvalidArgumentValueError("max-age must be an integer.")
