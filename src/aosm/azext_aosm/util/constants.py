@@ -35,6 +35,7 @@ CNF_DEFINITION_JINJA2_SOURCE_TEMPLATE_FILENAME = "cnfdefinition.bicep.j2"
 CNF_MANIFEST_JINJA2_SOURCE_TEMPLATE_FILENAME = "cnfartifactmanifest.bicep.j2"
 CNF_DEFINITION_BICEP_TEMPLATE_FILENAME = "cnfdefinition.bicep"
 CNF_MANIFEST_BICEP_TEMPLATE_FILENAME = "cnfartifactmanifest.bicep"
+CNF_VALUES_SCHEMA_FILENAME = "values.schema.json"
 
 
 # Names of directories used in the repo
@@ -84,4 +85,4 @@ DEPLOYMENT_PARAMETER_MAPPING_REGEX = r"\{deployParameters.(.+?)\}"
 SOURCE_ACR_REGEX = (
     r".*\/resourceGroups\/(?P<resource_group>[^\/]*)\/providers\/Microsoft."
     r"ContainerRegistry\/registries\/(?P<registry_name>[^\/]*)"
-    )
+)

@@ -298,7 +298,7 @@ class NSDGenerator:
             {},
         )
 
-    def generate_bicep(self, 
+    def generate_bicep(self,
                        template_name: str,
                        output_file_name: str,
                        params: Dict[Any,Any]) -> None:

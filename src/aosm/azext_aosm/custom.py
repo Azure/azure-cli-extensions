@@ -7,6 +7,7 @@ import json
 import os
 import shutil
 from dataclasses import asdict
+from pathlib import Path
 from typing import Optional
 
 from azure.cli.core.azclierror import (
@@ -116,15 +117,15 @@ def _generate_nfd(
             "Generate NFD called for unrecognised definition_type. Only VNF and CNF"
             " have been implemented."
         )
-    if nfd_generator.bicep_path:
+    if nfd_generator.nfd_bicep_path:
         carry_on = input(
-            f"The folder {os.path.dirname(nfd_generator.bicep_path)} already exists -"
+            f"The {nfd_generator.nfd_bicep_path.parent} directory already exists -"
             " delete it and continue? (y/n)"
         )
         if carry_on != "y":
-            raise UnclassifiedUserFault("User aborted! ")
+            raise UnclassifiedUserFault("User aborted!")
 
-        shutil.rmtree(os.path.dirname(nfd_generator.bicep_path))
+        shutil.rmtree(nfd_generator.nfd_bicep_path.parent)
     nfd_generator.generate_nfd()
 
 
@@ -177,7 +178,7 @@ def publish_definition(
             parameters_json_file=parameters_json_file,
             manifest_bicep_path=manifest_file,
             manifest_parameters_json_file=manifest_parameters_json_file,
-            skip=skip
+            skip=skip,
         )
     elif definition_type == CNF:
         deployer = DeployerViaArm(api_clients, config=config)
@@ -187,7 +188,7 @@ def publish_definition(
             parameters_json_file=parameters_json_file,
             manifest_bicep_path=manifest_file,
             manifest_parameters_json_file=manifest_parameters_json_file,
-            skip=skip
+            skip=skip,
         )
     else:
         raise ValueError(
@@ -253,7 +254,7 @@ def _generate_config(configuration_type: str, output_file: str = "input.json"):
     config = get_configuration(configuration_type)
     config_as_dict = json.dumps(asdict(config), indent=4)
 
-    if os.path.exists(output_file):
+    if Path(output_file).exists():
         carry_on = input(
             f"The file {output_file} already exists - do you want to overwrite it?"
             " (y/n)"
@@ -369,7 +370,7 @@ def publish_design(
         parameters_json_file=parameters_json_file,
         manifest_bicep_path=manifest_file,
         manifest_parameters_json_file=manifest_parameters_json_file,
-        skip=skip
+        skip=skip,
     )
 
 

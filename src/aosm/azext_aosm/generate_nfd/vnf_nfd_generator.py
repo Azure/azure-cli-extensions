@@ -5,10 +5,10 @@
 """Contains a class for generating VNF NFDs and associated resources."""
 
 import json
-import os
 import shutil
 import tempfile
 from functools import cached_property
+from pathlib import Path
 from typing import Any, Dict, Optional
 
 from knack.log import get_logger
@@ -62,21 +62,19 @@ class VnfNfdGenerator(NFDGenerator):
 
     def __init__(self, config: VNFConfiguration, order_params: bool, interactive: bool):
         self.config = config
-        self.bicep_template_name = VNF_DEFINITION_BICEP_TEMPLATE_FILENAME
-        self.manifest_template_name = VNF_MANIFEST_BICEP_TEMPLATE_FILENAME
 
-        self.arm_template_path = self.config.arm_template.file_path
-        self.output_folder_name = self.config.build_output_folder_name
+        self.arm_template_path = Path(self.config.arm_template.file_path)
+        self.output_directory: Path = self.config.output_directory_for_build
 
-        self._bicep_path = os.path.join(
-            self.output_folder_name, self.bicep_template_name
+        self._vnfd_bicep_path = Path(
+            self.output_directory, VNF_DEFINITION_BICEP_TEMPLATE_FILENAME
         )
-        self._manifest_path = os.path.join(
-            self.output_folder_name, self.manifest_template_name
+        self._manifest_bicep_path = Path(
+            self.output_directory, VNF_MANIFEST_BICEP_TEMPLATE_FILENAME
         )
         self.order_params = order_params
         self.interactive = interactive
-        self.tmp_folder_name = ""
+        self._tmp_dir: Optional[Path] = None
         self.image_name = f"{self.config.nf_name}Image"
 
     def generate_nfd(self) -> None:
@@ -85,32 +83,30 @@ class VnfNfdGenerator(NFDGenerator):
 
         Create a bicep template for an NFD from the ARM template for the VNF.
         """
-        # Create temporary folder.
+        # Create temporary directory.
         with tempfile.TemporaryDirectory() as tmpdirname:
-            self.tmp_folder_name = tmpdirname
+            self._tmp_dir = Path(tmpdirname)
 
-            self.create_parameter_files()
-            self.copy_to_output_folder()
-            print(f"Generated NFD bicep templates created in {self.output_folder_name}")
+            self._create_parameter_files()
+            self._copy_to_output_directory()
+            print(f"Generated NFD bicep templates created in {self.output_directory}")
             print(
                 "Please review these templates. When you are happy with them run "
                 "`az aosm nfd publish` with the same arguments."
             )
 
     @property
-    def bicep_path(self) -> Optional[str]:
+    def nfd_bicep_path(self) -> Optional[Path]:
         """Returns the path to the bicep file for the NFD if it has been created."""
-        if os.path.exists(self._bicep_path):
-            return self._bicep_path
-
+        if self._vnfd_bicep_path.exists():
+            return self._vnfd_bicep_path
         return None
 
     @property
-    def manifest_path(self) -> Optional[str]:
+    def manifest_bicep_path(self) -> Optional[str]:
         """Returns the path to the bicep file for the NFD if it has been created."""
-        if os.path.exists(self._manifest_path):
-            return self._manifest_path
-
+        if self._manifest_bicep_path.exists():
+            return self._manifest_bicep_path
         return None
 
     @cached_property
@@ -151,22 +147,22 @@ class VnfNfdGenerator(NFDGenerator):
 
         return {**vm_parameters_no_default, **vm_parameters_with_default}
 
-    def create_parameter_files(self) -> None:
-        """Create the Deployment and Template json parameter files."""
-        schemas_folder_path = os.path.join(self.tmp_folder_name, SCHEMAS_DIR_NAME)
-        os.mkdir(schemas_folder_path)
-        self.write_deployment_parameters(schemas_folder_path)
+    def _create_parameter_files(self) -> None:
+        """Create the deployment, template and VHD parameter files."""
+        tmp_schemas_directory: Path = self._tmp_dir / SCHEMAS_DIR_NAME
+        tmp_schemas_directory.mkdir()
+        self.write_deployment_parameters(tmp_schemas_directory)
 
-        mappings_folder_path = os.path.join(self.tmp_folder_name, CONFIG_MAPPINGS_DIR_NAME)
-        os.mkdir(mappings_folder_path)
-        self.write_template_parameters(mappings_folder_path)
-        self.write_vhd_parameters(mappings_folder_path)
+        tmp_mappings_directory: Path = self._tmp_dir / CONFIG_MAPPINGS_DIR_NAME
+        tmp_mappings_directory.mkdir()
+        self.write_template_parameters(tmp_mappings_directory)
+        self.write_vhd_parameters(tmp_mappings_directory)
 
-    def write_deployment_parameters(self, folder_path: str) -> None:
+    def write_deployment_parameters(self, directory: Path) -> None:
         """
-        Write out the NFD deploymentParameters.json file.
+        Write out the NFD deploymentParameters.json file to `directory`
 
-        :param folder_path: The folder to put this file in.
+        :param directory: The directory to put this file in.
         """
         logger.debug("Create deploymentParameters.json")
 
@@ -180,10 +176,10 @@ class VnfNfdGenerator(NFDGenerator):
 
         for key in vm_parameters:
             if key == self.config.image_name_parameter:
-                # There is only one correct answer for the image name, so don't ask the 
+                # There is only one correct answer for the image name, so don't ask the
                 # user, instead it is hardcoded in config mappings.
                 continue
-            
+
             # Order parameters into those without and then with defaults
             has_default_field = "defaultValue" in self.vm_parameters[key]
             has_default = (
@@ -213,7 +209,7 @@ class VnfNfdGenerator(NFDGenerator):
         for key in vm_parameters_to_exclude:
             self.vm_parameters.pop(key, None)
 
-        deployment_parameters_path = os.path.join(folder_path, DEPLOYMENT_PARAMETERS_FILENAME)
+        deployment_parameters_path = directory / DEPLOYMENT_PARAMETERS_FILENAME
 
         # Heading for the deployParameters schema
         deploy_parameters_full: Dict[str, Any] = SCHEMA_PREFIX
@@ -232,8 +228,8 @@ class VnfNfdGenerator(NFDGenerator):
         # Extra output file to help the user know which parameters are optional
         if not self.interactive:
             if nfd_parameters_with_default:
-                optional_deployment_parameters_path = os.path.join(
-                    folder_path, OPTIONAL_DEPLOYMENT_PARAMETERS_FILENAME
+                optional_deployment_parameters_path = (
+                    directory / OPTIONAL_DEPLOYMENT_PARAMETERS_FILENAME
                 )
                 with open(
                     optional_deployment_parameters_path, "w", encoding="utf-8"
@@ -245,12 +241,12 @@ class VnfNfdGenerator(NFDGenerator):
                     f"{OPTIONAL_DEPLOYMENT_PARAMETERS_FILENAME} to help you choose which "
                     "to expose."
                 )
-                
-    def write_template_parameters(self, folder_path: str) -> None:
-        """
-        Write out the NFD templateParameters.json file.
 
-        :param folder_path: The folder to put this file in.
+    def write_template_parameters(self, directory: Path) -> None:
+        """
+        Write out the NFD templateParameters.json file to `directory`.
+
+        :param directory: The directory to put this file in.
         """
         logger.debug("Create %s", TEMPLATE_PARAMETERS_FILENAME)
         vm_parameters = (
@@ -266,18 +262,18 @@ class VnfNfdGenerator(NFDGenerator):
 
             template_parameters[key] = f"{{deployParameters.{key}}}"
 
-        template_parameters_path = os.path.join(folder_path, TEMPLATE_PARAMETERS_FILENAME)
+        template_parameters_path = directory / TEMPLATE_PARAMETERS_FILENAME
 
         with open(template_parameters_path, "w", encoding="utf-8") as _file:
             _file.write(json.dumps(template_parameters, indent=4))
 
         logger.debug("%s created", template_parameters_path)
 
-    def write_vhd_parameters(self, folder_path: str) -> None:
+    def write_vhd_parameters(self, directory: Path) -> None:
         """
-        Write out the NFD vhdParameters.json file.
+        Write out the NFD vhdParameters.json file to `directory`.
 
-        :param folder_path: The folder to put this file in.
+        :param directory: The directory to put this file in.
         """
         azureDeployLocation: str
         if self.vm_parameters.get("location"):
@@ -293,29 +289,33 @@ class VnfNfdGenerator(NFDGenerator):
             "azureDeployLocation": azureDeployLocation,
         }
 
-        vhd_parameters_path = os.path.join(folder_path, VHD_PARAMETERS_FILENAME)
+        vhd_parameters_path = directory / VHD_PARAMETERS_FILENAME
         with open(vhd_parameters_path, "w", encoding="utf-8") as _file:
             _file.write(json.dumps(vhd_parameters, indent=4))
 
         logger.debug("%s created", vhd_parameters_path)
 
-    def copy_to_output_folder(self) -> None:
-        """Copy the bicep templates, config mappings and schema into the build output folder."""
-        code_dir = os.path.dirname(__file__)
+    def _copy_to_output_directory(self) -> None:
+        """Copy the static bicep templates and generated config mappings and schema into the build output directory."""
+        logger.info("Create NFD bicep %s", self.output_directory)
+        Path(self.output_directory).mkdir(exist_ok=True)
 
-        logger.info("Create NFD bicep %s", self.output_folder_name)
-        os.mkdir(self.output_folder_name)
+        static_bicep_templates_dir = Path(__file__).parent / "templates"
 
-        bicep_path = os.path.join(code_dir, "templates", self.bicep_template_name)
-        shutil.copy(bicep_path, self.output_folder_name)
+        static_vnfd_bicep_path = (
+            static_bicep_templates_dir / VNF_DEFINITION_BICEP_TEMPLATE_FILENAME
+        )
+        shutil.copy(static_vnfd_bicep_path, self.output_directory)
 
-        manifest_path = os.path.join(code_dir, "templates", self.manifest_template_name)
-        shutil.copy(manifest_path, self.output_folder_name)
-        # Copy everything in the temp folder to the output folder
+        static_manifest_bicep_path = (
+            static_bicep_templates_dir / VNF_MANIFEST_BICEP_TEMPLATE_FILENAME
+        )
+        shutil.copy(static_manifest_bicep_path, self.output_directory)
+        # Copy everything in the temp directory to the output directory
         shutil.copytree(
-            self.tmp_folder_name,
-            self.output_folder_name,
+            self._tmp_dir,
+            self.output_directory,
             dirs_exist_ok=True,
         )
 
-        logger.info("Copied files to %s", self.output_folder_name)
+        logger.info("Copied files to %s", self.output_directory)
