@@ -5,7 +5,6 @@
 """Contains a class for generating VNF NFDs and associated resources."""
 
 import json
-import os
 import shutil
 import tempfile
 from functools import cached_property
@@ -67,8 +66,12 @@ class VnfNfdGenerator(NFDGenerator):
         self.arm_template_path = Path(self.config.arm_template.file_path)
         self.output_directory: Path = self.config.output_directory_for_build
 
-        self._vnfd_bicep_path = Path(self.output_directory, VNF_DEFINITION_BICEP_TEMPLATE_FILENAME)
-        self._manifest_bicep_path = Path(self.output_directory, VNF_MANIFEST_BICEP_TEMPLATE_FILENAME)
+        self._vnfd_bicep_path = Path(
+            self.output_directory, VNF_DEFINITION_BICEP_TEMPLATE_FILENAME
+        )
+        self._manifest_bicep_path = Path(
+            self.output_directory, VNF_MANIFEST_BICEP_TEMPLATE_FILENAME
+        )
         self.order_params = order_params
         self.interactive = interactive
         self._tmp_dir: Optional[Path] = None
@@ -93,7 +96,7 @@ class VnfNfdGenerator(NFDGenerator):
             )
 
     @property
-    def vnfd_bicep_path(self) -> Optional[Path]:
+    def nfd_bicep_path(self) -> Optional[Path]:
         """Returns the path to the bicep file for the NFD if it has been created."""
         if self._vnfd_bicep_path.exists():
             return self._vnfd_bicep_path
@@ -225,7 +228,9 @@ class VnfNfdGenerator(NFDGenerator):
         # Extra output file to help the user know which parameters are optional
         if not self.interactive:
             if nfd_parameters_with_default:
-                optional_deployment_parameters_path = directory / OPTIONAL_DEPLOYMENT_PARAMETERS_FILENAME
+                optional_deployment_parameters_path = (
+                    directory / OPTIONAL_DEPLOYMENT_PARAMETERS_FILENAME
+                )
                 with open(
                     optional_deployment_parameters_path, "w", encoding="utf-8"
                 ) as _file:
@@ -297,10 +302,14 @@ class VnfNfdGenerator(NFDGenerator):
 
         static_bicep_templates_dir = Path(__file__).parent / "templates"
 
-        static_vnfd_bicep_path = static_bicep_templates_dir / VNF_DEFINITION_BICEP_TEMPLATE_FILENAME
+        static_vnfd_bicep_path = (
+            static_bicep_templates_dir / VNF_DEFINITION_BICEP_TEMPLATE_FILENAME
+        )
         shutil.copy(static_vnfd_bicep_path, self.output_directory)
 
-        static_manifest_bicep_path = static_bicep_templates_dir / VNF_MANIFEST_BICEP_TEMPLATE_FILENAME
+        static_manifest_bicep_path = (
+            static_bicep_templates_dir / VNF_MANIFEST_BICEP_TEMPLATE_FILENAME
+        )
         shutil.copy(static_manifest_bicep_path, self.output_directory)
         # Copy everything in the temp directory to the output directory
         shutil.copytree(

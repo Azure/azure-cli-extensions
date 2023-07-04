@@ -4,11 +4,11 @@
 # --------------------------------------------------------------------------------------
 """Contains a class for generating CNF NFDs and associated resources."""
 import json
-import os
 import re
 import shutil
 import tarfile
 import tempfile
+from pathlib import Path
 from typing import Any, Dict, Iterator, List, Optional, Tuple
 
 import yaml
@@ -23,6 +23,7 @@ from azext_aosm.util.constants import (
     CNF_DEFINITION_JINJA2_SOURCE_TEMPLATE_FILENAME,
     CNF_MANIFEST_BICEP_TEMPLATE_FILENAME,
     CNF_MANIFEST_JINJA2_SOURCE_TEMPLATE_FILENAME,
+    CNF_VALUES_SCHEMA_FILENAME,
     CONFIG_MAPPINGS_DIR_NAME,
     DEPLOYMENT_PARAMETER_MAPPING_REGEX,
     DEPLOYMENT_PARAMETERS_FILENAME,
@@ -59,38 +60,37 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         mapping file in config to be blank.
         """
         self.config = config
-        self.nfd_jinja2_template_path = os.path.join(
-            os.path.dirname(__file__),
-            "templates",
-            CNF_DEFINITION_JINJA2_SOURCE_TEMPLATE_FILENAME,
+        self.nfd_jinja2_template_path = (
+            Path(__file__).parent
+            / "templates"
+            / CNF_DEFINITION_JINJA2_SOURCE_TEMPLATE_FILENAME
         )
-        self.manifest_jinja2_template_path = os.path.join(
-            os.path.dirname(__file__),
-            "templates",
-            CNF_MANIFEST_JINJA2_SOURCE_TEMPLATE_FILENAME,
+        self.manifest_jinja2_template_path = (
+            Path(__file__).parent
+            / "templates"
+            / CNF_MANIFEST_JINJA2_SOURCE_TEMPLATE_FILENAME
         )
-        self.output_folder_name = self.config.build_output_folder_name
+        self.output_directory: Path = self.config.output_directory_for_build
+        self._cnfd_bicep_path = (
+            self.output_directory / CNF_DEFINITION_BICEP_TEMPLATE_FILENAME
+        )
+        self._tmp_dir: Optional[Path] = None
 
         self.artifacts = []
         self.nf_application_configurations = []
         self.deployment_parameter_schema = SCHEMA_PREFIX
-
-        self._bicep_path = os.path.join(
-            self.output_folder_name, CNF_DEFINITION_BICEP_TEMPLATE_FILENAME
-        )
         self.interactive = interactive
-        self._tmp_folder_name = ""
 
     def generate_nfd(self) -> None:
         """Generate a CNF NFD which comprises a group, an Artifact Manifest and an NFDV."""
 
-        # Create temporary folder.
+        # Create temporary directory.
         with tempfile.TemporaryDirectory() as tmpdirname:
-            self._tmp_folder_name = tmpdirname
+            self._tmp_dir = Path(tmpdirname)
             try:
                 for helm_package in self.config.helm_packages:
-                    # Unpack the chart into the tmp folder
-                    self._extract_chart(helm_package.path_to_chart)
+                    # Unpack the chart into the tmp directory
+                    self._extract_chart(Path(helm_package.path_to_chart))
 
                     # TODO: Validate charts
 
@@ -99,7 +99,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                         self._generate_chart_value_mappings(helm_package)
 
                     # Get schema for each chart
-                    # (extract mappings and take the schema bits we need from values.schema.json)
+                    # (extract mappings and relevant parts of the schema)
                     # + Add that schema to the big schema.
                     self.deployment_parameter_schema["properties"].update(
                         self.get_chart_mapping_schema(helm_package)
@@ -137,9 +137,9 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                 self.write_nfd_bicep_file()
                 self.write_schema_to_file()
                 self.write_manifest_bicep_file()
-                self.copy_to_output_folder()
+                self.copy_to_output_directory()
                 print(
-                    f"Generated NFD bicep template created in {self.output_folder_name}"
+                    f"Generated NFD bicep template created in {self.output_directory}"
                 )
                 print(
                     "Please review these templates."
@@ -151,30 +151,29 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                 raise e
 
     @property
-    def bicep_path(self) -> Optional[str]:
+    def nfd_bicep_path(self) -> Optional[Path]:
         """Returns the path to the bicep file for the NFD if it has been created."""
-        if os.path.exists(self._bicep_path):
-            return self._bicep_path
-
+        if self._cnfd_bicep_path.exists():
+            return self._cnfd_bicep_path
         return None
 
-    def _extract_chart(self, path: str) -> None:
+    def _extract_chart(self, path: Path) -> None:
         """
-        Extract the chart into the tmp folder.
+        Extract the chart into the tmp directory.
 
         :param path: The path to helm package
         """
 
         logger.debug("Extracting helm package %s", path)
 
-        (_, ext) = os.path.splitext(path)
-        if ext in (".gz", ".tgz"):
+        file_extension = path.suffix
+        if file_extension in (".gz", ".tgz"):
             with tarfile.open(path, "r:gz") as tar:
-                tar.extractall(path=self._tmp_folder_name)
+                tar.extractall(path=self._tmp_dir)
 
-        elif ext == ".tar":
+        elif file_extension == ".tar":
             with tarfile.open(path, "r:") as tar:
-                tar.extractall(path=self._tmp_folder_name)
+                tar.extractall(path=self._tmp_dir)
 
         else:
             raise InvalidTemplateError(
@@ -202,12 +201,10 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         )
 
         # Write the mapping to a file
-        folder_name = os.path.join(self._tmp_folder_name, GENERATED_VALUES_MAPPINGS_DIR_NAME)
-        os.makedirs(folder_name, exist_ok=True)
-        mapping_filepath = os.path.join(
-            self._tmp_folder_name,
-            GENERATED_VALUES_MAPPINGS_DIR_NAME,
-            f"{helm_package.name}-generated-mapping.yaml",
+        mapping_directory: Path = self._tmp_dir / GENERATED_VALUES_MAPPINGS_DIR_NAME
+        mapping_directory.mkdir(exist_ok=True)
+        mapping_filepath = (
+            mapping_directory / f"{helm_package.name}-generated-mapping.yaml"
         )
         with open(mapping_filepath, "w", encoding="UTF-8") as mapping_file:
             yaml.dump(mapping_to_write, mapping_file)
@@ -227,13 +224,9 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         :return: A dictionary of the yaml read from the file
         :rtype: Dict[str, Any]
         """
-        for file in os.listdir(os.path.join(self._tmp_folder_name, helm_package.name)):
-            if file in ("values.yaml", "values.yml"):
-                with open(
-                    os.path.join(self._tmp_folder_name, helm_package.name, file),
-                    "r",
-                    encoding="UTF-8",
-                ) as values_file:
+        for file in Path(self._tmp_dir / helm_package.name).iterdir():
+            if file.name in ("values.yaml", "values.yml"):
+                with file.open(encoding="UTF-8") as values_file:
                     values_yaml = yaml.safe_load(values_file)
                 return values_yaml
 
@@ -253,7 +246,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             artifacts=self.artifacts,
         )
 
-        path = os.path.join(self._tmp_folder_name, CNF_MANIFEST_BICEP_TEMPLATE_FILENAME)
+        path = self._tmp_dir / CNF_MANIFEST_BICEP_TEMPLATE_FILENAME
         with open(path, "w", encoding="utf-8") as f:
             f.write(bicep_contents)
 
@@ -268,11 +261,11 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             )
 
         bicep_contents: str = template.render(
-            deployParametersPath=os.path.join(SCHEMAS_DIR_NAME, DEPLOYMENT_PARAMETERS_FILENAME),
+            deployParametersPath=Path(SCHEMAS_DIR_NAME, DEPLOYMENT_PARAMETERS_FILENAME),
             nf_application_configurations=self.nf_application_configurations,
         )
 
-        path = os.path.join(self._tmp_folder_name, CNF_DEFINITION_BICEP_TEMPLATE_FILENAME)
+        path = self._tmp_dir / CNF_DEFINITION_BICEP_TEMPLATE_FILENAME
         with open(path, "w", encoding="utf-8") as f:
             f.write(bicep_contents)
 
@@ -283,67 +276,52 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
         logger.debug("Create deploymentParameters.json")
 
-        full_schema = os.path.join(self._tmp_folder_name, DEPLOYMENT_PARAMETERS_FILENAME)
+        full_schema = self._tmp_dir / DEPLOYMENT_PARAMETERS_FILENAME
         with open(full_schema, "w", encoding="UTF-8") as f:
             json.dump(self.deployment_parameter_schema, f, indent=4)
 
         logger.debug("%s created", full_schema)
 
-    def copy_to_output_folder(self) -> None:
-        """Copy the config mappings, schema and bicep templates (artifact manifest and NFDV) to the output folder."""
+    def copy_to_output_directory(self) -> None:
+        """Copy the config mappings, schema and bicep templates (artifact manifest and NFDV) to the output directory."""
 
-        logger.info("Create NFD bicep %s", self.output_folder_name)
+        logger.info("Create NFD bicep %s", self.output_directory)
 
-        os.mkdir(self.output_folder_name)
-        os.mkdir(os.path.join(self.output_folder_name, SCHEMAS_DIR_NAME))
-
-        # Copy the nfd and the manifest bicep files to the output folder
-        tmp_nfd_bicep_path = os.path.join(
-            self._tmp_folder_name, CNF_DEFINITION_BICEP_TEMPLATE_FILENAME
+        Path(self.output_directory / SCHEMAS_DIR_NAME).mkdir(
+            parents=True, exist_ok=True
         )
-        shutil.copy(tmp_nfd_bicep_path, self.output_folder_name)
 
-        tmp_manifest_bicep_path = os.path.join(
-            self._tmp_folder_name, CNF_MANIFEST_BICEP_TEMPLATE_FILENAME
+        # Copy the nfd and the manifest bicep files to the output directory
+        shutil.copy(
+            self._tmp_dir / CNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
+            self.output_directory,
         )
-        shutil.copy(tmp_manifest_bicep_path, self.output_folder_name)
+        shutil.copy(
+            self._tmp_dir / CNF_MANIFEST_BICEP_TEMPLATE_FILENAME, self.output_directory
+        )
 
-        # Copy any generated values mappings YAML files to the corresponding folder in
+        # Copy any generated values mappings YAML files to the corresponding directory in
         # the output directory so that the user can edit them and re-run the build if
         # required
-        if os.path.exists(
-            os.path.join(self._tmp_folder_name, GENERATED_VALUES_MAPPINGS_DIR_NAME)
-        ):
-            generated_mappings_path = os.path.join(
-                self.output_folder_name, GENERATED_VALUES_MAPPINGS_DIR_NAME
-            )
+        if Path(self._tmp_dir / GENERATED_VALUES_MAPPINGS_DIR_NAME).exists():
             shutil.copytree(
-                os.path.join(self._tmp_folder_name, GENERATED_VALUES_MAPPINGS_DIR_NAME),
-                generated_mappings_path,
+                self._tmp_dir / GENERATED_VALUES_MAPPINGS_DIR_NAME,
+                self.output_directory / GENERATED_VALUES_MAPPINGS_DIR_NAME,
             )
 
         # Copy the JSON config mappings and deploymentParameters schema that are used
-        # for the NFD to the output folder
-        tmp_config_mappings_path = os.path.join(self._tmp_folder_name, CONFIG_MAPPINGS_DIR_NAME)
-        output_config_mappings_path = os.path.join(
-            self.output_folder_name, CONFIG_MAPPINGS_DIR_NAME
-        )
+        # for the NFD to the output directory
         shutil.copytree(
-            tmp_config_mappings_path,
-            output_config_mappings_path,
+            self._tmp_dir / CONFIG_MAPPINGS_DIR_NAME,
+            self.output_directory / CONFIG_MAPPINGS_DIR_NAME,
             dirs_exist_ok=True,
         )
-
-        tmp_schema_path = os.path.join(self._tmp_folder_name, DEPLOYMENT_PARAMETERS_FILENAME)
-        output_schema_path = os.path.join(
-            self.output_folder_name, SCHEMAS_DIR_NAME, DEPLOYMENT_PARAMETERS_FILENAME
-        )
         shutil.copy(
-            tmp_schema_path,
-            output_schema_path,
+            self._tmp_dir / DEPLOYMENT_PARAMETERS_FILENAME,
+            self.output_directory / SCHEMAS_DIR_NAME / DEPLOYMENT_PARAMETERS_FILENAME,
         )
 
-        logger.info("Copied files to %s", self.output_folder_name)
+        logger.info("Copied files to %s", self.output_directory)
 
     def generate_nf_application_config(
         self,
@@ -368,16 +346,14 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         }
 
     @staticmethod
-    def _find_yaml_files(directory) -> Iterator[str]:
+    def _find_yaml_files(directory: Path) -> Iterator[str]:
         """
-        Find all yaml files in given directory.
+        Find all yaml files recursively in given directory.
 
         :param directory: The directory to search.
         """
-        for root, _, files in os.walk(directory):
-            for file in files:
-                if file.endswith(".yaml") or file.endswith(".yml"):
-                    yield os.path.join(root, file)
+        yield from directory.glob("**/*.yaml")
+        yield from directory.glob("**/*.yml")
 
     def find_pattern_matches_in_chart(
         self, helm_package: HelmPackageConfig, start_string: str
@@ -395,7 +371,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         paths and the name and version of the image. e.g. (Values.foo.bar.repoPath, foo,
         1.2.3)
         """
-        chart_dir = os.path.join(self._tmp_folder_name, helm_package.name)
+        chart_dir = self._tmp_dir / helm_package.name
         matches = []
         path = []
 
@@ -413,14 +389,14 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                             )
                             logger.debug(
                                 "Regex match for name and version is %s",
-                                name_and_version
-                                )
+                                name_and_version,
+                            )
 
                             if name_and_version and len(name_and_version.groups()) == 2:
                                 logger.debug(
                                     "Found image name and version %s %s",
                                     name_and_version.group(1),
-                                    name_and_version.group(2)
+                                    name_and_version.group(2),
                                 )
                                 matches.append(
                                     (
@@ -468,7 +444,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
     ) -> Dict[Any, Any]:
         """
         Get the schema for the non default values (those with {deploymentParameter...}).
-        Based on user provided values.schema.json.
+        Based on the user provided values schema.
 
         param helm_package: The helm package config.
         """
@@ -476,18 +452,16 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         logger.debug("Get chart mapping schema for %s", helm_package.name)
 
         mappings_path = helm_package.path_to_mappings
-        values_schema = os.path.join(
-            self._tmp_folder_name, helm_package.name, "values.schema.json"
-        )
-        if not os.path.exists(mappings_path):
+        values_schema = self._tmp_dir / helm_package.name / CNF_VALUES_SCHEMA_FILENAME
+        if not Path(mappings_path).exists():
             raise InvalidTemplateError(
                 f"ERROR: The helm package '{helm_package.name}' does not have a valid values"
                 " mappings file. The file at '{helm_package.path_to_mappings}' does not exist."
                 "\nPlease fix this and run the command again."
             )
-        if not os.path.exists(values_schema):
+        if not values_schema.exists():
             raise InvalidTemplateError(
-                f"ERROR: The helm package '{helm_package.name}' is missing values.schema.json."
+                f"ERROR: The helm package '{helm_package.name}' is missing {CNF_VALUES_SCHEMA_FILENAME}."
                 "\nPlease fix this and run the command again."
             )
 
@@ -515,9 +489,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
     @staticmethod
     def traverse_dict(
-        dict_to_search: Dict[Any, Any],
-        target_regex: str
-        ) -> Dict[str, List[str]]:
+        dict_to_search: Dict[Any, Any], target_regex: str
+    ) -> Dict[str, List[str]]:
         """
         Traverse the dictionary that is loaded from the file provided by path_to_mappings in the input.json.
 
@@ -563,15 +536,14 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                                 "at path %s, which this tool cannot parse. "
                                 "Please check the output configMappings and schemas "
                                 "files and check that they are as required.",
-                                path + [k]
+                                path + [k],
                             )
         return result
 
     @staticmethod
     def search_schema(
-        deployParams_paths: Dict[str, List[str]],
-        full_schema
-        ) -> Dict[str, Dict[str, str]]:
+        deployParams_paths: Dict[str, List[str]], full_schema
+    ) -> Dict[str, Dict[str, str]]:
         """
         Search through provided schema for the types of the deployment parameters.
         This assumes that the type of the key will be the type of the deployment parameter.
@@ -581,7 +553,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         {"foo": {"type": "string"}, "bar": {"type": "string"}}
 
         param deployParams_paths: a dictionary of all the deploy parameters to search for,
-                      with the key being the deploy parameter and the value being the 
+                      with the key being the deploy parameter and the value being the
                       path to the value.
                       e.g. {"foo": ["global", "foo", "bar"]}
         param full_schema: The schema to search through.
@@ -591,13 +563,14 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         for deploy_param, path_list in deployParams_paths.items():
             logger.debug(
                 "Searching for %s in schema at path %s", deploy_param, path_list
-                )
+            )
             node = full_schema
             for path in path_list:
                 if "properties" in node.keys():
                     logger.debug(
                         "Searching properties for %s in schema at path %s",
-                        deploy_param, path
+                        deploy_param,
+                        path,
                     )
                     node = node["properties"][path]
                 else:
@@ -613,7 +586,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             logger.warning(
                 "We default these parameters to type string. "
                 "Please edit schemas/%s in the output before publishing "
-                "if this is wrong", DEPLOYMENT_PARAMETERS
+                "if this is wrong",
+                DEPLOYMENT_PARAMETERS_FILENAME,
             )
         return new_schema
 
@@ -697,15 +671,15 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         self, helm_package: HelmPackageConfig
     ) -> Tuple[str, str]:
         """Get the name and version of the chart."""
-        chart = os.path.join(self._tmp_folder_name, helm_package.name, "Chart.yaml")
+        chart_path = self._tmp_dir / helm_package.name / "Chart.yaml"
 
-        if not os.path.exists(chart):
+        if not chart_path.exists():
             raise InvalidTemplateError(
                 f"There is no Chart.yaml file in the helm package '{helm_package.name}'. "
                 "\nPlease fix this and run the command again."
             )
 
-        with open(chart, "r", encoding="utf-8") as f:
+        with open(chart_path, "r", encoding="utf-8") as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
             if "name" in data and "version" in data:
                 chart_name = data["name"]
@@ -719,23 +693,19 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
         return (chart_name, chart_version)
 
-    def jsonify_value_mappings(self, helm_package: HelmPackageConfig) -> str:
+    def jsonify_value_mappings(self, helm_package: HelmPackageConfig) -> Path:
         """Yaml->JSON values mapping file, then return path to it."""
-        mappings_yaml = helm_package.path_to_mappings
+        mappings_yaml_file = helm_package.path_to_mappings
+        mappings_dir = self._tmp_dir / CONFIG_MAPPINGS_DIR_NAME
+        mappings_output_file = mappings_dir / f"{helm_package.name}-mappings.json"
 
-        mappings_folder_path = os.path.join(self._tmp_folder_name, CONFIG_MAPPINGS_DIR_NAME)
-        mappings_filename = f"{helm_package.name}-mappings.json"
+        mappings_dir.mkdir(exist_ok=True)
 
-        if not os.path.exists(mappings_folder_path):
-            os.mkdir(mappings_folder_path)
-
-        mapping_file_path = os.path.join(mappings_folder_path, mappings_filename)
-
-        with open(mappings_yaml, "r", encoding="utf-8") as f:
+        with open(mappings_yaml_file, "r", encoding="utf-8") as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
 
-        with open(mapping_file_path, "w", encoding="utf-8") as file:
+        with open(mappings_output_file, "w", encoding="utf-8") as file:
             json.dump(data, file, indent=4)
 
         logger.debug("Generated parameter mappings for %s", helm_package.name)
-        return os.path.join(CONFIG_MAPPINGS_DIR_NAME, mappings_filename)
+        return Path(CONFIG_MAPPINGS_DIR_NAME, f"{helm_package.name}-mappings.json")

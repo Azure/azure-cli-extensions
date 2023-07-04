@@ -117,15 +117,15 @@ def _generate_nfd(
             "Generate NFD called for unrecognised definition_type. Only VNF and CNF"
             " have been implemented."
         )
-    if nfd_generator.vnfd_bicep_path:
+    if nfd_generator.nfd_bicep_path:
         carry_on = input(
-            f"The {nfd_generator.vnfd_bicep_path.parent} directory already exists -"
+            f"The {nfd_generator.nfd_bicep_path.parent} directory already exists -"
             " delete it and continue? (y/n)"
         )
         if carry_on != "y":
             raise UnclassifiedUserFault("User aborted!")
 
-        shutil.rmtree(nfd_generator.vnfd_bicep_path.parent)
+        shutil.rmtree(nfd_generator.nfd_bicep_path.parent)
     nfd_generator.generate_nfd()
 
 
@@ -178,7 +178,7 @@ def publish_definition(
             parameters_json_file=parameters_json_file,
             manifest_bicep_path=manifest_file,
             manifest_parameters_json_file=manifest_parameters_json_file,
-            skip=skip
+            skip=skip,
         )
     elif definition_type == CNF:
         deployer = DeployerViaArm(api_clients, config=config)
@@ -188,7 +188,7 @@ def publish_definition(
             parameters_json_file=parameters_json_file,
             manifest_bicep_path=manifest_file,
             manifest_parameters_json_file=manifest_parameters_json_file,
-            skip=skip
+            skip=skip,
         )
     else:
         raise ValueError(
@@ -370,7 +370,7 @@ def publish_design(
         parameters_json_file=parameters_json_file,
         manifest_bicep_path=manifest_file,
         manifest_parameters_json_file=manifest_parameters_json_file,
-        skip=skip
+        skip=skip,
     )
 
 

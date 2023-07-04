@@ -3,7 +3,10 @@
 # License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------
 """Contains a base class for generating NFDs."""
-from abc import ABC
+from abc import ABC, abstractmethod
+from pathlib import Path
+from typing import Optional
+
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -12,7 +15,11 @@ logger = get_logger(__name__)
 class NFDGenerator(ABC):
     """A class for generating an NFD from a config file."""
 
-    # pylint: disable=too-few-public-methods
+    @abstractmethod
     def generate_nfd(self) -> None:
-        """No-op on base class."""
-        raise NotImplementedError
+        ...
+
+    @property
+    @abstractmethod
+    def nfd_bicep_path(self) -> Optional[Path]:
+        ...

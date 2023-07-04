@@ -5,16 +5,16 @@
 """A module to handle interacting with artifacts."""
 import subprocess
 from dataclasses import dataclass
-from typing import Union, List
+from typing import List, Union
 
 from azure.cli.core.commands import LongRunningOperation
-from azure.mgmt.containerregistry.models import ImportImageParameters, ImportSource
+from azure.mgmt.containerregistry import ContainerRegistryManagementClient
+from azure.mgmt.containerregistry.models import (ImportImageParameters,
+                                                 ImportSource)
 from azure.storage.blob import BlobClient, BlobType
 from knack.log import get_logger
 from knack.util import CLIError
 from oras.client import OrasClient
-from azure.cli.core.commands import LongRunningOperation
-from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 
 from azext_aosm._configuration import ArtifactConfig, HelmPackageConfig
 
@@ -156,7 +156,7 @@ class Artifact:
         :param source_image: source image
         :param target_registry_resource_group_name: target registry resource group name
         :param target_registry_name: target registry name
-        :param target_tags: the list of tags to be applied to the imported image 
+        :param target_tags: the list of tags to be applied to the imported image
                             should be of form: namepace/name:tag or name:tag
         :param mode: mode for import
         """

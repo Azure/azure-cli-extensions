@@ -5,7 +5,6 @@
 """Contains class for deploying generated definitions using ARM."""
 import json
 import os
-import re
 import shutil
 import subprocess  # noqa
 import tempfile
@@ -37,7 +36,6 @@ from azext_aosm.util.constants import (
     VNF,
     VNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
     VNF_MANIFEST_BICEP_TEMPLATE_FILENAME,
-    SOURCE_ACR_REGEX,
 )
 from azext_aosm.util.management_clients import ApiClients
 

@@ -13,7 +13,7 @@ from azext_aosm.util.constants import (
     NSD,
     NSD_OUTPUT_BICEP_PREFIX,
     VNF,
-    SOURCE_ACR_REGEX
+    SOURCE_ACR_REGEX,
 )
 
 DESCRIPTION_MAP: Dict[str, str] = {
@@ -229,7 +229,7 @@ class NSConfiguration:
     @property
     def acr_manifest_name(self) -> str:
         """Return the ACR manifest name from the NFD name."""
-        sanitised_nf_name = self.network_function_name.lower().replace('_', '-')
+        sanitised_nf_name = self.network_function_name.lower().replace("_", "-")
         return (
             f"{sanitised_nf_name}-nsd-acr-manifest-{self.nsd_version.replace('.', '-')}"
         )
@@ -362,9 +362,9 @@ class CNFConfiguration(NFConfiguration):
                 self.helm_packages[package_index] = HelmPackageConfig(**dict(package))
 
     @property
-    def build_output_folder_name(self) -> str:
-        """Return the local folder for generating the bicep template to."""
-        return f"{NF_DEFINITION_OUTPUT_BICEP_PREFIX}{self.nf_name}"
+    def output_directory_for_build(self) -> Path:
+        """Return the directory the build command will writes its output to"""
+        return Path(f"{NF_DEFINITION_OUTPUT_BICEP_PREFIX}{self.nf_name}")
 
     def validate(self):
         """Validate the CNF config
@@ -379,7 +379,9 @@ class CNFConfiguration(NFConfiguration):
         if not source_registry_match or len(source_registry_match.groups()) < 2:
             raise ValidationError(
                 "CNF config has an invalid source registry ID. Please run `az aosm "
-                "nfd generate-config` to see the valid formats.")
+                "nfd generate-config` to see the valid formats."
+            )
+
 
 def get_configuration(
     configuration_type: str, config_as_dict: Optional[Dict[Any, Any]] = None
