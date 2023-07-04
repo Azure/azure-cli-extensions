@@ -22,6 +22,8 @@ class Update(AAZCommand):
         ]
     }
 
+    AZ_SUPPORT_GENERIC_UPDATE = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
         self._execute_operations()
@@ -57,6 +59,11 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.storage_blob_container = AAZObjectArg(
+            options=["--storage-blob-container"],
+            arg_group="Properties",
+            help="Storage Blob Container Object",
+        )
         _args_schema.smb_mount = AAZObjectArg(
             options=["--smb-mount"],
             arg_group="Properties",
@@ -65,28 +72,43 @@ class Update(AAZCommand):
             options=["--description"],
             arg_group="Properties",
             help="A description for the Endpoint.",
+            nullable=True,
+        )
+
+        storage_blob_container = cls._args_schema.storage_blob_container
+        storage_blob_container.storage_account_resource_id = AAZResourceIdArg(
+            options=["storage-account-resource-id"],
+            help="The Azure Resource ID of the storage account that is the target destination.",
         )
 
         smb_mount = cls._args_schema.smb_mount
         smb_mount.credentials = AAZObjectArg(
             options=["credentials"],
             help="The Azure Key Vault secret URIs which store the required credentials to access the SMB share.",
+            nullable=True,
         )
 
         credentials = cls._args_schema.smb_mount.credentials
         credentials.password_uri = AAZStrArg(
             options=["password-uri"],
             help="The Azure Key Vault secret URI which stores the password. Use empty string to clean-up existing value.",
+            nullable=True,
         )
         credentials.username_uri = AAZStrArg(
             options=["username-uri"],
             help="The Azure Key Vault secret URI which stores the username. Use empty string to clean-up existing value.",
+            nullable=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.EndpointsUpdate(ctx=self.ctx)()
+        self.EndpointsGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
+        self.InstanceUpdateByJson(ctx=self.ctx)()
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
+        self.EndpointsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -97,11 +119,19 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class EndpointsUpdate(AAZHttpOperation):
+    class EndpointsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -121,7 +151,94 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PATCH"
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "endpointName", self.ctx.args.endpoint_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "storageMoverName", self.ctx.args.storage_mover_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2023-07-01-preview",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+            _UpdateHelper._build_schema_endpoint_read(cls._schema_on_200)
+
+            return cls._schema_on_200
+
+    class EndpointsCreateOrUpdate(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageMover/storageMovers/{storageMoverName}/endpoints/{endpointName}",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "PUT"
 
         @property
         def error_format(self):
@@ -175,24 +292,8 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+                value=self.ctx.vars.instance,
             )
-            _builder.set_prop("properties", AAZObjectType)
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("description", AAZStrType, ".description")
-                properties.discriminate_by("endpointType", "SmbMount")
-
-            disc_smb_mount = _builder.get(".properties{endpointType:SmbMount}")
-            if disc_smb_mount is not None:
-                disc_smb_mount.set_prop("credentials", AAZObjectType, ".smb_mount.credentials")
-
-            credentials = _builder.get(".properties{endpointType:SmbMount}.credentials")
-            if credentials is not None:
-                credentials.set_prop("passwordUri", AAZStrType, ".password_uri")
-                credentials.set_prop("usernameUri", AAZStrType, ".username_uri")
 
             return self.serialize_content(_content_value)
 
@@ -212,113 +313,176 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"required": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.description = AAZStrType()
-            properties.endpoint_type = AAZStrType(
-                serialized_name="endpointType",
-                flags={"required": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            disc_azure_storage_blob_container = cls._schema_on_200.properties.discriminate_by("endpoint_type", "AzureStorageBlobContainer")
-            disc_azure_storage_blob_container.blob_container_name = AAZStrType(
-                serialized_name="blobContainerName",
-                flags={"required": True},
-            )
-            disc_azure_storage_blob_container.storage_account_resource_id = AAZStrType(
-                serialized_name="storageAccountResourceId",
-                flags={"required": True},
-            )
-
-            disc_azure_storage_smb_file_share = cls._schema_on_200.properties.discriminate_by("endpoint_type", "AzureStorageSmbFileShare")
-            disc_azure_storage_smb_file_share.file_share_name = AAZStrType(
-                serialized_name="fileShareName",
-                flags={"required": True},
-            )
-            disc_azure_storage_smb_file_share.storage_account_resource_id = AAZStrType(
-                serialized_name="storageAccountResourceId",
-                flags={"required": True},
-            )
-
-            disc_nfs_mount = cls._schema_on_200.properties.discriminate_by("endpoint_type", "NfsMount")
-            disc_nfs_mount.export = AAZStrType(
-                flags={"required": True},
-            )
-            disc_nfs_mount.host = AAZStrType(
-                flags={"required": True},
-            )
-            disc_nfs_mount.nfs_version = AAZStrType(
-                serialized_name="nfsVersion",
-            )
-
-            disc_smb_mount = cls._schema_on_200.properties.discriminate_by("endpoint_type", "SmbMount")
-            disc_smb_mount.credentials = AAZObjectType()
-            disc_smb_mount.host = AAZStrType(
-                flags={"required": True},
-            )
-            disc_smb_mount.share_name = AAZStrType(
-                serialized_name="shareName",
-                flags={"required": True},
-            )
-
-            credentials = cls._schema_on_200.properties.discriminate_by("endpoint_type", "SmbMount").credentials
-            credentials.password_uri = AAZStrType(
-                serialized_name="passwordUri",
-            )
-            credentials.type = AAZStrType(
-                flags={"required": True},
-            )
-            credentials.username_uri = AAZStrType(
-                serialized_name="usernameUri",
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+            _UpdateHelper._build_schema_endpoint_read(cls._schema_on_200)
 
             return cls._schema_on_200
+
+    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance(self.ctx.vars.instance)
+
+        def _update_instance(self, instance):
+            _instance_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                value=instance,
+                typ=AAZObjectType
+            )
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("description", AAZStrType, ".description")
+                properties.discriminate_by("endpointType", "AzureStorageBlobContainer")
+                properties.discriminate_by("endpointType", "SmbMount")
+
+            disc_azure_storage_blob_container = _builder.get(".properties{endpointType:AzureStorageBlobContainer}")
+            if disc_azure_storage_blob_container is not None:
+                disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".storage_blob_container.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
+
+            disc_smb_mount = _builder.get(".properties{endpointType:SmbMount}")
+            if disc_smb_mount is not None:
+                disc_smb_mount.set_prop("credentials", AAZObjectType, ".smb_mount.credentials")
+
+            credentials = _builder.get(".properties{endpointType:SmbMount}.credentials")
+            if credentials is not None:
+                credentials.set_prop("passwordUri", AAZStrType, ".password_uri")
+                credentials.set_prop("usernameUri", AAZStrType, ".username_uri")
+
+            return _instance_value
+
+    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance_by_generic(
+                self.ctx.vars.instance,
+                self.ctx.generic_update_args
+            )
 
 
 class _UpdateHelper:
     """Helper class for Update"""
+
+    _schema_endpoint_read = None
+
+    @classmethod
+    def _build_schema_endpoint_read(cls, _schema):
+        if cls._schema_endpoint_read is not None:
+            _schema.id = cls._schema_endpoint_read.id
+            _schema.name = cls._schema_endpoint_read.name
+            _schema.properties = cls._schema_endpoint_read.properties
+            _schema.system_data = cls._schema_endpoint_read.system_data
+            _schema.type = cls._schema_endpoint_read.type
+            return
+
+        cls._schema_endpoint_read = _schema_endpoint_read = AAZObjectType()
+
+        endpoint_read = _schema_endpoint_read
+        endpoint_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        endpoint_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        endpoint_read.properties = AAZObjectType(
+            flags={"required": True},
+        )
+        endpoint_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        endpoint_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_endpoint_read.properties
+        properties.description = AAZStrType()
+        properties.endpoint_type = AAZStrType(
+            serialized_name="endpointType",
+            flags={"required": True},
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+
+        disc_azure_storage_blob_container = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "AzureStorageBlobContainer")
+        disc_azure_storage_blob_container.blob_container_name = AAZStrType(
+            serialized_name="blobContainerName",
+            flags={"required": True},
+        )
+        disc_azure_storage_blob_container.storage_account_resource_id = AAZStrType(
+            serialized_name="storageAccountResourceId",
+            flags={"required": True},
+        )
+
+        disc_azure_storage_smb_file_share = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "AzureStorageSmbFileShare")
+        disc_azure_storage_smb_file_share.file_share_name = AAZStrType(
+            serialized_name="fileShareName",
+            flags={"required": True},
+        )
+        disc_azure_storage_smb_file_share.storage_account_resource_id = AAZStrType(
+            serialized_name="storageAccountResourceId",
+            flags={"required": True},
+        )
+
+        disc_nfs_mount = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "NfsMount")
+        disc_nfs_mount.export = AAZStrType(
+            flags={"required": True},
+        )
+        disc_nfs_mount.host = AAZStrType(
+            flags={"required": True},
+        )
+        disc_nfs_mount.nfs_version = AAZStrType(
+            serialized_name="nfsVersion",
+        )
+
+        disc_smb_mount = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "SmbMount")
+        disc_smb_mount.credentials = AAZObjectType()
+        disc_smb_mount.host = AAZStrType(
+            flags={"required": True},
+        )
+        disc_smb_mount.share_name = AAZStrType(
+            serialized_name="shareName",
+            flags={"required": True},
+        )
+
+        credentials = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "SmbMount").credentials
+        credentials.password_uri = AAZStrType(
+            serialized_name="passwordUri",
+        )
+        credentials.type = AAZStrType(
+            flags={"required": True},
+        )
+        credentials.username_uri = AAZStrType(
+            serialized_name="usernameUri",
+        )
+
+        system_data = _schema_endpoint_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        _schema.id = cls._schema_endpoint_read.id
+        _schema.name = cls._schema_endpoint_read.name
+        _schema.properties = cls._schema_endpoint_read.properties
+        _schema.system_data = cls._schema_endpoint_read.system_data
+        _schema.type = cls._schema_endpoint_read.type
 
 
 __all__ = ["Update"]

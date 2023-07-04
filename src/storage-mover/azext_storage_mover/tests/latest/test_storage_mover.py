@@ -33,13 +33,13 @@ class StorageMoverScenario(ScenarioTest):
 
     @record_only()
     # need to manually register agent, first create the rg and the storagemover
-    # az group create -n test-storagemover-rg -l eastus
-    # az storage-mover create -n teststoragemover -g test-storagemover-rg
+    # az group create -n test-storagemover-rg2 -l eastus2euap
+    # az storage-mover create -n teststoragemover2 -g test-storagemover-rg2
     def test_storage_mover_agent_scenarios(self):
         self.kwargs.update({
-            "rg": "test-storagemover-rg",
-            "mover_name": "teststoragemover",
-            "agent_name": "testagent"
+            "rg": "test-storagemover-rg2",
+            "mover_name": "teststoragemover2",
+            "agent_name": "agent2"
         })
         self.cmd('az storage-mover agent show -g {rg} -n {agent_name} --storage-mover-name {mover_name}')
         self.cmd('az storage-mover agent list -g {rg} --storage-mover-name {mover_name}',
@@ -81,8 +81,23 @@ class StorageMoverScenario(ScenarioTest):
                          JMESPathCheck('properties.storageAccountResourceId', self.kwargs.get('account_id', '')),
                          JMESPathCheck('properties.description', "endpointDesc"),
                          ])
+
+        # # create for storage smb file share
+        # self.cmd('az storage container create -n {container_name} --account-name {account_name} '
+        #          '--account-key {account_key}')
+        # self.cmd('az storage-mover endpoint create-for-storage-container -g {rg} --storage-mover-name {mover_name} '
+        #          '-n {endpoint_container} --container-name {container_name} --storage-account-id {account_id} '
+        #          '--description endpointDesc')
+        # self.cmd('az storage-mover endpoint show -g {rg} --storage-mover-name {mover_name} -n {endpoint_container}',
+        #          checks=[JMESPathCheck('name', self.kwargs.get('endpoint_container', '')),
+        #                  JMESPathCheck('properties.blobContainerName', self.kwargs.get('container_name', '')),
+        #                  JMESPathCheck('properties.endpointType', "AzureStorageBlobContainer"),
+        #                  JMESPathCheck('properties.storageAccountResourceId', self.kwargs.get('account_id', '')),
+        #                  JMESPathCheck('properties.description', "endpointDesc"),
+        #                  ])
+
         # create for nfs
-        vm_ip = self.cmd('az vm create -n {vm_name} -g {rg} --image UbuntuLTS --size Standard_D4s_v3 --nsg-rule '
+        vm_ip = self.cmd('az vm create -n {vm_name} -g {rg} --image Ubuntu2204 --size Standard_D4s_v3 --nsg-rule '
                  'NONE --admin-username ubuntuuser --generate-ssh-keys').get_output_in_json()["publicIpAddress"]
         self.cmd('az storage-mover endpoint create-for-nfs -g {rg} --storage-mover-name {mover_name} '
                  '-n {endpoint_nfs} --description endpointDesc --export exportfolder --nfs-version NFSv4 --host '+vm_ip)
@@ -116,14 +131,14 @@ class StorageMoverScenario(ScenarioTest):
 
     @record_only()
     # need to manually register agent, first create the rg and the storagemover
-    # az group create -n test-storagemover-rg -l eastus
-    # az storage-mover create -n teststoragemover -g test-storagemover-rg
+    # az group create -n test-storagemover-rg2 -l eastus2euap
+    # az storage-mover create -n teststoragemover2 -g test-storagemover-rg2
     @AllowLargeResponse()
     def test_storage_mover_job_definition_scenarios(self):
         self.kwargs.update({
-            "rg": "test-storagemover-rg",
-            "mover_name": "teststoragemover",
-            "agent_name": "testagent",
+            "rg": "test-storagemover-rg2",
+            "mover_name": "teststoragemover2",
+            "agent_name": "agent2",
             "project_name": "testproject",
             "job_definition": "testdefinition",
             "account_name": "testjobdefinitionsa2",
@@ -144,7 +159,7 @@ class StorageMoverScenario(ScenarioTest):
         })
         self.cmd('az storage container create -n {target_container} --account-name {account_name} '
                  '--account-key {account_key}')
-        vm_ip = self.cmd('az vm create -n {source_vm} -g {rg} --image UbuntuLTS --size Standard_D4s_v3 --nsg-rule '
+        vm_ip = self.cmd('az vm create -n {source_vm} -g {rg} --image Ubuntu2204 --size Standard_D4s_v3 --nsg-rule '
                          'NONE --admin-username ubuntuuser --generate-ssh-keys').get_output_in_json()["publicIpAddress"]
         self.cmd('az storage-mover endpoint create-for-nfs -g {rg} --storage-mover-name {mover_name} '
                  '-n {source_endpoint} --description srcendpointDesc --export exportfolder --nfs-version NFSv4 '
