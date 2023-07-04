@@ -2,7 +2,7 @@ Release History
 ===============
 1.14.1
 ---
-* Support up to 1000 app instances in Enterprise tier
+* Support up to 1000 app instances in Enterprise tier.
 
 1.14.0
 ---
