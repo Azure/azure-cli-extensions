@@ -7,7 +7,7 @@ from knack.help_files import helps
 
 helps['ssh'] = """
     type: group
-    short-summary: SSH into resources (Azure VMs, Arc servers, etc) using AAD issued openssh certificates. 
+    short-summary: SSH into resources (Azure VMs, Arc servers, etc) using AAD issued openssh certificates.
     long-summary: SSH into Arc-enabled servers without requiring a public IP address or SSH into Azure Virtual Machines. AAD issued openssh certificates for authentication currently only supported for Linux.
 """
 
