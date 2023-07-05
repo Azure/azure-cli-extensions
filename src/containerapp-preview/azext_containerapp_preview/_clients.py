@@ -10,7 +10,8 @@ from azure.cli.core.util import send_raw_request
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 
-from ._utils import (_get_azext_module, GA_CONTAINERAPP_EXTENSION_NAME)
+from ._constants import GA_CONTAINERAPP_EXTENSION_NAME
+from ._utils import (_get_azext_module)
 
 logger = get_logger(__name__)
 
