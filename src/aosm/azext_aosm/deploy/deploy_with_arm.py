@@ -16,7 +16,7 @@ from knack.log import get_logger
 
 from azext_aosm._configuration import (
     CNFConfiguration,
-    NFConfiguration,
+    Configuration,
     NSConfiguration,
     VNFConfiguration,
 )
@@ -53,7 +53,7 @@ class DeployerViaArm:
     def __init__(
         self,
         api_clients: ApiClients,
-        config: Union[NFConfiguration, NSConfiguration]
+        config: Configuration
     ) -> None:
         """
         Initializes a new instance of the Deployer class.

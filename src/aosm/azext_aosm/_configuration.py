@@ -125,7 +125,13 @@ class ArtifactConfig:
 @dataclass
 class Configuration(abc.ABC):
     config_file: Optional[str] = None
-
+    publisher_name: str = DESCRIPTION_MAP["publisher_name"]
+    publisher_resource_group_name: str = DESCRIPTION_MAP[
+        "publisher_resource_group_name"
+    ]
+    acr_artifact_store_name: str = DESCRIPTION_MAP["acr_artifact_store_name"]
+    location: str = DESCRIPTION_MAP["location"]
+    
     def path_from_cli_dir(self, path: str) -> str:
         """
         Convert path from config file to path from current directory.
@@ -154,10 +160,15 @@ class Configuration(abc.ABC):
 
         return updated_path
 
-    @abc.abstractmethod
-    @property
+    @abc.abstractproperty
     def output_directory_for_build(self) -> Path:
         """Base class method to ensure subclasses implement this function."""
+        raise NotImplementedError("Subclass must define property")
+
+    @abc.abstractproperty
+    def acr_manifest_name(self) -> str:
+        """Base class method to ensure subclasses implement this function."""
+        raise NotImplementedError("Subclass must define property")
 
 
 @dataclass

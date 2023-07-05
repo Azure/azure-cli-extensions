@@ -12,7 +12,7 @@ from knack.log import get_logger
 from typing import Union
 
 from azext_aosm._configuration import (
-    NFConfiguration,
+    Configuration,
     NSConfiguration,
     VNFConfiguration,
     CNFConfiguration,
@@ -41,7 +41,7 @@ class PreDeployerViaSDK:
     def __init__(
         self,
         api_clients: ApiClients,
-        config: Union[NFConfiguration, NSConfiguration],
+        config: Configuration,
     ) -> None:
         """
         Initializes a new instance of the Deployer class.
@@ -387,7 +387,7 @@ class PreDeployerViaSDK:
 
     def do_config_artifact_manifests_exist(
         self,
-    ):
+    ) -> bool:
         """Returns True if all required manifests exist, False otherwise."""
         acr_manny_exists: bool = self.does_artifact_manifest_exist(
             rg_name=self.config.publisher_resource_group_name,

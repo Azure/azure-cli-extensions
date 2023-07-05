@@ -20,6 +20,7 @@ from knack.log import get_logger
 from azext_aosm._client_factory import cf_acr_registries, cf_resources
 from azext_aosm._configuration import (
     CNFConfiguration,
+    Configuration,
     NFConfiguration,
     NSConfiguration,
     VNFConfiguration,
@@ -81,7 +82,7 @@ def generate_definition_config(definition_type: str, output_file: str = "input.j
 
 def _get_config_from_file(
     config_file: str, configuration_type: str
-) -> Union[NFConfiguration, NSConfiguration]:
+) -> Configuration:
     """
     Read input config file JSON and turn it into a Configuration object.
 
