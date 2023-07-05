@@ -156,8 +156,10 @@ class CommunicationCreate(_CommunicationCreate):
             required=False
         )
         args_schema.assign_identity.Element = AAZStrArg()
-        args_schema.identity._registered = False
-        args_schema.identity._required = False
+        args_schema.type._registered = False
+        args_schema.type._required = False
+        args_schema.user_assigned_identities._registered = False
+        args_schema.user_assigned_identities._required = False
         return args_schema
 
     def pre_operations(self):
@@ -174,6 +176,6 @@ class CommunicationCreate(_CommunicationCreate):
                 user_dict[str(identity)] = {}
 
         if user_assigned_flag:
-            args.identity.user_assigned_identities = user_dict
+            args.user_assigned_identities = user_dict
 
-        args.identity.type = args_type_assignment(user_assigned_flag, system_assigned_flag)
+        args.type = args_type_assignment(user_assigned_flag, system_assigned_flag)

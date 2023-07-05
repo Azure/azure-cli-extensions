@@ -28,6 +28,7 @@ class CommunicationServiceManagementClientCommandsLoader(AzCommandsLoader):
                         command_group_cls=CommunicationCommandGroup)
 
     def load_command_table(self, args):
+        from azext_communication.commands import load_command_table
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -44,6 +45,7 @@ class CommunicationServiceManagementClientCommandsLoader(AzCommandsLoader):
             load_command_table_manual(self, args)
         except ImportError:
             pass
+        load_command_table(self, args)
         return self.command_table
 
     def load_arguments(self, command):
