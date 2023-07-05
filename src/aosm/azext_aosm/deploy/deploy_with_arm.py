@@ -16,7 +16,7 @@ from knack.log import get_logger
 
 from azext_aosm._configuration import (
     CNFConfiguration,
-    NFConfiguration,
+    Configuration,
     NSConfiguration,
     VNFConfiguration,
 )
@@ -50,11 +50,7 @@ class DeployerViaArm:
     templates.
     """
 
-    def __init__(
-        self,
-        api_clients: ApiClients,
-        config: NFConfiguration or NSConfiguration,
-    ) -> None:
+    def __init__(self, api_clients: ApiClients, config: Configuration) -> None:
         """
         Initializes a new instance of the Deployer class.
 
@@ -224,7 +220,9 @@ class DeployerViaArm:
 
     def construct_cnfd_parameters(self) -> Dict[str, Any]:
         """
-        Create the parmeters dictionary for cnfdefinition.bicep. CNF specific.
+        Create the parmeters dictionary for cnfdefinition.bicep.
+
+        CNF specific.
         """
         assert isinstance(self.config, CNFConfiguration)
         return {
@@ -297,7 +295,7 @@ class DeployerViaArm:
                 # User has not passed in a bicep template, so we are deploying the
                 # default one produced from building the NFDV using this CLI
                 bicep_path = os.path.join(
-                    self.config.build_output_folder_name,
+                    self.config.output_directory_for_build,
                     CNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
                 )
 
@@ -348,6 +346,12 @@ class DeployerViaArm:
             publisher_name=self.config.publisher_name,
             artifact_store_name=self.config.acr_artifact_store_name,
         )
+        if not acr_properties.storage_resource_id:
+            raise ValueError(
+                f"Artifact store {self.config.acr_artifact_store_name} "
+                "has no storage resource id linked"
+            )
+
         target_registry_name = acr_properties.storage_resource_id.split("/")[-1]
         target_registry_resource_group_name = acr_properties.storage_resource_id.split(
             "/"
@@ -434,7 +438,7 @@ class DeployerViaArm:
                 # User has not passed in a bicep template, so we are deploying the default
                 # one produced from building the NSDV using this CLI
                 bicep_path = os.path.join(
-                    self.config.build_output_folder_name,
+                    self.config.output_directory_for_build,
                     NSD_BICEP_FILENAME,
                 )
 
@@ -490,10 +494,14 @@ class DeployerViaArm:
         # Convert the NF bicep to ARM
         arm_template_artifact_json = self.convert_bicep_to_arm(
             os.path.join(
-                self.config.build_output_folder_name, NF_DEFINITION_BICEP_FILENAME
+                self.config.output_directory_for_build, NF_DEFINITION_BICEP_FILENAME
             )
         )
 
+        # appease mypy
+        assert (
+            self.config.arm_template.file_path
+        ), "Config missing ARM template file path"
         with open(self.config.arm_template.file_path, "w", encoding="utf-8") as file:
             file.write(json.dumps(arm_template_artifact_json, indent=4))
 
@@ -515,6 +523,7 @@ class DeployerViaArm:
         logger.debug("Deploy manifest bicep")
 
         if not manifest_bicep_path:
+            file_name: str = ""
             if configuration_type == NSD:
                 file_name = NSD_ARTIFACT_MANIFEST_BICEP_FILENAME
             elif configuration_type == VNF:
@@ -523,7 +532,7 @@ class DeployerViaArm:
                 file_name = CNF_MANIFEST_BICEP_TEMPLATE_FILENAME
 
             manifest_bicep_path = os.path.join(
-                self.config.build_output_folder_name,
+                str(self.config.output_directory_for_build),
                 file_name,
             )
         if not manifest_parameters_json_file:

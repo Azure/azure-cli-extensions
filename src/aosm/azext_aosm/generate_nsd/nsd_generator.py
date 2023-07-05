@@ -62,8 +62,10 @@ class NSDGenerator:
         self.nsd_bicep_template_name = NSD_DEFINITION_JINJA2_SOURCE_TEMPLATE
         self.nf_bicep_template_name = NF_TEMPLATE_JINJA2_SOURCE_TEMPLATE
         self.nsd_bicep_output_name = NSD_BICEP_FILENAME
-        self.nfdv_parameter_name = f"{self.config.network_function_definition_group_name.replace('-', '_')}_nfd_version"
-        self.build_folder_name = self.config.build_output_folder_name
+        self.nfdv_parameter_name = (
+            f"{self.config.network_function_definition_group_name.replace('-', '_')}"
+            "_nfd_version"
+        )
         nfdv = self._get_nfdv(config, api_clients)
         print("Finding the deploy parameters of the NFDV resource")
         if not nfdv.deploy_parameters:
@@ -74,6 +76,7 @@ class NSDGenerator:
             nfdv.deploy_parameters
         )
 
+    # pylint: disable=no-self-use
     def _get_nfdv(
         self, config: NSConfiguration, api_clients
     ) -> NetworkFunctionDefinitionVersion:
@@ -97,7 +100,7 @@ class NSDGenerator:
 
         # Create temporary folder.
         with tempfile.TemporaryDirectory() as tmpdirname:
-            self.tmp_folder_name = tmpdirname
+            self.tmp_folder_name = tmpdirname  # pylint: disable=attribute-defined-outside-init
 
             self.create_config_group_schema_files()
             self.write_nsd_manifest()
@@ -105,7 +108,10 @@ class NSDGenerator:
             self.write_nsd_bicep()
 
             self.copy_to_output_folder()
-            print(f"Generated NSD bicep templates created in {self.build_folder_name}")
+            print(
+                "Generated NSD bicep templates created in"
+                f" {self.config.output_directory_for_build}"
+            )
             print(
                 "Please review these templates. When you are happy with them run "
                 "`az aosm nsd publish` with the same arguments."
@@ -115,9 +121,9 @@ class NSDGenerator:
     def config_group_schema_dict(self) -> Dict[str, Any]:
         """
         :return: The Config Group Schema as a dictionary.
+
+        This function cannot be called before deployment parameters have been supplied.
         """
-        # This function cannot be called before deployment parameters have been
-        # supplied.
         assert self.deploy_parameters
 
         # Take a copy of the deploy parameters.
@@ -190,7 +196,7 @@ class NSDGenerator:
 
         schema_path = os.path.join(folder_path, f"{self.config.cg_schema_name}.json")
 
-        with open(schema_path, "w") as _file:
+        with open(schema_path, "w", encoding="utf-8") as _file:
             _file.write(json.dumps(self.config_group_schema_dict, indent=4))
 
         logger.debug("%s created", schema_path)
@@ -211,7 +217,7 @@ class NSDGenerator:
 
         config_mappings_path = os.path.join(folder_path, NSD_CONFIG_MAPPING_FILENAME)
 
-        with open(config_mappings_path, "w") as _file:
+        with open(config_mappings_path, "w", encoding="utf-8") as _file:
             _file.write(json.dumps(config_mappings, indent=4))
 
         logger.debug("%s created", config_mappings_path)
@@ -243,6 +249,7 @@ class NSDGenerator:
                 bicep_params += f"param {key} {bicep_type}\n"
             bicep_deploymentValues += f"{key}: {key}\n  "
 
+        # pylint: disable=no-member
         self.generate_bicep(
             self.nf_bicep_template_name,
             NF_DEFINITION_BICEP_FILENAME,
@@ -265,11 +272,11 @@ class NSDGenerator:
                 # NF, as we do for deployParameters, but the SDK currently doesn't
                 # support this and needs to be rebuilt to do so.
                 "nfvi_type": (
-                    NFVIType.AZURE_CORE.value
+                    NFVIType.AZURE_CORE.value  # type: ignore[attr-defined]
                     if self.config.network_function_type == VNF
-                    else NFVIType.AZURE_ARC_KUBERNETES.value
+                    else NFVIType.AZURE_ARC_KUBERNETES.value  # type: ignore[attr-defined]
                 ),
-                "CNF": True if self.config.network_function_type == CNF else False,
+                "CNF": self.config.network_function_type == CNF,
             },
         )
 
@@ -298,10 +305,9 @@ class NSDGenerator:
             {},
         )
 
-    def generate_bicep(self,
-                       template_name: str,
-                       output_file_name: str,
-                       params: Dict[Any, Any]) -> None:
+    def generate_bicep(
+        self, template_name: str, output_file_name: str, params: Dict[Any, Any]
+    ) -> None:
         """
         Render the bicep templates with the correct parameters and copy them into the build output folder.
 
@@ -314,7 +320,7 @@ class NSDGenerator:
 
         bicep_template_path = os.path.join(code_dir, TEMPLATES_DIR_NAME, template_name)
 
-        with open(bicep_template_path, "r") as file:
+        with open(bicep_template_path, "r", encoding="utf-8") as file:
             bicep_contents = file.read()
 
         bicep_template = Template(bicep_contents)
@@ -324,19 +330,19 @@ class NSDGenerator:
 
         bicep_file_build_path = os.path.join(self.tmp_folder_name, output_file_name)
 
-        with open(bicep_file_build_path, "w") as file:
+        with open(bicep_file_build_path, "w", encoding="utf-8") as file:
             file.write(rendered_template)
 
     def copy_to_output_folder(self) -> None:
         """Copy the bicep templates, config mappings and schema into the build output folder."""
 
-        logger.info("Create NSD bicep %s", self.build_folder_name)
-        os.mkdir(self.build_folder_name)
+        logger.info("Create NSD bicep %s", self.config.output_directory_for_build)
+        os.mkdir(self.config.output_directory_for_build)
 
         shutil.copytree(
             self.tmp_folder_name,
-            self.build_folder_name,
+            self.config.output_directory_for_build,
             dirs_exist_ok=True,
         )
 
-        logger.info("Copied files to %s", self.build_folder_name)
+        logger.info("Copied files to %s", self.config.output_directory_for_build)

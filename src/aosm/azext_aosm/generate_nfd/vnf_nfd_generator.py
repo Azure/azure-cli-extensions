@@ -103,7 +103,7 @@ class VnfNfdGenerator(NFDGenerator):
         return None
 
     @property
-    def manifest_bicep_path(self) -> Optional[str]:
+    def manifest_bicep_path(self) -> Optional[Path]:
         """Returns the path to the bicep file for the NFD if it has been created."""
         if self._manifest_bicep_path.exists():
             return self._manifest_bicep_path
@@ -149,6 +149,7 @@ class VnfNfdGenerator(NFDGenerator):
 
     def _create_parameter_files(self) -> None:
         """Create the deployment, template and VHD parameter files."""
+        assert self._tmp_dir
         tmp_schemas_directory: Path = self._tmp_dir / SCHEMAS_DIR_NAME
         tmp_schemas_directory.mkdir()
         self.write_deployment_parameters(tmp_schemas_directory)
@@ -298,6 +299,7 @@ class VnfNfdGenerator(NFDGenerator):
     def _copy_to_output_directory(self) -> None:
         """Copy the static bicep templates and generated config mappings and schema into the build output directory."""
         logger.info("Create NFD bicep %s", self.output_directory)
+        assert self._tmp_dir
         Path(self.output_directory).mkdir(exist_ok=True)
 
         static_bicep_templates_dir = Path(__file__).parent / "templates"

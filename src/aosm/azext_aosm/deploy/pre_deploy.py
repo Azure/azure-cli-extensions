@@ -11,7 +11,7 @@ from azure.mgmt.resource.resources.models import ResourceGroup
 from knack.log import get_logger
 
 from azext_aosm._configuration import (
-    NFConfiguration,
+    Configuration,
     NSConfiguration,
     VNFConfiguration,
     CNFConfiguration,
@@ -40,7 +40,7 @@ class PreDeployerViaSDK:
     def __init__(
         self,
         api_clients: ApiClients,
-        config: NFConfiguration or NSConfiguration,
+        config: Configuration,
     ) -> None:
         """
         Initializes a new instance of the Deployer class.
@@ -143,7 +143,7 @@ class PreDeployerViaSDK:
 
     def ensure_config_source_registry_exists(self) -> None:
         """
-        Ensures that the source registry exists
+        Ensures that the source registry exists.
 
         Finds the parameters from self.config
         """
@@ -166,6 +166,7 @@ class PreDeployerViaSDK:
             source_registry_name = source_registry_match.group("registry_name")
 
             # This will raise an error if the registry does not exist
+            assert self.api_clients.container_registry_client
             self.api_clients.container_registry_client.get(
                 resource_group_name=source_registry_resource_group_name,
                 registry_name=source_registry_name,
@@ -250,7 +251,7 @@ class PreDeployerViaSDK:
             self.config.publisher_resource_group_name,
             self.config.publisher_name,
             self.config.acr_artifact_store_name,
-            ArtifactStoreType.AZURE_CONTAINER_REGISTRY,
+            ArtifactStoreType.AZURE_CONTAINER_REGISTRY,  # type: ignore
             self.config.location,
         )
 
@@ -271,7 +272,7 @@ class PreDeployerViaSDK:
             self.config.publisher_resource_group_name,
             self.config.publisher_name,
             self.config.blob_artifact_store_name,
-            ArtifactStoreType.AZURE_STORAGE_ACCOUNT,
+            ArtifactStoreType.AZURE_STORAGE_ACCOUNT,  # type: ignore
             self.config.location,
         )
 
@@ -385,7 +386,7 @@ class PreDeployerViaSDK:
 
     def do_config_artifact_manifests_exist(
         self,
-    ):
+    ) -> bool:
         """Returns True if all required manifests exist, False otherwise."""
         acr_manny_exists: bool = self.does_artifact_manifest_exist(
             rg_name=self.config.publisher_resource_group_name,

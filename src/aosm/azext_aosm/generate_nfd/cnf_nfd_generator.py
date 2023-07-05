@@ -8,6 +8,7 @@ import re
 import shutil
 import tarfile
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterator, List, Optional, Tuple
 
@@ -38,6 +39,34 @@ from azext_aosm.util.constants import (
 from azext_aosm.util.utils import input_ack
 
 logger = get_logger(__name__)
+
+
+@dataclass
+class Artifact:
+    """
+    Information about an artifact.
+    """
+
+    name: str
+    version: str
+
+
+@dataclass
+class NFApplicationConfiguration:
+    name: str
+    chartName: str
+    chartVersion: str
+    dependsOnProfile: List[str]
+    registryValuesPaths: List[str]
+    imagePullSecretsValuesPaths: List[str]
+    valueMappingsPath: Path
+
+
+@dataclass
+class ImageInfo:
+    parameter: List[str]
+    name: str
+    version: str
 
 
 class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attributes
@@ -76,9 +105,9 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         )
         self._tmp_dir: Optional[Path] = None
 
-        self.artifacts = []
-        self.nf_application_configurations = []
-        self.deployment_parameter_schema = SCHEMA_PREFIX
+        self.artifacts: List[Artifact] = []
+        self.nf_application_configurations: List[NFApplicationConfiguration] = []
+        self.deployment_parameter_schema: Dict[str, Any] = SCHEMA_PREFIX
         self.interactive = interactive
 
     def generate_nfd(self) -> None:
@@ -107,13 +136,14 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
                     # Get all image line matches for files in the chart.
                     # Do this here so we don't have to do it multiple times.
-                    image_line_matches = self._find_pattern_matches_in_chart(
-                        helm_package, IMAGE_START_STRING
+                    image_line_matches = self._find_image_parameter_from_chart(
+                        helm_package
                     )
+
                     # Creates a flattened list of image registry paths to prevent set error
-                    image_registry_paths = []
-                    for registry_path in image_line_matches:
-                        image_registry_paths += registry_path[0]
+                    image_registry_paths: List[str] = []
+                    for image_info in image_line_matches:
+                        image_registry_paths += image_info.parameter
 
                     # Generate the NF application configuration for the chart
                     # passed to jinja2 renderer to render bicep template
@@ -121,8 +151,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                         self._generate_nf_application_config(
                             helm_package,
                             image_registry_paths,
-                            self._find_pattern_matches_in_chart(
-                                helm_package, IMAGE_PULL_SECRETS_START_STRING
+                            self._find_image_pull_secrets_parameter_from_chart(
+                                helm_package
                             ),
                         )
                     )
@@ -163,6 +193,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
         :param path: The path to helm package
         """
+        assert self._tmp_dir
 
         logger.debug("Extracting helm package %s", path)
 
@@ -188,6 +219,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         Expected use when a helm chart is very simple and user wants every value to be a
         deployment parameter.
         """
+        assert self._tmp_dir
         logger.debug(
             "Creating chart value mappings file for %s", helm_package.path_to_chart
         )
@@ -210,7 +242,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             yaml.dump(mapping_to_write, mapping_file)
 
         # Update the config that points to the mapping file
-        helm_package.path_to_mappings = mapping_filepath
+        helm_package.path_to_mappings = str(mapping_filepath)
 
     def _read_top_level_values_yaml(
         self, helm_package: HelmPackageConfig
@@ -224,6 +256,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         :return: A dictionary of the yaml read from the file
         :rtype: Dict[str, Any]
         """
+        assert self._tmp_dir
         for file in Path(self._tmp_dir / helm_package.name).iterdir():
             if file.name in ("values.yaml", "values.yml"):
                 with file.open(encoding="UTF-8") as values_file:
@@ -236,6 +269,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
     def _write_manifest_bicep_file(self) -> None:
         """Write the bicep file for the Artifact Manifest to the temp directory."""
+        assert self._tmp_dir
+
         with open(self.manifest_jinja2_template_path, "r", encoding="UTF-8") as f:
             template: Template = Template(
                 f.read(),
@@ -254,6 +289,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
     def _write_nfd_bicep_file(self) -> None:
         """Write the bicep file for the NFD to the temp directory."""
+        assert self._tmp_dir
         with open(self.nfd_jinja2_template_path, "r", encoding="UTF-8") as f:
             template: Template = Template(
                 f.read(),
@@ -273,8 +309,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
     def _write_schema_to_file(self) -> None:
         """Write the schema to file deploymentParameters.json to the temp directory."""
-
         logger.debug("Create deploymentParameters.json")
+        assert self._tmp_dir
 
         full_schema = self._tmp_dir / DEPLOYMENT_PARAMETERS_FILENAME
         with open(full_schema, "w", encoding="UTF-8") as f:
@@ -283,7 +319,13 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         logger.debug("%s created", full_schema)
 
     def _copy_to_output_directory(self) -> None:
-        """Copy the config mappings, schema and bicep templates (artifact manifest and NFDV) from the temp directory to the output directory."""
+        """
+        Copy files from the temp directory to the output directory.
+
+        Files are the config mappings, schema and bicep templates (artifact manifest
+        and NFDV).
+        """
+        assert self._tmp_dir
 
         logger.info("Create NFD bicep %s", self.output_directory)
 
@@ -327,26 +369,26 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         self,
         helm_package: HelmPackageConfig,
         image_registry_path: List[str],
-        image_pull_secret_line_matches: List[Tuple[str, ...]],
-    ) -> Dict[str, Any]:
+        image_pull_secret_line_matches: List[str],
+    ) -> NFApplicationConfiguration:
         """Generate NF application config."""
         (name, version) = self._get_chart_name_and_version(helm_package)
 
         registry_values_paths = set(image_registry_path)
         image_pull_secrets_values_paths = set(image_pull_secret_line_matches)
 
-        return {
-            "name": helm_package.name,
-            "chartName": name,
-            "chartVersion": version,
-            "dependsOnProfile": helm_package.depends_on,
-            "registryValuesPaths": list(registry_values_paths),
-            "imagePullSecretsValuesPaths": list(image_pull_secrets_values_paths),
-            "valueMappingsPath": self._jsonify_value_mappings(helm_package),
-        }
+        return NFApplicationConfiguration(
+            name=helm_package.name,
+            chartName=name,
+            chartVersion=version,
+            dependsOnProfile=helm_package.depends_on,
+            registryValuesPaths=list(registry_values_paths),
+            imagePullSecretsValuesPaths=list(image_pull_secrets_values_paths),
+            valueMappingsPath=self._jsonify_value_mappings(helm_package),
+        )
 
     @staticmethod
-    def _find_yaml_files(directory: Path) -> Iterator[str]:
+    def _find_yaml_files(directory: Path) -> Iterator[Path]:
         """
         Find all yaml files recursively in given directory.
 
@@ -355,67 +397,90 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         yield from directory.glob("**/*.yaml")
         yield from directory.glob("**/*.yml")
 
-    def _find_pattern_matches_in_chart(
-        self, helm_package: HelmPackageConfig, start_string: str
-    ) -> List[Tuple[str, ...]]:
+    def _find_image_parameter_from_chart(
+        self, helm_package_config: HelmPackageConfig
+    ) -> List[ImageInfo]:
         """
-        Find pattern matches in Helm chart, using provided REGEX pattern.
+        Find pattern matches in Helm chart for the names of the image parameters.
 
         :param helm_package: The helm package config.
-        :param start_string: The string to search for, either imagePullSecrets: or image:
 
-        If searching for imagePullSecrets, returns list of lists containing image pull
-        secrets paths, e.g. Values.foo.bar.imagePullSecret
-
-        If searching for image, returns list of tuples containing the list of image
+        Returns list of tuples containing the list of image
         paths and the name and version of the image. e.g. (Values.foo.bar.repoPath, foo,
         1.2.3)
         """
-        chart_dir = self._tmp_dir / helm_package.name
+        assert self._tmp_dir
+        chart_dir = self._tmp_dir / helm_package_config.name
         matches = []
         path = []
 
         for file in self._find_yaml_files(chart_dir):
             with open(file, "r", encoding="UTF-8") as f:
-                logger.debug("Searching for %s in %s", start_string, file)
+                logger.debug("Searching for %s in %s", IMAGE_START_STRING, file)
                 for line in f:
-                    if start_string in line:
-                        logger.debug("Found %s in %s", start_string, line)
+                    if IMAGE_START_STRING in line:
+                        logger.debug("Found %s in %s", IMAGE_START_STRING, line)
                         path = re.findall(IMAGE_PATH_REGEX, line)
-                        # If "image:", search for chart name and version
-                        if start_string == IMAGE_START_STRING:
-                            name_and_version = re.search(
-                                IMAGE_NAME_AND_VERSION_REGEX, line
-                            )
-                            logger.debug(
-                                "Regex match for name and version is %s",
-                                name_and_version,
-                            )
 
-                            if name_and_version and len(name_and_version.groups()) == 2:
-                                logger.debug(
-                                    "Found image name and version %s %s",
+                        # If "image:", search for chart name and version
+                        name_and_version = re.search(IMAGE_NAME_AND_VERSION_REGEX, line)
+                        logger.debug(
+                            "Regex match for name and version is %s",
+                            name_and_version,
+                        )
+
+                        if name_and_version and len(name_and_version.groups()) == 2:
+                            logger.debug(
+                                "Found image name and version %s %s",
+                                name_and_version.group("name"),
+                                name_and_version.group("version"),
+                            )
+                            matches.append(
+                                ImageInfo(
+                                    path,
                                     name_and_version.group("name"),
                                     name_and_version.group("version"),
                                 )
-                                matches.append(
-                                    (
-                                        path,
-                                        name_and_version.group("name"),
-                                        name_and_version.group("version"),
-                                    )
-                                )
-                            else:
-                                logger.debug("No image name and version found")
+                            )
                         else:
-                            matches += path
+                            logger.debug("No image name and version found")
+        return matches
+
+    def _find_image_pull_secrets_parameter_from_chart(
+        self, helm_package_config: HelmPackageConfig
+    ) -> List[str]:
+        """
+        Find pattern matches in Helm chart for the ImagePullSecrets parameter.
+
+        :param helm_package: The helm package config.
+
+        Returns list of lists containing image pull
+        secrets paths, e.g. Values.foo.bar.imagePullSecret
+        """
+        assert self._tmp_dir
+        chart_dir = self._tmp_dir / helm_package_config.name
+        matches = []
+        path = []
+
+        for file in self._find_yaml_files(chart_dir):
+            with open(file, "r", encoding="UTF-8") as f:
+                logger.debug(
+                    "Searching for %s in %s", IMAGE_PULL_SECRETS_START_STRING, file
+                )
+                for line in f:
+                    if IMAGE_PULL_SECRETS_START_STRING in line:
+                        logger.debug(
+                            "Found %s in %s", IMAGE_PULL_SECRETS_START_STRING, line
+                        )
+                        path = re.findall(IMAGE_PATH_REGEX, line)
+                        matches += path
         return matches
 
     def _get_artifact_list(
         self,
         helm_package: HelmPackageConfig,
-        image_line_matches: List[Tuple[str, ...]],
-    ) -> List[Any]:
+        image_line_matches: List[ImageInfo],
+    ) -> List[Artifact]:
         """
         Get the list of artifacts for the chart.
 
@@ -423,19 +488,12 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         :param image_line_matches: The list of image line matches.
         """
         artifact_list = []
-        (chart_name, chart_version) = self._get_chart_name_and_version(helm_package)
-        helm_artifact = {
-            "name": chart_name,
-            "version": chart_version,
-        }
+        (name, version) = self._get_chart_name_and_version(helm_package)
+        helm_artifact = Artifact(name, version)
+
         artifact_list.append(helm_artifact)
-        for match in image_line_matches:
-            artifact_list.append(
-                {
-                    "name": match[1],
-                    "version": match[2],
-                }
-            )
+        for image_info in image_line_matches:
+            artifact_list.append(Artifact(image_info.name, image_info.version))
 
         return artifact_list
 
@@ -448,7 +506,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
         param helm_package: The helm package config.
         """
-
+        assert self._tmp_dir
         logger.debug("Get chart mapping schema for %s", helm_package.name)
 
         mappings_path = helm_package.path_to_mappings
@@ -499,34 +557,54 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         :param d: The dictionary to traverse.
         :param target: The regex to search for.
         """
+        #  pylint: disable=too-many-nested-blocks
+        @dataclass
+        class DictNode:
+            # The dictionary under this node
+            sub_dict: Dict[Any, Any]
+
+            # The path to this node under the main dictionary
+            position_path: List[str]
+
         # Initialize the stack with the dictionary and an empty path
-        stack = [(dict_to_search, [])]
+        stack: List[DictNode] = [DictNode(dict_to_search, [])]
         result = {}  # Initialize empty dictionary to store the results
         while stack:  # While there are still items in the stack
             # Pop the last item from the stack and unpack it into node (the dictionary) and path
-            (node, path) = stack.pop()
+            node = stack.pop()
+
             # For each key-value pair in the popped item
-            for k, v in node.items():
+            for key, value in node.sub_dict.items():
+
                 # If the value is a dictionary
-                if isinstance(v, dict):
+                if isinstance(value, dict):
                     # Add the dictionary to the stack with the path
-                    stack.append((v, path + [k]))
+                    stack.append(DictNode(value, node.position_path + [key]))
+
                 # If the value is a string + matches target regex
-                elif isinstance(v, str) and re.search(target_regex, v):
+                elif isinstance(value, str):
                     # Take the match i.e, foo from {deployParameter.foo}
-                    match = re.search(target_regex, v)
+                    match = re.search(target_regex, value)
+
                     # Add it to the result dictionary with its path as the value
-                    result[match.group(1)] = path + [k]
-                elif isinstance(v, list):
-                    logger.debug("Found a list %s", v)
-                    for i in v:
-                        logger.debug("Found an item %s", i)
-                        if isinstance(i, str) and re.search(target_regex, i):
-                            match = re.search(target_regex, i)
-                            result[match.group(1)] = path + [k]
-                        elif isinstance(i, dict):
-                            stack.append((i, path + [k]))
-                        elif isinstance(i, list):
+                    if match:
+                        result[match.group(1)] = node.position_path + [key]
+
+                elif isinstance(value, list):
+                    logger.debug("Found a list %s", value)
+                    for item in value:
+                        logger.debug("Found an item %s", item)
+
+                        if isinstance(item, str):
+                            match = re.search(target_regex, item)
+
+                            if match:
+                                result[match.group(1)] = node.position_path + [key]
+
+                        elif isinstance(item, dict):
+                            stack.append(DictNode(item, node.position_path + [key]))
+
+                        elif isinstance(item, list):
                             # We should fix this but for now just log a warning and
                             # carry on
                             logger.warning(
@@ -534,7 +612,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                                 "at path %s, which this tool cannot parse. "
                                 "Please check the output configMappings and schemas "
                                 "files and check that they are as required.",
-                                path + [k],
+                                node.position_path + [key],
                             )
         return result
 
@@ -669,6 +747,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         self, helm_package: HelmPackageConfig
     ) -> Tuple[str, str]:
         """Get the name and version of the chart."""
+        assert self._tmp_dir
         chart_path = self._tmp_dir / helm_package.name / "Chart.yaml"
 
         if not chart_path.exists():
@@ -693,6 +772,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
     def _jsonify_value_mappings(self, helm_package: HelmPackageConfig) -> Path:
         """Yaml->JSON values mapping file, then return path to it."""
+        assert self._tmp_dir
         mappings_yaml_file = helm_package.path_to_mappings
         mappings_dir = self._tmp_dir / CONFIG_MAPPINGS_DIR_NAME
         mappings_output_file = mappings_dir / f"{helm_package.name}-mappings.json"

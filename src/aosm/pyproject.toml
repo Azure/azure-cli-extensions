@@ -1,0 +1,7 @@
+[tool.mypy]
+ignore_missing_imports = true
+no_namespace_packages = true
+
+[[tool.mypy.overrides]]
+module = ["azext_aosm.vendored_sdks.*"]
+ignore_errors = true

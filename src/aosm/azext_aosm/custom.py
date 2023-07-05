@@ -20,6 +20,7 @@ from knack.log import get_logger
 from azext_aosm._client_factory import cf_acr_registries, cf_resources
 from azext_aosm._configuration import (
     CNFConfiguration,
+    Configuration,
     NFConfiguration,
     NSConfiguration,
     VNFConfiguration,
@@ -57,6 +58,7 @@ def build_definition(
     config = _get_config_from_file(
         config_file=config_file, configuration_type=definition_type
     )
+    assert isinstance(config, NFConfiguration)
 
     # Generate the NFD and the artifact manifest.
     _generate_nfd(
@@ -78,9 +80,7 @@ def generate_definition_config(definition_type: str, output_file: str = "input.j
     _generate_config(configuration_type=definition_type, output_file=output_file)
 
 
-def _get_config_from_file(
-    config_file: str, configuration_type: str
-) -> NFConfiguration or NSConfiguration:
+def _get_config_from_file(config_file: str, configuration_type: str) -> Configuration:
     """
     Read input config file JSON and turn it into a Configuration object.
 
@@ -363,7 +363,7 @@ def publish_design(
     )
 
     config = _get_config_from_file(config_file=config_file, configuration_type=NSD)
-
+    assert isinstance(config, NSConfiguration)
     config.validate()
 
     deployer = DeployerViaArm(api_clients, config=config)
@@ -379,14 +379,14 @@ def publish_design(
 
 def _generate_nsd(config: NSConfiguration, api_clients: ApiClients):
     """Generate a Network Service Design for the given config."""
-    if os.path.exists(config.build_output_folder_name):
+    if os.path.exists(config.output_directory_for_build):
         carry_on = input(
-            f"The folder {config.build_output_folder_name} already exists - delete it"
+            f"The folder {config.output_directory_for_build} already exists - delete it"
             " and continue? (y/n)"
         )
         if carry_on != "y":
             raise UnclassifiedUserFault("User aborted! ")
 
-        shutil.rmtree(config.build_output_folder_name)
+        shutil.rmtree(config.output_directory_for_build)
     nsd_generator = NSDGenerator(api_clients, config)
     nsd_generator.generate_nsd()

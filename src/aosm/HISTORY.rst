@@ -17,6 +17,7 @@ unreleased
 * Fix Manifest name for NSDs so it isn't the same as that for NFDs
 * Add validation of source_registry_id format for CNF configuration
 * Workaround Oras client bug (#90) on Windows for Artifact upload to ACR
+* Take Oras 0.1.18 so above Workaround could be removed
 
 0.2.0
 ++++++

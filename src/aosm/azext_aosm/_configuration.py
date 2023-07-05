@@ -1,3 +1,10 @@
+# --------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT
+# License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------
+"""Configuration class for input config file parsing,"""
+import abc
+import logging
 import json
 import os
 import re
@@ -6,7 +13,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from azure.cli.core.azclierror import InvalidArgumentValueError, ValidationError
-
 from azext_aosm.util.constants import (
     CNF,
     NF_DEFINITION_OUTPUT_BICEP_PREFIX,
@@ -16,6 +22,8 @@ from azext_aosm.util.constants import (
     VNF,
     SOURCE_ACR_REGEX,
 )
+
+logger = logging.getLogger(__name__)
 
 DESCRIPTION_MAP: Dict[str, str] = {
     "publisher_resource_group_name": (
@@ -118,8 +126,14 @@ class ArtifactConfig:
 
 
 @dataclass
-class Configuration:
+class Configuration(abc.ABC):
     config_file: Optional[str] = None
+    publisher_name: str = DESCRIPTION_MAP["publisher_name"]
+    publisher_resource_group_name: str = DESCRIPTION_MAP[
+        "publisher_resource_group_name"
+    ]
+    acr_artifact_store_name: str = DESCRIPTION_MAP["acr_artifact_store_name"]
+    location: str = DESCRIPTION_MAP["location"]
 
     def path_from_cli_dir(self, path: str) -> str:
         """
@@ -131,6 +145,8 @@ class Configuration:
 
         :param path: The path relative to the config file.
         """
+        assert self.config_file
+
         # If no path has been supplied we shouldn't try to update it.
         if path == "":
             return ""
@@ -139,11 +155,29 @@ class Configuration:
         if os.path.isabs(path):
             return path
 
-        return os.path.join(os.path.dirname(self.config_file), path)
+        config_file_dir = Path(self.config_file).parent
+
+        updated_path = str(config_file_dir / path)
+
+        logger.debug("Updated path: %s", updated_path)
+
+        return updated_path
+
+    @property
+    def output_directory_for_build(self) -> Path:
+        """Base class method to ensure subclasses implement this function."""
+        raise NotImplementedError("Subclass must define property")
+
+    @property
+    def acr_manifest_name(self) -> str:
+        """Base class method to ensure subclasses implement this function."""
+        raise NotImplementedError("Subclass must define property")
 
 
 @dataclass
 class NFConfiguration(Configuration):
+    """Network Function configuration."""
+
     publisher_name: str = DESCRIPTION_MAP["publisher_name"]
     publisher_resource_group_name: str = DESCRIPTION_MAP[
         "publisher_resource_group_name"
@@ -237,10 +271,10 @@ class NSConfiguration(Configuration):
             raise ValueError("NSD Version must be set")
 
     @property
-    def build_output_folder_name(self) -> str:
+    def output_directory_for_build(self) -> Path:
         """Return the local folder for generating the bicep template to."""
         current_working_directory = os.getcwd()
-        return f"{current_working_directory}/{NSD_OUTPUT_BICEP_PREFIX}"
+        return Path(f"{current_working_directory}/{NSD_OUTPUT_BICEP_PREFIX}")
 
     @property
     def resource_element_name(self) -> str:
@@ -276,7 +310,7 @@ class NSConfiguration(Configuration):
         artifact = ArtifactConfig()
         artifact.version = self.nsd_version
         artifact.file_path = os.path.join(
-            self.build_output_folder_name, NF_DEFINITION_JSON_FILENAME
+            self.output_directory_for_build, NF_DEFINITION_JSON_FILENAME
         )
         return artifact
 
@@ -389,7 +423,9 @@ class CNFConfiguration(NFConfiguration):
         """
         for package_index, package in enumerate(self.helm_packages):
             if isinstance(package, dict):
-                package["path_to_chart"] = self.path_from_cli_dir(package["path_to_chart"])
+                package["path_to_chart"] = self.path_from_cli_dir(
+                    package["path_to_chart"]
+                )
                 package["path_to_mappings"] = self.path_from_cli_dir(
                     package["path_to_mappings"]
                 )
@@ -397,11 +433,12 @@ class CNFConfiguration(NFConfiguration):
 
     @property
     def output_directory_for_build(self) -> Path:
-        """Return the directory the build command will writes its output to"""
+        """Return the directory the build command will writes its output to."""
         return Path(f"{NF_DEFINITION_OUTPUT_BICEP_PREFIX}{self.nf_name}")
 
     def validate(self):
-        """Validate the CNF config
+        """
+        Validate the CNF config.
 
         :raises ValidationError: If source registry ID doesn't match the regex
         """
@@ -418,8 +455,8 @@ class CNFConfiguration(NFConfiguration):
 
 
 def get_configuration(
-    configuration_type: str, config_file: str = None
-) -> NFConfiguration or NSConfiguration:
+    configuration_type: str, config_file: Optional[str] = None
+) -> Configuration:
     """
     Return the correct configuration object based on the type.
 
@@ -432,6 +469,8 @@ def get_configuration(
             config_as_dict = json.loads(f.read())
     else:
         config_as_dict = {}
+
+    config: Configuration
 
     if configuration_type == VNF:
         config = VNFConfiguration(config_file=config_file, **config_as_dict)

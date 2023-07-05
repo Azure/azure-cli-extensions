@@ -3,21 +3,17 @@
 
 # pylint: disable=unidiomatic-typecheck
 """A module to handle interacting with artifacts."""
-import os
 import subprocess
 from dataclasses import dataclass
 from typing import List, Union
 
 from azure.cli.core.commands import LongRunningOperation
 from azure.mgmt.containerregistry import ContainerRegistryManagementClient
-from azure.mgmt.containerregistry.models import (ImportImageParameters,
-                                                 ImportSource)
+from azure.mgmt.containerregistry.models import ImportImageParameters, ImportSource
 from azure.storage.blob import BlobClient, BlobType
 from knack.log import get_logger
 from knack.util import CLIError
 from oras.client import OrasClient
-from azure.cli.core.commands import LongRunningOperation
-from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 
 from azext_aosm._configuration import ArtifactConfig, HelmPackageConfig
 
@@ -33,7 +29,7 @@ class Artifact:
     artifact_version: str
     artifact_client: Union[BlobClient, OrasClient]
 
-    def upload(self, artifact_config: ArtifactConfig or HelmPackageConfig) -> None:
+    def upload(self, artifact_config: Union[ArtifactConfig, HelmPackageConfig]) -> None:
         """
         Upload aritfact.
 
@@ -47,6 +43,7 @@ class Artifact:
             else:
                 raise ValueError(f"Unsupported artifact type: {type(artifact_config)}.")
         else:
+            assert isinstance(artifact_config, ArtifactConfig)
             self._upload_to_storage_account(artifact_config)
 
     def _upload_arm_to_acr(self, artifact_config: ArtifactConfig) -> None:
@@ -58,30 +55,17 @@ class Artifact:
         assert type(self.artifact_client) == OrasClient
 
         if artifact_config.file_path:
-            try:
-                # OrasClient 0.1.17 has a bug
-                # https://github.com/oras-project/oras-py/issues/90 which means on
-                # Windows we need a real blank file on disk, without a colon in the
-                # filepath (so tempfile can't be used and we just put it in the working
-                # directory), that can act as the manifest config file. So create one
-                # and then delete it after the upload.
-                with open("dummyManifestConfig.json", "w", encoding='utf-8') as f:
-                    target = (
-                        f"{self.artifact_client.remote.hostname.replace('https://', '')}"
-                        f"/{self.artifact_name}:{self.artifact_version}"
-                    )
-                    logger.debug("Uploading %s to %s", artifact_config.file_path, target)
-                    self.artifact_client.push(
-                        files=[artifact_config.file_path],
-                        target=target,
-                        manifest_config=f.name,
-                    )
-            finally:
-                # Delete the dummy file
-                try:
-                    os.remove("dummyManifestConfig.json")
-                except FileNotFoundError:
-                    pass
+            if not self.artifact_client.remote.hostname:
+                raise ValueError(
+                    "Cannot upload ARM template as OrasClient has no remote hostname."
+                    " Please check your ACR config."
+                )
+            target = (
+                f"{self.artifact_client.remote.hostname.replace('https://', '')}"
+                f"/{self.artifact_name}:{self.artifact_version}"
+            )
+            logger.debug("Uploading %s to %s", artifact_config.file_path, target)
+            self.artifact_client.push(files=[artifact_config.file_path], target=target)
         else:
             raise NotImplementedError(
                 "Copying artifacts is not implemented for ACR artifacts stores."
@@ -93,7 +77,12 @@ class Artifact:
 
         :param artifact_config: configuration for the artifact being uploaded
         """
+        assert isinstance(self.artifact_client, OrasClient)
         chart_path = artifact_config.path_to_chart
+        if not self.artifact_client.remote.hostname:
+            raise ValueError(
+                "Cannot upload artifact. Oras client has no remote hostname."
+            )
         registry = self.artifact_client.remote.hostname.replace("https://", "")
         target_registry = f"oci://{registry}"
         registry_name = registry.replace(".azurecr.io", "")
@@ -137,6 +126,8 @@ class Artifact:
                 self.artifact_client.account_name,
             )
         else:
+            # Config Validation will raise error if not true
+            assert artifact_config.blob_sas_url
             logger.info("Copy from SAS URL to blob store")
             source_blob = BlobClient.from_blob_url(artifact_config.blob_sas_url)
 
