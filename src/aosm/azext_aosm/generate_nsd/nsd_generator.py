@@ -303,10 +303,9 @@ class NSDGenerator:
             {},
         )
 
-    def generate_bicep(self,
-                       template_name: str,
-                       output_file_name: str,
-                       params: Dict[Any, Any]) -> None:
+    def generate_bicep(
+        self, template_name: str, output_file_name: str, params: Dict[Any, Any]
+    ) -> None:
         """
         Render the bicep templates with the correct parameters and copy them into the build output folder.
 

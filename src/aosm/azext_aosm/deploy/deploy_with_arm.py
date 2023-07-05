@@ -53,7 +53,7 @@ class DeployerViaArm:
     def __init__(
         self,
         api_clients: ApiClients,
-        config: Union[NFConfiguration,NSConfiguration],
+        config: Union[NFConfiguration, NSConfiguration]
     ) -> None:
         """
         Initializes a new instance of the Deployer class.
@@ -224,7 +224,9 @@ class DeployerViaArm:
 
     def construct_cnfd_parameters(self) -> Dict[str, Any]:
         """
-        Create the parmeters dictionary for cnfdefinition.bicep. CNF specific.
+        Create the parmeters dictionary for cnfdefinition.bicep.
+
+        CNF specific.
         """
         assert isinstance(self.config, CNFConfiguration)
         return {
@@ -490,14 +492,14 @@ class DeployerViaArm:
         # Convert the NF bicep to ARM
         arm_template_artifact_json = self.convert_bicep_to_arm(
             os.path.join(
-                self.config.output_directory_for_build,
-                NF_DEFINITION_BICEP_FILENAME)
+                self.config.output_directory_for_build, NF_DEFINITION_BICEP_FILENAME
+            )
         )
 
         # appease mypy
-        assert self.config.arm_template.file_path, (
-            "Config missing ARM template file path"
-        )
+        assert (
+            self.config.arm_template.file_path
+        ), "Config missing ARM template file path"
         with open(self.config.arm_template.file_path, "w", encoding="utf-8") as file:
             file.write(json.dumps(arm_template_artifact_json, indent=4))
 

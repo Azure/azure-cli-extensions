@@ -147,10 +147,10 @@ class Configuration(abc.ABC):
         """Base class method to ensure subclasses implement this function."""
 
 
-
 @dataclass
 class NFConfiguration(Configuration):
     """Network Function configuration."""
+
     publisher_name: str = DESCRIPTION_MAP["publisher_name"]
     publisher_resource_group_name: str = DESCRIPTION_MAP[
         "publisher_resource_group_name"
@@ -396,7 +396,9 @@ class CNFConfiguration(NFConfiguration):
         """
         for package_index, package in enumerate(self.helm_packages):
             if isinstance(package, dict):
-                package["path_to_chart"] = self.path_from_cli_dir(package["path_to_chart"])
+                package["path_to_chart"] = self.path_from_cli_dir(
+                    package["path_to_chart"]
+                )
                 package["path_to_mappings"] = self.path_from_cli_dir(
                     package["path_to_mappings"]
                 )
@@ -404,11 +406,12 @@ class CNFConfiguration(NFConfiguration):
 
     @property
     def output_directory_for_build(self) -> Path:
-        """Return the directory the build command will writes its output to"""
+        """Return the directory the build command will writes its output to."""
         return Path(f"{NF_DEFINITION_OUTPUT_BICEP_PREFIX}{self.nf_name}")
 
     def validate(self):
-        """Validate the CNF config
+        """
+        Validate the CNF config.
 
         :raises ValidationError: If source registry ID doesn't match the regex
         """

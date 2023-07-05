@@ -144,7 +144,7 @@ class PreDeployerViaSDK:
 
     def ensure_config_source_registry_exists(self) -> None:
         """
-        Ensures that the source registry exists
+        Ensures that the source registry exists.
 
         Finds the parameters from self.config
         """

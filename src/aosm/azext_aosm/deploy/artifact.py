@@ -10,8 +10,7 @@ from typing import List, Union
 
 from azure.cli.core.commands import LongRunningOperation
 from azure.mgmt.containerregistry import ContainerRegistryManagementClient
-from azure.mgmt.containerregistry.models import (ImportImageParameters,
-                                                 ImportSource)
+from azure.mgmt.containerregistry.models import ImportImageParameters, ImportSource
 from azure.storage.blob import BlobClient, BlobType
 from knack.log import get_logger
 from knack.util import CLIError
@@ -65,12 +64,14 @@ class Artifact:
                 # filepath (so tempfile can't be used and we just put it in the working
                 # directory), that can act as the manifest config file. So create one
                 # and then delete it after the upload.
-                with open("dummyManifestConfig.json", "w", encoding='utf-8') as f:
+                with open("dummyManifestConfig.json", "w", encoding="utf-8") as f:
                     target = (
                         f"{self.artifact_client.remote.hostname.replace('https://', '')}"
                         f"/{self.artifact_name}:{self.artifact_version}"
                     )
-                    logger.debug("Uploading %s to %s", artifact_config.file_path, target)
+                    logger.debug(
+                        "Uploading %s to %s", artifact_config.file_path, target
+                    )
                     self.artifact_client.push(
                         files=[artifact_config.file_path],
                         target=target,
