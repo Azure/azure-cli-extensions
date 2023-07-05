@@ -37,7 +37,16 @@ class TestVNF(unittest.TestCase):
             os.chdir(test_dir)
 
             try:
-                build_definition("vnf", str(mock_vnf_folder / "input.json"))
+                build_definition("vnf", str(mock_vnf_folder / "input_with_fp.json"))
+                assert os.path.exists("nfd-bicep-ubuntu-template")
+            finally:
+                os.chdir(starting_directory)
+                
+        with TemporaryDirectory() as test_dir:
+            os.chdir(test_dir)
+
+            try:
+                build_definition("vnf", str(mock_vnf_folder / "input_with_sas.json"))
                 assert os.path.exists("nfd-bicep-ubuntu-template")
             finally:
                 os.chdir(starting_directory)
@@ -53,7 +62,7 @@ class TestVNF(unittest.TestCase):
             try:
                 build_definition(
                     "vnf",
-                    str(mock_vnf_folder / "input.json"),
+                    str(mock_vnf_folder / "input_with_fp.json"),
                     order_params=True,
                 )
                 assert os.path.exists("nfd-bicep-ubuntu-template")

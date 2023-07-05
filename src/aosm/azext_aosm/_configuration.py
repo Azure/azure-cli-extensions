@@ -340,7 +340,8 @@ class VNFConfiguration(NFConfiguration):
             self.arm_template = ArtifactConfig(**self.arm_template)
 
         if isinstance(self.vhd, dict):
-            self.vhd["file_path"] = self.path_from_cli_dir(self.vhd["file_path"])
+            if self.vhd.get("file_path"):
+                self.vhd["file_path"] = self.path_from_cli_dir(self.vhd["file_path"])
             self.vhd = ArtifactConfig(**self.vhd)
             self.validate()
 
