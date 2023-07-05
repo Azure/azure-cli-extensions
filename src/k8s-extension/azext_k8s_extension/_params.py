@@ -127,6 +127,6 @@ def load_arguments(self, _):
                    options_list=['--plan-publisher'],
                    help='The plan publisher is referring to the Marketplace Publisher ID of the extension')        
         c.argument('major_version',
-                   help='Filter results by the major version of an extension type. For example if 1 is specified, all versions with major version 1 (1.1, 1.1.2) will be shown. The default value is None')        
+                   help='Filter results by only the major version of an extension type. For example if 1 is specified, all versions with major version 1 (1.1, 1.1.2) will be shown. The default value is None')        
         c.argument('show_latest',
                    help='Filter results by only the latest version. For example, if this flag is used the latest version of the extensionType will be shown.')

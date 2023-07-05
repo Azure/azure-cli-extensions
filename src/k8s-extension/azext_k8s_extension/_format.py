@@ -53,9 +53,7 @@ def __get_extension_type_table_row(result):
         defaultScope = result['properties']['supportedScopes']['defaultScope']
         if result['properties']['supportedScopes']['clusterScopeSettings'] is not None:
             allowMultipleInstances = result['properties']['supportedScopes']['clusterScopeSettings']['allowMultipleInstances']
-            print(allowMultipleInstances)
             defaultReleaseNamespace = result['properties']['supportedScopes']['clusterScopeSettings']['defaultReleaseNamespace']
-            print(defaultReleaseNamespace)
 
     retVal = OrderedDict([
         ('name', name),

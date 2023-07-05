@@ -83,48 +83,48 @@ helps[f'{consts.EXTENSION_NAME} extension-types'] = """
     short-summary: Commands to discover Kubernetes Extension Types.
 """
 
-helps[f'{consts.EXTENSION_NAME} extension-types get-by-cluster'] = f"""
+helps[f'{consts.EXTENSION_NAME} extension-types show-by-cluster'] = f"""
     type: command
-    short-summary: Get properties for a Cluster Extension Type for an existing cluster.
+    short-summary: Show properties for a Cluster Extension Type for an existing cluster. The properties used for filtering include type of cluster (managed, connected, etc), kubernetes version, location of the cluster.
     examples:
-      - name: Get properties for a Cluster Extension Type for an existing cluster
+      - name: Show properties for a Cluster Extension Type for an existing cluster
         text: |-
-          az {consts.EXTENSION_NAME} extension-types get-by-cluster --resource-group my-resource-group \
+          az {consts.EXTENSION_NAME} extension-types show-by-cluster --resource-group my-resource-group \
 --cluster-name mycluster --cluster-type connectedClusters --extension-type microsoft.openservicemesh
 """
 
-helps[f'{consts.EXTENSION_NAME} extension-types get-by-location'] = f"""
+helps[f'{consts.EXTENSION_NAME} extension-types show-by-location'] = f"""
     type: command
-    short-summary: Get properties for a Cluster Extension Type in a region.
+    short-summary: Show properties for a Cluster Extension Type in a region.
     examples:
-      - name: Get properties for a Cluster Extension Type in a region
+      - name: Show properties for a Cluster Extension Type in a region
         text: |-
-          az {consts.EXTENSION_NAME} extension-types get-by-location --location eastus --extension-type microsoft.openservicemesh
+          az {consts.EXTENSION_NAME} extension-types show-by-location --location eastus --extension-type microsoft.openservicemesh
 """
 
-helps[f'{consts.EXTENSION_NAME} extension-types get-version-by-cluster'] = f"""
+helps[f'{consts.EXTENSION_NAME} extension-types show-version-by-cluster'] = f"""
     type: command
-    short-summary: Get properties associated with a Cluster Extension Type version for an existing cluster.
+    short-summary: Show properties associated with a Cluster Extension Type version for an existing cluster. The properties used for filtering include type of cluster (managed, connected, etc), kubernetes version, location of the cluster.
     examples:
-      - name: Get properties associated with a Cluster Extension Type version for an existing cluster
+      - name: Show properties associated with a Cluster Extension Type version for an existing cluster
         text: |-
-          az {consts.EXTENSION_NAME} extension-types get-version-by-cluster --resource-group my-resource-group \
+          az {consts.EXTENSION_NAME} extension-types show-version-by-cluster --resource-group my-resource-group \
 --cluster-name mycluster --cluster-type connectedClusters --extension-type microsoft.openservicemesh --version 1.0.0
 """
 
-helps[f'{consts.EXTENSION_NAME} extension-types get-version-by-location'] = f"""
+helps[f'{consts.EXTENSION_NAME} extension-types show-version-by-location'] = f"""
     type: command
-    short-summary: Get properties associated with a Cluster Extension Type version in a region.
+    short-summary: Show properties associated with a Cluster Extension Type version in a region.
     examples:
-      - name: Get properties associated with a Cluster Extension Type version in a region.
+      - name: Show properties associated with a Cluster Extension Type version in a region.
         text: |-
-          az {consts.EXTENSION_NAME} extension-types list --location eastus --extension-type microsoft.openservicemesh \
+          az {consts.EXTENSION_NAME} extension-types show-version-by-location --location eastus --extension-type microsoft.openservicemesh \
 --version 1.0.0
 """
 
 helps[f'{consts.EXTENSION_NAME} extension-types list-by-cluster'] = f"""
     type: command
-    short-summary: List available Cluster Extension Types for an existing cluster.
+    short-summary: List available Cluster Extension Types for an existing cluster. The properties used for filtering include type of cluster (managed, connected, etc), kubernetes version, location of the cluster.
     examples:
       - name: List available Cluster Extension Types for an existing cluster
         text: |-
@@ -138,12 +138,12 @@ helps[f'{consts.EXTENSION_NAME} extension-types list-by-location'] = f"""
     examples:
       - name: List available Cluster Extension Types in a region
         text: |-
-          az {consts.EXTENSION_NAME} extension-types list --location eastus
+          az {consts.EXTENSION_NAME} extension-types list-by-location --location eastus
 """
 
 helps[f'{consts.EXTENSION_NAME} extension-types list-versions-by-cluster'] = f"""
     type: command
-    short-summary: List available versions for a Cluster Extension Type for a given cluster.
+    short-summary: List available versions for a Cluster Extension Type for a given cluster. The properties used for filtering include type of cluster (managed, connected, etc), kubernetes version, location of the cluster.
     examples:
       - name: List available versions for a Cluster Extension Type for a given cluster
         text: |-
@@ -157,5 +157,5 @@ helps[f'{consts.EXTENSION_NAME} extension-types list-versions-by-location'] = f"
     examples:
       - name: List available versions for a Cluster Extension Type versions in a region
         text: |-
-          az {consts.EXTENSION_NAME} extension-types list --location eastus
+          az {consts.EXTENSION_NAME} extension-types list-versions-by-location --location eastus
 """

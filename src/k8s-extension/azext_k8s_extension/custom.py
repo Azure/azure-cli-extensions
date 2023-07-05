@@ -390,7 +390,7 @@ def list_extension_types_by_location(
         cluster_type)
 
 # get by location
-def get_extension_type_by_location(client, location, extension_type):
+def show_extension_type_by_location(client, location, extension_type):
     
     """Get properties for a Cluster Extension Type in a region."""
     return client.location_get(
@@ -420,7 +420,7 @@ def list_extension_type_versions_by_location(
     return versions_list
 
 # get version by location
-def get_extension_type_version_by_location(       
+def show_extension_type_version_by_location(       
         client, 
         location, 
         extension_type,        
@@ -458,7 +458,7 @@ def list_extension_types_by_cluster(
         release_train)
 
 # get by cluster
-def get_extension_type_by_cluster(    
+def show_extension_type_by_cluster(    
     client, 
     resource_group_name, 
     cluster_name, 
@@ -502,7 +502,7 @@ def list_extension_type_versions_by_cluster(
        )
 
 # get version by cluster 
-def get_extension_type_version_by_cluster(
+def show_extension_type_version_by_cluster(
         client,
         resource_group_name,
         cluster_type,
