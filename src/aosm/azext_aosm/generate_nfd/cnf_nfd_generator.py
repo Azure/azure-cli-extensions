@@ -202,7 +202,9 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         )
 
         # Write the mapping to a file
-        folder_name = os.path.join(self._tmp_folder_name, GENERATED_VALUES_MAPPINGS_DIR_NAME)
+        folder_name = os.path.join(
+            self._tmp_folder_name, GENERATED_VALUES_MAPPINGS_DIR_NAME
+        )
         os.makedirs(folder_name, exist_ok=True)
         mapping_filepath = os.path.join(
             self._tmp_folder_name,
@@ -268,11 +270,15 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             )
 
         bicep_contents: str = template.render(
-            deployParametersPath=os.path.join(SCHEMAS_DIR_NAME, DEPLOYMENT_PARAMETERS_FILENAME),
+            deployParametersPath=os.path.join(
+                SCHEMAS_DIR_NAME, DEPLOYMENT_PARAMETERS_FILENAME
+            ),
             nf_application_configurations=self.nf_application_configurations,
         )
 
-        path = os.path.join(self._tmp_folder_name, CNF_DEFINITION_BICEP_TEMPLATE_FILENAME)
+        path = os.path.join(
+            self._tmp_folder_name, CNF_DEFINITION_BICEP_TEMPLATE_FILENAME
+        )
         with open(path, "w", encoding="utf-8") as f:
             f.write(bicep_contents)
 
@@ -283,7 +289,9 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
         logger.debug("Create deploymentParameters.json")
 
-        full_schema = os.path.join(self._tmp_folder_name, DEPLOYMENT_PARAMETERS_FILENAME)
+        full_schema = os.path.join(
+            self._tmp_folder_name, DEPLOYMENT_PARAMETERS_FILENAME
+        )
         with open(full_schema, "w", encoding="UTF-8") as f:
             json.dump(self.deployment_parameter_schema, f, indent=4)
 
@@ -324,7 +332,9 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
         # Copy the JSON config mappings and deploymentParameters schema that are used
         # for the NFD to the output folder
-        tmp_config_mappings_path = os.path.join(self._tmp_folder_name, CONFIG_MAPPINGS_DIR_NAME)
+        tmp_config_mappings_path = os.path.join(
+            self._tmp_folder_name, CONFIG_MAPPINGS_DIR_NAME
+        )
         output_config_mappings_path = os.path.join(
             self.output_folder_name, CONFIG_MAPPINGS_DIR_NAME
         )
@@ -334,7 +344,9 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             dirs_exist_ok=True,
         )
 
-        tmp_schema_path = os.path.join(self._tmp_folder_name, DEPLOYMENT_PARAMETERS_FILENAME)
+        tmp_schema_path = os.path.join(
+            self._tmp_folder_name, DEPLOYMENT_PARAMETERS_FILENAME
+        )
         output_schema_path = os.path.join(
             self.output_folder_name, SCHEMAS_DIR_NAME, DEPLOYMENT_PARAMETERS_FILENAME
         )
@@ -413,20 +425,20 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                             )
                             logger.debug(
                                 "Regex match for name and version is %s",
-                                name_and_version
+                                name_and_version,
                             )
 
                             if name_and_version and len(name_and_version.groups()) == 2:
                                 logger.debug(
                                     "Found image name and version %s %s",
-                                    name_and_version.group('name'),
-                                    name_and_version.group('version')
+                                    name_and_version.group("name"),
+                                    name_and_version.group("version"),
                                 )
                                 matches.append(
                                     (
                                         path,
-                                        name_and_version.group('name'),
-                                        name_and_version.group('version'),
+                                        name_and_version.group("name"),
+                                        name_and_version.group("version"),
                                     )
                                 )
                             else:
@@ -515,8 +527,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
     @staticmethod
     def traverse_dict(
-        dict_to_search: Dict[Any, Any],
-        target_regex: str
+        dict_to_search: Dict[Any, Any], target_regex: str
     ) -> Dict[str, List[str]]:
         """
         Traverse the dictionary that is loaded from the file provided by path_to_mappings in the input.json.
@@ -563,14 +574,13 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                                 "at path %s, which this tool cannot parse. "
                                 "Please check the output configMappings and schemas "
                                 "files and check that they are as required.",
-                                path + [k]
+                                path + [k],
                             )
         return result
 
     @staticmethod
     def search_schema(
-        deployParams_paths: Dict[str, List[str]],
-        full_schema
+        deployParams_paths: Dict[str, List[str]], full_schema
     ) -> Dict[str, Dict[str, str]]:
         """
         Search through provided schema for the types of the deployment parameters.
@@ -581,7 +591,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         {"foo": {"type": "string"}, "bar": {"type": "string"}}
 
         param deployParams_paths: a dictionary of all the deploy parameters to search for,
-                      with the key being the deploy parameter and the value being the 
+                      with the key being the deploy parameter and the value being the
                       path to the value.
                       e.g. {"foo": ["global", "foo", "bar"]}
         param full_schema: The schema to search through.
@@ -597,7 +607,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                 if "properties" in node.keys():
                     logger.debug(
                         "Searching properties for %s in schema at path %s",
-                        deploy_param, path
+                        deploy_param,
+                        path,
                     )
                     node = node["properties"][path]
                 else:
@@ -613,7 +624,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             logger.warning(
                 "We default these parameters to type string. "
                 "Please edit schemas/%s in the output before publishing "
-                "if this is wrong", DEPLOYMENT_PARAMETERS_FILENAME
+                "if this is wrong",
+                DEPLOYMENT_PARAMETERS_FILENAME,
             )
         return new_schema
 
@@ -723,7 +735,9 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         """Yaml->JSON values mapping file, then return path to it."""
         mappings_yaml = helm_package.path_to_mappings
 
-        mappings_folder_path = os.path.join(self._tmp_folder_name, CONFIG_MAPPINGS_DIR_NAME)
+        mappings_folder_path = os.path.join(
+            self._tmp_folder_name, CONFIG_MAPPINGS_DIR_NAME
+        )
         mappings_filename = f"{helm_package.name}-mappings.json"
 
         if not os.path.exists(mappings_folder_path):

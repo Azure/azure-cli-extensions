@@ -40,7 +40,7 @@ class TestVNF(unittest.TestCase):
                 assert os.path.exists("nfd-bicep-ubuntu-template")
             finally:
                 os.chdir(starting_directory)
-                
+
     def test_build_with_ordered_params(self):
         """
         Test building an NFDV for a VNF.
@@ -51,9 +51,10 @@ class TestVNF(unittest.TestCase):
 
             try:
                 build_definition(
-                    "vnf", 
+                    "vnf",
                     os.path.join(mock_vnf_folder, "input.json"),
-                    order_params=True)
+                    order_params=True,
+                )
                 assert os.path.exists("nfd-bicep-ubuntu-template")
             finally:
                 os.chdir(starting_directory)

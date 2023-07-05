@@ -175,7 +175,7 @@ def publish_definition(
             parameters_json_file=parameters_json_file,
             manifest_bicep_path=manifest_file,
             manifest_parameters_json_file=manifest_parameters_json_file,
-            skip=skip
+            skip=skip,
         )
     elif definition_type == CNF:
         deployer = DeployerViaArm(api_clients, config=config)
@@ -185,7 +185,7 @@ def publish_definition(
             parameters_json_file=parameters_json_file,
             manifest_bicep_path=manifest_file,
             manifest_parameters_json_file=manifest_parameters_json_file,
-            skip=skip
+            skip=skip,
         )
     else:
         raise ValueError(
@@ -372,7 +372,7 @@ def publish_design(
         parameters_json_file=parameters_json_file,
         manifest_bicep_path=manifest_file,
         manifest_parameters_json_file=manifest_parameters_json_file,
-        skip=skip
+        skip=skip,
     )
 
 

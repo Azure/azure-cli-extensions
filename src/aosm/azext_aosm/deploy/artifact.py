@@ -157,7 +157,7 @@ class Artifact:
         :param source_image: source image
         :param target_registry_resource_group_name: target registry resource group name
         :param target_registry_name: target registry name
-        :param target_tags: the list of tags to be applied to the imported image 
+        :param target_tags: the list of tags to be applied to the imported image
                             should be of form: namepace/name:tag or name:tag
         :param mode: mode for import
         """

@@ -15,7 +15,7 @@ from azext_aosm.custom import generate_design_config, build_design
 mock_nsd_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mock_nsd")
 
 
-class TestNSDGenerator():
+class TestNSDGenerator:
     def test_generate_config(self):
         """
         Test generating a config file for a VNF.
@@ -43,19 +43,11 @@ class TestNSDGenerator():
             "title": "DeployParametersSchema",
             "type": "object",
             "properties": {
-                "location": {
-                    "type": "string"
-                },
-                "subnetName": {
-                    "type": "string"
-                },
-                "virtualNetworkId": {
-                    "type": "string"
-                },
-                "sshPublicKeyAdmin": {
-                    "type": "string"
-                }
-            }
+                "location": {"type": "string"},
+                "subnetName": {"type": "string"},
+                "virtualNetworkId": {"type": "string"},
+                "sshPublicKeyAdmin": {"type": "string"},
+            },
         }
 
         deploy_parameters_string = json.dumps(deploy_parameters)
@@ -66,17 +58,17 @@ class TestNSDGenerator():
 
         nfdv = NFDV(deploy_parameters_string)
 
-        class NFDVs():
+        class NFDVs:
             def get(self, **_):
                 return nfdv
 
-        class AOSMClient():
+        class AOSMClient:
             def __init__(self) -> None:
                 self.network_function_definition_versions = NFDVs()
 
         mock_client = AOSMClient()
 
-        class FakeCmd():
+        class FakeCmd:
             def __init__(self) -> None:
                 self.cli_ctx = None
 
@@ -89,8 +81,8 @@ class TestNSDGenerator():
             try:
                 build_design(
                     cmd,
-                    client=mock_client, 
-                    config_file=os.path.join(mock_nsd_folder, "input.json")
+                    client=mock_client,
+                    config_file=os.path.join(mock_nsd_folder, "input.json"),
                 )
                 assert os.path.exists("nsd-bicep-templates")
             finally:

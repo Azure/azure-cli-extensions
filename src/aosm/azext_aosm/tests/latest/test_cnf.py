@@ -9,6 +9,7 @@ import json
 import logging
 import os
 from tempfile import TemporaryDirectory
+
 # from unittest.mock import Mock, patch
 
 from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
@@ -19,7 +20,7 @@ from azure.cli.core.azclierror import (
     BadRequestError,
     InvalidArgumentValueError,
     ResourceNotFoundError,
-    InvalidTemplateError
+    InvalidTemplateError,
 )
 
 mock_cnf_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mock_cnf")
@@ -58,8 +59,7 @@ class TestCNF(unittest.TestCase):
 
             try:
                 build_definition(
-                    "cnf",
-                    os.path.join(mock_cnf_folder, "input-nfconfigchart.json")
+                    "cnf", os.path.join(mock_cnf_folder, "input-nfconfigchart.json")
                 )
                 assert os.path.exists("nfd-bicep-nginx-basic-test")
             finally:
@@ -79,7 +79,7 @@ class TestCNF(unittest.TestCase):
                 build_definition(
                     "cnf",
                     os.path.join(mock_cnf_folder, "input-nf-agent-cnf.json"),
-                    order_params=True
+                    order_params=True,
                 )
                 assert os.path.exists("nfd-bicep-nf-agent-cnf")
             finally:

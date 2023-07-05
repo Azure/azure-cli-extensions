@@ -157,7 +157,9 @@ class VnfNfdGenerator(NFDGenerator):
         os.mkdir(schemas_folder_path)
         self.write_deployment_parameters(schemas_folder_path)
 
-        mappings_folder_path = os.path.join(self.tmp_folder_name, CONFIG_MAPPINGS_DIR_NAME)
+        mappings_folder_path = os.path.join(
+            self.tmp_folder_name, CONFIG_MAPPINGS_DIR_NAME
+        )
         os.mkdir(mappings_folder_path)
         self.write_template_parameters(mappings_folder_path)
         self.write_vhd_parameters(mappings_folder_path)
@@ -180,10 +182,10 @@ class VnfNfdGenerator(NFDGenerator):
 
         for key in vm_parameters:
             if key == self.config.image_name_parameter:
-                # There is only one correct answer for the image name, so don't ask the 
+                # There is only one correct answer for the image name, so don't ask the
                 # user, instead it is hardcoded in config mappings.
                 continue
-            
+
             # Order parameters into those without and then with defaults
             has_default_field = "defaultValue" in self.vm_parameters[key]
             has_default = (
@@ -213,7 +215,9 @@ class VnfNfdGenerator(NFDGenerator):
         for key in vm_parameters_to_exclude:
             self.vm_parameters.pop(key, None)
 
-        deployment_parameters_path = os.path.join(folder_path, DEPLOYMENT_PARAMETERS_FILENAME)
+        deployment_parameters_path = os.path.join(
+            folder_path, DEPLOYMENT_PARAMETERS_FILENAME
+        )
 
         # Heading for the deployParameters schema
         deploy_parameters_full: Dict[str, Any] = SCHEMA_PREFIX
@@ -245,7 +249,7 @@ class VnfNfdGenerator(NFDGenerator):
                     f"{OPTIONAL_DEPLOYMENT_PARAMETERS_FILENAME} to help you choose which "
                     "to expose."
                 )
-                
+
     def write_template_parameters(self, folder_path: str) -> None:
         """
         Write out the NFD templateParameters.json file.
@@ -266,7 +270,9 @@ class VnfNfdGenerator(NFDGenerator):
 
             template_parameters[key] = f"{{deployParameters.{key}}}"
 
-        template_parameters_path = os.path.join(folder_path, TEMPLATE_PARAMETERS_FILENAME)
+        template_parameters_path = os.path.join(
+            folder_path, TEMPLATE_PARAMETERS_FILENAME
+        )
 
         with open(template_parameters_path, "w", encoding="utf-8") as _file:
             _file.write(json.dumps(template_parameters, indent=4))

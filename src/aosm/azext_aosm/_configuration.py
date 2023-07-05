@@ -14,7 +14,7 @@ from azext_aosm.util.constants import (
     NSD,
     NSD_OUTPUT_BICEP_PREFIX,
     VNF,
-    SOURCE_ACR_REGEX
+    SOURCE_ACR_REGEX,
 )
 
 DESCRIPTION_MAP: Dict[str, str] = {
@@ -125,7 +125,7 @@ class Configuration:
         """
         Convert path from config file to path from current directory.
 
-        We assume that the path supplied in the config file is relative to the 
+        We assume that the path supplied in the config file is relative to the
         configuration file.  That isn't the same as the path relative to where ever the
         CLI is being run from.  This function fixes that up.
 
@@ -255,7 +255,7 @@ class NSConfiguration(Configuration):
     @property
     def acr_manifest_name(self) -> str:
         """Return the ACR manifest name from the NFD name."""
-        sanitised_nf_name = self.network_function_name.lower().replace('_', '-')
+        sanitised_nf_name = self.network_function_name.lower().replace("_", "-")
         return (
             f"{sanitised_nf_name}-nsd-acr-manifest-{self.nsd_version.replace('.', '-')}"
         )
@@ -300,13 +300,13 @@ class VNFConfiguration(NFConfiguration):
         Used when creating VNFConfiguration object from a loaded json config file.
         """
         if isinstance(self.arm_template, dict):
-            self.arm_template["file_path"] = \
-                self.path_from_cli(self.arm_template["file_path"])
+            self.arm_template["file_path"] = self.path_from_cli(
+                self.arm_template["file_path"]
+            )
             self.arm_template = ArtifactConfig(**self.arm_template)
 
         if isinstance(self.vhd, dict):
-            self.vhd["file_path"] = \
-                self.path_from_cli(self.vhd["file_path"])
+            self.vhd["file_path"] = self.path_from_cli(self.vhd["file_path"])
             self.vhd = ArtifactConfig(**self.vhd)
             self.validate()
 
@@ -390,8 +390,9 @@ class CNFConfiguration(NFConfiguration):
         for package_index, package in enumerate(self.helm_packages):
             if isinstance(package, dict):
                 package["path_to_chart"] = self.path_from_cli(package["path_to_chart"])
-                package["path_to_mappings"] = \
-                    self.path_from_cli(package["path_to_mappings"])
+                package["path_to_mappings"] = self.path_from_cli(
+                    package["path_to_mappings"]
+                )
                 self.helm_packages[package_index] = HelmPackageConfig(**dict(package))
 
     @property
@@ -412,7 +413,9 @@ class CNFConfiguration(NFConfiguration):
         if not source_registry_match or len(source_registry_match.groups()) < 2:
             raise ValidationError(
                 "CNF config has an invalid source registry ID. Please run `az aosm "
-                "nfd generate-config` to see the valid formats.")
+                "nfd generate-config` to see the valid formats."
+            )
+
 
 def get_configuration(
     configuration_type: str, config_file: str = None

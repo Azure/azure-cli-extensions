@@ -14,7 +14,7 @@ from azext_aosm._configuration import (
     NFConfiguration,
     NSConfiguration,
     VNFConfiguration,
-    CNFConfiguration
+    CNFConfiguration,
 )
 from azext_aosm.util.constants import SOURCE_ACR_REGEX
 from azext_aosm.util.management_clients import ApiClients
@@ -154,12 +154,16 @@ class PreDeployerViaSDK:
         )
 
         # Match the source registry format
-        source_registry_match = re.search(SOURCE_ACR_REGEX, self.config.source_registry_id)
+        source_registry_match = re.search(
+            SOURCE_ACR_REGEX, self.config.source_registry_id
+        )
         # Config validation has already checked and raised an error if the regex doesn't
         # match
         if source_registry_match and len(source_registry_match.groups()) > 1:
-            source_registry_resource_group_name = source_registry_match.group('resource_group')
-            source_registry_name = source_registry_match.group('registry_name')
+            source_registry_resource_group_name = source_registry_match.group(
+                "resource_group"
+            )
+            source_registry_name = source_registry_match.group("registry_name")
 
             # This will raise an error if the registry does not exist
             self.api_clients.container_registry_client.get(
