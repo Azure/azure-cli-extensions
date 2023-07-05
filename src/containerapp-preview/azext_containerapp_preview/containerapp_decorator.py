@@ -11,7 +11,8 @@ from azure.cli.core.azclierror import ValidationError, RequiredArgumentMissingEr
 from msrestazure.tools import parse_resource_id
 
 from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, ContainerAppClient
-from ._utils import (_get_azext_module, GA_CONTAINERAPP_EXTENSION_NAME)
+from ._constants import GA_CONTAINERAPP_EXTENSION_NAME
+from ._utils import (_get_azext_module)
 
 logger = get_logger(__name__)
 

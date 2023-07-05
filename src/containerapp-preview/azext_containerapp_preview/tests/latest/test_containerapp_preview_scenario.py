@@ -8,15 +8,13 @@ import time
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
 from subprocess import run
 
-from .common import (write_test_file, TEST_LOCATION)
+from .common import (write_test_file, TEST_LOCATION, clean_up_test_file)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ContainerappScenarioTest(ScenarioTest):
-
-    @ResourceGroupPreparer(location="eastus", random_name_length=15)
-    def test_containerapp_preview_environment_type(self, resource_group):
+    def setUp(self):
         cmd = ['azdev', 'extension', 'add', 'containerapp']
         run(cmd, check=True)
         cmd = ['azdev', 'extension', 'add', 'connectedk8s']
@@ -24,6 +22,16 @@ class ContainerappScenarioTest(ScenarioTest):
         cmd = ['azdev', 'extension', 'add', 'k8s-extension']
         run(cmd, check=True)
 
+    def tearDown(self):
+        cmd = ['azdev', 'extension', 'remove', 'containerapp']
+        run(cmd, check=True)
+        cmd = ['azdev', 'extension', 'remove', 'connectedk8s']
+        run(cmd, check=True)
+        cmd = ['azdev', 'extension', 'remove', 'k8s-extension']
+        run(cmd, check=True)
+
+    @ResourceGroupPreparer(location="eastus", random_name_length=15)
+    def test_containerapp_preview_environment_type(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         aks_name = "my-aks-cluster"
         connected_cluster_name = "my-connected-cluster"
@@ -95,9 +103,18 @@ class ContainerappScenarioTest(ScenarioTest):
                 JMESPathCheck('properties.provisioningState', "Succeeded")
             ])
 
-        cmd = ['azdev', 'extension', 'remove', 'containerapp']
-        run(cmd, check=True)
-        cmd = ['azdev', 'extension', 'remove', 'connectedk8s']
-        run(cmd, check=True)
-        cmd = ['azdev', 'extension', 'remove', 'k8s-extension']
-        run(cmd, check=True)
+        # test show/list/delete
+        self.cmd('containerapp list -g {}'.format(resource_group), checks=[
+            JMESPathCheck('length(@)', 2)
+        ])
+
+        app2 = self.cmd('containerapp show -n {} -g {}'.format(ca_name2, resource_group)).get_output_in_json()
+        self.cmd('containerapp delete --ids {} --yes'.format(app2['id']))
+
+        self.cmd('containerapp delete -n {} -g {} --yes'.format(ca_name, resource_group))
+
+        self.cmd('containerapp list -g {}'.format(resource_group), checks=[
+            JMESPathCheck('length(@)', 0)
+        ])
+        clean_up_test_file(file)
+

@@ -5,3 +5,4 @@
 # --------------------------------------------------------------------------------------------
 MANAGED_ENVIRONMENT_TYPE = "managed"
 CONNECTED_ENVIRONMENT_TYPE = "connected"
+GA_CONTAINERAPP_EXTENSION_NAME = 'containerapp'
