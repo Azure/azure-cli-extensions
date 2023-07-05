@@ -15,6 +15,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ContainerappScenarioTest(ScenarioTest):
     def setUp(self):
+        super(ContainerappScenarioTest, self).setUp()
         cmd = ['azdev', 'extension', 'add', 'containerapp']
         run(cmd, check=True)
         cmd = ['azdev', 'extension', 'add', 'connectedk8s']
@@ -30,46 +31,41 @@ class ContainerappScenarioTest(ScenarioTest):
         cmd = ['azdev', 'extension', 'remove', 'k8s-extension']
         run(cmd, check=True)
 
+        super(ContainerappScenarioTest, self).tearDown()
+
     @ResourceGroupPreparer(location="eastus", random_name_length=15)
     def test_containerapp_preview_environment_type(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         aks_name = "my-aks-cluster"
         connected_cluster_name = "my-connected-cluster"
-        self.cmd(
-            f'aks create --resource-group {resource_group} --name {aks_name} --enable-aad --generate-ssh-keys --enable-cluster-autoscaler --min-count 4 --max-count 10 --node-count 4')
-        self.cmd(
-            f'aks get-credentials --resource-group {resource_group} --name {aks_name} --overwrite-existing --admin')
-        connected_cluster = {}
+        custom_location_id = None
         try:
+            self.cmd(f'aks create --resource-group {resource_group} --name {aks_name} --enable-aad --generate-ssh-keys --enable-cluster-autoscaler --min-count 4 --max-count 10 --node-count 4')
+            self.cmd(f'aks get-credentials --resource-group {resource_group} --name {aks_name} --overwrite-existing --admin')
+
             self.cmd(f'connectedk8s connect --resource-group {resource_group} --name {connected_cluster_name}')
-            connected_cluster = self.cmd(
-                f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
+            connected_cluster = self.cmd(f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
+
+            connected_cluster_id = connected_cluster.get('id')
+            extension = self.cmd(f'az k8s-extension create'
+                                 f' --resource-group {resource_group}'
+                                 f' --name containerapp-ext'
+                                 f' --cluster-type connectedClusters'
+                                 f' --cluster-name {connected_cluster_name}'
+                                 f' --extension-type "Microsoft.App.Environment" '
+                                 f' --release-train stable'
+                                 f' --auto-upgrade-minor-version true'
+                                 f' --scope cluster'
+                                 f' --release-namespace appplat-ns'
+                                 f' --configuration-settings "Microsoft.CustomLocation.ServiceAccount=default"'
+                                 f' --configuration-settings "appsNamespace=appplat-ns"'
+                                 f' --configuration-settings "clusterName={connected_cluster_name}"'
+                                 f' --configuration-settings "envoy.annotations.service.beta.kubernetes.io/azure-load-balancer-resource-group={resource_group}"').get_output_in_json()
+            custom_location_name = "my-custom-location"
+            custom_location_id = self.cmd(f'az customlocation create -g {resource_group} -n {custom_location_name} -l {TEST_LOCATION} --host-resource-id {connected_cluster_id} --namespace appplat-ns -c {extension["id"]}').get_output_in_json()['id']
         except:
             pass
 
-        connected_cluster_id = connected_cluster.get('id')
-        extension = self.cmd(f'az k8s-extension create'
-                             f' --resource-group {resource_group}'
-                             f' --name containerapp-ext'
-                             f' --cluster-type connectedClusters'
-                             f' --cluster-name {connected_cluster_name}'
-                             f' --extension-type "Microsoft.App.Environment" '
-                             f' --release-train stable'
-                             f' --auto-upgrade-minor-version true'
-                             f' --scope cluster'
-                             f' --release-namespace appplat-ns'
-                             f' --configuration-settings "Microsoft.CustomLocation.ServiceAccount=default"'
-                             f' --configuration-settings "appsNamespace=appplat-ns"'
-                             f' --configuration-settings "clusterName={connected_cluster_name}"'
-                             f' --configuration-settings "envoy.annotations.service.beta.kubernetes.io/azure-load-balancer-resource-group={resource_group}"').get_output_in_json()
-        custom_location_name = "my-custom-location"
-        custom_location_id = None
-        try:
-            custom_location_id = self.cmd(
-                f'az customlocation create -g {resource_group} -n {custom_location_name} -l {TEST_LOCATION} --host-resource-id {connected_cluster_id} --namespace appplat-ns -c {extension["id"]}') \
-                .get_output_in_json()['id']
-        except:
-            pass
         # create connected environment with client or create a command for connected?
         sub_id = self.cmd('az account show').get_output_in_json()['id']
 
@@ -79,10 +75,8 @@ class ContainerappScenarioTest(ScenarioTest):
         env_payload = '{{ "location": "{location}", "extendedLocation": {{ "name": "{custom_location_id}", "type": "CustomLocation" }}, "Properties": {{}}}}' \
             .format(location=TEST_LOCATION, custom_location_id=custom_location_id)
         write_test_file(file, env_payload)
-        self.cmd(
-            f'az rest --method put --uri "{connected_env_resource_id}?api-version=2022-06-01-preview" --body "@{file}"')
-        containerapp_env = self.cmd(
-            f'az rest --method get --uri "{connected_env_resource_id}?api-version=2022-06-01-preview"').get_output_in_json()
+        self.cmd(f'az rest --method put --uri "{connected_env_resource_id}?api-version=2022-06-01-preview" --body "@{file}"')
+        containerapp_env = self.cmd(f'az rest --method get --uri "{connected_env_resource_id}?api-version=2022-06-01-preview"').get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() != "succeeded":
             time.sleep(5)
             containerapp_env = self.cmd(
