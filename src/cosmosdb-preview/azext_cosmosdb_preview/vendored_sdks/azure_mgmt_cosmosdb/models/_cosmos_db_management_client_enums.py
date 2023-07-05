@@ -31,7 +31,7 @@ class ApiType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 class AuthenticationMethod(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Which authentication method Cassandra should use to authenticate clients. 'None' turns off
     authentication, so should not be used except in emergencies. 'Cassandra' is the default
-    password based authentication. The default is 'Cassandra'.
+    password based authentication. The default is 'Cassandra'. 'Ldap' is in preview.
     """
 
     NONE = "None"
@@ -194,15 +194,6 @@ class KeyKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     SECONDARY = "secondary"
     PRIMARY_READONLY = "primaryReadonly"
     SECONDARY_READONLY = "secondaryReadonly"
-
-
-class Kind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Kind of the connection string key."""
-
-    PRIMARY = "Primary"
-    SECONDARY = "Secondary"
-    PRIMARY_READONLY = "PrimaryReadonly"
-    SECONDARY_READONLY = "SecondaryReadonly"
 
 
 class ManagedCassandraProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -408,16 +399,6 @@ class SpatialType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     MULTI_POLYGON = "MultiPolygon"
 
 
-class Status(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Enum to indicate current buildout status of the region."""
-
-    UNINITIALIZED = "Uninitialized"
-    INITIALIZING = "Initializing"
-    INTERNALLY_READY = "InternallyReady"
-    ONLINE = "Online"
-    DELETING = "Deleting"
-
-
 class ThroughputPolicyType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """ThroughputPolicy to apply for throughput redistribution."""
 
@@ -441,20 +422,6 @@ class TriggerType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     PRE = "Pre"
     POST = "Post"
-
-
-class Type(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Type of the connection string."""
-
-    SQL = "Sql"
-    TABLE = "Table"
-    MONGO_DB = "MongoDB"
-    CASSANDRA = "Cassandra"
-    CASSANDRA_CONNECTOR_METADATA = "CassandraConnectorMetadata"
-    GREMLIN = "Gremlin"
-    SQL_DEDICATED_GATEWAY = "SqlDedicatedGateway"
-    GREMLIN_V2 = "GremlinV2"
-    UNDEFINED = "Undefined"
 
 
 class UnitType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
