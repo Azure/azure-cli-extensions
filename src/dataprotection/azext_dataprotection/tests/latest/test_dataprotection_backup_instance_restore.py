@@ -10,7 +10,6 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from ..utils import track_job_to_completion, wait_for_job_exclusivity_on_datasource, get_midpoint_of_time_range
 
-
 class BackupInstanceRestoreScenarioTest(ScenarioTest):
 
     def setUp(test):
