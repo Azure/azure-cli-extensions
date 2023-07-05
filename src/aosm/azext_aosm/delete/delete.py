@@ -4,9 +4,13 @@
 # --------------------------------------------------------------------------------------
 """Contains class for deploying generated definitions using the Python SDK."""
 from knack.log import get_logger
-from typing import Union
 
-from azext_aosm._configuration import NFConfiguration, NSConfiguration, VNFConfiguration
+from azext_aosm._configuration import (
+    Configuration,
+    NFConfiguration,
+    NSConfiguration,
+    VNFConfiguration,
+)
 from azext_aosm.util.management_clients import ApiClients
 from azext_aosm.util.utils import input_ack
 
@@ -17,7 +21,7 @@ class ResourceDeleter:
     def __init__(
         self,
         api_clients: ApiClients,
-        config: Union[NFConfiguration, NSConfiguration],
+        config: Configuration,
     ) -> None:
         """
         Initializes a new instance of the Deployer class.

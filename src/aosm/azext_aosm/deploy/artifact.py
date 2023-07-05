@@ -15,8 +15,6 @@ from azure.storage.blob import BlobClient, BlobType
 from knack.log import get_logger
 from knack.util import CLIError
 from oras.client import OrasClient
-from azure.cli.core.commands import LongRunningOperation
-from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 
 from azext_aosm._configuration import ArtifactConfig, HelmPackageConfig
 
@@ -32,7 +30,7 @@ class Artifact:
     artifact_version: str
     artifact_client: Union[BlobClient, OrasClient]
 
-    def upload(self, artifact_config: ArtifactConfig or HelmPackageConfig) -> None:
+    def upload(self, artifact_config: Union[ArtifactConfig, HelmPackageConfig]) -> None:
         """
         Upload aritfact.
 
@@ -46,6 +44,7 @@ class Artifact:
             else:
                 raise ValueError(f"Unsupported artifact type: {type(artifact_config)}.")
         else:
+            assert isinstance(artifact_config, ArtifactConfig)
             self._upload_to_storage_account(artifact_config)
 
     def _upload_arm_to_acr(self, artifact_config: ArtifactConfig) -> None:
@@ -94,7 +93,12 @@ class Artifact:
 
         :param artifact_config: configuration for the artifact being uploaded
         """
+        assert isinstance(self.artifact_client, OrasClient)
         chart_path = artifact_config.path_to_chart
+        if not self.artifact_client.remote.hostname:
+            raise ValueError(
+                "Cannot upload artifact. Oras client has no remote hostname."
+            )
         registry = self.artifact_client.remote.hostname.replace("https://", "")
         target_registry = f"oci://{registry}"
         registry_name = registry.replace(".azurecr.io", "")
@@ -138,6 +142,8 @@ class Artifact:
                 self.artifact_client.account_name,
             )
         else:
+            # Config Validation will raise error if not true
+            assert artifact_config.blob_sas_url
             logger.info("Copy from SAS URL to blob store")
             source_blob = BlobClient.from_blob_url(artifact_config.blob_sas_url)
 

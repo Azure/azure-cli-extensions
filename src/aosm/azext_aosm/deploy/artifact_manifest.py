@@ -10,7 +10,7 @@ from azure.storage.blob import BlobClient
 from knack.log import get_logger
 from oras.client import OrasClient
 
-from azext_aosm._configuration import NFConfiguration, NSConfiguration
+from azext_aosm._configuration import Configuration
 from azext_aosm.deploy.artifact import Artifact
 from azext_aosm.util.management_clients import ApiClients
 from azext_aosm.vendored_sdks.models import (
@@ -29,7 +29,7 @@ class ArtifactManifestOperator:
     # pylint: disable=too-few-public-methods
     def __init__(
         self,
-        config: Union[NFConfiguration, NSConfiguration],
+        config: Configuration,
         api_clients: ApiClients,
         store_name: str,
         manifest_name: str,

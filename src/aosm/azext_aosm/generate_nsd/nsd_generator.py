@@ -76,6 +76,7 @@ class NSDGenerator:
             nfdv.deploy_parameters
         )
 
+    # pylint: disable=no-self-use
     def _get_nfdv(
         self, config: NSConfiguration, api_clients
     ) -> NetworkFunctionDefinitionVersion:
@@ -99,7 +100,7 @@ class NSDGenerator:
 
         # Create temporary folder.
         with tempfile.TemporaryDirectory() as tmpdirname:
-            self.tmp_folder_name = tmpdirname
+            self.tmp_folder_name = tmpdirname  # pylint: disable=attribute-defined-outside-init
 
             self.create_config_group_schema_files()
             self.write_nsd_manifest()
@@ -195,7 +196,7 @@ class NSDGenerator:
 
         schema_path = os.path.join(folder_path, f"{self.config.cg_schema_name}.json")
 
-        with open(schema_path, "w") as _file:
+        with open(schema_path, "w", encoding="utf-8") as _file:
             _file.write(json.dumps(self.config_group_schema_dict, indent=4))
 
         logger.debug("%s created", schema_path)
@@ -216,7 +217,7 @@ class NSDGenerator:
 
         config_mappings_path = os.path.join(folder_path, NSD_CONFIG_MAPPING_FILENAME)
 
-        with open(config_mappings_path, "w") as _file:
+        with open(config_mappings_path, "w", encoding="utf-8") as _file:
             _file.write(json.dumps(config_mappings, indent=4))
 
         logger.debug("%s created", config_mappings_path)
@@ -248,6 +249,7 @@ class NSDGenerator:
                 bicep_params += f"param {key} {bicep_type}\n"
             bicep_deploymentValues += f"{key}: {key}\n  "
 
+        # pylint: disable=no-member
         self.generate_bicep(
             self.nf_bicep_template_name,
             NF_DEFINITION_BICEP_FILENAME,
@@ -274,7 +276,7 @@ class NSDGenerator:
                     if self.config.network_function_type == VNF
                     else NFVIType.AZURE_ARC_KUBERNETES.value  # type: ignore[attr-defined]
                 ),
-                "CNF": True if self.config.network_function_type == CNF else False,
+                "CNF": self.config.network_function_type == CNF,
             },
         )
 
@@ -318,7 +320,7 @@ class NSDGenerator:
 
         bicep_template_path = os.path.join(code_dir, TEMPLATES_DIR_NAME, template_name)
 
-        with open(bicep_template_path, "r") as file:
+        with open(bicep_template_path, "r", encoding="utf-8") as file:
             bicep_contents = file.read()
 
         bicep_template = Template(bicep_contents)
@@ -328,7 +330,7 @@ class NSDGenerator:
 
         bicep_file_build_path = os.path.join(self.tmp_folder_name, output_file_name)
 
-        with open(bicep_file_build_path, "w") as file:
+        with open(bicep_file_build_path, "w", encoding="utf-8") as file:
             file.write(rendered_template)
 
     def copy_to_output_folder(self) -> None:

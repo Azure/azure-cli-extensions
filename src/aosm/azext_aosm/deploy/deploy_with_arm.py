@@ -9,14 +9,14 @@ import shutil
 import subprocess  # noqa
 import tempfile
 import time
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 from azure.mgmt.resource.resources.models import DeploymentExtended
 from knack.log import get_logger
 
 from azext_aosm._configuration import (
     CNFConfiguration,
-    NFConfiguration,
+    Configuration,
     NSConfiguration,
     VNFConfiguration,
 )
@@ -50,11 +50,7 @@ class DeployerViaArm:
     templates.
     """
 
-    def __init__(
-        self,
-        api_clients: ApiClients,
-        config: Union[NFConfiguration, NSConfiguration]
-    ) -> None:
+    def __init__(self, api_clients: ApiClients, config: Configuration) -> None:
         """
         Initializes a new instance of the Deployer class.
 

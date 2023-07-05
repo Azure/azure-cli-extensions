@@ -1,3 +1,8 @@
+# --------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT
+# License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------
+"""Configuration class for input config file parsing,"""
 import abc
 import logging
 import json
@@ -8,7 +13,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from azure.cli.core.azclierror import InvalidArgumentValueError, ValidationError
-
 from azext_aosm.util.constants import (
     CNF,
     NF_DEFINITION_OUTPUT_BICEP_PREFIX,
@@ -18,7 +22,6 @@ from azext_aosm.util.constants import (
     VNF,
     SOURCE_ACR_REGEX,
 )
-
 
 logger = logging.getLogger(__name__)
 
@@ -125,6 +128,12 @@ class ArtifactConfig:
 @dataclass
 class Configuration(abc.ABC):
     config_file: Optional[str] = None
+    publisher_name: str = DESCRIPTION_MAP["publisher_name"]
+    publisher_resource_group_name: str = DESCRIPTION_MAP[
+        "publisher_resource_group_name"
+    ]
+    acr_artifact_store_name: str = DESCRIPTION_MAP["acr_artifact_store_name"]
+    location: str = DESCRIPTION_MAP["location"]
 
     def path_from_cli_dir(self, path: str) -> str:
         """
@@ -157,6 +166,12 @@ class Configuration(abc.ABC):
     @abc.abstractproperty
     def output_directory_for_build(self) -> Path:
         """Base class method to ensure subclasses implement this function."""
+        raise NotImplementedError("Subclass must define property")
+
+    @property
+    def acr_manifest_name(self) -> str:
+        """Base class method to ensure subclasses implement this function."""
+        raise NotImplementedError("Subclass must define property")
 
 
 @dataclass
