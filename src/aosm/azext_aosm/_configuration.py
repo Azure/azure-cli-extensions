@@ -131,7 +131,7 @@ class Configuration(abc.ABC):
     ]
     acr_artifact_store_name: str = DESCRIPTION_MAP["acr_artifact_store_name"]
     location: str = DESCRIPTION_MAP["location"]
-    
+
     def path_from_cli_dir(self, path: str) -> str:
         """
         Convert path from config file to path from current directory.

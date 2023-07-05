@@ -6,7 +6,12 @@
 from knack.log import get_logger
 from typing import Union
 
-from azext_aosm._configuration import Configuration, NFConfiguration, NSConfiguration, VNFConfiguration
+from azext_aosm._configuration import (
+    Configuration,
+    NFConfiguration,
+    NSConfiguration,
+    VNFConfiguration,
+)
 from azext_aosm.util.management_clients import ApiClients
 from azext_aosm.util.utils import input_ack
 

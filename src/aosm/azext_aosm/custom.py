@@ -80,9 +80,7 @@ def generate_definition_config(definition_type: str, output_file: str = "input.j
     _generate_config(configuration_type=definition_type, output_file=output_file)
 
 
-def _get_config_from_file(
-    config_file: str, configuration_type: str
-) -> Configuration:
+def _get_config_from_file(config_file: str, configuration_type: str) -> Configuration:
     """
     Read input config file JSON and turn it into a Configuration object.
 

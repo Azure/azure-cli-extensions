@@ -50,11 +50,7 @@ class DeployerViaArm:
     templates.
     """
 
-    def __init__(
-        self,
-        api_clients: ApiClients,
-        config: Configuration
-    ) -> None:
+    def __init__(self, api_clients: ApiClients, config: Configuration) -> None:
         """
         Initializes a new instance of the Deployer class.
 
