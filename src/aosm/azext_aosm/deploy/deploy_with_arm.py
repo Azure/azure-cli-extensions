@@ -350,6 +350,12 @@ class DeployerViaArm:
             publisher_name=self.config.publisher_name,
             artifact_store_name=self.config.acr_artifact_store_name,
         )
+        if not acr_properties.storage_resource_id:
+            raise ValueError(
+                f"Artifact store {self.config.acr_artifact_store_name} "
+                "has no storage resource id linked"
+            )
+
         target_registry_name = acr_properties.storage_resource_id.split("/")[-1]
         target_registry_resource_group_name = acr_properties.storage_resource_id.split(
             "/"
