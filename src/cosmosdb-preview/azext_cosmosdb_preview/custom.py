@@ -1434,6 +1434,47 @@ def cli_begin_list_mongo_db_collection_partition_merge(client,
 
     return async_partition_merge_result.result()
 
+def cli_begin_sql_database_partition_merge(client,
+                                                 resource_group_name,
+                                                 account_name,
+                                                 database_name):
+
+    try:
+        client.get_sql_database(resource_group_name, account_name, database_name)
+    except Exception as ex:
+        if ex.error.code == "NotFound":
+            raise CLIError("(NotFound) Database with name '{}' in account '{}' could not be found.".format(database_name, account_name))
+        raise CLIError("{}".format(str(ex)))
+
+    mergeParameters = MergeParameters(is_dry_run=False)
+
+    async_partition_merge_result = client.begin_sql_database_partition_merge(resource_group_name=resource_group_name,
+                                                                                   account_name=account_name,
+                                                                                   database_name=database_name,
+                                                                                   merge_parameters=mergeParameters)
+
+    return async_partition_merge_result.result()
+
+def cli_begin_mongo_db_database_partition_merge(client,
+                                                       resource_group_name,
+                                                       account_name,
+                                                       database_name):
+
+    try:
+        client.get_mongo_db_database(resource_group_name, account_name, database_name)
+    except Exception as ex:
+        if ex.error.code == "NotFound":
+            raise CLIError("(NotFound) Database with name '{}' in account '{}' could not be found.".format(database_name, account_name))
+        raise CLIError("{}".format(str(ex)))
+
+    mergeParameters = MergeParameters(is_dry_run=False)
+
+    async_partition_merge_result = client.begin_mongo_db_database_partition_merge(resource_group_name=resource_group_name,
+                                                                                         account_name=account_name,
+                                                                                         database_name=database_name,
+                                                                                         merge_parameters=mergeParameters)
+
+    return async_partition_merge_result.result()
 
 def _handle_exists_exception(http_response_error):
     if http_response_error.status_code == 404:
