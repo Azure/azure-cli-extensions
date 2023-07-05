@@ -29,7 +29,7 @@ class ArtifactManifestOperator:
     # pylint: disable=too-few-public-methods
     def __init__(
         self,
-        config: NFConfiguration or NSConfiguration,
+        config: Union[NFConfiguration, NSConfiguration],
         api_clients: ApiClients,
         store_name: str,
         manifest_name: str,

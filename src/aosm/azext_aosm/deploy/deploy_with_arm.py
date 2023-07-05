@@ -9,7 +9,7 @@ import shutil
 import subprocess  # noqa
 import tempfile
 import time
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 from azure.mgmt.resource.resources.models import DeploymentExtended
 from knack.log import get_logger
@@ -53,7 +53,7 @@ class DeployerViaArm:
     def __init__(
         self,
         api_clients: ApiClients,
-        config: NFConfiguration or NSConfiguration,
+        config: Union[NFConfiguration,NSConfiguration],
     ) -> None:
         """
         Initializes a new instance of the Deployer class.
@@ -297,7 +297,7 @@ class DeployerViaArm:
                 # User has not passed in a bicep template, so we are deploying the
                 # default one produced from building the NFDV using this CLI
                 bicep_path = os.path.join(
-                    self.config.build_output_folder_name,
+                    self.config.output_directory_for_build,
                     CNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
                 )
 
@@ -434,7 +434,7 @@ class DeployerViaArm:
                 # User has not passed in a bicep template, so we are deploying the default
                 # one produced from building the NSDV using this CLI
                 bicep_path = os.path.join(
-                    self.config.build_output_folder_name,
+                    self.config.output_directory_for_build,
                     NSD_BICEP_FILENAME,
                 )
 
@@ -490,10 +490,14 @@ class DeployerViaArm:
         # Convert the NF bicep to ARM
         arm_template_artifact_json = self.convert_bicep_to_arm(
             os.path.join(
-                self.config.build_output_folder_name, NF_DEFINITION_BICEP_FILENAME
-            )
+                self.config.output_directory_for_build,
+                NF_DEFINITION_BICEP_FILENAME)
         )
 
+        # appease mypy
+        assert self.config.arm_template.file_path, (
+            "Config missing ARM template file path"
+        )
         with open(self.config.arm_template.file_path, "w", encoding="utf-8") as file:
             file.write(json.dumps(arm_template_artifact_json, indent=4))
 
@@ -523,7 +527,7 @@ class DeployerViaArm:
                 file_name = CNF_MANIFEST_BICEP_TEMPLATE_FILENAME
 
             manifest_bicep_path = os.path.join(
-                self.config.build_output_folder_name,
+                self.config.output_directory_for_build,
                 file_name,
             )
         if not manifest_parameters_json_file:

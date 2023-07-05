@@ -9,6 +9,7 @@ from azure.cli.core.azclierror import AzCLIError
 from azure.core import exceptions as azure_exceptions
 from azure.mgmt.resource.resources.models import ResourceGroup
 from knack.log import get_logger
+from typing import Union
 
 from azext_aosm._configuration import (
     NFConfiguration,
@@ -40,7 +41,7 @@ class PreDeployerViaSDK:
     def __init__(
         self,
         api_clients: ApiClients,
-        config: NFConfiguration or NSConfiguration,
+        config: Union[NFConfiguration, NSConfiguration],
     ) -> None:
         """
         Initializes a new instance of the Deployer class.
@@ -166,6 +167,7 @@ class PreDeployerViaSDK:
             source_registry_name = source_registry_match.group("registry_name")
 
             # This will raise an error if the registry does not exist
+            assert self.api_clients.container_registry_client
             self.api_clients.container_registry_client.get(
                 resource_group_name=source_registry_resource_group_name,
                 registry_name=source_registry_name,

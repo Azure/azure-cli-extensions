@@ -3,7 +3,7 @@ import os
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from azure.cli.core.azclierror import InvalidArgumentValueError, ValidationError
 
@@ -237,10 +237,10 @@ class NSConfiguration(Configuration):
             raise ValueError("NSD Version must be set")
 
     @property
-    def build_output_folder_name(self) -> str:
+    def output_directory_for_build(self) -> Path:
         """Return the local folder for generating the bicep template to."""
         current_working_directory = os.getcwd()
-        return f"{current_working_directory}/{NSD_OUTPUT_BICEP_PREFIX}"
+        return Path(f"{current_working_directory}/{NSD_OUTPUT_BICEP_PREFIX}")
 
     @property
     def resource_element_name(self) -> str:
@@ -276,7 +276,7 @@ class NSConfiguration(Configuration):
         artifact = ArtifactConfig()
         artifact.version = self.nsd_version
         artifact.file_path = os.path.join(
-            self.build_output_folder_name, NF_DEFINITION_JSON_FILENAME
+            self.output_directory_for_build, NF_DEFINITION_JSON_FILENAME
         )
         return artifact
 
@@ -418,8 +418,8 @@ class CNFConfiguration(NFConfiguration):
 
 
 def get_configuration(
-    configuration_type: str, config_file: str = None
-) -> NFConfiguration or NSConfiguration:
+    configuration_type: str, config_file: Optional[str] = None
+) -> Union[NFConfiguration, NSConfiguration]:
     """
     Return the correct configuration object based on the type.
 

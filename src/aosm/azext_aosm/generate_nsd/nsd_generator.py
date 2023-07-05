@@ -62,8 +62,10 @@ class NSDGenerator:
         self.nsd_bicep_template_name = NSD_DEFINITION_JINJA2_SOURCE_TEMPLATE
         self.nf_bicep_template_name = NF_TEMPLATE_JINJA2_SOURCE_TEMPLATE
         self.nsd_bicep_output_name = NSD_BICEP_FILENAME
-        self.nfdv_parameter_name = f"{self.config.network_function_definition_group_name.replace('-', '_')}_nfd_version"
-        self.build_folder_name = self.config.build_output_folder_name
+        self.nfdv_parameter_name = (
+            f"{self.config.network_function_definition_group_name.replace('-', '_')}"
+            "_nfd_version"
+        )
         nfdv = self._get_nfdv(config, api_clients)
         print("Finding the deploy parameters of the NFDV resource")
         if not nfdv.deploy_parameters:
@@ -105,7 +107,10 @@ class NSDGenerator:
             self.write_nsd_bicep()
 
             self.copy_to_output_folder()
-            print(f"Generated NSD bicep templates created in {self.build_folder_name}")
+            print(
+                "Generated NSD bicep templates created in"
+                f" {self.config.output_directory_for_build}"
+            )
             print(
                 "Please review these templates. When you are happy with them run "
                 "`az aosm nsd publish` with the same arguments."
@@ -115,9 +120,9 @@ class NSDGenerator:
     def config_group_schema_dict(self) -> Dict[str, Any]:
         """
         :return: The Config Group Schema as a dictionary.
+
+        This function cannot be called before deployment parameters have been supplied.
         """
-        # This function cannot be called before deployment parameters have been
-        # supplied.
         assert self.deploy_parameters
 
         # Take a copy of the deploy parameters.
@@ -330,13 +335,13 @@ class NSDGenerator:
     def copy_to_output_folder(self) -> None:
         """Copy the bicep templates, config mappings and schema into the build output folder."""
 
-        logger.info("Create NSD bicep %s", self.build_folder_name)
-        os.mkdir(self.build_folder_name)
+        logger.info("Create NSD bicep %s", self.config.output_directory_for_build)
+        os.mkdir(self.config.output_directory_for_build)
 
         shutil.copytree(
             self.tmp_folder_name,
-            self.build_folder_name,
+            self.config.output_directory_for_build,
             dirs_exist_ok=True,
         )
 
-        logger.info("Copied files to %s", self.build_folder_name)
+        logger.info("Copied files to %s", self.config.output_directory_for_build)
