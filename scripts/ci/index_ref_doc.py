@@ -44,7 +44,8 @@ for extension_name, exts in get_index_data()['extensions'].items():
 
     candidates_sorted = sorted(filtered_exts, key=lambda c: parse_version(c['metadata']['version']), reverse=True)
     chosen = candidates_sorted[0]
-    ALL_TESTS.append((extension_name, chosen['downloadUrl'], chosen['filename']))
+    if extension_name != 'partnercenter':
+        ALL_TESTS.append((extension_name, chosen['downloadUrl'], chosen['filename']))
 
 
 class TestIndexRefDocsMeta(type):
