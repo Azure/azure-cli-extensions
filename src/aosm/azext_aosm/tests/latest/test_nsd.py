@@ -6,13 +6,14 @@
 import os
 from dataclasses import dataclass
 import json
+from pathlib import Path
 from unittest.mock import patch
 from tempfile import TemporaryDirectory
 from typing import Any, Dict
 
 from azext_aosm.custom import generate_design_config, build_design
 
-mock_nsd_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mock_nsd")
+mock_nsd_folder = ((Path(__file__).parent) / "mock_nsd").resolve()
 
 
 class TestNSDGenerator:
@@ -82,7 +83,7 @@ class TestNSDGenerator:
                 build_design(
                     cmd,
                     client=mock_client,
-                    config_file=os.path.join(mock_nsd_folder, "input.json"),
+                    config_file=str(mock_nsd_folder / "input.json"),
                 )
                 assert os.path.exists("nsd-bicep-templates")
             finally:

@@ -5,11 +5,12 @@
 
 import os
 import unittest
+from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from azext_aosm.custom import build_definition, generate_definition_config
 
-mock_vnf_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mock_vnf")
+mock_vnf_folder = ((Path(__file__).parent) / "mock_vnf").resolve()
 
 
 class TestVNF(unittest.TestCase):
@@ -36,7 +37,7 @@ class TestVNF(unittest.TestCase):
             os.chdir(test_dir)
 
             try:
-                build_definition("vnf", os.path.join(mock_vnf_folder, "input.json"))
+                build_definition("vnf", str(mock_vnf_folder / "input.json"))
                 assert os.path.exists("nfd-bicep-ubuntu-template")
             finally:
                 os.chdir(starting_directory)
@@ -52,7 +53,7 @@ class TestVNF(unittest.TestCase):
             try:
                 build_definition(
                     "vnf",
-                    os.path.join(mock_vnf_folder, "input.json"),
+                    str(mock_vnf_folder / "input.json"),
                     order_params=True,
                 )
                 assert os.path.exists("nfd-bicep-ubuntu-template")

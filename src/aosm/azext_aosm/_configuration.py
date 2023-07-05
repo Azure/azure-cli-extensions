@@ -121,7 +121,7 @@ class ArtifactConfig:
 class Configuration:
     config_file: Optional[str] = None
 
-    def path_from_cli(self, path: str) -> str:
+    def path_from_cli_dir(self, path: str) -> str:
         """
         Convert path from config file to path from current directory.
 
@@ -300,13 +300,13 @@ class VNFConfiguration(NFConfiguration):
         Used when creating VNFConfiguration object from a loaded json config file.
         """
         if isinstance(self.arm_template, dict):
-            self.arm_template["file_path"] = self.path_from_cli(
+            self.arm_template["file_path"] = self.path_from_cli_dir(
                 self.arm_template["file_path"]
             )
             self.arm_template = ArtifactConfig(**self.arm_template)
 
         if isinstance(self.vhd, dict):
-            self.vhd["file_path"] = self.path_from_cli(self.vhd["file_path"])
+            self.vhd["file_path"] = self.path_from_cli_dir(self.vhd["file_path"])
             self.vhd = ArtifactConfig(**self.vhd)
             self.validate()
 
@@ -389,8 +389,8 @@ class CNFConfiguration(NFConfiguration):
         """
         for package_index, package in enumerate(self.helm_packages):
             if isinstance(package, dict):
-                package["path_to_chart"] = self.path_from_cli(package["path_to_chart"])
-                package["path_to_mappings"] = self.path_from_cli(
+                package["path_to_chart"] = self.path_from_cli_dir(package["path_to_chart"])
+                package["path_to_mappings"] = self.path_from_cli_dir(
                     package["path_to_mappings"]
                 )
                 self.helm_packages[package_index] = HelmPackageConfig(**dict(package))

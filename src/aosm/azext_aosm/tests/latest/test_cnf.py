@@ -2,36 +2,15 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
-# import os
 import unittest
-import json
-import logging
 import os
+from pathlib import Path
 from tempfile import TemporaryDirectory
 
-# from unittest.mock import Mock, patch
-
-from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
-from azext_aosm._configuration import CNFConfiguration, HelmPackageConfig
 from azext_aosm.custom import build_definition, generate_definition_config
 
-from azure.cli.core.azclierror import (
-    BadRequestError,
-    InvalidArgumentValueError,
-    ResourceNotFoundError,
-    InvalidTemplateError,
-)
 
-mock_cnf_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mock_cnf")
-cnf_config_file = os.path.join(mock_cnf_folder, "invalid_config_file.json")
-
-# Instantiate CNF with faked config file
-with open(cnf_config_file, "r", encoding="utf-8") as f:
-    config_as_dict = json.loads(f.read())
-config = CNFConfiguration(config_file=cnf_config_file, **config_as_dict)
-test_cnf = CnfNfdGenerator(config)
-invalid_helm_package = test_cnf.config.helm_packages[0]
+mock_cnf_folder = ((Path(__file__).parent) / "mock_cnf").resolve()
 
 
 class TestCNF(unittest.TestCase):
@@ -59,7 +38,7 @@ class TestCNF(unittest.TestCase):
 
             try:
                 build_definition(
-                    "cnf", os.path.join(mock_cnf_folder, "input-nfconfigchart.json")
+                    "cnf", str(mock_cnf_folder / "input-nfconfigchart.json")
                 )
                 assert os.path.exists("nfd-bicep-nginx-basic-test")
             finally:
@@ -78,7 +57,7 @@ class TestCNF(unittest.TestCase):
             try:
                 build_definition(
                     "cnf",
-                    os.path.join(mock_cnf_folder, "input-nf-agent-cnf.json"),
+                    str(mock_cnf_folder / "input-nf-agent-cnf.json"),
                     order_params=True,
                 )
                 assert os.path.exists("nfd-bicep-nf-agent-cnf")
