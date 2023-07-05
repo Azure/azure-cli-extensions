@@ -95,9 +95,7 @@ def _get_config_from_file(
             " path."
         )
 
-    with open(config_file, "r", encoding="utf-8") as f:
-        config_as_dict = json.loads(f.read())
-    config = get_configuration(configuration_type, config_as_dict)
+    config = get_configuration(configuration_type, config_file)
     return config
 
 
@@ -251,8 +249,13 @@ def _generate_config(configuration_type: str, output_file: str = "input.json"):
     :param output_file: path to output config file, defaults to "input.json"
     :type output_file: str, optional
     """
-    config = get_configuration(configuration_type)
-    config_as_dict = json.dumps(asdict(config), indent=4)
+    # Config file is a special parameter on the configuration objects.  It is the path
+    # to the configuration file, rather than an input parameter.  It therefore shouldn't
+    # be included here.
+    config = asdict(get_configuration(configuration_type))
+    config.pop("config_file")
+
+    config_as_dict = json.dumps(config, indent=4)
 
     if Path(output_file).exists():
         carry_on = input(

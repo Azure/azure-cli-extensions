@@ -191,7 +191,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         logger.debug(
             "Creating chart value mappings file for %s", helm_package.path_to_chart
         )
-        print("Creating chart value mappings file for %s", helm_package.path_to_chart)
+        print(f"Creating chart value mappings file for {helm_package.path_to_chart}.")
 
         # Get all the values files in the chart
         top_level_values_yaml = self._read_top_level_values_yaml(helm_package)
