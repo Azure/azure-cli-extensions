@@ -8,7 +8,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from azure.cli.core.azclierror import InvalidArgumentValueError, ValidationError
-
 from azext_aosm.util.constants import (
     CNF,
     NF_DEFINITION_OUTPUT_BICEP_PREFIX,
@@ -18,7 +17,6 @@ from azext_aosm.util.constants import (
     VNF,
     SOURCE_ACR_REGEX,
 )
-
 
 logger = logging.getLogger(__name__)
 
