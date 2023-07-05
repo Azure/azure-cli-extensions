@@ -110,9 +110,7 @@ def load_arguments(self: AzCommandsLoader, _):
                 " alternative parameters."
             ),
         )
-        c.argument(
-            "skip", arg_type=skip_steps, help="Optional skip steps"
-        )
+        c.argument("skip", arg_type=skip_steps, help="Optional skip steps")
 
     with self.argument_context("aosm nsd") as c:
         c.argument(
@@ -122,6 +120,4 @@ def load_arguments(self: AzCommandsLoader, _):
             completer=FilesCompleter(allowednames="*.json"),
             help="The path to the configuration file.",
         )
-        c.argument(
-            "skip", arg_type=skip_steps, help="Optional skip steps"
-        )
+        c.argument("skip", arg_type=skip_steps, help="Optional skip steps")

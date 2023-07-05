@@ -89,7 +89,7 @@ class DeployerViaArm:
         parameters_json_file: Optional[str] = None,
         manifest_bicep_path: Optional[str] = None,
         manifest_parameters_json_file: Optional[str] = None,
-        skip: Optional[str] = None
+        skip: Optional[str] = None,
     ) -> None:
         """
         Deploy the bicep template defining the VNFD.
@@ -274,7 +274,7 @@ class DeployerViaArm:
         parameters_json_file: Optional[str] = None,
         manifest_bicep_path: Optional[str] = None,
         manifest_parameters_json_file: Optional[str] = None,
-        skip: Optional[str] = None
+        skip: Optional[str] = None,
     ) -> None:
         """
         Deploy the bicep template defining the CNFD.
@@ -457,7 +457,9 @@ class DeployerViaArm:
                     manifest_parameters_json_file, manifest_bicep_path, NSD
                 )
             else:
-                print(f"Artifact manifests {self.config.acr_manifest_name} already exists")
+                print(
+                    f"Artifact manifests {self.config.acr_manifest_name} already exists"
+                )
 
             message = (
                 f"Deploy bicep template for NSDV {self.config.nsd_version} "
@@ -487,7 +489,9 @@ class DeployerViaArm:
 
         # Convert the NF bicep to ARM
         arm_template_artifact_json = self.convert_bicep_to_arm(
-            os.path.join(self.config.build_output_folder_name, NF_DEFINITION_BICEP_FILENAME)
+            os.path.join(
+                self.config.build_output_folder_name, NF_DEFINITION_BICEP_FILENAME
+            )
         )
 
         with open(self.config.arm_template.file_path, "w", encoding="utf-8") as file:

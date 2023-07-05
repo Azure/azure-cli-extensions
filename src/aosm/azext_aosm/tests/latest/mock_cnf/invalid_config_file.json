@@ -1,0 +1,16 @@
+{
+    "publisher_name": "test_cnf_publisher",
+    "publisher_resource_group_name": "test_cnf_publisher_rg",
+    "nf_name": "test_cnf_nf",
+    "version": "1.0.0",
+    "acr_artifact_store_name": "test_cnf_acr",
+    "location": "uksouth",
+    "helm_packages": [
+        {
+            "name": "invalid-package",
+            "path_to_chart": "src/aosm/azext_aosm/tests/latest/mock_cnf/invalid_chart.yaml",
+            "path_to_mappings":"src/aosm/azext_aosm/tests/latest/mock_cnf/invalid_mappings.yaml",
+            "depends_on": []
+        }
+    ]
+}

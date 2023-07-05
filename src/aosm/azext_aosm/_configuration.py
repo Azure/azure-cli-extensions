@@ -1,3 +1,4 @@
+import json
 import os
 import re
 from dataclasses import dataclass, field
@@ -117,7 +118,32 @@ class ArtifactConfig:
 
 
 @dataclass
-class NFConfiguration:
+class Configuration:
+    config_file: Optional[str] = None
+
+    def path_from_cli_dir(self, path: str) -> str:
+        """
+        Convert path from config file to path from current directory.
+
+        We assume that the path supplied in the config file is relative to the
+        configuration file.  That isn't the same as the path relative to where ever the
+        CLI is being run from.  This function fixes that up.
+
+        :param path: The path relative to the config file.
+        """
+        # If no path has been supplied we shouldn't try to update it.
+        if path == "":
+            return ""
+
+        # If it is an absolute path then we don't need to monkey around with it.
+        if os.path.isabs(path):
+            return path
+
+        return os.path.join(os.path.dirname(self.config_file), path)
+
+
+@dataclass
+class NFConfiguration(Configuration):
     publisher_name: str = DESCRIPTION_MAP["publisher_name"]
     publisher_resource_group_name: str = DESCRIPTION_MAP[
         "publisher_resource_group_name"
@@ -140,7 +166,7 @@ class NFConfiguration:
 
 
 @dataclass
-class NSConfiguration:
+class NSConfiguration(Configuration):
     # pylint: disable=too-many-instance-attributes
     location: str = DESCRIPTION_MAP["location"]
     publisher_name: str = DESCRIPTION_MAP["publisher_name_nsd"]
@@ -274,9 +300,13 @@ class VNFConfiguration(NFConfiguration):
         Used when creating VNFConfiguration object from a loaded json config file.
         """
         if isinstance(self.arm_template, dict):
+            self.arm_template["file_path"] = self.path_from_cli_dir(
+                self.arm_template["file_path"]
+            )
             self.arm_template = ArtifactConfig(**self.arm_template)
 
         if isinstance(self.vhd, dict):
+            self.vhd["file_path"] = self.path_from_cli_dir(self.vhd["file_path"])
             self.vhd = ArtifactConfig(**self.vhd)
             self.validate()
 
@@ -359,6 +389,10 @@ class CNFConfiguration(NFConfiguration):
         """
         for package_index, package in enumerate(self.helm_packages):
             if isinstance(package, dict):
+                package["path_to_chart"] = self.path_from_cli_dir(package["path_to_chart"])
+                package["path_to_mappings"] = self.path_from_cli_dir(
+                    package["path_to_mappings"]
+                )
                 self.helm_packages[package_index] = HelmPackageConfig(**dict(package))
 
     @property
@@ -384,24 +418,27 @@ class CNFConfiguration(NFConfiguration):
 
 
 def get_configuration(
-    configuration_type: str, config_as_dict: Optional[Dict[Any, Any]] = None
+    configuration_type: str, config_file: str = None
 ) -> NFConfiguration or NSConfiguration:
     """
     Return the correct configuration object based on the type.
 
     :param configuration_type: The type of configuration to return
-    :param config_as_dict: The configuration as a dictionary
+    :param config_file: The path to the config file
     :return: The configuration object
     """
-    if config_as_dict is None:
+    if config_file:
+        with open(config_file, "r", encoding="utf-8") as f:
+            config_as_dict = json.loads(f.read())
+    else:
         config_as_dict = {}
 
     if configuration_type == VNF:
-        config = VNFConfiguration(**config_as_dict)
+        config = VNFConfiguration(config_file=config_file, **config_as_dict)
     elif configuration_type == CNF:
-        config = CNFConfiguration(**config_as_dict)
+        config = CNFConfiguration(config_file=config_file, **config_as_dict)
     elif configuration_type == NSD:
-        config = NSConfiguration(**config_as_dict)
+        config = NSConfiguration(config_file=config_file, **config_as_dict)
     else:
         raise InvalidArgumentValueError(
             "Definition type not recognized, options are: vnf, cnf or nsd"

@@ -27,6 +27,7 @@ from azext_aosm.util.constants import (
     NSD_DEFINITION_JINJA2_SOURCE_TEMPLATE,
     SCHEMAS_DIR_NAME,
     TEMPLATES_DIR_NAME,
+    VNF,
 )
 from azext_aosm.util.management_clients import ApiClients
 from azext_aosm.vendored_sdks.models import NetworkFunctionDefinitionVersion, NFVIType
@@ -61,9 +62,7 @@ class NSDGenerator:
         self.nsd_bicep_template_name = NSD_DEFINITION_JINJA2_SOURCE_TEMPLATE
         self.nf_bicep_template_name = NF_TEMPLATE_JINJA2_SOURCE_TEMPLATE
         self.nsd_bicep_output_name = NSD_BICEP_FILENAME
-        self.nfdv_parameter_name = (
-            f"{self.config.network_function_definition_group_name.replace('-', '_')}_nfd_version"
-        )
+        self.nfdv_parameter_name = f"{self.config.network_function_definition_group_name.replace('-', '_')}_nfd_version"
         self.build_folder_name = self.config.build_output_folder_name
         nfdv = self._get_nfdv(config, api_clients)
         print("Finding the deploy parameters of the NFDV resource")
@@ -138,7 +137,7 @@ class NSDGenerator:
             "type": "string",
             "description": description_string,
         }
-        cgs_dict["required"].append(self.nfdv_parameter_name)
+        cgs_dict.setdefault("required", []).append(self.nfdv_parameter_name)
 
         managed_identity_description_string = (
             "The managed identity to use to deploy NFs within this SNS.  This should "
@@ -161,8 +160,10 @@ class NSDGenerator:
                 "/{resourceGroupName}/providers/microsoft.extendedlocation/"
                 "customlocations/{customLocationName}'"
             )
-            cgs_dict["properties"]["customLocationId"] = \
-                {"type": "string", "description": custom_location_description_string}
+            cgs_dict["properties"]["customLocationId"] = {
+                "type": "string",
+                "description": custom_location_description_string,
+            }
             cgs_dict["required"].append("customLocationId")
 
         return cgs_dict
@@ -233,9 +234,8 @@ class NSDGenerator:
             # location is sometimes part of deploy_properties.
             # We want to avoid having duplicate params in the bicep template
             logger.debug(
-                "Adding deploy parameter key: %s, value: %s to nf template",
-                key,
-                value)
+                "Adding deploy parameter key: %s, value: %s to nf template", key, value
+            )
             if key != "location":
                 bicep_type = (
                     NFV_TO_BICEP_PARAM_TYPES.get(value["type"]) or value["type"]
@@ -301,7 +301,7 @@ class NSDGenerator:
     def generate_bicep(self,
                        template_name: str,
                        output_file_name: str,
-                       params: Dict[Any,Any]) -> None:
+                       params: Dict[Any, Any]) -> None:
         """
         Render the bicep templates with the correct parameters and copy them into the build output folder.
 
