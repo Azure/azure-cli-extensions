@@ -7,7 +7,7 @@
 
 import time
 
-def wait_for_restore_job_exclusivity_on_datasource(test, data_source_id=None, source_data_store=None):
+def wait_for_job_exclusivity_on_datasource(test, data_source_id=None, source_data_store=None):
     """ Checks if any restore job is in progress for given datasource, source datastore and
         waits for its completion. Requires dataSourceType and dataSourceId kwargs.
     """
@@ -18,15 +18,17 @@ def wait_for_restore_job_exclusivity_on_datasource(test, data_source_id=None, so
     if not test.kwargs.get('dataSourceId') or not test.kwargs.get('sourceDataStore'):
         return
     jobs_in_progress = test.cmd('az dataprotection job list-from-resourcegraph '
-                                '--datasource-type "{dataSourceType}" --datasource-id "{dataSourceId}" '
-                                '--status "InProgress" --operation "Restore" '
+                                '--datasource-type "{dataSourceType}" '
+                                '--datasource-id "{dataSourceId}" '
+                                '--status "InProgress" '
                                 '--query "[?properties.sourceDataStoreType == \'{sourceDataStore}\']"').get_output_in_json()
     while jobs_in_progress:
         time.sleep(10)
         jobs_in_progress = test.cmd('az dataprotection job list-from-resourcegraph '
-                                '--datasource-type "{dataSourceType}" --datasource-id "{dataSourceId}" '
-                                '--status "InProgress" --operation "Restore" '
-                                '--query "[?properties.sourceDataStoreType == \'{sourceDataStore}\']"').get_output_in_json()
+                                    '--datasource-type "{dataSourceType}" '
+                                    '--datasource-id "{dataSourceId}" '
+                                    '--status "InProgress" '
+                                    '--query "[?properties.sourceDataStoreType == \'{sourceDataStore}\']"').get_output_in_json()
 
 
 def track_job_to_completion(test, job_id=None):

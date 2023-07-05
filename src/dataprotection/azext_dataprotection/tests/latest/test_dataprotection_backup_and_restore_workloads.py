@@ -9,7 +9,7 @@
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from datetime import datetime
-from ..utils import track_job_to_completion , wait_for_restore_job_exclusivity_on_datasource
+from ..utils import track_job_to_completion , wait_for_job_exclusivity_on_datasource
 
 def backup_instance_validate_create(test):
     # Adding backup-instance delete as the cleanup command, will always run even if test fails.
@@ -113,7 +113,7 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
         test.cmd('az dataprotection backup-instance validate-for-restore -g "{rg}" --vault-name "{vaultName}" -n "{backupInstanceName}" --restore-request-object "{restoreRequest}"')
 
         # Ensure no other jobs running on datasource. Required to avoid operation clashes. Requries dataSourceId kwarg to run.
-        wait_for_restore_job_exclusivity_on_datasource(test)
+        wait_for_job_exclusivity_on_datasource(test)
 
         restore_trigger_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" --vault-name "{vaultName}" '
                                         '-n "{backupInstanceName}" --restore-request-object "{restoreRequest}"').get_output_in_json()
@@ -138,7 +138,7 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
         test.cmd('az dataprotection backup-instance validate-for-restore -g "{rg}" --vault-name "{vaultName}" -n "{backupInstanceName}" --restore-request-object "{restoreRequest}"')
 
         # Ensure no other jobs running on datasource. Required to avoid operation clashes. Requries dataSourceId kwarg to run.
-        wait_for_restore_job_exclusivity_on_datasource(test)
+        wait_for_job_exclusivity_on_datasource(test)
 
         restore_trigger_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" --vault-name "{vaultName}" '
                                         '-n "{backupInstanceName}" --restore-request-object "{restoreRequest}"').get_output_in_json()
@@ -245,7 +245,7 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
         test.cmd('az dataprotection backup-instance validate-for-restore -g "{rg}" --vault-name "{vaultName}" -n "{backupInstanceName}" --restore-request-object "{restoreRequest}"')
 
         # Ensure no other jobs running on datasource. Required to avoid operation clashes. Requries dataSourceId kwarg to run.
-        wait_for_restore_job_exclusivity_on_datasource(test)
+        wait_for_job_exclusivity_on_datasource(test)
 
         restore_trigger_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" --vault-name "{vaultName}" '
                                         '-n "{backupInstanceName}" --restore-request-object "{restoreRequest}"').get_output_in_json()

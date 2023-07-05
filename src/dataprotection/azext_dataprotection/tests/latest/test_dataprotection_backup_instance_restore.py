@@ -8,7 +8,7 @@
 
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from ..utils import track_job_to_completion, wait_for_restore_job_exclusivity_on_datasource, get_midpoint_of_time_range
+from ..utils import track_job_to_completion, wait_for_job_exclusivity_on_datasource, get_midpoint_of_time_range
 
 
 class BackupInstanceRestoreScenarioTest(ScenarioTest):
@@ -51,7 +51,7 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
         test.kwargs.update({"restoreRequest": restore_request})
 
         # Ensure no other jobs running on datasource. Required to avoid operation clashes.
-        wait_for_restore_job_exclusivity_on_datasource(test)
+        wait_for_job_exclusivity_on_datasource(test)
 
         test.cmd('az dataprotection backup-instance validate-for-restore -g "{rg}" --vault-name "{vaultName}" -n "{backupInstanceName}" --restore-request-object "{restoreRequest}"')
         restore_trigger_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" --vault-name "{vaultName}" '
@@ -96,7 +96,7 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
         test.kwargs.update({"restoreRequest": restore_request})
 
         # Ensure no other restore jobs running on datasource. Required to avoid operation clashes.
-        wait_for_restore_job_exclusivity_on_datasource(test)
+        wait_for_job_exclusivity_on_datasource(test)
 
         test.cmd('az dataprotection backup-instance validate-for-restore -g "{rg}" --vault-name "{vaultName}" -n "{backupInstanceName}" --restore-request-object "{restoreRequest}"')
         restore_trigger_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" --vault-name "{vaultName}" '
@@ -145,7 +145,7 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
         test.cmd('az storage container delete --name "{containerName}" --account-name "{restoreContainerName}" --auth-mode "login"')
 
         # Ensure no other restore jobs running on datasource. Required to avoid operation clashes.
-        wait_for_restore_job_exclusivity_on_datasource(test)
+        wait_for_job_exclusivity_on_datasource(test)
 
         restore_trigger_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" --vault-name "{vaultName}" '
                                         '-n "{backupInstanceName}" --restore-request-object "{restoreRequest}"').get_output_in_json()
