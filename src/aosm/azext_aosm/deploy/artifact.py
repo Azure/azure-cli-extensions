@@ -3,12 +3,15 @@
 
 # pylint: disable=unidiomatic-typecheck
 """A module to handle interacting with artifacts."""
+import os
 import subprocess
 from dataclasses import dataclass
-from typing import Union, List
+from typing import List, Union
 
 from azure.cli.core.commands import LongRunningOperation
-from azure.mgmt.containerregistry.models import ImportImageParameters, ImportSource
+from azure.mgmt.containerregistry import ContainerRegistryManagementClient
+from azure.mgmt.containerregistry.models import (ImportImageParameters,
+                                                 ImportSource)
 from azure.storage.blob import BlobClient, BlobType
 from knack.log import get_logger
 from knack.util import CLIError
@@ -55,15 +58,30 @@ class Artifact:
         assert type(self.artifact_client) == OrasClient
 
         if artifact_config.file_path:
-            target = (
-                f"{self.artifact_client.remote.hostname.replace('https://', '')}"
-                f"/{self.artifact_name}:{self.artifact_version}"
-            )
-            logger.debug("Uploading %s to %s", artifact_config.file_path, target)
-            self.artifact_client.push(
-                files=[artifact_config.file_path],
-                target=target,
-            )
+            try:
+                # OrasClient 0.1.17 has a bug
+                # https://github.com/oras-project/oras-py/issues/90 which means on
+                # Windows we need a real blank file on disk, without a colon in the
+                # filepath (so tempfile can't be used and we just put it in the working
+                # directory), that can act as the manifest config file. So create one
+                # and then delete it after the upload.
+                with open("dummyManifestConfig.json", "w", encoding='utf-8') as f:
+                    target = (
+                        f"{self.artifact_client.remote.hostname.replace('https://', '')}"
+                        f"/{self.artifact_name}:{self.artifact_version}"
+                    )
+                    logger.debug("Uploading %s to %s", artifact_config.file_path, target)
+                    self.artifact_client.push(
+                        files=[artifact_config.file_path],
+                        target=target,
+                        manifest_config=f.name,
+                    )
+            finally:
+                # Delete the dummy file
+                try:
+                    os.remove("dummyManifestConfig.json")
+                except FileNotFoundError:
+                    pass
         else:
             raise NotImplementedError(
                 "Copying artifacts is not implemented for ACR artifacts stores."

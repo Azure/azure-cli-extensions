@@ -5,7 +5,6 @@
 """Contains class for deploying generated definitions using ARM."""
 import json
 import os
-import re
 import shutil
 import subprocess  # noqa
 import tempfile
@@ -37,7 +36,6 @@ from azext_aosm.util.constants import (
     VNF,
     VNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
     VNF_MANIFEST_BICEP_TEMPLATE_FILENAME,
-    SOURCE_ACR_REGEX,
 )
 from azext_aosm.util.management_clients import ApiClients
 
@@ -120,7 +118,7 @@ class DeployerViaArm:
                 # User has not passed in a bicep template, so we are deploying the default
                 # one produced from building the NFDV using this CLI
                 bicep_path = os.path.join(
-                    self.config.build_output_folder_name,
+                    self.config.output_directory_for_build,
                     VNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
                 )
 
