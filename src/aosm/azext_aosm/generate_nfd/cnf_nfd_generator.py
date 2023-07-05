@@ -319,7 +319,12 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         logger.debug("%s created", full_schema)
 
     def _copy_to_output_directory(self) -> None:
-        """Copy the config mappings, schema and bicep templates (artifact manifest and NFDV) from the temp directory to the output directory."""
+        """
+        Copy files from the temp directory to the output directory.
+
+        Files are the config mappings, schema and bicep templates (artifact manifest
+        and NFDV).
+        """
         assert self._tmp_dir
 
         logger.info("Create NFD bicep %s", self.output_directory)
@@ -552,6 +557,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         :param d: The dictionary to traverse.
         :param target: The regex to search for.
         """
+        #  pylint: disable=too-many-nested-blocks
         @dataclass
         class DictNode:
             # The dictionary under this node
@@ -591,7 +597,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
                         if isinstance(item, str):
                             match = re.search(target_regex, item)
-                            
+
                             if match:
                                 result[match.group(1)] = node.position_path + [key]
 

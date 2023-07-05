@@ -163,7 +163,7 @@ class Configuration(abc.ABC):
 
         return updated_path
 
-    @abc.abstractproperty
+    @property
     def output_directory_for_build(self) -> Path:
         """Base class method to ensure subclasses implement this function."""
         raise NotImplementedError("Subclass must define property")
