@@ -1,4 +1,5 @@
 import abc
+import logging
 import json
 import os
 import re
@@ -17,6 +18,9 @@ from azext_aosm.util.constants import (
     VNF,
     SOURCE_ACR_REGEX,
 )
+
+
+logger = logging.getLogger(__name__)
 
 DESCRIPTION_MAP: Dict[str, str] = {
     "publisher_resource_group_name": (
@@ -132,6 +136,8 @@ class Configuration(abc.ABC):
 
         :param path: The path relative to the config file.
         """
+        assert self.config_file
+
         # If no path has been supplied we shouldn't try to update it.
         if path == "":
             return ""
@@ -140,9 +146,16 @@ class Configuration(abc.ABC):
         if os.path.isabs(path):
             return path
 
-        return os.path.join(os.path.dirname(self.config_file), path)
+        config_file_dir = Path(self.config_file).parent
+
+        updated_path = str(config_file_dir / path)
+
+        logger.debug("Updated path: %s", updated_path)
+
+        return updated_path
 
     @abc.abstractmethod
+    @property
     def output_directory_for_build(self) -> Path:
         """Base class method to ensure subclasses implement this function."""
 
@@ -429,7 +442,7 @@ class CNFConfiguration(NFConfiguration):
 
 def get_configuration(
     configuration_type: str, config_file: Optional[str] = None
-) -> Union[NFConfiguration, NSConfiguration]:
+) -> Configuration:
     """
     Return the correct configuration object based on the type.
 
@@ -442,6 +455,8 @@ def get_configuration(
             config_as_dict = json.loads(f.read())
     else:
         config_as_dict = {}
+
+    config: Configuration
 
     if configuration_type == VNF:
         config = VNFConfiguration(config_file=config_file, **config_as_dict)
