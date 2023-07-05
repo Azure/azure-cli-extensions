@@ -33,12 +33,12 @@ class ResourceDeleter:
 
     def delete_nfd(self, clean: bool = False):
         """
-        Delete the NFDV and manifests.  If they don't exist it still reports them as
-        deleted.
+        Delete the NFDV and manifests.  If they don't exist it still reports them as deleted.
 
         :param clean: Delete the NFDG, artifact stores and publisher too. Defaults to False.
         Use with care.
         """
+        assert isinstance(self.config, NFConfiguration)
 
         if clean:
             print(
@@ -106,6 +106,7 @@ class ResourceDeleter:
         self.delete_config_group_schema()
 
     def delete_nfdv(self):
+        assert isinstance(self.config, NFConfiguration)
         message = (
             f"Delete NFDV {self.config.version} from group {self.config.nfdg_name} and"
             f" publisher {self.config.publisher_name}"
@@ -200,6 +201,7 @@ class ResourceDeleter:
 
     def delete_nsdg(self) -> None:
         """Delete the NSDG."""
+        assert isinstance(self.config, NSConfiguration)
         message = f"Delete NSD Group {self.config.nsdg_name}"
         logger.debug(message)
         print(message)
@@ -219,6 +221,7 @@ class ResourceDeleter:
 
     def delete_nfdg(self) -> None:
         """Delete the NFDG."""
+        assert isinstance(self.config, NFConfiguration)
         message = f"Delete NFD Group {self.config.nfdg_name}"
         logger.debug(message)
         print(message)
@@ -288,6 +291,7 @@ class ResourceDeleter:
 
     def delete_config_group_schema(self) -> None:
         """Delete the Configuration Group Schema."""
+        assert isinstance(self.config, NSConfiguration)
         message = f"Delete Configuration Group Schema {self.config.cg_schema_name}"
         logger.debug(message)
         print(message)

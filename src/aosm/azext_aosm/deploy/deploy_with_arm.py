@@ -519,6 +519,7 @@ class DeployerViaArm:
         logger.debug("Deploy manifest bicep")
 
         if not manifest_bicep_path:
+            file_name: str = ""
             if configuration_type == NSD:
                 file_name = NSD_ARTIFACT_MANIFEST_BICEP_FILENAME
             elif configuration_type == VNF:
@@ -527,7 +528,7 @@ class DeployerViaArm:
                 file_name = CNF_MANIFEST_BICEP_TEMPLATE_FILENAME
 
             manifest_bicep_path = os.path.join(
-                self.config.output_directory_for_build,
+                str(self.config.output_directory_for_build),
                 file_name,
             )
         if not manifest_parameters_json_file:

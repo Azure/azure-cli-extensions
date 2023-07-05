@@ -1,3 +1,4 @@
+import abc
 import json
 import os
 import re
@@ -118,7 +119,7 @@ class ArtifactConfig:
 
 
 @dataclass
-class Configuration:
+class Configuration(abc.ABC):
     config_file: Optional[str] = None
 
     def path_from_cli_dir(self, path: str) -> str:
@@ -141,9 +142,15 @@ class Configuration:
 
         return os.path.join(os.path.dirname(self.config_file), path)
 
+    @abc.abstractmethod
+    def output_directory_for_build(self) -> Path:
+        """Base class method to ensure subclasses implement this function."""
+
+
 
 @dataclass
 class NFConfiguration(Configuration):
+    """Network Function configuration."""
     publisher_name: str = DESCRIPTION_MAP["publisher_name"]
     publisher_resource_group_name: str = DESCRIPTION_MAP[
         "publisher_resource_group_name"

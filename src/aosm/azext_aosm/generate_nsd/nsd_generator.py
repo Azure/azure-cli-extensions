@@ -270,9 +270,9 @@ class NSDGenerator:
                 # NF, as we do for deployParameters, but the SDK currently doesn't
                 # support this and needs to be rebuilt to do so.
                 "nfvi_type": (
-                    NFVIType.AZURE_CORE.value
+                    NFVIType.AZURE_CORE.value  # type: ignore[attr-defined]
                     if self.config.network_function_type == VNF
-                    else NFVIType.AZURE_ARC_KUBERNETES.value
+                    else NFVIType.AZURE_ARC_KUBERNETES.value  # type: ignore[attr-defined]
                 ),
                 "CNF": True if self.config.network_function_type == CNF else False,
             },

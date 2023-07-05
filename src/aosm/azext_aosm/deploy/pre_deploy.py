@@ -252,7 +252,7 @@ class PreDeployerViaSDK:
             self.config.publisher_resource_group_name,
             self.config.publisher_name,
             self.config.acr_artifact_store_name,
-            ArtifactStoreType.AZURE_CONTAINER_REGISTRY,
+            ArtifactStoreType.AZURE_CONTAINER_REGISTRY,  # type: ignore
             self.config.location,
         )
 
@@ -273,7 +273,7 @@ class PreDeployerViaSDK:
             self.config.publisher_resource_group_name,
             self.config.publisher_name,
             self.config.blob_artifact_store_name,
-            ArtifactStoreType.AZURE_STORAGE_ACCOUNT,
+            ArtifactStoreType.AZURE_STORAGE_ACCOUNT,  # type: ignore
             self.config.location,
         )
 
