@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import re
 from knack.prompting import prompt, prompt_y_n, NoTTYException
 from knack.log import get_logger
 from azure.cli.core import telemetry
@@ -32,8 +33,13 @@ def run_cli_cmd(cmd, retry=0, interval=0, should_retry_func=None):
     try:
         return run_cli_cmd_base(cmd, retry, interval, should_retry_func)
     except CLIInternalError as e:
+        error_code = 'Unknown'
+        error_res = re.search(
+            '\(([a-zA-Z]+)\)', str(e))
+        if error_res:
+            error_code = error_res.group(1)
         telemetry.set_exception(
-            e, "Cli-Command-Fail-" + cmd.split(" -")[0].strip())
+            e, "Cli-Command-Fail-" + cmd.split(" -")[0].strip() + '-' + error_code)
         raise e
 
 

@@ -11,7 +11,6 @@ from azure.cli.core.aaz import (
     AAZStrArg, AAZResourceGroupNameArg, AAZFreeFormDictArg,
     AAZObjectType, AAZFreeFormDictType
 )
-from ..helpers import clean_nulls_from_session_http_response
 
 
 class Create(_Create):
@@ -47,16 +46,6 @@ class Create(_Create):
         return cls._args_schema
 
     class BackupPoliciesCreateOrUpdate(_Create.BackupPoliciesCreateOrUpdate):
-
-        def __call__(self, *args, **kwargs):    # Remove after error handling fixed.
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-            # Removing null valued items from json to fix 'Bad Request' error.
-            # This is a temporary fix for AAZ failing to handle null values in error response.
-            clean_nulls_from_session_http_response(session)
-            return self.on_error(session.http_response)
 
         @property
         def content(self):

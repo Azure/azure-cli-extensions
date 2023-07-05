@@ -20,6 +20,7 @@ def create_vault_and_policy(test):
             test.exists('identity.principalId')
         ]).get_output_in_json()
 
+    # Fix for 'Cannot find user or service principal in graph database' error. Confirming sp is created for the backup vault.
     sp_list = []
     while backup_vault['identity']['principalId'] not in sp_list:
         sp_list = test.cmd('az ad sp list --display-name "{vaultName}" --query [].id').get_output_in_json()

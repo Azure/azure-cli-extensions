@@ -103,7 +103,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 202
       message: Accepted
@@ -458,7 +458,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '998'
+      - '997'
     status:
       code: 200
       message: OK
@@ -506,7 +506,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '997'
+      - '995'
     status:
       code: 200
       message: OK
@@ -619,7 +619,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '996'
+      - '994'
     status:
       code: 200
       message: OK
@@ -667,7 +667,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '995'
+      - '992'
     status:
       code: 200
       message: OK
@@ -1005,7 +1005,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '998'
+      - '997'
     status:
       code: 200
       message: OK
@@ -1082,7 +1082,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '2378'
+      - '2377'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -1131,7 +1131,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '2378'
+      - '2377'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -1180,7 +1180,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '2378'
+      - '2377'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -1200,7 +1200,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '198'
+      - '199'
     status:
       code: 200
       message: OK
@@ -1229,7 +1229,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '2378'
+      - '2377'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -1670,7 +1670,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '2648'
+      - '2377'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -1690,7 +1690,252 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '199'
+      - '198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupJobs/d460bf81-75f1-4b86-b3e3-451ae983fee4?api-version=2023-01-01
+  response:
+    body:
+      string: '{"properties":{"activityID":"72f94fde-1738-11ee-a22f-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupInstances/clitest-cluster1-donotdelete-clitest-cluster1-donotdelete-faec6818-0720-11ec-bd1b-c8f750f92764","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupPolicies/akspolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/oss-clitest-rg/providers/Microsoft.ContainerService/managedClusters/clitest-cluster1-donotdelete","vaultName":"clitest-bkp-vault-aks-donotdelete","backupInstanceFriendlyName":"clitest-cluster1-donotdelete/clitest-friendly-aks","policyName":"akspolicy","sourceResourceGroup":"oss-clitest-rg","dataSourceSetName":"clitest-cluster1-donotdelete","dataSourceName":"clitest-cluster1-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-06-30T11%3A22%3A53.468783Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"eastus2euap","startTime":"2023-06-30T11:22:53.1890426Z","endTime":null,"dataSourceType":"Microsoft.ContainerService/managedClusters","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
+        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupJobs/d460bf81-75f1-4b86-b3e3-451ae983fee4","name":"d460bf81-75f1-4b86-b3e3-451ae983fee4","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2377'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Jun 2023 11:25:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '195'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupJobs/d460bf81-75f1-4b86-b3e3-451ae983fee4?api-version=2023-01-01
+  response:
+    body:
+      string: '{"properties":{"activityID":"72f94fde-1738-11ee-a22f-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupInstances/clitest-cluster1-donotdelete-clitest-cluster1-donotdelete-faec6818-0720-11ec-bd1b-c8f750f92764","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupPolicies/akspolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/oss-clitest-rg/providers/Microsoft.ContainerService/managedClusters/clitest-cluster1-donotdelete","vaultName":"clitest-bkp-vault-aks-donotdelete","backupInstanceFriendlyName":"clitest-cluster1-donotdelete/clitest-friendly-aks","policyName":"akspolicy","sourceResourceGroup":"oss-clitest-rg","dataSourceSetName":"clitest-cluster1-donotdelete","dataSourceName":"clitest-cluster1-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-06-30T11%3A22%3A53.468783Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"eastus2euap","startTime":"2023-06-30T11:22:53.1890426Z","endTime":null,"dataSourceType":"Microsoft.ContainerService/managedClusters","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
+        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupJobs/d460bf81-75f1-4b86-b3e3-451ae983fee4","name":"d460bf81-75f1-4b86-b3e3-451ae983fee4","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2377'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Jun 2023 11:25:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupJobs/d460bf81-75f1-4b86-b3e3-451ae983fee4?api-version=2023-01-01
+  response:
+    body:
+      string: '{"properties":{"activityID":"72f94fde-1738-11ee-a22f-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupInstances/clitest-cluster1-donotdelete-clitest-cluster1-donotdelete-faec6818-0720-11ec-bd1b-c8f750f92764","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupPolicies/akspolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/oss-clitest-rg/providers/Microsoft.ContainerService/managedClusters/clitest-cluster1-donotdelete","vaultName":"clitest-bkp-vault-aks-donotdelete","backupInstanceFriendlyName":"clitest-cluster1-donotdelete/clitest-friendly-aks","policyName":"akspolicy","sourceResourceGroup":"oss-clitest-rg","dataSourceSetName":"clitest-cluster1-donotdelete","dataSourceName":"clitest-cluster1-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-06-30T11%3A22%3A53.468783Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"eastus2euap","startTime":"2023-06-30T11:22:53.1890426Z","endTime":null,"dataSourceType":"Microsoft.ContainerService/managedClusters","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
+        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupJobs/d460bf81-75f1-4b86-b3e3-451ae983fee4","name":"d460bf81-75f1-4b86-b3e3-451ae983fee4","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2377'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Jun 2023 11:25:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupJobs/d460bf81-75f1-4b86-b3e3-451ae983fee4?api-version=2023-01-01
+  response:
+    body:
+      string: '{"properties":{"activityID":"72f94fde-1738-11ee-a22f-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupInstances/clitest-cluster1-donotdelete-clitest-cluster1-donotdelete-faec6818-0720-11ec-bd1b-c8f750f92764","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupPolicies/akspolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/oss-clitest-rg/providers/Microsoft.ContainerService/managedClusters/clitest-cluster1-donotdelete","vaultName":"clitest-bkp-vault-aks-donotdelete","backupInstanceFriendlyName":"clitest-cluster1-donotdelete/clitest-friendly-aks","policyName":"akspolicy","sourceResourceGroup":"oss-clitest-rg","dataSourceSetName":"clitest-cluster1-donotdelete","dataSourceName":"clitest-cluster1-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-06-30T11%3A22%3A53.468783Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"eastus2euap","startTime":"2023-06-30T11:22:53.1890426Z","endTime":null,"dataSourceType":"Microsoft.ContainerService/managedClusters","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
+        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupJobs/d460bf81-75f1-4b86-b3e3-451ae983fee4","name":"d460bf81-75f1-4b86-b3e3-451ae983fee4","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2377'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Jun 2023 11:25:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '196'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupJobs/d460bf81-75f1-4b86-b3e3-451ae983fee4?api-version=2023-01-01
+  response:
+    body:
+      string: '{"properties":{"activityID":"72f94fde-1738-11ee-a22f-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupInstances/clitest-cluster1-donotdelete-clitest-cluster1-donotdelete-faec6818-0720-11ec-bd1b-c8f750f92764","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupPolicies/akspolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/oss-clitest-rg/providers/Microsoft.ContainerService/managedClusters/clitest-cluster1-donotdelete","vaultName":"clitest-bkp-vault-aks-donotdelete","backupInstanceFriendlyName":"clitest-cluster1-donotdelete/clitest-friendly-aks","policyName":"akspolicy","sourceResourceGroup":"oss-clitest-rg","dataSourceSetName":"clitest-cluster1-donotdelete","dataSourceName":"clitest-cluster1-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-06-30T11%3A25%3A58.4951985Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"eastus2euap","startTime":"2023-06-30T11:22:53.1890426Z","endTime":"2023-06-30T11:25:58.3081926Z","dataSourceType":"Microsoft.ContainerService/managedClusters","operationCategory":"Backup","operation":"Backup","status":"Completed","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT3M5.11915S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":{"recoveryPointID":"328a7a7136ae4b14bb845c80f8572871","recoveryPointTime":"0001-01-01T00:00:00Z"},"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
+        Backup","taskStatus":"Completed","taskProgress":null,"additionalDetails":{"OriginalDatasourceSizeInBytes":"0","TaskId":"72f94fde-1738-11ee-a22f-002b670b472e","DatasourceType":"Microsoft.ContainerService/managedClusters"}}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-aks-donotdelete/backupJobs/d460bf81-75f1-4b86-b3e3-451ae983fee4","name":"d460bf81-75f1-4b86-b3e3-451ae983fee4","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2646'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 30 Jun 2023 11:26:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '193'
     status:
       code: 200
       message: OK
@@ -1854,7 +2099,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 202
       message: Accepted
@@ -2191,7 +2436,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '773'
+      - '497'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -2219,15 +2464,15 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - dataprotection job show
+      - dataprotection backup-instance restore trigger
       Connection:
       - keep-alive
       ParameterSetName:
-      - --ids
+      - -g --vault-name -n --restore-request-object
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
@@ -2240,7 +2485,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '2635'
+      - '773'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -2338,7 +2583,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '2635'
+      - '2634'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -2387,7 +2632,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '2635'
+      - '2634'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -2436,7 +2681,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '2635'
+      - '2634'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -2505,7 +2750,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '196'
+      - '189'
     status:
       code: 200
       message: OK
@@ -2534,7 +2779,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '2635'
+      - '2634'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -2583,7 +2828,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '2635'
+      - '2634'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -2701,7 +2946,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '196'
+      - '199'
     status:
       code: 200
       message: OK

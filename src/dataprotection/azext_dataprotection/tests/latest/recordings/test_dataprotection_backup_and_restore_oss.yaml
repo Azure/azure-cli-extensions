@@ -35,7 +35,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '199'
+      - '198'
       x-powered-by:
       - ASP.NET
     status:
@@ -340,7 +340,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '493'
+      - '492'
       content-type:
       - application/json
       date:
@@ -390,7 +390,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '492'
+      - '491'
       content-type:
       - application/json
       date:
@@ -823,7 +823,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '1999'
+      - '1997'
       x-powered-by:
       - ASP.NET
     status:
@@ -2789,7 +2789,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '2665'
+      - '2557'
       content-type:
       - application/json
       date:
@@ -2811,6 +2811,218 @@ interactions:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/27832616-1d4c-45d2-bcf0-0946bdc10d90?api-version=2023-01-01
+  response:
+    body:
+      string: '{"properties":{"activityID":"9d3c8d3f-173a-11ee-958c-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/oss-clitest-server-postgres-faec6818-0720-11ec-bd1b-c8f750f92764","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/osspolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/oss-clitest-rg/providers/Microsoft.DBforPostgreSQL/servers/oss-clitest-server/databases/postgres","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"oss-clitest-server/postgres","policyName":"osspolicy","sourceResourceGroup":"oss-clitest-rg","dataSourceSetName":"oss-clitest-server","dataSourceName":"postgres","sourceDataStoreName":null,"sourceDataStoreType":"VaultStore","destinationDataStoreName":null,"progressEnabled":true,"etag":"W/\"datetime''2023-06-30T11%3A38%3A22.9102261Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-06-30T11:38:22.6123969Z","endTime":null,"dataSourceType":"Microsoft.DBforPostgreSQL/servers/databases","operationCategory":"Restore","operation":"Restore","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":{"recoveryPointID":"bb23f36be79e4cbbbb41211e4c8b205d","recoveryPointTime":"2023-06-30T11:33:59.6215745Z"},"recoveryDestination":"https://ossclitestsa.blob.core.windows.net/oss-clitest-blob-container","subTasks":[{"taskId":1,"taskName":"Trigger
+        Restore","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"Restore
+        File Prefix":"postgres_restore_30062023_170746"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/27832616-1d4c-45d2-bcf0-0946bdc10d90","name":"27832616-1d4c-45d2-bcf0-0946bdc10d90","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2493'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 Jun 2023 11:39:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/27832616-1d4c-45d2-bcf0-0946bdc10d90?api-version=2023-01-01
+  response:
+    body:
+      string: '{"properties":{"activityID":"9d3c8d3f-173a-11ee-958c-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/oss-clitest-server-postgres-faec6818-0720-11ec-bd1b-c8f750f92764","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/osspolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/oss-clitest-rg/providers/Microsoft.DBforPostgreSQL/servers/oss-clitest-server/databases/postgres","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"oss-clitest-server/postgres","policyName":"osspolicy","sourceResourceGroup":"oss-clitest-rg","dataSourceSetName":"oss-clitest-server","dataSourceName":"postgres","sourceDataStoreName":null,"sourceDataStoreType":"VaultStore","destinationDataStoreName":null,"progressEnabled":true,"etag":"W/\"datetime''2023-06-30T11%3A38%3A22.9102261Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-06-30T11:38:22.6123969Z","endTime":null,"dataSourceType":"Microsoft.DBforPostgreSQL/servers/databases","operationCategory":"Restore","operation":"Restore","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":{"recoveryPointID":"bb23f36be79e4cbbbb41211e4c8b205d","recoveryPointTime":"2023-06-30T11:33:59.6215745Z"},"recoveryDestination":"https://ossclitestsa.blob.core.windows.net/oss-clitest-blob-container","subTasks":[{"taskId":1,"taskName":"Trigger
+        Restore","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"Restore
+        File Prefix":"postgres_restore_30062023_170746"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/27832616-1d4c-45d2-bcf0-0946bdc10d90","name":"27832616-1d4c-45d2-bcf0-0946bdc10d90","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2493'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 Jun 2023 11:39:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/27832616-1d4c-45d2-bcf0-0946bdc10d90?api-version=2023-01-01
+  response:
+    body:
+      string: '{"properties":{"activityID":"9d3c8d3f-173a-11ee-958c-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/oss-clitest-server-postgres-faec6818-0720-11ec-bd1b-c8f750f92764","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/osspolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/oss-clitest-rg/providers/Microsoft.DBforPostgreSQL/servers/oss-clitest-server/databases/postgres","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"oss-clitest-server/postgres","policyName":"osspolicy","sourceResourceGroup":"oss-clitest-rg","dataSourceSetName":"oss-clitest-server","dataSourceName":"postgres","sourceDataStoreName":null,"sourceDataStoreType":"VaultStore","destinationDataStoreName":null,"progressEnabled":true,"etag":"W/\"datetime''2023-06-30T11%3A38%3A22.9102261Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-06-30T11:38:22.6123969Z","endTime":null,"dataSourceType":"Microsoft.DBforPostgreSQL/servers/databases","operationCategory":"Restore","operation":"Restore","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":{"recoveryPointID":"bb23f36be79e4cbbbb41211e4c8b205d","recoveryPointTime":"2023-06-30T11:33:59.6215745Z"},"recoveryDestination":"https://ossclitestsa.blob.core.windows.net/oss-clitest-blob-container","subTasks":[{"taskId":1,"taskName":"Trigger
+        Restore","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"Restore
+        File Prefix":"postgres_restore_30062023_170746"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/27832616-1d4c-45d2-bcf0-0946bdc10d90","name":"27832616-1d4c-45d2-bcf0-0946bdc10d90","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2493'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 Jun 2023 11:39:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/27832616-1d4c-45d2-bcf0-0946bdc10d90?api-version=2023-01-01
+  response:
+    body:
+      string: '{"properties":{"activityID":"9d3c8d3f-173a-11ee-958c-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/oss-clitest-server-postgres-faec6818-0720-11ec-bd1b-c8f750f92764","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/osspolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/oss-clitest-rg/providers/Microsoft.DBforPostgreSQL/servers/oss-clitest-server/databases/postgres","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"oss-clitest-server/postgres","policyName":"osspolicy","sourceResourceGroup":"oss-clitest-rg","dataSourceSetName":"oss-clitest-server","dataSourceName":"postgres","sourceDataStoreName":null,"sourceDataStoreType":"VaultStore","destinationDataStoreName":null,"progressEnabled":true,"etag":"W/\"datetime''2023-06-30T11%3A39%3A40.7749913Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-06-30T11:38:22.6123969Z","endTime":"2023-06-30T11:39:40.5562863Z","dataSourceType":"Microsoft.DBforPostgreSQL/servers/databases","operationCategory":"Restore","operation":"Restore","status":"Completed","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT1M17.9438894S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":{"recoveryPointID":"bb23f36be79e4cbbbb41211e4c8b205d","recoveryPointTime":"2023-06-30T11:33:59.6215745Z"},"recoveryDestination":"https://ossclitestsa.blob.core.windows.net/oss-clitest-blob-container","subTasks":[{"taskId":1,"taskName":"Trigger
+        Restore","taskStatus":"Completed","taskProgress":null,"additionalDetails":{"DataTransferredInBytes":"0","TaskId":"9d3c8d3f-173a-11ee-958c-002b670b472e","DatasourceType":"Microsoft.DBforPostgreSQL/servers/databases"}}],"additionalDetails":{"Restore
+        File Prefix":"postgres_restore_30062023_170746"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/27832616-1d4c-45d2-bcf0-0946bdc10d90","name":"27832616-1d4c-45d2-bcf0-0946bdc10d90","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2665'
+      content-type:
+      - application/json
+      date:
+      - Fri, 30 Jun 2023 11:39:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '199'
       x-powered-by:
       - ASP.NET
     status:

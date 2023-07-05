@@ -468,7 +468,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
       x-powered-by:
       - ASP.NET
     status:
@@ -580,15 +580,15 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - dataprotection job show
+      - dataprotection backup-instance restore trigger
       Connection:
       - keep-alive
       ParameterSetName:
-      - --ids
+      - -g --vault-name -n --restore-request-object
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
@@ -612,7 +612,6 @@ interactions:
       - no-cache
       server:
       - Microsoft-IIS/10.0
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -622,7 +621,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '196'
+      - '996'
       x-powered-by:
       - ASP.NET
     status:
@@ -1506,7 +1505,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '198'
+      - '199'
       x-powered-by:
       - ASP.NET
     status:

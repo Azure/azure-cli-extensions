@@ -65,13 +65,11 @@ def load_command_table(self, _):
 
     from .aaz_operations.backup_instance import (
         AdhocBackup as BackupInstanceAdhocBackup,
-        Update as BackupInstanceUpdate,
         ValidateAndCreate as BackupInstanceCreate,
         ValidateForRestore as BackupInstanceValidateRestore,
         RestoreTrigger as BackupInstanceRestoreTrigger,
     )
     self.command_table['dataprotection backup-instance adhoc-backup'] = BackupInstanceAdhocBackup(loader=self)
-    self.command_table['dataprotection backup-instance update'] = BackupInstanceUpdate(loader=self)
     self.command_table['dataprotection backup-instance create'] = BackupInstanceCreate(loader=self)
     self.command_table['dataprotection backup-instance validate-for-restore'] = BackupInstanceValidateRestore(loader=self)
     self.command_table['dataprotection backup-instance restore trigger'] = BackupInstanceRestoreTrigger(loader=self)
@@ -85,10 +83,3 @@ def load_command_table(self, _):
     from .aaz_operations.resource_guard import Create as ResourceGuardCreate, Update as ResourceGuardUpdate
     self.command_table['dataprotection resource-guard create'] = ResourceGuardCreate(loader=self)
     self.command_table['dataprotection resource-guard update'] = ResourceGuardUpdate(loader=self)
-
-    from .aaz_operations.restorable_time_range import Find as RestorableTimeRangeFind
-    self.command_table['dataprotection restorable-time-range find'] = RestorableTimeRangeFind(loader=self)
-
-    from .aaz_operations.backup_vault import Create as BackupVaultCreate, Update as BackupVaultUpdate
-    self.command_table['dataprotection backup-vault create'] = BackupVaultCreate(loader=self)
-    self.command_table['dataprotection backup-vault update'] = BackupVaultUpdate(loader=self)

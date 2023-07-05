@@ -518,6 +518,98 @@ interactions:
       code: 200
       message: OK
 - request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --display-name --query
+      User-Agent:
+      - python/3.10.11 (Windows-10-10.0.22621-SP0) AZURECLI/2.49.0
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/servicePrincipals?$filter=startswith%28displayName%2C%27clitest-bkp-vault%27%29
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#servicePrincipals","value":[{"id":"1a8df041-82b4-4b45-a25d-867ac78309d5","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest-dpp-rg/providers/Microsoft.DataProtection/BackupVaults/clitest-bkp-vault-aks-donotdelete"],"appDisplayName":null,"appDescription":null,"appId":"5ffe7902-1e0d-4b21-8e53-5f627921a992","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-06-20T03:45:34Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"clitest-bkp-vault-aks-donotdelete","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["5ffe7902-1e0d-4b21-8e53-5f627921a992","https://identity.azure.net/83KVaUuB313g8PcXci7lpzzodrTmEa5N38OONzdGGLo="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"E89FF2663B6D3EEB1D2F5F019E488B080FE52C69","displayName":"CN=5ffe7902-1e0d-4b21-8e53-5f627921a992","endDateTime":"2023-09-18T03:40:00Z","key":null,"keyId":"e8e1ac0a-660b-4eda-a2a6-e274e1755ca2","startDateTime":"2023-06-20T03:40:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}},{"id":"f46d6ea4-bc22-439e-a22b-17bf55687ff4","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest-dpp-rg/providers/Microsoft.DataProtection/BackupVaults/clitest-bkp-vault-donotdelete"],"appDisplayName":null,"appDescription":null,"appId":"5effbcb0-906a-406f-8aba-247d6f27bd4d","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-06-15T11:57:13Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"clitest-bkp-vault-donotdelete","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["5effbcb0-906a-406f-8aba-247d6f27bd4d","https://identity.azure.net/hAAOiNfdTtXvW2qNUhVPODGoeuFNB7+voWnWJ68GfZ8="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"AA3A67F52460B7CADFB29AFF16D94685119EAC74","displayName":"CN=5effbcb0-906a-406f-8aba-247d6f27bd4d","endDateTime":"2023-09-13T11:52:00Z","key":null,"keyId":"45cfe9a8-1637-4d75-9f71-9b2ee6444f86","startDateTime":"2023-06-15T11:52:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}},{"id":"9d390201-843e-44d8-ab2c-fef15f3de22d","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest-dpp-rg/providers/Microsoft.DataProtection/BackupVaults/clitest-bkp-vault-persistent-bi-donotdelete"],"appDisplayName":null,"appDescription":null,"appId":"b668469b-00d3-45ad-991f-e34105cf1e2b","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-06-15T11:56:46Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"clitest-bkp-vault-persistent-bi-donotdelete","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["b668469b-00d3-45ad-991f-e34105cf1e2b","https://identity.azure.net/E6VJFJbQGRlEqoBLcwVe+UoATwY5/R4tVGWmnsjyDIM="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"80880D47161C8DDC56B53EFF86F272057A5E3D52","displayName":"CN=b668469b-00d3-45ad-991f-e34105cf1e2b","endDateTime":"2023-09-13T11:51:00Z","key":null,"keyId":"c387cfb7-9420-4e8a-93e3-c229ccbdcbb6","startDateTime":"2023-06-15T11:51:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4978'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      date:
+      - Fri, 30 Jun 2023 11:28:16 GMT
+      odata-version:
+      - '4.0'
+      request-id:
+      - bf218c6c-3fa5-49d9-9a35-00aea1660000
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ms-ags-diagnostic:
+      - '{"ServerInfo":{"DataCenter":"South India","Slice":"E","Ring":"2","ScaleUnit":"001","RoleInstance":"MA1PEPF00003103"}}'
+      x-ms-resource-unit:
+      - '1'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --display-name --query
+      User-Agent:
+      - python/3.10.11 (Windows-10-10.0.22621-SP0) AZURECLI/2.49.0
+    method: GET
+    uri: https://graph.microsoft.com/v1.0/servicePrincipals?$filter=startswith%28displayName%2C%27clitest-bkp-vault%27%29
+  response:
+    body:
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#servicePrincipals","value":[{"id":"e683aa14-9e22-4e2b-9a15-a8536f117043","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest-dpp-updatemsipermissions-000001/providers/Microsoft.DataProtection/BackupVaults/clitest-bkp-vault"],"appDisplayName":null,"appDescription":null,"appId":"eab2379a-eef1-4bb7-b667-50fea6636a2c","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-06-30T11:28:11Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"clitest-bkp-vault","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["eab2379a-eef1-4bb7-b667-50fea6636a2c","https://identity.azure.net/tCz8aXlWFLSzFGHcFAPITCrEa7rv6Y6JHResSVU5Zh8="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"64329CA7418A7D0FA46D9BC5B414C4F3D3C1A3F4","displayName":"CN=eab2379a-eef1-4bb7-b667-50fea6636a2c","endDateTime":"2023-09-28T11:23:00Z","key":null,"keyId":"15b9e117-f55b-48a4-b31e-3273b78e803c","startDateTime":"2023-06-30T11:23:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}},{"id":"1a8df041-82b4-4b45-a25d-867ac78309d5","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest-dpp-rg/providers/Microsoft.DataProtection/BackupVaults/clitest-bkp-vault-aks-donotdelete"],"appDisplayName":null,"appDescription":null,"appId":"5ffe7902-1e0d-4b21-8e53-5f627921a992","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-06-20T03:45:34Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"clitest-bkp-vault-aks-donotdelete","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["5ffe7902-1e0d-4b21-8e53-5f627921a992","https://identity.azure.net/83KVaUuB313g8PcXci7lpzzodrTmEa5N38OONzdGGLo="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"E89FF2663B6D3EEB1D2F5F019E488B080FE52C69","displayName":"CN=5ffe7902-1e0d-4b21-8e53-5f627921a992","endDateTime":"2023-09-18T03:40:00Z","key":null,"keyId":"e8e1ac0a-660b-4eda-a2a6-e274e1755ca2","startDateTime":"2023-06-20T03:40:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}},{"id":"f46d6ea4-bc22-439e-a22b-17bf55687ff4","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest-dpp-rg/providers/Microsoft.DataProtection/BackupVaults/clitest-bkp-vault-donotdelete"],"appDisplayName":null,"appDescription":null,"appId":"5effbcb0-906a-406f-8aba-247d6f27bd4d","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-06-15T11:57:13Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"clitest-bkp-vault-donotdelete","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["5effbcb0-906a-406f-8aba-247d6f27bd4d","https://identity.azure.net/hAAOiNfdTtXvW2qNUhVPODGoeuFNB7+voWnWJ68GfZ8="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"AA3A67F52460B7CADFB29AFF16D94685119EAC74","displayName":"CN=5effbcb0-906a-406f-8aba-247d6f27bd4d","endDateTime":"2023-09-13T11:52:00Z","key":null,"keyId":"45cfe9a8-1637-4d75-9f71-9b2ee6444f86","startDateTime":"2023-06-15T11:52:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}},{"id":"9d390201-843e-44d8-ab2c-fef15f3de22d","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest-dpp-rg/providers/Microsoft.DataProtection/BackupVaults/clitest-bkp-vault-persistent-bi-donotdelete"],"appDisplayName":null,"appDescription":null,"appId":"b668469b-00d3-45ad-991f-e34105cf1e2b","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-06-15T11:56:46Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"clitest-bkp-vault-persistent-bi-donotdelete","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["b668469b-00d3-45ad-991f-e34105cf1e2b","https://identity.azure.net/E6VJFJbQGRlEqoBLcwVe+UoATwY5/R4tVGWmnsjyDIM="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"80880D47161C8DDC56B53EFF86F272057A5E3D52","displayName":"CN=b668469b-00d3-45ad-991f-e34105cf1e2b","endDateTime":"2023-09-13T11:51:00Z","key":null,"keyId":"c387cfb7-9420-4e8a-93e3-c229ccbdcbb6","startDateTime":"2023-06-15T11:51:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '6596'
+      content-type:
+      - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
+      date:
+      - Fri, 30 Jun 2023 11:28:19 GMT
+      odata-version:
+      - '4.0'
+      request-id:
+      - 7f38ebb7-7422-4850-abce-9d0e5ae97c81
+      strict-transport-security:
+      - max-age=31536000
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-ms-ags-diagnostic:
+      - '{"ServerInfo":{"DataCenter":"South India","Slice":"E","Ring":"2","ScaleUnit":"001","RoleInstance":"MA1PEPF0000146C"}}'
+      x-ms-resource-unit:
+      - '1'
+    status:
+      code: 200
+      message: OK
+- request:
     body: '{"properties": {"datasourceTypes": ["Microsoft.ContainerService/managedClusters"],
       "name": "AKSPolicy1", "objectType": "BackupPolicy", "policyRules": [{"backupParameters":
       {"backupType": "Incremental", "objectType": "AzureBackupParams"}, "dataStore":

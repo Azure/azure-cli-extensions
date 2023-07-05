@@ -6,7 +6,7 @@
 import re
 import json
 from importlib import import_module
-from knack.util import CLIError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
 critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContainers/protectedItems/delete",
@@ -58,7 +58,7 @@ def get_datasource_info(datasource_type, resource_id, resource_location):
 def get_datasourceset_info(datasource_type, resource_id, resource_location):
     manifest = load_manifest(datasource_type)
     if len(resource_id.split("/")) < 3:
-        raise CLIError(resource_id + " is not a valid resource id")
+        raise InvalidArgumentValueError(resource_id + " is not a valid resource id")
 
     resource_name = resource_id.split("/")[-3]
     resource_type = "/".join(manifest["resourceType"].split("/")[:-1])
@@ -96,11 +96,12 @@ def get_backup_frequency_string(frequency, count):
 def validate_backup_schedule(datasource_type, schedule):
     manifest = load_manifest(datasource_type)
     if not manifest["policySettings"]["backupScheduleSupported"]:
-        raise CLIError("Adding Backup Schedule is not supported for Datasource Type " + datasource_type)
+        raise InvalidArgumentValueError("Adding Backup Schedule is not supported for Datasource Type " +
+                                        datasource_type)
 
     backup_freq_map = {"D": "Daily", "H": "Hourly", "W": "Weekly"}
     if backup_freq_map[schedule[0][-1]] not in manifest["policySettings"]["supportedBackupFrequency"]:
-        raise CLIError(
+        raise InvalidArgumentValueError(
             backup_freq_map[schedule[0][-1]] + " Backup Schedule is not supported for " + datasource_type + " policy"
         )
 
@@ -117,7 +118,7 @@ def get_tagging_priority(name):
 
 def truncate_id_using_scope(arm_id, scope):
     if not is_valid_resource_id(arm_id):
-        raise CLIError("Please give a valid ARM ID")
+        raise InvalidArgumentValueError("Please give a valid ARM ID")
 
     resource_params = parse_resource_id(arm_id)
     result_id = ""
@@ -387,33 +388,6 @@ def validate_recovery_point_datetime_format(aaz_str):
         dt_iso = dt_val.strftime("%Y-%m-%dT%H:%M:%S.%f0Z")  # Format datetime string
         return dt_iso
     except ValueError:
-        raise CLIError(f"Input '{date_str}' not valid datetime. Valid example: 2017-12-31T05:30:00") from ValueError
-
-
-def clean_nulls_from_json(json_obj):
-    """
-    Removes all `None` values from a valid json object, and returns a new dictionary or list.
-    This is an adhoc function to `clean_nulls_from_session_http_response` to remove null values
-    from response json object.
-    """
-    if isinstance(json_obj, dict):
-        clean_obj = {}
-        for key, val in json_obj.items():
-            if val is not None:
-                clean_obj[key] = clean_nulls_from_json(val)
-        return clean_obj
-    if isinstance(json_obj, list):
-        return [clean_nulls_from_json(val) for val in json_obj if val is not None]
-    else:
-        return json_obj
-
-
-def clean_nulls_from_session_http_response(session):
-    """
-    Removes all `null` values from http response of a session. This is temporary helper to fix handling
-    of error response. Makes `Operation returned an invalid status 'Bad Request'` more comprehensive by
-    displaying the HTTP error response.
-    """
-    clean_reponse = clean_nulls_from_json(json.loads(session.http_response.text()))
-    encoding = session.http_response.internal_response.encoding
-    session.http_response.internal_response._content = bytes(json.dumps(clean_reponse), encoding)
+        raise InvalidArgumentValueError(
+            f"Input '{date_str}' not valid datetime. Valid example: 2017-12-31T05:30:00"
+        ) from ValueError
