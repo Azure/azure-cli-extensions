@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.0.0
+++++++
+* Adding managed identity support for resource management
+
 1.6.0
 ++++++
  * Update Rooms sdk version to 1.0.0b3

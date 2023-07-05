@@ -110,12 +110,6 @@ helps['communication wait'] = """
         text: |-
                az communication wait --name "MyCommunicationResource" --resource-group "MyResourceGroup" --deleted
 """
-
-helps['communication identity'] = """
-    type: group
-    short-summary: Commands to manage user identities and their tokens for a Communication Service resource.
-"""
-
 helps['communication identity user'] = """
     type: group
     short-summary: Commands to manage user identities for a Communication Service resource.
@@ -184,6 +178,81 @@ helps['communication identity token get-for-teams-user'] = """
       - name: Get token for teams user
         text: |-
                az communication identity token get-for-teams-user --aad-token "aad-123-xyz" --client "app-id-123-xyz" --aad-user "uid"
+"""
+
+helps['communication user-identity'] = """
+    type: group
+    short-summary: Commands to manage user identities and their tokens for a Communication Service resource.
+"""
+
+helps['communication user-identity user'] = """
+    type: group
+    short-summary: Commands to manage user identities for a Communication Service resource.
+"""
+
+helps['communication user-identity user create'] = """
+    type: command
+    short-summary: "Creates a new ACS Identity."
+    examples:
+      - name: Create ACS user
+        text: |-
+               az communication user-identity user create
+"""
+
+helps['communication user-identity user delete'] = """
+    type: command
+    short-summary: "Deletes an existing ACS Identity, revokes all tokens for that ACS Identity and deletes all associated data."
+    examples:
+      - name: Delete ACS user
+        text: |-
+               az communication user-identity user delete --user "8:acs:xxxxxx"
+"""
+
+helps['communication user-identity issue-access-token'] = """
+    type: command
+    short-summary: "Issues a new access token with the specified scopes for a given User Identity. If no User Identity is specified, creates a new User Identity as well."
+    examples:
+      - name: Issue access token
+        text: |-
+               az communication user-identity issue-access-token --scope chat
+      - name: Issue access token with multiple scopes and user
+        text: |-
+               az communication user-identity issue-access-token --scope chat voip --userid "8:acs:xxxxxx"
+"""
+
+helps['communication user-identity token'] = """
+    type: group
+    short-summary: Commands to manage user tokens for a Communication Service resource.
+"""
+
+helps['communication user-identity token issue'] = """
+    type: command
+    short-summary: "Issues a new access token with the specified scopes for a given User Identity. If no User Identity is specified, creates a new User Identity as well."
+    examples:
+      - name: Issue access token
+        text: |-
+               az communication user-identity token issue --scope chat
+      - name: Issue access token with multiple scopes and user
+        text: |-
+               az communication user-identity token issue --scope chat voip --user "8:acs:xxxxxx"
+"""
+
+helps['communication user-identity token revoke'] = """
+    type: command
+    short-summary: "Revokes all access tokens for the specific ACS Identity."
+    examples:
+      - name: Revoke access tokens
+        text: |-
+               az communication user-identity token revoke --user "8:acs:xxxxxx"
+"""
+
+helps['communication user-identity token get-for-teams-user'] = """
+    type: command
+    short-summary: "Exchanges an Azure Active Directory (Azure AD) access token of a Teams user for a new ACS Identity access token with a matching expiration time."
+    examples:
+      - name: Get token for teams user
+        text: |-
+               az communication user-identity token get-for-teams-user --aad-token "aad-123-xyz" --client "app-id-123-xyz" --aad-user "uid"
 """
 
 helps['communication sms'] = """
