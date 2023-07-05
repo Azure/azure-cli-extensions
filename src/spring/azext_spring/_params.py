@@ -30,7 +30,8 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_build_env, validate_target_module, validate_runtime_version,
                                      validate_acs_ssh_or_warn, validate_apm_properties, validate_apm_secrets,
                                      validate_apm_not_exist, validate_apm_update, validate_apm_reference,
-                                     validate_cert_reference)
+                                     validate_apm_reference_and_enterprise_tier, validate_cert_reference,
+                                     validate_build_cert_reference, validate_acs_create)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
@@ -40,7 +41,7 @@ from ._app_managed_identity_validator import (validate_create_app_with_user_iden
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
-from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import (SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
+from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import (ConfigurationServiceGeneration, SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
 
 name_type = CLIArgumentType(options_list=[
@@ -60,7 +61,6 @@ cpu_type = CLIArgumentType(type=str, help='CPU resource quantity. Should be 250m
 memory_type = CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi, 1536Mi, 2560Mi, 3584Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_memory)
 build_cpu_type = CLIArgumentType(type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.', validator=validate_build_cpu)
 build_memory_type = CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_build_memory)
-apm_type = CLIArgumentType(nargs='*', help='Space-separated list of APM names.', validator=validate_apm_reference)
 
 
 # pylint: disable=too-many-statements
@@ -156,10 +156,16 @@ def load_arguments(self, _):
         c.argument('enable_application_configuration_service',
                    action='store_true',
                    options_list=['--enable-application-configuration-service', '--enable-acs'],
+                   arg_group="Application Configuration Service",
                    help='(Enterprise Tier Only) Enable Application Configuration Service.')
+        c.argument('application_configuration_service_generation',
+                   arg_group="Application Configuration Service",
+                   arg_type=get_enum_type(ConfigurationServiceGeneration),
+                   options_list=['--application-configuration-service-generation', '--acs-gen'],
+                   validator=validate_acs_create,
+                   help='(Enterprise Tier Only) Application Configuration Service Generation to enable.')
         c.argument('enable_application_live_view',
                    action='store_true',
-                   is_preview=True,
                    options_list=['--enable-application-live-view', '--enable-alv'],
                    help='(Enterprise Tier Only) Enable Application Live View.')
         c.argument('enable_service_registry',
@@ -191,7 +197,6 @@ def load_arguments(self, _):
                         'List all plans by running `az spring list-marketplace-plan -o table`.')
         c.argument('enable_application_accelerator',
                    action='store_true',
-                   is_preview=True,
                    options_list=['--enable-application-accelerator', '--enable-app-acc'],
                    help='(Enterprise Tier Only) Enable Application Accelerator.')
         c.argument('managed_environment',
@@ -463,7 +468,6 @@ def load_arguments(self, _):
             c.argument('jvm_options', type=str, validator=validate_jvm_options,
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash parse error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
             c.argument('env', env_type)
-            c.argument('apms', apm_type)
             c.argument('disable_probe', arg_type=get_three_state_flag(), help='If true, disable the liveness and readiness probe.')
             c.argument('main_entry', options_list=[
                 '--main-entry', '-m'], help="The path to the .NET executable relative to zip root.")
@@ -519,6 +523,11 @@ def load_arguments(self, _):
                 'build_cpu', arg_type=build_cpu_type, default="1")
             c.argument(
                 'build_memory', arg_type=build_memory_type, default="2Gi")
+            c.argument('apms', nargs='*', help='(Enterprise Tier Only) Space-separated APM names.',
+                       validator=validate_apm_reference_and_enterprise_tier)
+            c.argument('build_certificates', nargs='*',
+                       help='(Enterprise Tier Only) Space-separated certificate names, the certificates are used during build time.',
+                       validator=validate_build_cert_reference)
 
     with self.argument_context('spring app deploy') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)
@@ -740,7 +749,7 @@ def load_arguments(self, _):
             c.argument('build_env', build_env_type)
             c.argument('source_path', arg_type=source_path_type, validator=validate_source_path)
             c.argument('artifact_path', help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_artifact_path)
-            c.argument('apms', apm_type)
+            c.argument('apms', nargs='*', help='Space-separated APM names.', validator=validate_apm_reference)
             c.argument('certificates', nargs='*', help='Space-separated certificate names.', validator=validate_cert_reference)
             c.argument('disable_validation', arg_type=get_three_state_flag(), help='If true, disable jar validation.')
 
@@ -808,6 +817,10 @@ def load_arguments(self, _):
         with self.argument_context('spring application-configuration-service {}'.format(scope)) as c:
             c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
 
+    for scope in ['create', 'update']:
+        with self.argument_context('spring application-configuration-service {}'.format(scope)) as c:
+            c.argument('generation', arg_type=get_enum_type(ConfigurationServiceGeneration), help='Generation of Application Configuration Service.')
+
     for scope in ['add', 'update']:
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:
             c.argument('patterns',
@@ -824,6 +837,7 @@ def load_arguments(self, _):
             c.argument('host_key_algorithm', help='Host key algorithm of the added config.')
             c.argument('private_key', help='Private_key of the added config.', validator=validate_acs_ssh_or_warn)
             c.argument('host_key_check', help='Strict host key checking of the added config which is used in SSH authentication. If false, ignore errors with host key.')
+            c.argument('ca_cert_name', help='CA certificate name.')
 
     for scope in ['add', 'update', 'remove']:
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:
@@ -859,6 +873,10 @@ def load_arguments(self, _):
                    help='Sensitive properties for environment variables. Once put, it will be encrypted and not returned.'
                         'Format "key[=value]" and separated by space.')
         c.argument('allowed_origins', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed origins to make cross-site requests. The special value `*` allows all domains.")
+        c.argument('allowed_origin_patterns',
+                   arg_group='Cross-origin Resource Sharing (CORS)',
+                   options_list=['--allowed-origin-patterns', '--allow-origin-patterns'],
+                   help="Comma-separated list of allowed origin patterns to make cross-site requests.")
         c.argument('allowed_methods', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed HTTP methods on cross-site requests. The special value `*` allows all methods.")
         c.argument('allowed_headers', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed headers in cross-site requests. The special value `*` allows actual requests to send any header.")
         c.argument('max_age', arg_group='Cross-origin Resource Sharing (CORS)', type=int,
@@ -871,6 +889,8 @@ def load_arguments(self, _):
                    options_list=['--enable-certificate-verification', '--enable-cert-verify'],
                    help='If true, will verify certificate in TLS connection from gateway to app.')
         c.argument('certificate_names', arg_group='Client Certificate Authentication', help="Comma-separated list of certificate names in Azure Spring Apps.")
+        c.argument('addon_configs_json', arg_group='Add-on Configurations', help="JSON string of add-on configurations.")
+        c.argument('addon_configs_file', arg_group='Add-on Configurations', help="The file path of JSON string of add-on configurations.")
 
     for scope in ['spring gateway custom-domain',
                   'spring api-portal custom-domain']:

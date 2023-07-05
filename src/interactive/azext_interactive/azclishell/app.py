@@ -859,7 +859,17 @@ class AzInteractiveShell(object):
                 self.threads.append(thread)
                 result = None
             else:
-                result = invocation.execute(args)
+                try:
+                    result = invocation.execute(args)
+                    # Prevent users from exiting the entire az interactive by using Ctrl+C during command execution
+                except KeyboardInterrupt:
+                    result = None
+                    self.last_exit_code = 1
+                except SystemExit as ex:
+                    # prevent errors caused by uncompleted command loading
+                    if ex.code == 2 and self.command_table_thread.is_alive():
+                        print_styled_text([(Style.ERROR, "Command loading is not complete, please wait...")])
+                    result = None
 
             self.last_exit_code = 0
             if result and result.result is not None:

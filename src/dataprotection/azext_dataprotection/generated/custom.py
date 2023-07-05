@@ -250,46 +250,6 @@ def dataprotection_backup_instance_validate_for_restore(client,
                        parameters=parameters)
 
 
-def dataprotection_recovery_point_list(client,
-                                       resource_group_name,
-                                       vault_name,
-                                       backup_instance_name,
-                                       filter_=None,
-                                       skip_token=None):
-    return client.list(resource_group_name=resource_group_name,
-                       vault_name=vault_name,
-                       backup_instance_name=backup_instance_name,
-                       filter=filter_,
-                       skip_token=skip_token)
-
-
-def dataprotection_recovery_point_show(client,
-                                       resource_group_name,
-                                       vault_name,
-                                       backup_instance_name,
-                                       recovery_point_id):
-    return client.get(resource_group_name=resource_group_name,
-                      vault_name=vault_name,
-                      backup_instance_name=backup_instance_name,
-                      recovery_point_id=recovery_point_id)
-
-
-def dataprotection_job_list(client,
-                            resource_group_name,
-                            vault_name):
-    return client.list(resource_group_name=resource_group_name,
-                       vault_name=vault_name)
-
-
-def dataprotection_job_show(client,
-                            resource_group_name,
-                            vault_name,
-                            job_id):
-    return client.get(resource_group_name=resource_group_name,
-                      vault_name=vault_name,
-                      job_id=job_id)
-
-
 def dataprotection_restorable_time_range_find(client,
                                               resource_group_name,
                                               vault_name,

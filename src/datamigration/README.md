@@ -39,6 +39,11 @@ az datamigration login-migration --src-sql-connection-str  "data source=serverna
 az datamigration tde-migration --source-sql-connection-string "data source=servername;user id=userid;password=;initial catalog=master;TrustServerCertificate=True" --target-subscription-id "00000000-0000-0000-0000-000000000000" --target-resource-group-name "ResourceGroupName" --target-managed-instance-name "TargetManagedInstanceName" --network-share-path "\\NetworkShare\Folder" --network-share-domain "" --network-share-user-name "NetworkShareUserName" --network-share-password "" --database-name "TdeDb_0" "TdeDb_1" "TdeDb_2"
 ```
 
+##### Sql-server-schema #####
+```
+az datamigration sql-server-schema --action "MigrateSchema" --src-sql-connection-str  "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str  "Server=;Initial Catalog=;User ID=;Password=" --input-script-file-path "C:\inputFile" --output-folder "C:\OutputFolder" --display-result --overwrite
+```
+
 #### datamigration sql-managed-instance ####
 ##### Create (Backup source Fileshare) #####
 ```

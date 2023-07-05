@@ -17,7 +17,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
 from .vendored_sdks.appplatform.v2023_05_01_preview.models import (ApmReference, CertificateReference)
-from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import ApmType
+from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
 
 from ._resource_quantity import validate_cpu as validate_and_normalize_cpu
 from ._resource_quantity import \
@@ -345,6 +345,12 @@ def _is_valid_app_and_profile_name(pattern):
     return len(parts) == 2 and _is_valid_app_name(parts[0]) and _is_valid_profile_name(parts[1])
 
 
+def validate_acs_create(namespace):
+    if namespace.application_configuration_service_generation is not None:
+        if namespace.enable_application_configuration_service is False:
+            raise ArgumentUsageError("--application-configuration-service-generation can only be set when enable application configuration service.")
+
+
 def validate_gateway_update(namespace):
     _validate_sso(namespace)
     validate_cpu(namespace)
@@ -518,18 +524,26 @@ def validate_apm_update(cmd, namespace):
 def validate_apm_reference(cmd, namespace):
     apm_names = namespace.apms
 
-    result = []
     if not apm_names:
-        return result
+        return
 
     service_resource_id = get_service_resource_id(cmd, namespace)
 
+    result = []
     for apm_name in apm_names:
         resource_id = '{}/apms/{}'.format(service_resource_id, apm_name)
         apm_reference = ApmReference(resource_id=resource_id)
         result.append(apm_reference)
 
     namespace.apms = result
+
+
+def validate_apm_reference_and_enterprise_tier(cmd, namespace):
+    if namespace.apms is not None and namespace.resource_group and namespace.service and not is_enterprise_tier(
+            cmd, namespace.resource_group, namespace.service):
+        raise ArgumentUsageError("'--apms' only supports for Enterprise tier Spring instance.")
+
+    validate_apm_reference(cmd, namespace)
 
 
 def get_service_resource_id(cmd, namespace):
@@ -542,14 +556,33 @@ def get_service_resource_id(cmd, namespace):
 def validate_cert_reference(cmd, namespace):
     cert_names = namespace.certificates
 
-    result = []
     if not cert_names:
-        return result
+        return
 
+    result = []
+    get_cert_resource_id(cert_names, cmd, namespace, result)
+
+    namespace.certificates = result
+
+
+def get_cert_resource_id(cert_names, cmd, namespace, result):
     service_resource_id = get_service_resource_id(cmd, namespace)
     for cert_name in cert_names:
         resource_id = '{}/certificates/{}'.format(service_resource_id, cert_name)
         cert_reference = CertificateReference(resource_id=resource_id)
         result.append(cert_reference)
 
-    namespace.certificates = result
+
+def validate_build_cert_reference(cmd, namespace):
+    cert_names = namespace.build_certificates
+    if cert_names is not None and namespace.resource_group and namespace.service and not is_enterprise_tier(
+            cmd, namespace.resource_group, namespace.service):
+        raise ArgumentUsageError("'--build-certificates' only supports for Enterprise tier Spring instance.")
+
+    if not cert_names:
+        return
+
+    result = []
+    get_cert_resource_id(cert_names, cmd, namespace, result)
+
+    namespace.build_certificates = result
