@@ -100,7 +100,7 @@ class ContainerInsights(DefaultExtension):
                 if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
                     useAADAuth = True
         if useAADAuth:
-            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2022-06-01"
+            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2021-04-01"
             for _ in range(3):
                 try:
                     send_raw_request(cmd.cli_ctx, "GET", association_url,)
@@ -114,7 +114,7 @@ class ContainerInsights(DefaultExtension):
                     pass  # its OK to ignore the exception since MSI auth in preview
 
         if isDCRAExists:
-            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2022-06-01"
+            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2021-04-01"
             for _ in range(3):
                 try:
                     send_raw_request(cmd.cli_ctx, "DELETE", association_url,)
@@ -495,14 +495,6 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
                 namspaces = dataCollectionSettings["namespaces"]
                 if isinstance(namspaces, list) is False:
                     raise InvalidArgumentValueError('namespaces must be an array type')
-            if 'enableContainerLogV2' in dataCollectionSettings.keys():
-                enableContainerLogV2Value = dataCollectionSettings["enableContainerLogV2"]
-                if not isinstance(enableContainerLogV2Value, bool):
-                    raise InvalidArgumentValueError('enableContainerLogV2Value value MUST be either true or false')
-            if 'streams' in dataCollectionSettings.keys():
-                streams = dataCollectionSettings["streams"]
-                if isinstance(streams, list) is False:
-                    raise InvalidArgumentValueError('streams must be an array type')
             extensionSettings["dataCollectionSettings"] = dataCollectionSettings
 
     workspace_resource_id = workspace_resource_id.strip()
@@ -681,7 +673,7 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
             if (cluster_region not in region_ids):
                 raise ClientRequestError(f"Data Collection Rule Associations are not supported for cluster region {cluster_region}")
 
-    dcr_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{dcr_resource_id}?api-version=2022-06-01"
+    dcr_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{dcr_resource_id}?api-version=2021-04-01"
     # get existing tags on the container insights extension DCR if the customer added any
     existing_tags = get_existing_container_insights_extension_dcr_tags(cmd, dcr_url)
 
@@ -743,7 +735,7 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
             },
         }
     )
-    association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2022-06-01"
+    association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2021-04-01"
     for _ in range(3):
         try:
             send_raw_request(cmd.cli_ctx, "PUT", association_url, body=association_body,)
