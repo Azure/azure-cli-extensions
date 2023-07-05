@@ -119,14 +119,14 @@ def start_ssh_tunnel(op_info):
     print_ssh_logs = False
     if not set(['-v', '-vv', '-vvv']).isdisjoint(op_info.ssh_args):
         print_ssh_logs = True
-    else:
-        op_info.ssh_args = ['-v'] + op_info.ssh_args
 
     if '-E' in op_info.ssh_args:
         raise azclierror.BadRequestError("Can't use -E ssh parameter when using --rdp")
 
     command = [ssh_utils.get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host(),
                "-l", op_info.local_user]
+    if not print_ssh_logs:
+        command = command + ['-v']
     command = command + op_info.build_args() + op_info.ssh_args
 
     logger.debug("Running ssh command %s", ' '.join(command))
