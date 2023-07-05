@@ -15,8 +15,6 @@ from azure.storage.blob import BlobClient, BlobType
 from knack.log import get_logger
 from knack.util import CLIError
 from oras.client import OrasClient
-from azure.cli.core.commands import LongRunningOperation
-from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 
 from azext_aosm._configuration import ArtifactConfig, HelmPackageConfig
 

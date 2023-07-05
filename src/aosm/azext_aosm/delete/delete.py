@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------
 """Contains class for deploying generated definitions using the Python SDK."""
 from knack.log import get_logger
-from typing import Union
 
 from azext_aosm._configuration import (
     Configuration,

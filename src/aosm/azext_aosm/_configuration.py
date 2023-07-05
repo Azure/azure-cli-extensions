@@ -5,7 +5,7 @@ import os
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 from azure.cli.core.azclierror import InvalidArgumentValueError, ValidationError
 
@@ -160,12 +160,12 @@ class Configuration(abc.ABC):
 
         return updated_path
 
-    @abc.abstractproperty
+    @property
     def output_directory_for_build(self) -> Path:
         """Base class method to ensure subclasses implement this function."""
         raise NotImplementedError("Subclass must define property")
 
-    @abc.abstractproperty
+    @property
     def acr_manifest_name(self) -> str:
         """Base class method to ensure subclasses implement this function."""
         raise NotImplementedError("Subclass must define property")

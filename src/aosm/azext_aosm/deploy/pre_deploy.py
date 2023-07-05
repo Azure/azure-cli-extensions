@@ -9,7 +9,6 @@ from azure.cli.core.azclierror import AzCLIError
 from azure.core import exceptions as azure_exceptions
 from azure.mgmt.resource.resources.models import ResourceGroup
 from knack.log import get_logger
-from typing import Union
 
 from azext_aosm._configuration import (
     Configuration,

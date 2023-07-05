@@ -8,7 +8,7 @@ import os
 import shutil
 from dataclasses import asdict
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 
 from azure.cli.core.azclierror import (
     CLIInternalError,
