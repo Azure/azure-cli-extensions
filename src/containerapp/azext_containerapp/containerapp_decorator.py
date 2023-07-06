@@ -656,7 +656,6 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
 
         # Update image
         containerapp_def["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
-
         return containerapp_def
 
     def set_up_create_containerapp_repo(self, app, r, env, env_rg):
