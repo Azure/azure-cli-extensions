@@ -449,7 +449,15 @@ def create_containerapp(cmd,
                         registry_identity=None,
                         workload_profile_name=None,
                         termination_grace_period=None,
-                        secret_volume_mount=None):
+                        secret_volume_mount=None,
+                        source=None,
+                        repo=None,
+                        token=None,
+                        branch=None,
+                        context_path=None,
+                        service_principal_client_id=None,
+                        service_principal_client_secret=None,
+                        service_principal_tenant_id=None):
     raw_parameters = locals()
 
     containerapp_create_decorator = ContainerAppCreateDecorator(
@@ -465,6 +473,7 @@ def create_containerapp(cmd,
     r = containerapp_create_decorator.create_containerapp(containerapp_def)
     containerapp_def = containerapp_create_decorator.construct_containerapp_for_post_process(containerapp_def, r)
     r = containerapp_create_decorator.post_process_containerapp(containerapp_def, r)
+    
     return r
 
 
