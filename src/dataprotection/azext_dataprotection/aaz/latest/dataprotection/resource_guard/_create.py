@@ -54,15 +54,6 @@ class Create(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Identity"
-
-        _args_schema = cls._args_schema
-        _args_schema.type = AAZStrArg(
-            options=["--type"],
-            arg_group="Identity",
-            help="The identityType which can be either SystemAssigned or None",
-        )
-
         # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
@@ -179,14 +170,9 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("eTag", AAZStrType, ".e_tag")
-            _builder.set_prop("identity", AAZObjectType)
             _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
-
-            identity = _builder.get(".identity")
-            if identity is not None:
-                identity.set_prop("type", AAZStrType, ".type")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -218,7 +204,6 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.identity = AAZObjectType()
             _schema_on_200_201.location = AAZStrType()
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
@@ -232,17 +217,6 @@ class Create(AAZCommand):
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
-
-            identity = cls._schema_on_200_201.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
-            )
-            identity.type = AAZStrType()
 
             properties = cls._schema_on_200_201.properties
             properties.allow_auto_approvals = AAZBoolType(

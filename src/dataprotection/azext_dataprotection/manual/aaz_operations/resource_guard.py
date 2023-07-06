@@ -5,13 +5,9 @@
 
 # pylint: disable=protected-access
 # pylint: disable=line-too-long
-from azure.cli.core.aaz import (
-    AAZStrArg,
-    AAZArgEnum,
-    AAZUndefined
-)
+from azure.cli.core.aaz import AAZStrArg, AAZUndefined
 from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Update as _Update
-from azext_dataprotection.manual.enums import get_resource_type_values, get_critical_operation_values
+from azext_dataprotection.manual.enums import get_resource_type_values
 from knack.log import get_logger
 from ..helpers import critical_operation_map
 
@@ -32,9 +28,6 @@ class Update(_Update):
             help="Type of the resource associated with the protected operations.",
             enum=get_resource_type_values()
         )
-
-        enum = get_critical_operation_values()
-        _args_schema.critical_operation_exclusion_list.Element.enum = AAZArgEnum(enum, case_sensitive=False)
         return cls._args_schema
 
     def pre_operations(self):
