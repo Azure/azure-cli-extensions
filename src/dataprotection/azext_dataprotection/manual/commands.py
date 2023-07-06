@@ -56,7 +56,6 @@ def load_command_table(self, _):
 
     with self.command_group('dataprotection resource-guard', exception_handler=exception_handler) as g:
         g.custom_command('list-protected-operations', 'dataprotection_resource_guard_list_protected_operations')
-        g.custom_command('update', 'dataprotection_resource_guard_update')
 
     from .aaz_operations.backup_instance import (
         ValidateAndCreate as BackupInstanceCreate,

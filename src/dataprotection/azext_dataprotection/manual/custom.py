@@ -42,24 +42,6 @@ def dataprotection_resource_guard_list_protected_operations(cmd, resource_group_
     return resource_type_protected_operation
 
 
-def dataprotection_resource_guard_update(cmd,
-                                         resource_group_name,
-                                         resource_guard_name,
-                                         tags=None,
-                                         type_=None,
-                                         resource_type=None,
-                                         critical_operation_exclusion_list=None):
-    from .aaz_operations.resource_guard import Update as ResourceGuardUpdate
-    return ResourceGuardUpdate(cli_ctx=cmd.cli_ctx)(command_args={
-        "resource_group": resource_group_name,
-        "resource_guard_name": resource_guard_name,
-        "tags": tags,
-        "type": type_,
-        "resource_type": resource_type,
-        "critical_operation_exclusion_list": critical_operation_exclusion_list
-    })
-
-
 def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource_group_name, backup_instance,
                                                        no_wait=False):
 

@@ -229,14 +229,3 @@ def load_arguments(self, _):
         c.argument('resource_guard_name', options_list=['--resource-guard-name', '--name', '-n'], type=str, help='The name of '
                    'ResourceGuard', id_part='name')
         c.argument('resource_type', arg_type=get_enum_type(get_resource_type_values()), help='Type of the resource associated with the protected operations')
-
-    with self.argument_context('dataprotection resource-guard update') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('resource_guard_name', options_list=['--resource-guard-name', '--name', '-n'], type=str, help='The name of '
-                   'ResourceGuard', id_part='name')
-        c.argument('tags', tags_type)
-        c.argument('type_', options_list=['--type'], type=str, help='The identityType which can be either '
-                   'SystemAssigned or None', arg_group='Identity')
-        c.argument('resource_type', arg_type=get_enum_type(get_resource_type_values()), help='Type of the resource associated with the protected operations')
-        c.argument('critical_operation_exclusion_list', arg_type=get_enum_type(get_critical_operation_values()), nargs='+', help='List of critical operations which are '
-                   'not protected by this resourceGuard')
