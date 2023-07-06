@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 class ListCredential(AAZCommand):
-    """Gets the endpoint access credentials to the resource.
+    """Get the endpoint access credentials to the resource.
     """
 
     _aaz_info = {
