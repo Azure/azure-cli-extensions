@@ -142,26 +142,3 @@ class RestoreTrigger(_RestoreTrigger):
         @property
         def content(self):
             return convert_dict_keys_snake_to_camel(self.ctx.args.restore_request_object.to_serialized_data())
-
-
-class ValidateForBackup(_ValidateForBackup):
-
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-
-        args_schema.backup_instance.data_source_set_info.resource_id._required = False
-        args_schema.backup_instance.datasource_auth_credentials.\
-            secret_store_based_auth_credentials.secret_store_resource.secret_store_type._required = False
-
-        return args_schema
-
-    class BackupInstancesValidateForBackup(_ValidateForBackup.BackupInstancesValidateForBackup):
-
-        @property
-        def content(self):
-            body = convert_dict_keys_snake_to_camel(self.ctx.args.backup_instance.to_serialized_data())
-
-            return {
-                "backupInstance": body
-            }

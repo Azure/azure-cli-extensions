@@ -62,8 +62,32 @@ def dataprotection_resource_guard_update(cmd,
 
 def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource_group_name, backup_instance,
                                                        no_wait=False):
-    from .aaz_operations.backup_instance import ValidateForBackup
-    return ValidateForBackup(cli_ctx=cmd.cli_ctx)(command_args={
+
+    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import ValidateForBackup as _ValidateForBackup
+
+    class Validate(_ValidateForBackup):
+
+        @classmethod
+        def _build_arguments_schema(cls, *args, **kwargs):
+            args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+            args_schema.backup_instance.data_source_set_info.resource_id._required = False
+            args_schema.backup_instance.datasource_auth_credentials.\
+                secret_store_based_auth_credentials.secret_store_resource.secret_store_type._required = False
+
+            return args_schema
+
+        class BackupInstancesValidateForBackup(_ValidateForBackup.BackupInstancesValidateForBackup):
+
+            @property
+            def content(self):
+                body = helper.convert_dict_keys_snake_to_camel(backup_instance['properties'])
+
+                return {
+                    "backupInstance": body
+                }
+
+    return Validate(cli_ctx=cmd.cli_ctx)(command_args={
         "vault_name": vault_name,
         "resource_group": resource_group_name,
         "backup_instance": backup_instance['properties'],
