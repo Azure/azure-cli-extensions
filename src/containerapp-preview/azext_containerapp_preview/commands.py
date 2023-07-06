@@ -24,7 +24,8 @@ def transform_containerapp_list_output(apps):
 
 
 # This method cannot directly rely on GA resources.
-# This will cause all overload scenarios to throw a warning if the GA resource does not exist.
+# When the switch core.use_command_index is turned off, possibly unrelated commands may also trigger unnecessary loads.
+# It will throw a warning if the GA resource does not exist.
 def load_command_table(self, _):
 
     with self.command_group('containerapp') as g:

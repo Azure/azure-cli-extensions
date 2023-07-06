@@ -9,7 +9,8 @@ from ._validators import validate_env_name_or_id
 
 
 # This method cannot directly rely on GA resources.
-# This will cause all overload scenarios to throw a warning if the GA resource does not exist.
+# When the switch core.use_command_index is turned off, possibly unrelated commands may also trigger unnecessary loads.
+# It will throw a warning if the GA resource does not exist.
 def load_arguments(self, _):
 
     with self.argument_context('containerapp create') as c:
