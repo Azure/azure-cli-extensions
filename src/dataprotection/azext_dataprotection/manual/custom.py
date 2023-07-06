@@ -28,7 +28,7 @@ from azext_dataprotection.manual import backupcenter_helper, helpers as helper
 logger = get_logger(__name__)
 
 
-def resource_guard_list_protected_operations(cmd, resource_group_name, resource_guard_name, resource_type):
+def dataprotection_resource_guard_list_protected_operations(cmd, resource_group_name, resource_guard_name, resource_type):
     from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Show as ResourceGuardShow
     resource_guard_object = ResourceGuardShow(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
@@ -40,6 +40,24 @@ def resource_guard_list_protected_operations(cmd, resource_group_name, resource_
         if resource_type in protected_operation.get('vaultCriticalOperation'):
             resource_type_protected_operation.append(protected_operation)
     return resource_type_protected_operation
+
+
+def dataprotection_resource_guard_update(cmd,
+                                         resource_group_name,
+                                         resource_guard_name,
+                                         tags=None,
+                                         type_=None,
+                                         resource_type=None,
+                                         critical_operation_exclusion_list=None):
+    from .aaz_operations.resource_guard import Update as ResourceGuardUpdate
+    return ResourceGuardUpdate(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "resource_guard_name": resource_guard_name,
+        "tags": tags,
+        "type": type_,
+        "resource_type": resource_type,
+        "critical_operation_exclusion_list": critical_operation_exclusion_list
+    })
 
 
 def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource_group_name, backup_instance,

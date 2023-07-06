@@ -81,8 +81,8 @@ class Update(_Update):
             arg_group="Identity",
             help="The identityType which can be either SystemAssigned or None",
         )
-        enum = get_critical_operation_values()
-        _args_schema.critical_operation_exclusion_list.Element.enum = AAZArgEnum(enum, case_sensitive=False)
+        # enum = get_critical_operation_values()
+        # _args_schema.critical_operation_exclusion_list.Element.enum = AAZArgEnum(enum, case_sensitive=False)
         return cls._args_schema
 
     def pre_operations(self):
@@ -90,7 +90,7 @@ class Update(_Update):
         resource_type = self.ctx.args.resource_type
         if resource_type and critical_operation_exclusion_list.to_serialized_data() != AAZUndefined:
             for idx, critical_operation in enumerate(critical_operation_exclusion_list):
-                critical_operation_id = critical_operation_map.get(str(critical_operation))
+                critical_operation_id = critical_operation_map.get(str(critical_operation), str(critical_operation))
                 critical_operation_exclusion_list[idx] = str(resource_type) + critical_operation_id
         else:
             if critical_operation_exclusion_list.to_serialized_data() != AAZUndefined:

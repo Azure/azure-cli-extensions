@@ -213,7 +213,6 @@ class ValidateForBackup(_ValidateForBackup):
             help="Backup Instance",
             required=True,
         )
-        print("args schema")
         return cls._args_schema
 
     class BackupInstancesValidateForBackup(_ValidateForBackup.BackupInstancesValidateForBackup):

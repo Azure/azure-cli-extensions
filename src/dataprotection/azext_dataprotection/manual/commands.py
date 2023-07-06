@@ -58,7 +58,8 @@ def load_command_table(self, _):
         g.custom_command('list-from-resourcegraph', "dataprotection_job_list_from_resourcegraph", client_factory=cf_resource_graph_client)
 
     with self.command_group('dataprotection resource-guard', exception_handler=exception_handler) as g:
-        g.custom_command('list-protected-operations', 'resource_guard_list_protected_operations')
+        g.custom_command('list-protected-operations', 'dataprotection_resource_guard_list_protected_operations')
+        g.custom_command('update', 'dataprotection_resource_guard_update')
 
     from .aaz_operations.backup_instance import (
         AdhocBackup as BackupInstanceAdhocBackup,
