@@ -73,6 +73,5 @@ def load_command_table(self, _):
     from .aaz_operations.recovery_point import List as RecoveryPointList
     self.command_table['dataprotection recovery-point list'] = RecoveryPointList(loader=self)
 
-    from .aaz_operations.resource_guard import Create as ResourceGuardCreate, Update as ResourceGuardUpdate
-    self.command_table['dataprotection resource-guard create'] = ResourceGuardCreate(loader=self)
+    from .aaz_operations.resource_guard import Update as ResourceGuardUpdate
     self.command_table['dataprotection resource-guard update'] = ResourceGuardUpdate(loader=self)

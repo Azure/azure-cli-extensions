@@ -77,6 +77,16 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        # define Arg Group "Identity"
+
+        _args_schema = cls._args_schema
+        _args_schema.type = AAZStrArg(
+            options=["--type"],
+            arg_group="Identity",
+            help="The identityType which can be either SystemAssigned or None",
+            nullable=True,
+        )
+
         # define Arg Group "Parameters"
         return cls._args_schema
 
@@ -299,8 +309,13 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("identity", AAZObjectType)
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("type", AAZStrType, ".type")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -335,6 +350,7 @@ class _UpdateHelper:
         if cls._schema_resource_guard_resource_read is not None:
             _schema.e_tag = cls._schema_resource_guard_resource_read.e_tag
             _schema.id = cls._schema_resource_guard_resource_read.id
+            _schema.identity = cls._schema_resource_guard_resource_read.identity
             _schema.location = cls._schema_resource_guard_resource_read.location
             _schema.name = cls._schema_resource_guard_resource_read.name
             _schema.properties = cls._schema_resource_guard_resource_read.properties
@@ -352,6 +368,7 @@ class _UpdateHelper:
         resource_guard_resource_read.id = AAZStrType(
             flags={"read_only": True},
         )
+        resource_guard_resource_read.identity = AAZObjectType()
         resource_guard_resource_read.location = AAZStrType()
         resource_guard_resource_read.name = AAZStrType(
             flags={"read_only": True},
@@ -365,6 +382,17 @@ class _UpdateHelper:
         resource_guard_resource_read.type = AAZStrType(
             flags={"read_only": True},
         )
+
+        identity = _schema_resource_guard_resource_read.identity
+        identity.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
+        identity.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+            flags={"read_only": True},
+        )
+        identity.type = AAZStrType()
 
         properties = _schema_resource_guard_resource_read.properties
         properties.allow_auto_approvals = AAZBoolType(
@@ -427,6 +455,7 @@ class _UpdateHelper:
 
         _schema.e_tag = cls._schema_resource_guard_resource_read.e_tag
         _schema.id = cls._schema_resource_guard_resource_read.id
+        _schema.identity = cls._schema_resource_guard_resource_read.identity
         _schema.location = cls._schema_resource_guard_resource_read.location
         _schema.name = cls._schema_resource_guard_resource_read.name
         _schema.properties = cls._schema_resource_guard_resource_read.properties
