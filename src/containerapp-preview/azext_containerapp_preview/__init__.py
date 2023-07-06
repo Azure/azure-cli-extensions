@@ -23,6 +23,7 @@ class ContainerappPreviewCommandsLoader(AzCommandsLoader):
     def load_command_table(self, args):
         from azext_containerapp_preview.commands import load_command_table
 
+        # When the switch core.use_command_index is turned off, possibly unrelated commands may also trigger unnecessary loads.
         # Only the containerapp related commands can ask the user to install the containerapp extension with target version
         if len(args) > 0 and args[0] == GA_CONTAINERAPP_EXTENSION_NAME:
             if not _get_or_add_extension(self, GA_CONTAINERAPP_EXTENSION_NAME):
@@ -33,7 +34,8 @@ class ContainerappPreviewCommandsLoader(AzCommandsLoader):
     def load_arguments(self, command):
         from azext_containerapp_preview._params import load_arguments
 
-        # Only the containerapp related commands can ask the user to install the containerapp extension with target version
+        # When the switch core.use_command_index is turned off, possibly unrelated commands may also trigger unnecessary loads.
+        # Only the containerapp related commands can trigger the user to install the containerapp extension with target version
         if command is not None and command.startswith(GA_CONTAINERAPP_EXTENSION_NAME):
             if not _get_or_add_extension(self, GA_CONTAINERAPP_EXTENSION_NAME):
                 return
