@@ -22,6 +22,8 @@ def load_command_table(self, _):
 
     with self.command_group('powerbi embedded-capacity', powerbidedicated_custom_capacities, is_preview=True,
                             client_factory=cf_capacities) as g:
+        from azext_powerbidedicated.custom import EmbeddedCapacityCreate
+        # self.command_table['powerbi embedded-capacity create'] = EmbeddedCapacityCreate(loader=self)
         g.custom_command('create', 'create_powerbi_embedded_capacity', supports_no_wait=True)
         g.custom_command('update', 'update_powerbi_embedded_capacity', supports_no_wait=True)
         g.custom_command('delete', 'delete_powerbi_embedded_capacity', supports_no_wait=True, confirmation=True)

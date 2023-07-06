@@ -7,8 +7,17 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
-
+from .aaz.latest.powerbi.embedded_capacity._create import Create as _EmbeddedCapacityCreate
 from azure.cli.core.util import sdk_no_wait
+
+
+class EmbeddedCapacityCreate(_EmbeddedCapacityCreate):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.administration_members._required = False
+        return args_schema
 
 
 def create_powerbi_embedded_capacity(client,
