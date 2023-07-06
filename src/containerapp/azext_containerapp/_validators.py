@@ -23,7 +23,7 @@ logger = get_logger(__name__)
 # called directly from custom method bc otherwise it disrupts the --environment auto RID functionality
 def validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait, source=None, repo=None):
     if source and repo:
-        raise MutuallyExclusiveArgumentError("Cannot use --source and --repo together. ""Can either deploy from a local directory or a Github repo")
+        raise MutuallyExclusiveArgumentError("Cannot use --source and --repo together. ""Can either deploy from a local directory or a Github repository")
     if source or repo:
         if not registry_server or not registry_user or not registry_pass:
                 raise RequiredArgumentMissingError('Usage error: --registry-server, --registry-username and --registry-password are required while using --source or --repo.')
