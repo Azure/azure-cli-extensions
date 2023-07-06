@@ -60,7 +60,6 @@ from ._constants import (MAXIMUM_SECRET_LENGTH,
                          LOG_ANALYTICS_RP,
                          CONTAINER_APPS_RP,
                          ACR_IMAGE_SUFFIX,
-                         MAXIMUM_CONTAINER_APP_NAME_LENGTH,
                          ACR_TASK_TEMPLATE,
                          DEFAULT_PORT)
 
@@ -764,22 +763,6 @@ def _validate_up_args(cmd, source, image, repo, registry_server):
             "Cannot use --source and --repo togther. "
             "Can either deploy from a local directory or a Github repo"
         )
-    if repo and registry_server and "azurecr.io" in registry_server:
-        parsed = urlparse(registry_server)
-        registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]
-        if registry_name and len(registry_name) > MAXIMUM_SECRET_LENGTH:
-            raise ValidationError(f"--registry-server ACR name must be less than {MAXIMUM_SECRET_LENGTH} "
-                                  "characters when using --repo")
-
-def _validate_create_args(cmd, source, repo, registry_server, registry_user, registry_pass):
-    if source and repo:
-        raise MutuallyExclusiveArgumentError(
-            "Cannot use --source and --repo togther. "
-            "Can either deploy from a local directory or a Github repo"
-        )
-    if source or repo:
-        if not registry_server or not registry_user or not registry_pass:
-                raise RequiredArgumentMissingError('Usage error: --registry-server, --registry-username and --registry-password are required while using --source or --repo.')
     if repo and registry_server and "azurecr.io" in registry_server:
         parsed = urlparse(registry_server)
         registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]

@@ -26,7 +26,7 @@ def validate_create(registry_identity, registry_pass, registry_user, registry_se
         raise MutuallyExclusiveArgumentError("Cannot use --source and --repo together. ""Can either deploy from a local directory or a Github repository")
     if source or repo:
         if not registry_server or not registry_user or not registry_pass:
-                raise RequiredArgumentMissingError('Usage error: --registry-server, --registry-username and --registry-password are required while using --source or --repo.')
+            raise RequiredArgumentMissingError('Usage error: --registry-server, --registry-username and --registry-password are required while using --source or --repo.')
     if repo and registry_server and "azurecr.io" in registry_server:
         parsed = urlparse(registry_server)
         registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]
