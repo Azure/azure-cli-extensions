@@ -407,7 +407,6 @@ def create_containerapp(cmd,
                         resource_group_name,
                         yaml=None,
                         image=None,
-                        source=None,
                         container_name=None,
                         managed_env=None,
                         min_replicas=None,
@@ -474,7 +473,7 @@ def create_containerapp(cmd,
     r = containerapp_create_decorator.create_containerapp(containerapp_def)
     containerapp_def = containerapp_create_decorator.construct_containerapp_for_post_process(containerapp_def, r)
     r = containerapp_create_decorator.post_process_containerapp(containerapp_def, r)
-    
+
     return r
 
 
