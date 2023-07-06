@@ -27,7 +27,6 @@ class ContainerappPreviewCommandsLoader(AzCommandsLoader):
         if len(args) > 0 and args[0] == GA_CONTAINERAPP_EXTENSION_NAME:
             if not _get_or_add_extension(self, GA_CONTAINERAPP_EXTENSION_NAME):
                 return
-            
         load_command_table(self, args)
         return self.command_table
 
