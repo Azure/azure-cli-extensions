@@ -29,7 +29,7 @@ from azext_dataprotection.manual import backupcenter_helper, helpers as helper
 logger = get_logger(__name__)
 
 
-def resource_guard_list_protected_operations(cmd, resource_group_name, resource_guard_name, resource_type):
+def dataprotection_resource_guard_list_protected_operations(cmd, resource_group_name, resource_guard_name, resource_type):
     from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Show as ResourceGuardShow
     resource_guard_object = ResourceGuardShow(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
@@ -61,35 +61,6 @@ def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource
             return args_schema
 
         class BackupInstancesValidateForBackup(_ValidateForBackup.BackupInstancesValidateForBackup):
-
-            # TODO: Reach out to swagger team about potentially fixing this in the swagger-side.
-            #       We have to replace "final-state-via" to "location" instead of "azure-async-operation"
-            # In case of debug issues, compare against the equivalent call in
-            #  src\dataprotection\azext_dataprotection\aaz\latest\dataprotection\backup_instance\_validate_for_backup.py
-            #  to see if there are any new divergences.
-            def __call__(self, *args, **kwargs):
-                request = self.make_request()
-                session = self.client.send_request(request=request, stream=False, **kwargs)
-                if session.http_response.status_code in [202]:
-                    return self.client.build_lro_polling(
-                        self.ctx.args.no_wait,
-                        session,
-                        self.on_200,
-                        self.on_error,
-                        lro_options={"final-state-via": "location"},
-                        path_format_arguments=self.url_parameters,
-                    )
-                if session.http_response.status_code in [200]:
-                    return self.client.build_lro_polling(
-                        self.ctx.args.no_wait,
-                        session,
-                        self.on_200,
-                        self.on_error,
-                        lro_options={"final-state-via": "location"},
-                        path_format_arguments=self.url_parameters,
-                    )
-
-                return self.on_error(session.http_response)
 
             @property
             def content(self):

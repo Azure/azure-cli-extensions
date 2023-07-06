@@ -26,13 +26,10 @@ def load_command_table(self, _):
         g.custom_command('initialize-backupconfig', "dataprotection_backup_instance_initialize_backupconfig")
 
     # Migrated to AAZ, using a function based override approach. Function-based override uses AAZ arg schema to validate input
-    # but is less manageable. Needs manual management of params and help. Class-based override is manageable and brings everything
-    # under AAZ class, but will cause skipping of AAZ validation due to mismatch of input and defined schema.
+    # but is less manageable. Needs manual management of params and help. Find a way to use class-based override without compromising
+    # AAZ validation
     with self.command_group('dataprotection backup-instance', exception_handler=exception_handler) as g:
         g.custom_command('validate-for-backup', 'dataprotection_backup_instance_validate_for_backup', supports_no_wait=True)
-
-    # from .aaz_operations.backup_instance import ValidateForBackup as BackupInstanceValidateBackup
-    # self.command_table['dataprotection backup-instance validate-for-backup'] = BackupInstanceValidateBackup(loader=self)
 
     with self.command_group('dataprotection backup-instance restore', exception_handler=exception_handler) as g:
         g.custom_command('initialize-for-data-recovery', 'restore_initialize_for_data_recovery')
@@ -61,15 +58,13 @@ def load_command_table(self, _):
         g.custom_command('list-from-resourcegraph', "dataprotection_job_list_from_resourcegraph", client_factory=cf_resource_graph_client)
 
     with self.command_group('dataprotection resource-guard', exception_handler=exception_handler) as g:
-        g.custom_command('list-protected-operations', 'resource_guard_list_protected_operations')
+        g.custom_command('list-protected-operations', 'dataprotection_resource_guard_list_protected_operations')
 
     from .aaz_operations.backup_instance import (
-        AdhocBackup as BackupInstanceAdhocBackup,
         ValidateAndCreate as BackupInstanceCreate,
         ValidateForRestore as BackupInstanceValidateRestore,
         RestoreTrigger as BackupInstanceRestoreTrigger,
     )
-    self.command_table['dataprotection backup-instance adhoc-backup'] = BackupInstanceAdhocBackup(loader=self)
     self.command_table['dataprotection backup-instance create'] = BackupInstanceCreate(loader=self)
     self.command_table['dataprotection backup-instance validate-for-restore'] = BackupInstanceValidateRestore(loader=self)
     self.command_table['dataprotection backup-instance restore trigger'] = BackupInstanceRestoreTrigger(loader=self)
@@ -80,6 +75,5 @@ def load_command_table(self, _):
     from .aaz_operations.recovery_point import List as RecoveryPointList
     self.command_table['dataprotection recovery-point list'] = RecoveryPointList(loader=self)
 
-    from .aaz_operations.resource_guard import Create as ResourceGuardCreate, Update as ResourceGuardUpdate
-    self.command_table['dataprotection resource-guard create'] = ResourceGuardCreate(loader=self)
+    from .aaz_operations.resource_guard import Update as ResourceGuardUpdate
     self.command_table['dataprotection resource-guard update'] = ResourceGuardUpdate(loader=self)

@@ -58,7 +58,7 @@ class Update(AAZCommand):
         )
         _args_schema.critical_operation_exclusion_list = AAZListArg(
             options=["--critical-operation-exclusion-list"],
-            help="List of critical operations which are not protected by this resourceGuard.",
+            help="List of critical operations which are not protected by this resourceGuard. Allowed values: deleteProtection, getSecurityPIN, updatePolicy, updateProtection.",
             nullable=True,
         )
         _args_schema.tags = AAZDictArg(
