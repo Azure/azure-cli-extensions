@@ -9,27 +9,12 @@ from azure.cli.core.aaz import (
     AAZFreeFormDictArg, AAZStrArg, AAZResourceGroupNameArg,
 )
 from azext_dataprotection.aaz.latest.dataprotection.backup_instance import (
-    AdhocBackup as _AdhocBackup,
     Create as _Create,
     ValidateForBackup as _ValidateForBackup,
     ValidateForRestore as _ValidateForRestore,
 )
 from azext_dataprotection.aaz.latest.dataprotection.backup_instance.restore import Trigger as _RestoreTrigger
 from ..helpers import convert_dict_keys_snake_to_camel
-
-
-class AdhocBackup(_AdhocBackup):
-
-    class BackupInstancesAdhocBackup(_AdhocBackup.BackupInstancesAdhocBackup):
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            data = data.get('properties')
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
 
 
 class ValidateAndCreate(_Create):
@@ -123,29 +108,6 @@ class ValidateForRestore(_ValidateForRestore):
 
     class BackupInstancesValidateForRestore(_ValidateForRestore.BackupInstancesValidateForRestore):
 
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            return self.on_error(session.http_response)
-
         @property
         def content(self):
             return {
@@ -180,74 +142,25 @@ class RestoreTrigger(_RestoreTrigger):
         def content(self):
             return convert_dict_keys_snake_to_camel(self.ctx.args.restore_request_object.to_serialized_data())
 
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            data = data.get('properties')
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
 
 class ValidateForBackup(_ValidateForBackup):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        if cls._args_schema is not None:
-            return cls._args_schema
-        cls._args_schema = super(_ValidateForBackup, cls)._build_arguments_schema(*args, **kwargs)  # pylint: disable=bad-super-call
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
 
-        _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
-        )
-        _args_schema.vault_name = AAZStrArg(
-            options=["--vault-name"],
-            help="The name of the backup vault.",
-            required=True,
-            id_part="name",
-        )
-        _args_schema.backup_instance = AAZFreeFormDictArg(
-            options=["--backup-instance"],
-            help="Backup Instance",
-            required=True,
-        )
-        return cls._args_schema
+        args_schema.backup_instance.data_source_set_info.resource_id._required = False
+        args_schema.backup_instance.datasource_auth_credentials.\
+            secret_store_based_auth_credentials.secret_store_resource.secret_store_type._required = False
+
+        return args_schema
 
     class BackupInstancesValidateForBackup(_ValidateForBackup.BackupInstancesValidateForBackup):
 
-        # TODO: Reach out to swagger team about potentially fixing this in the swagger-side.
-        #       We have to replace "final-state-via" to "location" instead of "azure-async-operation"
-        # In case of debug issues, compare against the equivalent call in
-        #  src\dataprotection\azext_dataprotection\aaz\latest\dataprotection\backup_instance\_validate_for_backup.py
-        #  to see if there are any new divergences.
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            return self.on_error(session.http_response)
-
         @property
         def content(self):
-            body = convert_dict_keys_snake_to_camel(self.ctx.args.backup_instance['properties'])
+            body = convert_dict_keys_snake_to_camel(self.ctx.args.backup_instance.to_serialized_data())
+
             return {
-                "backupInstance": convert_dict_keys_snake_to_camel(body)
+                "backupInstance": body
             }

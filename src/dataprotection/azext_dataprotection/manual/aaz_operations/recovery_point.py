@@ -5,6 +5,7 @@
 
 # pylint: disable=protected-access
 # pylint: disable=line-too-long
+
 from azure.cli.core.aaz import AAZStrArg
 from azext_dataprotection.aaz.latest.dataprotection.recovery_point import List as _List
 from knack.log import get_logger

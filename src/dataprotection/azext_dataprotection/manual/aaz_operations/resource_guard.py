@@ -81,8 +81,8 @@ class Update(_Update):
             arg_group="Identity",
             help="The identityType which can be either SystemAssigned or None",
         )
-        # enum = get_critical_operation_values()
-        # _args_schema.critical_operation_exclusion_list.Element.enum = AAZArgEnum(enum, case_sensitive=False)
+        enum = get_critical_operation_values()
+        _args_schema.critical_operation_exclusion_list.Element.enum = AAZArgEnum(enum, case_sensitive=False)
         return cls._args_schema
 
     def pre_operations(self):
