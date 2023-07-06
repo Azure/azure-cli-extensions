@@ -166,6 +166,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.identity = AAZObjectType()
             _element.location = AAZStrType()
             _element.name = AAZStrType(
                 flags={"read_only": True},
@@ -179,6 +180,17 @@ class List(AAZCommand):
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
+
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType()
 
             properties = cls._schema_on_200.value.Element.properties
             properties.allow_auto_approvals = AAZBoolType(
@@ -329,6 +341,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.identity = AAZObjectType()
             _element.location = AAZStrType()
             _element.name = AAZStrType(
                 flags={"read_only": True},
@@ -342,6 +355,17 @@ class List(AAZCommand):
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
+
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType()
 
             properties = cls._schema_on_200.value.Element.properties
             properties.allow_auto_approvals = AAZBoolType(
