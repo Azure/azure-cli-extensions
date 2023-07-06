@@ -10,34 +10,37 @@ from knack.prompting import prompt_y_n, NoTTYException
 from knack.util import CLIError
 from knack.log import get_logger
 
-logger = get_logger(__name__)
+from ._constants import MIN_GA_VERSION
 
-MIN_GA_VERSION = '0.3.35'
+logger = get_logger(__name__)
 
 
 def _get_or_add_extension(cmd, extension_name):
     from azure.cli.core.extension import (
         ExtensionNotInstalledException, get_extension)
-    from pkg_resources import parse_version
+    from packaging.version import parse
+
+    # this confirmation step may block the automation scripts, because not all customers allow installing extensions without prompt
     prompt_ext = True
     try:
         ext = get_extension(extension_name)
-        # check extension version
-        if ext and parse_version(ext.version) < parse_version(MIN_GA_VERSION):
+        # Check extension version
+        # If the extension is automatically upgraded in the context of a command, it needs to reload all the files in the new extension, otherwise it will not find some dependent resources.
+        if ext and parse(ext.version) < parse(MIN_GA_VERSION):
             msg = f"The command requires the latest version of extension {extension_name}. Run 'az extension add --upgrade -n {extension_name}' to upgrade extension"
             logger.warning(msg)
             return False
     except ExtensionNotInstalledException:
         prompt_msg = f"The command requires the extension {extension_name}. Do you want to install it now?"
-        prompt_ext = _prompt_y_n(cmd, prompt_msg, extension_name)
+        prompt_ext = prompt_require_extension_y_n(cmd, prompt_msg, extension_name)
         if prompt_ext:
             return _install_containerapp_extension(cmd, extension_name)
     return prompt_ext
 
 
-def _prompt_y_n(cmd, prompt_msg, ext_name):
-    no_prompt_config_msg = "Run 'az config set extension.use_dynamic_install=" \
-                           "yes_without_prompt' to allow installing extensions without prompt."
+def prompt_require_extension_y_n(cmd, prompt_msg, ext_name):
+    no_prompt_config_msg = "You can consider run 'az config set extension.use_dynamic_install=" \
+                           "yes_without_prompt' to allow installing extensions without prompt in the future."
     try:
         yes_without_prompt = _get_extension_use_dynamic_install_config(cmd.cli_ctx) == 'yes_without_prompt'
         if yes_without_prompt:
