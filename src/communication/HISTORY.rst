@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.6.1
+++++++
+ * Update Rooms sdk version to 1.0.0 and remove from preview mode
+
 1.6.0
 ++++++
  * Update Rooms sdk version to 1.0.0b3
