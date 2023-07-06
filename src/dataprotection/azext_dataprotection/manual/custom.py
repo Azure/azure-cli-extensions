@@ -28,7 +28,7 @@ from azext_dataprotection.manual import backupcenter_helper, helpers as helper
 logger = get_logger(__name__)
 
 
-def resource_guard_list_protected_operations(cmd, resource_group_name, resource_guard_name, resource_type):
+def dataprotection_resource_guard_list_protected_operations(cmd, resource_group_name, resource_guard_name, resource_type):
     from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Show as ResourceGuardShow
     resource_guard_object = ResourceGuardShow(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
@@ -42,63 +42,28 @@ def resource_guard_list_protected_operations(cmd, resource_group_name, resource_
     return resource_type_protected_operation
 
 
+def dataprotection_resource_guard_update(cmd,
+                                         resource_group_name,
+                                         resource_guard_name,
+                                         tags=None,
+                                         type_=None,
+                                         resource_type=None,
+                                         critical_operation_exclusion_list=None):
+    from .aaz_operations.resource_guard import Update as ResourceGuardUpdate
+    return ResourceGuardUpdate(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "resource_guard_name": resource_guard_name,
+        "tags": tags,
+        "type": type_,
+        "resource_type": resource_type,
+        "critical_operation_exclusion_list": critical_operation_exclusion_list
+    })
+
+
 def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource_group_name, backup_instance,
                                                        no_wait=False):
-
-    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import ValidateForBackup as _ValidateForBackup
-
-    class Validate(_ValidateForBackup):
-
-        @classmethod
-        def _build_arguments_schema(cls, *args, **kwargs):
-            args_schema = super()._build_arguments_schema(*args, **kwargs)
-
-            args_schema.backup_instance.data_source_set_info.resource_id._required = False
-            args_schema.backup_instance.datasource_auth_credentials.\
-                secret_store_based_auth_credentials.secret_store_resource.secret_store_type._required = False
-
-            return args_schema
-
-        class BackupInstancesValidateForBackup(_ValidateForBackup.BackupInstancesValidateForBackup):
-
-            # TODO: Reach out to swagger team about potentially fixing this in the swagger-side.
-            #       We have to replace "final-state-via" to "location" instead of "azure-async-operation"
-            # In case of debug issues, compare against the equivalent call in
-            #  src\dataprotection\azext_dataprotection\aaz\latest\dataprotection\backup_instance\_validate_for_backup.py
-            #  to see if there are any new divergences.
-            def __call__(self, *args, **kwargs):
-                request = self.make_request()
-                session = self.client.send_request(request=request, stream=False, **kwargs)
-                if session.http_response.status_code in [202]:
-                    return self.client.build_lro_polling(
-                        self.ctx.args.no_wait,
-                        session,
-                        self.on_200,
-                        self.on_error,
-                        lro_options={"final-state-via": "location"},
-                        path_format_arguments=self.url_parameters,
-                    )
-                if session.http_response.status_code in [200]:
-                    return self.client.build_lro_polling(
-                        self.ctx.args.no_wait,
-                        session,
-                        self.on_200,
-                        self.on_error,
-                        lro_options={"final-state-via": "location"},
-                        path_format_arguments=self.url_parameters,
-                    )
-
-                return self.on_error(session.http_response)
-
-            @property
-            def content(self):
-                body = helper.convert_dict_keys_snake_to_camel(backup_instance['properties'])
-
-                return {
-                    "backupInstance": body
-                }
-
-    return Validate(cli_ctx=cmd.cli_ctx)(command_args={
+    from .aaz_operations.backup_instance import ValidateForBackup
+    return ValidateForBackup(cli_ctx=cmd.cli_ctx)(command_args={
         "vault_name": vault_name,
         "resource_group": resource_group_name,
         "backup_instance": backup_instance['properties'],
