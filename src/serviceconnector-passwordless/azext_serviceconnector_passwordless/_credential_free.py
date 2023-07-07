@@ -5,8 +5,8 @@
 
 import struct
 import sys
+import re
 from knack.log import get_logger
-from knack.prompting import prompt_y_n, NoTTYException
 from msrestazure.tools import parse_resource_id
 from azure.cli.core import telemetry
 from azure.cli.core.azclierror import (
@@ -18,7 +18,6 @@ from azure.cli.core.azclierror import (
 from azure.cli.core.extension.operations import _install_deps_for_psycopg2, _run_pip
 from azure.cli.core._profile import Profile
 from azure.cli.command_modules.serviceconnector._utils import (
-    run_cli_cmd as run_cli_cmd_base,
     generate_random_string,
     is_packaged_installed,
     get_object_id_of_current_user
@@ -31,7 +30,7 @@ from azure.cli.command_modules.serviceconnector._validators import (
     get_source_resource_name,
     get_target_resource_name,
 )
-
+from ._utils import run_cli_cmd, get_local_ip, confirm_all_ip_allow
 logger = get_logger(__name__)
 
 AUTHTYPES = {
@@ -40,17 +39,6 @@ AUTHTYPES = {
     AUTH_TYPE.ServicePrincipalSecret: 'servicePrincipalSecret',
     AUTH_TYPE.UserAccount: 'userAccount',
 }
-IP_ADDRESS_CHECKER = 'https://api.ipify.org'
-OPEN_ALL_IP_MESSAGE = 'Do you want to enable access for all IPs to allow local environment connecting to database?'
-
-
-def run_cli_cmd(cmd, retry=0, interval=0, should_retry_func=None):
-    try:
-        return run_cli_cmd_base(cmd, retry, interval, should_retry_func)
-    except CLIInternalError as e:
-        telemetry.set_exception(
-            e, "Cli-Command-Fail-" + cmd.split(" -")[0].strip())
-        raise e
 
 
 # pylint: disable=line-too-long, consider-using-f-string, too-many-statements
@@ -92,12 +80,15 @@ def get_enable_mi_for_db_linker_func(yes=False):
             source_object_id = source_handler.get_identity_pid()
             target_handler.identity_object_id = source_object_id
             try:
-                identity_info = run_cli_cmd(
-                    'az ad sp show --id {}'.format(source_object_id), 15, 10)
-                target_handler.identity_client_id = identity_info.get(
-                    'appId')
-                target_handler.identity_name = identity_info.get(
-                    'displayName')
+                if target_type in [RESOURCE.Sql]:
+                    target_handler.identity_name = source_handler.get_identity_name()
+                elif target_type in [RESOURCE.Postgres, RESOURCE.MysqlFlexible]:
+                    identity_info = run_cli_cmd(
+                        'az ad sp show --id {}'.format(source_object_id), 15, 10)
+                    target_handler.identity_client_id = identity_info.get(
+                        'appId')
+                    target_handler.identity_name = identity_info.get(
+                        'displayName')
             except CLIInternalError as e:
                 if 'AADSTS530003' in e.error_msg:
                     logger.warning(
@@ -313,24 +304,22 @@ class MysqlFlexibleHandler(TargetHandler):
         except AzureConnectionError as e:
             logger.warning(e)
             # allow local access
-            from requests import get
-            ip_address = get(IP_ADDRESS_CHECKER).text
-            self.set_target_firewall(True, ip_name, ip_address, ip_address)
-            # create again
+            ip_address = get_local_ip()
+            if not ip_address:
+                self.set_target_firewall(
+                    True, ip_name, '0.0.0.0', '255.255.255.255')
+            else:
+                self.set_target_firewall(
+                    True, ip_name, ip_address, ip_address)
             try:
                 self.create_aad_user_in_mysql(connection_kwargs, query_list)
             except AzureConnectionError as e:
                 logger.warning(e)
-                try:
-                    if not self.skip_prompt:
-                        if not prompt_y_n(OPEN_ALL_IP_MESSAGE):
-                            ex = AzureConnectionError(
-                                "Please confirm local environment can connect to database and try again.")
-                            telemetry.set_exception(ex, "Connect-Db-Fail")
-                            raise ex from e
-                except NoTTYException as e:
-                    raise CLIInternalError(
-                        'Unable to prompt for confirmation as no tty available. Use --yes.') from e
+                if not ip_address:
+                    telemetry.set_exception(e, "Connect-Db-Fail")
+                    raise e
+                if not self.skip_prompt:
+                    confirm_all_ip_allow()
                 # allow public access
                 self.set_target_firewall(
                     True, ip_name, '0.0.0.0', '255.255.255.255')
@@ -338,8 +327,8 @@ class MysqlFlexibleHandler(TargetHandler):
                 try:
                     self.create_aad_user_in_mysql(connection_kwargs, query_list)
                 except AzureConnectionError as e:
-                    telemetry.set_exception(ex, "Connect-Db-Fail")
-                    raise ex from e
+                    telemetry.set_exception(e, "Connect-Db-Fail")
+                    raise e
             finally:
                 self.set_target_firewall(False, ip_name)
 
@@ -474,13 +463,23 @@ class SqlHandler(TargetHandler):
             logger.warning("Connecting to database...")
             self.create_aad_user_in_sql(connection_args, query_list)
         except AzureConnectionError as e:
-            if not self.ip:
-                telemetry.set_exception(e, "Connect-Db-Fail")
-                raise e
-            logger.warning(e)
-            # allow local access
-            ip_address = self.ip
-            self.set_target_firewall(True, ip_name, ip_address, ip_address)
+            from azure.cli.core.util import in_cloud_console
+            if in_cloud_console():
+                self.set_target_firewall(
+                    True, ip_name, '0.0.0.0', '0.0.0.0')
+            else:
+                if not self.ip:
+                    error_code = ''
+                    error_res = re.search(
+                        '\((\d{5})\)', str(e))
+                    if error_res:
+                        error_code = error_res.group(1)
+                    telemetry.set_exception(e, "Connect-Db-Fail-" + error_code)
+                    raise e
+                logger.warning(e)
+                # allow local access
+                ip_address = self.ip
+                self.set_target_firewall(True, ip_name, ip_address, ip_address)
             try:
                 # create again
                 self.create_aad_user_in_sql(connection_args, query_list)
@@ -488,7 +487,12 @@ class SqlHandler(TargetHandler):
                 logger.warning(e)
                 ex = AzureConnectionError(
                     "Please confirm local environment can connect to database and try again.")
-                telemetry.set_exception(ex, "Connect-Db-Fail")
+                error_code = ''
+                error_res = re.search(
+                    '\((\d{5})\)', str(e))
+                if error_res:
+                    error_code = error_res.group(1)
+                telemetry.set_exception(e, "Connect-Db-Fail-" + error_code)
                 raise ex from e
             finally:
                 self.set_target_firewall(False, ip_name)
@@ -556,7 +560,6 @@ class SqlHandler(TargetHandler):
                             logger.warning(e)
                         conn.commit()
         except pyodbc.Error as e:
-            import re
             search_ip = re.search(
                 "Client with IP address '(.*?)' is not allowed to access the server", str(e))
             if search_ip is not None:
@@ -635,24 +638,23 @@ class PostgresFlexHandler(TargetHandler):
         except AzureConnectionError as e:
             logger.warning(e)
             # allow local access
-            from requests import get
-            ip_address = self.ip or get(IP_ADDRESS_CHECKER).text
-            self.set_target_firewall(True, ip_name, ip_address, ip_address)
+            ip_address = self.ip or get_local_ip()
+            if not ip_address:
+                self.set_target_firewall(
+                    True, ip_name, '0.0.0.0', '255.255.255.255')
+            else:
+                self.set_target_firewall(
+                    True, ip_name, ip_address, ip_address)
             try:
                 # create again
                 self.create_aad_user_in_pg(connection_string, query_list)
             except AzureConnectionError as e:
                 logger.warning(e)
-                try:
-                    if not self.skip_prompt:
-                        if not prompt_y_n(OPEN_ALL_IP_MESSAGE):
-                            ex = AzureConnectionError(
-                                "Please confirm local environment can connect to database and try again.")
-                            telemetry.set_exception(ex, "Connect-Db-Fail")
-                            raise ex from e
-                except NoTTYException as e:
-                    raise CLIInternalError(
-                        'Unable to prompt for confirmation as no tty available. Use --yes.') from e
+                if not ip_address:
+                    telemetry.set_exception(e, "Connect-Db-Fail")
+                    raise e
+                if not self.skip_prompt:
+                    confirm_all_ip_allow()
                 self.set_target_firewall(
                     True, ip_name, '0.0.0.0', '255.255.255.255')
                 # create again
@@ -711,7 +713,6 @@ class PostgresFlexHandler(TargetHandler):
         try:
             conn = psycopg2.connect(conn_string)
         except (psycopg2.Error, psycopg2.OperationalError) as e:
-            import re
             # logger.warning(e)
             search_ip = re.search(
                 'no pg_hba.conf entry for host "(.*)", user ', str(e))
@@ -869,6 +870,9 @@ class SourceHandler:
     def get_identity_pid(self):
         return
 
+    def get_identity_name(self):
+        return
+
 
 def output_is_none(output):
     return not output.stdout
@@ -880,6 +884,12 @@ class LocalHandler(SourceHandler):
 
 
 class SpringHandler(SourceHandler):
+    def get_identity_name(self):
+        segments = parse_resource_id(self.source_id)
+        spring = segments.get('name')
+        app = segments.get('child_name_1')
+        return '{}/apps/{}'.format(spring, app)
+
     def get_identity_pid(self):
         segments = parse_resource_id(self.source_id)
         sub = segments.get('subscription')
@@ -909,6 +919,11 @@ class SpringHandler(SourceHandler):
 
 
 class WebappHandler(SourceHandler):
+    def get_identity_name(self):
+        segments = parse_resource_id(self.source_id)
+        app_name = segments.get('name')
+        return app_name
+
     def get_identity_pid(self):
         logger.warning('Checking if WebApp enables System Identity...')
         identity = run_cli_cmd(
@@ -931,6 +946,11 @@ class WebappHandler(SourceHandler):
 
 
 class ContainerappHandler(SourceHandler):
+    def get_identity_name(self):
+        segments = parse_resource_id(self.source_id)
+        app_name = segments.get('name')
+        return app_name
+
     def get_identity_pid(self):
         logger.warning('Checking if Container App enables System Identity...')
         identity = run_cli_cmd(

@@ -210,7 +210,7 @@ def _check_existing_rg(rg_name):
         logger.error(azCommandError)
         raise Exception('Unexpected error occured while fetching existing resource groups.')
 
-    logger.info('Resource group exists is \'%s\'', group_exists)
+    logger.info('Pre-existing repair resource group with the same name is \'%s\'', group_exists)
     return group_exists
 
 
@@ -491,22 +491,17 @@ def _fetch_compatible_windows_os_urn(source_vm):
 
 def _suse_image_selector(distro):
     fetch_urn_command = 'az vm image list --publisher SUSE --offer {offer} --sku gen1 --verbose --all --query "[].urn | reverse(sort(@))" -o json'.format(offer=distro)
-    logger.info('Fetching compatible SUSE OS images from gallery...')
     urns = loads(_call_az_command(fetch_urn_command))
 
     # Raise exception when not finding SUSE image
     if not urns:
         raise SuseNotAvailableError()
 
-    logger.debug('Fetched urns: \n%s', urns)
-    # Returning the first URN as it is the latest image with no special use like HPC or SAP
-    logger.debug('Return the first URN : %s', urns[0])
     return urns[0]
 
 
 def _suse_image_selector_gen2(distro):
     fetch_urn_command = 'az vm image list --publisher SUSE --offer {offer} --sku gen2 --verbose --all --query "[].urn | reverse(sort(@))" -o json'.format(offer=distro)
-    logger.info('Fetching compatible SUSE OS images from gallery...')
     urns = loads(_call_az_command(fetch_urn_command))
 
     # Raise exception when not finding SUSE image
@@ -711,6 +706,14 @@ def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux):
 
 
 def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username, fix_uuid=False):
+
+    # logging all parameters of the function individually
+    logger.info('Creating repair VM with command: {}'.format(create_repair_vm_command))
+    logger.info('copy_disk_id: {}'.format(copy_disk_id))
+    logger.info('repair_password: {}'.format(repair_password))
+    logger.info('repair_username: {}'.format(repair_username))
+    logger.info('fix_uuid: {}'.format(fix_uuid))
+
     if not fix_uuid:
         create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
     logger.info('Validating VM template before continuing...')

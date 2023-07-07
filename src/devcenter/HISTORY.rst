@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.2
+++++++
+* Update allowPartialScopes to True for ARG query
+
 1.0.1
 ++++++
 * Update error string for environment create same name validation

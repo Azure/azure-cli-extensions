@@ -419,6 +419,7 @@ def load_arguments(self, _):
         c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
         c.argument('enable_node_restriction', action='store_true', is_preview=True, help="enable node restriction for cluster")
         c.argument('enable_cilium_dataplane', action='store_true', is_preview=True, deprecate_info=c.deprecate(target='--enable-cilium-dataplane', redirect='--network-dataplane', hide=True))
+        c.argument('enable_network_observability', action='store_true', is_preview=True, help="enable network observability for cluster")
         c.argument('custom_ca_trust_certificates', options_list=["--custom-ca-trust-certificates", "--ca-certs"], is_preview=True, help="path to file containing list of new line separated CAs")
         # nodepool
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
@@ -436,7 +437,8 @@ def load_arguments(self, _):
                    help='The guardrails version', is_preview=True)
         c.argument('guardrails_excluded_ns', type=str, is_preview=True)
         # azure monitor profile
-        c.argument('enable_azuremonitormetrics', action='store_true')
+        c.argument('enable_azuremonitormetrics', action='store_true', deprecate_info=c.deprecate(target='--enable-azuremonitormetrics', redirect='--enable-azure-monitor-metrics', hide=True))
+        c.argument('enable_azure_monitor_metrics', action='store_true')
         c.argument('azure_monitor_workspace_resource_id', validator=validate_azuremonitorworkspaceresourceid)
         c.argument('ksm_metric_labels_allow_list')
         c.argument('ksm_metric_annotations_allow_list')
@@ -546,13 +548,15 @@ def load_arguments(self, _):
         c.argument('enable_private_cluster', action='store_true', is_preview=True, help='enable private cluster for apiserver vnet integration')
         c.argument('disable_private_cluster', action='store_true', is_preview=True, help='disable private cluster for apiserver vnet integration')
         c.argument('private_dns_zone', is_preview=True)
-        c.argument('enable_azuremonitormetrics', action='store_true')
+        c.argument('enable_azuremonitormetrics', action='store_true', deprecate_info=c.deprecate(target='--enable-azuremonitormetrics', redirect='--enable-azure-monitor-metrics', hide=True))
+        c.argument('enable_azure_monitor_metrics', action='store_true')
         c.argument('azure_monitor_workspace_resource_id', validator=validate_azuremonitorworkspaceresourceid)
         c.argument('ksm_metric_labels_allow_list')
         c.argument('ksm_metric_annotations_allow_list')
         c.argument('grafana_resource_id', validator=validate_grafanaresourceid)
         c.argument('enable_windows_recording_rules', action='store_true')
-        c.argument('disable_azuremonitormetrics', action='store_true')
+        c.argument('disable_azuremonitormetrics', action='store_true', deprecate_info=c.deprecate(target='--disable-azuremonitormetrics', redirect='--disable-azure-monitor-metrics', hide=True))
+        c.argument('disable_azure_monitor_metrics', action='store_true')
         c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
         c.argument('disable_vpa', action='store_true', is_preview=True, help="disable vertical pod autoscaler for cluster")
         c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
@@ -560,6 +564,7 @@ def load_arguments(self, _):
         c.argument('guardrails_level', arg_type=get_enum_type(guardrails_levels), is_preview=True)
         c.argument('guardrails_version', help='The guardrails version', is_preview=True)
         c.argument('guardrails_excluded_ns', is_preview=True)
+        c.argument('enable_network_observability', action='store_true', is_preview=True, help="enable network observability for cluster")
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
@@ -844,6 +849,10 @@ def load_arguments(self, _):
             c.argument('nodepool_id', required=True,
                        help='The nodepool id.', validator=validate_nodepool_id)
             c.argument('aks_custom_headers')
+
+    with self.argument_context('aks nodepool snapshot update') as c:
+        c.argument('snapshot_name', options_list=['--name', '-n'], help='The nodepool snapshot name.', validator=validate_snapshot_name)
+        c.argument('tags', tags_type, help='The tags to set to the snapshot.')
 
     for scope in ['aks nodepool snapshot show', 'aks nodepool snapshot delete']:
         with self.argument_context(scope) as c:

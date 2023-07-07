@@ -171,7 +171,7 @@ class CreateIdentity(AAZCommand):
 
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True, "read_only": True},
+                flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties

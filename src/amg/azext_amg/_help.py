@@ -64,6 +64,91 @@ helps['grafana data-source create'] = """
     type: command
     short-summary: Create a data source.
     examples:
+        - name: create a data source of Azure Monitor using Managed Identity
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "access": "proxy",
+              "jsonData": {
+                "azureAuthType": "msi",
+                "subscriptionId": "3a7edf7d-1488-4017-a908-111111111111"
+              },
+              "name": "Azure Monitor-3",
+              "type": "grafana-azure-monitor-datasource"
+            }'
+        - name: create a data source of Azure Monitor using App Registration
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "name": "Azure Monitor-2",
+              "type": "grafana-azure-monitor-datasource",
+              "access": "proxy",
+              "jsonData": {
+                "subscriptionId": "3a7edf7d-1488-4017-a908-111111111111",
+                "azureAuthType": "clientsecret",
+                "cloudName": "azuremonitor",
+                "tenantId": "72f988bf-86f1-41af-91ab-111111111111",
+                "clientId": "fb31a2f5-9122-4be9-9705-111111111111"
+              },
+              "secureJsonData": { "clientSecret": "verySecret" }
+            }'
+        - name: create a data source of Azure Data Explorer using Managed Identity
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "name": "Azure Data Explorer Datasource-2",
+              "type": "grafana-azure-data-explorer-datasource",
+              "access": "proxy",
+              "jsonData": {
+                "dataConsistency": "strongconsistency",
+                "clusterUrl": "https://mykusto.westcentralus.kusto.windows.net"
+              }
+            }'
+        - name: create a data source of Azure Data Explorer using App Registration
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "name": "Azure Data Explorer Datasource-1",
+              "type": "grafana-azure-data-explorer-datasource",
+              "access": "proxy",
+              "jsonData": {
+                "clusterUrl": "https://mykusto.westcentralus.kusto.windows.net",
+                "azureCredentials": {
+                  "authType": "clientsecret",
+                  "azureCloud": "AzureCloud",
+                  "tenantId": "72f988bf-86f1-41af-91ab-111111111111",
+                  "clientId": "fb31a2f5-9122-4be9-9705-111111111111"
+                }
+              },
+              "secureJsonData": { "azureClientSecret": "verySecret" }
+            }'
+        - name: create a data source of Azure Managed Prometheus using App Registration
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "name": "Azure Managed Prometheus-1",
+              "type": "prometheus",
+              "access": "proxy",
+              "url": "https://myprom-abcd.westcentralus.prometheus.monitor.azure.com",
+              "jsonData": {
+                "httpMethod": "POST",
+                "azureCredentials": {
+                  "authType": "clientsecret",
+                  "azureCloud": "AzureCloud",
+                  "tenantId": "72f988bf-86f1-41af-91ab-111111111111",
+                  "clientId": "fb31a2f5-9122-4be9-9705-111111111111"
+                },
+                "timeInterval": "30s"
+              },
+              "secureJsonData": { "azureClientSecret": "verySecret" }
+            }'
+        - name: create a data source of Azure Managed Prometheus using managed identity
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "name": "Azure Managed Prometheus-1",
+              "type": "prometheus",
+              "access": "proxy",
+              "url": "https://myprom-jryu.westcentralus.prometheus.monitor.azure.com",
+              "jsonData": {
+                "httpMethod": "POST",
+                "azureCredentials": { "authType": "msi" }
+              }
+            }'
         - name: create a data source of Azure SQL
           text: |
             az grafana data-source create -n MyGrafana --definition '{
