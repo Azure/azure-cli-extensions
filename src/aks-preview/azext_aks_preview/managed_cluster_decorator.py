@@ -2270,23 +2270,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         return tierStr
 
     def get_nodepool_taints(self) -> Union[List[str], None]:
-        """Obtain the value of nodepool_taints.
+        """Obtain the value of nodepool_labels.
 
-        :return: list or None
+        :return: dictionary or None
         """
+        return self.agentpool_context.get_node_taints()
 
-        # read the original value passed by the command
-        raw_value = self.raw_param.get("nodepool_taints")
-        value_obtained_from_mc = None
-        if self.mc and self.mc.agent_pool_profiles and len(self.mc.agent_pool_profiles) > 0:
-            value_obtained_from_mc = self.mc.agent_pool_profiles[0].node_taints
-        # set default value
-        if value_obtained_from_mc is not None:
-            nodepool_taints = value_obtained_from_mc
-        else:
-            nodepool_taints = raw_value
-        # this parameter does not need validation
-        return nodepool_taints
     
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
@@ -2719,14 +2708,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             )
         return mc
 
-    def set_up_nodepool_taints_mc(self, mc: ManagedCluster) -> ManagedCluster:
-        self._ensure_mc(mc)
-        taints = self.context.get_nodepool_taints()
-        if taints is not None and mc.agent_pool_profiles is not None and len(mc.agent_pool_profiles) > 1:
-            for agent_pool_profile in mc.agent_pool_profiles:
-                agent_pool_profile.node_taints = taints
-        return mc
-
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
 
@@ -2770,8 +2751,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_azure_service_mesh_profile(mc)
         # set up azure monitor profile
         mc = self.set_up_azure_monitor_profile(mc)
-        # set up nodepool taints
-        mc = self.set_up_nodepool_taints_mc(mc)
+
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
         return mc
@@ -3588,10 +3568,18 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
     def update_nodepool_taints_mc(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
-        taints = self.context.get_nodepool_taints()
-        if taints is not None and mc.agent_pool_profiles is not None and len(mc.agent_pool_profiles) > 1:
-            for agent_pool_profile in mc.agent_pool_profiles:
-                agent_pool_profile.node_taints = taints
+
+        if not mc.agent_pool_profiles:
+            raise UnknownError(
+                "Encounter an unexpected error while getting agent pool profiles from the cluster in the process of "
+                "updating agentpool profile."
+            )
+        
+        # update nodepool taints for all nodepools
+        nodepool_taints = self.context.get_nodepool_taints()
+        if nodepool_taints is not None:
+            for agent_profile in mc.agent_pool_profiles:
+                agent_profile.node_taints = nodepool_taints
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
