@@ -15,7 +15,6 @@ from ._exception_handler import exception_handler
 def load_command_table(self, _):
 
     # Manual backup-instance commmands
-    # Manual backup-instance commmands
     with self.command_group('dataprotection backup-instance', exception_handler=exception_handler) as g:
         g.custom_command('initialize-restoreconfig', "dataprotection_backup_instance_initialize_restoreconfig")
         g.custom_command('initialize', "dataprotection_backup_instance_initialize")
