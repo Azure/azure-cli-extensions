@@ -71,6 +71,7 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
         # Uncomment if validate-for-backup fails due to permission error. Only uncomment if running live.
         # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type "{dataSourceType}" --operation Backup --permissions-scope "{permissionsScope}" '
         #          '-g "{rg}" --vault-name "{vaultName}" --backup-instance "{backupInstance}" --yes')
+        # import time
         # time.sleep(30)
 
         backup_instance_validate_create(test)
@@ -111,6 +112,7 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
         # Uncomment if validate-for-backup fails due to permission error. Only uncomment when running live.
         # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type "{dataSourceType}" --operation Backup --permissions-scope "{permissionsScope}" '
         #          '-g "{rg}" --vault-name "{vaultName}" --backup-instance "{backupInstance}" --yes')
+        # import time
         # time.sleep(30)
 
         backup_instance_validate_create(test)

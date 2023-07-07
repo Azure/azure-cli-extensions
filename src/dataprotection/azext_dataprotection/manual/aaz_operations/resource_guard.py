@@ -6,7 +6,8 @@
 # pylint: disable=protected-access
 # pylint: disable=line-too-long
 
-from azure.cli.core.aaz import AAZStrArg, AAZUndefined
+from azure.cli.core.aaz import AAZStrArg, AAZUndefined, has_value
+from azure.cli.core.aaz.utils import assign_aaz_list_arg
 from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Update as _Update
 from azext_dataprotection.manual.enums import get_resource_type_values
 from knack.log import get_logger
@@ -32,13 +33,16 @@ class Update(_Update):
         return cls._args_schema
 
     def pre_operations(self):
-        critical_operation_exclusion_list = self.ctx.args.critical_operation_exclusion_list
-        resource_type = self.ctx.args.resource_type
-        if resource_type and critical_operation_exclusion_list.to_serialized_data() != AAZUndefined:
-            for idx, critical_operation in enumerate(critical_operation_exclusion_list):
-                critical_operation_id = critical_operation_map.get(str(critical_operation), str(critical_operation))
-                critical_operation_exclusion_list[idx] = str(resource_type) + critical_operation_id
-        else:
-            if critical_operation_exclusion_list.to_serialized_data() != AAZUndefined:
+        if has_value(self.ctx.args.critical_operation_exclusion_list):
+            resource_type = self.ctx.args.resource_type.to_serialized_data()
+            if resource_type:
+                self.ctx.args.critical_operation_exclusion_list = assign_aaz_list_arg(
+                    self.ctx.args.critical_operation_exclusion_list,
+                    self.ctx.args.critical_operation_exclusion_list,
+                    element_transformer=lambda _, e: resource_type + critical_operation_map.get(str(e), str(e))
+                )
+            else:
+                # Issue a warning if --resource-type not given but --critical-operation-exclusion-list is given.
+                # List can be empty as well.
                 logger.warning("WARNING: --resource-type argument is required to update --critical-operation-exclusion-list.")
                 self.ctx.args.critical_operation_exclusion_list = AAZUndefined
