@@ -82,7 +82,6 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
         #          '--permissions-scope "{permissionsScope}" '
         #          '--operation "{operation}" '
         #          '--keyvault-id "{keyVaultId}" --yes')
-        # time.sleep(30)
 
         backup_instance_validate_create(test)
 
