@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class RegenerateKey(AAZCommand):
     """Regenerate CommunicationService access key. PrimaryKey and SecondaryKey cannot be regenerated at the same time.
+
+    :example: Regenerate secondary key for a resource
+        az communication regenrate-key -n <your-resource-name> -g <your-resource-group> --key-type secondary
     """
 
     _aaz_info = {

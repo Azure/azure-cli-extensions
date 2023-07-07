@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class LinkNotificationHub(AAZCommand):
     """Links an Azure Notification Hub to this communication service.
+
+    :example: Create a communication resource
+        az communication link-notification-hub -n <your-resource-name> -g <your-resource-group> --resource-id <notification-hub-resource-id>
     """
 
     _aaz_info = {

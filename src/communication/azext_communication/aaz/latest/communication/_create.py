@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a new CommunicationService or update an existing CommunicationService.
+
+    :example: Create a communication resource
+        az communication create -n <your-resource-name> -g <your-resource-group>
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List requests to list all resources in a resource group.
+
+    :example: Get all resources from a resource group
+        az communication list -g <your-resource-group>
     """
 
     _aaz_info = {

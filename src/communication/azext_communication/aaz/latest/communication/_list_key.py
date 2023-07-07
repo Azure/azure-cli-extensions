@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListKey(AAZCommand):
     """Get the access keys of the CommunicationService resource.
+
+    :example: Get resource access keys
+        az communication list-keys -n <your-resource-name> -g <your-resource-group>
     """
 
     _aaz_info = {

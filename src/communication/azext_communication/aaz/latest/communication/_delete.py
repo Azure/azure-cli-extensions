@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete to delete a CommunicationService.
+
+    :example: Delete a communication resource
+        az communication delete -n <your-resource-name> -g <your-resource-group>
     """
 
     _aaz_info = {
