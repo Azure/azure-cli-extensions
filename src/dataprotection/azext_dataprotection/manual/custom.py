@@ -21,30 +21,14 @@ from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
     UnauthorizedError
 )
-from azure.cli.core.azclierror import (
-    RequiredArgumentMissingError,
-    InvalidArgumentValueError,
-    CLIInternalError,
-    ForbiddenError,
-    MutuallyExclusiveArgumentError,
-    UnauthorizedError
-)
 from knack.log import get_logger
 from azext_dataprotection.vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions
 from azext_dataprotection.manual import backupcenter_helper, helpers as helper
 
-
 logger = get_logger(__name__)
 
 
-def dataprotection_resource_guard_list_protected_operations(cmd, resource_group_name, resource_guard_name, resource_type):
-    from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Show as ResourceGuardShow
-    resource_guard_object = ResourceGuardShow(cli_ctx=cmd.cli_ctx)(command_args={
-        "resource_group": resource_group_name,
-        "resource_guard_name": resource_guard_name,
-    })
-    protected_operations = resource_guard_object.get('properties').get('resourceGuardOperations')
 def dataprotection_resource_guard_list_protected_operations(cmd, resource_group_name, resource_guard_name, resource_type):
     from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Show as ResourceGuardShow
     resource_guard_object = ResourceGuardShow(cli_ctx=cmd.cli_ctx)(command_args={
