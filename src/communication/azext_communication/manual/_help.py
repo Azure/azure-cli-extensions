@@ -133,18 +133,6 @@ helps['communication identity user delete'] = """
                az communication identity user delete --user "8:acs:xxxxxx"
 """
 
-helps['communication identity issue-access-token'] = """
-    type: command
-    short-summary: "Issues a new access token with the specified scopes for a given User Identity. If no User Identity is specified, creates a new User Identity as well."
-    examples:
-      - name: Issue access token
-        text: |-
-               az communication identity issue-access-token --scope chat
-      - name: Issue access token with multiple scopes and user
-        text: |-
-               az communication identity issue-access-token --scope chat voip --userid "8:acs:xxxxxx"
-"""
-
 helps['communication identity token'] = """
     type: group
     short-summary: Commands to manage user tokens for a Communication Service resource.

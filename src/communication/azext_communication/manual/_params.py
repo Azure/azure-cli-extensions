@@ -52,11 +52,6 @@ def _load_legacy_identity_arguments(self):
     with self.argument_context('communication identity user delete') as c:
         c.argument('user_id', options_list=['--user'], type=str, help='ACS identifier')
 
-    with self.argument_context('communication identity issue-access-token') as c:
-        c.argument('user_id', options_list=['--userid', '-u'], type=str, help='ACS identifier')
-        c.argument('scopes', options_list=['--scope', '-s'],
-                   nargs='+', help='list of scopes for an access token ex: chat/voip')
-
     with self.argument_context('communication identity token issue') as c:
         c.argument('user_id', options_list=['--user'], type=str, help='ACS identifier')
         c.argument('scopes', options_list=['--scope'], nargs='+',
