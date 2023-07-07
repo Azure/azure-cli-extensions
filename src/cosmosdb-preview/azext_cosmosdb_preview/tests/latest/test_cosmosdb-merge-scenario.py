@@ -7,6 +7,7 @@ import os
 import unittest
 
 from knack.util import CLIError
+from azure.core.exceptions import HttpResponseError
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from datetime import datetime, timedelta, timezone
@@ -95,8 +96,8 @@ class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb sql database throughput update -g {rg} -a {acc} -n {db_name} --throughput 3000').get_output_in_json()
 
         # merge
-        merge_info = self.cmd('az cosmosdb sql database merge -g {rg} -a {acc} -n {db_name} ').get_output_in_json()
-        print(merge_info)
+        # Currently this should throw as the feature is disabled
+        self.assertRaises(HttpResponseError, lambda: self.cmd('az cosmosdb sql database merge -g {rg} -a {acc} -n {db_name} '))
         
 
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_database_merge', location='eastus2')
@@ -122,8 +123,7 @@ class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
 
         #Lower the throughput
         self.cmd('az cosmosdb mongodb database throughput update -g {rg} -a {acc} -n {db_name} --throughput 1000')
-
-        #merge
-        merge_info = self.cmd('az cosmosdb mongodb database merge -g {rg} -a {acc} -n {db_name} ').get_output_in_json()
-        print(merge_info)
         
+        #merge
+        # Currently this should throw as the feature is disabled
+        self.assertRaises(CLIError, lambda:self.cmd('az cosmosdb mongodb database merge -g {rg} -a {acc} -n {db_name} '))
