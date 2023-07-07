@@ -84,6 +84,10 @@ DESCRIPTION_MAP: Dict[str, str] = {
     "network_function_type": (
         "Type of nf in the definition. Valid values are 'cnf' or 'vnf'"
     ),
+    "multiple_instances": (
+        "Whether the NSD should allow arbitrary numbers of this type of NF.  If set to "
+        "false only a single instance will be allowed.  Defaults to false."
+    ),
     "helm_package_name": "Name of the Helm package",
     "path_to_chart": (
         "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz"
@@ -221,6 +225,14 @@ class NSConfiguration(Configuration):
     nsdg_name: str = DESCRIPTION_MAP["nsdg_name"]
     nsd_version: str = DESCRIPTION_MAP["nsd_version"]
     nsdv_description: str = DESCRIPTION_MAP["nsdv_description"]
+    multiple_instances: bool = DESCRIPTION_MAP["multiple_instances"]
+
+    def __post_init__(self):
+        """
+        Finish setting up the instance.
+        """
+        if self.multiple_instances == DESCRIPTION_MAP["multiple_instances"]:
+            self.multiple_instances = False
 
     def validate(self):
         """Validate that all of the configuration parameters are set."""
@@ -269,6 +281,8 @@ class NSConfiguration(Configuration):
             raise ValueError("NSDG name must be set")
         if self.nsd_version == DESCRIPTION_MAP["nsd_version"] or "":
             raise ValueError("NSD Version must be set")
+        if not isinstance(self.multiple_instances, bool):
+            raise ValueError("multiple_instances must be a boolean")
 
     @property
     def output_directory_for_build(self) -> Path:
