@@ -9,9 +9,18 @@
 # pylint: disable=line-too-long
 # pylint: disable=too-many-branches
 # pylint: disable=protected-access
+# pylint: disable=protected-access
 import uuid
 import re
 import time
+from azure.cli.core.azclierror import (
+    RequiredArgumentMissingError,
+    InvalidArgumentValueError,
+    CLIInternalError,
+    ForbiddenError,
+    MutuallyExclusiveArgumentError,
+    UnauthorizedError
+)
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     InvalidArgumentValueError,
@@ -29,6 +38,13 @@ from azext_dataprotection.manual import backupcenter_helper, helpers as helper
 logger = get_logger(__name__)
 
 
+def dataprotection_resource_guard_list_protected_operations(cmd, resource_group_name, resource_guard_name, resource_type):
+    from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Show as ResourceGuardShow
+    resource_guard_object = ResourceGuardShow(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "resource_guard_name": resource_guard_name,
+    })
+    protected_operations = resource_guard_object.get('properties').get('resourceGuardOperations')
 def dataprotection_resource_guard_list_protected_operations(cmd, resource_group_name, resource_guard_name, resource_type):
     from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Show as ResourceGuardShow
     resource_guard_object = ResourceGuardShow(cli_ctx=cmd.cli_ctx)(command_args={
@@ -1139,7 +1155,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
                 restore_criteria_list.append(restore_criteria)
 
         if container_list is None and from_prefix_pattern is None and to_prefix_pattern is None:
-            raise InvalidArgumentValueError("Provide container list or prefixes for item level recovery.")
+            raise RequiredArgumentMissingError("Provide ContainersList or Prefixes for Item Level Recovery")
 
     restore_request["restore_target_info"]["restore_criteria"] = restore_criteria_list
 

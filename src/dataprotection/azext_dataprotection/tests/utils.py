@@ -8,7 +8,7 @@
 import time
 
 def wait_for_job_exclusivity_on_datasource(test, data_source_id=None, source_data_store=None):
-    """ Checks if any restore job is in progress for given datasource, source datastore and
+    """ Checks if any job is in progress for given datasource and source datastore to
         waits for its completion. Requires dataSourceType and dataSourceId kwargs.
     """
     if data_source_id:
