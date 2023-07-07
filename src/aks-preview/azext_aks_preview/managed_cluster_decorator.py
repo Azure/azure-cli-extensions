@@ -3612,7 +3612,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 "Encounter an unexpected error while getting agent pool profiles from the cluster in the process of "
                 "updating agentpool profile."
             )
-        
+
         # update nodepool taints for all nodepools
         nodepool_taints = self.context.get_nodepool_taints()
         if nodepool_taints is not None:

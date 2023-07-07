@@ -269,7 +269,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                     tag=v,
                 ))
         return res
-    
+
     def get_node_taints(self) -> Union[List[str], None]:
         """Obtain the value of node_taints.
 
@@ -403,7 +403,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             agentpool.network_profile.node_public_ip_tags = ip_tags
 
         return agentpool
-    
+
     def set_up_taints(self, agentpool: AgentPool) -> AgentPool:
         """Set up label, tag, taint for the AgentPool object.
 
