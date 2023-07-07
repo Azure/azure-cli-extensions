@@ -9,6 +9,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 from subprocess import run
 
 from .common import (write_test_file, TEST_LOCATION, clean_up_test_file)
+from .utils import create_containerapp_env
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -112,3 +113,38 @@ class ContainerappScenarioTest(ScenarioTest):
         ])
         clean_up_test_file(file)
 
+    @ResourceGroupPreparer(location="eastus")
+    def test_containerapp_preview_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        create_containerapp_env(self, env_name, resource_group)
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd(
+            f'az containerapp create --name {ca_name} --resource-group {resource_group} --environment {env_name} --image "mcr.microsoft.com/k8se/quickstart:latest" --environment-type managed',
+            checks=[
+                JMESPathCheck('properties.environmentId', containerapp_env['id']),
+                JMESPathCheck('properties.provisioningState', "Succeeded")
+            ])
+
+        app = self.cmd(
+            'containerapp show -n {} -g {}'.format(ca_name, resource_group),
+            checks=[
+                JMESPathCheck('properties.environmentId', containerapp_env['id']),
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('name', ca_name),
+            ]
+        ).get_output_in_json()
+
+        self.cmd('containerapp list -g {}'.format(resource_group), checks=[
+            JMESPathCheck('length(@)', 1)
+        ])
+        self.cmd('containerapp delete --ids {} --yes'.format(app['id']))
+
+        self.cmd('containerapp list -g {}'.format(resource_group), checks=[
+            JMESPathCheck('length(@)', 0)
+        ])

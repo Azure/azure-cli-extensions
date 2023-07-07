@@ -5,5 +5,8 @@
 # --------------------------------------------------------------------------------------------
 MANAGED_ENVIRONMENT_TYPE = "managed"
 CONNECTED_ENVIRONMENT_TYPE = "connected"
+MANAGED_ENVIRONMENT_RESOURCE_TYPE = "managedEnvironments"
+CONNECTED_ENVIRONMENT_RESOURCE_TYPE = "connectedEnvironments"
 GA_CONTAINERAPP_EXTENSION_NAME = 'containerapp'
 MIN_GA_VERSION = '0.3.35'
+CONTAINERAPP_NAMESPACE = 'Microsoft.App'

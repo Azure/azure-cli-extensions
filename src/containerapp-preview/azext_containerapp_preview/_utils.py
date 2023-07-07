@@ -27,7 +27,7 @@ def _get_or_add_extension(cmd, extension_name):
         # Check extension version
         # If the extension is automatically upgraded in the context of a command, it needs to reload all the files in the new extension, otherwise it will not find some dependent resources.
         if ext and parse(ext.version) < parse(MIN_GA_VERSION):
-            msg = f"The command requires the latest version of extension {extension_name}. Run 'az extension add --upgrade -n {extension_name}' to upgrade extension"
+            msg = f"The command requires the version of {extension_name} >= {MIN_GA_VERSION}. Run 'az extension add --upgrade -n {extension_name}' to upgrade extension"
             logger.warning(msg)
             return False
     except ExtensionNotInstalledException:
