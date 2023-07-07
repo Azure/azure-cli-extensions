@@ -442,3 +442,32 @@ class MobileNetworkScenario(ScenarioTest):
             self.check('tags.tag2', 'test2')
         ])
         self.cmd('mobile-network slice delete --mobile-network-name {mobile_network} -n {slice} -g {rg} -y')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_mobile_network', location='westcentralus')
+    def test_mobile_network_bulk_sim_upload(self, resource_group):
+        self.kwargs.update({
+            'mobile_network': self.create_random_name('mobile_network_', 20),
+            'sim_group': self.create_random_name('simgroup', 15),
+        })
+        mobile_network = self.cmd('mobile-network create -n {mobile_network} -g {rg} --identifier {{mcc:001,mnc:01}}', checks=[
+            self.check('publicLandMobileNetworkIdentifier.mcc', '001'),
+            self.check('publicLandMobileNetworkIdentifier.mnc', '01')
+        ]).get_output_in_json()
+        self.kwargs.update({
+            'mobile_network_id': mobile_network['id']
+        })
+        sim_group = self.cmd('mobile-network sim group create -n {sim_group} -g {rg} --mobile-network {{id:{mobile_network_id}}}', checks=[
+            self.check('mobileNetwork.id', '{mobile_network_id}'),
+            self.check('name', '{sim_group}')
+        ]).get_output_in_json()
+        self.kwargs.update({
+            'sim_group_id': sim_group['id'],
+            'sims': '{name:bulk-upload-sim-01,authentication-key:00000000000000000000000000000000,operator-key-code:00000000000000000000000000000000,international-msi:0000000000},{name:bulk-upload-sim-02,authentication-key:00000000000000000000000000000001,operator-key-code:00000000000000000000000000000001,international-msi:0000000001}'
+        })
+        self.cmd('mobile-network sim group bulk-upload-sims -g {rg} --sim-group-name {sim_group} --sims ["{sims}"] ', checks=[
+            self.check('status', 'Succeeded')
+        ])
+        self.cmd('mobile-network sim group bulk-delete-sims -g {rg} --sim-group-name {sim_group} --sims [bulk-upload-sim-01,bulk-upload-sim-02] ', checks=[
+            self.check('status', 'Succeeded')
+        ])
+        self.cmd('mobile-network sim group delete -n {sim_group} -g {rg} -y')
