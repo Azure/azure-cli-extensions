@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "connectedmachine extension update",
 )
 class Update(AAZCommand):
-    """The operation to create or update the extension
+    """Update operation to create or update the extension.
     """
 
     _aaz_info = {

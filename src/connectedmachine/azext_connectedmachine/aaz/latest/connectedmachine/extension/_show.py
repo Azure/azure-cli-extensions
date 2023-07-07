@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "connectedmachine extension show",
 )
 class Show(AAZCommand):
-    """The operation to get the extension.
+    """The operation to create or update the extension.
     """
 
     _aaz_info = {

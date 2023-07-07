@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "connectedmachine list",
 )
 class List(AAZCommand):
-    """List all the hybrid machines in the specified subscription. Use the nextLink property in the response to get the next page of hybrid machines.And Lists all the hybrid machines in the specified subscription. Use the nextLink property in the response to get the next page of hybrid machines.
+    """List all the Azure Arc-Enabled Servers in the specified resource group.
     """
 
     _aaz_info = {

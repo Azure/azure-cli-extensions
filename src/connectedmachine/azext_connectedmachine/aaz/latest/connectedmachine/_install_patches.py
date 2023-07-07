@@ -15,10 +15,10 @@ from azure.cli.core.aaz import *
     "connectedmachine install-patches",
 )
 class InstallPatches(AAZCommand):
-    """The operation to install patches on a hybrid machine identity in Azure.
+    """Install patches on an Azure Arc-Enabled Server.
 
-    :example: Example for Install-Patches
-        az connectedmachine install-patches -g MyResourceGroup -n MyVm --maximum-duration PT4H --reboot-setting IfRequired --classifications-to-include-win Critical Security --exclude-kbs-requiring-reboot true
+    :example: Sample command for install-patches
+        az connectedmachine install-patches --resource-group MyResourceGroup --name MyMachine --maximum-duration PT4H --reboot-setting IfRequired --classifications-to-include-win Critical Security --exclude-kbs-requiring-reboot true
     """
 
     _aaz_info = {
@@ -46,7 +46,7 @@ class InstallPatches(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
-            options=["--name"],
+            options=["-n", "--name"],
             help="The name of the hybrid machine.",
             required=True,
             id_part="name",
@@ -58,6 +58,11 @@ class InstallPatches(AAZCommand):
         # define Arg Group "InstallPatchesInput"
 
         _args_schema = cls._args_schema
+        _args_schema.linux_parameters = AAZObjectArg(
+            options=["--linux-parameters"],
+            arg_group="InstallPatchesInput",
+            help="Input for InstallPatches on a Linux VM, as directly received by the API",
+        )
         _args_schema.maximum_duration = AAZStrArg(
             options=["--maximum-duration"],
             arg_group="InstallPatchesInput",
@@ -71,75 +76,68 @@ class InstallPatches(AAZCommand):
             required=True,
             enum={"Always": "Always", "IfRequired": "IfRequired", "Never": "Never"},
         )
+        _args_schema.windows_parameters = AAZObjectArg(
+            options=["--windows-parameters"],
+            arg_group="InstallPatchesInput",
+            help="Input for InstallPatches on a Windows VM, as directly received by the API",
+        )
 
-        # define Arg Group "LinuxParameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.classifications_to_include_lin = AAZListArg(
-            options=["--classifications-to-include-lin"],
-            arg_group="LinuxParameters",
+        linux_parameters = cls._args_schema.linux_parameters
+        linux_parameters.classifications_to_include = AAZListArg(
+            options=["classifications-to-include"],
             help="The update classifications to select when installing patches for Linux.",
         )
-        _args_schema.package_name_masks_to_exclude = AAZListArg(
-            options=["--package-name-masks-to-exclude"],
-            arg_group="LinuxParameters",
+        linux_parameters.package_name_masks_to_exclude = AAZListArg(
+            options=["package-name-masks-to-exclude"],
             help="packages to exclude in the patch operation. Format: packageName_packageVersion",
         )
-        _args_schema.package_name_masks_to_include = AAZListArg(
-            options=["--package-name-masks-to-include"],
-            arg_group="LinuxParameters",
+        linux_parameters.package_name_masks_to_include = AAZListArg(
+            options=["package-name-masks-to-include"],
             help="packages to include in the patch operation. Format: packageName_packageVersion",
         )
 
-        classifications_to_include_lin = cls._args_schema.classifications_to_include_lin
-        classifications_to_include_lin.Element = AAZStrArg(
+        classifications_to_include = cls._args_schema.linux_parameters.classifications_to_include
+        classifications_to_include.Element = AAZStrArg(
             enum={"Critical": "Critical", "Other": "Other", "Security": "Security"},
         )
 
-        package_name_masks_to_exclude = cls._args_schema.package_name_masks_to_exclude
+        package_name_masks_to_exclude = cls._args_schema.linux_parameters.package_name_masks_to_exclude
         package_name_masks_to_exclude.Element = AAZStrArg()
 
-        package_name_masks_to_include = cls._args_schema.package_name_masks_to_include
+        package_name_masks_to_include = cls._args_schema.linux_parameters.package_name_masks_to_include
         package_name_masks_to_include.Element = AAZStrArg()
 
-        # define Arg Group "WindowsParameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.classifications_to_include_win = AAZListArg(
-            options=["--classifications-to-include-win"],
-            arg_group="WindowsParameters",
+        windows_parameters = cls._args_schema.windows_parameters
+        windows_parameters.classifications_to_include = AAZListArg(
+            options=["classifications-to-include"],
             help="The update classifications to select when installing patches for Windows.",
         )
-        _args_schema.exclude_kbs_requiring_reboot = AAZBoolArg(
-            options=["--exclude-kbs-requiring-reboot"],
-            arg_group="WindowsParameters",
+        windows_parameters.exclude_kbs_requiring_reboot = AAZBoolArg(
+            options=["exclude-kbs-requiring-reboot"],
             help="Filters out Kbs that don't have an InstallationRebootBehavior of 'NeverReboots' when this is set to true.",
         )
-        _args_schema.kb_numbers_to_exclude = AAZListArg(
-            options=["--kb-numbers-to-exclude"],
-            arg_group="WindowsParameters",
+        windows_parameters.kb_numbers_to_exclude = AAZListArg(
+            options=["kb-numbers-to-exclude"],
             help="Kbs to exclude in the patch operation",
         )
-        _args_schema.kb_numbers_to_include = AAZListArg(
-            options=["--kb-numbers-to-include"],
-            arg_group="WindowsParameters",
+        windows_parameters.kb_numbers_to_include = AAZListArg(
+            options=["kb-numbers-to-include"],
             help="Kbs to include in the patch operation",
         )
-        _args_schema.max_patch_publish_date = AAZDateTimeArg(
-            options=["--max-patch-publish-date"],
-            arg_group="WindowsParameters",
+        windows_parameters.max_patch_publish_date = AAZDateTimeArg(
+            options=["max-patch-publish-date"],
             help="This is used to install patches that were published on or before this given max published date.",
         )
 
-        classifications_to_include_win = cls._args_schema.classifications_to_include_win
-        classifications_to_include_win.Element = AAZStrArg(
+        classifications_to_include = cls._args_schema.windows_parameters.classifications_to_include
+        classifications_to_include.Element = AAZStrArg(
             enum={"Critical": "Critical", "Definition": "Definition", "FeaturePack": "FeaturePack", "Security": "Security", "ServicePack": "ServicePack", "Tools": "Tools", "UpdateRollUp": "UpdateRollUp", "Updates": "Updates"},
         )
 
-        kb_numbers_to_exclude = cls._args_schema.kb_numbers_to_exclude
+        kb_numbers_to_exclude = cls._args_schema.windows_parameters.kb_numbers_to_exclude
         kb_numbers_to_exclude.Element = AAZStrArg()
 
-        kb_numbers_to_include = cls._args_schema.kb_numbers_to_include
+        kb_numbers_to_include = cls._args_schema.windows_parameters.kb_numbers_to_include
         kb_numbers_to_include.Element = AAZStrArg()
         return cls._args_schema
 
@@ -249,14 +247,14 @@ class InstallPatches(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("linuxParameters", AAZObjectType)
+            _builder.set_prop("linuxParameters", AAZObjectType, ".linux_parameters")
             _builder.set_prop("maximumDuration", AAZStrType, ".maximum_duration", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("rebootSetting", AAZStrType, ".reboot_setting", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("windowsParameters", AAZObjectType)
+            _builder.set_prop("windowsParameters", AAZObjectType, ".windows_parameters")
 
             linux_parameters = _builder.get(".linuxParameters")
             if linux_parameters is not None:
-                linux_parameters.set_prop("classificationsToInclude", AAZListType, ".classifications_to_include_lin")
+                linux_parameters.set_prop("classificationsToInclude", AAZListType, ".classifications_to_include")
                 linux_parameters.set_prop("packageNameMasksToExclude", AAZListType, ".package_name_masks_to_exclude")
                 linux_parameters.set_prop("packageNameMasksToInclude", AAZListType, ".package_name_masks_to_include")
 
@@ -274,7 +272,7 @@ class InstallPatches(AAZCommand):
 
             windows_parameters = _builder.get(".windowsParameters")
             if windows_parameters is not None:
-                windows_parameters.set_prop("classificationsToInclude", AAZListType, ".classifications_to_include_win")
+                windows_parameters.set_prop("classificationsToInclude", AAZListType, ".classifications_to_include")
                 windows_parameters.set_prop("excludeKbsRequiringReboot", AAZBoolType, ".exclude_kbs_requiring_reboot")
                 windows_parameters.set_prop("kbNumbersToExclude", AAZListType, ".kb_numbers_to_exclude")
                 windows_parameters.set_prop("kbNumbersToInclude", AAZListType, ".kb_numbers_to_include")

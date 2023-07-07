@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "connectedmachine extension",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage a machine extension with connectedmachine
+    """Manage a VM extension on an Azure Arc-Enabled Server.
     """
     pass
 

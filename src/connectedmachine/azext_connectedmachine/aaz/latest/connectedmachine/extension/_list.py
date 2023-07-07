@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "connectedmachine extension list",
 )
 class List(AAZCommand):
-    """List operation to get all extensions of a non-Azure machine.
+    """The operation to get all extensions of a Non-Azure machine.
     """
 
     _aaz_info = {

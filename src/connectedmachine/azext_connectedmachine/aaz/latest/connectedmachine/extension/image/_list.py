@@ -12,21 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine extensionimage list",
+    "connectedmachine extension image list",
 )
 class List(AAZCommand):
-    """Extensions Metadata API
+    """List all Extension versions based on location, publisher, extensionType.
 
-    This allows to query specific extension versions for regions and also list all possible extension versions for a given region.
-
-    :example: Sample command for extensionimage list
-        az connectedmachine extensionimage list --publisher Microsoft.AzureStack.Observability.Internal --extension-type EdgeRemoteSupport --location centraluseuap
+    :example: Sample command for extension image list
+        az connectedmachine extension image list --publisher microsoft.azure.monitor --extension-type azuremonitorlinuxagent --location eastus
     """
 
     _aaz_info = {
-        "version": "2022-11-10",
+        "version": "2022-12-27",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/locations/{}/publishers/{}/extensiontypes/{}/versions", "2022-11-10"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/locations/{}/publishers/{}/extensiontypes/{}/versions", "2022-12-27"],
         ]
     }
 
@@ -130,7 +128,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-10",
+                    "api-version", "2022-12-27",
                     required=True,
                 ),
             }

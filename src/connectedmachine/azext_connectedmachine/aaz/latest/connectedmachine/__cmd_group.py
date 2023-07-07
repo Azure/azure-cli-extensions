@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "connectedmachine",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage a connectedmachine
+    """Manage an Azure Arc-Enabled Server.
     """
     pass
 

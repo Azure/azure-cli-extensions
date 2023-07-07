@@ -15,10 +15,10 @@ from azure.cli.core.aaz import *
     "connectedmachine assess-patches",
 )
 class AssessPatches(AAZCommand):
-    """The operation to assess patches on a hybrid machine identity in Azure.
+    """Assess patches on an Azure Arc-Enabled Server.
 
-    :example: Example for assess-patches
-        az connectedmachine assess-patches -g MyResourceGroup -n MyVm
+    :example: Sample command for access-patches
+        az connectedmachine machine assess-patches --resource-group MyResourceGroup --name MyMachine
     """
 
     _aaz_info = {
@@ -46,7 +46,7 @@ class AssessPatches(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
-            options=["--name"],
+            options=["-n", "--name"],
             help="The name of the hybrid machine.",
             required=True,
             id_part="name",

@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "connectedmachine extensionimage",
+    "connectedmachine extension image",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage a extension image with connectedmachine
+    """Manage VM extension images available for Azure Arc-Enabled Servers.
     """
     pass
 

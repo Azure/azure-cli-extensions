@@ -12,10 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine extensionimage show",
+    "connectedmachine extension image show",
 )
 class Show(AAZCommand):
-    """Get an Extension Metadata based on location, publisher, extensionType and version
+    """Get an Extension Metadata based on location, publisher, extensionType and version.
+
+    :example: Sample command for extension image show
+        az connectedmachine extension image show --publisher microsoft.azure.monitor --extension-type azuremonitorlinuxagent --location eastus --version 1.9.1
     """
 
     _aaz_info = {
@@ -42,7 +45,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.extension_type = AAZStrArg(
-            options=["--extension-type"],
+            options=["--type", "--extension-type"],
             help="The extensionType of the Extension being received.",
             required=True,
             id_part="child_name_2",
@@ -52,7 +55,7 @@ class Show(AAZCommand):
             id_part="name",
         )
         _args_schema.publisher = AAZStrArg(
-            options=["--publisher"],
+            options=["-p", "--publisher"],
             help="The publisher of the Extension being received.",
             required=True,
             id_part="child_name_1",
