@@ -18,7 +18,7 @@ class LinkNotificationHub(AAZCommand):
     """Links an Azure Notification Hub to this communication service.
 
     :example: Create a communication resource
-        az communication link-notification-hub -n <your-resource-name> -g <your-resource-group> --resource-id <notification-hub-resource-id>
+        az communication link-notification-hub -n ResourceName -g ResourceGroup --resource-id /subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/testResource/providers/Microsoft.NotificationHubs/namespaces/my-hub/NotificationHubs/testHub
     """
 
     _aaz_info = {

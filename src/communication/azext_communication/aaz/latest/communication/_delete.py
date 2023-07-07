@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete to delete a CommunicationService.
 
     :example: Delete a communication resource
-        az communication delete -n <your-resource-name> -g <your-resource-group>
+        az communication delete -n ResourceName -g ResourceGroup
     """
 
     _aaz_info = {

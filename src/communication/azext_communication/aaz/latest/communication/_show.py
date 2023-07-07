@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get the CommunicationService and its properties.
 
     :example: Get a communication service's properties
-        az communication show -n <your-resource-name> -g <your-resource-group>
+        az communication show -n ResourceName -g ResourceGroup
     """
 
     _aaz_info = {
