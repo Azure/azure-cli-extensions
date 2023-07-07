@@ -4778,7 +4778,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
-                     '--nodepool-taints '
+                     '--nodepool-taints ""'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('agentPoolProfiles[0].nodeTaints', None),
