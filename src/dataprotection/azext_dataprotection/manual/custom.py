@@ -77,25 +77,63 @@ def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource
     })
 
 
-def dataprotection_backup_instance_initialize_backupconfig(datasource_type, excluded_resource_types=None,
+def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasource_type, excluded_resource_types=None,
                                                            included_resource_types=None, excluded_namespaces=None,
                                                            included_namespaces=None, label_selectors=None,
                                                            snapshot_volumes=None,
-                                                           include_cluster_scope_resources=None):
-    if snapshot_volumes is None:
-        snapshot_volumes = True
-    if include_cluster_scope_resources is None:
-        include_cluster_scope_resources = True
-
-    return {
-        "excluded_resource_types": excluded_resource_types,
-        "included_resource_types": included_resource_types,
-        "excluded_namespaces": excluded_namespaces,
-        "included_namespaces": included_namespaces,
-        "label_selectors": label_selectors,
-        "snapshot_volumes": snapshot_volumes,
-        "include_cluster_scope_resources": include_cluster_scope_resources
-    }
+                                                           include_cluster_scope_resources=None,
+                                                           vaulted_backup_containers=None,
+                                                           include_all_containers=None,
+                                                           storage_account_name=None, storage_account_resource_group=None):
+    if datasource_type == "AzureKubernetesService":
+        if vaulted_backup_containers:
+            raise InvalidArgumentValueError('Invalid argument --vaulted-backup-containers for given datasource type.')
+        if snapshot_volumes is None:
+            snapshot_volumes = True
+        if include_cluster_scope_resources is None:
+            include_cluster_scope_resources = True
+        return {
+            "object_type": "KubernetesClusterBackupDatasourceParameters",
+            "excluded_resource_types": excluded_resource_types,
+            "included_resource_types": included_resource_types,
+            "excluded_namespaces": excluded_namespaces,
+            "included_namespaces": included_namespaces,
+            "label_selectors": label_selectors,
+            "snapshot_volumes": snapshot_volumes,
+            "include_cluster_scope_resources": include_cluster_scope_resources
+        }
+    elif datasource_type == "AzureBlob":
+        if any([excluded_resource_types, included_resource_types, excluded_namespaces, included_namespaces,
+                label_selectors, snapshot_volumes, include_cluster_scope_resources]):
+            raise InvalidArgumentValueError('Invalid arguments --excluded-resource-type, --included-resource-type, --excluded-namespaces, '
+                                            ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources '
+                                            ' for given datasource type.')
+        if vaulted_backup_containers:
+            return {
+                "object_type": "BlobBackupDatasourceParameters",
+                "containers_list": vaulted_backup_containers
+            }
+        elif include_all_containers:
+            if storage_account_name and storage_account_resource_group:
+                from azure.cli.command_modules.storage.operations.blob import list_container_rm
+                container_list_generator = list_container_rm(cmd, client, storage_account_resource_group, storage_account_name)
+                containers_list = [container.name for container in list(container_list_generator)]
+                # Verify and raise error if number of containers > 100
+                # if len(containers_list) > 100:
+                #     raise InvalidArgumentValueError('Storage account has more than 100 containers. Please select 100 containers or less for backup configuration.')
+                return {
+                    "object_type": "BlobBackupDatasourceParameters",
+                    "containers_list": containers_list
+                }
+            else:
+                raise RequiredArgumentMissingError('Please input --storage-account-name and --storage-account-resource-group parameters '
+                                                   'for fetching all vaulted containers.')
+        else:
+            raise RequiredArgumentMissingError('Please provide --vaulted-backup-containers argument or --include-all-containers argument '
+                                               'for given workload type.')
+    else:
+        raise InvalidArgumentValueError('Given datasource type is not supported currently. '
+                                        'This command only supports "AzureBlob" or "AzureKubernetesService" datasource types.')
 
 
 def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,
@@ -170,13 +208,29 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
         backup_instance_name = datasource_info["resource_name"] + "-" + datasource_info["resource_name"] + "-" + str(guid)
 
     if manifest["addBackupDatasourceParametersList"]:
-        if backup_configuration is None:
-            raise RequiredArgumentMissingError("Please input parameter backup-configuration for AKS cluster backup. \
-                           Use command az dataprotection backup-instance initialize-backupconfig \
-                           for creating the backup-configuration")
-        backup_configuration["object_type"] = "KubernetesClusterBackupDatasourceParameters"
-        policy_info["policy_parameters"]["backup_datasource_parameters_list"] = []
-        policy_info["policy_parameters"]["backup_datasource_parameters_list"].append(backup_configuration)
+        if manifest["backupConfigurationRequired"] and backup_configuration is None:
+            raise RequiredArgumentMissingError("Please input parameter backup-configuration for given datasource type. \
+                                                Use command az dataprotection backup-instance initialize-backupconfig \
+                                                for creating the backup-configuration")
+        if backup_configuration:
+            if datasource_type == "AzureBlob":
+                for key in ['excluded_resource_types', 'included_resource_types', 'excluded_namespaces', 'included_namespaces',
+                            'label_selectors', 'snapshot_volumes', 'include_cluster_scope_resources']:
+                    if key in backup_configuration:
+                        raise InvalidArgumentValueError('Invalid arguments --excluded-resource-type, --included-resource-type, --excluded-namespaces, '
+                                                        ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources '
+                                                        ' for given datasource type. Please check the backup configuration.')
+
+            if datasource_type == "AzureKubernetesService":
+                if "containers_list" in backup_configuration:
+                    raise InvalidArgumentValueError('Invalid argument --vaulted-backup-containers for given datasource type. '
+                                                    'Please check the backup configuration.')
+
+            if not policy_info["policy_parameters"]:
+                policy_info["policy_parameters"] = {}
+
+            policy_info["policy_parameters"]["backup_datasource_parameters_list"] = []
+            policy_info["policy_parameters"]["backup_datasource_parameters_list"].append(backup_configuration)
     else:
         if backup_configuration is not None:
             logger.warning("--backup-configuration is not required for the given DatasourceType, and will not be used")
@@ -977,7 +1031,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
                                         ". Supported restore modes are " + ','.join(manifest["allowedRestoreModes"]))
 
     # Workload should allow for item level recovery
-    if manifest is not None and not manifest["itemLevelRecoveyEnabled"]:
+    if manifest is not None and not manifest["itemLevelRecoveryEnabled"]:
         raise InvalidArgumentValueError("Specified DatasourceType " + datasource_type + " doesn't support Item Level Recovery")
 
     # Constructing the rest of the restore request object. No further validation is being done.
@@ -1004,23 +1058,34 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
             raise MutuallyExclusiveArgumentError("Please specify either container list or prefix pattern.")
 
         if container_list is not None:
-            if len(container_list) > 10:
-                raise InvalidArgumentValueError("A maximum of 10 containers can be restored. Please choose up to 10 containers.")
-            for container in container_list:
-                if container[0] == '$':
-                    raise InvalidArgumentValueError("container name can not start with '$'. Please retry with different sets of containers.")
-                restore_criteria = {}
-                restore_criteria["object_type"] = "RangeBasedItemLevelRestoreCriteria"
-                restore_criteria["min_matching_value"] = container
-                restore_criteria["max_matching_value"] = container + "-0"
-
-                restore_criteria_list.append(restore_criteria)
+            if recovery_point_id:
+                if len(container_list) > 100:
+                    raise InvalidArgumentValueError("A maximum of 100 containers can be restored for vaulted backup. Please choose up to 100 containers.")
+                for container in container_list:
+                    if container[0] == '$':
+                        raise InvalidArgumentValueError("container name can not start with '$'. Please retry with different sets of containers.")
+                    restore_criteria = {}
+                    restore_criteria["object_type"] = "ItemPathBasedRestoreCriteria"
+                    restore_criteria["item_path"] = container
+                    restore_criteria["is_path_relative_to_backup_item"] = True
+                    restore_criteria_list.append(restore_criteria)
+            else:
+                if len(container_list) > 10:
+                    raise InvalidArgumentValueError("A maximum of 10 containers can be restored. Please choose up to 10 containers.")
+                for container in container_list:
+                    if container[0] == '$':
+                        raise InvalidArgumentValueError("container name can not start with '$'. Please retry with different sets of containers.")
+                    restore_criteria = {}
+                    restore_criteria["object_type"] = "RangeBasedItemLevelRestoreCriteria"
+                    restore_criteria["min_matching_value"] = container
+                    restore_criteria["max_matching_value"] = container + "-0"
+                    restore_criteria_list.append(restore_criteria)
 
         if from_prefix_pattern is not None or to_prefix_pattern is not None:
             if from_prefix_pattern is None or to_prefix_pattern is None or \
                len(from_prefix_pattern) != len(to_prefix_pattern) or len(from_prefix_pattern) > 10:
                 raise InvalidArgumentValueError(
-                    "from-prefix-pattern and to-prefix-pattern should not be null, both of them should have "
+                    "From-prefix-pattern and to-prefix-pattern should not be null, both of them should have "
                     "equal length and can have a maximum of 10 patterns."
                 )
 
@@ -1043,7 +1108,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
                 regex_pattern = r"^[a-z0-9](?!.*--)[a-z0-9-]{1,61}[a-z0-9](\/.{1,60})*$"
                 if re.match(regex_pattern, from_prefix_pattern[index]) is None:
                     raise InvalidArgumentValueError(
-                        "prefix patterns must start or end with a letter or number,"
+                        "Prefix patterns must start or end with a letter or number,"
                         "and can contain only lowercase letters, numbers, and the dash (-) character. "
                         "consecutive dashes are not permitted."
                         "Given pattern " + from_prefix_pattern[index] + " violates the above rule."
@@ -1051,7 +1116,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
 
                 if re.match(regex_pattern, to_prefix_pattern[index]) is None:
                     raise InvalidArgumentValueError(
-                        "prefix patterns must start or end with a letter or number,"
+                        "Prefix patterns must start or end with a letter or number,"
                         "and can contain only lowercase letters, numbers, and the dash (-) character. "
                         "consecutive dashes are not permitted."
                         "Given pattern " + to_prefix_pattern[index] + " violates the above rule."
@@ -1061,7 +1126,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
                     if (from_prefix_pattern[index] <= from_prefix_pattern[compareindex] and to_prefix_pattern[index] >= from_prefix_pattern[compareindex]) or \
                        (from_prefix_pattern[index] >= from_prefix_pattern[compareindex] and from_prefix_pattern[index] <= to_prefix_pattern[compareindex]):
                         raise InvalidArgumentValueError(
-                            "overlapping ranges are not allowed."
+                            "Overlapping ranges are not allowed."
                         )
 
             for index, _ in enumerate(from_prefix_pattern):

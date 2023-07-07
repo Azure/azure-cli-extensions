@@ -25,7 +25,7 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Thu, 06 Jul 2023 06:58:37 GMT
+      - Thu, 06 Jul 2023 12:10:05 GMT
       expires:
       - '-1'
       pragma:
@@ -35,7 +35,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '197'
+      - '199'
       x-powered-by:
       - ASP.NET
     status:
@@ -45,266 +45,8 @@ interactions:
     body: '{"backupInstance": {"dataSourceInfo": {"datasourceType": "Microsoft.Compute/disks",
       "objectType": "Datasource", "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete",
       "resourceLocation": "centraluseuap", "resourceName": "clitest-disk-donotdelete",
-      "resourceType": "Microsoft.Compute/disks", "resourceUri": ""}, "dataSourceSetInfo":
-      null, "datasourceAuthCredentials": null, "friendlyName": "clitest-disk-donotdelete",
-      "objectType": "BackupInstance", "policyInfo": {"policyId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy",
-      "policyParameters": {"dataStoreParametersList": [{"dataStoreType": "OperationalStore",
-      "objectType": "AzureOperationalStoreParameters", "resourceGroupId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg"}]}}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - dataprotection backup-instance validate-for-backup
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '1012'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - -g --vault-name --backup-instance
-      User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/validateForBackup?api-version=2023-01-01
-  response:
-    body:
-      string: ''
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2NmNmI2NjM3LWZkZjYtNGFmOC1iNzJjLWI0MzM1OGE4ZjM1Yw==?api-version=2023-01-01
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Thu, 06 Jul 2023 06:58:41 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2NmNmI2NjM3LWZkZjYtNGFmOC1iNzJjLWI0MzM1OGE4ZjM1Yw==?api-version=2023-01-01
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - dataprotection backup-instance validate-for-backup
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --vault-name --backup-instance
-      User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2NmNmI2NjM3LWZkZjYtNGFmOC1iNzJjLWI0MzM1OGE4ZjM1Yw==?api-version=2023-01-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2NmNmI2NjM3LWZkZjYtNGFmOC1iNzJjLWI0MzM1OGE4ZjM1Yw==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2NmNmI2NjM3LWZkZjYtNGFmOC1iNzJjLWI0MzM1OGE4ZjM1Yw==","status":"Inprogress","startTime":"2023-07-06T06:58:41.5257971Z","endTime":"0001-01-01T00:00:00Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '493'
-      content-type:
-      - application/json
-      date:
-      - Thu, 06 Jul 2023 06:58:41 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '994'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - dataprotection backup-instance validate-for-backup
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --vault-name --backup-instance
-      User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2NmNmI2NjM3LWZkZjYtNGFmOC1iNzJjLWI0MzM1OGE4ZjM1Yw==?api-version=2023-01-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2NmNmI2NjM3LWZkZjYtNGFmOC1iNzJjLWI0MzM1OGE4ZjM1Yw==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2NmNmI2NjM3LWZkZjYtNGFmOC1iNzJjLWI0MzM1OGE4ZjM1Yw==","status":"Inprogress","startTime":"2023-07-06T06:58:41.5257971Z","endTime":"0001-01-01T00:00:00Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '493'
-      content-type:
-      - application/json
-      date:
-      - Thu, 06 Jul 2023 06:59:12 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '993'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - dataprotection backup-instance validate-for-backup
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --vault-name --backup-instance
-      User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2NmNmI2NjM3LWZkZjYtNGFmOC1iNzJjLWI0MzM1OGE4ZjM1Yw==?api-version=2023-01-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2NmNmI2NjM3LWZkZjYtNGFmOC1iNzJjLWI0MzM1OGE4ZjM1Yw==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2NmNmI2NjM3LWZkZjYtNGFmOC1iNzJjLWI0MzM1OGE4ZjM1Yw==","status":"Succeeded","startTime":"2023-07-06T06:58:41.5257971Z","endTime":"2023-07-06T06:59:23Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '492'
-      content-type:
-      - application/json
-      date:
-      - Thu, 06 Jul 2023 06:59:42 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '992'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - dataprotection backup-instance validate-for-backup
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --vault-name --backup-instance
-      User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2NmNmI2NjM3LWZkZjYtNGFmOC1iNzJjLWI0MzM1OGE4ZjM1Yw==?api-version=2023-01-01
-  response:
-    body:
-      string: '{"objectType":"OperationJobExtendedInfo"}'
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2NmNmI2NjM3LWZkZjYtNGFmOC1iNzJjLWI0MzM1OGE4ZjM1Yw==?api-version=2023-01-01
-      cache-control:
-      - no-cache
-      content-length:
-      - '41'
-      content-type:
-      - application/json
-      date:
-      - Thu, 06 Jul 2023 06:59:42 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '198'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"backupInstance": {"dataSourceInfo": {"datasourceType": "Microsoft.Compute/disks",
-      "objectType": "Datasource", "resourceID": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete",
-      "resourceLocation": "centraluseuap", "resourceName": "clitest-disk-donotdelete",
-      "resourceType": "Microsoft.Compute/disks", "resourceUri": ""}, "friendlyName":
+      "resourceType": "Microsoft.Compute/disks", "resourceUri": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete"},
+      "dataSourceSetInfo": null, "datasourceAuthCredentials": null, "friendlyName":
       "clitest-disk-donotdelete", "objectType": "BackupInstance", "policyInfo": {"policyId":
       "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy",
       "policyParameters": {"dataStoreParametersList": [{"dataStoreType": "OperationalStore",
@@ -315,11 +57,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - dataprotection backup-instance create
+      - dataprotection backup-instance validate-for-backup
       Connection:
       - keep-alive
       Content-Length:
-      - '950'
+      - '1152'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -333,17 +75,17 @@ interactions:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzRkOGFmNDcxLWI3ZGYtNGMwZi05Y2VkLWYwYzc1NDI5ZmZlYQ==?api-version=2023-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzFiY2IwNDY3LTJhMjgtNDQ3Mi05MmNmLTgyY2E5NDQ3YjU1Yg==?api-version=2023-01-01
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Thu, 06 Jul 2023 06:59:45 GMT
+      - Thu, 06 Jul 2023 12:10:08 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzRkOGFmNDcxLWI3ZGYtNGMwZi05Y2VkLWYwYzc1NDI5ZmZlYQ==?api-version=2023-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzFiY2IwNDY3LTJhMjgtNDQ3Mi05MmNmLTgyY2E5NDQ3YjU1Yg==?api-version=2023-01-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -365,7 +107,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - dataprotection backup-instance create
+      - dataprotection backup-instance validate-for-backup
       Connection:
       - keep-alive
       ParameterSetName:
@@ -373,10 +115,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzRkOGFmNDcxLWI3ZGYtNGMwZi05Y2VkLWYwYzc1NDI5ZmZlYQ==?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzFiY2IwNDY3LTJhMjgtNDQ3Mi05MmNmLTgyY2E5NDQ3YjU1Yg==?api-version=2023-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzRkOGFmNDcxLWI3ZGYtNGMwZi05Y2VkLWYwYzc1NDI5ZmZlYQ==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzRkOGFmNDcxLWI3ZGYtNGMwZi05Y2VkLWYwYzc1NDI5ZmZlYQ==","status":"Inprogress","startTime":"2023-07-06T06:59:46.2153749Z","endTime":"0001-01-01T00:00:00Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzFiY2IwNDY3LTJhMjgtNDQ3Mi05MmNmLTgyY2E5NDQ3YjU1Yg==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzFiY2IwNDY3LTJhMjgtNDQ3Mi05MmNmLTgyY2E5NDQ3YjU1Yg==","status":"Inprogress","startTime":"2023-07-06T12:10:08.5746921Z","endTime":"0001-01-01T00:00:00Z"}'
     headers:
       cache-control:
       - no-cache
@@ -385,7 +127,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 06:59:46 GMT
+      - Thu, 06 Jul 2023 12:10:09 GMT
       expires:
       - '-1'
       pragma:
@@ -415,7 +157,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - dataprotection backup-instance create
+      - dataprotection backup-instance validate-for-backup
       Connection:
       - keep-alive
       ParameterSetName:
@@ -423,10 +165,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzRkOGFmNDcxLWI3ZGYtNGMwZi05Y2VkLWYwYzc1NDI5ZmZlYQ==?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzFiY2IwNDY3LTJhMjgtNDQ3Mi05MmNmLTgyY2E5NDQ3YjU1Yg==?api-version=2023-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzRkOGFmNDcxLWI3ZGYtNGMwZi05Y2VkLWYwYzc1NDI5ZmZlYQ==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzRkOGFmNDcxLWI3ZGYtNGMwZi05Y2VkLWYwYzc1NDI5ZmZlYQ==","status":"Inprogress","startTime":"2023-07-06T06:59:46.2153749Z","endTime":"0001-01-01T00:00:00Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzFiY2IwNDY3LTJhMjgtNDQ3Mi05MmNmLTgyY2E5NDQ3YjU1Yg==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzFiY2IwNDY3LTJhMjgtNDQ3Mi05MmNmLTgyY2E5NDQ3YjU1Yg==","status":"Inprogress","startTime":"2023-07-06T12:10:08.5746921Z","endTime":"0001-01-01T00:00:00Z"}'
     headers:
       cache-control:
       - no-cache
@@ -435,7 +177,216 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:00:17 GMT
+      - Thu, 06 Jul 2023 12:10:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '998'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance validate-for-backup
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name --backup-instance
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzFiY2IwNDY3LTJhMjgtNDQ3Mi05MmNmLTgyY2E5NDQ3YjU1Yg==?api-version=2023-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzFiY2IwNDY3LTJhMjgtNDQ3Mi05MmNmLTgyY2E5NDQ3YjU1Yg==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzFiY2IwNDY3LTJhMjgtNDQ3Mi05MmNmLTgyY2E5NDQ3YjU1Yg==","status":"Succeeded","startTime":"2023-07-06T12:10:08.5746921Z","endTime":"2023-07-06T12:10:49Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '492'
+      content-type:
+      - application/json
+      date:
+      - Thu, 06 Jul 2023 12:11:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '997'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance validate-for-backup
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name --backup-instance
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzFiY2IwNDY3LTJhMjgtNDQ3Mi05MmNmLTgyY2E5NDQ3YjU1Yg==?api-version=2023-01-01
+  response:
+    body:
+      string: '{"objectType":"OperationJobExtendedInfo"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzFiY2IwNDY3LTJhMjgtNDQ3Mi05MmNmLTgyY2E5NDQ3YjU1Yg==?api-version=2023-01-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '41'
+      content-type:
+      - application/json
+      date:
+      - Thu, 06 Jul 2023 12:11:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"backupInstance": {"dataSourceInfo": {"datasourceType": "Microsoft.Compute/disks",
+      "objectType": "Datasource", "resourceID": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete",
+      "resourceLocation": "centraluseuap", "resourceName": "clitest-disk-donotdelete",
+      "resourceType": "Microsoft.Compute/disks", "resourceUri": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete"},
+      "friendlyName": "clitest-disk-donotdelete", "objectType": "BackupInstance",
+      "policyInfo": {"policyId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy",
+      "policyParameters": {"dataStoreParametersList": [{"dataStoreType": "OperationalStore",
+      "objectType": "AzureOperationalStoreParameters", "resourceGroupId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg"}]}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1090'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --vault-name --backup-instance
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/validateForBackup?api-version=2023-01-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2RiNmE4YTFkLTQzOGEtNDU2NS1hNTY1LTE0YzUxZDVjNGMxNA==?api-version=2023-01-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 06 Jul 2023 12:11:13 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2RiNmE4YTFkLTQzOGEtNDU2NS1hNTY1LTE0YzUxZDVjNGMxNA==?api-version=2023-01-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name --backup-instance
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2RiNmE4YTFkLTQzOGEtNDU2NS1hNTY1LTE0YzUxZDVjNGMxNA==?api-version=2023-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2RiNmE4YTFkLTQzOGEtNDU2NS1hNTY1LTE0YzUxZDVjNGMxNA==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2RiNmE4YTFkLTQzOGEtNDU2NS1hNTY1LTE0YzUxZDVjNGMxNA==","status":"Inprogress","startTime":"2023-07-06T12:11:13.9936845Z","endTime":"0001-01-01T00:00:00Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '493'
+      content-type:
+      - application/json
+      date:
+      - Thu, 06 Jul 2023 12:11:14 GMT
       expires:
       - '-1'
       pragma:
@@ -473,172 +424,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzRkOGFmNDcxLWI3ZGYtNGMwZi05Y2VkLWYwYzc1NDI5ZmZlYQ==?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2RiNmE4YTFkLTQzOGEtNDU2NS1hNTY1LTE0YzUxZDVjNGMxNA==?api-version=2023-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzRkOGFmNDcxLWI3ZGYtNGMwZi05Y2VkLWYwYzc1NDI5ZmZlYQ==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzRkOGFmNDcxLWI3ZGYtNGMwZi05Y2VkLWYwYzc1NDI5ZmZlYQ==","status":"Succeeded","startTime":"2023-07-06T06:59:46.2153749Z","endTime":"2023-07-06T07:00:27Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '492'
-      content-type:
-      - application/json
-      date:
-      - Thu, 06 Jul 2023 07:00:48 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '997'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - dataprotection backup-instance create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --vault-name --backup-instance
-      User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzRkOGFmNDcxLWI3ZGYtNGMwZi05Y2VkLWYwYzc1NDI5ZmZlYQ==?api-version=2023-01-01
-  response:
-    body:
-      string: '{"objectType":"OperationJobExtendedInfo"}'
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzRkOGFmNDcxLWI3ZGYtNGMwZi05Y2VkLWYwYzc1NDI5ZmZlYQ==?api-version=2023-01-01
-      cache-control:
-      - no-cache
-      content-length:
-      - '41'
-      content-type:
-      - application/json
-      date:
-      - Thu, 06 Jul 2023 07:00:48 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"dataSourceInfo": {"datasourceType": "Microsoft.Compute/disks",
-      "objectType": "Datasource", "resourceID": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete",
-      "resourceLocation": "centraluseuap", "resourceName": "clitest-disk-donotdelete",
-      "resourceType": "Microsoft.Compute/disks", "resourceUri": ""}, "friendlyName":
-      "clitest-disk-donotdelete", "objectType": "BackupInstance", "policyInfo": {"policyId":
-      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy",
-      "policyParameters": {"dataStoreParametersList": [{"dataStoreType": "OperationalStore",
-      "objectType": "AzureOperationalStoreParameters", "resourceGroupId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg"}]}}},
-      "tags": {"Owner": "dppclitest", "Purpose": "Testing"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - dataprotection backup-instance create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '1001'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - -g --vault-name --backup-instance
-      User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1?api-version=2023-01-01
-  response:
-    body:
-      string: '{"tags":{"Owner":"dppclitest","Purpose":"Testing"},"properties":{"friendlyName":"clitest-disk-donotdelete","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","resourceUri":"","datasourceType":"Microsoft.Compute/disks","resourceName":"clitest-disk-donotdelete","resourceType":"Microsoft.Compute/disks","resourceLocation":"centraluseuap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","policyParameters":{"dataStoreParametersList":[{"dataStoreType":"OperationalStore","objectType":"AzureOperationalStoreParameters","resourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg"}]}},"protectionStatus":{"status":"ConfiguringProtection"},"currentProtectionState":"ConfiguringProtection","provisioningState":"Provisioning","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","name":"clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","type":"Microsoft.DataProtection/backupVaults/backupInstances"}'
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzE4MmUzZmRkLTc3ZDEtNGE1ZC1hYzFkLWQxMjk4ZThmNjk2Yg==?api-version=2023-01-01
-      cache-control:
-      - no-cache
-      content-length:
-      - '1533'
-      content-type:
-      - application/json
-      date:
-      - Thu, 06 Jul 2023 07:00:49 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 201
-      message: Created
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - dataprotection backup-instance create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --vault-name --backup-instance
-      User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzE4MmUzZmRkLTc3ZDEtNGE1ZC1hYzFkLWQxMjk4ZThmNjk2Yg==?api-version=2023-01-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzE4MmUzZmRkLTc3ZDEtNGE1ZC1hYzFkLWQxMjk4ZThmNjk2Yg==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzE4MmUzZmRkLTc3ZDEtNGE1ZC1hYzFkLWQxMjk4ZThmNjk2Yg==","status":"Inprogress","startTime":"2023-07-06T07:00:49.9331689Z","endTime":"0001-01-01T00:00:00Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2RiNmE4YTFkLTQzOGEtNDU2NS1hNTY1LTE0YzUxZDVjNGMxNA==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2RiNmE4YTFkLTQzOGEtNDU2NS1hNTY1LTE0YzUxZDVjNGMxNA==","status":"Inprogress","startTime":"2023-07-06T12:11:13.9936845Z","endTime":"0001-01-01T00:00:00Z"}'
     headers:
       cache-control:
       - no-cache
@@ -647,7 +436,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:00:50 GMT
+      - Thu, 06 Jul 2023 12:11:45 GMT
       expires:
       - '-1'
       pragma:
@@ -685,10 +474,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzE4MmUzZmRkLTc3ZDEtNGE1ZC1hYzFkLWQxMjk4ZThmNjk2Yg==?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2RiNmE4YTFkLTQzOGEtNDU2NS1hNTY1LTE0YzUxZDVjNGMxNA==?api-version=2023-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzE4MmUzZmRkLTc3ZDEtNGE1ZC1hYzFkLWQxMjk4ZThmNjk2Yg==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzE4MmUzZmRkLTc3ZDEtNGE1ZC1hYzFkLWQxMjk4ZThmNjk2Yg==","status":"Succeeded","startTime":"2023-07-06T07:00:49.9331689Z","endTime":"2023-07-06T07:00:51Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2RiNmE4YTFkLTQzOGEtNDU2NS1hNTY1LTE0YzUxZDVjNGMxNA==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2RiNmE4YTFkLTQzOGEtNDU2NS1hNTY1LTE0YzUxZDVjNGMxNA==","status":"Succeeded","startTime":"2023-07-06T12:11:13.9936845Z","endTime":"2023-07-06T12:11:55Z"}'
     headers:
       cache-control:
       - no-cache
@@ -697,7 +486,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:01:21 GMT
+      - Thu, 06 Jul 2023 12:12:15 GMT
       expires:
       - '-1'
       pragma:
@@ -713,7 +502,219 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '995'
+      - '994'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name --backup-instance
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2RiNmE4YTFkLTQzOGEtNDU2NS1hNTY1LTE0YzUxZDVjNGMxNA==?api-version=2023-01-01
+  response:
+    body:
+      string: '{"objectType":"OperationJobExtendedInfo"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2RiNmE4YTFkLTQzOGEtNDU2NS1hNTY1LTE0YzUxZDVjNGMxNA==?api-version=2023-01-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '41'
+      content-type:
+      - application/json
+      date:
+      - Thu, 06 Jul 2023 12:12:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"dataSourceInfo": {"datasourceType": "Microsoft.Compute/disks",
+      "objectType": "Datasource", "resourceID": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete",
+      "resourceLocation": "centraluseuap", "resourceName": "clitest-disk-donotdelete",
+      "resourceType": "Microsoft.Compute/disks", "resourceUri": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete"},
+      "friendlyName": "clitest-disk-donotdelete", "objectType": "BackupInstance",
+      "policyInfo": {"policyId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy",
+      "policyParameters": {"dataStoreParametersList": [{"dataStoreType": "OperationalStore",
+      "objectType": "AzureOperationalStoreParameters", "resourceGroupId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg"}]}}},
+      "tags": {"Owner": "dppclitest", "Purpose": "Testing"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1141'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --vault-name --backup-instance
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1?api-version=2023-01-01
+  response:
+    body:
+      string: '{"tags":{"Owner":"dppclitest","Purpose":"Testing"},"properties":{"friendlyName":"clitest-disk-donotdelete","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","resourceUri":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","datasourceType":"Microsoft.Compute/disks","resourceName":"clitest-disk-donotdelete","resourceType":"Microsoft.Compute/disks","resourceLocation":"centraluseuap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","policyParameters":{"dataStoreParametersList":[{"dataStoreType":"OperationalStore","objectType":"AzureOperationalStoreParameters","resourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg"}]}},"protectionStatus":{"status":"ConfiguringProtection"},"currentProtectionState":"ConfiguringProtection","provisioningState":"Provisioning","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","name":"clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","type":"Microsoft.DataProtection/backupVaults/backupInstances"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2IzNjk5N2VmLThhNmUtNDQ2Yy1iODg4LWI1ZGQ1ZmRkYjc5OA==?api-version=2023-01-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1673'
+      content-type:
+      - application/json
+      date:
+      - Thu, 06 Jul 2023 12:12:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name --backup-instance
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2IzNjk5N2VmLThhNmUtNDQ2Yy1iODg4LWI1ZGQ1ZmRkYjc5OA==?api-version=2023-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2IzNjk5N2VmLThhNmUtNDQ2Yy1iODg4LWI1ZGQ1ZmRkYjc5OA==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2IzNjk5N2VmLThhNmUtNDQ2Yy1iODg4LWI1ZGQ1ZmRkYjc5OA==","status":"Inprogress","startTime":"2023-07-06T12:12:17.6652624Z","endTime":"0001-01-01T00:00:00Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '493'
+      content-type:
+      - application/json
+      date:
+      - Thu, 06 Jul 2023 12:12:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '992'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name --backup-instance
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2IzNjk5N2VmLThhNmUtNDQ2Yy1iODg4LWI1ZGQ1ZmRkYjc5OA==?api-version=2023-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2IzNjk5N2VmLThhNmUtNDQ2Yy1iODg4LWI1ZGQ1ZmRkYjc5OA==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2IzNjk5N2VmLThhNmUtNDQ2Yy1iODg4LWI1ZGQ1ZmRkYjc5OA==","status":"Succeeded","startTime":"2023-07-06T12:12:17.6652624Z","endTime":"2023-07-06T12:12:18Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '492'
+      content-type:
+      - application/json
+      date:
+      - Thu, 06 Jul 2023 12:12:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '990'
       x-powered-by:
       - ASP.NET
     status:
@@ -738,66 +739,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1?api-version=2023-01-01
   response:
     body:
-      string: '{"tags":{"Owner":"dppclitest","Purpose":"Testing"},"properties":{"friendlyName":"clitest-disk-donotdelete","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","resourceUri":"","datasourceType":"Microsoft.Compute/disks","resourceName":"clitest-disk-donotdelete","resourceType":"Microsoft.Compute/disks","resourceLocation":"centraluseuap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","policyParameters":{"dataStoreParametersList":[{"dataStoreType":"OperationalStore","objectType":"AzureOperationalStoreParameters","resourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg"}]}},"protectionStatus":{"status":"ConfiguringProtection"},"currentProtectionState":"ConfiguringProtection","provisioningState":"Succeeded","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","name":"clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","type":"Microsoft.DataProtection/backupVaults/backupInstances"}'
+      string: '{"tags":{"Owner":"dppclitest","Purpose":"Testing"},"properties":{"friendlyName":"clitest-disk-donotdelete","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","resourceUri":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","datasourceType":"Microsoft.Compute/disks","resourceName":"clitest-disk-donotdelete","resourceType":"Microsoft.Compute/disks","resourceLocation":"centraluseuap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","policyParameters":{"dataStoreParametersList":[{"dataStoreType":"OperationalStore","objectType":"AzureOperationalStoreParameters","resourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg"}]}},"protectionStatus":{"status":"ConfiguringProtection"},"currentProtectionState":"ConfiguringProtection","provisioningState":"Succeeded","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","name":"clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","type":"Microsoft.DataProtection/backupVaults/backupInstances"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1530'
+      - '1670'
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:01:21 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '1997'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - dataprotection backup-instance list
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --vault-name
-      User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances?api-version=2023-01-01
-  response:
-    body:
-      string: '{"value":[{"tags":{"Owner":"dppclitest","Purpose":"Testing"},"properties":{"friendlyName":"clitest-disk-donotdelete","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","resourceUri":"","datasourceType":"Microsoft.Compute/disks","resourceName":"clitest-disk-donotdelete","resourceType":"Microsoft.Compute/disks","resourceLocation":"centraluseuap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","policyParameters":{"dataStoreParametersList":[{"dataStoreType":"OperationalStore","objectType":"AzureOperationalStoreParameters","resourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg"}]}},"protectionStatus":{"status":"ConfiguringProtection"},"currentProtectionState":"ConfiguringProtection","provisioningState":"Succeeded","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","name":"clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","type":"Microsoft.DataProtection/backupVaults/backupInstances"}]}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1542'
-      content-type:
-      - application/json
-      date:
-      - Thu, 06 Jul 2023 07:01:24 GMT
+      - Thu, 06 Jul 2023 12:12:49 GMT
       expires:
       - '-1'
       pragma:
@@ -827,6 +778,56 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
+      - dataprotection backup-instance list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances?api-version=2023-01-01
+  response:
+    body:
+      string: '{"value":[{"tags":{"Owner":"dppclitest","Purpose":"Testing"},"properties":{"friendlyName":"clitest-disk-donotdelete","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","resourceUri":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","datasourceType":"Microsoft.Compute/disks","resourceName":"clitest-disk-donotdelete","resourceType":"Microsoft.Compute/disks","resourceLocation":"centraluseuap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","policyParameters":{"dataStoreParametersList":[{"dataStoreType":"OperationalStore","objectType":"AzureOperationalStoreParameters","resourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg"}]}},"protectionStatus":{"status":"ConfiguringProtection"},"currentProtectionState":"ConfiguringProtection","provisioningState":"Succeeded","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","name":"clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","type":"Microsoft.DataProtection/backupVaults/backupInstances"},{"tags":{"Owner":"dppclitest","Purpose":"Testing"},"properties":{"friendlyName":"clitestsadonotdelete","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Storage/storageAccounts/clitestsadonotdelete","resourceUri":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Storage/storageAccounts/clitestsadonotdelete","datasourceType":"Microsoft.Storage/storageAccounts/blobServices","resourceName":"clitestsadonotdelete","resourceType":"Microsoft.Storage/storageAccounts","resourceLocation":"centraluseuap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/blobpolicy","policyParameters":{"backupDatasourceParametersList":[{"objectType":"BlobBackupDatasourceParameters","containersList":["cont1"]}]}},"protectionStatus":{"status":"ProtectionConfigured"},"currentProtectionState":"ProtectionConfigured","provisioningState":"Succeeded","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitestsadonotdelete-clitestsadonotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","name":"clitestsadonotdelete-clitestsadonotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","type":"Microsoft.DataProtection/backupVaults/backupInstances"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3268'
+      content-type:
+      - application/json
+      date:
+      - Thu, 06 Jul 2023 12:12:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1999'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
       - dataprotection backup-instance show
       Connection:
       - keep-alive
@@ -838,16 +839,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1?api-version=2023-01-01
   response:
     body:
-      string: '{"tags":{"Owner":"dppclitest","Purpose":"Testing"},"properties":{"friendlyName":"clitest-disk-donotdelete","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","resourceUri":"","datasourceType":"Microsoft.Compute/disks","resourceName":"clitest-disk-donotdelete","resourceType":"Microsoft.Compute/disks","resourceLocation":"centraluseuap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","policyParameters":{"dataStoreParametersList":[{"dataStoreType":"OperationalStore","objectType":"AzureOperationalStoreParameters","resourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg"}]}},"protectionStatus":{"status":"ConfiguringProtection"},"currentProtectionState":"ConfiguringProtection","provisioningState":"Succeeded","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","name":"clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","type":"Microsoft.DataProtection/backupVaults/backupInstances"}'
+      string: '{"tags":{"Owner":"dppclitest","Purpose":"Testing"},"properties":{"friendlyName":"clitest-disk-donotdelete","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","resourceUri":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","datasourceType":"Microsoft.Compute/disks","resourceName":"clitest-disk-donotdelete","resourceType":"Microsoft.Compute/disks","resourceLocation":"centraluseuap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","policyParameters":{"dataStoreParametersList":[{"dataStoreType":"OperationalStore","objectType":"AzureOperationalStoreParameters","resourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg"}]}},"protectionStatus":{"status":"ConfiguringProtection"},"currentProtectionState":"ConfiguringProtection","provisioningState":"Succeeded","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","name":"clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","type":"Microsoft.DataProtection/backupVaults/backupInstances"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1530'
+      - '1670'
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:01:26 GMT
+      - Thu, 06 Jul 2023 12:12:56 GMT
       expires:
       - '-1'
       pragma:
@@ -888,16 +889,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1?api-version=2023-01-01
   response:
     body:
-      string: '{"tags":{"Owner":"dppclitest","Purpose":"Testing"},"properties":{"friendlyName":"clitest-disk-donotdelete","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","resourceUri":"","datasourceType":"Microsoft.Compute/disks","resourceName":"clitest-disk-donotdelete","resourceType":"Microsoft.Compute/disks","resourceLocation":"centraluseuap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","policyParameters":{"dataStoreParametersList":[{"dataStoreType":"OperationalStore","objectType":"AzureOperationalStoreParameters","resourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg"}]}},"protectionStatus":{"status":"ConfiguringProtection"},"currentProtectionState":"ConfiguringProtection","provisioningState":"Succeeded","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","name":"clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","type":"Microsoft.DataProtection/backupVaults/backupInstances"}'
+      string: '{"tags":{"Owner":"dppclitest","Purpose":"Testing"},"properties":{"friendlyName":"clitest-disk-donotdelete","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","resourceUri":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","datasourceType":"Microsoft.Compute/disks","resourceName":"clitest-disk-donotdelete","resourceType":"Microsoft.Compute/disks","resourceLocation":"centraluseuap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","policyParameters":{"dataStoreParametersList":[{"dataStoreType":"OperationalStore","objectType":"AzureOperationalStoreParameters","resourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg"}]}},"protectionStatus":{"status":"ConfiguringProtection"},"currentProtectionState":"ConfiguringProtection","provisioningState":"Succeeded","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","name":"clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","type":"Microsoft.DataProtection/backupVaults/backupInstances"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1530'
+      - '1670'
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:01:29 GMT
+      - Thu, 06 Jul 2023 12:12:58 GMT
       expires:
       - '-1'
       pragma:
@@ -938,16 +939,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1?api-version=2023-01-01
   response:
     body:
-      string: '{"tags":{"Owner":"dppclitest","Purpose":"Testing"},"properties":{"friendlyName":"clitest-disk-donotdelete","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","resourceUri":"","datasourceType":"Microsoft.Compute/disks","resourceName":"clitest-disk-donotdelete","resourceType":"Microsoft.Compute/disks","resourceLocation":"centraluseuap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","policyParameters":{"dataStoreParametersList":[{"dataStoreType":"OperationalStore","objectType":"AzureOperationalStoreParameters","resourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg"}]}},"protectionStatus":{"status":"ProtectionConfigured"},"currentProtectionState":"ProtectionConfigured","provisioningState":"Succeeded","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","name":"clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","type":"Microsoft.DataProtection/backupVaults/backupInstances"}'
+      string: '{"tags":{"Owner":"dppclitest","Purpose":"Testing"},"properties":{"friendlyName":"clitest-disk-donotdelete","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","resourceUri":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","datasourceType":"Microsoft.Compute/disks","resourceName":"clitest-disk-donotdelete","resourceType":"Microsoft.Compute/disks","resourceLocation":"centraluseuap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","policyParameters":{"dataStoreParametersList":[{"dataStoreType":"OperationalStore","objectType":"AzureOperationalStoreParameters","resourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg"}]}},"protectionStatus":{"status":"ProtectionConfigured"},"currentProtectionState":"ProtectionConfigured","provisioningState":"Succeeded","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","name":"clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","type":"Microsoft.DataProtection/backupVaults/backupInstances"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1528'
+      - '1668'
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:02:01 GMT
+      - Thu, 06 Jul 2023 12:13:30 GMT
       expires:
       - '-1'
       pragma:
@@ -963,7 +964,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '1997'
+      - '1999'
       x-powered-by:
       - ASP.NET
     status:
@@ -995,17 +996,17 @@ interactions:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzUxOTE2YWZhLTVkMzAtNDlmNy04MDYxLTlmOTJlYzUyZWFkNA==?api-version=2023-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2Q0YzkyOWJiLWNmYjQtNDgzOC04ZTcwLTNhYzA4OTJiODU1OQ==?api-version=2023-01-01
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Thu, 06 Jul 2023 07:02:02 GMT
+      - Thu, 06 Jul 2023 12:13:32 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzUxOTE2YWZhLTVkMzAtNDlmNy04MDYxLTlmOTJlYzUyZWFkNA==?api-version=2023-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2Q0YzkyOWJiLWNmYjQtNDgzOC04ZTcwLTNhYzA4OTJiODU1OQ==?api-version=2023-01-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -1013,7 +1014,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
       x-powered-by:
       - ASP.NET
     status:
@@ -1035,10 +1036,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzUxOTE2YWZhLTVkMzAtNDlmNy04MDYxLTlmOTJlYzUyZWFkNA==?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2Q0YzkyOWJiLWNmYjQtNDgzOC04ZTcwLTNhYzA4OTJiODU1OQ==?api-version=2023-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzUxOTE2YWZhLTVkMzAtNDlmNy04MDYxLTlmOTJlYzUyZWFkNA==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzUxOTE2YWZhLTVkMzAtNDlmNy04MDYxLTlmOTJlYzUyZWFkNA==","status":"Inprogress","startTime":"2023-07-06T07:02:02.8209084Z","endTime":"0001-01-01T00:00:00Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2Q0YzkyOWJiLWNmYjQtNDgzOC04ZTcwLTNhYzA4OTJiODU1OQ==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2Q0YzkyOWJiLWNmYjQtNDgzOC04ZTcwLTNhYzA4OTJiODU1OQ==","status":"Inprogress","startTime":"2023-07-06T12:13:32.8480446Z","endTime":"0001-01-01T00:00:00Z"}'
     headers:
       cache-control:
       - no-cache
@@ -1047,7 +1048,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:02:02 GMT
+      - Thu, 06 Jul 2023 12:13:32 GMT
       expires:
       - '-1'
       pragma:
@@ -1063,7 +1064,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '997'
+      - '999'
       x-powered-by:
       - ASP.NET
     status:
@@ -1085,10 +1086,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzUxOTE2YWZhLTVkMzAtNDlmNy04MDYxLTlmOTJlYzUyZWFkNA==?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2Q0YzkyOWJiLWNmYjQtNDgzOC04ZTcwLTNhYzA4OTJiODU1OQ==?api-version=2023-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzUxOTE2YWZhLTVkMzAtNDlmNy04MDYxLTlmOTJlYzUyZWFkNA==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzUxOTE2YWZhLTVkMzAtNDlmNy04MDYxLTlmOTJlYzUyZWFkNA==","status":"Succeeded","startTime":"2023-07-06T07:02:02.8209084Z","endTime":"2023-07-06T07:02:03Z","properties":{"jobId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be","objectType":"OperationJobExtendedInfo"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2Q0YzkyOWJiLWNmYjQtNDgzOC04ZTcwLTNhYzA4OTJiODU1OQ==","name":"MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2Q0YzkyOWJiLWNmYjQtNDgzOC04ZTcwLTNhYzA4OTJiODU1OQ==","status":"Succeeded","startTime":"2023-07-06T12:13:32.8480446Z","endTime":"2023-07-06T12:13:34Z","properties":{"jobId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a","objectType":"OperationJobExtendedInfo"}}'
     headers:
       cache-control:
       - no-cache
@@ -1097,7 +1098,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:02:34 GMT
+      - Thu, 06 Jul 2023 12:14:04 GMT
       expires:
       - '-1'
       pragma:
@@ -1113,7 +1114,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '996'
+      - '998'
       x-powered-by:
       - ASP.NET
     status:
@@ -1135,13 +1136,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzUxOTE2YWZhLTVkMzAtNDlmNy04MDYxLTlmOTJlYzUyZWFkNA==?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2Q0YzkyOWJiLWNmYjQtNDgzOC04ZTcwLTNhYzA4OTJiODU1OQ==?api-version=2023-01-01
   response:
     body:
-      string: '{"jobId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be","objectType":"OperationJobExtendedInfo"}'
+      string: '{"jobId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a","objectType":"OperationJobExtendedInfo"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzUxOTE2YWZhLTVkMzAtNDlmNy04MDYxLTlmOTJlYzUyZWFkNA==?api-version=2023-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2Q0YzkyOWJiLWNmYjQtNDgzOC04ZTcwLTNhYzA4OTJiODU1OQ==?api-version=2023-01-01
       cache-control:
       - no-cache
       content-length:
@@ -1149,7 +1150,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:02:34 GMT
+      - Thu, 06 Jul 2023 12:14:04 GMT
       expires:
       - '-1'
       pragma:
@@ -1165,7 +1166,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '198'
+      - '199'
       x-powered-by:
       - ASP.NET
     status:
@@ -1187,11 +1188,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a?api-version=2023-01-01
   response:
     body:
-      string: '{"properties":{"activityID":"01d853c0-1bcb-11ee-af72-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T07%3A02%3A03.2306713Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T07:02:03.0070186Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
-        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be","name":"d0526989-4292-46e9-81f8-150b621ea5be","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+      string: '{"properties":{"activityID":"85016b2c-1bf6-11ee-9484-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T12%3A13%3A33.3229884Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T12:13:33.1278831Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
+        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a","name":"32ea0cc4-5451-41ed-adf1-69a8f042ec8a","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
     headers:
       cache-control:
       - no-cache
@@ -1200,111 +1201,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:02:47 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '198'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - dataprotection job show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --ids
-      User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be?api-version=2023-01-01
-  response:
-    body:
-      string: '{"properties":{"activityID":"01d853c0-1bcb-11ee-af72-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T07%3A02%3A03.2306713Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T07:02:03.0070186Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
-        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be","name":"d0526989-4292-46e9-81f8-150b621ea5be","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '2261'
-      content-type:
-      - application/json
-      date:
-      - Thu, 06 Jul 2023 07:02:59 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '198'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - dataprotection job show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --ids
-      User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be?api-version=2023-01-01
-  response:
-    body:
-      string: '{"properties":{"activityID":"01d853c0-1bcb-11ee-af72-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T07%3A02%3A03.2306713Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T07:02:03.0070186Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
-        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be","name":"d0526989-4292-46e9-81f8-150b621ea5be","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '2261'
-      content-type:
-      - application/json
-      date:
-      - Thu, 06 Jul 2023 07:03:11 GMT
+      - Thu, 06 Jul 2023 12:14:16 GMT
       expires:
       - '-1'
       pragma:
@@ -1343,11 +1240,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a?api-version=2023-01-01
   response:
     body:
-      string: '{"properties":{"activityID":"01d853c0-1bcb-11ee-af72-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T07%3A02%3A03.2306713Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T07:02:03.0070186Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
-        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be","name":"d0526989-4292-46e9-81f8-150b621ea5be","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+      string: '{"properties":{"activityID":"85016b2c-1bf6-11ee-9484-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T12%3A13%3A33.3229884Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T12:13:33.1278831Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
+        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a","name":"32ea0cc4-5451-41ed-adf1-69a8f042ec8a","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
     headers:
       cache-control:
       - no-cache
@@ -1356,59 +1253,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:03:25 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '199'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - dataprotection job show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --ids
-      User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be?api-version=2023-01-01
-  response:
-    body:
-      string: '{"properties":{"activityID":"01d853c0-1bcb-11ee-af72-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T07%3A02%3A03.2306713Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T07:02:03.0070186Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
-        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be","name":"d0526989-4292-46e9-81f8-150b621ea5be","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '2261'
-      content-type:
-      - application/json
-      date:
-      - Thu, 06 Jul 2023 07:03:36 GMT
+      - Thu, 06 Jul 2023 12:14:28 GMT
       expires:
       - '-1'
       pragma:
@@ -1447,11 +1292,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a?api-version=2023-01-01
   response:
     body:
-      string: '{"properties":{"activityID":"01d853c0-1bcb-11ee-af72-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T07%3A02%3A03.2306713Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T07:02:03.0070186Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
-        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be","name":"d0526989-4292-46e9-81f8-150b621ea5be","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+      string: '{"properties":{"activityID":"85016b2c-1bf6-11ee-9484-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T12%3A13%3A33.3229884Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T12:13:33.1278831Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
+        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a","name":"32ea0cc4-5451-41ed-adf1-69a8f042ec8a","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
     headers:
       cache-control:
       - no-cache
@@ -1460,7 +1305,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:03:48 GMT
+      - Thu, 06 Jul 2023 12:14:42 GMT
       expires:
       - '-1'
       pragma:
@@ -1499,11 +1344,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a?api-version=2023-01-01
   response:
     body:
-      string: '{"properties":{"activityID":"01d853c0-1bcb-11ee-af72-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T07%3A02%3A03.2306713Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T07:02:03.0070186Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
-        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be","name":"d0526989-4292-46e9-81f8-150b621ea5be","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+      string: '{"properties":{"activityID":"85016b2c-1bf6-11ee-9484-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T12%3A13%3A33.3229884Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T12:13:33.1278831Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
+        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a","name":"32ea0cc4-5451-41ed-adf1-69a8f042ec8a","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
     headers:
       cache-control:
       - no-cache
@@ -1512,7 +1357,59 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:04:01 GMT
+      - Thu, 06 Jul 2023 12:14:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a?api-version=2023-01-01
+  response:
+    body:
+      string: '{"properties":{"activityID":"85016b2c-1bf6-11ee-9484-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T12%3A13%3A33.3229884Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T12:13:33.1278831Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
+        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a","name":"32ea0cc4-5451-41ed-adf1-69a8f042ec8a","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2261'
+      content-type:
+      - application/json
+      date:
+      - Thu, 06 Jul 2023 12:15:05 GMT
       expires:
       - '-1'
       pragma:
@@ -1551,11 +1448,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a?api-version=2023-01-01
   response:
     body:
-      string: '{"properties":{"activityID":"01d853c0-1bcb-11ee-af72-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T07%3A02%3A03.2306713Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T07:02:03.0070186Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
-        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be","name":"d0526989-4292-46e9-81f8-150b621ea5be","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+      string: '{"properties":{"activityID":"85016b2c-1bf6-11ee-9484-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T12%3A13%3A33.3229884Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T12:13:33.1278831Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
+        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a","name":"32ea0cc4-5451-41ed-adf1-69a8f042ec8a","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
     headers:
       cache-control:
       - no-cache
@@ -1564,7 +1461,59 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:04:12 GMT
+      - Thu, 06 Jul 2023 12:15:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a?api-version=2023-01-01
+  response:
+    body:
+      string: '{"properties":{"activityID":"85016b2c-1bf6-11ee-9484-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T12%3A13%3A33.3229884Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T12:13:33.1278831Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
+        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a","name":"32ea0cc4-5451-41ed-adf1-69a8f042ec8a","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2261'
+      content-type:
+      - application/json
+      date:
+      - Thu, 06 Jul 2023 12:15:28 GMT
       expires:
       - '-1'
       pragma:
@@ -1603,11 +1552,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a?api-version=2023-01-01
   response:
     body:
-      string: '{"properties":{"activityID":"01d853c0-1bcb-11ee-af72-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T07%3A02%3A03.2306713Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T07:02:03.0070186Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
-        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be","name":"d0526989-4292-46e9-81f8-150b621ea5be","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+      string: '{"properties":{"activityID":"85016b2c-1bf6-11ee-9484-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T12%3A13%3A33.3229884Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T12:13:33.1278831Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
+        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a","name":"32ea0cc4-5451-41ed-adf1-69a8f042ec8a","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
     headers:
       cache-control:
       - no-cache
@@ -1616,7 +1565,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:04:24 GMT
+      - Thu, 06 Jul 2023 12:15:41 GMT
       expires:
       - '-1'
       pragma:
@@ -1655,11 +1604,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a?api-version=2023-01-01
   response:
     body:
-      string: '{"properties":{"activityID":"01d853c0-1bcb-11ee-af72-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T07%3A02%3A03.2306713Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T07:02:03.0070186Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
-        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be","name":"d0526989-4292-46e9-81f8-150b621ea5be","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+      string: '{"properties":{"activityID":"85016b2c-1bf6-11ee-9484-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T12%3A13%3A33.3229884Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T12:13:33.1278831Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
+        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a","name":"32ea0cc4-5451-41ed-adf1-69a8f042ec8a","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
     headers:
       cache-control:
       - no-cache
@@ -1668,59 +1617,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:04:36 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '195'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - dataprotection job show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --ids
-      User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be?api-version=2023-01-01
-  response:
-    body:
-      string: '{"properties":{"activityID":"01d853c0-1bcb-11ee-af72-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T07%3A02%3A03.2306713Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T07:02:03.0070186Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
-        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be","name":"d0526989-4292-46e9-81f8-150b621ea5be","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '2261'
-      content-type:
-      - application/json
-      date:
-      - Thu, 06 Jul 2023 07:04:50 GMT
+      - Thu, 06 Jul 2023 12:15:54 GMT
       expires:
       - '-1'
       pragma:
@@ -1759,11 +1656,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a?api-version=2023-01-01
   response:
     body:
-      string: '{"properties":{"activityID":"01d853c0-1bcb-11ee-af72-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T07%3A02%3A03.2306713Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T07:02:03.0070186Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
-        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be","name":"d0526989-4292-46e9-81f8-150b621ea5be","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+      string: '{"properties":{"activityID":"85016b2c-1bf6-11ee-9484-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T12%3A13%3A33.3229884Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T12:13:33.1278831Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
+        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a","name":"32ea0cc4-5451-41ed-adf1-69a8f042ec8a","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
     headers:
       cache-control:
       - no-cache
@@ -1772,7 +1669,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:05:03 GMT
+      - Thu, 06 Jul 2023 12:16:05 GMT
       expires:
       - '-1'
       pragma:
@@ -1789,7 +1686,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '199'
+      - '197'
       x-powered-by:
       - ASP.NET
     status:
@@ -1811,11 +1708,115 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a?api-version=2023-01-01
   response:
     body:
-      string: '{"properties":{"activityID":"01d853c0-1bcb-11ee-af72-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":"OperationalTierStore","progressEnabled":false,"etag":"W/\"datetime''2023-07-06T07%3A05%3A08.2911842Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T07:02:03.0070186Z","endTime":"2023-07-06T07:05:08.0136481Z","dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"Completed","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT3M5.0066295S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":{"recoveryPointID":"b0204b1a52e443d2bb23297a0dadbb7d","recoveryPointTime":"0001-01-01T00:00:00Z"},"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
-        Backup","taskStatus":"Completed","taskProgress":null,"additionalDetails":{"OriginalDatasourceSizeInBytes":"0","TaskId":"01d853c0-1bcb-11ee-af72-002b670b472e","DatasourceType":"Microsoft.Compute/disks"}}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/d0526989-4292-46e9-81f8-150b621ea5be","name":"d0526989-4292-46e9-81f8-150b621ea5be","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+      string: '{"properties":{"activityID":"85016b2c-1bf6-11ee-9484-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T12%3A13%3A33.3229884Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T12:13:33.1278831Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
+        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a","name":"32ea0cc4-5451-41ed-adf1-69a8f042ec8a","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2261'
+      content-type:
+      - application/json
+      date:
+      - Thu, 06 Jul 2023 12:16:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '197'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a?api-version=2023-01-01
+  response:
+    body:
+      string: '{"properties":{"activityID":"85016b2c-1bf6-11ee-9484-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":null,"progressEnabled":false,"etag":"W/\"datetime''2023-07-06T12%3A13%3A33.3229884Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T12:13:33.1278831Z","endTime":null,"dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"InProgress","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT0S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":null,"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
+        Backup","taskStatus":"InProgress","taskProgress":null,"additionalDetails":null}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a","name":"32ea0cc4-5451-41ed-adf1-69a8f042ec8a","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2261'
+      content-type:
+      - application/json
+      date:
+      - Thu, 06 Jul 2023 12:16:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '197'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a?api-version=2023-01-01
+  response:
+    body:
+      string: '{"properties":{"activityID":"85016b2c-1bf6-11ee-9484-002b670b472e","subscriptionId":"38304e13-357e-405e-9e9a-220351dcce8c","backupInstanceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupInstances/clitest-disk-donotdelete-clitest-disk-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/diskpolicy","dataSourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-donotdelete","vaultName":"clitest-bkp-vault-donotdelete","backupInstanceFriendlyName":"clitest-disk-donotdelete","policyName":"diskpolicy","sourceResourceGroup":"clitest-dpp-rg","dataSourceSetName":null,"dataSourceName":"clitest-disk-donotdelete","sourceDataStoreName":null,"sourceDataStoreType":null,"destinationDataStoreName":"OperationalTierStore","progressEnabled":false,"etag":"W/\"datetime''2023-07-06T12%3A16%3A39.2345285Z''\"","sourceSubscriptionID":"38304e13-357e-405e-9e9a-220351dcce8c","dataSourceLocation":"centraluseuap","startTime":"2023-07-06T12:13:33.1278831Z","endTime":"2023-07-06T12:16:38.7571515Z","dataSourceType":"Microsoft.Compute/disks","operationCategory":"Backup","operation":"Backup","status":"Completed","restoreType":null,"isUserTriggered":true,"rehydrationPriority":null,"supportedActions":[""],"duration":"PT3M5.6292684S","progressUrl":null,"isCrossRegionRestore":null,"errorDetails":null,"extendedInfo":{"backupInstanceState":null,"dataTransferredInBytes":null,"targetRecoverPoint":{"recoveryPointID":"ab38ec14696042f5ad14f4d7513946db","recoveryPointTime":"0001-01-01T00:00:00Z"},"sourceRecoverPoint":null,"recoveryDestination":null,"subTasks":[{"taskId":1,"taskName":"Trigger
+        Backup","taskStatus":"Completed","taskProgress":null,"additionalDetails":{"OriginalDatasourceSizeInBytes":"0","TaskId":"85016b2c-1bf6-11ee-9484-002b670b472e","DatasourceType":"Microsoft.Compute/disks"}}],"additionalDetails":{"RetentionTag":"default"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupJobs/32ea0cc4-5451-41ed-adf1-69a8f042ec8a","name":"32ea0cc4-5451-41ed-adf1-69a8f042ec8a","type":"Microsoft.DataProtection/backupVaults/backupJobs"}'
     headers:
       cache-control:
       - no-cache
@@ -1824,7 +1825,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 06 Jul 2023 07:05:15 GMT
+      - Thu, 06 Jul 2023 12:16:42 GMT
       expires:
       - '-1'
       pragma:
@@ -1841,7 +1842,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '197'
+      - '199'
       x-powered-by:
       - ASP.NET
     status:
@@ -1871,17 +1872,17 @@ interactions:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2M5YjI2YmZkLTNlNWYtNDljMC1hNzBjLTQyNzI2NDY2NWQ3Mw==?api-version=2023-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/operationStatus/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzY2MDZkYzgwLTdmMDItNGU5ZC04YTE3LTAyOWUxNDhiYjIxZg==?api-version=2023-01-01
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Thu, 06 Jul 2023 07:05:17 GMT
+      - Thu, 06 Jul 2023 12:16:46 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1O2M5YjI2YmZkLTNlNWYtNDljMC1hNzBjLTQyNzI2NDY2NWQ3Mw==?api-version=2023-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/MGQ0NDgwMzEtZTZmYi00YzVjLWIzY2QtMDFlMGE2NjVkY2E1OzY2MDZkYzgwLTdmMDItNGU5ZC04YTE3LTAyOWUxNDhiYjIxZg==?api-version=2023-01-01
       pragma:
       - no-cache
       strict-transport-security:

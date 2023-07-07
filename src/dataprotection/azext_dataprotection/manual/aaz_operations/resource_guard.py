@@ -8,9 +8,9 @@
 
 from azure.cli.core.aaz import AAZStrArg, AAZUndefined, has_value
 from azure.cli.core.aaz.utils import assign_aaz_list_arg
-from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Update as _Update
-from azext_dataprotection.manual.enums import get_resource_type_values
 from knack.log import get_logger
+from azext_dataprotection.manual.enums import get_resource_type_values
+from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Update as _Update
 from ..helpers import critical_operation_map
 
 logger = get_logger(__name__)

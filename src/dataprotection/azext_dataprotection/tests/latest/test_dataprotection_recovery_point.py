@@ -17,11 +17,13 @@ class RecoveryPointScenarioTest(ScenarioTest):
             'location': 'centraluseuap',
             'rg': 'clitest-dpp-rg',
             'vaultName': 'clitest-bkp-vault-persistent-bi-donotdelete',
-            'backupInstanceName': 'clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e'
         })
 
     @AllowLargeResponse()
     def test_dataprotection_recovery_point_show(test):
+        test.kwargs.update({
+            'backupInstanceName': 'clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e'
+        })
         recovery_point_list = test.cmd('az dataprotection recovery-point list -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}"', checks=[
             test.exists('[0].properties.recoveryPointId')
         ]).get_output_in_json()
@@ -35,6 +37,9 @@ class RecoveryPointScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     def test_dataprotection_recovery_point_list(test):
+        test.kwargs.update({
+            'backupInstanceName': 'clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e'
+        })
         test.cmd('az dataprotection recovery-point list -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}"', checks=[
             test.greater_than('length([])', 0)
         ])
@@ -58,3 +63,12 @@ class RecoveryPointScenarioTest(ScenarioTest):
                  '--start-time 0000-13-32T01:00:00', expect_failure=True)
         test.cmd('az dataprotection recovery-point list -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" '
                  '--end-time 2023-12-31T25:60:00', expect_failure=True)
+
+    # @AllowLargeResponse
+    # def test_dataprotection_recovery_point_vaulted_blob(test):
+    #     test.kwargs.update({
+    #         'backupInstanceName': ''
+    #     })
+    #     test.cmd('az dataprotection recovery-point list -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}"', checks=[
+    #         test.greater_than('length([])', 0)
+    #     ])

@@ -85,8 +85,8 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
 
         backup_instance_validate_create(test)
 
-        # Ensure no other jobs running on datasource. Required to avoid operation clashes. Requries dataSourceId kwarg to run.
-        wait_for_job_exclusivity_on_datasource(test)
+        # Uncomment if test runs into parallelization errors
+        # wait_for_job_exclusivity_on_datasource(test)
 
         # Trigger ad-hoc backup and track to completion
         adhoc_backup_response = test.cmd('az dataprotection backup-instance adhoc-backup '
@@ -204,12 +204,12 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
 
         backup_instance_validate_create(test)
 
-        # Ensure no other jobs running on datasource. Required to avoid operation clashes. Requries dataSourceId kwarg to run.
-        wait_for_job_exclusivity_on_datasource(test)
+        # Uncomment if test runs into parallelization errors
+        # wait_for_job_exclusivity_on_datasource(test)
 
         # Trigger ad-hoc backup and track to completion
         adhoc_backup_response = test.cmd('az dataprotection backup-instance adhoc-backup '
-                                 '-n {backupInstanceName} -g {rg} --vault-name {vaultName} --rule-name "{policyRuleName}"').get_output_in_json()
+                                         '-n {backupInstanceName} -g {rg} --vault-name {vaultName} --rule-name "{policyRuleName}"').get_output_in_json()
         test.kwargs.update({"jobId": adhoc_backup_response["jobId"]})
         track_job_to_completion(test)
 

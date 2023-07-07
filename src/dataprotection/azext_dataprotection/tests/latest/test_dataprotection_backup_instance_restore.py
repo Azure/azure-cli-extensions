@@ -10,7 +10,6 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from ..utils import track_job_to_completion, wait_for_job_exclusivity_on_datasource, get_midpoint_of_time_range
 
-
 class BackupInstanceRestoreScenarioTest(ScenarioTest):
 
     def setUp(test):
@@ -45,7 +44,7 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
         # As a failsafe, ensure restored disk from previous run is deleted
         test.cmd('az disk delete --name "{restoreDiskName}" --resource-group "{rg}" --yes')
 
-        restore_request = test.cmd('az dataprotection backup-instance restore  initialize-for-data-recovery '
+        restore_request = test.cmd('az dataprotection backup-instance restore initialize-for-data-recovery '
                                    '--datasource-type "{dataSourceType}" --restore-location "{restoreLocation}" --source-datastore "{sourceDataStore}" '
                                    '--recovery-point-id "{recoveryPointId}" --target-resource-id "{restoreDiskId}"').get_output_in_json()
         test.kwargs.update({"restoreRequest": restore_request})
@@ -67,7 +66,7 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
         track_job_to_completion(test)
 
     @AllowLargeResponse()
-    def test_dataprotection_backup_instance_restore_blob(test):
+    def test_dataprotection_backup_instance_restore_blob_point_in_time(test):
         test.kwargs.update({
             'dataSourceType': 'AzureBlob',
             'sourceDataStore': 'OperationalStore',
@@ -95,10 +94,58 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
                                    '--point-in-time "{restorePointInTime}" --backup-instance-id "{backupInstanceId}"').get_output_in_json()
         test.kwargs.update({"restoreRequest": restore_request})
 
-        # Ensure no other jobs running on datasource. Required to avoid operation clashes.
+        # Ensure no other restore jobs running on datasource. Required to avoid operation clashes.
         wait_for_job_exclusivity_on_datasource(test)
 
         test.cmd('az dataprotection backup-instance validate-for-restore -g "{rg}" --vault-name "{vaultName}" -n "{backupInstanceName}" --restore-request-object "{restoreRequest}"')
+        restore_trigger_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" --vault-name "{vaultName}" '
+                                        '-n "{backupInstanceName}" --restore-request-object "{restoreRequest}"').get_output_in_json()
+        test.kwargs.update({"jobId": restore_trigger_json["jobId"]})
+
+        test.cmd('az dataprotection job show --ids "{jobId}"', checks=[
+            test.check('properties.dataSourceName', "{dataSourceName}"),
+            test.exists('properties.extendedInfo.recoveryDestination')
+        ])
+
+    @AllowLargeResponse()
+    def test_dataprotection_backup_instance_restore_blob_recovery_point(test):
+        test.kwargs.update({
+            'dataSourceType': 'AzureBlob',
+            'sourceDataStore': 'VaultStore',
+            'backupInstanceName': 'clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e',
+            'dataSourceName': 'clitestsabidonotdelete',
+            'dataSourceId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Storage/storageAccounts/clitestsabidonotdelete',
+            'restoreLocation': 'centraluseuap',
+            'containerName': 'container1',
+            'restoreContainerName': 'clitestvsdonotdelete',
+            'targetResourceId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Storage/storageAccounts/clitestvsdonotdelete',
+        })
+
+        # Recovery Point Restore - Vaulted Blobs
+        recovery_point = test.cmd('az dataprotection recovery-point list --backup-instance-name "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}"', checks=[
+            test.greater_than('length([])', 0)
+        ]).get_output_in_json()
+        test.kwargs.update({
+            'recoveryPointId': recovery_point[0]['name']
+        })
+
+        restore_request_vs = test.cmd('az dataprotection backup-instance restore initialize-for-item-recovery '
+                                   '--datasource-type "{dataSourceType}" '
+                                   '--restore-location "{restoreLocation}" '
+                                   '--source-datastore "{sourceDataStore}" '
+                                   '--recovery-point-id "{recoveryPointId}" '
+                                   '--target-resource-id "{targetResourceId}" '
+                                   '--container-list "{containerName}"').get_output_in_json()
+        test.kwargs.update({"restoreRequest": restore_request_vs})
+
+        test.addCleanup(test.cmd, 'az storage container delete --name "{containerName}" --account-name "{restoreContainerName}" --auth-mode "login"')
+
+        # Cleanup failsafe, delete existing container at restore location
+        test.cmd('az storage container delete --name "{containerName}" --account-name "{restoreContainerName}" --auth-mode "login"')
+
+        # Ensure no other restore jobs running on datasource. Required to avoid operation clashes.
+        wait_for_job_exclusivity_on_datasource(test)
+
         restore_trigger_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" --vault-name "{vaultName}" '
                                         '-n "{backupInstanceName}" --restore-request-object "{restoreRequest}"').get_output_in_json()
         test.kwargs.update({"jobId": restore_trigger_json["jobId"]})
