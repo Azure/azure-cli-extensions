@@ -107,8 +107,8 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
         if any([excluded_resource_types, included_resource_types, excluded_namespaces, included_namespaces,
                 label_selectors, snapshot_volumes, include_cluster_scope_resources]):
             raise InvalidArgumentValueError('Invalid arguments --excluded-resource-type, --included-resource-type, --excluded-namespaces, '
-                           ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources '
-                           ' for given datasource type.')
+                                            ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources '
+                                            ' for given datasource type.')
         if vaulted_backup_containers:
             return {
                 "object_type": "BlobBackupDatasourceParameters",
@@ -128,13 +128,13 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
                 }
             else:
                 raise RequiredArgumentMissingError('Please input --storage-account-name and --storage-account-resource-group parameters '
-                               'for fetching all vaulted containers.')
+                                                   'for fetching all vaulted containers.')
         else:
             raise RequiredArgumentMissingError('Please provide --vaulted-backup-containers argument or --include-all-containers argument '
-                           'for given workload type.')
+                                               'for given workload type.')
     else:
         raise InvalidArgumentValueError('Given datasource type is not supported currently. '
-                       'This command only supports "AzureBlob" or "AzureKubernetesService" datasource types.')
+                                        'This command only supports "AzureBlob" or "AzureKubernetesService" datasource types.')
 
 
 def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,
@@ -211,21 +211,21 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
     if manifest["addBackupDatasourceParametersList"]:
         if manifest["backupConfigurationRequired"] and backup_configuration is None:
             raise RequiredArgumentMissingError("Please input parameter backup-configuration for given datasource type. \
-                           Use command az dataprotection backup-instance initialize-backupconfig \
-                           for creating the backup-configuration")
+                                                Use command az dataprotection backup-instance initialize-backupconfig \
+                                                for creating the backup-configuration")
         if backup_configuration:
             if datasource_type == "AzureBlob":
                 for key in ['excluded_resource_types', 'included_resource_types', 'excluded_namespaces', 'included_namespaces',
                             'label_selectors', 'snapshot_volumes', 'include_cluster_scope_resources']:
                     if key in backup_configuration:
                         raise InvalidArgumentValueError('Invalid arguments --excluded-resource-type, --included-resource-type, --excluded-namespaces, '
-                                       ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources '
-                                       ' for given datasource type. Please check the backup configuration.')
+                                                        ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources '
+                                                        ' for given datasource type. Please check the backup configuration.')
 
             if datasource_type == "AzureKubernetesService":
                 if "containers_list" in backup_configuration:
                     raise InvalidArgumentValueError('Invalid argument --vaulted-backup-containers for given datasource type. '
-                                   'Please check the backup configuration.')
+                                                    'Please check the backup configuration.')
 
             if not policy_info["policy_parameters"]:
                 policy_info["policy_parameters"] = {}
