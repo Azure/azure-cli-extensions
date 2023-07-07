@@ -6,7 +6,8 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=too-many-lines
-# pylint: disable=too-many-statements
+# pylint: disable=too-many-statements, protected-access, unused-wildcard-import, wildcard-import
+# pylint: disable=
 
 try:
     from .manual.custom import *  # noqa: F403
@@ -19,6 +20,7 @@ from azext_communication.aaz.latest.communication._create import Create as _Comm
 from knack.log import get_logger
 
 logger = get_logger(__name__)
+
 
 def args_type_assignment(user_assigned_flag, system_assigned_flag):
     if system_assigned_flag and user_assigned_flag:
@@ -145,6 +147,7 @@ class IdentityRemove(_IdentityRemove):
 
         args.type = args_type_assignment(user_assigned_flag, system_assigned_flag)
 
+
 class CommunicationCreate(_CommunicationCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -152,7 +155,9 @@ class CommunicationCreate(_CommunicationCreate):
         from azure.cli.core.aaz import AAZListArg, AAZStrArg
         args_schema.assign_identity = AAZListArg(
             options=["--assign-identity"],
-            help="""Space-separated identities to assign. Use '[system]' to refer to the system assigned identity or a resource id to refer to a user assigned identity""",
+            help="""Space-separated identities to assign.
+                Use '[system]' to refer to the system assigned identity or a resource id to refer to a user assigned identity
+            """,
             required=False
         )
         args_schema.assign_identity.Element = AAZStrArg()

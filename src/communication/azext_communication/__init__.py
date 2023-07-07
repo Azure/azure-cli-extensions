@@ -11,7 +11,7 @@
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.commands import AzCommandGroup
 try:
-    from azext_communication.manual._help import helps  # pylint: disable=reimported
+    from azext_communication.manual._help import helps  # pylint: disable=unused-import
 except ImportError:
     pass
 

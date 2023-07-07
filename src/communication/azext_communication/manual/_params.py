@@ -10,7 +10,8 @@ def load_arguments(self, _):
     with self.argument_context('communication update') as c:
         c.argument('location', validator=None)
 
-    _load_identity_arguments(self)
+    _load_user_identity_arguments(self)
+    _load_legacy_identity_arguments(self)
     _load_sms_arguments(self)
     _load_phonenumber_arguments(self)
     _load_chat_arguments(self)
@@ -18,7 +19,7 @@ def load_arguments(self, _):
     _load_email_arguments(self)
 
 
-def _load_identity_arguments(self):
+def _load_user_identity_arguments(self):
     self.argument_context('communication user-identity user create')
 
     with self.argument_context('communication user-identity user delete') as c:
@@ -38,6 +39,33 @@ def _load_identity_arguments(self):
         c.argument('user_id', options_list=['--user'], type=str, help='ACS identifier')
 
     with self.argument_context('communication user-identity token get-for-teams-user') as c:
+        c.argument('aad_token', options_list=['--aad-token'], type=str, help='Azure AD access token of a Teams User')
+        c.argument('client_id', options_list=['--client'], type=str, help='Client ID of an Azure AD application'
+                   'to be verified against the appId claim in the Azure AD access token')
+        c.argument('user_object_id', options_list=['--aad-user'], type=str, help='Object ID of an Azure AD user'
+                   '(Teams User) to be verified against the OID claim in the Azure AD access token')
+
+
+def _load_legacy_identity_arguments(self):
+    self.argument_context('communication identity user create')
+
+    with self.argument_context('communication identity user delete') as c:
+        c.argument('user_id', options_list=['--user'], type=str, help='ACS identifier')
+
+    with self.argument_context('communication identity issue-access-token') as c:
+        c.argument('user_id', options_list=['--userid', '-u'], type=str, help='ACS identifier')
+        c.argument('scopes', options_list=['--scope', '-s'],
+                   nargs='+', help='list of scopes for an access token ex: chat/voip')
+
+    with self.argument_context('communication identity token issue') as c:
+        c.argument('user_id', options_list=['--user'], type=str, help='ACS identifier')
+        c.argument('scopes', options_list=['--scope'], nargs='+',
+                   help='list of scopes for an access token ex: chat/voip')
+
+    with self.argument_context('communication identity token revoke') as c:
+        c.argument('user_id', options_list=['--user'], type=str, help='ACS identifier')
+
+    with self.argument_context('communication identity token get-for-teams-user') as c:
         c.argument('aad_token', options_list=['--aad-token'], type=str, help='Azure AD access token of a Teams User')
         c.argument('client_id', options_list=['--client'], type=str, help='Client ID of an Azure AD application'
                    'to be verified against the appId claim in the Azure AD access token')
