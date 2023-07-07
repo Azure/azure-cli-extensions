@@ -18,7 +18,7 @@ helps[
     "confcom acipolicygen"
 ] = """
     type: command
-    short-summary: Create a Confidential Container Security Policy.
+    short-summary: Create a Confidential Container Security Policy for ACI.
 
     parameters:
         - name: --input -i
@@ -90,4 +90,36 @@ helps[
           text: az confcom acipolicygen --template-file "./template.json" -s "./output-file.txt" --print-policy
         - name: Input an ARM Template file and use a tar file as the image source instead of the Docker daemon
           text: az confcom acipolicygen --template-file "./template.json" --tar "./image.tar"
+"""
+
+helps[
+    "confcom katapolicygen"
+] = """
+    type: command
+    short-summary: Create a Confidential Container Security Policy for AKS.
+
+    parameters:
+        - name: --yaml-path -y
+          type: string
+          short-summary: 'Input YAML Kubernetes file'
+
+        - name: --output-policy-file
+          type: string
+          short-summary: 'Output policy file in Rego format'
+
+        - name: --config-map-file -c
+          type: string
+          short-summary: 'Path to config map file'
+
+        - name: --use-cached-files -u
+          type: bool
+          short-summary: 'Use cached files to save on computation time'
+
+        - name: --settings-file-name -j
+          type: bool
+          short-summary: 'Path to custom settings file'
+
+    examples:
+        - name: Input a Kubernetes YAML file to inject a base64 encoded Confidential Container Security Policy into the YAML file
+          text: az confcom katapolicygen --yaml-path "./pod.json"
 """
