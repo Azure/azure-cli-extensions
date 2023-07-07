@@ -7,8 +7,8 @@
 # pylint: disable=too-many-locals
 # pylint: disable=line-too-long
 
-from azext_dataprotection.manual._client_factory import cf_resource_graph_client
 from azure.cli.command_modules.storage._client_factory import cf_blob_container_mgmt
+from azext_dataprotection.manual._client_factory import cf_resource_graph_client
 from ._exception_handler import exception_handler
 
 
