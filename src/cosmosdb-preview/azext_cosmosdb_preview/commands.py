@@ -204,7 +204,7 @@ def load_command_table(self, _):
 
     with self.command_group('cosmosdb mongodb collection', cosmosdb_mongo_sdk, client_factory=cf_mongo_db_resources) as g:
         g.custom_command('merge', 'cli_begin_list_mongo_db_collection_partition_merge', is_preview=True)
-    
+
     # Merge partitions for Sql databases
     with self.command_group('cosmosdb sql container', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
         g.custom_command('merge', 'cli_begin_sql_database_partition_merge', is_preview=True)

@@ -419,17 +419,17 @@ def load_arguments(self, _):
         c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
         c.argument('database_name', database_name_type, required=True, help='Name of the mongoDB database')
         c.argument('container_name', options_list=['--name', '-n'], required=True, help='Name of the mongoDB collection')
-    
+
     # Sql database partition merge
     with self.argument_context('cosmosdb sql database merge') as c:
         c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
-        c.argument('database_name',  options_list=['--name', '-n'], required=True, help='Name of the CosmosDB database name')
+        c.argument('database_name', options_list=['--name', '-n'], required=True, help='Name of the CosmosDB database name')
 
     # mongodb database partition merge
     with self.argument_context('cosmosdb mongodb database merge') as c:
         c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
-        c.argument('database_name',  options_list=['--name', '-n'], required=True, help='Name of the mongoDB database')
-    
+        c.argument('database_name', options_list=['--name', '-n'], required=True, help='Name of the mongoDB database')
+
     # Sql container partition retrieve throughput
     with self.argument_context('cosmosdb sql container retrieve-partition-throughput') as c:
         c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
