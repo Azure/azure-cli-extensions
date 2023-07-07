@@ -1028,6 +1028,12 @@ helps['aks update'] = """
         - name: --guardrails-excluded-ns
           type: string
           short-summary: Comma-separated list of Kubernetes namespaces to exclude from Guardrails. Use "" to clear a previously non-empty list
+        - name: --nodepool-taints
+          type: string
+          short-summary: The node taints for all node pool. 
+        - name: --nodepool-labels
+          type: string
+          short-summary: The node labels for all node pool. See https://aka.ms/node-labels for syntax of labels.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
