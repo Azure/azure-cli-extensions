@@ -117,7 +117,7 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
 
         backup_instance_validate_create(test)
 
-        # Trigger ad-hoc backup for vaulted blob
+        # Trigger ad-hoc backup for vaulted blob. Ad-hoc backup may fail as backup-instance will get deleted before backup completes.
         adhoc_backup_response = test.cmd('az dataprotection backup-instance adhoc-backup '
                                          '-n "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}" --rule-name "{policyRuleName}"').get_output_in_json()
         test.kwargs.update({"jobId": adhoc_backup_response["jobId"]})
