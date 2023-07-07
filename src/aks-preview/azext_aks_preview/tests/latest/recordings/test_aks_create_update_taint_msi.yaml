@@ -6,7 +6,7 @@ interactions:
       "OCIContainer", "osType": "Linux", "enableAutoScaling": false, "type": "VirtualMachineScaleSets",
       "mode": "System", "orchestratorVersion": "", "upgradeSettings": {}, "enableNodePublicIP":
       false, "enableCustomCATrust": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
-      "Delete", "spotMaxPrice": -1.0, "nodeTaints": ["taint1=value1:NoSchedule","taint2=value2:NoSchedule"], "enableEncryptionAtHost":
+      "Delete", "spotMaxPrice": -1.0, "nodeTaints": ["taint1=value1:PreferNoSchedule","taint2=value2:PreferNoSchedule"], "enableEncryptionAtHost":
       false, "enableUltraSSD": false, "enableFIPS": false, "networkProfile": {}, "name":
       "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser", "ssh": {"publicKeys":
       [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDgwJ1YLtrtaF7seObyf1xaMbixzWbi2HkGaOQ4C7BPyeho2pMacCkJ0qYZa0V+Muv+22BUMr0QNBnzuEYku5uM5AZW2j4fu/cRMp+1HtZHtbGRcHD2a4iMRMfUDXUCefmVhL9WzN3JUzc5sTu2HLEaAtEKAMbT/hOL75vaYug7WFsE7U7eia+E1LFMxXa+z5aKDPLYok4JduYqdALRqElogv8QekQLwjw1kt7IZY9z4krjo4FXPHd5RDIalO0mH4eNYhxbxW6r6M/OQsqxqUAOauFzF9QgU/gFMcIZC4eU2ZbQZMbMH/l+CMAwNK8ccxOEFLSmkZiPVvQ3l1ANjJeN
@@ -51,7 +51,7 @@ interactions:
         \    \"enableAutoScaling\": false,\n     \"provisioningState\": \"Creating\",\n
         \    \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\":
         \"1.23.12\",\n     \"currentOrchestratorVersion\": \"1.23.12\",\n     \"enableNodePublicIP\":
-        false,\n     \"enableCustomCATrust\": false,\n     \"nodeTaints\": [\n    \"taint1=value1:NoSchedule\",\"taint2=value2:NoSchedule\"\n   ],\n     \"mode\": \"System\",\n
+        false,\n     \"enableCustomCATrust\": false,\n     \"nodeTaints\": [\n    \"taint1=value1:PreferNoSchedule\",\"taint2=value2:PreferNoSchedule\"\n   ],\n     \"mode\": \"System\",\n
         \    \"enableEncryptionAtHost\": false,\n     \"enableUltraSSD\": false,\n
         \    \"osType\": \"Linux\",\n     \"osSKU\": \"Ubuntu\",\n     \"nodeImageVersion\":
         \"AKSUbuntu-1804gen2containerd-2022.10.24\",\n     \"upgradeSettings\": {},\n
@@ -570,7 +570,7 @@ interactions:
         \    \"enableAutoScaling\": false,\n     \"provisioningState\": \"Succeeded\",\n
         \    \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\":
         \"1.23.12\",\n     \"currentOrchestratorVersion\": \"1.23.12\",\n     \"enableNodePublicIP\":
-        false,\n     \"enableCustomCATrust\": false,\n     \"nodeTaints\": [\n    \"taint1=value1:NoSchedule\",\"taint2=value2:NoSchedule\"\n   ],\n     \"mode\": \"System\",\n
+        false,\n     \"enableCustomCATrust\": false,\n     \"nodeTaints\": [\n    \"taint1=value1:PreferNoSchedule\",\"taint2=value2:PreferNoSchedule\"\n   ],\n     \"mode\": \"System\",\n
         \    \"enableEncryptionAtHost\": false,\n     \"enableUltraSSD\": false,\n
         \    \"osType\": \"Linux\",\n     \"osSKU\": \"Ubuntu\",\n     \"nodeImageVersion\":
         \"AKSUbuntu-1804gen2containerd-2022.10.24\",\n     \"upgradeSettings\": {},\n
@@ -724,7 +724,7 @@ interactions:
       "OCIContainer", "maxPods": 110, "osType": "Linux", "osSKU": "Ubuntu", "enableAutoScaling":
       false, "type": "VirtualMachineScaleSets", "mode": "System", "orchestratorVersion":
       "1.23.12", "upgradeSettings": {}, "powerState": {"code": "Running"}, "enableNodePublicIP":
-      false, "enableCustomCATrust": false, "nodeTaints": ["taint1=value1:NoSchedule","taint2=value2:NoSchedule"], "enableEncryptionAtHost": false, "enableUltraSSD": false, "enableFIPS":
+      false, "enableCustomCATrust": false, "nodeTaints": ["taint1=value1:PreferNoSchedule","taint2=value2:PreferNoSchedule"], "enableEncryptionAtHost": false, "enableUltraSSD": false, "enableFIPS":
       false, "networkProfile": {}, "name": "nodepool1"}], "linuxProfile": {"adminUsername":
       "azureuser", "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDgwJ1YLtrtaF7seObyf1xaMbixzWbi2HkGaOQ4C7BPyeho2pMacCkJ0qYZa0V+Muv+22BUMr0QNBnzuEYku5uM5AZW2j4fu/cRMp+1HtZHtbGRcHD2a4iMRMfUDXUCefmVhL9WzN3JUzc5sTu2HLEaAtEKAMbT/hOL75vaYug7WFsE7U7eia+E1LFMxXa+z5aKDPLYok4JduYqdALRqElogv8QekQLwjw1kt7IZY9z4krjo4FXPHd5RDIalO0mH4eNYhxbxW6r6M/OQsqxqUAOauFzF9QgU/gFMcIZC4eU2ZbQZMbMH/l+CMAwNK8ccxOEFLSmkZiPVvQ3l1ANjJeN
       azcli_aks_live_test@example.com\n"}]}}, "servicePrincipalProfile": {"clientId":"00000000-0000-0000-0000-000000000001"},
@@ -776,7 +776,7 @@ interactions:
         \    \"enableAutoScaling\": false,\n     \"provisioningState\": \"Updating\",\n
         \    \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\":
         \"1.23.12\",\n     \"currentOrchestratorVersion\": \"1.23.12\",\n     \"enableNodePublicIP\":
-        false,\n     \"enableCustomCATrust\": false,\n     \"nodeTaints\": [\n    \"taint1=value1:NoSchedule\",\"taint2=value2:NoSchedule\"\n   ],\n     \"mode\": \"System\",\n
+        false,\n     \"enableCustomCATrust\": false,\n     \"nodeTaints\": [\n    \"taint1=value1:PreferNoSchedule\",\"taint2=value2:PreferNoSchedule\"\n   ],\n     \"mode\": \"System\",\n
         \    \"enableEncryptionAtHost\": false,\n     \"enableUltraSSD\": false,\n
         \    \"osType\": \"Linux\",\n     \"osSKU\": \"Ubuntu\",\n     \"nodeImageVersion\":
         \"AKSUbuntu-1804gen2containerd-2022.10.24\",\n     \"upgradeSettings\": {},\n
@@ -1063,7 +1063,7 @@ interactions:
         \    \"enableAutoScaling\": false,\n     \"provisioningState\": \"Succeeded\",\n
         \    \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\":
         \"1.23.12\",\n     \"currentOrchestratorVersion\": \"1.23.12\",\n     \"enableNodePublicIP\":
-        false,\n     \"enableCustomCATrust\": false,\n     \"nodeTaints\": [\n    \"taint1=value1:NoSchedule\",\"taint2=value2:NoSchedule\"\n   ],\n     \"mode\": \"System\",\n
+        false,\n     \"enableCustomCATrust\": false,\n     \"nodeTaints\": [\n    \"taint1=value1:PreferNoSchedule\",\"taint2=value2:PreferNoSchedule\"\n   ],\n     \"mode\": \"System\",\n
         \    \"enableEncryptionAtHost\": false,\n     \"enableUltraSSD\": false,\n
         \    \"osType\": \"Linux\",\n     \"osSKU\": \"Ubuntu\",\n     \"nodeImageVersion\":
         \"AKSUbuntu-1804gen2containerd-2022.10.24\",\n     \"upgradeSettings\": {},\n
@@ -1153,7 +1153,7 @@ interactions:
         \    \"enableAutoScaling\": false,\n     \"provisioningState\": \"Succeeded\",\n
         \    \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\":
         \"1.23.12\",\n     \"currentOrchestratorVersion\": \"1.23.12\",\n     \"enableNodePublicIP\":
-        false,\n     \"enableCustomCATrust\": false,\n     \"nodeTaints\": [\n    \"taint1=value1:NoSchedule\",\"taint2=value2:NoSchedule\"\n   ],\n     \"mode\": \"System\",\n
+        false,\n     \"enableCustomCATrust\": false,\n     \"nodeTaints\": [\n    \"taint1=value1:PreferNoSchedule\",\"taint2=value2:PreferNoSchedule\"\n   ],\n     \"mode\": \"System\",\n
         \    \"enableEncryptionAtHost\": false,\n     \"enableUltraSSD\": false,\n
         \    \"osType\": \"Linux\",\n     \"osSKU\": \"Ubuntu\",\n     \"nodeImageVersion\":
         \"AKSUbuntu-1804gen2containerd-2022.10.24\",\n     \"upgradeSettings\": {},\n

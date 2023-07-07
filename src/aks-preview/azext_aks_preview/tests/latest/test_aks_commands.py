@@ -4742,8 +4742,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         nodepool2_name = "nodepool2"
         tags = "key1=value1"
         new_tags = "key2=value2"
-        nodepool_taints = "taint1=value1:NoSchedule,taint2=value2:NoSchedule"
-        nodepool_taints2 = "taint1=value2:NoSchedule"
+        nodepool_taints = "taint1=value1:PreferNoSchedule,taint2=value2:PreferNoSchedule"
+        nodepool_taints2 = "taint1=value2:PreferNoSchedule"
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
@@ -4766,15 +4766,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.exists('fqdn'),
             self.exists('nodeResourceGroup'),
             self.check('provisioningState', 'Succeeded'),
-            self.check('agentPoolProfiles[0].nodeTaints[0]', 'taint1=value1:NoSchedule'),
-            self.check('agentPoolProfiles[0].nodeTaints[1]', 'taint2=value2:NoSchedule'),
+            self.check('agentPoolProfiles[0].nodeTaints[0]', 'taint1=value1:PreferNoSchedule'),
+            self.check('agentPoolProfiles[0].nodeTaints[1]', 'taint2=value2:PreferNoSchedule'),
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
                      '--nodepool-taints {nodepool_taints2}'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('agentPoolProfiles[0].nodeTaints[0]', 'taint1=value2:NoSchedule'),
+            self.check('agentPoolProfiles[0].nodeTaints[0]', 'taint1=value2:PreferNoSchedule'),
         ])
 
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
@@ -4783,7 +4783,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('agentPoolProfiles[0].nodeTaints', None),
         ])
-        
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap')
     def test_aks_create_with_oidc_issuer_enabled(self, resource_group, resource_group_location):
