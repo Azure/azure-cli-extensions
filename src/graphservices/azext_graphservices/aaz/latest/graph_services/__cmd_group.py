@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class __CMDGroup(AAZCommandGroup):
     """Make operations on Microsoft.GraphServices resource types
 
-    This module enables you to use the Azure CLI to manage Microsoft.GraphServices/Accounts resources in Azure, which is the resource that contains the billing configuration of the Graph app associated with it.
+    Manage Microsoft.GraphServices/Accounts resources in Azure to configure billing on a Graph application.
     """
     pass
 

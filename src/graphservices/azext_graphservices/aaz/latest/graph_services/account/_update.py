@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "graph-services account update",
 )
 class Update(AAZCommand):
-    """Update account resource.
+    """Update an account resource.
 
     The only supported updated on a resource is the tags property
 

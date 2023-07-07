@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "graph-services account list",
 )
 class List(AAZCommand):
-    """List list of accounts belonging to a subscription.
+    """List of accounts belonging to a subscription.
 
     :example: List resources in subscription
         az graph-services account list --subscription mySubscriptionGUID --resource-group myRg

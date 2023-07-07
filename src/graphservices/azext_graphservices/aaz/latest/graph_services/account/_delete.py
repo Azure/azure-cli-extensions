@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a account resource.
+    """Delete an account resource. Disables billing on the associated application.
 
     :example: Delete account
         az graph-services account delete --subscription mySubscriptionGUID --resource-group myRG --resource-name myGraphAppBilling

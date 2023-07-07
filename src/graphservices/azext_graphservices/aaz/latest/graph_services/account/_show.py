@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "graph-services account show",
 )
 class Show(AAZCommand):
-    """Get account resource for a given name.
+    """Get an account resource given its name.
 
     :example: Get account
         az --subscription mySubscriptionGUID --resource-group myRG --resource-name myGraphAppBilling

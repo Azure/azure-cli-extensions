@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "graph-services account create",
 )
 class Create(AAZCommand):
-    """Create account resource.
+    """Create account resource. Enables billing for the provided application.
 
     :example: Create Account
         az graph-services account create --resource-group myRG  --resource-name myGraphAppBilling --subscription mySubscriptionGUID --location global --tags "foo=bar" "baz=qux" --app-id myAppGUID
