@@ -8,7 +8,6 @@
 
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-import time, sys
 from datetime import datetime
 from ..utils import track_job_to_completion , wait_for_job_exclusivity_on_datasource
 
