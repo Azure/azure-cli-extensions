@@ -22,6 +22,8 @@ https://github.com/jddarby/azure-cli-extensions/releases/download/aosm-extension
 To install, download this wheel and run:
 `az extension add --source path/to/aosm-0.2.0-py2.py3-none-any.whl`
 
+You must also have helm installed, instructions can be found here: https://helm.sh/docs/intro/install/#through-package-managers
+
 ## Updating 
 
 We are currently not bumping versions, so if you would like the most up to date version of the CLI. You should run:
@@ -188,6 +190,13 @@ cd src/aosm
 coverage erase
 coverage run -m pytest .
 coverage report --include="*/src/aosm/*" --omit="*/src/aosm/azext_aosm/vendored_sdks/*","*/src/aosm/azext_aosm/tests/*" -m
+```
+
+## Linting
+Please run mypy on your changes and fix up any issues before merging.
+```bash
+cd src/aosm
+mypy . --ignore-missing-imports --no-namespace-packages --exclude "azext_aosm/vendored_sdks/*"
 ```
 
 ## Pipelines

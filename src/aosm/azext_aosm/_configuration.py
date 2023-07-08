@@ -10,7 +10,7 @@ import os
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from azure.cli.core.azclierror import InvalidArgumentValueError, ValidationError
 from azext_aosm.util.constants import (
@@ -226,7 +226,7 @@ class NSConfiguration(Configuration):
     nsdg_name: str = DESCRIPTION_MAP["nsdg_name"]
     nsd_version: str = DESCRIPTION_MAP["nsd_version"]
     nsdv_description: str = DESCRIPTION_MAP["nsdv_description"]
-    multiple_instances: bool = DESCRIPTION_MAP["multiple_instances"]
+    multiple_instances: Union[str, bool] = DESCRIPTION_MAP["multiple_instances"]
 
     def validate(self):
         """Validate that all of the configuration parameters are set."""

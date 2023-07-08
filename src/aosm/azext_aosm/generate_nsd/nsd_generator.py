@@ -156,7 +156,7 @@ class NSDGenerator:
                 "properties": self.deploy_parameters["properties"],
             }
 
-        cgs_dict = {
+        cgs_dict: Dict[str, Any] = {
             "$schema": "https://json-schema.org/draft-07/schema#",
             "title": self.config.cg_schema_name,
             "type": "object",

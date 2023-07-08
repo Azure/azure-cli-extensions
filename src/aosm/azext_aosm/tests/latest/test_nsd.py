@@ -6,13 +6,13 @@
 import os
 from dataclasses import dataclass
 import json
-import jsonschema
 import shutil
 import subprocess
 from pathlib import Path
 from unittest.mock import patch
 from tempfile import TemporaryDirectory
-from typing import Any, Dict
+
+import jsonschema
 
 from azext_aosm.custom import generate_design_config, build_design
 
@@ -74,7 +74,7 @@ deploy_parameters_string = json.dumps(deploy_parameters)
 # Therefore we pass in a fake client to supply the deployment parameters from the "NFD".
 @dataclass
 class NFDV:
-    deploy_parameters: Dict[str, Any]
+    deploy_parameters: str
 
 
 nfdv = NFDV(deploy_parameters_string)
