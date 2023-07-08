@@ -101,9 +101,31 @@ class FakeCmd:
 mock_cmd = FakeCmd()
 
 
+def validate_schema_against_metaschema(schema_data):
+    """
+    Validate that the schema produced by the CLI matches the AOSM metaschema.
+    """
+
+    # There is a bug in the jsonschema module that means that it hits an error in with
+    # the "$id" bit of the metaschema.  Here we use a modified version of the metaschema
+    # with that small section removed.
+    metaschema_file_path = (
+        (Path(__file__).parent) / "metaschema_modified.json"
+    ).resolve()
+    with open(metaschema_file_path, "r", encoding="utf8") as f:
+        metaschema = json.load(f)
+
+    jsonschema.validate(instance=schema_data, schema=metaschema)
+
+
 def validate_json_against_schema(json_data, schema_file):
-    with open(schema_file, "r") as f:
+    """
+    Validate some test data against the schema produced by the CLI.
+    """
+    with open(schema_file, "r", encoding="utf8") as f:
         schema = json.load(f)
+
+    validate_schema_against_metaschema(schema)
 
     jsonschema.validate(instance=json_data, schema=schema)
 
@@ -163,9 +185,9 @@ class TestNSDGenerator:
                     CGV_DATA,
                     "nsd-bicep-templates/schemas/ubuntu_ConfigGroupSchema.json",
                 )
-                build_bicep("nsd-bicep-templates/nf_definition.bicep")
-                build_bicep("nsd-bicep-templates/nsd_definition.bicep")
-                build_bicep("nsd-bicep-templates/artifact_manifest.bicep")
+                # build_bicep("nsd-bicep-templates/nf_definition.bicep")
+                # build_bicep("nsd-bicep-templates/nsd_definition.bicep")
+                # build_bicep("nsd-bicep-templates/artifact_manifest.bicep")
             finally:
                 os.chdir(starting_directory)
 

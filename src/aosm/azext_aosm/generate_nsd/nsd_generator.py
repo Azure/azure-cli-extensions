@@ -251,6 +251,11 @@ class NSDGenerator:
             "managedIdentity": f"{{configurationparameters('{self.config.cg_schema_name}').managedIdentity}}",
         }
 
+        if self.config.network_function_type == CNF:
+            config_mappings[
+                "customLocationId"
+            ] = f"{{configurationparameters('{self.config.cg_schema_name}').{nf}.customLocationId}}"
+
         config_mappings_path = os.path.join(folder_path, NSD_CONFIG_MAPPING_FILENAME)
 
         with open(config_mappings_path, "w", encoding="utf-8") as _file:

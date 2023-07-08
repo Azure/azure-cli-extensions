@@ -85,8 +85,9 @@ DESCRIPTION_MAP: Dict[str, str] = {
         "Type of nf in the definition. Valid values are 'cnf' or 'vnf'"
     ),
     "multiple_instances": (
-        "Whether the NSD should allow arbitrary numbers of this type of NF.  If set to "
-        "false only a single instance will be allowed.  Defaults to false."
+        "Set to true or false.  Whether the NSD should allow arbitrary numbers of this "
+        "type of NF.  If set to false only a single instance will be allowed.  Only "
+        "supported on VNFs, must be set to false on CNFs."
     ),
     "helm_package_name": "Name of the Helm package",
     "path_to_chart": (
@@ -227,13 +228,6 @@ class NSConfiguration(Configuration):
     nsdv_description: str = DESCRIPTION_MAP["nsdv_description"]
     multiple_instances: bool = DESCRIPTION_MAP["multiple_instances"]
 
-    def __post_init__(self):
-        """
-        Finish setting up the instance.
-        """
-        if self.multiple_instances == DESCRIPTION_MAP["multiple_instances"]:
-            self.multiple_instances = False
-
     def validate(self):
         """Validate that all of the configuration parameters are set."""
 
@@ -275,14 +269,23 @@ class NSConfiguration(Configuration):
             raise ValueError(
                 "Network Function Definition Offering Location must be set"
             )
+
         if self.network_function_type not in [CNF, VNF]:
             raise ValueError("Network Function Type must be cnf or vnf")
+
         if self.nsdg_name == DESCRIPTION_MAP["nsdg_name"] or "":
             raise ValueError("NSDG name must be set")
+
         if self.nsd_version == DESCRIPTION_MAP["nsd_version"] or "":
             raise ValueError("NSD Version must be set")
+
         if not isinstance(self.multiple_instances, bool):
             raise ValueError("multiple_instances must be a boolean")
+
+        # There is currently a NFM bug that means that multiple copies of the same NF
+        # cannot be deployed to the same custom location.
+        if self.network_function_type == CNF and self.multiple_instances:
+            raise ValueError("Multiple instances is not supported on CNFs.")
 
     @property
     def output_directory_for_build(self) -> Path:
