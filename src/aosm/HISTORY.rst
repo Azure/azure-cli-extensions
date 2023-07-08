@@ -18,6 +18,7 @@ unreleased
 * Add validation of source_registry_id format for CNF configuration
 * Workaround Oras client bug (#90) on Windows for Artifact upload to ACR
 * Take Oras 0.1.18 so above Workaround could be removed
+* Support deploying multiple instances of the same NF in an SNS
 
 0.2.0
 ++++++
