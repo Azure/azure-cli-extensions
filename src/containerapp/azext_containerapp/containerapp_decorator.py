@@ -583,7 +583,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             registries_def["server"] = self.get_argument_registry_server()
             registries_def["identity"] = self.get_argument_registry_identity()
             safe_set(containerapp_def, "properties", "configuration", "registries", value=[registries_def])
-        return containerapp_def
+            return containerapp_def
 
     def post_process_containerapp(self, containerapp_def, r):
         if is_registry_msi_system(self.get_argument_registry_identity()):
