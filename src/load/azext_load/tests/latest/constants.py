@@ -12,6 +12,7 @@ class LoadConstants:
 
     # Test Plan constants
     LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config.yaml")
+    INVALID_LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"invalid-config.yaml")
     TEST_PLAN = os.path.join(TEST_RESOURCES_DIR, r"sample-JMX-file.jmx")
     ADDITIONAL_FILE =  os.path.join(TEST_RESOURCES_DIR, r"additional-data.csv")
     FILE_NAME = "sample-JMX-file.jmx"
@@ -68,7 +69,8 @@ class LoadTestConstants(LoadConstants):
     FILE_TEST_ID = "file-test-case"
 
     INVALID_UPDATE_TEST_ID = "invalid-update-test-case"
-
+    INVALID_PF_TEST_ID = "invalid-pf-test-case"
+    
     DESCRIPTION = r"Sample_test_description"
     DISPLAY_NAME = r"Sample_test_display_name"
 

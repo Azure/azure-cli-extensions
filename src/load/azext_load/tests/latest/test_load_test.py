@@ -243,6 +243,24 @@ class LoadTestScenario(ScenarioTest):
         except Exception as e:
             assert "Invalid split-csv value:" in str(e)
 
+        # 11 Invalid PF criteria in config file
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.INVALID_PF_TEST_ID,
+                "load_test_config_file": LoadTestConstants.INVALID_LOAD_TEST_CONFIG_FILE,
+            }
+        )
+        try:
+            self.cmd(
+                "az load test create "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                '--load-test-config-file "{load_test_config_file}" '
+            )
+        except Exception as e:
+            assert "Invalid failure criteria:" in str(e)
+
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_list(self, rg, load):
