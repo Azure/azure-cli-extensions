@@ -29,18 +29,7 @@ We are currently not bumping versions, so if you would like the most up to date 
 
 And then re-add with the new wheel, as detailed in Installation above. 
 
-## Bug Reporting
-
-Especially as this extension is still in development, you may encounter bugs or
-usability issues as you try to use it in its current form. It would be much
-appreciated if you could report these so that we're aware of them!
-
-The (Microsoft internal) process for bug reporting during development is here:
-https://eng.ms/docs/strategic-missions-and-technologies/strategic-missions-and-technologies-organization/azure-for-operators/aiops/aiops-orchestration/aosm-product-docs/processes/bug_process
-
-CLI issues should be tagged and triaged as UX bugs.
-
-## nfd and nsd commands
+# nfd and nsd commands
 
 These commands help with the publishing of Network Function Definition and Network
 Service Design resources.
@@ -176,24 +165,35 @@ Delete a published design and the publisher, artifact stores and NSD group
 
 `az aosm nsd delete --config-file input.json --clean`
 
-# Development
+## Bug Reporting
 
-## Unit tests
-To run unit tests run `azdev test aosm`.
+Especially as this extension is still in development, you may encounter bugs or
+usability issues as you try to use it in its current form. It would be much
+appreciated if you could report these so that we're aware of them!
 
-To get code coverage run:
-```bash
-pip install coverage 
-cd src/aosm
-coverage erase
-coverage run -m pytest .
-coverage report --include="*/src/aosm/*" --omit="*/src/aosm/azext_aosm/vendored_sdks/*","*/src/aosm/azext_aosm/tests/*" -m
+The (Microsoft internal) process for bug reporting during development is here:
+https://eng.ms/docs/strategic-missions-and-technologies/strategic-missions-and-technologies-organization/azure-for-operators/aiops/aiops-orchestration/aosm-product-docs/processes/bug_process
+
+CLI issues should be tagged and triaged as UX bugs.
+
+## Logging
+
+The CLI uses the standard Azure CLI logging mechanism. To enable logging to the console, you can use the following flags depending on the desired level of logging:
+- `--verbose` - This flag changes the logging level to Info and above.
+- `--debug` - This flag changes the logging level to Debug and above.
+- `--only-show-errors` - This flag changes the logging level to Error only, suppressing Warning.
+
+It is also possible to enable logging to file by running the following command:
+```
+az config set logging.enable_log_file=true
+```
+This will create a log file in the `~/.azure/logs` directory. 
+
+**Note:** The above command will enable logging for all Azure CLI commands until the logging is disabled again by the user. Not disabling file logging could slow down the performance of the CLI. To disable file logging, run the following command:
+```
+az config set logging.enable_log_file=false
 ```
 
-## Pipelines
-The pipelines for the Azure CLI run in ADO, not in github.
-To trigger a pipeline you need to create a PR against main.
-Until we do the initial merge to main we don't want to have a PR to main for every code review.
-Instead we have a single PR for the `add-aosm-extension` branch: https://github.com/Azure/azure-cli-extensions/pull/6426
-Once you have merged your changes to `add-aosm-extension` then look at the Azure Pipelines under https://github.com/Azure/azure-cli-extensions/pull/6426/checks, click on the link that says `<X> errors / <Y> warnings`.
+## Development
 
+Information about setting up and maintaining a development environment for this extension can be found [here](./development.md).
