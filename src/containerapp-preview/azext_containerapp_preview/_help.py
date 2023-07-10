@@ -57,8 +57,8 @@ helps['containerapp create'] = """
               --secrets mysecret=secretvalue1 anothersecret="secret value 2" \\
               --secret-volume-mount "mnt/secrets"
     - name: Create a container app hosted on a Connected Environment.
-          text: |
-              az containerapp create -n MyContainerapp -g MyResourceGroup \\
-                  --image my-app:v1.0 --environment MyContainerappConnectedEnv \\
-                  --environment-type connected
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+              --image my-app:v1.0 --environment MyContainerappConnectedEnv \\
+              --environment-type connected
 """
