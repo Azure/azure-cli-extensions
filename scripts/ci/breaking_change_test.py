@@ -69,6 +69,9 @@ def get_diff_meta_files(diff_ref):
     cmd = ['azdev', 'command-change', 'meta-export', '--src', src_branch, '--tgt', target_branch, '--repo', get_ext_repo_paths()[0], '--meta-output-path', diff_meta_path]
     print(cmd)
     subprocess.run(cmd)
+    cmd = ['ls', '-al', diff_meta_path]
+    print(cmd)
+    subprocess.run(cmd)
 
 
 def get_base_meta_files(diff_ref):
@@ -81,6 +84,9 @@ def get_base_meta_files(diff_ref):
     uninstall_extensions(diff_ref)
     install_extensions(diff_ref)
     cmd = ['azdev', 'command-change', 'meta-export', 'CLI', '--meta-output-path', base_meta_path]
+    print(cmd)
+    subprocess.run(cmd)
+    cmd = ['ls', '-al', base_meta_path]
     print(cmd)
     subprocess.run(cmd)
 
