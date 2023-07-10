@@ -16,9 +16,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01-preview",
+        "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2023-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2023-03-01"],
         ]
     }
 
@@ -64,10 +64,6 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Storage Blob Container Object",
         )
-        _args_schema.smb_mount = AAZObjectArg(
-            options=["--smb-mount"],
-            arg_group="Properties",
-        )
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
@@ -76,28 +72,9 @@ class Update(AAZCommand):
         )
 
         storage_blob_container = cls._args_schema.storage_blob_container
-        storage_blob_container.storage_account_resource_id = AAZResourceIdArg(
+        storage_blob_container.storage_account_resource_id = AAZStrArg(
             options=["storage-account-resource-id"],
             help="The Azure Resource ID of the storage account that is the target destination.",
-        )
-
-        smb_mount = cls._args_schema.smb_mount
-        smb_mount.credentials = AAZObjectArg(
-            options=["credentials"],
-            help="The Azure Key Vault secret URIs which store the required credentials to access the SMB share.",
-            nullable=True,
-        )
-
-        credentials = cls._args_schema.smb_mount.credentials
-        credentials.password_uri = AAZStrArg(
-            options=["password-uri"],
-            help="The Azure Key Vault secret URI which stores the password. Use empty string to clean-up existing value.",
-            nullable=True,
-        )
-        credentials.username_uri = AAZStrArg(
-            options=["username-uri"],
-            help="The Azure Key Vault secret URI which stores the username. Use empty string to clean-up existing value.",
-            nullable=True,
         )
         return cls._args_schema
 
@@ -183,7 +160,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }
@@ -270,7 +247,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }
@@ -334,20 +311,10 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.discriminate_by("endpointType", "AzureStorageBlobContainer")
-                properties.discriminate_by("endpointType", "SmbMount")
 
             disc_azure_storage_blob_container = _builder.get(".properties{endpointType:AzureStorageBlobContainer}")
             if disc_azure_storage_blob_container is not None:
                 disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".storage_blob_container.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
-
-            disc_smb_mount = _builder.get(".properties{endpointType:SmbMount}")
-            if disc_smb_mount is not None:
-                disc_smb_mount.set_prop("credentials", AAZObjectType, ".smb_mount.credentials")
-
-            credentials = _builder.get(".properties{endpointType:SmbMount}.credentials")
-            if credentials is not None:
-                credentials.set_prop("passwordUri", AAZStrType, ".password_uri")
-                credentials.set_prop("usernameUri", AAZStrType, ".username_uri")
 
             return _instance_value
 
@@ -416,16 +383,6 @@ class _UpdateHelper:
             flags={"required": True},
         )
 
-        disc_azure_storage_smb_file_share = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "AzureStorageSmbFileShare")
-        disc_azure_storage_smb_file_share.file_share_name = AAZStrType(
-            serialized_name="fileShareName",
-            flags={"required": True},
-        )
-        disc_azure_storage_smb_file_share.storage_account_resource_id = AAZStrType(
-            serialized_name="storageAccountResourceId",
-            flags={"required": True},
-        )
-
         disc_nfs_mount = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "NfsMount")
         disc_nfs_mount.export = AAZStrType(
             flags={"required": True},
@@ -435,27 +392,6 @@ class _UpdateHelper:
         )
         disc_nfs_mount.nfs_version = AAZStrType(
             serialized_name="nfsVersion",
-        )
-
-        disc_smb_mount = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "SmbMount")
-        disc_smb_mount.credentials = AAZObjectType()
-        disc_smb_mount.host = AAZStrType(
-            flags={"required": True},
-        )
-        disc_smb_mount.share_name = AAZStrType(
-            serialized_name="shareName",
-            flags={"required": True},
-        )
-
-        credentials = _schema_endpoint_read.properties.discriminate_by("endpoint_type", "SmbMount").credentials
-        credentials.password_uri = AAZStrType(
-            serialized_name="passwordUri",
-        )
-        credentials.type = AAZStrType(
-            flags={"required": True},
-        )
-        credentials.username_uri = AAZStrType(
-            serialized_name="usernameUri",
         )
 
         system_data = _schema_endpoint_read.system_data

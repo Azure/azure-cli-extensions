@@ -35,43 +35,6 @@ def endpoint_create_for_storage_container(cmd, endpoint_name, resource_group, st
     return Create_Endpoint(args)
 
 
-def endpoint_update_for_storage_container(cmd, endpoint_name, resource_group, storage_mover_name, description,
-                                          blob_container_name, storage_account_resource_id):
-    Update_Endpoint = Update(cmd.loader)
-    args = _get_args_for_endpoint_for_storage_container(endpoint_name, resource_group, storage_mover_name, description,
-                                                        blob_container_name, storage_account_resource_id)
-    return Update_Endpoint(args)
-
-
-def _get_args_for_endpoint_for_storage_smb_file_share(endpoint_name, resource_group, storage_mover_name, description,
-                                                      file_share_name, storage_account_resource_id):
-    args = {
-        "endpoint_name": endpoint_name, "resource_group": resource_group, "storage_mover_name": storage_mover_name,
-        "description": description,
-        "azure_storage_smb_file_share": {
-            "file_share_name": file_share_name,
-            "storage_account_resource_id": storage_account_resource_id,
-        }
-    }
-    return args
-
-
-def endpoint_create_for_storage_smb_file_share(cmd, endpoint_name, resource_group, storage_mover_name, description,
-                                               file_share_name, storage_account_resource_id):
-    Create_Endpoint = Create(cmd.loader)
-    args = _get_args_for_endpoint_for_storage_smb_file_share(endpoint_name, resource_group, storage_mover_name,
-                                                             description, file_share_name, storage_account_resource_id)
-    return Create_Endpoint(args)
-
-
-def endpoint_update_for_storage_smb_file_share(cmd, endpoint_name, resource_group, storage_mover_name, description,
-                                               file_share_name, storage_account_resource_id):
-    Update_Endpoint = Update(cmd.loader)
-    args = _get_args_for_endpoint_for_storage_smb_file_share(endpoint_name, resource_group, storage_mover_name,
-                                                             description, file_share_name, storage_account_resource_id)
-    return Update_Endpoint(args)
-
-
 def _get_args_for_endpoint_for_nfs(endpoint_name, resource_group, storage_mover_name, description,
                                    export, host, nfs_version):
     args = {
@@ -94,44 +57,17 @@ def endpoint_create_for_nfs(cmd, endpoint_name, resource_group, storage_mover_na
     return Create_Endpoint(args)
 
 
+def endpoint_update_for_storage_container(cmd, endpoint_name, resource_group, storage_mover_name, description,
+                                          blob_container_name, storage_account_resource_id):
+    Update_Endpoint = Update(cmd.loader)
+    args = _get_args_for_endpoint_for_storage_container(endpoint_name, resource_group, storage_mover_name, description,
+                                                        blob_container_name, storage_account_resource_id)
+    return Update_Endpoint(args)
+
+
 def endpoint_update_for_nfs(cmd, endpoint_name, resource_group, storage_mover_name, description,
                             export, host, nfs_version=None):
     Update_Endpoint = Update(cmd.loader)
     args = _get_args_for_endpoint_for_nfs(endpoint_name, resource_group, storage_mover_name, description,
                                           export, host, nfs_version)
-    return Update_Endpoint(args)
-
-
-def _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_name, description,
-                                   host, share_name, username_uri=None, password_uri=None):
-    args = {
-        "endpoint_name": endpoint_name, "resource_group": resource_group, "storage_mover_name": storage_mover_name,
-        "description": description,
-        "smb_mount": {
-            "host": host,
-            "share_name": share_name
-        }
-    }
-    if username_uri or password_uri:
-        args["credential"] = {
-            "username_uri": username_uri,
-            "password_uri": password_uri,
-            "type": "AzureKeyVaultSmb"
-        }
-    return args
-
-
-def endpoint_create_for_smb(cmd, endpoint_name, resource_group, storage_mover_name, description,
-                            host, share_name, username_uri=None, password_uri=None):
-    Create_Endpoint = Create(cmd.loader)
-    args = _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_name, description,
-                                          host, share_name, username_uri, password_uri)
-    return Create_Endpoint(args)
-
-
-def endpoint_update_for_smb(cmd, endpoint_name, resource_group, storage_mover_name, description,
-                            host, share_name, username_uri=None, password_uri=None):
-    Update_Endpoint = Update(cmd.loader)
-    args = _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_name, description,
-                                          host, share_name, username_uri, password_uri)
     return Update_Endpoint(args)

@@ -16,9 +16,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01-preview",
+        "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2023-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2023-03-01"],
         ]
     }
 
@@ -60,16 +60,8 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Storage Blob Container Object",
         )
-        _args_schema.azure_storage_smb_file_share = AAZObjectArg(
-            options=["--azure-storage-smb-file-share"],
-            arg_group="Properties",
-        )
         _args_schema.nfs_mount = AAZObjectArg(
             options=["--nfs-mount"],
-            arg_group="Properties",
-        )
-        _args_schema.smb_mount = AAZObjectArg(
-            options=["--smb-mount"],
             arg_group="Properties",
         )
         _args_schema.description = AAZStrArg(
@@ -84,21 +76,9 @@ class Create(AAZCommand):
             help="The name of the Storage blob container that is the target destination.",
             required=True,
         )
-        storage_blob_container.storage_account_resource_id = AAZResourceIdArg(
+        storage_blob_container.storage_account_resource_id = AAZStrArg(
             options=["storage-account-resource-id"],
             help="The Azure Resource ID of the storage account that is the target destination.",
-            required=True,
-        )
-
-        azure_storage_smb_file_share = cls._args_schema.azure_storage_smb_file_share
-        azure_storage_smb_file_share.file_share_name = AAZStrArg(
-            options=["file-share-name"],
-            help="The name of the Azure Storage file share.",
-            required=True,
-        )
-        azure_storage_smb_file_share.storage_account_resource_id = AAZResourceIdArg(
-            options=["storage-account-resource-id"],
-            help="The Azure Resource ID of the storage account.",
             required=True,
         )
 
@@ -117,32 +97,6 @@ class Create(AAZCommand):
             options=["nfs-version"],
             help="The NFS protocol version.",
             enum={"NFSauto": "NFSauto", "NFSv3": "NFSv3", "NFSv4": "NFSv4"},
-        )
-
-        smb_mount = cls._args_schema.smb_mount
-        smb_mount.credentials = AAZObjectArg(
-            options=["credentials"],
-            help="The Azure Key Vault secret URIs which store the required credentials to access the SMB share.",
-        )
-        smb_mount.host = AAZStrArg(
-            options=["host"],
-            help="The host name or IP address of the server exporting the file system.",
-            required=True,
-        )
-        smb_mount.share_name = AAZStrArg(
-            options=["share-name"],
-            help="The name of the SMB share being exported from the server.",
-            required=True,
-        )
-
-        credentials = cls._args_schema.smb_mount.credentials
-        credentials.password_uri = AAZStrArg(
-            options=["password-uri"],
-            help="The Azure Key Vault secret URI which stores the password. Use empty string to clean-up existing value.",
-        )
-        credentials.username_uri = AAZStrArg(
-            options=["username-uri"],
-            help="The Azure Key Vault secret URI which stores the username. Use empty string to clean-up existing value.",
         )
         return cls._args_schema
 
@@ -215,7 +169,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2023-03-01",
                     required=True,
                 ),
             }
@@ -246,41 +200,20 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_const("endpointType", "AzureStorageBlobContainer", AAZStrType, ".storage_blob_container", typ_kwargs={"flags": {"required": True}})
-                properties.set_const("endpointType", "AzureStorageSmbFileShare", AAZStrType, ".azure_storage_smb_file_share", typ_kwargs={"flags": {"required": True}})
                 properties.set_const("endpointType", "NfsMount", AAZStrType, ".nfs_mount", typ_kwargs={"flags": {"required": True}})
-                properties.set_const("endpointType", "SmbMount", AAZStrType, ".smb_mount", typ_kwargs={"flags": {"required": True}})
                 properties.discriminate_by("endpointType", "AzureStorageBlobContainer")
-                properties.discriminate_by("endpointType", "AzureStorageSmbFileShare")
                 properties.discriminate_by("endpointType", "NfsMount")
-                properties.discriminate_by("endpointType", "SmbMount")
 
             disc_azure_storage_blob_container = _builder.get(".properties{endpointType:AzureStorageBlobContainer}")
             if disc_azure_storage_blob_container is not None:
                 disc_azure_storage_blob_container.set_prop("blobContainerName", AAZStrType, ".storage_blob_container.blob_container_name", typ_kwargs={"flags": {"required": True}})
                 disc_azure_storage_blob_container.set_prop("storageAccountResourceId", AAZStrType, ".storage_blob_container.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
 
-            disc_azure_storage_smb_file_share = _builder.get(".properties{endpointType:AzureStorageSmbFileShare}")
-            if disc_azure_storage_smb_file_share is not None:
-                disc_azure_storage_smb_file_share.set_prop("fileShareName", AAZStrType, ".azure_storage_smb_file_share.file_share_name", typ_kwargs={"flags": {"required": True}})
-                disc_azure_storage_smb_file_share.set_prop("storageAccountResourceId", AAZStrType, ".azure_storage_smb_file_share.storage_account_resource_id", typ_kwargs={"flags": {"required": True}})
-
             disc_nfs_mount = _builder.get(".properties{endpointType:NfsMount}")
             if disc_nfs_mount is not None:
                 disc_nfs_mount.set_prop("export", AAZStrType, ".nfs_mount.export", typ_kwargs={"flags": {"required": True}})
                 disc_nfs_mount.set_prop("host", AAZStrType, ".nfs_mount.host", typ_kwargs={"flags": {"required": True}})
                 disc_nfs_mount.set_prop("nfsVersion", AAZStrType, ".nfs_mount.nfs_version")
-
-            disc_smb_mount = _builder.get(".properties{endpointType:SmbMount}")
-            if disc_smb_mount is not None:
-                disc_smb_mount.set_prop("credentials", AAZObjectType, ".smb_mount.credentials")
-                disc_smb_mount.set_prop("host", AAZStrType, ".smb_mount.host", typ_kwargs={"flags": {"required": True}})
-                disc_smb_mount.set_prop("shareName", AAZStrType, ".smb_mount.share_name", typ_kwargs={"flags": {"required": True}})
-
-            credentials = _builder.get(".properties{endpointType:SmbMount}.credentials")
-            if credentials is not None:
-                credentials.set_prop("passwordUri", AAZStrType, ".password_uri")
-                credentials.set_const("type", "AzureKeyVaultSmb", AAZStrType, ".", typ_kwargs={"flags": {"required": True}})
-                credentials.set_prop("usernameUri", AAZStrType, ".username_uri")
 
             return self.serialize_content(_content_value)
 
@@ -340,16 +273,6 @@ class Create(AAZCommand):
                 flags={"required": True},
             )
 
-            disc_azure_storage_smb_file_share = cls._schema_on_200.properties.discriminate_by("endpoint_type", "AzureStorageSmbFileShare")
-            disc_azure_storage_smb_file_share.file_share_name = AAZStrType(
-                serialized_name="fileShareName",
-                flags={"required": True},
-            )
-            disc_azure_storage_smb_file_share.storage_account_resource_id = AAZStrType(
-                serialized_name="storageAccountResourceId",
-                flags={"required": True},
-            )
-
             disc_nfs_mount = cls._schema_on_200.properties.discriminate_by("endpoint_type", "NfsMount")
             disc_nfs_mount.export = AAZStrType(
                 flags={"required": True},
@@ -359,27 +282,6 @@ class Create(AAZCommand):
             )
             disc_nfs_mount.nfs_version = AAZStrType(
                 serialized_name="nfsVersion",
-            )
-
-            disc_smb_mount = cls._schema_on_200.properties.discriminate_by("endpoint_type", "SmbMount")
-            disc_smb_mount.credentials = AAZObjectType()
-            disc_smb_mount.host = AAZStrType(
-                flags={"required": True},
-            )
-            disc_smb_mount.share_name = AAZStrType(
-                serialized_name="shareName",
-                flags={"required": True},
-            )
-
-            credentials = cls._schema_on_200.properties.discriminate_by("endpoint_type", "SmbMount").credentials
-            credentials.password_uri = AAZStrType(
-                serialized_name="passwordUri",
-            )
-            credentials.type = AAZStrType(
-                flags={"required": True},
-            )
-            credentials.username_uri = AAZStrType(
-                serialized_name="usernameUri",
             )
 
             system_data = cls._schema_on_200.system_data

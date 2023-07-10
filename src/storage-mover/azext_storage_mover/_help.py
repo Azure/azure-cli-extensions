@@ -16,20 +16,8 @@ short-summary: Creates an Endpoint resource for storage blob container.
 examples:
     - name: endpoint create-for-storage-container
       text: >
-        az storage-mover endpoint create-for-storage-container -g "rg" --storage-mover-name "mover_name"
-        -n "endpoint_container" --container-name "container_name" --storage-account-id "account_id"
-        --description endpointDesc
-"""
-
-helps['storage-mover endpoint create-for-storage-smb-file-share'] = """
-type: command
-short-summary: Creates an Endpoint resource for storage smb file share.
-examples:
-    - name: endpoint create-for-storage-smb-file-share
-      text: >
-        az storage-mover endpoint create-for-storage-smb-file-share -g "rg" --storage-mover-name "mover_name"
-        -n "endpoint_file_share" --file-share-name "file_share_name" --storage-account-id "account_id"
-        --description endpointFileShareDesc
+        az storage-mover endpoint create-for-storage-container -g {rg} --storage-mover-name {mover_name} -n
+        {endpoint_container} --container-name {container_name} --storage-account-id {account_id} --description endpointDesc
 """
 
 helps['storage-mover endpoint create-for-nfs'] = """
@@ -38,19 +26,8 @@ short-summary: Creates an Endpoint resource for nfs.
 examples:
     - name: endpoint create-for-nfs
       text: >
-        az storage-mover endpoint create-for-nfs -g "rg" --storage-mover-name "mover_name" -n "endpoint_nfs"
-        --description endpointDesc --export exportfolder --nfs-version NFSv4 --host "vm_ip"
-"""
-
-helps['storage-mover endpoint create-for-smb'] = """
-type: command
-short-summary: Creates an Endpoint resource for smb mount.
-examples:
-    - name: endpoint create-for-smb
-      text: >
-        az storage-mover endpoint create-for-smb -g "rg" --storage-mover-name "mover_name"
-        -n "endpoint_smb" --description endpointSmbDesc --share-name "smb_share_name" --username-uri username
-        --password-uri Password!23 --host "vm_ip"
+        az storage-mover endpoint create-for-nfs -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs}
+        --description endpointDesc --export exportfolder --nfs-version NFSv4 --host {vm_ip}
 """
 
 helps['storage-mover endpoint update-for-storage-container'] = """
@@ -59,20 +36,8 @@ short-summary: Updates an Endpoint resource for storage blob container.
 examples:
     - name: endpoint update-for-storage-container
       text: >
-        az storage-mover endpoint update-for-storage-container -g "rg" --storage-mover-name "mover_name"
-        -n "endpoint_container" --description endpointDescUpdate --container-name "container_name"
-        --storage-account-id "account_id"
-"""
-
-helps['storage-mover endpoint update-for-storage-smb-file-share'] = """
-type: command
-short-summary: Updates an Endpoint resource for storage smb file share.
-examples:
-    - name: endpoint update-for-storage-smb-file-share
-      text: >
-        az storage-mover endpoint update-for-storage-smb-file-share -g "rg" --storage-mover-name "mover_name"
-        -n "endpoint_file_share" --description endpointFileShareDescUpdate --file-share-name "file_share_name"
-        --storage-account-id "account_id"
+        az storage-mover endpoint update-for-storage-container -g {rg} --storage-mover-name {mover_name} -n
+        {endpoint_container} --description endpointDescUpdate --container-name {container_name} --storage-account-id {account_id}
 """
 
 helps['storage-mover endpoint update-for-nfs'] = """
@@ -81,16 +46,6 @@ short-summary: Updates an Endpoint resource for nfs.
 examples:
     - name: endpoint update-for-nfs
       text: >
-        az storage-mover endpoint update-for-nfs -g "rg" --storage-mover-name "mover_name" -n "endpoint_nfs"
-        --description endpointDescUpdate --export exportfolder --nfs-version NFSv4 --host "vm_ip"
-"""
-
-helps['storage-mover endpoint update-for-smb'] = """
-type: command
-short-summary: Updates an Endpoint resource for smb mount.
-examples:
-    - name: endpoint update-for-smb
-      text: >
-        az storage-mover endpoint update-for-smb -g "rg" --storage-mover-name "mover_name" -n "endpoint_smb"
-        --description endpointSmbDescUpdate --share-name "smb_share_name" --host "vm_ip"
+        az storage-mover endpoint update-for-nfs -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs}
+        --description endpointDescUpdate --export exportfolder --nfs-version NFSv4 --host {vm_ip}
 """
