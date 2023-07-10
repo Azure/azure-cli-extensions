@@ -126,7 +126,7 @@ def get_index_data():
 
 
 def diff_code(start, end):
-    diif_ref = []
+    diff_ref = []
 
     for src_d in os.listdir(SRC_PATH):
         src_d_full = os.path.join(SRC_PATH, src_d)
@@ -157,9 +157,9 @@ def diff_code(start, end):
                 if not check_output(shlex.split(cmd)):
                     continue
 
-        diif_ref.append((pkg_name, src_d_full))
+        diff_ref.append((pkg_name, src_d_full))
 
     logger.warning(f'start: {start}, '
                    f'end: {end}, '
-                   f'diif_ref: {diif_ref}.')
-    return diif_ref
+                   f'diff_ref: {diff_ref}.')
+    return diff_ref
