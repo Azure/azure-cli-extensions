@@ -31,7 +31,7 @@ def is_containerapp_extension_available():
         msg = f"The command requires the extension {GA_CONTAINERAPP_EXTENSION_NAME}. Run 'az extension add -n {GA_CONTAINERAPP_EXTENSION_NAME}' to install extension"
         logger.warning(msg)
         return False
-    return False
+    return True
 
 
 def _get_or_add_extension(cmd, extension_name):
