@@ -54,7 +54,7 @@ def get_diff_meta_files():
     cmd = ['git', 'rev-parse', 'HEAD']
     print(cmd)
     subprocess.run(cmd)
-    cmd = ['azdev', 'command-change', 'meta-export', '--src', src_branch, '--tgt', target_branch, '--repo', get_cli_repo_path(), '--meta-output-path', diff_meta_path]
+    cmd = ['azdev', 'command-change', 'meta-export', '--src', src_branch, '--tgt', target_branch, '--repo', get_ext_repo_paths()[0], '--meta-output-path', diff_meta_path]
     print(cmd)
     subprocess.run(cmd)
 
