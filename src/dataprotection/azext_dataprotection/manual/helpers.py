@@ -6,7 +6,7 @@
 import re
 import json
 from importlib import import_module
-from knack.util import CLIError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
 critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContainers/protectedItems/delete",
@@ -58,7 +58,7 @@ def get_datasource_info(datasource_type, resource_id, resource_location):
 def get_datasourceset_info(datasource_type, resource_id, resource_location):
     manifest = load_manifest(datasource_type)
     if len(resource_id.split("/")) < 3:
-        raise CLIError(resource_id + " is not a valid resource id")
+        raise InvalidArgumentValueError(resource_id + " is not a valid resource id")
 
     resource_name = resource_id.split("/")[-3]
     resource_type = "/".join(manifest["resourceType"].split("/")[:-1])
@@ -96,11 +96,12 @@ def get_backup_frequency_string(frequency, count):
 def validate_backup_schedule(datasource_type, schedule):
     manifest = load_manifest(datasource_type)
     if not manifest["policySettings"]["backupScheduleSupported"]:
-        raise CLIError("Adding Backup Schedule is not supported for Datasource Type " + datasource_type)
+        raise InvalidArgumentValueError("Adding Backup Schedule is not supported for Datasource Type " +
+                                        datasource_type)
 
     backup_freq_map = {"D": "Daily", "H": "Hourly", "W": "Weekly"}
     if backup_freq_map[schedule[0][-1]] not in manifest["policySettings"]["supportedBackupFrequency"]:
-        raise CLIError(
+        raise InvalidArgumentValueError(
             backup_freq_map[schedule[0][-1]] + " Backup Schedule is not supported for " + datasource_type + " policy"
         )
 
@@ -117,7 +118,7 @@ def get_tagging_priority(name):
 
 def truncate_id_using_scope(arm_id, scope):
     if not is_valid_resource_id(arm_id):
-        raise CLIError("Please give a valid ARM ID")
+        raise InvalidArgumentValueError("Please give a valid ARM ID")
 
     resource_params = parse_resource_id(arm_id)
     result_id = ""
@@ -370,13 +371,13 @@ def convert_string_snake_to_camel(string):
     return new_string
 
 
-def validate_recovery_point_datetime_format(aaz_str_arg):
+def validate_recovery_point_datetime_format(aaz_str):
     """ Validates UTC datettime in accepted format. Examples: 31-12-2017, 31-12-2017-05:30:00.
-       Returns datetime in ISO format.
+       Returns datetime in the ISO format: yyyy:mm:ddTHH:MM:SS.0000000Z
     """
     # accepted_date_formats = ['%Y-%m-%dT%H:%M:%S']
-    if aaz_str_arg:
-        date_str = str(aaz_str_arg)
+    if aaz_str:
+        date_str = str(aaz_str)
     else:
         return None
 
@@ -384,7 +385,9 @@ def validate_recovery_point_datetime_format(aaz_str_arg):
     try:
         # Parse input string for valid datetime.
         dt_val = dateutil.parser.parse(date_str)
-        dt_iso = dt_val.strftime("%Y-%m-%dT%H:%M:%S.0000000Z")  # Format datetime string
+        dt_iso = dt_val.strftime("%Y-%m-%dT%H:%M:%S.%f0Z")  # Format datetime string
         return dt_iso
     except ValueError:
-        raise CLIError(f"Input '{date_str}' not valid datetime. Valid example: 2017-12-31T05:30:00") from ValueError
+        raise InvalidArgumentValueError(
+            f"Input '{date_str}' not valid datetime. Valid example: 2017-12-31T05:30:00"
+        ) from ValueError

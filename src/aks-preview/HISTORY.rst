@@ -15,6 +15,7 @@ Pending
 0.5.146
 +++++++
 * Extend containerinsights --data-collection-settings with new fields "streams" and containerlogv2
+* Add support for new snapshot command `az aks nodepool snapshot update`
 
 0.5.145
 +++++++

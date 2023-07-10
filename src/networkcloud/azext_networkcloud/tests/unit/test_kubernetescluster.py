@@ -27,11 +27,19 @@ class TestKubernetesClusterCreate(unittest.TestCase):
         self._cli_ctx = DummyCli()
         loader = NetworkcloudCommandsLoader(self._cli_ctx)
         self.cmd = Create(loader)
+        # Create mock ssh key values
+        self.keys = []
+        for _ in range(2):
+            key = rsa.generate_private_key(65537, 2048)
+            pub = key.public_key().public_bytes(
+                serialization.Encoding.OpenSSH, serialization.PublicFormat.OpenSSH
+            )
+            # Convert from bytes
+            self.keys.append(str(pub, "UTF-8"))
 
     def test_build_arguments_schema(self):
         """Test that _build_arguments_schema unregisters the parameters."""
         args_schema = mock.Mock()
-
         results_args_schema = self.cmd._build_arguments_schema(args_schema)
 
         # validate the ssh-key-values parameter exists at root and child level
@@ -41,7 +49,7 @@ class TestKubernetesClusterCreate(unittest.TestCase):
         self.assertIsNotNone(
             results_args_schema.initial_agent_pool_configurations.Element.ssh_key_values)
 
-        # valdiate registered parameters
+        # validate registered parameters
         self.assertFalse(results_args_schema.ssh_public_keys._registered)
         self.assertFalse(
             results_args_schema.initial_agent_pool_configurations.Element.ssh_public_keys._registered)
@@ -55,18 +63,9 @@ class TestKubernetesClusterCreate(unittest.TestCase):
         """
         args = mock.Mock()
         self.cmd.ctx = mock.Mock()
-        # Create mock ssh key values
-        keys = []
-        for _ in range(2):
-            key = rsa.generate_private_key(65537, 2048)
-            pub = key.public_key().public_bytes(
-                serialization.Encoding.OpenSSH, serialization.PublicFormat.OpenSSH
-            )
-            # Convert from bytes
-            keys.append(str(pub, "UTF-8"))
 
         # Mock data to contain only root level admin configuration provided
-        args.ssh_key_values = keys
+        args.ssh_key_values = self.keys
         args.control_plane_node_configuration.ssh_key_values = []
         args.initial_agent_pool_configurations = []
         args.ssh_dest_key_path = []
@@ -76,31 +75,60 @@ class TestKubernetesClusterCreate(unittest.TestCase):
         # Call func
         self.cmd.pre_operations()
         self.assertEqual(len(args.ssh_public_keys), 2)
+        # self.assertEqual(
+        #     len(args.control_plane_node_configuration.ssh_public_keys), 0)
+        for x in args.initial_agent_pool_configurations:
+            self.assertEqual(len(x.ssh_public_keys), 0)
 
         # Test admin configuration in control_plane_node_configuration is updated
+        args.control_plane_node_configuration.ssh_public_keys = None
+        args.ssh_public_keys = []
         args.ssh_key_values = []
-        args.control_plane_node_configuration.ssh_key_values = keys
+        args.control_plane_node_configuration.ssh_key_values = self.keys
         args.initial_agent_pool_configurations = []
         self.cmd.ctx.args = args
 
         # Call func
         self.cmd.pre_operations()
         # Validate control_plane_node_configuration is updated
+        self.assertEqual(len(args.ssh_public_keys), 0)
         self.assertEqual(
             len(args.control_plane_node_configuration.ssh_public_keys), 2)
+        for x in args.initial_agent_pool_configurations:
+            self.assertEqual(len(x.ssh_public_keys), 0)
 
         # Test admin configuration in initial-agent-pool configuration is updated
         args.ssh_key_values = []
+        args.control_plane_node_configuration.ssh_public_keys = []
         args.control_plane_node_configuration.ssh_key_values = []
         for x in args.initial_agent_pool_configurations:
-            x.ssh_key_values = keys
+            x.ssh_key_values = self.keys
         self.cmd.ctx.args = args
 
         # Call func
         self.cmd.pre_operations()
         # Validate initial node configuration is updated
+        self.assertEqual(len(args.ssh_public_keys), 0)
+        self.assertEqual(
+            len(args.control_plane_node_configuration.ssh_public_keys), 0)
         for x in args.initial_agent_pool_configurations:
             self.assertEqual(len(x.ssh_public_keys), 2)
+
+        # Validate agent_pool_configuration and control_plane_node_configuration structure does not contain ssh_public_keys array
+        # when no ssh key is provided in the input
+        args.ssh_key_values = []
+        args.control_plane_node_configuration.ssh_key_values = []
+        args.initial_agent_pool_configurations = []
+        self.cmd.ctx.args = args
+
+        # Call func
+        self.cmd.pre_operations()
+
+        self.assertEqual(len(args.ssh_public_keys), 0)
+        self.assertEqual(
+            len(args.control_plane_node_configuration.ssh_public_keys), 0)
+        for x in args.initial_agent_pool_configurations:
+            self.assertEqual(len(x.ssh_public_keys), 0)
 
     @mock.patch("azure.cli.core.keys.generate_ssh_keys")
     @mock.patch("os.path.expanduser")
@@ -113,7 +141,7 @@ class TestKubernetesClusterCreate(unittest.TestCase):
     @mock.patch("os.path.isdir")
     @mock.patch("os.path.isfile")
     def test_vm_get_ssh_keys_from_path(self, mock_isfile, mock_isdir, mock_listdir):
-        """ Test KubernetesCluster ssh-key-from-path paramter enabled """
+        """ Test KubernetesCluster ssh-key-from-path parameter enabled """
         TestCommonSsh.validate_get_ssh_keys_from_path(
             self, mock_isfile, mock_isdir, mock_listdir)
 
