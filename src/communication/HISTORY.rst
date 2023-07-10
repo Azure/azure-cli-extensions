@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.7.1b1
+++++++
+* Adding managed identity support
+
+
 1.7.0b1
 ++++++
 * Migrate control plane operations to aaz
