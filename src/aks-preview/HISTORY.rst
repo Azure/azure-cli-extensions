@@ -12,9 +12,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 ++++++
 
-0.5.146
+0.5.147
 +++++++
 * Extend containerinsights --data-collection-settings with new fields "streams" and containerlogv2
+
+0.5.146
++++++++
 * Add support for new snapshot command `az aks nodepool snapshot update`
 
 0.5.145
