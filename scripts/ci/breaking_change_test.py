@@ -41,7 +41,18 @@ def install_extensions(diif_ref):
             raise RuntimeError(f"{cmd} failed")
 
 
-def get_diff_meta_files():
+def uninstall_extensions(diif_ref):
+    for tname, ext_path in diif_ref:
+        ext_name = ext_path.split('/')[-1]
+        logger.info(f'uninstalling extension: {ext_name}')
+        cmd = ['azdev', 'extension', 'remove', ext_name]
+        logger.info(f'cmd: {cmd}')
+        out = run(cmd, check=True)
+        if out.returncode:
+            raise RuntimeError(f"{cmd} failed")
+
+
+def get_diff_meta_files(diff_ref):
     cmd = ['git', 'checkout', '-b', target_branch]
     print(cmd)
     subprocess.run(cmd)
@@ -54,21 +65,21 @@ def get_diff_meta_files():
     cmd = ['git', 'rev-parse', 'HEAD']
     print(cmd)
     subprocess.run(cmd)
+    install_extensions(diff_ref)
     cmd = ['azdev', 'command-change', 'meta-export', '--src', src_branch, '--tgt', target_branch, '--repo', get_ext_repo_paths()[0], '--meta-output-path', diff_meta_path]
     print(cmd)
     subprocess.run(cmd)
 
 
-def get_base_meta_files():
+def get_base_meta_files(diff_ref):
     cmd = ['git', 'checkout', src_branch]
     print(cmd)
     subprocess.run(cmd)
     cmd = ['git', 'rev-parse', 'HEAD']
     print(cmd)
     subprocess.run(cmd)
-    cmd = ['azdev', 'setup', '--cli', get_cli_repo_path(), '--repo', get_ext_repo_paths()[0]]
-    print(cmd)
-    subprocess.run(cmd)
+    uninstall_extensions(diff_ref)
+    install_extensions(diff_ref)
     cmd = ['azdev', 'command-change', 'meta-export', 'CLI', '--meta-output-path', base_meta_path]
     print(cmd)
     subprocess.run(cmd)
@@ -161,10 +172,9 @@ def save_pipeline_result(pipeline_result):
 def main():
     if pull_request_number != '$(System.PullRequest.PullRequestNumber)':
         logger.info("Start breaking change test ...\n")
-        diif_ref = diff_code(src_branch, 'HEAD')
-        install_extensions(diif_ref)
-        get_diff_meta_files()
-        get_base_meta_files()
+        diff_ref = diff_code(src_branch, 'HEAD')
+        get_diff_meta_files(diff_ref)
+        get_base_meta_files(diff_ref)
         meta_diff()
         pipeline_result = get_pipeline_result()
         save_pipeline_result(pipeline_result)
