@@ -10,9 +10,28 @@ from knack.prompting import prompt_y_n, NoTTYException
 from knack.util import CLIError
 from knack.log import get_logger
 
-from ._constants import MIN_GA_VERSION
+from ._constants import MIN_GA_VERSION, GA_CONTAINERAPP_EXTENSION_NAME
 
 logger = get_logger(__name__)
+
+
+def is_containerapp_extension_available():
+    from azure.cli.core.extension import (
+        ExtensionNotInstalledException, get_extension)
+    from packaging.version import parse
+
+    try:
+        ext = get_extension(GA_CONTAINERAPP_EXTENSION_NAME)
+        # Check extension version
+        if ext and parse(ext.version) < parse(MIN_GA_VERSION):
+            msg = f"The command requires the version of {GA_CONTAINERAPP_EXTENSION_NAME} >= {MIN_GA_VERSION}. Run 'az extension add --upgrade -n {GA_CONTAINERAPP_EXTENSION_NAME}' to upgrade extension"
+            logger.warning(msg)
+            return False
+    except ExtensionNotInstalledException:
+        msg = f"The command requires the extension {GA_CONTAINERAPP_EXTENSION_NAME}. Run 'az extension add -n {GA_CONTAINERAPP_EXTENSION_NAME}' to install extension"
+        logger.warning(msg)
+        return False
+    return False
 
 
 def _get_or_add_extension(cmd, extension_name):

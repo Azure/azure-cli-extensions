@@ -6,7 +6,7 @@
 from azure.cli.core import AzCommandsLoader
 
 from azext_containerapp_preview._help import helps  # pylint: disable=unused-import
-from azext_containerapp_preview._utils import (_get_or_add_extension, _get_azext_module)
+from azext_containerapp_preview._utils import (is_containerapp_extension_available, _get_azext_module)
 from azext_containerapp_preview._constants import GA_CONTAINERAPP_EXTENSION_NAME
 
 
@@ -26,7 +26,7 @@ class ContainerappPreviewCommandsLoader(AzCommandsLoader):
         # When the switch core.use_command_index is turned off, possibly unrelated commands may also trigger unnecessary loads.
         # Only the containerapp related commands can ask the user to install the containerapp extension with target version
         if len(args) > 0 and args[0] == GA_CONTAINERAPP_EXTENSION_NAME:
-            if not _get_or_add_extension(self, GA_CONTAINERAPP_EXTENSION_NAME):
+            if not is_containerapp_extension_available():
                 return self.command_table
         load_command_table(self, args)
         return self.command_table
@@ -37,7 +37,7 @@ class ContainerappPreviewCommandsLoader(AzCommandsLoader):
         # When the switch core.use_command_index is turned off, possibly unrelated commands may also trigger unnecessary loads.
         # Only the containerapp related commands can trigger the user to install the containerapp extension with target version
         if command is not None and command.split(' ')[0] == GA_CONTAINERAPP_EXTENSION_NAME:
-            if not _get_or_add_extension(self, GA_CONTAINERAPP_EXTENSION_NAME):
+            if not is_containerapp_extension_available():
                 return
             ga_params = _get_azext_module(
                 GA_CONTAINERAPP_EXTENSION_NAME, "azext_containerapp._params")
