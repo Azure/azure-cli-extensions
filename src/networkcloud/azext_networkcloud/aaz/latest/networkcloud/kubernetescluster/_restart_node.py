@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkcloud baremetalmachine run-data-extract",
+    "networkcloud kubernetescluster restart-node",
     is_preview=True,
 )
-class RunDataExtract(AAZCommand):
-    """Run one or more data extractions on the provided bare metal machine. The URL to storage account with the command execution results and the command exit code can be retrieved from the operation status API once available.
+class RestartNode(AAZCommand):
+    """Restart a targeted node of a Kubernetes cluster.
 
-    :example: Run data extraction on bare metal machine
-        az networkcloud baremetalmachine run-data-extract --bare-metal-machine-name "bareMetalMachineName" --limit-time-seconds 360 --commands "[{arguments:['SysInfo','TTYLog'],command:'hardware-support-data-collection'}]" --resource-group "resourceGroupName"
+    :example: Restart Kubernetes cluster node
+        az networkcloud kubernetescluster restart-node --node-name "nodeName" --kubernetes-cluster-name "kubernetesClusterName" --resource-group "resourceGroupName"
     """
 
     _aaz_info = {
         "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/rundataextracts", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}/restartnode", "2023-07-01"],
         ]
     }
 
@@ -46,60 +46,33 @@ class RunDataExtract(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.bare_metal_machine_name = AAZStrArg(
-            options=["-n", "--name", "--bare-metal-machine-name"],
-            help="The name of the bare metal machine.",
+        _args_schema.kubernetes_cluster_name = AAZStrArg(
+            options=["-n", "--name", "--kubernetes-cluster-name"],
+            help="The name of the Kubernetes cluster.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^([a-zA-Z0-9][a-zA-Z0-9]{0,62}[a-zA-Z0-9])$",
+                pattern="^([a-zA-Z0-9][a-zA-Z0-9-_]{0,28}[a-zA-Z0-9])$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
 
-        # define Arg Group "BareMetalMachineRunDataExtractsParameters"
+        # define Arg Group "KubernetesClusterRestartNodeParameters"
 
         _args_schema = cls._args_schema
-        _args_schema.commands = AAZListArg(
-            options=["--commands"],
-            arg_group="BareMetalMachineRunDataExtractsParameters",
-            help="The list of curated data extraction commands to be executed directly against the target machine.",
+        _args_schema.node_name = AAZStrArg(
+            options=["--node-name"],
+            arg_group="KubernetesClusterRestartNodeParameters",
+            help="The name of the node to restart.",
             required=True,
         )
-        _args_schema.limit_time_seconds = AAZIntArg(
-            options=["--limit-time-seconds"],
-            arg_group="BareMetalMachineRunDataExtractsParameters",
-            help="The maximum time the commands are allowed to run. If the execution time exceeds the maximum, the script will be stopped, any output produced until then will be captured, and the exit code matching a timeout will be returned (252).",
-            required=True,
-            fmt=AAZIntArgFormat(
-                maximum=14400,
-                minimum=60,
-            ),
-        )
-
-        commands = cls._args_schema.commands
-        commands.Element = AAZObjectArg()
-
-        _element = cls._args_schema.commands.Element
-        _element.arguments = AAZListArg(
-            options=["arguments"],
-            help="The list of string arguments that will be passed to the script in order as separate arguments.",
-        )
-        _element.command = AAZStrArg(
-            options=["command"],
-            help="The command to execute against the bare metal machine.",
-            required=True,
-        )
-
-        arguments = cls._args_schema.commands.Element.arguments
-        arguments.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.BareMetalMachinesRunDataExtracts(ctx=self.ctx)()
+        yield self.KubernetesClustersRestartNode(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -114,7 +87,7 @@ class RunDataExtract(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class BareMetalMachinesRunDataExtracts(AAZHttpOperation):
+    class KubernetesClustersRestartNode(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -153,7 +126,7 @@ class RunDataExtract(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetworkCloud/bareMetalMachines/{bareMetalMachineName}/runDataExtracts",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetworkCloud/kubernetesClusters/{kubernetesClusterName}/restartNode",
                 **self.url_parameters
             )
 
@@ -169,7 +142,7 @@ class RunDataExtract(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "bareMetalMachineName", self.ctx.args.bare_metal_machine_name,
+                    "kubernetesClusterName", self.ctx.args.kubernetes_cluster_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -212,21 +185,7 @@ class RunDataExtract(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("commands", AAZListType, ".commands", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("limitTimeSeconds", AAZIntType, ".limit_time_seconds", typ_kwargs={"flags": {"required": True}})
-
-            commands = _builder.get(".commands")
-            if commands is not None:
-                commands.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".commands[]")
-            if _elements is not None:
-                _elements.set_prop("arguments", AAZListType, ".arguments")
-                _elements.set_prop("command", AAZStrType, ".command", typ_kwargs={"flags": {"required": True}})
-
-            arguments = _builder.get(".commands[].arguments")
-            if arguments is not None:
-                arguments.set_elements(AAZStrType, ".")
+            _builder.set_prop("nodeName", AAZStrType, ".node_name", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
@@ -249,13 +208,13 @@ class RunDataExtract(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _RunDataExtractHelper._build_schema_operation_status_result_read(cls._schema_on_200_201)
+            _RestartNodeHelper._build_schema_operation_status_result_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
 
-class _RunDataExtractHelper:
-    """Helper class for RunDataExtract"""
+class _RestartNodeHelper:
+    """Helper class for RestartNode"""
 
     _schema_error_detail_read = None
 
@@ -363,4 +322,4 @@ class _RunDataExtractHelper:
         _schema.status = cls._schema_operation_status_result_read.status
 
 
-__all__ = ["RunDataExtract"]
+__all__ = ["RestartNode"]

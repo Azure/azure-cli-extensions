@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine run-read-command",
-    is_experimental=True,
+    is_preview=True,
 )
 class RunReadCommand(AAZCommand):
     """Run one or more read-only commands on the provided bare metal machine. The URL to storage account with the command execution results and the command exit code can be retrieved from the operation status API once available.
@@ -23,9 +23,9 @@ class RunReadCommand(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01-preview",
+        "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/runreadcommands", "2023-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/runreadcommands", "2023-07-01"],
         ]
     }
 
@@ -187,7 +187,7 @@ class RunReadCommand(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }

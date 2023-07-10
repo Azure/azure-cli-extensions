@@ -16,8 +16,8 @@ import urllib
 
 from azure.cli.core.aaz import (
     AAZFloatType,
-    AAZObjectType,
     AAZListType,
+    AAZObjectType,
     AAZStrType,
     has_value,
 )
@@ -117,7 +117,9 @@ class CustomActionProperties:
             _schema.id = cls._schema_operation_status_result_read.id
             _schema.name = cls._schema_operation_status_result_read.name
             _schema.operations = cls._schema_operation_status_result_read.operations
-            _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
+            _schema.percent_complete = (
+                cls._schema_operation_status_result_read.percent_complete
+            )
             _schema.resource_id = cls._schema_operation_status_result_read.resource_id
             _schema.start_time = cls._schema_operation_status_result_read.start_time
             _schema.status = cls._schema_operation_status_result_read.status
@@ -164,7 +166,9 @@ class CustomActionProperties:
         _schema.id = cls._schema_operation_status_result_read.id
         _schema.name = cls._schema_operation_status_result_read.name
         _schema.operations = cls._schema_operation_status_result_read.operations
-        _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
+        _schema.percent_complete = (
+            cls._schema_operation_status_result_read.percent_complete
+        )
         _schema.resource_id = cls._schema_operation_status_result_read.resource_id
         _schema.start_time = cls._schema_operation_status_result_read.start_time
         _schema.status = cls._schema_operation_status_result_read.status
