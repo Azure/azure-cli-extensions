@@ -15,7 +15,7 @@ from azure.cli.testsdk import (
 
 
 
-class StackHciClientTest(ScenarioTest):
+class CommunicationClientTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_communication', location='eastus')
     def test_communication_identity(self):
         self.kwargs.update({
