@@ -12,6 +12,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 ++++++
 
+0.5.147
++++++++
+* Add support for option --nodepool-taints to some aks commands
+  * aks create
+  * aks update
+
 0.5.146
 +++++++
 * Add support for new snapshot command `az aks nodepool snapshot update`
