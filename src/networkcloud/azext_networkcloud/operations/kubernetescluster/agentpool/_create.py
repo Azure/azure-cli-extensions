@@ -52,5 +52,6 @@ class Create(_Create, CustomSshOptions):
                 "The image will need to have keys or credentials "
                 "setup in order to access."
             )
-        args.ssh_public_keys = ssh_keys
+        if len(ssh_keys) > 0:
+            args.ssh_public_keys = ssh_keys
         return args
