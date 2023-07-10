@@ -147,7 +147,6 @@ from azext_aks_preview._validators import (
     validate_ssh_key_for_update,
     validate_start_date,
     validate_start_time,
-    validate_nodepool_taints,
     validate_user,
     validate_utc_offset,
     validate_vm_set_type,

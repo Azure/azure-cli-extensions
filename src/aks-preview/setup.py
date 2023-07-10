@@ -13,7 +13,7 @@ VERSION = "0.5.147"
 
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
+    "Intended Audience :: Developvalidate_nodepool_taintsers",
     "Intended Audience :: System Administrators",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
