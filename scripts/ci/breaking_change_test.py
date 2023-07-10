@@ -72,6 +72,7 @@ def get_diff_meta_files(diff_ref):
     cmd = ['ls', '-al', diff_meta_path]
     print(cmd)
     subprocess.run(cmd)
+    uninstall_extensions(diff_ref)
 
 
 def get_base_meta_files(diff_ref):
@@ -81,9 +82,8 @@ def get_base_meta_files(diff_ref):
     cmd = ['git', 'rev-parse', 'HEAD']
     print(cmd)
     subprocess.run(cmd)
-    uninstall_extensions(diff_ref)
     install_extensions(diff_ref)
-    cmd = ['azdev', 'command-change', 'meta-export', 'CLI', '--meta-output-path', base_meta_path]
+    cmd = ['azdev', 'command-change', 'meta-export', 'EXT', '--meta-output-path', base_meta_path]
     print(cmd)
     subprocess.run(cmd)
     cmd = ['ls', '-al', base_meta_path]
