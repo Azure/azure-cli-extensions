@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a TagRule
 
     :example: Create a TagRule.
-        az new-relic monitor tag-rule create --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --name default --log-rules {"send-aad-logs":"Enabled","send-subscription-logs":"Enabled","send-activity-logs":"Enabled","filtering-tags":[]} --metric-rules {"user-email":"UserEmail@123.com","filtering-tags":[{"name":"Environment","value":"Prod","action":"Include"}]}
+        az new-relic monitor tag-rule create --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --name default --log-rules send-aad-logs="Enabled" send-subscription-logs="Enabled" send-activity-logs="Enabled" filtering-tags=[] --metric-rules user-email="UserEmail@123.com" filtering-tags=[{"name":"Environment","value":"Prod","action":"Include"}]
     """
 
     _aaz_info = {
