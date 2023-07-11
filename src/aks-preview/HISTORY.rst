@@ -12,11 +12,15 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 ++++++
 
-0.5.147
+0.5.148
 +++++++
 * Add support for option --nodepool-taints to some aks commands
   * aks create
   * aks update
+
+0.5.147
++++++++
+* Extend containerinsights --data-collection-settings with new fields "streams" and containerlogv2
 
 0.5.146
 +++++++
