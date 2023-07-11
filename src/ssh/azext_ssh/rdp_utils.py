@@ -28,6 +28,8 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
         log_list = []
         print_ssh_logs = False
         ssh_success = False
+        retry_attempt = 0
+        retry_attempts_allowed = 0
 
         resource_port = 3389
         local_port = _get_open_port()
@@ -40,9 +42,22 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
         else:
             ssh_info.ssh_args = ['-L', f"{local_port}:localhost:{resource_port}", "-N"] + ssh_info.ssh_args
 
-        ssh_process, print_ssh_logs = start_ssh_tunnel(ssh_info)
-        ssh_connection_t0 = time.time()
-        ssh_success, log_list = wait_for_ssh_connection(ssh_process, print_ssh_logs)
+        while (retry_attempt <= retry_attempts_allowed and not ssh_success):
+            service_config_delay_error = False
+            if retry_attempt == 1:
+                logger.warning("SSH connection failed, possibly caused by new service configuration setup. "
+                               "Retrying the connection in %d seconds.", const.RETRY_DELAY_IN_SECONDS)
+                time.sleep(const.RETRY_DELAY_IN_SECONDS)
+            ssh_process, print_ssh_logs = start_ssh_tunnel(ssh_info)
+            ssh_connection_t0 = time.time()
+            ssh_success, log_list, service_config_delay_error = wait_for_ssh_connection(ssh_process, print_ssh_logs)
+            if ssh_info.new_service_config and service_config_delay_error and ssh_process.poll() == 255:
+                retry_attempts_allowed = 1
+                if retry_attempt == 1:
+                    logger.warning("SSH connection failure could still be due to Service Configuration update. "
+                                   "Please re-run command.")
+            retry_attempt += 1
+
         ssh_utils.do_cleanup(delete_keys, delete_cert, ssh_info.delete_credentials, ssh_info.cert_file,
                              ssh_info.private_key_file, ssh_info.public_key_file)
         if ssh_success and ssh_process.poll() is None:
@@ -104,14 +119,14 @@ def start_ssh_tunnel(op_info):
     print_ssh_logs = False
     if not set(['-v', '-vv', '-vvv']).isdisjoint(op_info.ssh_args):
         print_ssh_logs = True
-    else:
-        op_info.ssh_args = ['-v'] + op_info.ssh_args
 
     if '-E' in op_info.ssh_args:
         raise azclierror.BadRequestError("Can't use -E ssh parameter when using --rdp")
 
     command = [ssh_utils.get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host(),
                "-l", op_info.local_user]
+    if not print_ssh_logs:
+        command = command + ['-v']
     command = command + op_info.build_args() + op_info.ssh_args
 
     logger.debug("Running ssh command %s", ' '.join(command))
@@ -121,7 +136,8 @@ def start_ssh_tunnel(op_info):
 
 def wait_for_ssh_connection(ssh_sub, print_ssh_logs):
     log_list = []
-    ssh_sucess = False
+    ssh_success = False
+    service_config_delay_error = False
     while True:
         next_line = ssh_sub.stderr.readline()
         if print_ssh_logs:
@@ -129,14 +145,16 @@ def wait_for_ssh_connection(ssh_sub, print_ssh_logs):
         else:
             log_list.append(next_line)
         if "debug1: Entering interactive session." in next_line:
-            logger.debug("SSH Connection estalished succesfully.")
-            ssh_sucess = True
+            logger.debug("SSH Connection established succesfully.")
+            ssh_success = True
             break
         if ssh_sub.poll() is not None:
             logger.debug("SSH Connection failed.")
-            ssh_sucess = False
+            ssh_success = False
             break
-    return ssh_sucess, log_list
+        if not service_config_delay_error:
+            service_config_delay_error = ssh_utils.check_for_service_config_delay_error(next_line)
+    return ssh_success, log_list, service_config_delay_error
 
 
 def terminate_ssh(ssh_process, log_list, print_ssh_logs):
