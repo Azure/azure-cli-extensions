@@ -37,7 +37,8 @@ logger = get_logger(__name__)
 # https://microsoft.sharepoint.com/:w:/t/NSODevTeam/Ec7ovdKroSRIv5tumQnWIE0BE-B2LykRcll2Qb9JwfVFMQ
 ARM_TO_JSON_PARAM_TYPES: Dict[str, str] = {
     "int": "integer",
-    "secureString": "string",
+    "securestring": "string",
+    "bool": "boolean",
 }
 
 
@@ -197,7 +198,7 @@ class VnfNfdGenerator(NFDGenerator):
 
             # Map ARM parameter types to JSON parameter types accepted by AOSM
             arm_type = self.vm_parameters[key]["type"]
-            json_type = ARM_TO_JSON_PARAM_TYPES.get(arm_type, arm_type)
+            json_type = ARM_TO_JSON_PARAM_TYPES.get(arm_type.lower(), arm_type)
 
             if has_default:
                 nfd_parameters_with_default[key] = {"type": json_type}
