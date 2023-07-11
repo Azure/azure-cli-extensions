@@ -299,9 +299,8 @@ def convert_yaml_to_test(data):
             #validate failure criteria
             try:
                 validate_failure_criteria(components)
-            except ValueError as e:
+            except InvalidArgumentValueError as e:
                 logger.error("Invalid failure criteria: %s", str(e))
-                exit(1)
             new_body["passFailCriteria"]["passFailMetrics"][metric_id] = {}
             new_body["passFailCriteria"]["passFailMetrics"][metric_id][
                 "aggregate"
