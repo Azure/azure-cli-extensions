@@ -10,7 +10,6 @@ from azure.cli.core.util import send_raw_request
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 
-from ._constants import GA_CONTAINERAPP_EXTENSION_NAME
 from ._utils import (_get_azext_module)
 
 logger = get_logger(__name__)
@@ -21,24 +20,22 @@ HEADER_LOCATION = "location"
 
 
 def poll_status(cmd, request_url):
-    azext_client = _get_azext_module(
-        GA_CONTAINERAPP_EXTENSION_NAME, "azext_containerapp._clients")
+    azext_client = _get_azext_module("azext_containerapp._clients")
     return azext_client.poll_status(cmd, request_url)
 
 
 def poll_results(cmd, request_url):
-    azext_client = _get_azext_module(
-        GA_CONTAINERAPP_EXTENSION_NAME, "azext_containerapp._clients")
+    azext_client = _get_azext_module("azext_containerapp._clients")
     return azext_client.poll_results(cmd, request_url)
 
 
-class ContainerAppClient(_get_azext_module(GA_CONTAINERAPP_EXTENSION_NAME, "azext_containerapp._clients").ContainerAppClient):
+class ContainerAppClient(_get_azext_module("azext_containerapp._clients").ContainerAppClient):
     @classmethod
     def get_api_version(cls):
         return PREVIEW_API_VERSION
 
 
-class ManagedEnvironmentClient(_get_azext_module(GA_CONTAINERAPP_EXTENSION_NAME, "azext_containerapp._clients").ManagedEnvironmentClient):
+class ManagedEnvironmentClient(_get_azext_module("azext_containerapp._clients").ManagedEnvironmentClient):
     @classmethod
     def get_api_version(cls):
         return PREVIEW_API_VERSION
