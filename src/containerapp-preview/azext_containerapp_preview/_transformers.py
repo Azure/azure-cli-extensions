@@ -4,6 +4,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+
 def transform_containerapp_output(app):
     props = ['name', 'location', 'resourceGroup', 'provisioningState']
     result = {k: app[k] for k in app if k in props}
