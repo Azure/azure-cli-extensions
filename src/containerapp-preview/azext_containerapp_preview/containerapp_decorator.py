@@ -11,7 +11,9 @@ from azure.cli.core.azclierror import ValidationError, RequiredArgumentMissingEr
 from msrestazure.tools import parse_resource_id
 
 from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, ContainerAppClient
-from ._constants import GA_CONTAINERAPP_EXTENSION_NAME
+from ._constants import (CONNECTED_ENVIRONMENT_RESOURCE_TYPE,
+                         MANAGED_ENVIRONMENT_TYPE,
+                         CONNECTED_ENVIRONMENT_TYPE)
 from ._utils import (_get_azext_module)
 
 logger = get_logger(__name__)
@@ -43,7 +45,7 @@ class ContainerAppPreviewCreateDecorator(_get_azext_module("azext_containerapp.c
         return containerapp_def
 
     def set_up_extended_location(self, containerapp_def):
-        if self.get_argument_environment_type() == "connected":
+        if self.get_argument_environment_type() == CONNECTED_ENVIRONMENT_TYPE:
             parsed_env = parse_resource_id(self.get_argument_managed_env())  # custom_location check here perhaps
             env_name = parsed_env['name']
             env_rg = parsed_env['resource_group']
@@ -71,18 +73,18 @@ class ContainerAppPreviewCreateDecorator(_get_azext_module("azext_containerapp.c
         parsed_env = parse_resource_id(env)
 
         # Validate environment type
-        if parsed_env.get('resource_type') == "connectedEnvironments":
-            if environment_type == "managed":
+        if parsed_env.get('resource_type').lower() == CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower():
+            if environment_type == MANAGED_ENVIRONMENT_TYPE:
                 logger.warning("User passed a connectedEnvironment resource id but did not specify --environment-type connected. Using environment type connected.")
-                environment_type = "connected"
+                environment_type = CONNECTED_ENVIRONMENT_TYPE
         else:
-            if environment_type == "connected":
+            if environment_type == CONNECTED_ENVIRONMENT_TYPE:
                 logger.warning("User passed a managedEnvironment resource id but specified --environment-type connected. Using environment type managed.")
 
         self.set_argument_environment_type(environment_type)
         self.set_argument_managed_env(env)
 
-        if environment_type == "connected":
+        if environment_type == CONNECTED_ENVIRONMENT_TYPE:
             return ConnectedEnvironmentClient
         else:
             return ManagedEnvironmentClient

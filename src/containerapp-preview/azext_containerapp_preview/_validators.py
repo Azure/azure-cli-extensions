@@ -31,8 +31,6 @@ def validate_env_name_or_id(cmd, namespace):
                     environment_type = CONNECTED_ENVIRONMENT_TYPE
                 if MANAGED_ENVIRONMENT_RESOURCE_TYPE.lower() == resource_type.lower():
                     environment_type = MANAGED_ENVIRONMENT_TYPE
-    if namespace.__dict__.get("custom_location") or namespace.__dict__.get("connected_cluster_id"):
-        environment_type = CONNECTED_ENVIRONMENT_TYPE
     # Validate resource id / format resource id
     if environment_type == CONNECTED_ENVIRONMENT_TYPE:
         if not is_valid_resource_id(namespace.managed_env):

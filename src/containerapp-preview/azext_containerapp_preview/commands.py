@@ -5,27 +5,13 @@
 # pylint: disable=line-too-long
 
 from azure.cli.command_modules.appservice.commands import ex_handler_factory
-
-
-def transform_containerapp_output(app):
-    props = ['name', 'location', 'resourceGroup', 'provisioningState']
-    result = {k: app[k] for k in app if k in props}
-
-    try:
-        result['fqdn'] = app['properties']['configuration']['ingress']['fqdn']
-    except:
-        result['fqdn'] = None
-
-    return result
-
-
-def transform_containerapp_list_output(apps):
-    return [transform_containerapp_output(a) for a in apps]
+from ._transformers import (transform_containerapp_output,
+                            transform_containerapp_list_output)
 
 
 # This method cannot directly rely on GA resources.
 # When the switch core.use_command_index is turned off, possibly unrelated commands may also trigger unnecessary loads.
-# It will throw a warning if the GA resource does not exist.
+# It will throw a error if the GA resource does not exist.
 def load_command_table(self, _):
 
     with self.command_group('containerapp') as g:
