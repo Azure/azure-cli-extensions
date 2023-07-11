@@ -130,6 +130,27 @@ def tdeMigration_console_app_setup():
 
 
 # -----------------------------------------------------------------------------------------------------------------
+# SqlServerSchema helper function to do console app setup (mkdir, download and extract)
+# -----------------------------------------------------------------------------------------------------------------
+def sqlServerSchema_console_app_setup():
+
+    validate_os_env()
+
+    defaultOutputFolder = get_sqlServerSchema_default_output_folder()
+
+    # Assigning base folder path
+    baseFolder = os.path.join(defaultOutputFolder, "Downloads")
+    exePath = os.path.join(baseFolder, "SchemaMigration.Console.csproj", "SqlSchemaMigration.exe")
+
+    # Creating base folder structure
+    create_dir_path(baseFolder)
+    # check and download console app
+    check_and_download_sqlServerSchema_console_app(exePath, baseFolder)
+
+    return defaultOutputFolder, exePath
+
+
+# -----------------------------------------------------------------------------------------------------------------
 # Assessment helper function to return the default output folder path depending on OS environment.
 # -----------------------------------------------------------------------------------------------------------------
 def get_default_output_folder():
@@ -181,6 +202,23 @@ def get_tdeMigration_default_output_folder():
 
 
 # -----------------------------------------------------------------------------------------------------------------
+# SqlServerSchema helper function to return the default output folder path depending on OS environment.
+# -----------------------------------------------------------------------------------------------------------------
+def get_sqlServerSchema_default_output_folder():
+
+    osPlatform = platform.system()
+
+    if osPlatform.__contains__('Linux'):
+        defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), ".config", "Microsoft", "SqlSchemaMigration")
+    elif osPlatform.__contains__('Darwin'):
+        defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), "Library", "Application Support", "Microsoft", "SqlSchemaMigration")
+    else:
+        defaultOutputPath = os.path.join(os.getenv('LOCALAPPDATA'), "Microsoft", "SqlSchemaMigration")
+
+    return defaultOutputPath
+
+
+# -----------------------------------------------------------------------------------------------------------------
 # Assessment helper function to check if console app exists, if not download it.
 # -----------------------------------------------------------------------------------------------------------------
 def check_and_download_console_app(exePath, baseFolder):
@@ -208,6 +246,23 @@ def check_and_download_loginMigration_console_app(exePath, baseFolder):
     if not testPath:
         zipSource = "https://sqlassess.blob.core.windows.net/app/LoginsMigration.zip"
         zipDestination = os.path.join(baseFolder, "LoginsMigration.zip")
+
+        urllib.request.urlretrieve(zipSource, filename=zipDestination)
+        with ZipFile(zipDestination, 'r') as zipFile:
+            zipFile.extractall(path=baseFolder)
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# SqlServerSchema helper function to check if console app exists, if not download it.
+# -----------------------------------------------------------------------------------------------------------------
+def check_and_download_sqlServerSchema_console_app(exePath, baseFolder):
+
+    testPath = os.path.exists(exePath)
+
+    # Downloading console app zip and extracting it
+    if not testPath:
+        zipSource = "https://migrationapps.blob.core.windows.net/schemamigration/SqlSchemaMigration.zip"
+        zipDestination = os.path.join(baseFolder, "SqlSchemaMigration.zip")
 
         urllib.request.urlretrieve(zipSource, filename=zipDestination)
         with ZipFile(zipDestination, 'r') as zipFile:

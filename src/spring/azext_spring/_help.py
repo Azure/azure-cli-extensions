@@ -956,6 +956,14 @@ helps['spring application-configuration-service create'] = """
           text: az spring application-configuration-service create -s MyService -g MyResourceGroup
 """
 
+helps['spring application-configuration-service update'] = """
+    type: command
+    short-summary: Update Application Configuration Service.
+    examples:
+        - name: Update Application Configuration Service.
+          text: az spring application-configuration-service update -s MyService -g MyResourceGroup --generation Gen2
+"""
+
 helps['spring application-configuration-service delete'] = """
     type: command
     short-summary: Delete Application Configuration Service.
@@ -1060,6 +1068,14 @@ helps['spring gateway update'] = """
     examples:
         - name: Update gateway property.
           text: az spring gateway update -s MyService -g MyResourceGroup --assign-endpoint true --https-only true
+"""
+
+helps['spring gateway restart'] = """
+    type: command
+    short-summary: Restart Spring Cloud Gateway.
+    examples:
+        - name: Restart Spring Cloud Gateway.
+          text: az spring gateway restart -s MyService -g MyResourceGroup
 """
 
 helps['spring gateway sync-cert'] = """
@@ -1408,4 +1424,85 @@ helps['spring application-accelerator customized-accelerator delete'] = """
     examples:
         - name: Delete a customized accelerator.
           text: az spring application-accelerator customized-accelerator delete --name AcceleratorName --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring apm'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage APMs in Azure Spring Apps.
+"""
+
+helps['spring apm create'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Create an APM.
+    examples:
+        - name: Create an APM with secrets only.
+          text: az spring apm create --name first-apm --type ApplicationInsights --secrets k1=v1 k2=v2 --service MyCluster --resource-group MyResourceGroup
+        - name: Create an APM with properties only.
+          text: az spring apm create --name first-apm --type ApplicationInsights --properties a=b c=d --service MyCluster --resource-group MyResourceGroup
+        - name: Create an APM with properties and secrets.
+          text: az spring apm create --name first-apm --type ApplicationInsights --properties a=b c=d --secrets k1=v1 k2=v2 --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring apm update'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Update an APM.
+    examples:
+        - name: Update an APM with properties and secrets.
+          text: az spring apm update --name first-apm --type ApplicationInsights --properties a=b c=d --secrets k1=v1 k2=v2 --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring apm show'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Show an APM. The secrets will be masked.
+    examples:
+        - name: Show an APM.
+          text: az spring apm show --name first-apm --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring apm list'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) List all the APMs in the Azure Spring Apps. The secrets will be omitted.
+    examples:
+        - name: List all the APMs in the Azure Spring Apps.
+          text: az spring apm list --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring apm delete'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Delete an APM.
+    examples:
+        - name: Delete an APM.
+          text: az spring apm delete --name first-apm --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring apm list-enabled-globally'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) List all the APMs enabled globally in the Azure Spring Apps.
+    examples:
+        - name: List all the APMs enabled globally in the Azure Spring Apps.
+          text: az spring apm list-enabled-globally --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring apm list-support-types'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) List all the supported APM types in the Azure Spring Apps.
+    examples:
+        - name: List all the supported APM types in the Azure Spring Apps.
+          text: az spring apm list-support-types --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring apm enable-globally'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Enable an APM globally.
+    examples:
+        - name: Enable an APM globally.
+          text: az spring apm enable-globally --name first-apm --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring apm disable-globally'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Disable an APM globally.
+    examples:
+        - name: Disable an APM globally.
+          text: az spring apm disable-globally --name first-apm --service MyCluster --resource-group MyResourceGroup
 """

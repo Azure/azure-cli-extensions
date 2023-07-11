@@ -1,0 +1,15 @@
+stack-hci cluster create:
+  parameters:
+    user_assigned_identities:
+      rule_exclusions:
+      - option_length_too_long
+stack-hci cluster update:
+  parameters:
+    user_assigned_identities:
+      rule_exclusions:
+      - option_length_too_long
+stack-hci cluster extend-software-assurance-benefit:
+  parameters:
+    software_assurance_intent:
+      rule_exclusions:
+      - option_length_too_long

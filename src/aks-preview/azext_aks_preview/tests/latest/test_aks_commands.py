@@ -38,7 +38,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def _get_versions(self, location):
         """Return the previous and current Kubernetes minor release versions, such as ("1.11.6", "1.12.4")."""
         versions = self.cmd(
-            "az aks get-versions -l {} --query 'orchestrators[].orchestratorVersion'".format(location)).get_output_in_json()
+            "az aks get-versions -l {} --query 'values[*].patchVersions.keys(@)[]'".format(location)).get_output_in_json()
         # sort by semantic version, from newest to oldest
         versions = sorted(versions, key=version_to_tuple, reverse=True)
         upgrade_version = versions[0]
@@ -50,7 +50,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def _get_version_in_range(self, location: str, min_version: str, max_version: str) -> str:
         """Return the version which is greater than min_version and less than max_version."""
         versions = self.cmd(
-            "az aks get-versions -l {} --query 'orchestrators[].orchestratorVersion'".format(location)).get_output_in_json()
+            "az aks get-versions -l {} --query 'values[*].patchVersions.keys(@)[]'".format(location)).get_output_in_json()
         versions = sorted(versions, key=version_to_tuple, reverse=True)
         for version in versions:
             if version > min_version and version < max_version:
@@ -87,11 +87,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     def test_get_version(self):
         versions_cmd = 'aks get-versions -l westus2'
-        self.cmd(versions_cmd, checks=[
-            self.check(
-                'type', 'Microsoft.ContainerService/locations/orchestrators'),
-            self.check('orchestrators[0].orchestratorType', 'Kubernetes')
-        ])
+        versions = self.cmd(versions_cmd).get_output_in_json()
+        assert len(versions["values"]) > 0
 
     @AllowLargeResponse()
     def test_get_os_options(self):
@@ -1390,6 +1387,54 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_guardrails(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--guardrails-level Warning --guardrails-version "v1.0.0" ' \
+                     '--enable-addons azure-policy --ssh-key-value={ssh_key_value} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/GuardrailsPreview'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('guardrailsProfile.level', 'Warning'),
+            self.check('guardrailsProfile.version','v1.0.0')
+        ])
+    
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_update_with_guardrails(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value} ' \
+                     '--enable-addons azure-policy '
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded')
+        ])
+    
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
+                     '--guardrails-level Warning --guardrails-version "v1.0.0" ' \
+                     '--guardrails-excluded-ns test-ns1 ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/GuardrailsPreview'
+        
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('guardrailsProfile.level', 'Warning'),
+            self.check('guardrailsProfile.version','v1.0.0'),
+            self.check('guardrailsProfile.excludedNamespaces[0]','test-ns1')
+        ])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_managed_disk(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -1903,6 +1948,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         nodepool_name = self.create_random_name('c', 6)
         nodepool_name2 = self.create_random_name('c', 6)
         snapshot_name = self.create_random_name('s', 16)
+        tagVar = "test"
+        tagVal = "value"
+        tags = tagVar+"="+tagVal
 
         self.kwargs.update({
             'resource_group': resource_group,
@@ -1914,7 +1962,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'snapshot_name': snapshot_name,
             'k8s_version': create_version,
             'upgrade_k8s_version': upgrade_version,
-            'ssh_key_value': self.generate_ssh_keys()
+            'ssh_key_value': self.generate_ssh_keys(),
+            'tags': tags
         })
 
         # create an aks cluster not using snapshot
@@ -1947,6 +1996,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'snapshot_resource_id': snapshot_resource_id,
         })
         print("The snapshot resource id %s " % snapshot_resource_id)
+
+        # update tags on nodepool snapshot
+        update_snapshot_cmd = 'aks nodepool snapshot update --resource-group {resource_group} --name {snapshot_name} --tags {tags} -o json'
+        response = self.cmd(update_snapshot_cmd, checks=[
+            self.check('tags', {tagVar: tagVal})
+        ]).get_output_in_json()
 
         # delete the original AKS cluster
         self.cmd(
@@ -2778,7 +2833,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         dataCollectionRuleName = f"MSCI-{location}-{aks_name}"
         dataCollectionRuleName = dataCollectionRuleName[0:64]
         dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
-        get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2021-04-01'
+        get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2022-06-01'
         self.cmd(get_cmd, checks=[
             self.check(
                 'properties.destinations.logAnalytics[0].workspaceResourceId', f'{workspace_resource_id}')
@@ -2791,21 +2846,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         if data_collection_settings:
              self.cmd(get_cmd, checks=[
-                self.check('properties.dataSources.extensions[0].name', f'ContainerInsightsExtension')
-            ])
-             self.cmd(get_cmd, checks=[
-                self.check('properties.dataSources.extensions[0].extensionSettings.dataCollectionSettings.interval', f'1m')
-            ])
-             self.cmd(get_cmd, checks=[
-                self.check('properties.dataSources.extensions[0].extensionSettings.dataCollectionSettings.namespaceFilteringMode', f'Include')
-            ])
-             self.cmd(get_cmd, checks=[
-                self.check('properties.dataSources.extensions[0].extensionSettings.dataCollectionSettings.namespaces[0]', f'kube-system')
+                self.check('properties.dataSources.extensions[0].name', f'ContainerInsightsExtension'),
+                self.check('properties.dataSources.extensions[0].extensionSettings.dataCollectionSettings.interval', f'1m'),
+                self.check('properties.dataSources.extensions[0].extensionSettings.dataCollectionSettings.namespaceFilteringMode', f'Include'),
+                self.check('properties.dataSources.extensions[0].extensionSettings.dataCollectionSettings.namespaces[0]', f'kube-system'),
+                self.check('properties.dataSources.extensions[0].extensionSettings.dataCollectionSettings.streams[0]', f'Microsoft-ContainerLogV2'),
+                self.check('properties.dataFlows[0].streams[0]', f'Microsoft-ContainerLogV2'),
+                self.check('properties.dataSources.extensions[0].extensionSettings.dataCollectionSettings.enableContainerLogV2', True)
             ])
 
         # check that the DCR-A was created
         dcra_resource_id = f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension"
-        get_cmd = f'rest --method get --url https://management.azure.com{dcra_resource_id}?api-version=2021-04-01'
+        get_cmd = f'rest --method get --url https://management.azure.com{dcra_resource_id}?api-version=2022-06-01'
         self.cmd(get_cmd, checks=[
             self.check('properties.dataCollectionRuleId', f'{dcr_resource_id}')
         ])
@@ -2914,7 +2966,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         dataCollectionRuleName = f"MSCI-{location}-{aks_name}"
         dataCollectionRuleName = dataCollectionRuleName[0:64]
         dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
-        get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2021-04-01'
+        get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2022-06-01'
         self.cmd(get_cmd, checks=[
             self.check(
                 'properties.destinations.logAnalytics[0].workspaceResourceId', f'{workspace_resource_id}')
@@ -2927,7 +2979,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # check that the DCR-A was created
         dcra_resource_id = f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension"
-        get_cmd = f'rest --method get --url https://management.azure.com{dcra_resource_id}?api-version=2021-04-01'
+        get_cmd = f'rest --method get --url https://management.azure.com{dcra_resource_id}?api-version=2022-06-01'
         self.cmd(get_cmd, checks=[
             self.check('properties.dataCollectionRuleId', f'{dcr_resource_id}')
         ])
@@ -2977,7 +3029,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             dataCollectionRuleName = f"MSCI-{location}-{aks_name}"
             dataCollectionRuleName = dataCollectionRuleName[0:64]
             dcr_resource_id = f"/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
-            get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2021-04-01'
+            get_cmd = f'rest --method get --url https://management.azure.com{dcr_resource_id}?api-version=2022-06-01'
             self.cmd(get_cmd, checks=[
                 self.check(
                     'properties.destinations.logAnalytics[0].workspaceResourceId', f'{workspace_resource_id}')
@@ -6383,7 +6435,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} ' \
-                     '--enable-managed-identity --enable-azuremonitormetrics --enable-windows-recording-rules --output=json'
+                     '--enable-managed-identity --enable-azure-monitor-metrics --enable-windows-recording-rules --output=json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
         ])
@@ -6424,24 +6476,24 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'node_vm_size': node_vm_size,
         })
 
-        # create: without enable-azuremonitormetrics
+        # create: without enable-azure-monitor-metrics
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --enable-managed-identity --output=json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.not_exists('azureMonitorProfile.metrics'),
         ])
 
-        # update: enable-azuremonitormetrics
+        # update: enable-azure-monitor-metrics
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
-                     '--enable-azuremonitormetrics --enable-managed-identity --enable-windows-recording-rules'
+                     '--enable-azure-monitor-metrics --enable-managed-identity --enable-windows-recording-rules'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('azureMonitorProfile.metrics.enabled', True),
         ])
 
-        # update: disable-azuremonitormetrics
+        # update: disable-azure-monitor-metrics
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
-                     '--disable-azuremonitormetrics'
+                     '--disable-azure-monitor-metrics'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('azureMonitorProfile.metrics.enabled', False),
@@ -7130,6 +7182,108 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('upgradeSettings.overrideSettings.controlPlaneOverrides[0]', "IgnoreKubernetesDeprecations"),
             self.check('upgradeSettings.overrideSettings.until', '2020-02-22T22:30:17+00:00')  # This will be left unchanged as it's already expired.
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
+    def test_aks_update_enable_network_observability(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'location': resource_group_location,
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--ssh-key-value={ssh_key_value} --node-count=1 --tier standard ' 
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        # update to enable network observability
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --enable-network-observability ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkObservabilityPreview '
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.monitoring.enabled', True),
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
+    def test_aks_create_with_enable_network_observability(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'location': resource_group_location,
+        })
+    
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--ssh-key-value={ssh_key_value} --node-count=1 --tier standard --enable-network-observability ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkObservabilityPreview'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.monitoring.enabled', True),
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
+    def test_aks_create_with_custom_headers(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        _, create_version = self._get_versions(resource_group_location)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'k8s_version': create_version,
+        })
+    
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} -k {k8s_version} -c 1 ' \
+                     '--ssh-key-value={ssh_key_value} ' \
+                     '--aks-custom-headers x-ms-correlation-request-id=12345678-90ab-cdef-1234-567890abcdef'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # scale cluster
+        scale_cluster_cmd = 'aks scale --resource-group={resource_group} --name={name} ' \
+                    '-c 2 --aks-custom-headers x-ms-correlation-request-id=12345678-90ab-cdef-1234-567890abcdef'
+        self.cmd(scale_cluster_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # scale nodepool
+        scale_nodepool_cmd = 'aks nodepool scale --resource-group={resource_group} --cluster-name={name} --name=nodepool1 ' \
+                    '-c 1 --aks-custom-headers x-ms-correlation-request-id=12345678-90ab-cdef-1234-567890abcdef'
+        self.cmd(scale_nodepool_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # show
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} ' \
+                   '--aks-custom-headers x-ms-correlation-request-id=12345678-90ab-cdef-1234-567890abcdef'
+        self.cmd(show_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
         ])
 
         # delete

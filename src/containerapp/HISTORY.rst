@@ -2,6 +2,36 @@
 
 Release History
 ===============
+
+0.3.35
+++++++
+* 'az containerapp create/update': --termination-grace-period support custom termination grace period
+* 'az containerapp env logs show': fix issue of constructing connection url
+* 'az containerapp create/update': --revision-suffix allow revision suffix to start with numbers
+* 'az containerapp create/show/list/delete': refactor with containerapp decorator
+
+0.3.34
+++++++
+* 'az containerapp job execution show/list': improve table output format
+* 'az containerapp create/update': --yaml support properties for api-version 2023-04-01-preview (e.g. subPath, mountOptions)
+* 'az containerapp service': add support for creation and deletion of kafka
+* 'az containerapp create': --registry-server support registry with custom port
+* 'az containerapp create': fix containerapp create not waiting for ready environment
+* Add regex to fix validation for containerapp name
+* Add 'az containerapp ingress cors' for CORS support
+* 'az container app env create/update': support --enable-mtls parameter
+* 'az containerapp up': fix issue where --repo throws KeyError
+
+0.3.33
+++++++
+* 'az containerapp create': fix --registry-identity "system" with --revision-suffix
+* 'az containerapp up': fix --target-port value not being propagated when buildpack is used to build image from --source
+* Fix for 'az containerapp job create' with --yaml option to create a Container App job
+* Support 'az containerapp job secret' to manage secrets for Container App jobs
+* Support 'az containerapp job identity' to manage identity for Container App jobs
+* Fix for issue with --user-assigned identity for Container App jobs where identities were getting split incorrectly
+* Add new parameters `--mi-system-assigned` and `--mi-user-assigned` to replace the deprecated parameters `--system-assigned` and `--user-assigned` for `az containerapp job create` command
+
 0.3.32
 ++++++
 * Fix for 'az containerapp job update' command when updating Container App job with a trigger configuration
