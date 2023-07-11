@@ -60,6 +60,22 @@ class LoadTestScenario(ScenarioTest):
             checks=checks,
         ).get_output_in_json()
 
+        pass_fail_metric = response.get("passFailCriteria",{}).get("passFailMetrics",{})
+        for item in pass_fail_metric.values():
+            if item.get("clientMetric") == "requests_per_sec":
+                assert item.get("value") == 78.0
+                assert item.get("condition") == ">"
+                assert item.get("aggregate") == "avg"
+            elif item.get("clientMetric") == "error":
+                assert item.get("value") == 50.0
+                assert item.get("condition") == ">"
+                assert item.get("aggregate") == "percentage"
+            else:
+                assert item.get("value") == 200.0
+                assert item.get("condition") == ">"
+                assert item.get("aggregate") == "avg"
+                assert item.get("requestName") == "GetCustomerDetails"
+
         tests = self.cmd(
             "az load test list "
             "--load-test-resource {load_test_resource} "

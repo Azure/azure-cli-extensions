@@ -6,7 +6,10 @@ env:
   - name: 'rps'
     value: 1
 splitAllCSVs: True
-failureCriteria: []
+failureCriteria:
+  - avg(requests_per_sec)>78
+  - percentage(error) > 50
+  - GetCustomerDetails: avg(latency) >200
 autoStop:
   errorPercentage: 90
   timeWindow: 60
