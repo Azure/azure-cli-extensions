@@ -27,3 +27,5 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('only_break', action="store_true", help='whether include non breaking changes')
         c.argument('use_cache', action="store_true", help='whether use cached metadata files')
         c.argument('version_diff_file', help='command meta version diff file path to store')
+        c.argument('output_type', help='command meta diff format to store')
+        c.argument('target_module', help='module chosen to diff between different cli versions')

@@ -17,8 +17,10 @@ def meta_diff(base_meta_file, diff_meta_file, only_break=False, output_type="tex
     return azureCliDiffTool.meta_diff(base_meta_file, diff_meta_file, only_break, output_type, output_file)
 
 
-def version_diff(base_version, diff_version, only_break=False, version_diff_file=None):
-    return azureCliDiffTool.version_diff(base_version, diff_version, only_break, version_diff_file)
+def version_diff(base_version, diff_version, only_break=False, version_diff_file=None, use_cache=False,
+                 output_type="dict", target_module=None):
+    return azureCliDiffTool.version_diff(base_version, diff_version, only_break, version_diff_file,
+                                         use_cache, output_type, target_module)
 
 
 
