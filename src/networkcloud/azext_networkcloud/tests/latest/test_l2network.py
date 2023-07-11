@@ -15,10 +15,12 @@ from .config import CONFIG
 
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
+    pass
 
 
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
+    pass
 
 
 def call_scenario1(test):
@@ -45,7 +47,6 @@ def step_create(test, checks=None):
         checks = []
     test.cmd('az networkcloud l2network create --name {name} --extended-location '
              'name={extendedLocation} type={type} --location {location} '
-             '--hybrid-aks-plugin-type  {hybridAksPluginType} '
              '--interface-name {interfaceName} '
              '--l2-isolation-domain-id {l2_isolation_domain_id} --tags '
              ' {tags} --resource-group {rg}', checks=checks)
@@ -102,7 +103,6 @@ class L2NetworkScenarioTest(ScenarioTest):
             'tagsUpdate': CONFIG.get('L2_NETWORK', 'tags_update'),
             "type": CONFIG.get('L2_NETWORK', 'type'),
             "interfaceName": CONFIG.get('L2_NETWORK', 'interface_name'),
-            "hybridAksPluginType": CONFIG.get('L2_NETWORK', 'hybrid_aks_plugin_type'),
             "l2_isolation_domain_id": CONFIG.get('L2_NETWORK', 'l2_isolation_domain_id'),
         })
 

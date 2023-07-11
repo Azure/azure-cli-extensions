@@ -27,8 +27,10 @@ def get_project_arg(cli_ctx, dev_center_name, project_name=None):
     | take 1
     | extend devCenterUri = properties.devCenterUri
     | project name,devCenterUri """
+    options = {
+        "allowPartialScopes": True}  # maximum of 5000 subs for cross tenant query
 
-    content = {"query": query}
+    content = {"query": query, "options": options}
     request_url = f"{management_hostname}/providers/Microsoft.ResourceGraph/resources?api-version={api_version}"
 
     response = send_raw_request(
@@ -52,7 +54,8 @@ def get_project_data(cli_ctx, dev_center_name, project_name=None):
     profile = Profile()
     tenant_id = profile.get_subscription()["tenantId"]
 
-    resource_graph_data = get_project_arg(cli_ctx, dev_center_name, project_name)
+    resource_graph_data = get_project_arg(
+        cli_ctx, dev_center_name, project_name)
 
     error_help = f"""under the current tenant '{tenant_id}'. \
 Please contact your admin to gain access to specific projects or \
