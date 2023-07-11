@@ -38,7 +38,7 @@ def install_extensions(diif_ref, branch):
         logger.info(f'installing extension: {ext_name}')
         cmd = ['azdev', 'extension', 'add', ext_name]
         logger.info(f'cmd: {cmd}')
-        out = run(cmd)
+        out = run(cmd, capture_output=True, text=True)
         if out.returncode and branch == 'base':
             print(out.stderr)
             print(out.stdout)
