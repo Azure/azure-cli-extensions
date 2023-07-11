@@ -6,7 +6,7 @@
 from azure.cli.core import AzCommandsLoader
 
 from azext_containerapp_preview._help import helps  # pylint: disable=unused-import
-from azext_containerapp_preview._utils import (_get_azext_module)
+from azext_containerapp_preview._utils import (_get_azext_containerapp_module)
 
 
 class ContainerappPreviewCommandsLoader(AzCommandsLoader):
@@ -28,7 +28,7 @@ class ContainerappPreviewCommandsLoader(AzCommandsLoader):
     def load_arguments(self, command):
         from azext_containerapp_preview._params import load_arguments
 
-        ga_params = _get_azext_module("azext_containerapp._params")
+        ga_params = _get_azext_containerapp_module("azext_containerapp._params")
         ga_params.load_arguments(self, command)
         load_arguments(self, command)
 

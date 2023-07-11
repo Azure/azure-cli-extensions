@@ -14,13 +14,13 @@ from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, Cont
 from ._constants import (CONNECTED_ENVIRONMENT_RESOURCE_TYPE,
                          MANAGED_ENVIRONMENT_TYPE,
                          CONNECTED_ENVIRONMENT_TYPE)
-from ._utils import (_get_azext_module)
+from ._utils import (_get_azext_containerapp_module)
 
 logger = get_logger(__name__)
 
 
 def get_containerapp_base_decorator(cmd, raw_parameters):
-    azext_decorator = _get_azext_module("azext_containerapp.containerapp_decorator")
+    azext_decorator = _get_azext_containerapp_module("azext_containerapp.containerapp_decorator")
 
     containerapp_base_decorator = azext_decorator.BaseContainerAppDecorator(
         cmd=cmd,
@@ -31,13 +31,13 @@ def get_containerapp_base_decorator(cmd, raw_parameters):
     return containerapp_base_decorator
 
 
-class ContainerAppPreviewCreateDecorator(_get_azext_module("azext_containerapp.containerapp_decorator").ContainerAppCreateDecorator):
+class ContainerAppPreviewCreateDecorator(_get_azext_containerapp_module("azext_containerapp.containerapp_decorator").ContainerAppCreateDecorator):
     def __init__(
         self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
     ):
         super().__init__(cmd, client, raw_parameters, models)
-        self.azext_decorator_utils = _get_azext_module("azext_containerapp._decorator_utils")
-        self.azext_default_utils = _get_azext_module("azext_containerapp._utils")
+        self.azext_decorator_utils = _get_azext_containerapp_module("azext_containerapp._decorator_utils")
+        self.azext_default_utils = _get_azext_containerapp_module("azext_containerapp._utils")
 
     def construct_containerapp(self):
         containerapp_def = super().construct_containerapp()

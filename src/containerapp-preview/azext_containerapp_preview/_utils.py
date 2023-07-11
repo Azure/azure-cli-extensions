@@ -27,7 +27,7 @@ def is_containerapp_extension_available():
     return True
 
 
-def _get_azext_module(module_name):
+def _get_azext_containerapp_module(module_name):
     try:
         if not is_containerapp_extension_available():
             raise ValidationError(f"The command requires the version of {GA_CONTAINERAPP_EXTENSION_NAME} >= {MIN_GA_VERSION}. Run 'az extension add --upgrade -n {GA_CONTAINERAPP_EXTENSION_NAME}' to install extension")
