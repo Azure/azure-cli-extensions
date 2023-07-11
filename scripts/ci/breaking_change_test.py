@@ -42,7 +42,7 @@ def install_extensions(diif_ref, branch):
         if out.returncode and branch == 'base':
             print(f"{cmd} failed, extesion {ext_name} is not exist on base branch, skip it.")
             continue
-        else:
+        elif out.returncode:
             raise RuntimeError(f"{cmd} failed")
 
 
