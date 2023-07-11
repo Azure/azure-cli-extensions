@@ -43,6 +43,7 @@ class FleetScenarioTest(ScenarioTest):
         self.kwargs.update({
             'fleet_name': self.create_random_name(prefix='fl-', length=7),
             'member_name': self.create_random_name(prefix='flmc-', length=9),
+            'updaterun': self.create_random_name(prefix='uprn-', length=9),
             'ssh_key_value': self.generate_ssh_keys()
         })
 
@@ -79,9 +80,14 @@ class FleetScenarioTest(ScenarioTest):
             'mc_id': mc_id,
         })
 
-        self.cmd('fleet member create -g {rg} --fleet-name {fleet_name} -n {member_name} --member-cluster-id {mc_id}', checks=[
+        self.cmd('fleet member create -g {rg} --fleet-name {fleet_name} -n {member_name} --member-cluster-id {mc_id} --update-group group1', checks=[
             self.check('name', '{member_name}'),
-            self.check('clusterResourceId', '{mc_id}')
+            self.check('clusterResourceId', '{mc_id}'),
+            self.check('group', 'group1')
+        ])
+
+        self.cmd('fleet member update -g {rg} --fleet-name {fleet_name} -n {member_name} --update-group group2', checks=[
+            self.check('group', 'group2')
         ])
 
         self.cmd('fleet member list -g {rg} --fleet-name {fleet_name}', checks=[
@@ -91,6 +97,30 @@ class FleetScenarioTest(ScenarioTest):
         self.cmd('fleet member show -g {rg} --fleet-name {fleet_name} -n {member_name}', checks=[
             self.check('name', '{member_name}')
         ])
+
+        self.cmd('aks wait -g {rg} -n {member_name} --created', checks=[self.is_empty()])
+
+        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --kubernetes-version 1.25.0', checks=[
+            self.check('name', '{updaterun}')
+        ])
+
+        self.cmd('fleet updaterun start -g {rg} -n {updaterun} -f {fleet_name}', checks=[
+            self.check('name', '{updaterun}')
+        ])
+
+        self.cmd('fleet updaterun show -g {rg} -n {updaterun} -f {fleet_name}', checks=[
+            self.check('name', '{updaterun}')
+        ])
+
+        self.cmd('fleet updaterun list -g {rg} -f {fleet_name}', checks=[
+            self.check('length([])', 1)
+        ])
+
+        self.cmd('fleet updaterun stop -g {rg} -n {updaterun} -f {fleet_name}', checks=[
+            self.check('name', '{updaterun}')
+        ])
+
+        self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name}')
         
         self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member_name}')
 

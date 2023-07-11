@@ -296,3 +296,72 @@ def transform_customized_accelerator_output(result):
         item['Git Auth Type'] = item['properties']['gitRepository']['authSetting']['authType']
 
     return result if is_list else result[0]
+
+
+def transform_build_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Name'] = item['name']
+        item['Provisioning State'] = item['properties']['provisioningState']
+        item['Resource Quota'] = "{}, {}".format(item['properties']['resourceRequests']['cpu'], item['properties']['resourceRequests']['memory'])
+        item['Builder'] = item['properties']['builder']
+
+    return result if is_list else result[0]
+
+
+def transform_build_result_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Name'] = item['name']
+        item['Provisioning State'] = item['properties']['provisioningState']
+        item['Image'] = item['properties']['image']
+
+    return result if is_list else result[0]
+
+
+def transform_container_registry_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Name'] = item['name']
+        item['Server'] = item['properties']['server']
+        item['Username'] = item['properties']['username']
+
+    return result if is_list else result[0]
+
+
+def transform_apm_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Name'] = item['name']
+        item['Provisioning State'] = item['properties']['provisioningState']
+        item['Type'] = item['properties']['type']
+
+    return result if is_list else result[0]
+
+
+def transform_apm_type_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Name'] = item['name']
+
+    return result if is_list else result[0]

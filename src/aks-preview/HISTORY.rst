@@ -10,8 +10,80 @@ If there is no rush to release a new version, please just add a description of t
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
 Pending
-+++++++
+++++++
 
+0.5.147
++++++++
+* Extend containerinsights --data-collection-settings with new fields "streams" and containerlogv2
+
+0.5.146
++++++++
+* Add support for new snapshot command `az aks nodepool snapshot update`
+
+0.5.145
++++++++
+* Add support for option --aks-custom-headers to some aks commands
+  * aks get-credentials
+  * aks nodepool scale
+  * aks nodepool update
+  * aks enable-addons
+  * aks show
+  * aks scale
+
+0.5.144
++++++++
+* Fix setup network profile with network observability due to incorrect property
+
+0.5.143
++++++++
+* Vendor new SDK and bump API version to 2023-05-02-preview.
+* Add `--enable-network-observability` flag to `az aks create` and `az aks update`.
+
+0.5.142
++++++++
+* Deprecate option names `--enable-azuremonitormetrics` and `--disable-azuremonitormetrics`, use `--enable-azure-monitor-metrics` and `--disable-azure-monitor-metrics` instead, so as to be consistent with the option names in official azure-cli. Fix issue `\#26600 <https://github.com/Azure/azure-cli/issues/26600>`_.
+
+0.5.141
++++++++
+* Fix `az aks get-credentials` not using the value set by environment variable `KUBECONFIG`, see issue `\#26444 <https://github.com/Azure/azure-cli-extensions/issues/26444>`_.
+* Allow options for specifying guardrails profile arguments
+
+0.5.140
++++++++
+* Vendor new SDK and bump API version to 2023-04-02-preview.
+* `az aks create` and `az aks enable-addons`: Change the default value of `--enable-msi-auth-for-monitoring` to `true` and add check for airgap clouds for monitoring addon
+
+0.5.139
++++++++
+* `az aks create` and `az aks nodepool add`: Add warning message when specifying `--os-sku` to `Mariner` or `CBLMariner`.
+
+0.5.138
++++++++
+* Vendor new SDK and bump API version to 2023-03-02-preview.
+* fix: don't use current kube_proxy_config on UPDATE
+* GA update for Azure Monitor Metrics Addon (managed prometheus metrics) for AKS
+
+0.5.137
++++++++
+* Fix role assignment failure caused by the breaking change of default API version bump of the auth SDK
+
+0.5.136
++++++++
+* fix: remove uneeded location check for DCR, DCRA in azure monitor metrics addon (aks)
+* Refactor: use decorator mode in pod_cidr and network_plugin_mode getters to read from mc only during CREATE
+
+0.5.135
++++++++
+* Add `--network-dataplane` flag to `az aks create`.
+* Allow updating the pod CIDR and network plugin mode to migrate clusters to Azure CNI Overlay.
+
+0.5.134
++++++++
+* Add cluster upgrade settings options `--upgrade-settings`, and `--upgrade-override-until`.
+
+0.5.133
++++++++
+* Add `az aks mesh` commands for Azure Service Mesh.
 * `az aks create/update`: Replace `--uptime-sla` and `--no-uptime-sla` argument with `--tier` argument.
 * Raise a ClientRequestError when creating the same cluster again in command `az aks create`.
 * Vendor new SDK and bump API version to 2023-02-02-preview.
@@ -525,6 +597,7 @@ Pending
 0.5.49
 ++++++
 
+* Update to use 2021-11-01-preview api-version.
 * Update the minimum required cli core version to `2.31.0`.
 * Add support for Alias Minor Version.
 

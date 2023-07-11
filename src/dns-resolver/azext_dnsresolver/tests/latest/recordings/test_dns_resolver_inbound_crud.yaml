@@ -13,28 +13,30 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_dns_resolver_000001?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_dns_resolver_000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001","name":"cli_test_dns_resolver_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2023-03-16T14:51:30Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001","name":"cli_test_dns_resolver_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2023-03-28T23:26:08Z","StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '334'
+      - '377'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:51:30 GMT
+      - Tue, 28 Mar 2023 23:26:09 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:
@@ -66,10 +68,10 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"vnet-000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004\",\r\n
-        \ \"etag\": \"W/\\\"a00e03f9-027a-4e47-9150-e7b2a811412e\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"60596da5-67e5-4308-9a01-b0bb818229b0\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"resourceGuid\":
-        \"7892fb9c-d364-4f1e-a155-14f2cb9a346a\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        \"75213e61-325b-4eb4-a57f-df64714316cc\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
         [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [],\r\n
         \   \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\": false\r\n
         \ }\r\n}"
@@ -77,7 +79,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/d86e01df-d69c-4ce3-85e2-60cc5a62157e?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/377d127a-f5f9-4b1b-9f89-11dc687e21b1?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -85,7 +87,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:51:34 GMT
+      - Tue, 28 Mar 2023 23:26:10 GMT
       expires:
       - '-1'
       pragma:
@@ -98,9 +100,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 6748aaff-7da3-4da0-8558-747a3ff05e6a
+      - f99323c5-7a8b-41c9-aab0-bac4902d764f
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1181'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -121,7 +123,7 @@ interactions:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/d86e01df-d69c-4ce3-85e2-60cc5a62157e?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/377d127a-f5f9-4b1b-9f89-11dc687e21b1?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -133,7 +135,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:51:38 GMT
+      - Tue, 28 Mar 2023 23:26:13 GMT
       expires:
       - '-1'
       pragma:
@@ -143,10 +145,14 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - ded3487c-141d-4e5e-8cf9-a9e241e3339f
+      - 7b323713-5506-49be-b5d5-5cd82c57c41a
     status:
       code: 200
       message: OK
@@ -171,10 +177,10 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"vnet-000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004\",\r\n
-        \ \"etag\": \"W/\\\"4740fbc7-3957-4138-8946-bf62c2b69dbe\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"69e1462e-3450-4d39-b80c-5f006ae22ea7\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\":
-        \"7892fb9c-d364-4f1e-a155-14f2cb9a346a\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        \"75213e61-325b-4eb4-a57f-df64714316cc\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
         [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [],\r\n
         \   \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\": false\r\n
         \ }\r\n}"
@@ -186,9 +192,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:51:38 GMT
+      - Tue, 28 Mar 2023 23:26:13 GMT
       etag:
-      - W/"4740fbc7-3957-4138-8946-bf62c2b69dbe"
+      - W/"69e1462e-3450-4d39-b80c-5f006ae22ea7"
       expires:
       - '-1'
       pragma:
@@ -198,10 +204,14 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - bb978ca3-870a-4527-b0e0-cd4f9301668d
+      - 59afab10-8b79-4a75-aaaf-121fd89188cc
     status:
       code: 200
       message: OK
@@ -230,7 +240,7 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"subnet-000005\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004/subnets/subnet-000005\",\r\n
-        \ \"etag\": \"W/\\\"87b29b68-22d2-44a3-9576-49eaf3a0cdcb\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"356a7682-4a93-4f3b-8c79-bfe83d7a79ea\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Updating\",\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n
         \   \"delegations\": [],\r\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n
         \   \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"type\":
@@ -239,7 +249,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/c70c0dc0-5386-4c5b-b588-f16554a5a77c?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/007ab43d-e811-410c-90fe-ae8bad5c7542?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -247,7 +257,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:51:40 GMT
+      - Tue, 28 Mar 2023 23:26:14 GMT
       expires:
       - '-1'
       pragma:
@@ -260,9 +270,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - a54a1454-6dca-480a-b64c-76e61b2f5653
+      - 36d53437-b3c2-4c44-9948-7b74d2770df3
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1193'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -283,7 +293,7 @@ interactions:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/c70c0dc0-5386-4c5b-b588-f16554a5a77c?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/007ab43d-e811-410c-90fe-ae8bad5c7542?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -295,7 +305,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:51:43 GMT
+      - Tue, 28 Mar 2023 23:26:17 GMT
       expires:
       - '-1'
       pragma:
@@ -312,7 +322,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 1d18a07a-849b-4bfe-a213-dff6d2957b98
+      - ebcae1bb-9e1b-4d47-861b-cfa055677998
     status:
       code: 200
       message: OK
@@ -337,7 +347,7 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"subnet-000005\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004/subnets/subnet-000005\",\r\n
-        \ \"etag\": \"W/\\\"d6e237e4-69d0-4600-a526-20e07ccd2b7f\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"fd28a05b-ce26-44df-b8e2-e314f07a455e\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n
         \   \"delegations\": [],\r\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n
         \   \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"type\":
@@ -350,9 +360,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:51:43 GMT
+      - Tue, 28 Mar 2023 23:26:17 GMT
       etag:
-      - W/"d6e237e4-69d0-4600-a526-20e07ccd2b7f"
+      - W/"fd28a05b-ce26-44df-b8e2-e314f07a455e"
       expires:
       - '-1'
       pragma:
@@ -369,7 +379,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - cd405bea-3d9b-41df-abfb-d6f55806b8fe
+      - 984dddc7-360f-43b4-b668-af33ca574ee8
     status:
       code: 200
       message: OK
@@ -394,13 +404,13 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"vnet-000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004\",\r\n
-        \ \"etag\": \"W/\\\"d6e237e4-69d0-4600-a526-20e07ccd2b7f\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"fd28a05b-ce26-44df-b8e2-e314f07a455e\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\":
-        \"7892fb9c-d364-4f1e-a155-14f2cb9a346a\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        \"75213e61-325b-4eb4-a57f-df64714316cc\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
         [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [\r\n
         \     {\r\n        \"name\": \"subnet-000005\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004/subnets/subnet-000005\",\r\n
-        \       \"etag\": \"W/\\\"d6e237e4-69d0-4600-a526-20e07ccd2b7f\\\"\",\r\n
+        \       \"etag\": \"W/\\\"fd28a05b-ce26-44df-b8e2-e314f07a455e\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -415,9 +425,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:51:43 GMT
+      - Tue, 28 Mar 2023 23:26:18 GMT
       etag:
-      - W/"d6e237e4-69d0-4600-a526-20e07ccd2b7f"
+      - W/"fd28a05b-ce26-44df-b8e2-e314f07a455e"
       expires:
       - '-1'
       pragma:
@@ -434,7 +444,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 38b681ff-0227-4aa9-94b0-17c50eb7fa9a
+      - 14e1ff41-5511-432b-9715-b20daefa383c
     status:
       code: 200
       message: OK
@@ -459,7 +469,7 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"subnet-000005\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004/subnets/subnet-000005\",\r\n
-        \ \"etag\": \"W/\\\"d6e237e4-69d0-4600-a526-20e07ccd2b7f\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"fd28a05b-ce26-44df-b8e2-e314f07a455e\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n
         \   \"delegations\": [],\r\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n
         \   \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"type\":
@@ -472,9 +482,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:51:43 GMT
+      - Tue, 28 Mar 2023 23:26:18 GMT
       etag:
-      - W/"d6e237e4-69d0-4600-a526-20e07ccd2b7f"
+      - W/"fd28a05b-ce26-44df-b8e2-e314f07a455e"
       expires:
       - '-1'
       pragma:
@@ -491,7 +501,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f2c408ad-9ca0-46bc-9eec-f00cc703c9b8
+      - 1c116cab-7c59-4082-b3be-2e8af50ed941
     status:
       code: 200
       message: OK
@@ -509,30 +519,28 @@ interactions:
       ParameterSetName:
       - -n -g --id
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_dns_resolver_000001?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_dns_resolver_000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001","name":"cli_test_dns_resolver_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2023-03-16T14:51:30Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001","name":"cli_test_dns_resolver_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2023-03-28T23:26:08Z","StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '334'
+      - '377'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:51:43 GMT
+      - Tue, 28 Mar 2023 23:26:18 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:
@@ -565,7 +573,7 @@ interactions:
       string: '{}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0RG5zUmVzb2x2ZXIiLCJPcGVyYXRpb25JZCI6IjQ2M2E3ZDNmLThlZWYtNGE3Yi05YmJlLWY4NTk0ODZkM2YwYSJ9?api-version=2022-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0RG5zUmVzb2x2ZXIiLCJPcGVyYXRpb25JZCI6ImM3ZmNhMDk4LTA1MDEtNDg5NS04YmVlLTc3ZGY2YWU0MzQ4OSJ9?api-version=2022-07-01
       cache-control:
       - no-cache
       content-length:
@@ -573,11 +581,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:51:44 GMT
+      - Tue, 28 Mar 2023 23:26:19 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationResults/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0RG5zUmVzb2x2ZXIiLCJPcGVyYXRpb25JZCI6IjQ2M2E3ZDNmLThlZWYtNGE3Yi05YmJlLWY4NTk0ODZkM2YwYSJ9?api-version=2022-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationResults/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0RG5zUmVzb2x2ZXIiLCJPcGVyYXRpb25JZCI6ImM3ZmNhMDk4LTA1MDEtNDg5NS04YmVlLTc3ZGY2YWU0MzQ4OSJ9?api-version=2022-07-01
       pragma:
       - no-cache
       server:
@@ -587,7 +595,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - 0a7105dd-229f-4bca-8f10-5bfdc194a817
+      - 72a34e4c-7d23-4414-bbcf-b48693913800
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '11999'
     status:
@@ -610,10 +618,10 @@ interactions:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0RG5zUmVzb2x2ZXIiLCJPcGVyYXRpb25JZCI6IjQ2M2E3ZDNmLThlZWYtNGE3Yi05YmJlLWY4NTk0ODZkM2YwYSJ9?api-version=2022-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0RG5zUmVzb2x2ZXIiLCJPcGVyYXRpb25JZCI6ImM3ZmNhMDk4LTA1MDEtNDg5NS04YmVlLTc3ZGY2YWU0MzQ4OSJ9?api-version=2022-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0RG5zUmVzb2x2ZXIiLCJPcGVyYXRpb25JZCI6IjQ2M2E3ZDNmLThlZWYtNGE3Yi05YmJlLWY4NTk0ODZkM2YwYSJ9","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0RG5zUmVzb2x2ZXIiLCJPcGVyYXRpb25JZCI6IjQ2M2E3ZDNmLThlZWYtNGE3Yi05YmJlLWY4NTk0ODZkM2YwYSJ9","startTime":"2023-03-16T14:51:45.0000000Z","status":"InProgress"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0RG5zUmVzb2x2ZXIiLCJPcGVyYXRpb25JZCI6ImM3ZmNhMDk4LTA1MDEtNDg5NS04YmVlLTc3ZGY2YWU0MzQ4OSJ9","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0RG5zUmVzb2x2ZXIiLCJPcGVyYXRpb25JZCI6ImM3ZmNhMDk4LTA1MDEtNDg5NS04YmVlLTc3ZGY2YWU0MzQ4OSJ9","startTime":"2023-03-28T23:26:20.0000000Z","status":"InProgress"}'
     headers:
       cache-control:
       - no-cache
@@ -622,7 +630,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:51:49 GMT
+      - Tue, 28 Mar 2023 23:26:25 GMT
       expires:
       - '-1'
       pragma:
@@ -638,7 +646,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - 7880745c-1119-4d06-8dc1-a3768b79f856
+      - 043603a9-959c-4833-b7bb-ea3c66e89e18
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '499'
     status:
@@ -661,10 +669,10 @@ interactions:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0RG5zUmVzb2x2ZXIiLCJPcGVyYXRpb25JZCI6IjQ2M2E3ZDNmLThlZWYtNGE3Yi05YmJlLWY4NTk0ODZkM2YwYSJ9?api-version=2022-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0RG5zUmVzb2x2ZXIiLCJPcGVyYXRpb25JZCI6ImM3ZmNhMDk4LTA1MDEtNDg5NS04YmVlLTc3ZGY2YWU0MzQ4OSJ9?api-version=2022-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0RG5zUmVzb2x2ZXIiLCJPcGVyYXRpb25JZCI6IjQ2M2E3ZDNmLThlZWYtNGE3Yi05YmJlLWY4NTk0ODZkM2YwYSJ9","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0RG5zUmVzb2x2ZXIiLCJPcGVyYXRpb25JZCI6IjQ2M2E3ZDNmLThlZWYtNGE3Yi05YmJlLWY4NTk0ODZkM2YwYSJ9","startTime":"2023-03-16T14:51:45.0000000Z","endTime":"2023-03-16T14:51:53.0000000Z","status":"Succeeded"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0RG5zUmVzb2x2ZXIiLCJPcGVyYXRpb25JZCI6ImM3ZmNhMDk4LTA1MDEtNDg5NS04YmVlLTc3ZGY2YWU0MzQ4OSJ9","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0RG5zUmVzb2x2ZXIiLCJPcGVyYXRpb25JZCI6ImM3ZmNhMDk4LTA1MDEtNDg5NS04YmVlLTc3ZGY2YWU0MzQ4OSJ9","startTime":"2023-03-28T23:26:20.0000000Z","endTime":"2023-03-28T23:26:26.0000000Z","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -673,7 +681,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:52:20 GMT
+      - Tue, 28 Mar 2023 23:26:55 GMT
       expires:
       - '-1'
       pragma:
@@ -689,7 +697,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - ea5d126b-7008-4d2e-8376-10973561a75d
+      - f6917d71-f3a0-406b-a48e-169cf1f83569
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '498'
     status:
@@ -715,7 +723,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/dnsResolvers/dns-resolver-000003?api-version=2022-07-01
   response:
     body:
-      string: '{"properties":{"virtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004"},"dnsResolverState":"Connected","provisioningState":"Succeeded","resourceGuid":"0df1e117-af87-4ec6-93a6-01fa27f0f3e8"},"etag":"\"08008854-0000-0100-0000-64132d080000\"","location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/dnsResolvers/dns-resolver-000003","name":"dns-resolver-000003","type":"Microsoft.Network/dnsResolvers","systemData":{"createdAt":"2023-03-16T14:51:45.4332101Z","createdByType":"User","lastModifiedAt":"2023-03-16T14:51:45.4332101Z","lastModifiedByType":"User"}}'
+      string: '{"properties":{"virtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004"},"dnsResolverState":"Connected","provisioningState":"Succeeded","resourceGuid":"072dfae1-443c-4415-8cd1-773b0b3bf639"},"etag":"\"4a00f5cd-0000-0100-0000-642377a10000\"","location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/dnsResolvers/dns-resolver-000003","name":"dns-resolver-000003","type":"Microsoft.Network/dnsResolvers","systemData":{"createdAt":"2023-03-28T23:26:20.2756591Z","createdByType":"User","lastModifiedAt":"2023-03-28T23:26:20.2756591Z","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
@@ -724,7 +732,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:52:20 GMT
+      - Tue, 28 Mar 2023 23:26:55 GMT
       expires:
       - '-1'
       pragma:
@@ -740,7 +748,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - 2ca74d98-168c-41e4-9249-f63465d03fe6
+      - fa63b22e-c6db-46b4-9eba-b99d5f146cf7
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '499'
     status:
@@ -760,22 +768,22 @@ interactions:
       ParameterSetName:
       - -n -g --dns-resolver-name --ip-configurations --tags
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_dns_resolver_000001?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_dns_resolver_000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001","name":"cli_test_dns_resolver_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2023-03-16T14:51:30Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001","name":"cli_test_dns_resolver_000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2023-03-28T23:26:08Z","StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '334'
+      - '377'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:52:20 GMT
+      - Tue, 28 Mar 2023 23:26:55 GMT
       expires:
       - '-1'
       pragma:
@@ -818,7 +826,7 @@ interactions:
       string: '{}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4YjY0M2Q5Ny1iZTI2LTQ4MjEtYjAyMS0yY2E1OTFlZWM1YzQifQ==?api-version=2022-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==?api-version=2022-07-01
       cache-control:
       - no-cache
       content-length:
@@ -826,11 +834,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:52:21 GMT
+      - Tue, 28 Mar 2023 23:26:56 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationResults/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4YjY0M2Q5Ny1iZTI2LTQ4MjEtYjAyMS0yY2E1OTFlZWM1YzQifQ==?api-version=2022-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationResults/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==?api-version=2022-07-01
       pragma:
       - no-cache
       server:
@@ -840,7 +848,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - 1845dc6e-276d-475b-8800-26f755b39d84
+      - 8daf9b56-0ff6-4c94-b668-f976e78dd55e
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '11999'
     status:
@@ -863,10 +871,10 @@ interactions:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4YjY0M2Q5Ny1iZTI2LTQ4MjEtYjAyMS0yY2E1OTFlZWM1YzQifQ==?api-version=2022-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==?api-version=2022-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4YjY0M2Q5Ny1iZTI2LTQ4MjEtYjAyMS0yY2E1OTFlZWM1YzQifQ==","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4YjY0M2Q5Ny1iZTI2LTQ4MjEtYjAyMS0yY2E1OTFlZWM1YzQifQ==","startTime":"2023-03-16T14:52:22.0000000Z","status":"InProgress"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==","startTime":"2023-03-28T23:26:56.0000000Z","status":"InProgress"}'
     headers:
       cache-control:
       - no-cache
@@ -875,7 +883,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:52:26 GMT
+      - Tue, 28 Mar 2023 23:27:01 GMT
       expires:
       - '-1'
       pragma:
@@ -891,7 +899,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - 516b7e19-54e1-4254-ba60-87aa24b62317
+      - e98ddd1f-2886-4c59-89cd-795578ac06d1
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '499'
     status:
@@ -914,10 +922,10 @@ interactions:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4YjY0M2Q5Ny1iZTI2LTQ4MjEtYjAyMS0yY2E1OTFlZWM1YzQifQ==?api-version=2022-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==?api-version=2022-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4YjY0M2Q5Ny1iZTI2LTQ4MjEtYjAyMS0yY2E1OTFlZWM1YzQifQ==","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4YjY0M2Q5Ny1iZTI2LTQ4MjEtYjAyMS0yY2E1OTFlZWM1YzQifQ==","startTime":"2023-03-16T14:52:22.0000000Z","status":"InProgress"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==","startTime":"2023-03-28T23:26:56.0000000Z","status":"InProgress"}'
     headers:
       cache-control:
       - no-cache
@@ -926,7 +934,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:52:57 GMT
+      - Tue, 28 Mar 2023 23:27:32 GMT
       expires:
       - '-1'
       pragma:
@@ -942,7 +950,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - 9d1331b7-05cd-4379-b6e1-50fa4a5c4aa2
+      - 52e454a8-5de0-4f4f-b7d4-6b89a18cb6f7
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '498'
     status:
@@ -965,10 +973,10 @@ interactions:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4YjY0M2Q5Ny1iZTI2LTQ4MjEtYjAyMS0yY2E1OTFlZWM1YzQifQ==?api-version=2022-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==?api-version=2022-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4YjY0M2Q5Ny1iZTI2LTQ4MjEtYjAyMS0yY2E1OTFlZWM1YzQifQ==","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4YjY0M2Q5Ny1iZTI2LTQ4MjEtYjAyMS0yY2E1OTFlZWM1YzQifQ==","startTime":"2023-03-16T14:52:22.0000000Z","status":"InProgress"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==","startTime":"2023-03-28T23:26:56.0000000Z","status":"InProgress"}'
     headers:
       cache-control:
       - no-cache
@@ -977,7 +985,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:53:27 GMT
+      - Tue, 28 Mar 2023 23:28:01 GMT
       expires:
       - '-1'
       pragma:
@@ -993,7 +1001,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - 784035e0-026d-4098-a0ab-7dda74458ef2
+      - 7a8cde4c-8d54-41d2-92d4-54cdb3dcf535
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '497'
     status:
@@ -1016,10 +1024,10 @@ interactions:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4YjY0M2Q5Ny1iZTI2LTQ4MjEtYjAyMS0yY2E1OTFlZWM1YzQifQ==?api-version=2022-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==?api-version=2022-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4YjY0M2Q5Ny1iZTI2LTQ4MjEtYjAyMS0yY2E1OTFlZWM1YzQifQ==","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4YjY0M2Q5Ny1iZTI2LTQ4MjEtYjAyMS0yY2E1OTFlZWM1YzQifQ==","startTime":"2023-03-16T14:52:22.0000000Z","status":"InProgress"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==","startTime":"2023-03-28T23:26:56.0000000Z","status":"InProgress"}'
     headers:
       cache-control:
       - no-cache
@@ -1028,7 +1036,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:53:57 GMT
+      - Tue, 28 Mar 2023 23:28:31 GMT
       expires:
       - '-1'
       pragma:
@@ -1044,7 +1052,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - 75e22133-7c3f-4645-92d5-72e800de5b7f
+      - 78c4c805-436e-4a2f-b8ab-226b9fca28ae
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '496'
     status:
@@ -1067,19 +1075,19 @@ interactions:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4YjY0M2Q5Ny1iZTI2LTQ4MjEtYjAyMS0yY2E1OTFlZWM1YzQifQ==?api-version=2022-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==?api-version=2022-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4YjY0M2Q5Ny1iZTI2LTQ4MjEtYjAyMS0yY2E1OTFlZWM1YzQifQ==","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4YjY0M2Q5Ny1iZTI2LTQ4MjEtYjAyMS0yY2E1OTFlZWM1YzQifQ==","startTime":"2023-03-16T14:52:22.0000000Z","endTime":"2023-03-16T14:54:10.0000000Z","status":"Succeeded"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==","startTime":"2023-03-28T23:26:56.0000000Z","status":"InProgress"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '550'
+      - '510'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:54:26 GMT
+      - Tue, 28 Mar 2023 23:29:02 GMT
       expires:
       - '-1'
       pragma:
@@ -1095,9 +1103,60 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - f1448f03-fa09-425c-8f70-7903810f5038
+      - 2d11fbf9-f7a9-421d-952d-81c26ec7c1ad
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '495'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dns-resolver inbound-endpoint create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --dns-resolver-name --ip-configurations --tags
+      User-Agent:
+      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiIwMmFjNzFhNi0zMGY5LTRjNTMtOTk1YS01NzkyZTFkOTViOWQifQ==","startTime":"2023-03-28T23:26:56.0000000Z","endTime":"2023-03-28T23:29:24.0000000Z","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '550'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 28 Mar 2023 23:29:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-activity-id:
+      - 5011370e-103c-4e7a-9b1b-76771766bd0c
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '494'
     status:
       code: 200
       message: OK
@@ -1121,7 +1180,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/dnsResolvers/dns-resolver-000003/inboundEndpoints/endpoint-000002?api-version=2022-07-01
   response:
     body:
-      string: '{"properties":{"ipConfigurations":[{"subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004/subnets/subnet-000005"},"privateIpAddress":"10.0.0.4","privateIpAllocationMethod":"Dynamic"}],"provisioningState":"Succeeded","resourceGuid":"b6db2096-f88f-44e3-981a-6e69ea90059f"},"etag":"\"06003b1e-0000-0100-0000-64132d910000\"","location":"eastus","tags":{"key":"value1"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/dnsResolvers/dns-resolver-000003/inboundEndpoints/endpoint-000002","name":"endpoint-000002","type":"Microsoft.Network/dnsResolvers/inboundEndpoints","systemData":{"createdAt":"2023-03-16T14:52:21.9744063Z","createdByType":"User","lastModifiedAt":"2023-03-16T14:52:21.9744063Z","lastModifiedByType":"User"}}'
+      string: '{"properties":{"ipConfigurations":[{"subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004/subnets/subnet-000005"},"privateIpAddress":"10.0.0.4","privateIpAllocationMethod":"Dynamic"}],"provisioningState":"Succeeded","resourceGuid":"559185af-af8c-43bd-ace2-80cb6a29236a"},"etag":"\"3100fb43-0000-0100-0000-642378530000\"","location":"eastus","tags":{"key":"value1"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/dnsResolvers/dns-resolver-000003/inboundEndpoints/endpoint-000002","name":"endpoint-000002","type":"Microsoft.Network/dnsResolvers/inboundEndpoints","systemData":{"createdAt":"2023-03-28T23:26:56.7780071Z","createdByType":"User","lastModifiedAt":"2023-03-28T23:26:56.7780071Z","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
@@ -1130,7 +1189,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:54:26 GMT
+      - Tue, 28 Mar 2023 23:29:31 GMT
       expires:
       - '-1'
       pragma:
@@ -1146,7 +1205,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - b32d4de8-75dc-4995-8da7-fd65bccfe718
+      - 2c9d2621-ecb5-4e8d-99ec-d133f34b775c
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '499'
     status:
@@ -1172,7 +1231,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/dnsResolvers/dns-resolver-000003/inboundEndpoints?api-version=2022-07-01
   response:
     body:
-      string: '{"value":[{"properties":{"ipConfigurations":[{"subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004/subnets/subnet-000005"},"privateIpAddress":"10.0.0.4","privateIpAllocationMethod":"Dynamic"}],"provisioningState":"Succeeded","resourceGuid":"b6db2096-f88f-44e3-981a-6e69ea90059f"},"etag":"\"06003b1e-0000-0100-0000-64132d910000\"","location":"eastus","tags":{"key":"value1"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/dnsResolvers/dns-resolver-000003/inboundEndpoints/endpoint-000002","name":"endpoint-000002","type":"Microsoft.Network/dnsResolvers/inboundEndpoints","systemData":{"createdAt":"2023-03-16T14:52:21.9744063Z","createdByType":"User","lastModifiedAt":"2023-03-16T14:52:21.9744063Z","lastModifiedByType":"User"}}]}'
+      string: '{"value":[{"properties":{"ipConfigurations":[{"subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004/subnets/subnet-000005"},"privateIpAddress":"10.0.0.4","privateIpAllocationMethod":"Dynamic"}],"provisioningState":"Succeeded","resourceGuid":"559185af-af8c-43bd-ace2-80cb6a29236a"},"etag":"\"3100fb43-0000-0100-0000-642378530000\"","location":"eastus","tags":{"key":"value1"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/dnsResolvers/dns-resolver-000003/inboundEndpoints/endpoint-000002","name":"endpoint-000002","type":"Microsoft.Network/dnsResolvers/inboundEndpoints","systemData":{"createdAt":"2023-03-28T23:26:56.7780071Z","createdByType":"User","lastModifiedAt":"2023-03-28T23:26:56.7780071Z","lastModifiedByType":"User"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -1181,7 +1240,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:54:28 GMT
+      - Tue, 28 Mar 2023 23:29:32 GMT
       expires:
       - '-1'
       pragma:
@@ -1190,10 +1249,14 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - 3d8ae31e-fc23-4aee-84fb-84856fb2d45b
+      - d2876964-8cf2-4dcc-99fe-8d99682de88d
       x-ms-ratelimit-remaining-subscription-resource-entities-read:
       - '59999'
       x-ms-ratelimit-remaining-subscription-resource-requests:
@@ -1221,7 +1284,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/dnsResolvers/dns-resolver-000003/inboundEndpoints/endpoint-000002?api-version=2022-07-01
   response:
     body:
-      string: '{"properties":{"ipConfigurations":[{"subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004/subnets/subnet-000005"},"privateIpAddress":"10.0.0.4","privateIpAllocationMethod":"Dynamic"}],"provisioningState":"Succeeded","resourceGuid":"b6db2096-f88f-44e3-981a-6e69ea90059f"},"etag":"\"06003b1e-0000-0100-0000-64132d910000\"","location":"eastus","tags":{"key":"value1"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/dnsResolvers/dns-resolver-000003/inboundEndpoints/endpoint-000002","name":"endpoint-000002","type":"Microsoft.Network/dnsResolvers/inboundEndpoints","systemData":{"createdAt":"2023-03-16T14:52:21.9744063Z","createdByType":"User","lastModifiedAt":"2023-03-16T14:52:21.9744063Z","lastModifiedByType":"User"}}'
+      string: '{"properties":{"ipConfigurations":[{"subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004/subnets/subnet-000005"},"privateIpAddress":"10.0.0.4","privateIpAllocationMethod":"Dynamic"}],"provisioningState":"Succeeded","resourceGuid":"559185af-af8c-43bd-ace2-80cb6a29236a"},"etag":"\"3100fb43-0000-0100-0000-642378530000\"","location":"eastus","tags":{"key":"value1"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/dnsResolvers/dns-resolver-000003/inboundEndpoints/endpoint-000002","name":"endpoint-000002","type":"Microsoft.Network/dnsResolvers/inboundEndpoints","systemData":{"createdAt":"2023-03-28T23:26:56.7780071Z","createdByType":"User","lastModifiedAt":"2023-03-28T23:26:56.7780071Z","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
@@ -1230,7 +1293,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:54:28 GMT
+      - Tue, 28 Mar 2023 23:29:32 GMT
       expires:
       - '-1'
       pragma:
@@ -1239,10 +1302,14 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - 7a46e3a6-bbac-4dfc-a662-5e9022912134
+      - 121ae385-2f6e-44bf-b194-5b38066c8fe6
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '499'
     status:
@@ -1277,7 +1344,7 @@ interactions:
       string: '{}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI5ZWU2OWMyZi03NGRkLTQ3NzctYThjMy1lMGZkNDY2YjVlODMifQ==?api-version=2022-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiJkMDFlM2IxZi01YTZlLTQ4YzYtYWJiMC0yYjc2MjRmNDQ4ZDUifQ==?api-version=2022-07-01
       cache-control:
       - no-cache
       content-length:
@@ -1285,11 +1352,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:54:29 GMT
+      - Tue, 28 Mar 2023 23:29:33 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationResults/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI5ZWU2OWMyZi03NGRkLTQ3NzctYThjMy1lMGZkNDY2YjVlODMifQ==?api-version=2022-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationResults/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiJkMDFlM2IxZi01YTZlLTQ4YzYtYWJiMC0yYjc2MjRmNDQ4ZDUifQ==?api-version=2022-07-01
       pragma:
       - no-cache
       server:
@@ -1299,7 +1366,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - 44b5e742-10eb-4105-9106-0f4ddb7442ea
+      - 365a4107-39a0-4f11-85ab-1360d86e8d2b
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '11999'
     status:
@@ -1322,10 +1389,10 @@ interactions:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI5ZWU2OWMyZi03NGRkLTQ3NzctYThjMy1lMGZkNDY2YjVlODMifQ==?api-version=2022-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiJkMDFlM2IxZi01YTZlLTQ4YzYtYWJiMC0yYjc2MjRmNDQ4ZDUifQ==?api-version=2022-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI5ZWU2OWMyZi03NGRkLTQ3NzctYThjMy1lMGZkNDY2YjVlODMifQ==","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI5ZWU2OWMyZi03NGRkLTQ3NzctYThjMy1lMGZkNDY2YjVlODMifQ==","startTime":"2023-03-16T14:54:29.0000000Z","status":"InProgress"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiJkMDFlM2IxZi01YTZlLTQ4YzYtYWJiMC0yYjc2MjRmNDQ4ZDUifQ==","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiJkMDFlM2IxZi01YTZlLTQ4YzYtYWJiMC0yYjc2MjRmNDQ4ZDUifQ==","startTime":"2023-03-28T23:29:34.0000000Z","status":"InProgress"}'
     headers:
       cache-control:
       - no-cache
@@ -1334,7 +1401,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:54:34 GMT
+      - Tue, 28 Mar 2023 23:29:38 GMT
       expires:
       - '-1'
       pragma:
@@ -1343,10 +1410,14 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - 076c3484-f13c-4646-bd85-5d9767ebb529
+      - 7f314ba3-d674-499b-8e7d-4d768f470e77
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '499'
     status:
@@ -1369,10 +1440,10 @@ interactions:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI5ZWU2OWMyZi03NGRkLTQ3NzctYThjMy1lMGZkNDY2YjVlODMifQ==?api-version=2022-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiJkMDFlM2IxZi01YTZlLTQ4YzYtYWJiMC0yYjc2MjRmNDQ4ZDUifQ==?api-version=2022-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI5ZWU2OWMyZi03NGRkLTQ3NzctYThjMy1lMGZkNDY2YjVlODMifQ==","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI5ZWU2OWMyZi03NGRkLTQ3NzctYThjMy1lMGZkNDY2YjVlODMifQ==","startTime":"2023-03-16T14:54:29.0000000Z","endTime":"2023-03-16T14:54:57.0000000Z","status":"Succeeded"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiJkMDFlM2IxZi01YTZlLTQ4YzYtYWJiMC0yYjc2MjRmNDQ4ZDUifQ==","name":"eyJPcGVyYXRpb25UeXBlIjoiVXBzZXJ0SW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiJkMDFlM2IxZi01YTZlLTQ4YzYtYWJiMC0yYjc2MjRmNDQ4ZDUifQ==","startTime":"2023-03-28T23:29:34.0000000Z","endTime":"2023-03-28T23:29:58.0000000Z","status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
@@ -1381,7 +1452,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:55:04 GMT
+      - Tue, 28 Mar 2023 23:30:09 GMT
       expires:
       - '-1'
       pragma:
@@ -1390,10 +1461,14 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - cfba2ad6-593c-4003-9fb2-2232192acb8f
+      - 50587a26-7819-4d14-b4fa-3abcfc99af5d
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '498'
     status:
@@ -1419,16 +1494,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/dnsResolvers/dns-resolver-000003/inboundEndpoints/endpoint-000002?api-version=2022-07-01
   response:
     body:
-      string: '{"properties":{"ipConfigurations":[{"subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004/subnets/subnet-000005"},"privateIpAddress":"10.0.0.4","privateIpAllocationMethod":"Dynamic"}],"provisioningState":"Succeeded","resourceGuid":"b6db2096-f88f-44e3-981a-6e69ea90059f"},"etag":"\"0600b31e-0000-0100-0000-64132dc00000\"","location":"eastus","tags":{"key":"value2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/dnsResolvers/dns-resolver-000003/inboundEndpoints/endpoint-000002","name":"endpoint-000002","type":"Microsoft.Network/dnsResolvers/inboundEndpoints","systemData":{"createdAt":"2023-03-16T14:52:21.9744063Z","createdByType":"User","lastModifiedAt":"2023-03-16T14:54:29.9106407Z","lastModifiedByType":"User"}}'
+      string: '{"properties":{"ipConfigurations":[{"subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004/subnets/subnet-000005"},"privateIpAddress":"10.0.0.4","privateIpAllocationMethod":"Dynamic"}],"provisioningState":"Succeeded","resourceGuid":"559185af-af8c-43bd-ace2-80cb6a29236a"},"etag":"\"31004a44-0000-0100-0000-642378740000\"","location":"eastus","tags":{"key":"value2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/dnsResolvers/dns-resolver-000003/inboundEndpoints/endpoint-000002","name":"endpoint-000002","type":"Microsoft.Network/dnsResolvers/inboundEndpoints","systemData":{"createdAt":"2023-03-28T23:26:56.7780071Z","createdByType":"User","lastModifiedAt":"2023-03-28T23:29:34.462006Z","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '915'
+      - '914'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:55:05 GMT
+      - Tue, 28 Mar 2023 23:30:09 GMT
       expires:
       - '-1'
       pragma:
@@ -1437,10 +1512,14 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - 57126c83-c180-4ce2-97e7-dd50d73fce1b
+      - 52213129-1c48-4f8a-b794-b138f5175e23
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '498'
     status:
@@ -1466,16 +1545,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/dnsResolvers/dns-resolver-000003/inboundEndpoints/endpoint-000002?api-version=2022-07-01
   response:
     body:
-      string: '{"properties":{"ipConfigurations":[{"subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004/subnets/subnet-000005"},"privateIpAddress":"10.0.0.4","privateIpAllocationMethod":"Dynamic"}],"provisioningState":"Succeeded","resourceGuid":"b6db2096-f88f-44e3-981a-6e69ea90059f"},"etag":"\"0600b31e-0000-0100-0000-64132dc00000\"","location":"eastus","tags":{"key":"value2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/dnsResolvers/dns-resolver-000003/inboundEndpoints/endpoint-000002","name":"endpoint-000002","type":"Microsoft.Network/dnsResolvers/inboundEndpoints","systemData":{"createdAt":"2023-03-16T14:52:21.9744063Z","createdByType":"User","lastModifiedAt":"2023-03-16T14:54:29.9106407Z","lastModifiedByType":"User"}}'
+      string: '{"properties":{"ipConfigurations":[{"subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/virtualNetworks/vnet-000004/subnets/subnet-000005"},"privateIpAddress":"10.0.0.4","privateIpAllocationMethod":"Dynamic"}],"provisioningState":"Succeeded","resourceGuid":"559185af-af8c-43bd-ace2-80cb6a29236a"},"etag":"\"31004a44-0000-0100-0000-642378740000\"","location":"eastus","tags":{"key":"value2"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/dnsResolvers/dns-resolver-000003/inboundEndpoints/endpoint-000002","name":"endpoint-000002","type":"Microsoft.Network/dnsResolvers/inboundEndpoints","systemData":{"createdAt":"2023-03-28T23:26:56.7780071Z","createdByType":"User","lastModifiedAt":"2023-03-28T23:29:34.462006Z","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '915'
+      - '914'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 Mar 2023 14:55:06 GMT
+      - Tue, 28 Mar 2023 23:30:09 GMT
       expires:
       - '-1'
       pragma:
@@ -1491,7 +1570,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - 387a4f1b-f7b9-4976-9db6-3d10e300dce9
+      - 851fca0a-56cc-4f56-aef9-2676bb2572cf
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '499'
     status:
@@ -1522,17 +1601,17 @@ interactions:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiRGVsZXRlSW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4Zjk1YWJkMi1jYjFkLTQxZmItODMwZi0yNDhhMDQ3NTAzZTMifQ==?api-version=2022-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationStatuses/eyJPcGVyYXRpb25UeXBlIjoiRGVsZXRlSW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiJjNTk5ZmZiZi1kOTU1LTRiYzMtYjRiNy1lZTY3NDJlNzExOWEifQ==?api-version=2022-07-01
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Thu, 16 Mar 2023 14:55:06 GMT
+      - Tue, 28 Mar 2023 23:30:10 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationResults/eyJPcGVyYXRpb25UeXBlIjoiRGVsZXRlSW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiI4Zjk1YWJkMi1jYjFkLTQxZmItODMwZi0yNDhhMDQ3NTAzZTMifQ==?api-version=2022-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dns_resolver_000001/providers/Microsoft.Network/locations/eastus/dnsResolverOperationResults/eyJPcGVyYXRpb25UeXBlIjoiRGVsZXRlSW5ib3VuZEVuZHBvaW50IiwiT3BlcmF0aW9uSWQiOiJjNTk5ZmZiZi1kOTU1LTRiYzMtYjRiNy1lZTY3NDJlNzExOWEifQ==?api-version=2022-07-01
       pragma:
       - no-cache
       server:
@@ -1542,7 +1621,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-activity-id:
-      - b7d3eb88-66b6-4453-8a70-e5b4066780f5
+      - c3febf08-7ad5-4198-bd94-dd374948576c
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '11999'
     status:

@@ -10,279 +10,391 @@ helps[
     "devcenter dev"
 ] = """
     type: group
-    short-summary: "Manages devcenter developer resources"
+    short-summary: "Manage devcenter developer resources."
 """
 helps[
     "devcenter dev project"
 ] = """
     type: group
-    short-summary: Manage project with devcenter
+    short-summary: Manage projects.
 """
 
 helps[
     "devcenter dev project list"
 ] = """
     type: command
-    short-summary: "Lists all projects."
+    short-summary: "List all projects."
     examples:
-      - name: Project_ListByDevCenter
+      - name: List using dev center
         text: |-
-               az devcenter dev project list --dev-center-name "{devCenterName}"
+               az devcenter dev project list --dev-center-name "ContosoDevCenter"
+      - name: List using endpoint
+        text: |-
+               az devcenter dev project list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/"
 """
 
 helps[
     "devcenter dev project show"
 ] = """
     type: command
-    short-summary: "Gets a project."
+    short-summary: "Get a project."
     examples:
-      - name: Project_Get
+      - name: Get using dev center
         text: |-
-               az devcenter dev project show --dev-center-name "{devCenterName}" \
---name "{projectName}"
+               az devcenter dev project show --dev-center-name "ContosoDevCenter" \
+--name "DevProject"
+      - name: Get using endpoint
+        text: |-
+               az devcenter dev project show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--name "DevProject"
 """
 
 helps[
     "devcenter dev pool"
 ] = """
     type: group
-    short-summary: Manage pool with devcenter
+    short-summary: Manage pools.
 """
 
 helps[
     "devcenter dev pool list"
 ] = """
     type: command
-    short-summary: "Lists available pools."
+    short-summary: "List available pools."
     examples:
-      - name: listPools
+      - name: List using dev center
         text: |-
-               az devcenter dev pool list --dev-center-name "{devCenterName}" \
---project-name "{projectName}"
+               az devcenter dev pool list --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject"
+      - name: List using end point
+        text: |-
+               az devcenter dev pool list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject"
 """
 
 helps[
     "devcenter dev pool show"
 ] = """
     type: command
-    short-summary: "Gets a pool."
+    short-summary: "Get a pool."
     examples:
-      - name: Pools_Get
+      - name: Get using dev center
         text: |-
-               az devcenter dev pool show --dev-center-name "{devCenterName}" --name \
-"{poolName}" --project-name "{projectName}"
+               az devcenter dev pool show --dev-center-name "ContosoDevCenter" --name \
+"DevPool" --project-name "DevProject"
+      - name: Get using endpoint
+        text: |-
+               az devcenter dev pool show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --name \
+"DevPool" --project-name "DevProject"
 """
 
 helps[
     "devcenter dev schedule"
 ] = """
     type: group
-    short-summary: Manage schedule with devcenter
-"""
-
-helps[
-    "devcenter dev schedule list"
-] = """
-    type: command
-    short-summary: "Lists available schedules for a pool."
-    examples:
-      - name: listSchedules
-        text: |-
-               az devcenter dev schedule list --dev-center-name "{devCenterName}" \
---pool-name "{poolName}" --project-name "{projectName}"
+    short-summary: Manage schedules.
 """
 
 helps[
     "devcenter dev schedule show"
 ] = """
     type: command
-    short-summary: "Gets a schedule."
+    short-summary: "Get a schedule."
     examples:
-      - name: Schedule_Get
+      - name: Get using dev center
         text: |-
-               az devcenter dev schedule show --dev-center-name "{devCenterName}" \
---pool-name "{poolName}" --project-name "{projectName}" --name "{scheduleName}"
+               az devcenter dev schedule show --dev-center-name "ContosoDevCenter" \
+--pool-name "DevPool" --project-name "DevProject"
+      - name: Get using endpoint
+        text: |-
+               az devcenter dev schedule show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--pool-name "DevPool" --project-name "DevProject"
 """
 
 helps[
     "devcenter dev dev-box"
 ] = """
     type: group
-    short-summary: Manage dev box with devcenter
+    short-summary: Manage dev boxes.
 """
 
 helps[
     "devcenter dev dev-box list"
 ] = """
     type: command
-    short-summary: "Lists dev boxes in the project for a particular user, lists dev boxes in the dev center for a \
-particular user, or lists dev boxes that the caller has access to in the dev center."
+    short-summary: "List dev boxes for a user, list dev boxes in the dev center for a \
+project and user, or list dev boxes that the caller has access to in the dev center."
     examples:
-      - name: DevBox_ListByUserByProject
+      - name: List all dev boxes in the dev center
         text: |-
-               az devcenter dev dev-box list --dev-center-name "{devCenterName}" \
---project-name "{projectName}" --user-id "me"
-      - name: DevBox_ListByUser
+               az devcenter dev dev-box list --dev-center-name "ContosoDevCenter"
+      - name: List all dev boxes in the dev center using endpoint
         text: |-
-               az devcenter dev dev-box list --dev-center-name "{devCenterName}" \
---user-id "me"
-      - name: DevBox_List
+               az devcenter dev dev-box list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/"
+      - name: List by user using dev center
         text: |-
-               az devcenter dev dev-box list --dev-center-name "{devCenterName}"
+               az devcenter dev dev-box list --dev-center-name "ContosoDevCenter" \
+--user-id "00000000-0000-0000-0000-000000000000"
+      - name: List by user using endpoint
+        text: |-
+               az devcenter dev dev-box list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--user-id "00000000-0000-0000-0000-000000000000"
+      - name: List by user and project using dev center
+        text: |-
+               az devcenter dev dev-box list --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: List by user and project using endpoint
+        text: |-
+               az devcenter dev dev-box list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
     "devcenter dev dev-box show"
 ] = """
     type: command
-    short-summary: "Gets a dev box."
+    short-summary: "Get a dev box."
     examples:
-      - name: getDevBoxForUser
+      - name: Get using dev center
         text: |-
-               az devcenter dev dev-box show --name "MyDevBox" --dev-center-name "{devCenterName}" \
-               --project-name "{projectName}" --user-id "me"
+               az devcenter dev dev-box show --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Get using endpoint
+        text: |-
+               az devcenter dev dev-box show --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
     "devcenter dev dev-box create"
 ] = """
     type: command
-    short-summary: "Creates or updates a dev box."
+    short-summary: "Create a dev box."
     examples:
-      - name: createDevBox
+      - name: Create using dev center
         text: |-
                az devcenter dev dev-box create --pool-name "LargeDevWorkStationPool" --name "MyDevBox" --dev-center-name \
-"{devCenterName}" --project-name "{projectName}" --user-id "me"
+"ContosoDevCenter" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Create using endpoint
+        text: |-
+               az devcenter dev dev-box create --pool-name "LargeDevWorkStationPool" --name "MyDevBox" --endpoint \
+"https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
     "devcenter dev dev-box delete"
 ] = """
     type: command
-    short-summary: "Deletes a dev box."
+    short-summary: "Delete a dev box."
     examples:
-      - name: deleteDevBox
+      - name: Delete using dev center
         text: |-
-               az devcenter dev dev-box delete --name "MyDevBox" --dev-center-name "{devCenterName}"  \
-               --project-name "{projectName}" --user-id "me"
+               az devcenter dev dev-box delete --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Delete using endpoint
+        text: |-
+               az devcenter dev dev-box delete --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
     "devcenter dev dev-box show-remote-connection"
 ] = """
     type: command
-    short-summary: "Gets Connection info."
+    short-summary: "Get remote connection info."
     examples:
-      - name: DevBox_GetRemoteConnection
+      - name: Get remote connection using dev center
         text: |-
-               az devcenter dev dev-box show-remote-connection --name "MyDevBox" --dev-center-name "{devCenterName}" \
-               --project-name "{projectName}" --user-id "me"
+               az devcenter dev dev-box show-remote-connection --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Get remote connection using dev center
+        text: |-
+               az devcenter dev dev-box show-remote-connection --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
     "devcenter dev dev-box start"
 ] = """
     type: command
-    short-summary: "Starts a dev box."
+    short-summary: "Start a dev box."
     examples:
-      - name: startDevBoxForUser
+      - name: Start using dev center
         text: |-
-               az devcenter dev dev-box start --name "MyDevBox" --dev-center-name "{devCenterName}" \
-               --project-name "{projectName}" --user-id "me"
+               az devcenter dev dev-box start --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Start using endpoint
+        text: |-
+               az devcenter dev dev-box start --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev dev-box restart"
+] = """
+    type: command
+    short-summary: "Restart a dev box."
+    examples:
+      - name: Restart using dev center
+        text: |-
+               az devcenter dev dev-box restart --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Restart using endpoint
+        text: |-
+               az devcenter dev dev-box restart --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
     "devcenter dev dev-box stop"
 ] = """
     type: command
-    short-summary: "Stops a dev box."
+    short-summary: "Stop a dev box."
     examples:
-      - name: stopDevBoxForUser
+      - name: Stop using dev center
         text: |-
-               az devcenter dev dev-box stop --name "MyDevBox" --dev-center-name "{devCenterName}" \
-               --project-name "{projectName}" --user-id "me"
+               az devcenter dev dev-box stop --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Stop using endpoint
+        text: |-
+               az devcenter dev dev-box stop --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
-    "devcenter dev dev-box list-upcoming-action"
+    "devcenter dev dev-box list-action"
 ] = """
     type: command
-    short-summary: "Lists upcoming actions on a Dev Box."
+    short-summary: "List actions on a dev box."
     examples:
-      - name: DevBoxes_ListUpcomingActions
+      - name: List actions using dev center
         text: |-
-               az devcenter dev dev-box list-upcoming-action --dev-center-name "{devCenterName}" \
---project-name "{projectName}" --name "myDevBox" --user-id "me"
+               az devcenter dev dev-box list-action --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --name "myDevBox" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: List actions using endpoint
+        text: |-
+               az devcenter dev dev-box list-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --name "myDevBox" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
-    "devcenter dev dev-box delay-upcoming-action"
+    "devcenter dev dev-box delay-action"
 ] = """
     type: command
-    short-summary: "Delays an Upcoming Action."
+    short-summary: "Delay an action."
     examples:
-      - name: DevBoxes_DelayUpcomingAction
+      - name: Delay action using dev center
         text: |-
-               az devcenter dev dev-box delay-upcoming-action --dev-center-name "{devCenterName}" \
---project-name "{projectName}" --delay-time "04:30" --name "myDevBox" \
---upcoming-action-id "cae4d1f4-94b8-75f2-406d-5f00ae4c1da7 --user-id "00000000-0000-0000-0000-000000000000""
+               az devcenter dev dev-box delay-action --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --delay-time "04:30" --name "myDevBox" \
+--action-name "schedule-default" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Delay action using endpoint
+        text: |-
+               az devcenter dev dev-box delay-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --delay-time "04:30" --name "myDevBox" \
+--action-name "schedule-default" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
-    "devcenter dev dev-box show-upcoming-action"
+    "devcenter dev dev-box delay-all-actions"
 ] = """
     type: command
-    short-summary: "Gets an Upcoming Action."
+    short-summary: "Delay all actions."
     examples:
-      - name: DevBoxes_GetUpcomingAction
+      - name: Delay all actions using dev center
         text: |-
-               az devcenter dev dev-box show-upcoming-action --dev-center-name "{devCenterName}" \
---project-name "{projectName}" --name "myDevBox" --upcoming-action-id \
-"cae4d1f4-94b8-75f2-406d-5f00ae4c1da7" --user-id "me"
+               az devcenter dev dev-box delay-all-actions --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --delay-time "04:30" --name "myDevBox" \
+--user-id "00000000-0000-0000-0000-000000000000"
+      - name: Delay all actions using endpoint
+        text: |-
+               az devcenter dev dev-box delay-all-actions --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --delay-time "04:30" --name "myDevBox" \
+--user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
-    "devcenter dev dev-box skip-upcoming-action"
+    "devcenter dev dev-box show-action"
 ] = """
     type: command
-    short-summary: "Skips an Upcoming Action."
+    short-summary: "Get an action."
     examples:
-      - name: DevBoxes_SkipUpcomingAction
+      - name: Get action using dev center
         text: |-
-               az devcenter dev dev-box skip-upcoming-action --dev-center-name "{devCenterName}" \
---project-name "{projectName}" --name "myDevBox" --upcoming-action-id \
-"cae4d1f4-94b8-75f2-406d-5f00ae4c1da7" --user-id "me"
+               az devcenter dev dev-box show-action --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --name "myDevBox" --action-name \
+"schedule-default" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Get action using endpoint
+        text: |-
+               az devcenter dev dev-box show-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --name "myDevBox" --action-name \
+"schedule-default" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev dev-box skip-action"
+] = """
+    type: command
+    short-summary: "Skip an action."
+    examples:
+      - name: Skip action using dev center
+        text: |-
+               az devcenter dev dev-box skip-action --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --name "myDevBox" --action-name \
+"schedule-default" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Skip action using endpoint
+        text: |-
+               az devcenter dev dev-box skip-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --name "myDevBox" --action-name \
+"schedule-default" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
     "devcenter dev environment"
 ] = """
     type: group
-    short-summary: Manage environment with devcenter
+    short-summary: Manage environments.
 """
 
 helps[
     "devcenter dev environment list"
 ] = """
     type: command
-    short-summary: "Lists the environments for a project."
+    short-summary: "List the environments for a project or list the environments for a user within a project."
     examples:
-      - name: Environments_ListByProject
+      - name: List by project using dev center
         text: |-
-              az devcenter dev environment list --dev-center-name "{devCenterName}" \
---project-name "{projectName}" --user-id "me"
+              az devcenter dev environment list --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject"
+      - name: List by project using endpoint
+        text: |-
+              az devcenter dev environment list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject"
+      - name: List by user and project using dev center
+        text: |-
+               az devcenter dev environment list --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: List by user and project using endpoint
+        text: |-
+               az devcenter dev environment list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
     "devcenter dev environment show"
 ] = """
     type: command
-    short-summary: "Gets an environment."
+    short-summary: "Get an environment."
     examples:
-      - name: Environments_Get
+      - name: Get using dev center
         text: |-
-              az devcenter dev environment show --dev-center-name "{devCenterName}" \
---name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
+              az devcenter dev environment show --dev-center-name "ContosoDevCenter" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+    examples:
+      - name: Get using endpoint
+        text: |-
+              az devcenter dev environment show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
@@ -291,216 +403,176 @@ helps[
     type: command
     short-summary: "Create an environment."
     examples:
-      - name: Environments_CreateByCatalogItem
+      - name: Create using dev center
         text: |-
-              az devcenter dev environment create --description "Personal Dev Environment" --catalog-item-name \
-"helloworld" --catalog-name "main" --environment-type "DevTest" --parameters "{\\"functionAppRuntime\\":\\"node\\",\\"s\
-torageAccountType\\":\\"Standard_LRS\\"}" --dev-center-name "{devCenterName}" \
---name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
+               az devcenter dev environment create --dev-center-name "ContosoDevCenter" --project-name "DevProject" \
+--catalog-name "main" --environment-definition-name "helloworld" --environment-type "DevTest" --parameters "{\\"functionAppRuntime\\":\\"node\
+\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "mydevenv" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Create using endpoint
+        text: |-
+               az devcenter dev environment create --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" \
+--catalog-name "main" --environment-definition-name "helloworld" --environment-type "DevTest" --parameters "{\\"functionAppRuntime\\":\\"node\
+\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "mydevenv" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
     "devcenter dev environment update"
 ] = """
     type: command
-    short-summary: "Partially updates an environment."
+    short-summary: "Update an environment."
     examples:
-      - name: Environments_Update
+      - name: Update using dev center
         text: |-
-              az devcenter dev environment update --description "Personal Dev Environment 2" --dev-center-name "{devCenterName}" \
---name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
+               az devcenter dev environment update --dev-center-name "ContosoDevCenter" --project-name "DevProject" \
+--name "mydevenv" --user-id "00000000-0000-0000-0000-000000000000" --parameters "{\\"functionAppRuntime\\":\\"node\
+\\",\\"storageAccountType\\":\\"Standard_LRS\\"}"
+      - name: Update using endpoint
+        text: |-
+               az devcenter dev environment update --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" \
+--name "mydevenv" --user-id "00000000-0000-0000-0000-000000000000" --parameters "{\\"functionAppRuntime\\":\\"node\
+\\",\\"storageAccountType\\":\\"Standard_LRS\\"}"
+"""
+
+helps[
+    "devcenter dev environment deploy"
+] = """
+    type: command
+    short-summary: "Update an environment."
+    examples:
+      - name: Update using dev center
+        text: |-
+               az devcenter dev environment deploy --dev-center-name "ContosoDevCenter" --project-name "DevProject" \
+--name "mydevenv" --user-id "00000000-0000-0000-0000-000000000000" --parameters "{\\"functionAppRuntime\\":\\"node\
+\\",\\"storageAccountType\\":\\"Standard_LRS\\"}"
+      - name: Update using endpoint
+        text: |-
+               az devcenter dev environment deploy --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" \
+--name "mydevenv" --user-id "00000000-0000-0000-0000-000000000000" --parameters "{\\"functionAppRuntime\\":\\"node\
+\\",\\"storageAccountType\\":\\"Standard_LRS\\"}"
 """
 
 helps[
     "devcenter dev environment delete"
 ] = """
     type: command
-    short-summary: "Deletes an environment and all it's associated resources."
+    short-summary: "Delete an environment and all its associated resources."
     examples:
-      - name: Environments_Delete
+      - name: Delete using dev center
         text: |-
-              az devcenter dev environment delete --dev-center-name "{devCenterName}"  \
-              --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
+              az devcenter dev environment delete --dev-center-name "ContosoDevCenter"  \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Delete using endpoint
+        text: |-
+              az devcenter dev environment delete --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
-    "devcenter dev environment deploy-action"
-] = """
-    type: command
-    short-summary: "Executes a deploy action."
-    examples:
-      - name: Environments_DeployAction
-        text: |-
-              az devcenter dev environment deploy-action --action-id "deploy" --parameters "{\\"functionAppRuntime\\":\\"n\
-ode\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "{environmentName}" --project-name "myProject" --user-id \
-"me" --dev-center-name "{devCenterName}"
-"""
-
-helps[
-    "devcenter dev environment wait"
-] = """
-    type: command
-    short-summary: Place the CLI in a waiting state until a condition of the devcenter environment is met.
-    examples:
-      - name: Pause executing next line of CLI script until the devcenter environment is successfully created.
-        text: |-
-              az devcenter dev environment wait --dev-center-name "{devCenterName}" \
---name "{environmentName}" --project-name "{projectName}" --user-id "{userId}" --created
-      - name: Pause executing next line of CLI script until the devcenter environment is successfully updated.
-        text: |-
-              az devcenter dev environment wait --dev-center-name "{devCenterName}" \
---name "{environmentName}" --project-name "{projectName}" --user-id "{userId}" --updated
-      - name: Pause executing next line of CLI script until the devcenter environment is successfully deleted.
-        text: |-
-              az devcenter dev environment wait --dev-center-name "{devCenterName}" \
---name "{environmentName}" --project-name "{projectName}" --user-id "{userId}" --deleted
-"""
-
-helps[
-    "devcenter dev catalog-item"
+    "devcenter dev catalog"
 ] = """
     type: group
-    short-summary: Manage catalog item with devcenter
+    short-summary: Manage catalogs.
 """
 
 helps[
-    "devcenter dev catalog-item list"
+    "devcenter dev catalog list"
 ] = """
     type: command
-    short-summary: "Lists latest version of all catalog items available for a project."
+    short-summary: "List all of the catalogs available for a project."
     examples:
-      - name: CatalogItems_ListByProject
+      - name: List using dev center
         text: |-
-               az devcenter dev catalog-item list --dev-center-name "{devCenterName}" \
-               --project-name "{projectName}"
+               az devcenter dev catalog list --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject"
+      - name: List using endpoint
+        text: |-
+               az devcenter dev catalog list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject"
 """
 
 helps[
-    "devcenter dev catalog-item"
-] = """
-    type: group
-    short-summary: Manage catalog item with devcenter
-"""
-
-helps[
-    "devcenter dev catalog-item show"
+    "devcenter dev catalog show"
 ] = """
     type: command
-    short-summary: "Get a catalog item from a project."
+    short-summary: "Get the specified catalog within the project."
     examples:
-      - name: CatalogItems_Get
+      - name: Get using dev center
         text: |-
-               az devcenter dev catalog-item show --dev-center-name "{devCenterName}" \
-               --project-name "{projectName}" --catalog-item-id "{catalogItemId}"
-"""
-
-helps[
-    "devcenter dev catalog-item-version"
-] = """
-    type: group
-    short-summary: Manage catalog item version with devcenter
-"""
-
-helps[
-    "devcenter dev catalog-item-version list"
-] = """
-    type: command
-    short-summary: "List all versions of a catalog item from a project."
-    examples:
-      - name: CatalogItemVersions_ListByProject
+               az devcenter dev catalog show --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --catalog-name "foo"
+      - name: Get using endpoint
         text: |-
-               az devcenter dev catalog-item-version list --dev-center-name "{devCenterName}"  \
-                --project-name "{projectName}" --catalog-item-id "{catalogItemId}"
-"""
-
-helps[
-    "devcenter dev catalog-item-version show"
-] = """
-    type: command
-    short-summary: "Get a specific catalog item version from a project."
-    examples:
-      - name: CatalogItemVersion_Get
-        text: |-
-               az devcenter dev catalog-item-version show --dev-center-name "{devCenterName}"  \
-               --project-name "{projectName}" --catalog-item-id "{catalogItemId}" --version "1.0.0"
+               az devcenter dev catalog show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --catalog-name "foo"
 """
 
 helps[
     "devcenter dev environment-type"
 ] = """
     type: group
-    short-summary: Manage environment type with devcenter
+    short-summary: Manage environment types.
 """
 
 helps[
     "devcenter dev environment-type list"
 ] = """
     type: command
-    short-summary: "Lists all environment types configured for a project."
+    short-summary: "List all environment types configured for a project."
     examples:
-      - name: EnvironmentType_ListByProject
+      - name: List using dev center
         text: |-
-               az devcenter dev environment-type list --dev-center-name "{devCenterName}"  \
-              --project-name "{projectName}"
+               az devcenter dev environment-type list --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject"
+      - name: List using endpoint
+        text: |-
+               az devcenter dev environment-type list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject"
 """
 
 helps[
-    "devcenter dev notification-setting"
+    "devcenter dev environment-definition"
 ] = """
     type: group
-    short-summary: Manage notification setting with devcenter
+    short-summary: Manage environment definitions.
 """
 
 helps[
-    "devcenter dev notification-setting show"
+    "devcenter dev environment-definition list"
 ] = """
     type: command
-    short-summary: "Gets notification settings for user in the project."
+    short-summary: "List all environment definitions available within a catalog or list all environment \
+definitions available for a project."
     examples:
-      - name: DevCenter_GetNotificationSettings
+      - name: List using dev center
         text: |-
-               az devcenter dev notification-setting show --dev-center-name "{devCenterName}"  \
-              --project-name "{projectName}" --user-id "me"
+               az devcenter dev environment-definition list --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject"
+      - name: List using endpoint
+        text: |-
+               az devcenter dev environment-definition list --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject"
+      - name: List by catalog using dev center
+        text: |-
+               az devcenter dev environment-definition list --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --catalog-name "myCatalog"
+      - name: List by catalog using endpoint
+        text: |-
+               az devcenter dev environment-definition list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --catalog-name "myCatalog"
 """
 
 helps[
-    "devcenter dev notification-setting create"
+    "devcenter dev environment-definition show"
 ] = """
     type: command
-    short-summary: "Creates or updates notification settings."
-    parameters:
-      - name: --email-notification
-        short-summary: "The email notification"
-        long-summary: |
-            Usage: --email-notification enabled=XX recipients=XX cc=XX
-
-            enabled: Required. If email notification is enabled
-            recipients: The recipients of the email notification
-            cc: The cc of the email notification
-      - name: --webhook-notification
-        short-summary: "The webhook notification"
-        long-summary: |
-            Usage: --webhook-notification enabled=XX url=XX
-
-            enabled: Required. If webhook notification is enabled
-            url: The url of the webhook
+    short-summary: "Get an environment definition from a catalog."
     examples:
-      - name: DevCenter_CreateNotificationSettings
+      - name: Get using dev center
         text: |-
-               az devcenter dev notification-setting create --dev-center-name "{devCenterName}"  \
---project-name "{projectName}" --culture "en-us" --enabled false --boolean-enabled \
-true --email-notification cc="stubcc@domain.com" enabled=true recipients="stubrecipient@domain.com" \
---webhook-notification enabled=false url="https://fake.domain/url/hook" --user-id "me"
-"""
-
-helps[
-    "devcenter dev notification-setting list-allowed-culture"
-] = """
-    type: command
-    short-summary: "Lists allowed culture codes for notification settings."
-    examples:
-      - name: DevCenter_ListNotificationSettingsAllowedCultures
+               az devcenter dev environment-definition show --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --catalog-name "myCatalog" --definition-name "foo"
+      - name: Get using endpoint
         text: |-
-              az devcenter dev notification-setting list-allowed-culture --dev-center-name "{devCenterName}"  \
---project-name "{projectName}" --user-id "me"
+               az devcenter dev environment-definition show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --catalog-name "myCatalog" --definition-name "foo"
 """

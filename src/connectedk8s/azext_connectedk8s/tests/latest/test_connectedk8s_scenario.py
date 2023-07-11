@@ -13,6 +13,7 @@ from knack.util import CLIError
 import azext_connectedk8s._constants as consts
 import urllib.request
 import shutil
+import time
 from knack.log import get_logger
 from azure.cli.core import get_default_cli
 import subprocess
@@ -514,3 +515,49 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         # delete the kube config
         os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
 
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
+    def test_proxy(self,resource_group):
+        managed_cluster_name = self.create_random_name(prefix='test-proxy', length=24)
+        kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
+        kubeconfig2="%s" % (_get_test_data_file(managed_cluster_name + '-config2.yaml'))
+        name = self.create_random_name(prefix='cc-', length=12)
+        self.kwargs.update({
+            'name': name,
+            'kubeconfig': kubeconfig,
+            'kubeconfig2': kubeconfig2,
+            'rg':resource_group,
+            'managed_cluster_name': managed_cluster_name
+        })
+
+        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
+        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
+        self.cmd('connectedk8s connect -g {rg} -n {name} -l eastus --tags foo=doo --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin', checks=[
+            self.check('tags.foo', 'doo'),
+            self.check('name', '{name}')
+        ])
+        self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
+            self.check('name', '{name}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('tags.foo', 'doo')
+        ])
+        # starting the proxy
+        script = ['az','connectedk8s', 'proxy', '-n', name, '-g', resource_group, '-f' , kubeconfig2, '&']
+        process = subprocess.Popen(script, shell=True)
+
+        # Time to let the kubeconfig merge in current context
+        time.sleep(10)
+
+        # Start running proxy as a background process
+        process2 = subprocess.Popen(['disown %1'],shell=True)
+
+        # testing if the proxy kubeconfig file is created
+        process3 = ['sudo', 'cat', kubeconfig2]
+        process3 = subprocess.run(process3,shell=True)
+
+        # Cleaning up the cluster
+        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
+        self.cmd('aks delete -g {rg} -n {managed_cluster_name} -y')
+
+        # delete the kube config
+        os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))

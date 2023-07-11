@@ -8,102 +8,109 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-import os
-from azure.cli.testsdk import ScenarioTest
-from azure.cli.testsdk import ResourceGroupPreparer
-from .example_steps import step_monitor_create
-from .example_steps import step_monitor_show
-from .example_steps import step_monitor_list
-from .example_steps import step_monitor_list2
-from .example_steps import step_monitor_update
-from .example_steps import step_deployment_info_list
-from .example_steps import step_monitored_resource_list
-from .example_steps import step_tag_rule_create
-from .example_steps import step_tag_rule_show
-from .example_steps import step_tag_rule_list
-from .example_steps import step_tag_rule_delete
-from .example_steps import step_vm_collection_update
-from .example_steps import step_vm_host_list
-from .example_steps import step_vm_ingestion_detail
-from .example_steps import step_monitor_delete
-from .. import (
-    try_manual,
-    raise_if,
-    calc_coverage
-)
+from azure.cli.testsdk import *
 
 
-TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-
-
-# Env setup_scenario
-@try_manual
-def setup_scenario(test):
-    pass
-
-
-# Env cleanup_scenario
-@try_manual
-def cleanup_scenario(test):
-    pass
-
-
-# Testcase: Scenario
-@try_manual
-def call_scenario(test):
-    setup_scenario(test)
-    step_monitor_create(test, checks=[
-        test.check("name", "{myMonitor}", case_sensitive=False),
-        test.check("location", "westus2", case_sensitive=False),
-        test.check("sku.name", "ess-monthly-consumption_Monthly", case_sensitive=False),
-        test.check("tags.Environment", "Dev", case_sensitive=False),
-    ])
-    step_monitor_show(test, checks=[
-        test.check("name", "{myMonitor}", case_sensitive=False),
-        test.check("location", "westus2", case_sensitive=False),
-        test.check("tags.Environment", "Dev", case_sensitive=False),
-    ])
-    step_monitor_list(test, checks=[
-        test.check('length(@)', 37),
-    ])
-    step_monitor_list2(test, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_monitor_update(test, checks=[
-        test.check("name", "{myMonitor}", case_sensitive=False),
-        test.check("location", "westus2", case_sensitive=False),
-        test.check("sku.name", "ess-monthly-consumption_Monthly", case_sensitive=False),
-        test.check("tags.Environment", "Dev", case_sensitive=False),
-    ])
-    step_deployment_info_list(test, checks=[])
-    step_monitored_resource_list(test, checks=[])
-    step_tag_rule_create(test, checks=[])
-    step_tag_rule_show(test, checks=[])
-    step_tag_rule_list(test, checks=[])
-    # Error  (ResourceDeletionFailed) Resource deletion failed as RP returned status code: 'UnprocessableEntity'
-    # step_tag_rule_delete(test, checks=[])
-    step_vm_collection_update(test, checks=[])
-    step_vm_host_list(test, checks=[])
-    step_vm_ingestion_detail(test, checks=[])
-    step_monitor_delete(test, checks=[])
-    cleanup_scenario(test)
-
-
-# Test class for Scenario
-@try_manual
-class ElasticScenarioTest(ScenarioTest):
-    def __init__(self, *args, **kwargs):
-        super(ElasticScenarioTest, self).__init__(*args, **kwargs)
+class ElasticScenario(ScenarioTest):
+    @ResourceGroupPreparer(name_prefix='cli_test_elastic_monitor', location='eastus')
+    def test_elastic_monitor(self, resource_group):
+        email = self.cmd('account show').get_output_in_json()['user']['name']
         self.kwargs.update({
-            'subscription_id': self.get_subscription_id()
+            'monitor': self.create_random_name('monitor', 20),
+            'email': email
         })
+        self.cmd('elastic monitor create -n {monitor} -g {rg} --user-info {{firstName:Alice,lastName:bob,companyName:Micosoft,emailAddress:{email}}} --sku {{name:ess-monthly-consumption_Monthly}}', checks=[
+            self.check('name', '{monitor}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('sku.name', 'ess-monthly-consumption_Monthly')
+        ])
+        self.cmd('elastic monitor update -n {monitor} -g {rg} --tags {{tag:test,tag2:test2}}', checks=[
+            self.check('name', '{monitor}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('tags.tag', 'test'),
+            self.check('tags.tag2', 'test2')
+        ])
+        self.cmd('elastic monitor list -g {rg}', checks=[
+            self.check('[0].name', '{monitor}'),
+            self.check('[0].resourceGroup', '{rg}'),
+            self.check('[0].sku.name', 'ess-monthly-consumption_Monthly')
+        ])
+        self.cmd('elastic monitor show -n {monitor} -g {rg}', checks=[
+            self.check('name', '{monitor}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('sku.name', 'ess-monthly-consumption_Monthly')
+        ])
+        self.cmd("elastic monitor create-or-update-external-user --monitor-name {monitor} -g {rg} --user-name newuser --full-name fullname --password password --email-id email@outlook.com --roles [admin,other_role]", checks=[self.check('created', True)])
+        self.cmd('elastic monitor list-all-traffic-filter --monitor-name {monitor} -g {rg}', checks=[
+            self.check('length(@)', 1)
+        ])
+        self.cmd('elastic monitor list-associated-traffic-filter --monitor-name {monitor} -g {rg}', checks=[
+            self.check('length(@)', 1)
+        ])
+        self.cmd('elastic monitor list-deployment-info --monitor-name {monitor} -g {rg}', checks=[
+            self.check('status', 'Healthy')
+        ])
+        self.cmd('elastic monitor list-resource --monitor-name {monitor} -g {rg}')
+        self.cmd('elastic monitor list-upgradable-version --monitor-name {monitor} -g {rg}')
+        self.cmd('elastic monitor list-vm-host --monitor-name {monitor} -g {rg}')
+        self.cmd('elastic monitor detach-and-delete-traffic-filter --monitor-name {monitor} -g {rg}')
+        self.cmd('elastic monitor delete-traffic-filter --monitor-name {monitor} -g {rg}')
+        self.cmd('elastic monitor upgrade --monitor-name {monitor} -g {rg} --version 8.0.0'),
+        self.cmd('elastic monitor create-and-associate-ip-filter --monitor-name {monitor} -g {rg} --name filter1 --ips "192.168.131.0, 192.168.132.6/22"')
+        self.cmd('elastic monitor create-and-associate-pl-filter --monitor-name {monitor} -g {rg} --name filter2'),
+        self.cmd('elastic monitor delete-traffic-filter --monitor-name {monitor} -g {rg}')
 
+        self.cmd('elastic monitor delete -n {monitor} -g {rg} -y')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_elastic_monitor', location='eastus')
+    def test_elastic_monitor_tag_rule(self, resource_group):
+        email = self.cmd('account show').get_output_in_json()['user']['name']
         self.kwargs.update({
-            'myMonitor': 'myMonitor',
+            'monitor': self.create_random_name('monitor', 20),
+            'email': email
         })
-
-    @ResourceGroupPreparer(name_prefix='clitestelastic_myResourceGroup'[:7], key='rg', parameter_name='rg')
-    def test_elastic_Scenario(self, rg):
-        call_scenario(self)
-        calc_coverage(__file__)
-        raise_if()
+        self.cmd('elastic monitor create -n {monitor} -g {rg} --user-info {{firstName:Alice,lastName:bob,companyName:Micosoft,emailAddress:{email}}} --sku {{name:ess-monthly-consumption_Monthly}}', checks=[
+            self.check('name', '{monitor}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('sku.name', 'ess-monthly-consumption_Monthly'),
+        ])
+        self.cmd('elastic monitor tag-rule create -n default -g {rg} --monitor-name {monitor} --log-rules {{filteringTags:[{{name:Environment,value:Prod,action:Include}}]}}', checks=[
+            self.check('name', 'default'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('properties.logRules.filteringTags[0].action', 'Include'),
+            self.check('properties.logRules.filteringTags[0].name', 'Environment'),
+            self.check('properties.logRules.filteringTags[0].value', 'Prod'),
+            self.check('properties.logRules.sendAadLogs', False),
+            self.check('properties.logRules.sendActivityLogs', False),
+            self.check('properties.logRules.sendSubscriptionLogs', False)
+        ])
+        self.cmd('elastic monitor tag-rule update -n default -g {rg} --monitor-name {monitor} --log-rules {{filteringTags:[{{name:Environment2,value:Prod,action:Include}}]}}', checks=[
+            self.check('name', 'default'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('properties.logRules.filteringTags[0].action', 'Include'),
+            self.check('properties.logRules.filteringTags[0].name', 'Environment2'),
+            self.check('properties.logRules.filteringTags[0].value', 'Prod'),
+            self.check('properties.logRules.sendAadLogs', False),
+            self.check('properties.logRules.sendActivityLogs', False),
+            self.check('properties.logRules.sendSubscriptionLogs', False)
+        ])
+        self.cmd('elastic monitor tag-rule list -g {rg} --monitor-name {monitor}', checks=[
+            self.check('[0].name', 'default'),
+            self.check('[0].resourceGroup', '{rg}'),
+            self.check('[0].properties.logRules.filteringTags[0].action', 'Include'),
+            self.check('[0].properties.logRules.filteringTags[0].name', 'Environment2'),
+            self.check('[0].properties.logRules.filteringTags[0].value', 'Prod'),
+            self.check('[0].properties.logRules.sendAadLogs', False),
+            self.check('[0].properties.logRules.sendActivityLogs', False),
+            self.check('[0].properties.logRules.sendSubscriptionLogs', False)
+        ])
+        self.cmd('elastic monitor tag-rule show -n default -g {rg} --monitor-name {monitor}', checks=[
+            self.check('name', 'default'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('properties.logRules.filteringTags[0].action', 'Include'),
+            self.check('properties.logRules.filteringTags[0].name', 'Environment2'),
+            self.check('properties.logRules.filteringTags[0].value', 'Prod'),
+            self.check('properties.logRules.sendAadLogs', False),
+            self.check('properties.logRules.sendActivityLogs', False),
+            self.check('properties.logRules.sendSubscriptionLogs', False)
+        ])
