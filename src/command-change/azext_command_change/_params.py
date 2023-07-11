@@ -7,7 +7,7 @@
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
-import cliMetaTool
+import azureCliDiffTool
 
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
@@ -16,8 +16,8 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('base_meta_file', required=True, help='command meta json file')
         c.argument('diff_meta_file', required=True, help='command meta json file to diff')
         c.argument('only_break', action="store_true", help='whether include non breaking changes')
-        c.argument('output_type', choices=cliMetaTool.diff_export_format_choices(),
-                   default=cliMetaTool.diff_export_format_choices()[0],
+        c.argument('output_type', choices=azureCliDiffTool.diff_export_format_choices(),
+                   default=azureCliDiffTool.diff_export_format_choices()[0],
                    help='format to print diff and suggest message')
         c.argument('output_file', help='command meta diff json file path to store')
 
@@ -25,4 +25,5 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('base_version', required=True, help='azure cli version as base')
         c.argument('diff_version', required=True, help='azure cli version to diff')
         c.argument('only_break', action="store_true", help='whether include non breaking changes')
+        c.argument('use_cache', action="store_true", help='whether use cached metadata files')
         c.argument('version_diff_file', help='command meta version diff file path to store')

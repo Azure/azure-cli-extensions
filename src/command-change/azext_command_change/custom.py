@@ -8,17 +8,17 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 from knack.log import get_logger
-import cliMetaTool
+import azureCliDiffTool
 
 logger = get_logger(__name__)
 
 
 def meta_diff(base_meta_file, diff_meta_file, only_break=False, output_type="text", output_file=None):
-    return cliMetaTool.meta_diff(base_meta_file, diff_meta_file, only_break, output_type, output_file)
+    return azureCliDiffTool.meta_diff(base_meta_file, diff_meta_file, only_break, output_type, output_file)
 
 
 def version_diff(base_version, diff_version, only_break=False, version_diff_file=None):
-    return cliMetaTool.version_diff(base_version, diff_version, only_break, version_diff_file)
+    return azureCliDiffTool.version_diff(base_version, diff_version, only_break, version_diff_file)
 
 
 
