@@ -283,7 +283,8 @@ class NSConfiguration(Configuration):
             raise ValueError("multiple_instances must be a boolean")
 
         # There is currently a NFM bug that means that multiple copies of the same NF
-        # cannot be deployed to the same custom location.
+        # cannot be deployed to the same custom location:
+        # https://portal.microsofticm.com/imp/v3/incidents/details/405078667/home
         if self.network_function_type == CNF and self.multiple_instances:
             raise ValueError("Multiple instances is not supported on CNFs.")
 
