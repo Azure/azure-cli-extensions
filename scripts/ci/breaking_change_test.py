@@ -9,6 +9,8 @@ import json
 import logging
 import os
 import subprocess
+import sys
+
 from util import diff_code
 
 from azdev.utilities.path import get_cli_repo_path, get_ext_repo_paths
@@ -30,14 +32,17 @@ diff_meta_path = '~/_work/1/diff_meta'
 output_path = '~/_work/1/output_meta'
 
 
-def install_extensions(diif_ref):
+def install_extensions(diif_ref, branch):
     for tname, ext_path in diif_ref:
         ext_name = ext_path.split('/')[-1]
         logger.info(f'installing extension: {ext_name}')
         cmd = ['azdev', 'extension', 'add', ext_name]
         logger.info(f'cmd: {cmd}')
-        out = run(cmd, check=True)
-        if out.returncode:
+        out = run(cmd)
+        if out.returncode and branch == 'base':
+            print(f"{cmd} failed, extesion {ext_name} is not exist on base branch, skip it.")
+            continue
+        else:
             raise RuntimeError(f"{cmd} failed")
 
 
@@ -47,7 +52,7 @@ def uninstall_extensions(diif_ref):
         logger.info(f'uninstalling extension: {ext_name}')
         cmd = ['azdev', 'extension', 'remove', ext_name]
         logger.info(f'cmd: {cmd}')
-        out = run(cmd, check=True)
+        out = run(cmd)
         if out.returncode:
             raise RuntimeError(f"{cmd} failed")
 
@@ -65,7 +70,7 @@ def get_diff_meta_files(diff_ref):
     cmd = ['git', 'rev-parse', 'HEAD']
     print(cmd)
     subprocess.run(cmd)
-    install_extensions(diff_ref)
+    install_extensions(diff_ref, branch='target')
     cmd = ['azdev', 'command-change', 'meta-export', '--src', src_branch, '--tgt', target_branch, '--repo', get_ext_repo_paths()[0], '--meta-output-path', diff_meta_path]
     print(cmd)
     subprocess.run(cmd)
@@ -82,7 +87,7 @@ def get_base_meta_files(diff_ref):
     cmd = ['git', 'rev-parse', 'HEAD']
     print(cmd)
     subprocess.run(cmd)
-    install_extensions(diff_ref)
+    install_extensions(diff_ref, branch='base')
     cmd = ['azdev', 'command-change', 'meta-export', 'EXT', '--meta-output-path', base_meta_path]
     print(cmd)
     subprocess.run(cmd)
