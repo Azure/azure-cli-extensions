@@ -39,9 +39,9 @@ def install_extensions(diif_ref, branch):
         cmd = ['azdev', 'extension', 'add', ext_name]
         logger.info(f'cmd: {cmd}')
         out = run(cmd)
-        if out.returncode and branch == 'base':
+        if out.returncode and branch == 'base' and 'ERROR: extension(s) not found' in out.stderr:
             print(f"{cmd} failed, extesion {ext_name} is not exist on base branch, skip it.")
-            continue
+            sys.exit(0)
         elif out.returncode:
             raise RuntimeError(f"{cmd} failed")
 
