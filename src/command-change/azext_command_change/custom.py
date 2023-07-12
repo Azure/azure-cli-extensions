@@ -21,6 +21,3 @@ def version_diff(base_version, diff_version, only_break=False, version_diff_file
                  output_type="dict", target_module=None):
     return azureCliDiffTool.version_diff(base_version, diff_version, only_break, version_diff_file,
                                          use_cache, output_type, target_module)
-
-
-
