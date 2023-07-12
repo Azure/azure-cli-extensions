@@ -73,7 +73,7 @@ def get_enable_mi_for_db_linker_func(yes=False):
                 telemetry.set_exception(e, "No-User-Oid")
                 if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserAccount]:
                     raise e
-                error_msg = "Unable to get current login user object id with `az ad signed-in-user show`. "
+                error_msg = "Unable to get current login user object id. "
                 if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserIdentity]:
                     error_msg += "You can provide it via --user-identity user-object-id=xx"
                 if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.SystemIdentity]:
