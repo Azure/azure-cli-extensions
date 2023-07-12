@@ -25,20 +25,20 @@ class CommunicationClientTest(ScenarioTest):
 
         self.kwargs['managed_identity_id'] = self.cmd('identity create -n managedIdentity -g {rg}').get_output_in_json()['id']
 
-        self.cmd('communication create -n {resource_name} -g {rg} --location global --data-location unitedstates --assign-identity [system]', checks=[
+        self.cmd('communication create -n {resource_name} -g {rg} --location global --data-location unitedstates --mi-system-assigned', checks=[
             self.check('identity.type', 'SystemAssigned')
         ])
 
         self.cmd('communication create -n {resource_name} -g {rg} --location global --data-location unitedstates')
-        self.cmd('communication identity assign -n {resource_name} -g {rg} --identities [system]', checks=[
+        self.cmd('communication identity assign -n {resource_name} -g {rg} --system-assigned', checks=[
             self.check('type', 'SystemAssigned')
         ])
 
-        self.cmd('communication identity assign -n {resource_name} -g {rg} --identities [system] {managed_identity_id}', checks={
+        self.cmd('communication identity assign -n {resource_name} -g {rg} --system-assigned --user-assigned {managed_identity_id}', checks={
             self.check('type', "SystemAssigned,UserAssigned")
         })
 
-        self.cmd('communication identity remove -n {resource_name} -g {rg} --identities [system]', checks={
+        self.cmd('communication identity remove -n {resource_name} -g {rg} --system-assigned', checks={
             self.check('type', "UserAssigned")
         })
 

@@ -36,15 +36,19 @@ class IdentityAssign(_IdentityAssign):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZListArg, AAZStrArg
-        args_schema.identities = AAZListArg(
-            options=["--identities"],
-            help="""Space-separated identities to assign. Use
-                '[system]' to refer to the system assigned identity. Default: '[system]'""",
-            required=False,
-            default=["[system]"]
+        from azure.cli.core.aaz import AAZListArg, AAZResourceIdArg, AAZBoolArg, AAZResourceIdArgFormat
+        args_schema.system_assigned = AAZBoolArg(
+            options=["--system-assigned"],
+            help="Enable system assigned identity.",
         )
-        args_schema.identities.Element = AAZStrArg()
+        args_schema.user_assigned = AAZListArg(
+            options=["--user-assigned"],
+            help="Space separated resource IDs to add user-assigned identities. Use [] to remove all identities."
+        )
+        args_schema.user_assigned.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
+                                                "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
+        )
         args_schema.type._registered = False
         args_schema.type._required = False
         args_schema.user_assigned_identities._registered = False
@@ -66,11 +70,12 @@ class IdentityAssign(_IdentityAssign):
         if "UserAssigned" in str(current_identity_type):
             user_assigned_flag = True
 
-        for identity in args.identities:
-            if str(identity) == "[system]" or str(identity) == "system":
-                system_assigned_flag = True
-            else:
-                user_assigned_flag = True
+        if args.system_assigned:
+            system_assigned_flag = True
+
+        if args.user_assigned:
+            user_assigned_flag = True
+            for identity in args.user_assigned:
                 user_dict[str(identity)] = {}
 
         if user_assigned_flag:
@@ -84,14 +89,20 @@ class IdentityRemove(_IdentityRemove):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZListArg, AAZStrArg
-        args_schema.identities = AAZListArg(
-            options=["--identities"],
-            help="Space-separated identities to remove. Use '[system]' to refer to the system assigned identity.",
-            required=False,
-            default=["*"]
+        from azure.cli.core.aaz import AAZListArg, AAZResourceIdArg, AAZBoolArg, AAZResourceIdArgFormat
+        args_schema.system_assigned = AAZBoolArg(
+            options=["--system-assigned"],
+            help="""Enable system assigned identity.""",
         )
-        args_schema.identities.Element = AAZStrArg()
+        args_schema.user_assigned = AAZListArg(
+            options=["--user-assigned"],
+            help="Space separated resource IDs to add user-assigned identities. Use [] to remove all identities.",
+        )
+
+        args_schema.user_assigned.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
+                                                "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}"),
+        )
         args_schema.type._registered = False
         args_schema.type._required = False
         args_schema.user_assigned_identities._registered = False
@@ -99,6 +110,7 @@ class IdentityRemove(_IdentityRemove):
         return args_schema
 
     def pre_instance_update(self, instance):
+        from azure.cli.core.aaz import has_value
         current_identity_type = ""
         current_assigned_identities = {}
         system_assigned_flag = False
@@ -107,7 +119,6 @@ class IdentityRemove(_IdentityRemove):
         current_identity_type = instance.type
         current_assigned_identities = instance.user_assigned_identities
         current_assigned_identities = dict.fromkeys(current_assigned_identities.keys(), {})
-        print(current_assigned_identities)
 
         del instance.user_assigned_identities
 
@@ -118,31 +129,30 @@ class IdentityRemove(_IdentityRemove):
 
         user_dict = {}
 
-        for identity in args.identities:
-            if str(identity) == "*":
-                system_assigned_flag = False
-                user_assigned_flag = False
-            elif str(identity) == "[system]" or str(identity) == "system":
-                if system_assigned_flag is True:
-                    system_assigned_flag = False
-                else:
-                    logger.warning("The resource does not currently have a system assigned managed identity.")
-                    raise Exception
-            else:  # case for user identity
-                if str(identity) in current_assigned_identities:
-                    print("hey")
-                    current_assigned_identities.pop(str(identity))
-                else:
-                    logger.warning(
-                        'The following was not found as a managed identity for the current resource: %s', str(identity)
-                    )
-                    raise Exception
+        if args.system_assigned:
+            system_assigned_flag = False
+
+        if has_value(args.user_assigned):
+            if len(args.user_assigned) == 0:
+                print("heeey")
+                current_assigned_identities = []
+            else:
+                for identity in args.user_assigned:
+                    print("neta")
+                    if str(identity) in current_assigned_identities:
+                        current_assigned_identities.pop(str(identity))
+                    else:
+                        logger.warning(
+                            'The following was not found as a managed identity for the current resource: %s', str(identity)
+                        )
+                        raise Exception
 
         if len(current_assigned_identities) == 0:
             user_assigned_flag = False
         else:
             for identity in current_assigned_identities:
                 user_dict[str(identity)] = {}
+
             args.user_assigned_identities = user_dict
 
         args.type = args_type_assignment(user_assigned_flag, system_assigned_flag)
@@ -152,15 +162,18 @@ class CommunicationCreate(_CommunicationCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZListArg, AAZStrArg
-        args_schema.assign_identity = AAZListArg(
-            options=["--assign-identity"],
-            help="""Space-separated identities to assign.
-                Use '[system]' to refer to the system assigned identity or a resource id to refer to a user assigned identity
-            """,
-            required=False
+        from azure.cli.core.aaz import AAZListArg, AAZBoolArg, AAZResourceIdArg, AAZResourceIdArgFormat
+        args_schema.system_assigned = AAZBoolArg(
+            options=["--mi-system-assigned"],
+            help="""Enable system assigned identity.""",
         )
-        args_schema.assign_identity.Element = AAZStrArg()
+        args_schema.user_assigned = AAZListArg(
+            options=["--mi-user-assigned"],
+            help="Space separated resource IDs to add user-assigned identities."
+        )
+        args_schema.user_assigned.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}")
+        )
         args_schema.type._registered = False
         args_schema.type._required = False
         args_schema.user_assigned_identities._registered = False
@@ -173,11 +186,12 @@ class CommunicationCreate(_CommunicationCreate):
         user_assigned_flag = False
         user_dict = {}
 
-        for identity in args.assign_identity:
-            if str(identity) == "[system]" or str(identity) == "system":
-                system_assigned_flag = True
-            else:
-                user_assigned_flag = True
+        if args.system_assigned:
+            system_assigned_flag = True
+
+        if args.user_assigned:
+            user_assigned_flag = True
+            for identity in args.user_assigned:
                 user_dict[str(identity)] = {}
 
         if user_assigned_flag:
