@@ -14,7 +14,7 @@ helps['command-change'] = """
     short-summary: Commands for CLI modules metadata management.
 """
 
-helps['command-change version-export'] = """
+helps['command-change version-diff'] = """
     short-summary: Diff command meta data between different cli versions.
     examples:
         - name: Diff command meta data of monitor module between cli version 2.49.0 and 2.47.0 
@@ -22,8 +22,8 @@ helps['command-change version-export'] = """
 """
 
 helps['command-change meta-diff'] = """
-    short-summary: Diff the command meta between provided meta files.
+    short-summary: Diff command meta between provided meta files.
     examples:
-        - name: Diff the command meta change from fileA to fileB
+        - name: Diff command meta change from fileA to fileB
           text: az command-change meta-diff --base-meta-file fileA --diff-meta-file fileB --only-break
 """
