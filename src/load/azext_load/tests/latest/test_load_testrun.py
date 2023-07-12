@@ -21,6 +21,7 @@ from azure.cli.testsdk import (
     StorageAccountPreparer,
     ScenarioTest,
     create_random_name,
+    live_only,
 )
 
 rg_params = {
@@ -53,6 +54,7 @@ class LoadTestRunScenario(ScenarioTest):
         super(LoadTestRunScenario, self).__init__(*args, **kwargs)
         self.kwargs.update({"subscription_id": self.get_subscription_id()})
     
+    @live_only()
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_run_stop(self, rg, load):

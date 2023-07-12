@@ -296,7 +296,7 @@ def convert_yaml_to_test(data):
             if isinstance(items, dict):
                 name = list(items.keys())[0]
                 components = list(items.values())[0]
-            #validate failure criteria
+            # validate failure criteria
             try:
                 validate_failure_criteria(components)
             except InvalidArgumentValueError as e:
@@ -556,13 +556,19 @@ def upload_files_helper(
                 f"Test plan file {test_plan} is not valid. Please check the file and try again."
             )
 
+
 def validate_failure_criteria(failure_criteria):
     parts = failure_criteria.split("(")
     if len(parts) != 2:
         raise ValueError(f"Invalid failure criteria: {failure_criteria}")
-    metric, condition_value = parts
-    if ")" not in condition_value or len(condition_value.split(")")) != 2 or condition_value.endswith(")"):
+    _, condition_value = parts
+    if (
+        ")" not in condition_value
+        or len(condition_value.split(")")) != 2
+        or condition_value.endswith(")")
+    ):
         raise ValueError(f"Invalid failure criteria: {failure_criteria}")
-    
+
+
 def get_random_uuid():
     return str(uuid.uuid4())

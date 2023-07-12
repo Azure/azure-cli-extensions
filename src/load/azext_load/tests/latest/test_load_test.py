@@ -16,6 +16,7 @@ from azure.cli.testsdk import (
     VirtualNetworkPreparer,
     StorageAccountPreparer,
     create_random_name,
+    live_only,
 )
 
 rg_params = {
@@ -132,6 +133,23 @@ class LoadTestScenario(ScenarioTest):
         ).get(
             "value"
         )
+
+        # verify failureCriteria
+        pass_fail_metric = response.get("passFailCriteria",{}).get("passFailMetrics",{})
+        for item in pass_fail_metric.values():
+            if item.get("clientMetric") == "requests_per_sec":
+                assert item.get("value") == 78.0
+                assert item.get("condition") == ">"
+                assert item.get("aggregate") == "avg"
+            elif item.get("clientMetric") == "error":
+                assert item.get("value") == 50.0
+                assert item.get("condition") == ">"
+                assert item.get("aggregate") == "percentage"
+            else:
+                assert item.get("value") == 200.0
+                assert item.get("condition") == ">"
+                assert item.get("aggregate") == "avg"
+                assert item.get("requestName") == "GetCustomerDetails"
 
         #Invalid create test cases
         # 1. Creating test with existing test id
@@ -699,6 +717,7 @@ class LoadTestScenario(ScenarioTest):
             self.kwargs["server_metric_id"]
         )
 
+    @live_only()
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_file(self):
