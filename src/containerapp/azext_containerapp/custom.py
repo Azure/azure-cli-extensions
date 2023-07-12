@@ -4460,6 +4460,8 @@ def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, cer
                     cert_name = random_name
             logger.warning("Creating managed certificate '%s' for %s.\nIt may take up to 20 minutes to create and issue a managed certificate.", cert_name, standardized_hostname)
 
+            if validation_method is None:
+                raise RequiredArgumentMissingError('Please specify the parameter: --validation-method')
             validation = validation_method.upper()
             while validation not in ["TXT", "CNAME", "HTTP"]:
                 validation = prompt_str('\nPlease choose one of the following domain validation methods: TXT, CNAME, HTTP\nYour answer: ').upper()
