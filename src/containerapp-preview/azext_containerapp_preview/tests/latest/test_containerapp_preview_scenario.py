@@ -24,16 +24,6 @@ class ContainerappScenarioTest(ScenarioTest):
         cmd = ['azdev', 'extension', 'add', 'k8s-extension']
         run(cmd, check=True)
 
-    def tearDown(self):
-        cmd = ['azdev', 'extension', 'remove', 'containerapp']
-        run(cmd, check=True)
-        cmd = ['azdev', 'extension', 'remove', 'connectedk8s']
-        run(cmd, check=True)
-        cmd = ['azdev', 'extension', 'remove', 'k8s-extension']
-        run(cmd, check=True)
-
-        super(ContainerappScenarioTest, self).tearDown()
-
     @ResourceGroupPreparer(location="eastus", random_name_length=15)
     def test_containerapp_preview_environment_type(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
