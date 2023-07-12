@@ -146,9 +146,7 @@ def _extract_delay(response):
 
 
 class ContainerAppClient():
-    @classmethod
-    def get_api_version(cls):
-        return CURRENT_API_VERSION
+    api_version = CURRENT_API_VERSION
 
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, name, container_app_envelope, no_wait=False):
@@ -160,7 +158,7 @@ class ContainerAppClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(container_app_envelope))
 
@@ -175,7 +173,7 @@ class ContainerAppClient():
                 sub_id,
                 resource_group_name,
                 name,
-                cls.get_api_version())
+                cls.api_version)
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
         return r.json()
@@ -191,7 +189,7 @@ class ContainerAppClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(container_app_envelope))
 
@@ -217,7 +215,7 @@ class ContainerAppClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
 
@@ -239,7 +237,7 @@ class ContainerAppClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
@@ -253,7 +251,7 @@ class ContainerAppClient():
         request_url = "{}/subscriptions/{}/providers/Microsoft.App/containerApps?api-version={}".format(
             management_hostname.strip('/'),
             sub_id,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         j = r.json()
@@ -282,7 +280,7 @@ class ContainerAppClient():
             management_hostname.strip('/'),
             sub_id,
             resource_group_name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         j = r.json()
@@ -311,7 +309,7 @@ class ContainerAppClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=None)
         return r.json()
@@ -329,7 +327,7 @@ class ContainerAppClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         j = r.json()
@@ -358,7 +356,7 @@ class ContainerAppClient():
             resource_group_name,
             container_app_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
@@ -374,7 +372,7 @@ class ContainerAppClient():
             resource_group_name,
             container_app_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
@@ -390,7 +388,7 @@ class ContainerAppClient():
             resource_group_name,
             container_app_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
@@ -406,7 +404,7 @@ class ContainerAppClient():
             resource_group_name,
             container_app_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
@@ -424,7 +422,7 @@ class ContainerAppClient():
             resource_group_name,
             container_app_name,
             revision_name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         j = r.json()
@@ -452,7 +450,7 @@ class ContainerAppClient():
             container_app_name,
             revision_name,
             replica_name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
@@ -467,7 +465,7 @@ class ContainerAppClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
@@ -482,7 +480,7 @@ class ContainerAppClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version(),
+            cls.api_version,
             hostname)
 
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
@@ -490,6 +488,8 @@ class ContainerAppClient():
 
 
 class ManagedEnvironmentClient():
+    api_version = CURRENT_API_VERSION
+
     @classmethod
     def get_api_version(cls):
         return CURRENT_API_VERSION
@@ -504,7 +504,7 @@ class ManagedEnvironmentClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(managed_environment_envelope))
 
@@ -527,7 +527,7 @@ class ManagedEnvironmentClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(managed_environment_envelope))
 
@@ -559,7 +559,7 @@ class ManagedEnvironmentClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
 
@@ -582,7 +582,7 @@ class ManagedEnvironmentClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
@@ -596,7 +596,7 @@ class ManagedEnvironmentClient():
         request_url = "{}/subscriptions/{}/providers/Microsoft.App/managedEnvironments?api-version={}".format(
             management_hostname.strip('/'),
             sub_id,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         j = r.json()
@@ -625,7 +625,7 @@ class ManagedEnvironmentClient():
             management_hostname.strip('/'),
             sub_id,
             resource_group_name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         j = r.json()
@@ -654,7 +654,7 @@ class ManagedEnvironmentClient():
             resource_group_name,
             name,
             certificate_name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, body=None)
         return r.json()
@@ -670,7 +670,7 @@ class ManagedEnvironmentClient():
             resource_group_name,
             name,
             certificate_name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, body=None)
         return r.json()
@@ -687,7 +687,7 @@ class ManagedEnvironmentClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, body=None)
         j = r.json()
@@ -708,7 +708,7 @@ class ManagedEnvironmentClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, body=None)
         j = r.json()
@@ -728,7 +728,7 @@ class ManagedEnvironmentClient():
             resource_group_name,
             name,
             certificate_name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(certificate))
         return r.json()
@@ -744,7 +744,7 @@ class ManagedEnvironmentClient():
             resource_group_name,
             name,
             certificate_name,
-            cls.get_api_version())
+            cls.api_version)
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(certificate_envelop))
 
         if no_wait and not is_TXT:
@@ -788,7 +788,7 @@ class ManagedEnvironmentClient():
             resource_group_name,
             name,
             certificate_name,
-            cls.get_api_version())
+            cls.api_version)
 
         return send_raw_request(cmd.cli_ctx, "DELETE", request_url, body=None)
 
@@ -803,7 +803,7 @@ class ManagedEnvironmentClient():
             resource_group_name,
             name,
             certificate_name,
-            cls.get_api_version())
+            cls.api_version)
 
         return send_raw_request(cmd.cli_ctx, "DELETE", request_url, body=None)
 
@@ -817,7 +817,7 @@ class ManagedEnvironmentClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=json.dumps(name_availability_request))
         return r.json()
@@ -832,16 +832,14 @@ class ManagedEnvironmentClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
 
 
 class WorkloadProfileClient():
-    @classmethod
-    def get_api_version(cls):
-        return CURRENT_API_VERSION
+    api_version = CURRENT_API_VERSION
 
     @classmethod
     def list_supported(cls, cmd, location):
@@ -852,7 +850,7 @@ class WorkloadProfileClient():
             management_hostname.strip('/'),
             sub_id,
             location,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json().get("value")
@@ -867,16 +865,14 @@ class WorkloadProfileClient():
             sub_id,
             resource_group_name,
             env_name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json().get("value")
 
 
 class ContainerAppsJobClient():
-    @classmethod
-    def get_api_version(cls):
-        return CURRENT_API_VERSION
+    api_version = CURRENT_API_VERSION
 
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, name, containerapp_job_envelope, no_wait=False):
@@ -888,7 +884,7 @@ class ContainerAppsJobClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(containerapp_job_envelope))
 
@@ -901,7 +897,7 @@ class ContainerAppsJobClient():
                 sub_id,
                 resource_group_name,
                 name,
-                cls.get_api_version())
+                cls.api_version)
             return poll(cmd, request_url, "inprogress")
 
         return r.json()
@@ -917,7 +913,7 @@ class ContainerAppsJobClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(containerapp_job_envelope))
 
@@ -930,7 +926,7 @@ class ContainerAppsJobClient():
                 sub_id,
                 resource_group_name,
                 name,
-                cls.get_api_version())
+                cls.api_version)
             response = poll_results(cmd, request_url)
             if response is None:
                 raise ResourceNotFoundError("Could not find a container App Job")
@@ -949,7 +945,7 @@ class ContainerAppsJobClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
@@ -963,7 +959,7 @@ class ContainerAppsJobClient():
         request_url = "{}/subscriptions/{}/providers/Microsoft.App/jobs?api-version={}".format(
             management_hostname.strip('/'),
             sub_id,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         j = r.json()
@@ -984,7 +980,7 @@ class ContainerAppsJobClient():
             management_hostname.strip('/'),
             sub_id,
             resource_group_name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         j = r.json()
@@ -1004,7 +1000,7 @@ class ContainerAppsJobClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
 
@@ -1017,7 +1013,7 @@ class ContainerAppsJobClient():
                 sub_id,
                 resource_group_name,
                 name,
-                cls.get_api_version())
+                cls.api_version)
 
             if r.status_code == 202:
                 from azure.cli.core.azclierror import ResourceNotFoundError
@@ -1037,7 +1033,7 @@ class ContainerAppsJobClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
         if containerapp_job_start_envelope is None:
             r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         else:
@@ -1057,7 +1053,7 @@ class ContainerAppsJobClient():
                 sub_id,
                 resource_group_name,
                 name,
-                cls.get_api_version())
+                cls.api_version)
         else:
             url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}/stop/{}?api-version={}"
             request_url = url_fmt.format(
@@ -1066,7 +1062,7 @@ class ContainerAppsJobClient():
                 resource_group_name,
                 name,
                 job_execution_name,
-                cls.get_api_version())
+                cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=json.dumps(job_execution_names))
         return r.json()
@@ -1081,7 +1077,7 @@ class ContainerAppsJobClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
@@ -1097,7 +1093,7 @@ class ContainerAppsJobClient():
             resource_group_name,
             name,
             job_execution_name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
@@ -1113,16 +1109,14 @@ class ContainerAppsJobClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=None)
         return r.json()
 
 
 class GitHubActionClient():
-    @classmethod
-    def get_api_version(cls):
-        return CURRENT_API_VERSION
+    api_version = CURRENT_API_VERSION
 
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, name, github_action_envelope, headers, no_wait=False):
@@ -1134,7 +1128,7 @@ class GitHubActionClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(github_action_envelope), headers=headers)
 
@@ -1147,7 +1141,7 @@ class GitHubActionClient():
                 sub_id,
                 resource_group_name,
                 name,
-                cls.get_api_version())
+                cls.api_version)
             return poll(cmd, request_url, "inprogress")
 
         return r.json()
@@ -1162,7 +1156,7 @@ class GitHubActionClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
@@ -1177,7 +1171,7 @@ class GitHubActionClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url, headers=headers)
 
@@ -1190,7 +1184,7 @@ class GitHubActionClient():
                 sub_id,
                 resource_group_name,
                 name,
-                cls.get_api_version())
+                cls.api_version)
 
             if r.status_code == 202:
                 from azure.cli.core.azclierror import ResourceNotFoundError
@@ -1231,9 +1225,7 @@ class GitHubActionClient():
 
 
 class DaprComponentClient():
-    @classmethod
-    def get_api_version(cls):
-        return CURRENT_API_VERSION
+    api_version = CURRENT_API_VERSION
 
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, environment_name, name, dapr_component_envelope, no_wait=False):
@@ -1247,7 +1239,7 @@ class DaprComponentClient():
             resource_group_name,
             environment_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(dapr_component_envelope))
 
@@ -1261,7 +1253,7 @@ class DaprComponentClient():
                 resource_group_name,
                 environment_name,
                 name,
-                cls.get_api_version())
+                cls.api_version)
             return poll(cmd, request_url, "inprogress")
 
         return r.json()
@@ -1277,7 +1269,7 @@ class DaprComponentClient():
             resource_group_name,
             environment_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
 
@@ -1291,7 +1283,7 @@ class DaprComponentClient():
                 resource_group_name,
                 environment_name,
                 name,
-                cls.get_api_version())
+                cls.api_version)
 
             if r.status_code == 202:
                 from azure.cli.core.azclierror import ResourceNotFoundError
@@ -1313,7 +1305,7 @@ class DaprComponentClient():
             resource_group_name,
             environment_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
@@ -1329,7 +1321,7 @@ class DaprComponentClient():
             sub_id,
             resource_group_name,
             environment_name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         j = r.json()
@@ -1349,9 +1341,7 @@ class DaprComponentClient():
 
 
 class StorageClient():
-    @classmethod
-    def get_api_version(cls):
-        return CURRENT_API_VERSION
+    api_version = CURRENT_API_VERSION
 
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, env_name, name, storage_envelope, no_wait=False):
@@ -1364,7 +1354,7 @@ class StorageClient():
             resource_group_name,
             env_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(storage_envelope))
 
@@ -1378,7 +1368,7 @@ class StorageClient():
                 resource_group_name,
                 env_name,
                 name,
-                cls.get_api_version())
+                cls.api_version)
             return poll(cmd, request_url, "waiting")
 
         return r.json()
@@ -1394,7 +1384,7 @@ class StorageClient():
             resource_group_name,
             env_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
 
@@ -1408,7 +1398,7 @@ class StorageClient():
                 resource_group_name,
                 env_name,
                 name,
-                cls.get_api_version())
+                cls.api_version)
             if r.status_code == 200:  # 200 successful delete, 204 means storage not found
                 from azure.cli.core.azclierror import ResourceNotFoundError
                 try:
@@ -1429,7 +1419,7 @@ class StorageClient():
             resource_group_name,
             env_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
@@ -1446,7 +1436,7 @@ class StorageClient():
             sub_id,
             resource_group_name,
             env_name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         j = r.json()
@@ -1466,16 +1456,14 @@ class StorageClient():
 
 
 class AuthClient():
-    @classmethod
-    def get_api_version(cls):
-        return CURRENT_API_VERSION
+    api_version = CURRENT_API_VERSION
 
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, container_app_name, auth_config_name, auth_config_envelope,
                          no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
-        request_url = f"{management_hostname}subscriptions/{sub_id}/resourceGroups/{resource_group_name}/providers/Microsoft.App/containerApps/{container_app_name}/authConfigs/{auth_config_name}?api-version={cls.get_api_version()}"
+        request_url = f"{management_hostname}subscriptions/{sub_id}/resourceGroups/{resource_group_name}/providers/Microsoft.App/containerApps/{container_app_name}/authConfigs/{auth_config_name}?api-version={cls.api_version}"
 
         if "properties" not in auth_config_envelope:  # sdk does this for us
             temp_env = auth_config_envelope
@@ -1487,7 +1475,7 @@ class AuthClient():
         if no_wait:
             return r.json()
         elif r.status_code == 201:
-            request_url = f"{management_hostname}subscriptions/{sub_id}/resourceGroups/{resource_group_name}/providers/Microsoft.App/containerApps/{container_app_name}/authConfigs/{auth_config_name}?api-version={cls.get_api_version()}"
+            request_url = f"{management_hostname}subscriptions/{sub_id}/resourceGroups/{resource_group_name}/providers/Microsoft.App/containerApps/{container_app_name}/authConfigs/{auth_config_name}?api-version={cls.api_version}"
             return poll(cmd, request_url, "waiting")
 
         return r.json()
@@ -1496,14 +1484,14 @@ class AuthClient():
     def delete(cls, cmd, resource_group_name, container_app_name, auth_config_name, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
-        request_url = f"{management_hostname}subscriptions/{sub_id}/resourceGroups/{resource_group_name}/providers/Microsoft.App/containerApps/{container_app_name}/authConfigs/{auth_config_name}?api-version={cls.get_api_version()}"
+        request_url = f"{management_hostname}subscriptions/{sub_id}/resourceGroups/{resource_group_name}/providers/Microsoft.App/containerApps/{container_app_name}/authConfigs/{auth_config_name}?api-version={cls.api_version}"
 
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
 
         if no_wait:
             return  # API doesn't return JSON (it returns no content)
         elif r.status_code in [200, 201, 202, 204]:
-            request_url = f"{management_hostname}subscriptions/{sub_id}/resourceGroups/{resource_group_name}/providers/Microsoft.App/containerApps/{container_app_name}/authConfigs/{auth_config_name}?api-version={cls.get_api_version()}"
+            request_url = f"{management_hostname}subscriptions/{sub_id}/resourceGroups/{resource_group_name}/providers/Microsoft.App/containerApps/{container_app_name}/authConfigs/{auth_config_name}?api-version={cls.api_version}"
             if r.status_code == 200:  # 200 successful delete, 204 means storage not found
                 from azure.cli.core.azclierror import ResourceNotFoundError
                 try:
@@ -1517,7 +1505,7 @@ class AuthClient():
     def get(cls, cmd, resource_group_name, container_app_name, auth_config_name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
-        request_url = f"{management_hostname}subscriptions/{sub_id}/resourceGroups/{resource_group_name}/providers/Microsoft.App/containerApps/{container_app_name}/authConfigs/{auth_config_name}?api-version={cls.get_api_version()}"
+        request_url = f"{management_hostname}subscriptions/{sub_id}/resourceGroups/{resource_group_name}/providers/Microsoft.App/containerApps/{container_app_name}/authConfigs/{auth_config_name}?api-version={cls.api_version}"
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()

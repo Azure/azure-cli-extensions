@@ -30,21 +30,15 @@ def poll_results(cmd, request_url):
 
 
 class ContainerAppClient(_get_azext_containerapp_module("azext_containerapp._clients").ContainerAppClient):
-    @classmethod
-    def get_api_version(cls):
-        return PREVIEW_API_VERSION
+    api_version = PREVIEW_API_VERSION
 
 
 class ManagedEnvironmentClient(_get_azext_containerapp_module("azext_containerapp._clients").ManagedEnvironmentClient):
-    @classmethod
-    def get_api_version(cls):
-        return PREVIEW_API_VERSION
+    api_version = PREVIEW_API_VERSION
 
 
 class ConnectedEnvironmentClient():
-    @classmethod
-    def get_api_version(cls):
-        return PREVIEW_API_VERSION
+    api_version = PREVIEW_API_VERSION
 
     @classmethod
     def create(cls, cmd, resource_group_name, name, connected_environment_envelope, no_wait=False):
@@ -56,7 +50,7 @@ class ConnectedEnvironmentClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(connected_environment_envelope))
 
@@ -79,7 +73,7 @@ class ConnectedEnvironmentClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(managed_environment_envelope))
 
@@ -105,7 +99,7 @@ class ConnectedEnvironmentClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
 
@@ -128,7 +122,7 @@ class ConnectedEnvironmentClient():
             sub_id,
             resource_group_name,
             name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
@@ -142,7 +136,7 @@ class ConnectedEnvironmentClient():
         request_url = "{}/subscriptions/{}/providers/Microsoft.App/connectedEnvironments?api-version={}".format(
             management_hostname.strip('/'),
             sub_id,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         j = r.json()
@@ -171,7 +165,7 @@ class ConnectedEnvironmentClient():
             management_hostname.strip('/'),
             sub_id,
             resource_group_name,
-            cls.get_api_version())
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         j = r.json()
