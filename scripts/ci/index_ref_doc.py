@@ -73,6 +73,8 @@ class TestIndexRefDocsMeta(type):
         dep_url = {}
         for ext_name, ext_url, filename in ALL_TESTS:
             test_name = "test_ref_doc_%s" % ext_name
+            # The containerapp-preview extension is a special case,
+            # it must depend on the continerapp extension and cannot run independently.
             if ext_name == 'containerapp':
                 dep_url['containerapp-preview'] = [ext_url, filename]
             _dict[test_name] = gen_test(ext_name, ext_url, filename, dep_url)
