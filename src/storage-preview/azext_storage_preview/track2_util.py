@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+import base64
 
 def string_to_bytes(data, encoding="utf-8"):
     if isinstance(data, str):
@@ -46,3 +46,9 @@ def list_generator(pages, num_results):
         result += page
 
     return result
+
+
+def _encode_bytes(b):
+    if isinstance(b, (bytes, bytearray)):
+        return base64.b64encode(b).decode('utf-8')
+    return b
