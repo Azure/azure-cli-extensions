@@ -19,7 +19,7 @@ helps['command-change version-diff'] = """
 type: command
 short-summary: Diff command meta data between different cli versions.
 examples:
-    - name: Diff command meta data of monitor module between cli version 2.49.0 and 2.47.0 
+    - name: Diff command meta data of monitor module between cli version 2.49.0 and 2.47.0
       text: az command-change version-diff --base-version 2.47.0 --diff-version 2.49.0 --target-module monitor
 """
 
