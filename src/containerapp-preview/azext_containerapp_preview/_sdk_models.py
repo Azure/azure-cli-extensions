@@ -2694,6 +2694,53 @@ class CustomDomain(_serialization.Model):
         self.certificate_id = certificate_id
 
 
+class IngressAdditionalPortMapping(_serialization.Model):
+    """Port mapping for Container App Ingress.
+
+        All required parameters must be populated in order to send to Azure.
+
+        :ivar external: Bool indicating if app exposes an external http endpoint.
+        :vartype external: bool
+        :ivar target_port: Target Port in containers for traffic from ingress.
+        :vartype target_port: int
+        :ivar exposed_port: Exposed Port in containers for TCP traffic from ingress.
+        :vartype exposed_port: int
+        """
+
+    _validation = {
+        "external": {"required": True},
+        "target_port": {"required": True},
+    }
+
+    _attribute_map = {
+        "external": {"key": "external", "type": "bool"},
+        "target_port": {"key": "targetPort", "type": "int"},
+        "exposed_port": {"key": "exposedPort", "type": "int"},
+    }
+
+    def __init__(
+            self,
+            *,
+            external: bool,
+            target_port: int,
+            exposed_port: Optional[int] = None,
+            **kwargs: Any
+    ) -> None:
+        """
+        :keyword external: Bool indicating if app exposes an external http endpoint.
+         Required.
+        :paramtype external: bool
+        :keyword target_port: Target Port in containers for traffic from ingress.
+        :paramtype target_port: int
+        :keyword exposed_port: Exposed Port in containers for TCP traffic from ingress.
+        :paramtype exposed_port: int
+        """
+        super().__init__(**kwargs)
+        self.external = external
+        self.target_port = target_port
+        self.exposed_port = exposed_port
+
+
 class CustomDomainConfiguration(_serialization.Model):
     """Configuration properties for apps environment custom domain.
 
@@ -4788,6 +4835,7 @@ class Ingress(_serialization.Model):  # pylint: disable=too-many-instance-attrib
         "exposed_port": {"key": "exposedPort", "type": "int"},
         "transport": {"key": "transport", "type": "str"},
         "traffic": {"key": "traffic", "type": "[TrafficWeight]"},
+        "additional_port_mappings": {"key": "additionalPortMappings", "type": "[IngressAdditionalPortMapping]"},
         "custom_domains": {"key": "customDomains", "type": "[CustomDomain]"},
         "allow_insecure": {"key": "allowInsecure", "type": "bool"},
         "ip_security_restrictions": {"key": "ipSecurityRestrictions", "type": "[IpSecurityRestrictionRule]"},
@@ -4804,6 +4852,7 @@ class Ingress(_serialization.Model):  # pylint: disable=too-many-instance-attrib
         exposed_port: Optional[int] = None,
         transport: Union[str, "_models.IngressTransportMethod"] = "auto",
         traffic: Optional[List["_models.TrafficWeight"]] = None,
+        additional_port_mappings: Optional[List["_models.IngressAdditionalPortMapping"]] = None,
         custom_domains: Optional[List["_models.CustomDomain"]] = None,
         allow_insecure: bool = False,
         ip_security_restrictions: Optional[List["_models.IpSecurityRestrictionRule"]] = None,
@@ -4824,6 +4873,8 @@ class Ingress(_serialization.Model):  # pylint: disable=too-many-instance-attrib
         :paramtype transport: str or ~azure.mgmt.appcontainers.models.IngressTransportMethod
         :keyword traffic: Traffic weights for app's revisions.
         :paramtype traffic: list[~azure.mgmt.appcontainers.models.TrafficWeight]
+        :keyword additional_port_mappings: Additional exposed ports for Container Apps.
+        :paramtype traffic: list[~azure.mgmt.appcontainers.models.IngressAdditionalPortMapping]
         :keyword custom_domains: custom domain bindings for Container Apps' hostnames.
         :paramtype custom_domains: list[~azure.mgmt.appcontainers.models.CustomDomain]
         :keyword allow_insecure: Bool indicating if HTTP connections to is allowed. If set to false
@@ -4856,6 +4907,7 @@ class Ingress(_serialization.Model):  # pylint: disable=too-many-instance-attrib
         self.sticky_sessions = sticky_sessions
         self.client_certificate_mode = client_certificate_mode
         self.cors_policy = cors_policy
+        self.additional_port_mappings = additional_port_mappings
 
 
 class IngressStickySessions(_serialization.Model):

@@ -14,7 +14,7 @@ from ._utils import (_get_azext_containerapp_module)
 
 logger = get_logger(__name__)
 
-PREVIEW_API_VERSION = "2023-04-01-preview"
+PREVIEW_API_VERSION = "2023-05-02-preview"
 HEADER_AZURE_ASYNC_OPERATION = "azure-asyncoperation"
 HEADER_LOCATION = "location"
 
