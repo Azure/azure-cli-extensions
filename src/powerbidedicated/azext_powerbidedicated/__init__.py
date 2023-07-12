@@ -12,10 +12,8 @@ class PowerBIDedicatedCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from ._client_factory import cf_powerbidedicated
         powerbidedicated_custom = CliCommandType(
-            operations_tmpl='azext_powerbidedicated.custom#{}',
-            client_factory=cf_powerbidedicated)
+            operations_tmpl='azext_powerbidedicated.custom#{}')
         super(PowerBIDedicatedCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                              custom_command_type=powerbidedicated_custom)
 
