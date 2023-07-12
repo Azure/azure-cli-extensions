@@ -39,7 +39,7 @@ def _load_identity_token_command_table(self):
         g.communication_custom_command('create', "communication_identity_create_user", identity_arguments)
         g.communication_custom_command('delete', "communication_identity_delete_user", identity_arguments, confirmation=True)
 
-    with self.command_group('communication user-identity', client_factory=cf_communication_identity) as g:
+    with self.command_group('communication user-identity', client_factory=cf_communication_identity, is_preview=True) as g:
         g.communication_custom_command('issue-access-token', "communication_identity_issue_access_token", identity_arguments,
                                        deprecate_info=self.deprecate(redirect='token issue', hide=True))
 

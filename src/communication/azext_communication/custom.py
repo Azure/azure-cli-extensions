@@ -18,6 +18,7 @@ from azext_communication.aaz.latest.communication.identity import Assign as _Ide
 from azext_communication.aaz.latest.communication.identity import Remove as _IdentityRemove
 from azext_communication.aaz.latest.communication._create import Create as _CommunicationCreate
 from knack.log import get_logger
+from knack.util import CLIError
 
 logger = get_logger(__name__)
 
@@ -142,10 +143,9 @@ class IdentityRemove(_IdentityRemove):
                     if str(identity) in current_assigned_identities:
                         current_assigned_identities.pop(str(identity))
                     else:
-                        logger.warning(
-                            'The following was not found as a managed identity for the current resource: %s', str(identity)
+                        raise CLIError(
+                            'The following was not found as a managed identity for the current resource: ' + str(identity)
                         )
-                        raise Exception
 
         if len(current_assigned_identities) == 0:
             user_assigned_flag = False
