@@ -686,7 +686,7 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
         args = self.ctx.args
         if has_value(args.identity):
             args.identity_type = "UserAssigned"
-            args.user_assigned_identities = {args.identity: {}}
+            args.user_assigned_identities = {args.identity.to_serialized_data(): {}}
 
         if has_value(args.dns_servers):
             if not has_value(args.enable_dns_proxy):
@@ -715,7 +715,7 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
         args = self.ctx.args
         if has_value(args.identity):
             args.identity_type = "UserAssigned"
-            args.user_assigned_identities = {args.identity: {}}
+            args.user_assigned_identities = {args.identity.to_serialized_data(): {}}
         elif args.sku == 'Premium':
             args.identity_type = "None"
             args.user_assigned_identities = None

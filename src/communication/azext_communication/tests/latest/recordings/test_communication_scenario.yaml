@@ -17,20 +17,20 @@ interactions:
       ParameterSetName:
       - --name --location --data-location --resource-group
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-communication/1.0.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001?api-version=2020-08-20
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001?api-version=2023-04-01-preview
   response:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
         "name": "MyCommunica000001", "type": "microsoft.communication/communicationservices",
         "location": "Global", "systemData": {"createdBy": "sanitized", "createdByType":
-        "User", "createdAt": "2022-12-05T20:16:40.9911614Z", "lastModifiedBy": "sanitized",
-        "lastModifiedByType": "User", "lastModifiedAt": "2022-12-05T20:16:40.9911614Z"},
+        "User", "createdAt": "2023-07-07T02:10:43.0351427Z", "lastModifiedBy": "sanitized",
+        "lastModifiedByType": "User", "lastModifiedAt": "2023-07-07T02:10:43.0351427Z"},
         "properties": {"dataLocation": "United States", "provisioningState": "Accepted"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/f2f17f1d-6468-4910-8c18-dc26592699c8*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86?api-version=2020-08-20
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/37650d1a-2af6-4aa4-9e95-b8b183375241*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4?api-version=2023-04-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -38,11 +38,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:16:41 GMT
+      - Fri, 07 Jul 2023 02:10:43 GMT
       etag:
-      - '"970047f8-0000-0700-0000-638e51a90000"'
+      - '"0a00749f-0000-0700-0000-64a774230000"'
       expires:
       - '-1'
+      mise-correlation-id:
+      - de2cf2e5-bd62-41b0-8ad7-19aec579bec1
       pragma:
       - no-cache
       request-context:
@@ -54,7 +56,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
     status:
       code: 201
       message: Created
@@ -72,15 +74,15 @@ interactions:
       ParameterSetName:
       - --name --location --data-location --resource-group
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-communication/1.0.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/f2f17f1d-6468-4910-8c18-dc26592699c8*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86?api-version=2020-08-20
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/37650d1a-2af6-4aa4-9e95-b8b183375241*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4?api-version=2023-04-01-preview
   response:
     body:
-      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/f2f17f1d-6468-4910-8c18-dc26592699c8*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86",
-        "name": "f2f17f1d-6468-4910-8c18-dc26592699c8*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86",
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/37650d1a-2af6-4aa4-9e95-b8b183375241*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "name": "37650d1a-2af6-4aa4-9e95-b8b183375241*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
         "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
-        "status": "Accepted", "startTime": "2022-12-05T20:16:41.4808978Z"}'
+        "status": "Accepted", "startTime": "2023-07-07T02:10:43.7951379Z"}'
     headers:
       cache-control:
       - no-cache
@@ -89,9 +91,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:17:11 GMT
+      - Fri, 07 Jul 2023 02:10:43 GMT
       etag:
-      - '"57018ba1-0000-0800-0000-638e51a90000"'
+      - '"100008c4-0000-0800-0000-64a774230000"'
       expires:
       - '-1'
       pragma:
@@ -121,15 +123,15 @@ interactions:
       ParameterSetName:
       - --name --location --data-location --resource-group
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-communication/1.0.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/f2f17f1d-6468-4910-8c18-dc26592699c8*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86?api-version=2020-08-20
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/37650d1a-2af6-4aa4-9e95-b8b183375241*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4?api-version=2023-04-01-preview
   response:
     body:
-      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/f2f17f1d-6468-4910-8c18-dc26592699c8*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86",
-        "name": "f2f17f1d-6468-4910-8c18-dc26592699c8*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86",
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/37650d1a-2af6-4aa4-9e95-b8b183375241*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "name": "37650d1a-2af6-4aa4-9e95-b8b183375241*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
         "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
-        "status": "Accepted", "startTime": "2022-12-05T20:16:41.4808978Z"}'
+        "status": "Accepted", "startTime": "2023-07-07T02:10:43.7951379Z"}'
     headers:
       cache-control:
       - no-cache
@@ -138,9 +140,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:17:41 GMT
+      - Fri, 07 Jul 2023 02:11:14 GMT
       etag:
-      - '"57018ba1-0000-0800-0000-638e51a90000"'
+      - '"100008c4-0000-0800-0000-64a774230000"'
       expires:
       - '-1'
       pragma:
@@ -170,15 +172,64 @@ interactions:
       ParameterSetName:
       - --name --location --data-location --resource-group
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-communication/1.0.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/f2f17f1d-6468-4910-8c18-dc26592699c8*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86?api-version=2020-08-20
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/37650d1a-2af6-4aa4-9e95-b8b183375241*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4?api-version=2023-04-01-preview
   response:
     body:
-      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/f2f17f1d-6468-4910-8c18-dc26592699c8*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86",
-        "name": "f2f17f1d-6468-4910-8c18-dc26592699c8*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86",
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/37650d1a-2af6-4aa4-9e95-b8b183375241*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "name": "37650d1a-2af6-4aa4-9e95-b8b183375241*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
         "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
-        "status": "Succeeded", "startTime": "2022-12-05T20:16:41.4808978Z", "properties":
+        "status": "Accepted", "startTime": "2023-07-07T02:10:43.7951379Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '585'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jul 2023 02:11:43 GMT
+      etag:
+      - '"100008c4-0000-0800-0000-64a774230000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --data-location --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/37650d1a-2af6-4aa4-9e95-b8b183375241*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4?api-version=2023-04-01-preview
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/37650d1a-2af6-4aa4-9e95-b8b183375241*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "name": "37650d1a-2af6-4aa4-9e95-b8b183375241*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
+        "status": "Succeeded", "startTime": "2023-07-07T02:10:43.7951379Z", "properties":
         null}'
     headers:
       cache-control:
@@ -188,9 +239,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:18:12 GMT
+      - Fri, 07 Jul 2023 02:12:13 GMT
       etag:
-      - '"570134a4-0000-0800-0000-638e51ea0000"'
+      - '"100028c4-0000-0800-0000-64a774650000"'
       expires:
       - '-1'
       pragma:
@@ -220,18 +271,18 @@ interactions:
       ParameterSetName:
       - --name --location --data-location --resource-group
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-communication/1.0.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001?api-version=2020-08-20
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001?api-version=2023-04-01-preview
   response:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
         "name": "MyCommunica000001", "type": "microsoft.communication/communicationservices",
         "location": "Global", "systemData": {"createdBy": "sanitized", "createdByType":
-        "User", "createdAt": "2022-12-05T20:16:40.9911614Z", "lastModifiedBy": "sanitized",
-        "lastModifiedByType": "User", "lastModifiedAt": "2022-12-05T20:16:40.9911614Z"},
-        "properties": {"provisioningState": "Succeeded", "hostName": "mycommunica76uxipy7hucs.communication.azure.com",
-        "immutableResourceId": "b760db84-e494-4e9f-af9d-94edc43c7d7c", "dataLocation":
+        "User", "createdAt": "2023-07-07T02:10:43.0351427Z", "lastModifiedBy": "sanitized",
+        "lastModifiedByType": "User", "lastModifiedAt": "2023-07-07T02:10:43.0351427Z"},
+        "properties": {"provisioningState": "Succeeded", "hostName": "mycommunicamuwssbqegxmx.communication.azure.com",
+        "immutableResourceId": "2a1fd42a-2816-4d14-9bc2-da39d277c690", "dataLocation":
         "United States"}}'
     headers:
       cache-control:
@@ -241,9 +292,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:18:12 GMT
+      - Fri, 07 Jul 2023 02:12:13 GMT
       etag:
-      - '"970060f8-0000-0700-0000-638e51b10000"'
+      - '"0a007e9f-0000-0700-0000-64a7742b0000"'
       expires:
       - '-1'
       pragma:
@@ -275,18 +326,18 @@ interactions:
       ParameterSetName:
       - --created --name --resource-group
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-communication/1.0.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001?api-version=2020-08-20
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001?api-version=2023-04-01-preview
   response:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
         "name": "MyCommunica000001", "type": "microsoft.communication/communicationservices",
         "location": "Global", "systemData": {"createdBy": "sanitized", "createdByType":
-        "User", "createdAt": "2022-12-05T20:16:40.9911614Z", "lastModifiedBy": "sanitized",
-        "lastModifiedByType": "User", "lastModifiedAt": "2022-12-05T20:16:40.9911614Z"},
-        "properties": {"provisioningState": "Succeeded", "hostName": "mycommunica76uxipy7hucs.communication.azure.com",
-        "immutableResourceId": "b760db84-e494-4e9f-af9d-94edc43c7d7c", "dataLocation":
+        "User", "createdAt": "2023-07-07T02:10:43.0351427Z", "lastModifiedBy": "sanitized",
+        "lastModifiedByType": "User", "lastModifiedAt": "2023-07-07T02:10:43.0351427Z"},
+        "properties": {"provisioningState": "Succeeded", "hostName": "mycommunicamuwssbqegxmx.communication.azure.com",
+        "immutableResourceId": "2a1fd42a-2816-4d14-9bc2-da39d277c690", "dataLocation":
         "United States"}}'
     headers:
       cache-control:
@@ -296,9 +347,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:18:13 GMT
+      - Fri, 07 Jul 2023 02:12:14 GMT
       etag:
-      - '"970060f8-0000-0700-0000-638e51b10000"'
+      - '"0a007e9f-0000-0700-0000-64a7742b0000"'
       expires:
       - '-1'
       pragma:
@@ -330,18 +381,18 @@ interactions:
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-communication/1.0.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001?api-version=2020-08-20
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001?api-version=2023-04-01-preview
   response:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
         "name": "MyCommunica000001", "type": "microsoft.communication/communicationservices",
         "location": "Global", "systemData": {"createdBy": "sanitized", "createdByType":
-        "User", "createdAt": "2022-12-05T20:16:40.9911614Z", "lastModifiedBy": "sanitized",
-        "lastModifiedByType": "User", "lastModifiedAt": "2022-12-05T20:16:40.9911614Z"},
-        "properties": {"provisioningState": "Succeeded", "hostName": "mycommunica76uxipy7hucs.communication.azure.com",
-        "immutableResourceId": "b760db84-e494-4e9f-af9d-94edc43c7d7c", "dataLocation":
+        "User", "createdAt": "2023-07-07T02:10:43.0351427Z", "lastModifiedBy": "sanitized",
+        "lastModifiedByType": "User", "lastModifiedAt": "2023-07-07T02:10:43.0351427Z"},
+        "properties": {"provisioningState": "Succeeded", "hostName": "mycommunicamuwssbqegxmx.communication.azure.com",
+        "immutableResourceId": "2a1fd42a-2816-4d14-9bc2-da39d277c690", "dataLocation":
         "United States"}}'
     headers:
       cache-control:
@@ -351,9 +402,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:18:13 GMT
+      - Fri, 07 Jul 2023 02:12:15 GMT
       etag:
-      - '"970060f8-0000-0700-0000-638e51b10000"'
+      - '"0a007e9f-0000-0700-0000-64a7742b0000"'
       expires:
       - '-1'
       pragma:
@@ -385,18 +436,18 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-communication/1.0.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices?api-version=2020-08-20
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices?api-version=2023-04-01-preview
   response:
     body:
       string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
         "name": "MyCommunica000001", "type": "microsoft.communication/communicationservices",
         "location": "Global", "systemData": {"createdBy": "sanitized", "createdByType":
-        "User", "createdAt": "2022-12-05T20:16:40.9911614Z", "lastModifiedBy": "sanitized",
-        "lastModifiedByType": "User", "lastModifiedAt": "2022-12-05T20:16:40.9911614Z"},
-        "properties": {"provisioningState": "Succeeded", "hostName": "mycommunica76uxipy7hucs.communication.azure.com",
-        "immutableResourceId": "b760db84-e494-4e9f-af9d-94edc43c7d7c", "dataLocation":
+        "User", "createdAt": "2023-07-07T02:10:43.0351427Z", "lastModifiedBy": "sanitized",
+        "lastModifiedByType": "User", "lastModifiedAt": "2023-07-07T02:10:43.0351427Z"},
+        "properties": {"provisioningState": "Succeeded", "hostName": "mycommunicamuwssbqegxmx.communication.azure.com",
+        "immutableResourceId": "2a1fd42a-2816-4d14-9bc2-da39d277c690", "dataLocation":
         "United States"}}]}'
     headers:
       cache-control:
@@ -406,7 +457,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:18:13 GMT
+      - Fri, 07 Jul 2023 02:12:15 GMT
       expires:
       - '-1'
       pragma:
@@ -438,18 +489,18 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-communication/1.0.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices?api-version=2020-08-20
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices?api-version=2023-04-01-preview
   response:
     body:
       string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
         "name": "MyCommunica000001", "type": "microsoft.communication/communicationservices",
         "location": "Global", "systemData": {"createdBy": "sanitized", "createdByType":
-        "User", "createdAt": "2022-12-05T20:16:40.9911614Z", "lastModifiedBy": "sanitized",
-        "lastModifiedByType": "User", "lastModifiedAt": "2022-12-05T20:16:40.9911614Z"},
-        "properties": {"provisioningState": "Succeeded", "hostName": "mycommunica76uxipy7hucs.communication.azure.com",
-        "immutableResourceId": "b760db84-e494-4e9f-af9d-94edc43c7d7c", "dataLocation":
+        "User", "createdAt": "2023-07-07T02:10:43.0351427Z", "lastModifiedBy": "sanitized",
+        "lastModifiedByType": "User", "lastModifiedAt": "2023-07-07T02:10:43.0351427Z"},
+        "properties": {"provisioningState": "Succeeded", "hostName": "mycommunicamuwssbqegxmx.communication.azure.com",
+        "immutableResourceId": "2a1fd42a-2816-4d14-9bc2-da39d277c690", "dataLocation":
         "United States"}}]}'
     headers:
       cache-control:
@@ -459,7 +510,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:18:14 GMT
+      - Fri, 07 Jul 2023 02:12:16 GMT
       expires:
       - '-1'
       pragma:
@@ -478,7 +529,63 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"tags": {"newTag": "newVal"}}'
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001?api-version=2023-04-01-preview
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
+        "name": "MyCommunica000001", "type": "microsoft.communication/communicationservices",
+        "location": "Global", "systemData": {"createdBy": "sanitized", "createdByType":
+        "User", "createdAt": "2023-07-07T02:10:43.0351427Z", "lastModifiedBy": "sanitized",
+        "lastModifiedByType": "User", "lastModifiedAt": "2023-07-07T02:10:43.0351427Z"},
+        "properties": {"provisioningState": "Succeeded", "hostName": "mycommunicamuwssbqegxmx.communication.azure.com",
+        "immutableResourceId": "2a1fd42a-2816-4d14-9bc2-da39d277c690", "dataLocation":
+        "United States"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '704'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jul 2023 02:12:16 GMT
+      etag:
+      - '"0a007e9f-0000-0700-0000-64a7742b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "Global", "properties": {"dataLocation": "United States"},
+      "tags": {"newTag": "newVal"}}'
     headers:
       Accept:
       - application/json
@@ -489,25 +596,281 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '30'
+      - '101'
       Content-Type:
       - application/json
       ParameterSetName:
       - --name --tags --resource-group
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-communication/1.0.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
-    method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001?api-version=2020-08-20
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001?api-version=2023-04-01-preview
   response:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
         "name": "MyCommunica000001", "type": "microsoft.communication/communicationservices",
         "location": "Global", "tags": {"newTag": "newVal"}, "systemData": {"createdBy":
-        "sanitized", "createdByType": "User", "createdAt": "2022-12-05T20:16:40.9911614Z",
+        "sanitized", "createdByType": "User", "createdAt": "2023-07-07T02:10:43.0351427Z",
         "lastModifiedBy": "sanitized", "lastModifiedByType": "User", "lastModifiedAt":
-        "2022-12-05T20:18:15.0358044Z"}, "properties": {"hostName": "mycommunica76uxipy7hucs.communication.azure.com",
-        "immutableResourceId": "b760db84-e494-4e9f-af9d-94edc43c7d7c", "dataLocation":
-        "United States", "provisioningState": "Succeeded"}}'
+        "2023-07-07T02:12:17.3710568Z"}, "properties": {"provisioningState": "Accepted",
+        "hostName": "mycommunicamuwssbqegxmx.communication.azure.com", "immutableResourceId":
+        "2a1fd42a-2816-4d14-9bc2-da39d277c690", "dataLocation": "United States"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/ceff5330-a241-4b36-b122-08321bfc6eff*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4?api-version=2023-04-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '733'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jul 2023 02:12:17 GMT
+      etag:
+      - '"0a009d9f-0000-0700-0000-64a774810000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 87200d80-062a-4368-8eea-2fc20c918f8c
+      pragma:
+      - no-cache
+      request-context:
+      - appId=
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/ceff5330-a241-4b36-b122-08321bfc6eff*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4?api-version=2023-04-01-preview
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/ceff5330-a241-4b36-b122-08321bfc6eff*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "name": "ceff5330-a241-4b36-b122-08321bfc6eff*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
+        "status": "Accepted", "startTime": "2023-07-07T02:12:17.5858809Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '585'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jul 2023 02:12:17 GMT
+      etag:
+      - '"100034c4-0000-0800-0000-64a774810000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/ceff5330-a241-4b36-b122-08321bfc6eff*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4?api-version=2023-04-01-preview
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/ceff5330-a241-4b36-b122-08321bfc6eff*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "name": "ceff5330-a241-4b36-b122-08321bfc6eff*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
+        "status": "Accepted", "startTime": "2023-07-07T02:12:17.5858809Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '585'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jul 2023 02:12:48 GMT
+      etag:
+      - '"100034c4-0000-0800-0000-64a774810000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/ceff5330-a241-4b36-b122-08321bfc6eff*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4?api-version=2023-04-01-preview
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/ceff5330-a241-4b36-b122-08321bfc6eff*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "name": "ceff5330-a241-4b36-b122-08321bfc6eff*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
+        "status": "Accepted", "startTime": "2023-07-07T02:12:17.5858809Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '585'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jul 2023 02:13:18 GMT
+      etag:
+      - '"100034c4-0000-0800-0000-64a774810000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/ceff5330-a241-4b36-b122-08321bfc6eff*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4?api-version=2023-04-01-preview
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/ceff5330-a241-4b36-b122-08321bfc6eff*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "name": "ceff5330-a241-4b36-b122-08321bfc6eff*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
+        "status": "Succeeded", "startTime": "2023-07-07T02:12:17.5858809Z", "properties":
+        null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '606'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jul 2023 02:13:47 GMT
+      etag:
+      - '"10006ac4-0000-0800-0000-64a774c30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001?api-version=2023-04-01-preview
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
+        "name": "MyCommunica000001", "type": "microsoft.communication/communicationservices",
+        "location": "Global", "tags": {"newTag": "newVal"}, "systemData": {"createdBy":
+        "sanitized", "createdByType": "User", "createdAt": "2023-07-07T02:10:43.0351427Z",
+        "lastModifiedBy": "sanitized", "lastModifiedByType": "User", "lastModifiedAt":
+        "2023-07-07T02:12:17.3710568Z"}, "properties": {"provisioningState": "Succeeded",
+        "hostName": "mycommunicamuwssbqegxmx.communication.azure.com", "immutableResourceId":
+        "2a1fd42a-2816-4d14-9bc2-da39d277c690", "dataLocation": "United States"}}'
     headers:
       cache-control:
       - no-cache
@@ -516,15 +879,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:18:15 GMT
+      - Fri, 07 Jul 2023 02:13:48 GMT
       etag:
-      - '"9700e5f9-0000-0700-0000-638e52070000"'
+      - '"0a00a09f-0000-0700-0000-64a774870000"'
       expires:
       - '-1'
       pragma:
       - no-cache
-      request-context:
-      - appId=
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -535,14 +896,12 @@ interactions:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NotificationHubs/namespaces/MyNamespace/notificationHubs/MyHub",
-      "connectionString": "Endpoint=sb://MyNamespace.servicebus.windows.net/;SharedAccessKey=abcd1234"}'
+    body: '{"connectionString": "Endpoint=sb://MyNamespace.servicebus.windows.net/;SharedAccessKey=abcd1234",
+      "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NotificationHubs/namespaces/MyNamespace/notificationHubs/MyHub"}'
     headers:
       Accept:
       - application/json
@@ -559,9 +918,9 @@ interactions:
       ParameterSetName:
       - --name --connection-string --resource-id --resource-group
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-communication/1.0.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001/linkNotificationHub?api-version=2020-08-20
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001/linkNotificationHub?api-version=2023-04-01-preview
   response:
     body:
       string: '{"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NotificationHubs/namespaces/MyNamespace/notificationHubs/MyHub"}'
@@ -573,9 +932,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:18:15 GMT
+      - Fri, 07 Jul 2023 02:13:49 GMT
       expires:
       - '-1'
+      mise-correlation-id:
+      - 1012406c-63a4-40da-9083-339d905569e4
       pragma:
       - no-cache
       request-context:
@@ -591,7 +952,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -611,15 +972,15 @@ interactions:
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-communication/1.0.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001/listKeys?api-version=2020-08-20
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001/listKeys?api-version=2023-04-01-preview
   response:
     body:
-      string: '{"primaryKey": "ZUQtpmGlMpMgyN4TqleZ21qKAjdGNevTBcXKeNq+9wSfOeJyo8uiPwahAqSjjzz3oPTyDwinlG39vwsNqSeMJQ==",
-        "secondaryKey": "hbSXXZBHa8MhKLReqz2vzULkWCI5ce5aPd4IQejM85L5iQnVPIzqJZUvc2OW+FTcw+BpGM1jIv0OQCHgyKaDTw==",
-        "primaryConnectionString": "endpoint=https://mycommunica76uxipy7hucs.communication.azure.com/;accesskey=ZUQtpmGlMpMgyN4TqleZ21qKAjdGNevTBcXKeNq+9wSfOeJyo8uiPwahAqSjjzz3oPTyDwinlG39vwsNqSeMJQ==",
-        "secondaryConnectionString": "endpoint=https://mycommunica76uxipy7hucs.communication.azure.com/;accesskey=hbSXXZBHa8MhKLReqz2vzULkWCI5ce5aPd4IQejM85L5iQnVPIzqJZUvc2OW+FTcw+BpGM1jIv0OQCHgyKaDTw=="}'
+      string: '{"primaryKey": "gsk05m/jIiWTt1EIAhORbLko1rpSfRhZbpxMp8vVZKZh2ndd3HPrUoRa0O+QlgmbXphLlhyWOnnbZuku3ewiFQ==",
+        "secondaryKey": "MM6JSAqcTrwBSJ0BR8bde2udPxJoIsdeB941DKU7SIb5M0Rj8nDoaBnsMh4QI69wMxJJBEDWQCqrZSpNa/XhOw==",
+        "primaryConnectionString": "endpoint=https://mycommunicamuwssbqegxmx.communication.azure.com/;accesskey=gsk05m/jIiWTt1EIAhORbLko1rpSfRhZbpxMp8vVZKZh2ndd3HPrUoRa0O+QlgmbXphLlhyWOnnbZuku3ewiFQ==",
+        "secondaryConnectionString": "endpoint=https://mycommunicamuwssbqegxmx.communication.azure.com/;accesskey=MM6JSAqcTrwBSJ0BR8bde2udPxJoIsdeB941DKU7SIb5M0Rj8nDoaBnsMh4QI69wMxJJBEDWQCqrZSpNa/XhOw=="}'
     headers:
       cache-control:
       - no-cache
@@ -628,9 +989,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:18:17 GMT
+      - Fri, 07 Jul 2023 02:13:49 GMT
       expires:
       - '-1'
+      mise-correlation-id:
+      - dd608b66-af36-4646-ad6f-ffbfe8a18817
       pragma:
       - no-cache
       request-context:
@@ -646,7 +1009,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -668,13 +1031,13 @@ interactions:
       ParameterSetName:
       - --name --key-type --resource-group
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-communication/1.0.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001/regenerateKey?api-version=2020-08-20
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001/regenerateKey?api-version=2023-04-01-preview
   response:
     body:
-      string: '{"primaryKey": "23eJDSW/cp+x4JCG7BvpTEr95uMMBj2AVfK5WMezt+xBdSgbkHMxuhFbuTw9ugzJHMtOyxxSskKbgRzWmD+rEg==",
-        "primaryConnectionString": "endpoint=https://mycommunica76uxipy7hucs.communication.azure.com/;accesskey=23eJDSW/cp+x4JCG7BvpTEr95uMMBj2AVfK5WMezt+xBdSgbkHMxuhFbuTw9ugzJHMtOyxxSskKbgRzWmD+rEg=="}'
+      string: '{"primaryKey": "lQONAs+mw/+ROqRkZl7yIdmxDAyvpOV5vaI88D/sT+7vkrjyWvSpJ+v0Z6Q6xnUfXZLb7Fj9yFFnhQQCDRdicA==",
+        "primaryConnectionString": "endpoint=https://mycommunicamuwssbqegxmx.communication.azure.com/;accesskey=lQONAs+mw/+ROqRkZl7yIdmxDAyvpOV5vaI88D/sT+7vkrjyWvSpJ+v0Z6Q6xnUfXZLb7Fj9yFFnhQQCDRdicA=="}'
     headers:
       cache-control:
       - no-cache
@@ -683,9 +1046,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:18:18 GMT
+      - Fri, 07 Jul 2023 02:13:51 GMT
       expires:
       - '-1'
+      mise-correlation-id:
+      - 92802bb9-221f-40b3-b0ba-1540a115e042
       pragma:
       - no-cache
       request-context:
@@ -709,7 +1074,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -721,15 +1086,15 @@ interactions:
       ParameterSetName:
       - -y --name --resource-group
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-communication/1.0.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001?api-version=2020-08-20
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001?api-version=2023-04-01-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/6c84a1e4-d326-43fe-96fc-7e7a91c48218*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86?api-version=2020-08-20
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/41a4ee42-b3c0-4c34-b05f-893fd830d220*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4?api-version=2023-04-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -737,13 +1102,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:18:18 GMT
+      - Fri, 07 Jul 2023 02:13:52 GMT
       etag:
-      - '"9700edf9-0000-0700-0000-638e520a0000"'
+      - '"0a00f49f-0000-0700-0000-64a774e00000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/6c84a1e4-d326-43fe-96fc-7e7a91c48218*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86?api-version=2020-08-20
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/41a4ee42-b3c0-4c34-b05f-893fd830d220*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4?api-version=2023-04-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -753,7 +1118,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
     status:
       code: 202
       message: Accepted
@@ -771,15 +1136,15 @@ interactions:
       ParameterSetName:
       - -y --name --resource-group
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-communication/1.0.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/6c84a1e4-d326-43fe-96fc-7e7a91c48218*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86?api-version=2020-08-20
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/41a4ee42-b3c0-4c34-b05f-893fd830d220*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4?api-version=2023-04-01-preview
   response:
     body:
-      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/6c84a1e4-d326-43fe-96fc-7e7a91c48218*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86",
-        "name": "6c84a1e4-d326-43fe-96fc-7e7a91c48218*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86",
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/41a4ee42-b3c0-4c34-b05f-893fd830d220*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "name": "41a4ee42-b3c0-4c34-b05f-893fd830d220*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
         "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
-        "status": "Deleting", "startTime": "2022-12-05T20:18:18.8327376Z"}'
+        "status": "Deleting", "startTime": "2023-07-07T02:13:52.4150764Z"}'
     headers:
       cache-control:
       - no-cache
@@ -788,9 +1153,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:18:48 GMT
+      - Fri, 07 Jul 2023 02:13:52 GMT
       etag:
-      - '"57019da5-0000-0800-0000-638e520a0000"'
+      - '"100071c4-0000-0800-0000-64a774e00000"'
       expires:
       - '-1'
       pragma:
@@ -816,15 +1181,15 @@ interactions:
       ParameterSetName:
       - -y --name --resource-group
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-communication/1.0.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/6c84a1e4-d326-43fe-96fc-7e7a91c48218*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86?api-version=2020-08-20
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/41a4ee42-b3c0-4c34-b05f-893fd830d220*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4?api-version=2023-04-01-preview
   response:
     body:
-      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/6c84a1e4-d326-43fe-96fc-7e7a91c48218*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86",
-        "name": "6c84a1e4-d326-43fe-96fc-7e7a91c48218*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86",
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/41a4ee42-b3c0-4c34-b05f-893fd830d220*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "name": "41a4ee42-b3c0-4c34-b05f-893fd830d220*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
         "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
-        "status": "Deleting", "startTime": "2022-12-05T20:18:18.8327376Z"}'
+        "status": "Deleting", "startTime": "2023-07-07T02:13:52.4150764Z"}'
     headers:
       cache-control:
       - no-cache
@@ -833,9 +1198,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:19:18 GMT
+      - Fri, 07 Jul 2023 02:14:21 GMT
       etag:
-      - '"57019da5-0000-0800-0000-638e520a0000"'
+      - '"100071c4-0000-0800-0000-64a774e00000"'
       expires:
       - '-1'
       pragma:
@@ -861,15 +1226,60 @@ interactions:
       ParameterSetName:
       - -y --name --resource-group
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-communication/1.0.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/6c84a1e4-d326-43fe-96fc-7e7a91c48218*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86?api-version=2020-08-20
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/41a4ee42-b3c0-4c34-b05f-893fd830d220*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4?api-version=2023-04-01-preview
   response:
     body:
-      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/6c84a1e4-d326-43fe-96fc-7e7a91c48218*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86",
-        "name": "6c84a1e4-d326-43fe-96fc-7e7a91c48218*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86",
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/41a4ee42-b3c0-4c34-b05f-893fd830d220*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "name": "41a4ee42-b3c0-4c34-b05f-893fd830d220*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
         "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
-        "status": "Succeeded", "startTime": "2022-12-05T20:18:18.8327376Z", "properties":
+        "status": "Deleting", "startTime": "2023-07-07T02:13:52.4150764Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '585'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Jul 2023 02:14:52 GMT
+      etag:
+      - '"100071c4-0000-0800-0000-64a774e00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - communication delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/41a4ee42-b3c0-4c34-b05f-893fd830d220*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4?api-version=2023-04-01-preview
+  response:
+    body:
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/41a4ee42-b3c0-4c34-b05f-893fd830d220*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "name": "41a4ee42-b3c0-4c34-b05f-893fd830d220*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
+        "status": "Succeeded", "startTime": "2023-07-07T02:13:52.4150764Z", "properties":
         null}'
     headers:
       cache-control:
@@ -879,9 +1289,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:19:48 GMT
+      - Fri, 07 Jul 2023 02:15:21 GMT
       etag:
-      - '"fc02ec88-0000-0100-0000-638e524c0000"'
+      - '"1000e4c4-0000-0800-0000-64a775220000"'
       expires:
       - '-1'
       pragma:
@@ -911,15 +1321,15 @@ interactions:
       ParameterSetName:
       - -y --name --resource-group
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-communication/1.0.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/6c84a1e4-d326-43fe-96fc-7e7a91c48218*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86?api-version=2020-08-20
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/41a4ee42-b3c0-4c34-b05f-893fd830d220*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4?api-version=2023-04-01-preview
   response:
     body:
-      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/6c84a1e4-d326-43fe-96fc-7e7a91c48218*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86",
-        "name": "6c84a1e4-d326-43fe-96fc-7e7a91c48218*8CB365A14C994A3143FF0C70C07CD1CE66834A090261B57AE7E5A9662575DD86",
+      string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Communication/locations/WESTUS2/operationStatuses/41a4ee42-b3c0-4c34-b05f-893fd830d220*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
+        "name": "41a4ee42-b3c0-4c34-b05f-893fd830d220*AEB63608B0E9DAE53DF5B35C8AD405AA2A536840F5E99775D8E88A4A75F42CA4",
         "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.Communication/communicationServices/MyCommunica000001",
-        "status": "Succeeded", "startTime": "2022-12-05T20:18:18.8327376Z", "properties":
+        "status": "Succeeded", "startTime": "2023-07-07T02:13:52.4150764Z", "properties":
         null}'
     headers:
       cache-control:
@@ -929,9 +1339,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:19:48 GMT
+      - Fri, 07 Jul 2023 02:15:21 GMT
       etag:
-      - '"fc02ec88-0000-0100-0000-638e524c0000"'
+      - '"1000e4c4-0000-0800-0000-64a775220000"'
       expires:
       - '-1'
       pragma:

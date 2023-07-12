@@ -4,6 +4,10 @@ Release History
 ===============
 
 =======
+0.6.0
+++++++
+* [NEW COMMAND] `az datamigration sql-server-schema` : Migrate database schema objects to the target Azure Sql Servers.
+
 0.5.0
 ++++++
 * [NEW COMMAND] `az datamigration tde-migration` : Migrate TDE certificate from source SQL Server to the target Azure SQL Server.

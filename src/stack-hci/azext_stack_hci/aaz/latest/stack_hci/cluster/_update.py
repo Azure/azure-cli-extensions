@@ -71,8 +71,6 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        # define Arg Group "Identity"
-
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -335,7 +333,6 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("identity", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
@@ -390,9 +387,7 @@ class _UpdateHelper:
         cluster_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        cluster_read.identity = AAZObjectType(
-            flags={"client_flatten": True},
-        )
+        cluster_read.identity = AAZObjectType()
         cluster_read.location = AAZStrType(
             flags={"required": True},
         )

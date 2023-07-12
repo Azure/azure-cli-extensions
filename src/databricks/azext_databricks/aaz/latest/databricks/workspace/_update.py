@@ -140,6 +140,62 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        # define Arg Group "Managed Disk"
+
+        _args_schema = cls._args_schema
+        _args_schema.disk_key_source = AAZStrArg(
+            options=["--disk-key-source"],
+            arg_group="Managed Disk",
+            help="The encryption keySource (provider). Possible values (case-insensitive):  Microsoft.Keyvault",
+            enum={"Microsoft.Keyvault": "Microsoft.Keyvault"},
+        )
+        _args_schema.disk_key_name = AAZStrArg(
+            options=["--disk-key-name"],
+            arg_group="Managed Disk",
+            help="The name of KeyVault key.",
+        )
+        _args_schema.disk_key_vault = AAZStrArg(
+            options=["--disk-key-vault"],
+            arg_group="Managed Disk",
+            help="The URI of KeyVault.",
+        )
+        _args_schema.disk_key_version = AAZStrArg(
+            options=["--disk-key-version"],
+            arg_group="Managed Disk",
+            help="The version of KeyVault key.",
+        )
+        _args_schema.disk_key_auto_rotation = AAZBoolArg(
+            options=["--disk-key-auto-rotation"],
+            arg_group="Managed Disk",
+            help="Indicate whether the latest key version should be automatically used for Managed Disk Encryption.",
+            nullable=True,
+        )
+
+        # define Arg Group "Managed Services"
+
+        _args_schema = cls._args_schema
+        _args_schema.managed_services_key_source = AAZStrArg(
+            options=["--managed-services-key-source"],
+            arg_group="Managed Services",
+            help="The encryption keySource (provider). Possible values (case-insensitive):  Microsoft.Keyvault",
+            enum={"Microsoft.Keyvault": "Microsoft.Keyvault"},
+        )
+        _args_schema.managed_services_key_name = AAZStrArg(
+            options=["--ms-key-name", "--managed-services-key-name"],
+            arg_group="Managed Services",
+            help="The name of KeyVault key.",
+        )
+        _args_schema.managed_services_key_vault = AAZStrArg(
+            options=["--ms-key-vault", "--managed-services-key-vault"],
+            arg_group="Managed Services",
+            help="The Uri of KeyVault.",
+        )
+        _args_schema.managed_services_key_version = AAZStrArg(
+            options=["--ms-key-version", "--managed-services-key-version"],
+            arg_group="Managed Services",
+            help="The version of KeyVault key.",
+        )
+
         # define Arg Group "Parameters"
 
         # define Arg Group "Properties"
@@ -428,9 +484,42 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("encryption", AAZObjectType)
                 properties.set_prop("parameters", AAZObjectType)
                 properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
                 properties.set_prop("requiredNsgRules", AAZStrType, ".required_nsg_rules")
+
+            encryption = _builder.get(".properties.encryption")
+            if encryption is not None:
+                encryption.set_prop("entities", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+
+            entities = _builder.get(".properties.encryption.entities")
+            if entities is not None:
+                entities.set_prop("managedDisk", AAZObjectType)
+                entities.set_prop("managedServices", AAZObjectType)
+
+            managed_disk = _builder.get(".properties.encryption.entities.managedDisk")
+            if managed_disk is not None:
+                managed_disk.set_prop("keySource", AAZStrType, ".disk_key_source", typ_kwargs={"flags": {"required": True}})
+                managed_disk.set_prop("keyVaultProperties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+                managed_disk.set_prop("rotationToLatestKeyVersionEnabled", AAZBoolType, ".disk_key_auto_rotation")
+
+            key_vault_properties = _builder.get(".properties.encryption.entities.managedDisk.keyVaultProperties")
+            if key_vault_properties is not None:
+                key_vault_properties.set_prop("keyName", AAZStrType, ".disk_key_name", typ_kwargs={"flags": {"required": True}})
+                key_vault_properties.set_prop("keyVaultUri", AAZStrType, ".disk_key_vault", typ_kwargs={"flags": {"required": True}})
+                key_vault_properties.set_prop("keyVersion", AAZStrType, ".disk_key_version", typ_kwargs={"flags": {"required": True}})
+
+            managed_services = _builder.get(".properties.encryption.entities.managedServices")
+            if managed_services is not None:
+                managed_services.set_prop("keySource", AAZStrType, ".managed_services_key_source", typ_kwargs={"flags": {"required": True}})
+                managed_services.set_prop("keyVaultProperties", AAZObjectType)
+
+            key_vault_properties = _builder.get(".properties.encryption.entities.managedServices.keyVaultProperties")
+            if key_vault_properties is not None:
+                key_vault_properties.set_prop("keyName", AAZStrType, ".managed_services_key_name", typ_kwargs={"flags": {"required": True}})
+                key_vault_properties.set_prop("keyVaultUri", AAZStrType, ".managed_services_key_vault", typ_kwargs={"flags": {"required": True}})
+                key_vault_properties.set_prop("keyVersion", AAZStrType, ".managed_services_key_version", typ_kwargs={"flags": {"required": True}})
 
             parameters = _builder.get(".properties.parameters")
             if parameters is not None:

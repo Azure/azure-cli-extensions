@@ -187,7 +187,7 @@ def privatecloud_rotate_nsxt_password():
     # return client.private_clouds.begin_rotate_nsxt_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 
 
-def cluster_create(client: AVSClient, resource_group_name, name, sku, private_cloud, size, hosts):
+def cluster_create(client: AVSClient, resource_group_name, name, sku, private_cloud, size=None, hosts=None):
     from azext_vmware.vendored_sdks.avs_client.models import Sku, Cluster
     return client.clusters.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name, cluster=Cluster(sku=Sku(name=sku), cluster_size=size, hosts=hosts))
 

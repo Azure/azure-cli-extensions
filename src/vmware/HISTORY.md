@@ -1,5 +1,9 @@
 # Release History
 
+## 5.0.3 (2023-07)
+
+- Fix the mandatory flag of `--hosts` for `az vmware cluster create` [#26653](https://github.com/Azure/azure-cli/issues/26653)
+
 ## 5.0.2 (2023-05)
 
 - Update `az vmware cluster` subcommand descriptions

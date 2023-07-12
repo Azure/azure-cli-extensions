@@ -146,6 +146,9 @@ def load_command_table(self: AzCommandsLoader, _):
         g.custom_command('start', 'start_vm', supports_no_wait=True)
         g.custom_command('stop', 'stop_vm', supports_no_wait=True)
         g.custom_command('restart', 'restart_vm', supports_no_wait=True)
+        g.custom_command('create-checkpoint', 'create_vm_checkpoint', supports_no_wait=True)
+        g.custom_command('delete-checkpoint', 'delete_vm_checkpoint', supports_no_wait=True)
+        g.custom_command('restore-checkpoint', 'restore_vm_checkpoint', supports_no_wait=True)
         g.wait_command('wait')
 
     with self.command_group(
