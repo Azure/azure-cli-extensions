@@ -73,9 +73,9 @@ jobs:
     name: 'pool-ubuntu-2004'
   steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.6'
+      displayName: 'Use Python 3.10'
       inputs:
-        versionSpec: 3.6
+        versionSpec: 3.10
     - bash: pip install wheel==0.30.0 "pylint>=2.12,<3" flake8==6.0.0 requests
       displayName: 'Install wheel, pylint, flake8, requests'
     - bash: python scripts/ci/source_code_static_analysis.py
