@@ -507,7 +507,6 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         if self.get_argument_termination_grace_period() is not None:
             template_def["terminationGracePeriodSeconds"] = self.get_argument_termination_grace_period()
 
-        self.containerapp_def = ContainerAppModel
         self.containerapp_def["location"] = location
         self.containerapp_def["identity"] = identity_def
         self.containerapp_def["properties"]["environmentId"] = self.get_argument_managed_env()
