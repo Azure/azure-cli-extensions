@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+
 def file_related_exception_handler(ex):
     from azure.cli.core.azclierror import FileOperationError
     if isinstance(ex, FileNotFoundError):

@@ -129,16 +129,6 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                                           message_func=_adls_deprecate_message)) as g:
         pass
 
-    share_client_sdk = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storagev2.fileshare._share_client#ShareClient.{}',
-        client_factory=cf_share_client,
-        resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
-
-    share_service_sdk = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storagev2.fileshare._share_service_client#ShareServiceClient.{}',
-        client_factory=cf_share_service,
-        resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
-
     directory_client_sdk = CliCommandType(
         operations_tmpl='azext_storage_preview.vendored_sdks.azure_storagev2.fileshare._directory_client#ShareDirectoryClient.{}',
         client_factory=cf_share_directory_client,
