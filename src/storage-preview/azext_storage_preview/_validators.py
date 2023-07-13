@@ -345,15 +345,13 @@ def get_content_setting_validator(settings_class, update, guess_from_file=None, 
             if guess_from_file:
                 new_props = guess_content_type(ns[guess_from_file], new_props, settings_class)
 
-        # In the model serialization of ContentSettings, the required type for content_md5 is str. But when uploading,
-        # content_md5 needs to be converted to bytearray and it would cause a bug when converting a string to bytearray.
-        # So we pass in the content_md5 of the bytearray type as a workaround.
-        # There is an issue of Python SDK to follow up this problem, and if the SDK is fixed, the logic can be removed
-        # Issue link: https://github.com/Azure/azure-sdk-for-python/issues/15919
-        if process_md5:
+        # In track2 SDK, the content_md5 type should be bytearray. And then it will serialize to a string for request.
+        # To keep consistent with track1 input and CLI will treat all parameter values as string. Here is to transform
+        # content_md5 value to bytearray. And track2 SDK will serialize it into the right value with str type in header.
+        if process_md5 and new_props.content_md5:
             if not isinstance(new_props.content_md5, bytearray):
-                from .track2_util import string_to_bytes
-                new_props.content_md5 = string_to_bytes(new_props.content_md5)
+                from .track2_util import _str_to_bytearray
+                new_props.content_md5 = _str_to_bytearray(new_props.content_md5)
 
         ns['content_settings'] = new_props
 

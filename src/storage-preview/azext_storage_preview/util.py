@@ -266,3 +266,20 @@ def create_short_lived_file_sas_v2(cmd, account_name, account_key, share, direct
     sas = t_sas(account_name, account_key)
     return sas.generate_file(share, directory_name=directory_name, file_name=file_name,
                              permission=t_file_permissions(read=True), expiry=expiry, protocol='https')
+
+
+def create_short_lived_container_sas_track2(cmd, account_name, account_key, container):
+    from datetime import timedelta
+    t_generate_container_sas = cmd.get_models('_shared_access_signature#generate_container_sas',
+                                              resource_type=CUSTOM_DATA_STORAGE_BLOB)
+    expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
+    return t_generate_container_sas(account_name, container, account_key, permission='r', expiry=expiry,
+                                    protocol='https')
+
+
+def create_short_lived_share_sas_track2(cmd, account_name, account_key, share):
+    from datetime import timedelta
+    t_generate_share_sas = cmd.get_models('#generate_share_sas', resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
+    expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
+    return t_generate_share_sas(account_name, share, account_key, permission='r', expiry=expiry,
+                                protocol='https')
