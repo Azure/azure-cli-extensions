@@ -15,8 +15,11 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ContainerappScenarioTest(ScenarioTest):
-    def setUp(self):
-        super(ContainerappScenarioTest, self).setUp()
+    def __init__(self, method_name, config_file=None, recording_name=None, recording_processors=None,
+                 replay_processors=None, recording_patches=None, replay_patches=None, random_config_dir=False):
+
+        super().__init__(method_name, config_file, recording_name, recording_processors, replay_processors,
+                         recording_patches, replay_patches, random_config_dir)
         cmd = ['azdev', 'extension', 'add', 'containerapp']
         run(cmd, check=True)
         cmd = ['azdev', 'extension', 'add', 'connectedk8s']
