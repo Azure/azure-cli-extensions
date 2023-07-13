@@ -15,6 +15,7 @@ from ._utils import (_get_azext_containerapp_module)
 logger = get_logger(__name__)
 
 PREVIEW_API_VERSION = "2023-05-02-preview"
+ARC_PREVIEW_API_VERSION = "2023-04-01-preview"
 HEADER_AZURE_ASYNC_OPERATION = "azure-asyncoperation"
 HEADER_LOCATION = "location"
 
@@ -38,7 +39,7 @@ class ManagedEnvironmentClient(_get_azext_containerapp_module("azext_containerap
 
 
 class ConnectedEnvironmentClient():
-    api_version = PREVIEW_API_VERSION
+    api_version = ARC_PREVIEW_API_VERSION
 
     @classmethod
     def create(cls, cmd, resource_group_name, name, connected_environment_envelope, no_wait=False):
