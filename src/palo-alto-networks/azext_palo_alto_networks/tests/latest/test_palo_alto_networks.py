@@ -118,6 +118,22 @@ class PaloAltoNetworksScenario(ScenarioTest):
         self.cmd('az palo-alto cloudngfw firewall status default show --resource-group {rg} -n {cloudngfw_firewall_name}')
 
     @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_palo_alto_firewall')
+    def test_palo_alto_firewall(self, resource_group):
+        self.kwargs.update({
+            'loc': 'eastus',
+            'resource_group': 'CUSEUAP',
+            'firewall_name': 'OsamaV3',
+        })
+
+        self.cmd('az palo-alto cloudngfw firewall save-log-profile --resource-group {resource_group} -n {firewall_name}')
+        self.cmd('az palo-alto cloudngfw firewall get-log-profile --resource-group {rg} -n {cloudngfw_firewall_name}')
+        self.cmd('az palo-alto cloudngfw firewall get-support-info --resource-group {rg} -n {cloudngfw_firewall_name}')
+
+        self.cmd('az palo-alto cloudngfw firewall status list --resource-group {rg} -n {cloudngfw_firewall_name}')
+        self.cmd('az palo-alto cloudngfw firewall status default show --resource-group {rg} -n {cloudngfw_firewall_name}')
+
+    @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_palo_alto_networks_cloudngfw_global_rulestack')
     def test_palo_alto_networks_cloudngfw_global_rulestack(self, resource_group):
         self.kwargs.update({
@@ -220,62 +236,87 @@ class PaloAltoNetworksScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_palo_alto_networks_cloudngfw_local_rulestack')
     def test_palo_alto_networks_cloudngfw_local_rulestack(self, resource_group):
         self.kwargs.update({
-            'global_rulestack_name': 'test-cloudngfw-global-rulestack',
-            'public_ip_name': 'test-public-ip',
-            'local_rulestack_name': 'test-local-rulestack',
-            'user_email': 'v-taoxuzeng@microsoft.com',
-            'prefix': 'test-publicip-prefix',
+            'local_rulestack_name': self.create_random_name('local_rulestack', 20),
+            'certificate_name': self.create_random_name('certificate', 15),
+            'fqdnlist_name': self.create_random_name('fqdnlist', 15),
+            'local_rule_name': self.create_random_name('local_rule', 15),
+            'prefixlist_name': self.create_random_name('prefixlist', 15),
             'loc': 'eastus'
         })
 
-        self.cmd('az palo-alto cloudngfw global-rulestack create -g {rg} -n {global_rulestack_name} '
+        self.cmd('az palo-alto cloudngfw local-rulestack create -g {rg} -n {local_rulestack_name} '
                  '--identity {{"type":None}} '
                  '--location {loc} '
-                 '--associated-subscriptions [""] '
+                 '--associated-subscriptions ["2bf4a339-294d-4c25-b0b2-ef649e9f5c27"] '
                  '--default-mode IPS '
-                 '--description "global rulestacks" '
+                 '--description "local rulestacks" '
                  '--min-app-id-version "8.5.3" '
-                 '--pan-etag '
-                 '--pan-location {loc} '
-                 '--scope "GLOBAL" '
-                 '--security-services {{"anti-spyware-profile":"default","anti-virus-profile":"default","dns-subscription":"default","file-blocking-profile":"default","outbound-trust-certificate":"default","outbound-un-trust-certificate":"default","url-filtering-profile":"default","vulnerability-profile":"default"}}')
-        self.cmd('az palo-alto cloudngfw global-rulestack get-change-log')
-        self.cmd('az palo-alto cloudngfw global-rulestack list-advanced-security-object')
-        self.cmd('az palo-alto cloudngfw global-rulestack list-app-id')
-        self.cmd('az palo-alto cloudngfw global-rulestack list-country')
-        self.cmd('az palo-alto cloudngfw global-rulestack list-firewall')
-        self.cmd('az palo-alto cloudngfw global-rulestack list-predefined-url-category')
-        self.cmd('az palo-alto cloudngfw global-rulestack list-security-service')
-        self.cmd('az palo-alto cloudngfw global-rulestack revert')
+                 '--scope "LOCAL" '
+                 '--security-services {{"vulnerability-profile":"BestPractice","anti-spyware-profile":"BestPractice","anti-virus-profile":"BestPractice","url-filtering-profile":"BestPractice","file-blocking-profile":"BestPractice","dns-subscription":"BestPractice"}}')
+        self.cmd('az palo-alto cloudngfw local-rulestack update -g {rg} -n {local_rulestack_name} --tags {{"tag-name":"value"}}')
+        self.cmd('az palo-alto cloudngfw local-rulestack get-change-log -g {rg} -n {local_rulestack_name}')
+        self.cmd('az palo-alto cloudngfw local-rulestack get-support-info -g {rg} -n {local_rulestack_name}')
+        self.cmd('az palo-alto cloudngfw local-rulestack list-advanced-security-object -g {rg} -n {local_rulestack_name}')
+        self.cmd('az palo-alto cloudngfw local-rulestack list-app-id -g {rg} -n {local_rulestack_name}')
+        self.cmd('az palo-alto cloudngfw local-rulestack list-country -g {rg} -n {local_rulestack_name}')
+        self.cmd('az palo-alto cloudngfw local-rulestack list-firewall -g {rg} -n {local_rulestack_name}')
+        self.cmd('az palo-alto cloudngfw local-rulestack list-predefined-url-category -g {rg} -n {local_rulestack_name}')
+        self.cmd('az palo-alto cloudngfw local-rulestack list-security-service -g {rg} -n {local_rulestack_name}')
+        self.cmd('az palo-alto cloudngfw local-rulestack revert -g {rg} -n {local_rulestack_name}')
 
-        self.cmd('az palo-alto cloudngfw global-rulestack certificate create')
-        self.cmd('az palo-alto cloudngfw global-rulestack certificate list')
-        self.cmd('az palo-alto cloudngfw global-rulestack certificate show')
-        self.cmd('az palo-alto cloudngfw global-rulestack certificate delete')
+        self.cmd('az palo-alto cloudngfw local-rulestack certificate create -g {rg} '
+                 '--local-rulestack-name {local_rulestack_name} '
+                 '--name {certificate_name} '
+                 '--audit-comment "comment" '
+                 '--certificate-self-signed "TRUE" '
+                 '--certificate-signer-resource-id "" '
+                 '--description "description" ')
+        self.cmd('az palo-alto cloudngfw local-rulestack certificate list -g {rg} --local-rulestack-name {local_rulestack_name}')
+        self.cmd('az palo-alto cloudngfw local-rulestack certificate show -g {rg} --local-rulestack-name {local_rulestack_name} --name {certificate_name}')
+        self.cmd('az palo-alto cloudngfw local-rulestack certificate delete -g {rg} --local-rulestack-name {local_rulestack_name} --name {certificate_name}')
 
-        self.cmd('az palo-alto cloudngfw global-rulestack fqdnlist create')
-        self.cmd('az palo-alto cloudngfw global-rulestack fqdnlist list')
-        self.cmd('az palo-alto cloudngfw global-rulestack fqdnlist show')
-        self.cmd('az palo-alto cloudngfw global-rulestack fqdnlist delete')
+        self.cmd('az palo-alto cloudngfw local-rulestack fqdnlist create -g {rg} '
+                 '--local-rulestack-name {local_rulestack_name} '
+                 '--name {fqdnlist_name} '
+                 '--audit-comment "string" '
+                 '--description "description" '
+                 '--fqdn-list ["string1","string2"]')
+        self.cmd('az palo-alto cloudngfw local-rulestack fqdnlist list -g {rg} --local-rulestack-name {local_rulestack_name}')
+        self.cmd('az palo-alto cloudngfw local-rulestack fqdnlist show  -g {rg} --local-rulestack-name {local_rulestack_name} --name {fqdnlist_name}')
+        self.cmd('az palo-alto cloudngfw local-rulestack fqdnlist delete  -g {rg} --local-rulestack-name {local_rulestack_name} --name {fqdnlist_name}')
 
-        self.cmd('az palo-alto cloudngfw global-rulestack post-rule create')
-        self.cmd('az palo-alto cloudngfw global-rulestack post-rule list')
-        self.cmd('az palo-alto cloudngfw global-rulestack post-rule show')
-        self.cmd('az palo-alto cloudngfw global-rulestack post-rule get-counter')
-        self.cmd('az palo-alto cloudngfw global-rulestack post-rule refresh-counter')
-        self.cmd('az palo-alto cloudngfw global-rulestack post-rule reset-counter')
-        self.cmd('az palo-alto cloudngfw global-rulestack post-rule delete')
+        self.cmd('az palo-alto cloudngfw local-rulestack local-rule create -g {rg} '
+                 '--local-rulestack-name {local_rulestack_name} '
+                 '--rule-name {local_rule_name} '
+                 '--priority "1" '
+                 '--action-type "Allow" '
+                 '--applications ["app1"] '
+                 '--audit-comment "example comment" '
+                 '--category {{"feeds":["feed"],"url-custom":["https://microsoft.com"]}} '
+                 '--decryption-rule-type "SSLOutboundInspection" '
+                 '--description "description of local rule" '
+                 '--destination {{"cidrs":["1.0.0.1/10"],"countries":["abcde"],"feeds":["feed"],"fqdn-lists":"FQDN1","prefix-lists": ["PL1"]}} '
+                 '--enable-logging "DISABLED" '
+                 '--inbound-inspection-certificate "cert1" '
+                 '--negate-destination "TRUE" '
+                 '--negate-source "TRUE" '
+                 '--rule-state "DISABLED" '
+                 '--source {{"cidrs":["1.0.0.1/10"],"countries":["abcde"],"feeds":["feed"],"prefix-lists": ["PL1"]}} ')
+        self.cmd('az palo-alto cloudngfw local-rulestack local-rule list -g {rg} --local-rulestack-name {local_rulestack_name}')
+        self.cmd('az palo-alto cloudngfw local-rulestack local-rule show -g {rg} --local-rulestack-name {local_rulestack_name} --rule-name {local_rule_name}')
+        self.cmd('az palo-alto cloudngfw local-rulestack local-rule get-counter -g {rg} --local-rulestack-name {local_rulestack_name} --priority "1"')
+        self.cmd('az palo-alto cloudngfw local-rulestack local-rule refresh-counter -g {rg} --local-rulestack-name {local_rulestack_name} --priority "1"')
+        self.cmd('az palo-alto cloudngfw local-rulestack local-rule reset-counter -g {rg} --local-rulestack-name {local_rulestack_name} --priority "1"')
+        self.cmd('az palo-alto cloudngfw local-rulestack local-rule delete -g {rg} --local-rulestack-name {local_rulestack_name} --rule-name {local_rule_name}')
 
-        self.cmd('az palo-alto cloudngfw global-rulestack pre-rule create')
-        self.cmd('az palo-alto cloudngfw global-rulestack pre-rule list')
-        self.cmd('az palo-alto cloudngfw global-rulestack pre-rule show')
-        self.cmd('az palo-alto cloudngfw global-rulestack pre-rule get-counter')
-        self.cmd('az palo-alto cloudngfw global-rulestack pre-rule refresh-counter')
-        self.cmd('az palo-alto cloudngfw global-rulestack pre-rule reset-counter')
-        self.cmd('az palo-alto cloudngfw global-rulestack pre-rule delete')
-
-        self.cmd('az palo-alto cloudngfw global-rulestack prefixlist create')
-        self.cmd('az palo-alto cloudngfw global-rulestack prefixlist list')
-        self.cmd('az palo-alto cloudngfw global-rulestack prefixlist show')
-        self.cmd('az palo-alto cloudngfw global-rulestack prefixlist delete')
+        self.cmd('az palo-alto cloudngfw local-rulestack prefixlist create -g {rg} '
+                 '--local-rulestack-name {local_rulestack_name} '
+                 '--name {prefixlist_name} '
+                 '--audit-comment "comment" '
+                 '--description "string" '
+                 '--etag "" '
+                 '--prefix-list ["1.0.0.0/24"]')
+        self.cmd('az palo-alto cloudngfw local-rulestack prefixlist list -g {rg} --local-rulestack-name {local_rulestack_name} ')
+        self.cmd('az palo-alto cloudngfw local-rulestack prefixlist show -g {rg} --local-rulestack-name {local_rulestack_name} --name {prefixlist_name}')
+        self.cmd('az palo-alto cloudngfw local-rulestack prefixlist delete -g {rg} --local-rulestack-name {local_rulestack_name} --name {prefixlist_name}')
 

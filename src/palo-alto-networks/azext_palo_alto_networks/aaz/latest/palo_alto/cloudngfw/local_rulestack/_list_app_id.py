@@ -42,7 +42,7 @@ class ListAppId(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.local_rulestack_name = AAZStrArg(
-            options=["--local-rulestack-name"],
+            options=["-n", "--name", "--local-rulestack-name"],
             help="LocalRulestack resource name",
             required=True,
             id_part="name",

@@ -48,7 +48,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.priority = AAZStrArg(
-            options=["-n", "--name", "--priority"],
+            options=["--priority"],
             help="Local Rule priority",
             required=True,
         )
