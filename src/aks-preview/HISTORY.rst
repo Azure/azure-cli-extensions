@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 ++++++
 
+0.5.149
++++++++
+* `aks addon update`: Fix unexpected error 'Addon "web_application_routing" is not enabled in this cluster' when trying to update the web app routing addon for an managed cluster that already has it enabled.
+
 0.5.148
 +++++++
 * Add support for option --nodepool-taints to some aks commands
