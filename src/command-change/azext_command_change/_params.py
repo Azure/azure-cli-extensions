@@ -7,7 +7,7 @@
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
-import azureCliDiffTool
+import azure_cli_diff_tool
 
 
 def load_arguments(self, _):  # pylint: disable=unused-argument
@@ -16,8 +16,8 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument('base_meta_file', required=True, help='command meta json file')
         c.argument('diff_meta_file', required=True, help='command meta json file to diff')
         c.argument('only_break', action="store_true", help='whether include non breaking changes')
-        c.argument('output_type', choices=azureCliDiffTool.diff_export_format_choices(),
-                   default=azureCliDiffTool.diff_export_format_choices()[0],
+        c.argument('output_type', choices=azure_cli_diff_tool.diff_export_format_choices(),
+                   default=azure_cli_diff_tool.diff_export_format_choices()[0],
                    help='format to print diff and suggest message')
         c.argument('output_file', help='command meta diff json file path to store')
 
