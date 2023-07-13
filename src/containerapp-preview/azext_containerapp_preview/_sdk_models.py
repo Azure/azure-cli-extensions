@@ -2699,11 +2699,11 @@ class IngressAdditionalPortMapping(_serialization.Model):
 
         All required parameters must be populated in order to send to Azure.
 
-        :ivar external: Bool indicating if app exposes an external http endpoint.
+        :ivar external: Specifies whether the app port is accessible outside of the environment.
         :vartype external: bool
-        :ivar target_port: Target Port in containers for traffic from ingress.
+        :ivar target_port: Specifies the port user's container listens on.
         :vartype target_port: int
-        :ivar exposed_port: Exposed Port in containers for TCP traffic from ingress.
+        :ivar exposed_port: Specifies the exposed port for the target port. If not specified, it defaults to target port.
         :vartype exposed_port: int
         """
 
@@ -2727,12 +2727,12 @@ class IngressAdditionalPortMapping(_serialization.Model):
             **kwargs: Any
     ) -> None:
         """
-        :keyword external: Bool indicating if app exposes an external http endpoint.
+        :keyword external: Specifies whether the app port is accessible outside of the environment.
          Required.
         :paramtype external: bool
-        :keyword target_port: Target Port in containers for traffic from ingress.
+        :keyword target_port: Specifies the port user's container listens on.
         :paramtype target_port: int
-        :keyword exposed_port: Exposed Port in containers for TCP traffic from ingress.
+        :keyword exposed_port: Specifies the exposed port for the target port. If not specified, it defaults to target port.
         :paramtype exposed_port: int
         """
         super().__init__(**kwargs)
