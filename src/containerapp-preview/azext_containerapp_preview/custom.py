@@ -89,8 +89,8 @@ def create_containerapp(cmd,
     )
     containerapp_preview_create_decorator.register_provider()
     containerapp_preview_create_decorator.validate_arguments()
-    containerapp_def = containerapp_preview_create_decorator.construct_containerapp()
-    r = containerapp_preview_create_decorator.create_containerapp(containerapp_def)
-    containerapp_def = containerapp_preview_create_decorator.construct_containerapp_for_post_process(containerapp_def, r)
-    r = containerapp_preview_create_decorator.post_process_containerapp(containerapp_def, r)
+    containerapp_preview_create_decorator.construct_containerapp()
+    r = containerapp_preview_create_decorator.create_containerapp()
+    containerapp_preview_create_decorator.construct_containerapp_for_post_process(r)
+    r = containerapp_preview_create_decorator.post_process_containerapp(r)
     return r
