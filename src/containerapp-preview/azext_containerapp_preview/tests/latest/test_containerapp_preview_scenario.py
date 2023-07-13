@@ -5,6 +5,7 @@
 
 import os
 import time
+from time import sleep
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
 from subprocess import run
 
@@ -26,6 +27,9 @@ class ContainerappScenarioTest(ScenarioTest):
         run(cmd, check=True)
         cmd = ['azdev', 'extension', 'add', 'k8s-extension']
         run(cmd, check=True)
+        # Wait for extensions to be installed
+        # We mock time.sleep in azure-sdk-tools, that's why we need to use sleep here.
+        sleep(120)
 
     @ResourceGroupPreparer(location="eastus", random_name_length=15)
     def test_containerapp_preview_environment_type(self, resource_group):
