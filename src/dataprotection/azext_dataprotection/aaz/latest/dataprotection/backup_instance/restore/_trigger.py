@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Trigger(AAZCommand):
     """Triggers restore for a BackupInstance
+
+    :example: Trigger restore
+        az dataprotection backup-instance restore trigger -g sarath-rg --vault-name sarath-vault --backup-instance-name {backup_instance_name} --restore-request-object restore_request.json
     """
 
     _aaz_info = {
@@ -44,7 +47,7 @@ class Trigger(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.backup_instance_name = AAZStrArg(
-            options=["--backup-instance-name"],
+            options=["-n", "--name", "--backup-instance-name"],
             help="The name of the backup instance.",
             required=True,
             id_part="child_name_1",
@@ -62,21 +65,6 @@ class Trigger(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.azure_backup_recovery_point_based_restore_request = AAZObjectArg(
-            options=["--azure-backup-recovery-point-based-restore-request"],
-            arg_group="Properties",
-            help="-",
-        )
-        _args_schema.azure_backup_recovery_time_based_restore_request = AAZObjectArg(
-            options=["--azure-backup-recovery-time-based-restore-request"],
-            arg_group="Properties",
-            help="-",
-        )
-        _args_schema.azure_backup_restore_with_rehydration_request = AAZObjectArg(
-            options=["--azure-backup-restore-with-rehydration-request"],
-            arg_group="Properties",
-            help="-",
-        )
         _args_schema.restore_target_info = AAZObjectArg(
             options=["--restore-target-info"],
             arg_group="Properties",
@@ -89,41 +77,6 @@ class Trigger(AAZCommand):
             help="Gets or sets the type of the source data store.",
             required=True,
             enum={"ArchiveStore": "ArchiveStore", "OperationalStore": "OperationalStore", "SnapshotStore": "SnapshotStore", "VaultStore": "VaultStore"},
-        )
-        _args_schema.source_resource_id = AAZStrArg(
-            options=["--source-resource-id"],
-            arg_group="Properties",
-            help="Fully qualified Azure Resource Manager ID of the datasource which is being recovered.",
-        )
-
-        azure_backup_recovery_point_based_restore_request = cls._args_schema.azure_backup_recovery_point_based_restore_request
-        azure_backup_recovery_point_based_restore_request.recovery_point_id = AAZStrArg(
-            options=["recovery-point-id"],
-            required=True,
-        )
-
-        azure_backup_recovery_time_based_restore_request = cls._args_schema.azure_backup_recovery_time_based_restore_request
-        azure_backup_recovery_time_based_restore_request.recovery_point_time = AAZStrArg(
-            options=["recovery-point-time"],
-            help="The recovery time in ISO 8601 format example - 2020-08-14T17:30:00.0000000Z.",
-            required=True,
-        )
-
-        azure_backup_restore_with_rehydration_request = cls._args_schema.azure_backup_restore_with_rehydration_request
-        azure_backup_restore_with_rehydration_request.recovery_point_id = AAZStrArg(
-            options=["recovery-point-id"],
-            required=True,
-        )
-        azure_backup_restore_with_rehydration_request.rehydration_priority = AAZStrArg(
-            options=["rehydration-priority"],
-            help="Priority to be used for rehydration. Values High or Standard",
-            required=True,
-            enum={"High": "High", "Invalid": "Invalid", "Standard": "Standard"},
-        )
-        azure_backup_restore_with_rehydration_request.rehydration_retention_duration = AAZStrArg(
-            options=["rehydration-retention-duration"],
-            help="Retention duration in ISO 8601 format i.e P10D .",
-            required=True,
         )
 
         restore_target_info = cls._args_schema.restore_target_info
@@ -524,7 +477,7 @@ class Trigger(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -533,7 +486,7 @@ class Trigger(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -605,12 +558,9 @@ class Trigger(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_const("objectType", "AzureBackupRecoveryPointBasedRestoreRequest", AAZStrType, ".azure_backup_recovery_point_based_restore_request", typ_kwargs={"flags": {"required": True}})
-            _builder.set_const("objectType", "AzureBackupRecoveryTimeBasedRestoreRequest", AAZStrType, ".azure_backup_recovery_time_based_restore_request", typ_kwargs={"flags": {"required": True}})
-            _builder.set_const("objectType", "AzureBackupRestoreWithRehydrationRequest", AAZStrType, ".azure_backup_restore_with_rehydration_request", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("objectType", AAZStrType, ".", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("restoreTargetInfo", AAZObjectType, ".restore_target_info", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("sourceDataStoreType", AAZStrType, ".source_data_store_type", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("sourceResourceId", AAZStrType, ".source_resource_id")
             _builder.discriminate_by("objectType", "AzureBackupRecoveryPointBasedRestoreRequest")
             _builder.discriminate_by("objectType", "AzureBackupRecoveryTimeBasedRestoreRequest")
             _builder.discriminate_by("objectType", "AzureBackupRestoreWithRehydrationRequest")

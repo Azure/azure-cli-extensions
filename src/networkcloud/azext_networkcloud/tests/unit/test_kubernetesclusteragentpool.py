@@ -25,10 +25,10 @@ class TestKubernetesClusterAgentPoolCreate(unittest.TestCase):
         self.cmd = Create(loader)
 
     def test_build_arguments_schema(self):
-        """Test that _build_arguments_schema unregisters the parameters."""
+        """Test that _build_arguments_schema un-registers the parameters."""
         args_schema = mock.Mock()
         results_args_schema = self.cmd._build_arguments_schema(args_schema)
-        # valdiate registered parameters
+        # validate registered parameters
         self.assertFalse(results_args_schema.ssh_public_keys._registered)
 
     def test_pre_operations(self):
@@ -45,9 +45,23 @@ class TestKubernetesClusterAgentPoolCreate(unittest.TestCase):
             )
             # Convert from bytes
             keys.append(str(pub, "UTF-8"))
+        # no ssh keys passed to agent pool
+        args.ssh_key_values = []
+        args.ssh_dest_key_path = []
+        args.generate_ssh_keys = []
+        args.ssh_public_keys = None
+
+        self.cmd.ctx = mock.Mock()
+        self.cmd.ctx.args = args
+
+        # Call func
+        self.cmd.pre_operations()
+        self.assertEqual(None, self.cmd.ctx.args.ssh_public_keys)
+        # SSH keys passed to agent pool
         args.ssh_key_values = keys
         args.ssh_dest_key_path = []
         args.generate_ssh_keys = []
+        args.ssh_public_keys = None
 
         self.cmd.ctx = mock.Mock()
         self.cmd.ctx.args = args
@@ -67,7 +81,7 @@ class TestKubernetesClusterAgentPoolCreate(unittest.TestCase):
     @mock.patch("os.path.isdir")
     @mock.patch("os.path.isfile")
     def test_vm_get_ssh_keys_from_path(self, mock_isfile, mock_isdir, mock_listdir):
-        """ Test KubernetesCluster agent pool ssh-key-from-path paramter enabled """
+        """ Test KubernetesCluster agent pool ssh-key-from-path parameter enabled """
         TestCommonSsh.validate_get_ssh_keys_from_path(
             self, mock_isfile, mock_isdir, mock_listdir)
 
