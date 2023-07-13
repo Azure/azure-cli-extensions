@@ -6089,6 +6089,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             # self.check('ingressProfile.webAppRouting.enabled', False)
         ])
 
+    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_and_update_web_application_routing_dns_zone(self, resource_group, resource_group_location):
