@@ -40,29 +40,21 @@ class ContainerAppPreviewCreateDecorator(_get_azext_containerapp_module("azext_c
         self.azext_default_utils = _get_azext_containerapp_module("azext_containerapp._utils")
 
     def construct_containerapp(self):
-        containerapp_def = super().construct_containerapp()
-        containerapp_def = self.set_up_extended_location(containerapp_def)
-        return containerapp_def
+        super().construct_containerapp()
+        self.set_up_extended_location()
 
-    def set_up_extended_location(self, containerapp_def):
+    def set_up_extended_location(self):
         if self.get_argument_environment_type() == CONNECTED_ENVIRONMENT_TYPE:
-            parsed_env = parse_resource_id(self.get_argument_managed_env())  # custom_location check here perhaps
-            env_name = parsed_env['name']
-            env_rg = parsed_env['resource_group']
-            env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
-            if not containerapp_def.get('extendedLocation'):
-                containerapp_def["extendedLocation"] = env_info["extendedLocation"]
-        return containerapp_def
+            if not self.containerapp_def.get('extendedLocation'):
+                parsed_env = parse_resource_id(self.get_argument_managed_env())  # custom_location check here perhaps
+                env_name = parsed_env['name']
+                env_rg = parsed_env['resource_group']
+                env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
+                self.containerapp_def["extendedLocation"] = env_info["extendedLocation"]
 
     def get_environment_client(self):
         if self.get_argument_yaml():
-            yaml_containerapp = self.get_yaml_containerapp()
-            if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
-                raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
-            env = self.azext_default_utils.safe_get(yaml_containerapp, "properties", "environmentId")
-            if not env:
-                raise RequiredArgumentMissingError(
-                    'environmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+            env = self.azext_default_utils.safe_get(self.containerapp_def, "properties", "environmentId")
         else:
             env = self.get_argument_managed_env()
 
