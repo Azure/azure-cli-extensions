@@ -39,10 +39,10 @@ helps['grafana backup'] = """
     examples:
         - name: backup dashboards under 2 folders (data sources are included to enable name remapping when restore dashboards to another worksapce)
           text: |
-            az grafana backup -g MyResourceGroup -n MyGrafana -d c:\temp --folders-to-include dbServerHealth webServerHealth --components datasources dashboards folders
+            az grafana backup -g MyResourceGroup -n MyGrafana -d c:\\temp --folders-to-include "Prod" "Compute Gateway" --components datasources dashboards folders
         - name: backup dashboards except General folders
           text: |
-            az grafana backup -g MyResourceGroup -n MyGrafana -d c:\temp  --folders-to-exclude General --components datasources dashboards folders
+            az grafana backup -g MyResourceGroup -n MyGrafana -d c:\\temp  --folders-to-exclude General --components datasources dashboards folders
 
 """
 
@@ -50,9 +50,9 @@ helps['grafana restore'] = """
     type: command
     short-summary: Restore an Azure Managed Grafana instance from an achive.
     examples:
-       - name: Restore dashboards. If they are under folders, include "folders" in the components list; use "--remap-data-sources" so CLI will update dashboards to point to data sources at target workspace
+       - name: Restore dashboards. If they are under folders, include "folders" in the components list; use "--remap-data-sources" so CLI will update dashboards to point to same data sourceses at target workspace
          text: |
-           az grafana restore -g MyResourceGroup -n MyGrafana --archive-file backup\dashboards\ServiceHealth-202307051036.tar.gz --components dashboards folders --remap-data-sources
+           az grafana restore -g MyResourceGroup -n MyGrafana --archive-file backup\\dashboards\\ServiceHealth-202307051036.tar.gz --components dashboards folders --remap-data-sources
 """
 
 helps['grafana update'] = """
