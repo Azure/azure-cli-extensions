@@ -8,51 +8,12 @@
 # from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from azext_containerapp._client_factory import ex_handler_factory
 from ._validators import validate_ssh
-
-
-def transform_containerapp_output(app):
-    props = ['name', 'location', 'resourceGroup', 'provisioningState']
-    result = {k: app[k] for k in app if k in props}
-
-    try:
-        result['fqdn'] = app['properties']['configuration']['ingress']['fqdn']
-    except:
-        result['fqdn'] = None
-
-    return result
-
-
-def transform_containerapp_list_output(apps):
-    return [transform_containerapp_output(a) for a in apps]
-
-
-def transform_revision_output(rev):
-    props = ['name', 'active', 'createdTime', 'trafficWeight', 'healthState', 'provisioningState', 'replicas']
-    result = {k: rev['properties'][k] for k in rev['properties'] if k in props}
-
-    if 'name' in rev:
-        result['name'] = rev['name']
-
-    if 'fqdn' in rev['properties']['template']:
-        result['fqdn'] = rev['properties']['template']['fqdn']
-
-    return result
-
-
-def transform_revision_list_output(revs):
-    return [transform_revision_output(r) for r in revs]
-
-
-def transform_job_execution_show_output(execution):
-    return {
-        'name': execution['name'],
-        'startTime': execution['properties']['startTime'],
-        'status': execution['properties']['status']
-    }
-
-
-def transform_job_execution_list_output(executions):
-    return [transform_job_execution_show_output(e) for e in executions]
+from ._transformers import (transform_containerapp_output,
+                            transform_containerapp_list_output,
+                            transform_job_execution_list_output,
+                            transform_job_execution_show_output,
+                            transform_revision_list_output,
+                            transform_revision_output)
 
 
 def load_command_table(self, _):
