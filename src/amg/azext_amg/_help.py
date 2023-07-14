@@ -40,9 +40,9 @@ helps['grafana backup'] = """
         - name: backup dashboards under 2 folders (data sources are included to enable name remapping when restore dashboards to another worksapce)
           text: |
             az grafana backup -g MyResourceGroup -n MyGrafana -d c:\\temp --folders-to-include "Prod" "Compute Gateway" --components datasources dashboards folders
-        - name: backup dashboards except General folders
+        - name: backup dashboards and skip a few folders
           text: |
-            az grafana backup -g MyResourceGroup -n MyGrafana -d c:\\temp  --folders-to-exclude General --components datasources dashboards folders
+            az grafana backup -g MyResourceGroup -n MyGrafana -d c:\\temp  --folders-to-exclude General "Azure Monitor" --components datasources dashboards folders
 
 """
 
