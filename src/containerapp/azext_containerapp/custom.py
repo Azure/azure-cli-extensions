@@ -2173,9 +2173,10 @@ def start_containerappsjob(cmd,
         if resources_def is not None:
             container_def["resources"] = resources_def
 
-        template_def["template"]["containers"] = [container_def]
+        template_def["containers"] = [container_def]
 
     try:
+        print("Json dump of template_def: {}".format(json.dumps(template_def)))
         return ContainerAppsJobClient.start_job(cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_start_envelope=template_def)
     except CLIError as e:
         handle_raw_exception(e)
