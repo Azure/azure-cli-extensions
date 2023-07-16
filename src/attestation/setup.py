@@ -31,7 +31,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'pyjwt==1.7.1'
+    'pyjwt==2.4.0'
 ]
 
 try:
