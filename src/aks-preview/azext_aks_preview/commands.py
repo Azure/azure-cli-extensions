@@ -267,3 +267,13 @@ def load_command_table(self, _):
             'aks_mesh_disable_ingress_gateway',
             supports_no_wait=True,
             confirmation=True)
+        g.custom_command(
+            'get-mesh-config',
+            'aks_mesh_get_mesh_config',
+            supports_no_wait=True
+        )
+        g.custom_command(
+            'migration-check',
+            'aks_mesh_migration_check',
+            supports_no_wait=True
+        )

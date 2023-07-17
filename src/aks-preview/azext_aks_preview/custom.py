@@ -16,6 +16,12 @@ import time
 import uuid
 import webbrowser
 
+import time
+import kubernetes
+from kubernetes.client.rest import ApiException
+import yaml
+
+
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
     cf_agent_pools,
@@ -2477,3 +2483,48 @@ def _aks_mesh_update(
         return None
 
     return aks_update_decorator.update_mc(mc)
+
+def aks_mesh_get_mesh_config(cmd, client, resource_group_name, name):
+    from azure.cli.core import __version__ as local_version
+    from packaging.version import parse
+    from pprint import pprint
+    
+    kubernetes.config.load_kube_config()
+    v1 = kubernetes.client.CoreV1Api()
+    namespace = 'istio-system'
+    api_response = v1.list_namespaced_config_map(namespace)
+    api_resource = v1.get_api_resources()
+    namespaces = v1.list_namespace
+    api_items = api_response.items[0]
+    meshconfig = api_items.data['mesh']
+    istio_version = api_items.metadata.labels['operator.istio.io/version']
+    dct = yaml.safe_load(meshconfig)
+    config_set = set()
+    proxy_set = set()
+    version = parse(local_version)
+    
+    
+    
+    
+    print("AZ version:")
+    print(version)
+    print("-----------------------------------")
+    show_result = aks_show(cmd, client, resource_group_name, name)
+    print("Kubernetes version:")
+    print(show_result.kubernetes_version)
+    print('----------------------------------')
+    for keys in dct.keys():
+        config_set.add(keys)
+    proxy_config = dct['defaultConfig']
+    for keys in proxy_config.keys():
+        proxy_set.add(keys)
+    print("Meshconfig current configuration:")
+    print(config_set)
+    print('----------------------------------')
+    print("Proxyconfig current configuration: ")
+    print(proxy_set)
+    return
+
+
+def aks_mesh_migration_check(cmd, client, resource_group_name, name):
+    return "Migration check"
