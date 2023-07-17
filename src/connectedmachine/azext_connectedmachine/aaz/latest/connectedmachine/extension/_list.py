@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """The operation to get all extensions of a Non-Azure machine.
+    :example: Sample command for extension list
+        connectedmachine extension list --machine-name myMachine --resource-group myResourceGroup
     """
 
     _aaz_info = {
@@ -45,7 +47,7 @@ class List(AAZCommand):
             help="The name of the machine containing the extension.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]",
+                pattern="[a-zA-Z0-9-_\.]+",
                 max_length=54,
                 min_length=1,
             ),

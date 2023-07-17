@@ -1,0 +1,1632 @@
+interactions:
+- request:
+    body: '{"location": "eastus2euap"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '27'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -l
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/az-sdk-test-private-link?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link","name":"az-sdk-test-private-link","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '250'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:32:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"addressSpace": {"addressPrefixes":
+      ["10.0.0.0/16"]}, "enableDdosProtection": false, "enableVmProtection": false,
+      "subnets": [{"name": "subnet-000002", "properties": {"addressPrefix": "10.0.0.0/24"}}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '245'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g -l --subnet-name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/virtualNetworks/vnet-000002?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"vnet-000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/virtualNetworks/vnet-000002\",\r\n
+        \ \"etag\": \"W/\\\"c0715b70-d155-4c8f-a4c4-425482dc501e\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus2euap\",\r\n
+        \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"resourceGuid\":
+        \"c691f894-f1ed-458c-9707-5f502e92853a\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [\r\n
+        \     {\r\n        \"name\": \"subnet-000002\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/virtualNetworks/vnet-000002/subnets/subnet-000002\",\r\n
+        \       \"etag\": \"W/\\\"c0715b70-d155-4c8f-a4c4-425482dc501e\\\"\",\r\n
+        \       \"properties\": {\r\n          \"provisioningState\": \"Updating\",\r\n
+        \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
+        [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
+        \"Enabled\"\r\n        },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n
+        \     }\r\n    ],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\":
+        false\r\n  }\r\n}"
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/2165486a-8482-4601-ae18-24b757e4eeba?api-version=2022-01-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1268'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:32:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 7af1bcac-1f70-4413-bb1b-e4cb5279533a
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --subnet-name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/2165486a-8482-4601-ae18-24b757e4eeba?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:32:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 6817bdc1-c527-4fdb-a64a-42786f98c7b6
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --subnet-name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/2165486a-8482-4601-ae18-24b757e4eeba?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 0861661d-d41f-4faa-a857-e060457d9d57
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l --subnet-name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/virtualNetworks/vnet-000002?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"vnet-000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/virtualNetworks/vnet-000002\",\r\n
+        \ \"etag\": \"W/\\\"18376f94-1e93-46b2-9e4e-2758cfd7cdb6\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus2euap\",\r\n
+        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\":
+        \"c691f894-f1ed-458c-9707-5f502e92853a\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [\r\n
+        \     {\r\n        \"name\": \"subnet-000002\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/virtualNetworks/vnet-000002/subnets/subnet-000002\",\r\n
+        \       \"etag\": \"W/\\\"18376f94-1e93-46b2-9e4e-2758cfd7cdb6\\\"\",\r\n
+        \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
+        \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
+        [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
+        \"Enabled\"\r\n        },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n
+        \     }\r\n    ],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\":
+        false\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1270'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:03 GMT
+      etag:
+      - W/"18376f94-1e93-46b2-9e4e-2758cfd7cdb6"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 4e39255e-a098-4327-b0f1-3cc5b0f9cd27
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --vnet-name -g --disable-private-endpoint-network-policies
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/virtualNetworks/vnet-000002/subnets/subnet-000002?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"subnet-000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/virtualNetworks/vnet-000002/subnets/subnet-000002\",\r\n
+        \ \"etag\": \"W/\\\"18376f94-1e93-46b2-9e4e-2758cfd7cdb6\\\"\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n
+        \   \"delegations\": [],\r\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n
+        \   \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks/subnets\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '554'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:04 GMT
+      etag:
+      - W/"18376f94-1e93-46b2-9e4e-2758cfd7cdb6"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 08b47259-8432-4a1a-8ad5-a969a07167cd
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/virtualNetworks/vnet-000002/subnets/subnet-000002",
+      "name": "subnet-000002", "properties": {"addressPrefix": "10.0.0.0/24", "delegations":
+      [], "privateEndpointNetworkPolicies": "Disabled", "privateLinkServiceNetworkPolicies":
+      "Enabled"}, "type": "Microsoft.Network/virtualNetworks/subnets"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '418'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n --vnet-name -g --disable-private-endpoint-network-policies
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/virtualNetworks/vnet-000002/subnets/subnet-000002?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"subnet-000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/virtualNetworks/vnet-000002/subnets/subnet-000002\",\r\n
+        \ \"etag\": \"W/\\\"78955784-bf55-4057-9df7-7445d9392ed4\\\"\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n
+        \   \"delegations\": [],\r\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n
+        \   \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks/subnets\"\r\n}"
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/07b8a577-f1d9-48ed-85d8-43d1cdf7b94c?api-version=2022-01-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '554'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 6047c9db-dce3-499a-82e0-aa720d45f7bc
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --vnet-name -g --disable-private-endpoint-network-policies
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/07b8a577-f1d9-48ed-85d8-43d1cdf7b94c?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 6b0f9da9-f227-4171-8d3a-f14303359da8
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --vnet-name -g --disable-private-endpoint-network-policies
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/virtualNetworks/vnet-000002/subnets/subnet-000002?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"subnet-000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/virtualNetworks/vnet-000002/subnets/subnet-000002\",\r\n
+        \ \"etag\": \"W/\\\"78955784-bf55-4057-9df7-7445d9392ed4\\\"\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n
+        \   \"delegations\": [],\r\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n
+        \   \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks/subnets\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '554'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:05 GMT
+      etag:
+      - W/"78955784-bf55-4057-9df7-7445d9392ed4"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 3affeaff-c257-4f27-a448-1c85ea75e846
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"publicNetworkAccess": "Disabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-link-scope create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '78'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --resource-group --scope-name
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002?api-version=2022-03-10
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002","name":"scope-000002","type":"Microsoft.HybridCompute/privateLinkScopes","location":"eastus2euap","properties":{"privateLinkScopeId":"efeff8e5-eb0e-4435-9060-8b006d9cd899","publicNetworkAccess":"Disabled","provisioningState":"Succeeded","privateEndpointConnections":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '435'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-link-scope update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --tags --public-network-access --resource-group --scope-name
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002?api-version=2022-03-10
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002","name":"scope-000002","type":"Microsoft.HybridCompute/privateLinkScopes","location":"eastus2euap","properties":{"privateLinkScopeId":"efeff8e5-eb0e-4435-9060-8b006d9cd899","publicNetworkAccess":"Disabled","provisioningState":"Succeeded","privateEndpointConnections":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '435'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "tags": {"Tag1": "Value1"}, "properties": {"publicNetworkAccess":
+      "Enabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-link-scope update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '105'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --tags --public-network-access --resource-group --scope-name
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002?api-version=2022-03-10
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002","name":"scope-000002","type":"Microsoft.HybridCompute/privateLinkScopes","location":"eastus2euap","properties":{"privateLinkScopeId":"efeff8e5-eb0e-4435-9060-8b006d9cd899","publicNetworkAccess":"Enabled","provisioningState":"Succeeded","privateEndpointConnections":[]},"tags":{"Tag1":"Value1"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '459'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-link-scope list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes?api-version=2022-03-10
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002","name":"scope-000002","type":"Microsoft.HybridCompute/privateLinkScopes","location":"eastus2euap","tags":{"Tag1":"Value1"},"properties":{"privateLinkScopeId":"efeff8e5-eb0e-4435-9060-8b006d9cd899","publicNetworkAccess":"Enabled","provisioningState":"Succeeded","privateEndpointConnections":[]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '471'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"Tag1": "Value1", "Tag2": "Value2"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-link-scope update-tag
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '46'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --tags --resource-group --scope-name
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002?api-version=2022-03-10
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002","name":"scope-000002","type":"Microsoft.HybridCompute/privateLinkScopes","location":"eastus2euap","properties":{"privateLinkScopeId":"efeff8e5-eb0e-4435-9060-8b006d9cd899","publicNetworkAccess":"Enabled","provisioningState":"Succeeded","privateEndpointConnections":[]},"tags":{"Tag1":"Value1","Tag2":"Value2"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '475'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-link-scope show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --scope-name -g
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002?api-version=2022-03-10
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002","name":"scope-000002","type":"Microsoft.HybridCompute/privateLinkScopes","location":"eastus2euap","properties":{"privateLinkScopeId":"efeff8e5-eb0e-4435-9060-8b006d9cd899","publicNetworkAccess":"Enabled","provisioningState":"Succeeded","privateEndpointConnections":[]},"tags":{"Tag1":"Value1","Tag2":"Value2"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '475'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-link-resource show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --scope-name -g --group-name
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002/privateLinkResources/hybridcompute?api-version=2022-03-10
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002/privateLinkResources/hybridcompute","name":"hybridcompute","type":"Microsoft.HybridCompute/privateLinkScopes/privateLinkResources","properties":{"groupId":"hybridcompute","requiredMembers":["HybridCompute.Global","HybridCompute.Server","GuestConfig.GlobalService","GuestConfig.AgentService.eapeus2","GuestConfig.AgentService.eastus2euap","HybridCompute.K8sConfiguration"],"requiredZoneNames":["privatelink.his.arc.azure.com","privatelink.Guestconfiguration.azure.com","privatelink.dp.kubernetesconfiguration.azure.com"]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '685'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-link-resource list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --scope-name -g
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002/privateLinkResources?api-version=2022-03-10
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002/privateLinkResources/hybridcompute","name":"hybridcompute","type":"Microsoft.HybridCompute/privateLinkScopes/privateLinkResources","properties":{"groupId":"hybridcompute","requiredMembers":["HybridCompute.Global","HybridCompute.Server","GuestConfig.GlobalService","GuestConfig.AgentService.eapeus2","GuestConfig.AgentService.eastus2euap","HybridCompute.K8sConfiguration"],"requiredZoneNames":["privatelink.his.arc.azure.com","privatelink.Guestconfiguration.azure.com","privatelink.dp.kubernetesconfiguration.azure.com"]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '697'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network private-endpoint create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --vnet-name --subnet --private-connection-resource-id --connection-name
+        --group-id
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/az-sdk-test-private-link?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link","name":"az-sdk-test-private-link","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '250'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"privateLinkServiceConnections":
+      [{"name": "pec-000002", "properties": {"groupIds": ["hybridcompute"], "privateLinkServiceId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002"}}],
+      "subnet": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/virtualNetworks/vnet-000002/subnets/subnet-000002"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network private-endpoint create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '524'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --vnet-name --subnet --private-connection-resource-id --connection-name
+        --group-id
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/privateEndpoints/pe-000002?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"pe-000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/privateEndpoints/pe-000002\",\r\n
+        \ \"etag\": \"W/\\\"ab533a2f-1e5b-43f8-9f7f-44dbb3a5ce14\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/privateEndpoints\",\r\n  \"location\": \"eastus2euap\",\r\n
+        \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"resourceGuid\":
+        \"3c94e727-c2a0-4027-a17e-c22a9ca1827b\",\r\n    \"privateLinkServiceConnections\":
+        [\r\n      {\r\n        \"name\": \"pec-000002\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/privateEndpoints/pe-000002/privateLinkServiceConnections/pec-000002\",\r\n
+        \       \"etag\": \"W/\\\"ab533a2f-1e5b-43f8-9f7f-44dbb3a5ce14\\\"\",\r\n
+        \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
+        \         \"privateLinkServiceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002\",\r\n
+        \         \"groupIds\": [\r\n            \"hybridcompute\"\r\n          ],\r\n
+        \         \"privateLinkServiceConnectionState\": {\r\n            \"status\":
+        \"Approved\",\r\n            \"description\": \"Auto Approved\",\r\n            \"actionsRequired\":
+        \"None\"\r\n          }\r\n        },\r\n        \"type\": \"Microsoft.Network/privateEndpoints/privateLinkServiceConnections\"\r\n
+        \     }\r\n    ],\r\n    \"manualPrivateLinkServiceConnections\": [],\r\n
+        \   \"customNetworkInterfaceName\": \"\",\r\n    \"subnet\": {\r\n      \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/virtualNetworks/vnet-000002/subnets/subnet-000002\"\r\n
+        \   },\r\n    \"ipConfigurations\": [],\r\n    \"networkInterfaces\": [\r\n
+        \     {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/networkInterfaces/pe-000002.nic.99fe32bd-99c2-49df-b059-35ef6e6f6af8\"\r\n
+        \     }\r\n    ],\r\n    \"customDnsConfigs\": []\r\n  }\r\n}"
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/5e49196f-bf96-43ac-af4a-9efd025d8fc0?api-version=2022-01-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '2037'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - b5213e36-f205-44d7-b258-4b3994fd561d
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network private-endpoint create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --vnet-name --subnet --private-connection-resource-id --connection-name
+        --group-id
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/5e49196f-bf96-43ac-af4a-9efd025d8fc0?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - b7c454ba-7074-46d0-9692-90c7baac1e52
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network private-endpoint create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --vnet-name --subnet --private-connection-resource-id --connection-name
+        --group-id
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/5e49196f-bf96-43ac-af4a-9efd025d8fc0?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - e99a8958-10f5-4418-86c1-bc1dd95e27e9
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network private-endpoint create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --vnet-name --subnet --private-connection-resource-id --connection-name
+        --group-id
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/5e49196f-bf96-43ac-af4a-9efd025d8fc0?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - acfa5b59-65a7-4960-8c3e-c79b202ba714
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network private-endpoint create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --vnet-name --subnet --private-connection-resource-id --connection-name
+        --group-id
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/privateEndpoints/pe-000002?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"pe-000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/privateEndpoints/pe-000002\",\r\n
+        \ \"etag\": \"W/\\\"4da2c14f-ca37-4524-9d72-a8e0151d93a7\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/privateEndpoints\",\r\n  \"location\": \"eastus2euap\",\r\n
+        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\":
+        \"3c94e727-c2a0-4027-a17e-c22a9ca1827b\",\r\n    \"privateLinkServiceConnections\":
+        [\r\n      {\r\n        \"name\": \"pec-000002\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/privateEndpoints/pe-000002/privateLinkServiceConnections/pec-000002\",\r\n
+        \       \"etag\": \"W/\\\"4da2c14f-ca37-4524-9d72-a8e0151d93a7\\\"\",\r\n
+        \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
+        \         \"privateLinkServiceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002\",\r\n
+        \         \"groupIds\": [\r\n            \"hybridcompute\"\r\n          ],\r\n
+        \         \"privateLinkServiceConnectionState\": {\r\n            \"status\":
+        \"Approved\",\r\n            \"description\": \"Auto-approved\",\r\n            \"actionsRequired\":
+        \"None\"\r\n          }\r\n        },\r\n        \"type\": \"Microsoft.Network/privateEndpoints/privateLinkServiceConnections\"\r\n
+        \     }\r\n    ],\r\n    \"manualPrivateLinkServiceConnections\": [],\r\n
+        \   \"customNetworkInterfaceName\": \"\",\r\n    \"subnet\": {\r\n      \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/virtualNetworks/vnet-000002/subnets/subnet-000002\"\r\n
+        \   },\r\n    \"ipConfigurations\": [],\r\n    \"networkInterfaces\": [\r\n
+        \     {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/networkInterfaces/pe-000002.nic.99fe32bd-99c2-49df-b059-35ef6e6f6af8\"\r\n
+        \     }\r\n    ],\r\n    \"customDnsConfigs\": [\r\n      {\r\n        \"fqdn\":
+        \"gbl.his.arc.azure.com\",\r\n        \"ipAddresses\": [\r\n          \"10.0.0.4\"\r\n
+        \       ]\r\n      },\r\n      {\r\n        \"fqdn\": \"cbn.his.arc.azure.com\",\r\n
+        \       \"ipAddresses\": [\r\n          \"10.0.0.5\"\r\n        ]\r\n      },\r\n
+        \     {\r\n        \"fqdn\": \"agentserviceapi.guestconfiguration.azure.com\",\r\n
+        \       \"ipAddresses\": [\r\n          \"10.0.0.6\"\r\n        ]\r\n      },\r\n
+        \     {\r\n        \"fqdn\": \"eapeus2-gas.guestconfiguration.azure.com\",\r\n
+        \       \"ipAddresses\": [\r\n          \"10.0.0.7\"\r\n        ]\r\n      },\r\n
+        \     {\r\n        \"fqdn\": \"eastus2euap-gas.guestconfiguration.azure.com\",\r\n
+        \       \"ipAddresses\": [\r\n          \"10.0.0.8\"\r\n        ]\r\n      },\r\n
+        \     {\r\n        \"fqdn\": \"eastus2euap.dp.kubernetesconfiguration.azure.com\",\r\n
+        \       \"ipAddresses\": [\r\n          \"10.0.0.9\"\r\n        ]\r\n      }\r\n
+        \   ]\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2855'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:46 GMT
+      etag:
+      - W/"4da2c14f-ca37-4524-9d72-a8e0151d93a7"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 9bdcdcd9-4f80-48d1-95c2-75ca6e29ad62
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-endpoint-connection list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --scope-name
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002/privateEndpointConnections?api-version=2022-03-10
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002/privateEndpointConnections/pe-000002.3c94e727-c2a0-4027-a17e-c22a9ca1827b","name":"pe-000002.3c94e727-c2a0-4027-a17e-c22a9ca1827b","type":"Microsoft.HybridCompute/privateLinkScopes/privateEndpointConnections","properties":{"provisioningState":"Succeeded","privateEndpoint":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/privateEndpoints/pe-000002"},"privateLinkServiceConnectionState":{"status":"Approved","description":"Auto-approved","actionsRequired":"None"}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '719'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"privateLinkServiceConnectionState": {"status": "Rejected",
+      "description": "Rejected by AZ CLI test"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-endpoint-connection update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '119'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --connection-state --name --resource-group --scope-name
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002/privateEndpointConnections/pe-000002.3c94e727-c2a0-4027-a17e-c22a9ca1827b?api-version=2022-03-10
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/33bc4f13-fe96-401e-9664-1049bc620321?api-version=2022-03-10
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - application/json
+      date:
+      - Mon, 17 Jul 2023 06:33:48 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/33bc4f13-fe96-401e-9664-1049bc620321?api-version=2022-03-10
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-endpoint-connection update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --connection-state --name --resource-group --scope-name
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/33bc4f13-fe96-401e-9664-1049bc620321?api-version=2022-03-10
+  response:
+    body:
+      string: '{"name":"33bc4f13-fe96-401e-9664-1049bc620321","status":"Succeeded","startTime":"2023-07-17T06:33:49.2332493Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '111'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-endpoint-connection update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --connection-state --name --resource-group --scope-name
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002/privateEndpointConnections/pe-000002.3c94e727-c2a0-4027-a17e-c22a9ca1827b?api-version=2022-03-10
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002/privateEndpointConnections/pe-000002.3c94e727-c2a0-4027-a17e-c22a9ca1827b","name":"pe-000002.3c94e727-c2a0-4027-a17e-c22a9ca1827b","type":"Microsoft.HybridCompute/privateLinkScopes/privateEndpointConnections","properties":{"provisioningState":"Succeeded","privateEndpoint":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/privateEndpoints/pe-000002"},"privateLinkServiceConnectionState":{"status":"Rejected","description":"Rejected
+        by AZ CLI test","actionsRequired":"None"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '717'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-endpoint-connection show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --scope-name
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002/privateEndpointConnections/pe-000002.3c94e727-c2a0-4027-a17e-c22a9ca1827b?api-version=2022-03-10
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002/privateEndpointConnections/pe-000002.3c94e727-c2a0-4027-a17e-c22a9ca1827b","name":"pe-000002.3c94e727-c2a0-4027-a17e-c22a9ca1827b","type":"Microsoft.HybridCompute/privateLinkScopes/privateEndpointConnections","properties":{"provisioningState":"Succeeded","privateEndpoint":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.Network/privateEndpoints/pe-000002"},"privateLinkServiceConnectionState":{"status":"Rejected","description":"Rejected
+        by AZ CLI test","actionsRequired":"None"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '717'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-endpoint-connection delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --name --resource-group --scope-name
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002/privateEndpointConnections/pe-000002.3c94e727-c2a0-4027-a17e-c22a9ca1827b?api-version=2022-03-10
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/cbedeeb0-cc8d-417c-bbf0-972bf7581e15?api-version=2022-03-10
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - application/json
+      date:
+      - Mon, 17 Jul 2023 06:33:51 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/cbedeeb0-cc8d-417c-bbf0-972bf7581e15?api-version=2022-03-10
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-endpoint-connection delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --resource-group --scope-name
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/cbedeeb0-cc8d-417c-bbf0-972bf7581e15?api-version=2022-03-10
+  response:
+    body:
+      string: '{"name":"cbedeeb0-cc8d-417c-bbf0-972bf7581e15","status":"Succeeded","startTime":"2023-07-17T06:33:52.2683521Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '111'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-endpoint-connection list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --scope-name
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test-private-link/providers/Microsoft.HybridCompute/privateLinkScopes/scope-000002/privateEndpointConnections?api-version=2022-03-10
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jul 2023 06:33:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -18,7 +18,7 @@ class InstallPatches(AAZCommand):
     """Install patches on an Azure Arc-Enabled Server.
 
     :example: Sample command for install-patches
-        az connectedmachine install-patches --resource-group MyResourceGroup --name MyMachine --maximum-duration PT4H --reboot-setting IfRequired --classifications-to-include-win Critical Security --exclude-kbs-requiring-reboot true
+        az connectedmachine install-patches --resource-group MyResourceGroup --name MyMachine --maximum-duration PT4H --reboot-setting IfRequired --windows-parameters "{"classificationsToInclude": ["Critical", "Security"]}"
     """
 
     _aaz_info = {

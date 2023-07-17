@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """The operation to create or update the extension.
+    :example: Sample command for extension show
+        connectedmachine extension show --name CustomScriptExtension --machine-name myMachine --resource-group myResourceGroup
     """
 
     _aaz_info = {
@@ -53,7 +55,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]",
+                pattern="[a-zA-Z0-9-_\.]+",
                 max_length=54,
                 min_length=1,
             ),

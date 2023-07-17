@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update operation to create or update the extension.
+    :example: Sample command for extension update
+        connectedmachine extension update --name CustomScriptExtension --type CustomScriptExtension --publisher Microsoft.Compute --type-handler-version 1.10 --machine-name myMachine --resource-group myResourceGroup
     """
 
     _aaz_info = {
@@ -56,7 +58,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]",
+                pattern="[a-zA-Z0-9-_\.]+",
                 max_length=54,
                 min_length=1,
             ),

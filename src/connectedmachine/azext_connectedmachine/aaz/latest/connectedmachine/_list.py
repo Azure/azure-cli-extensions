@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all the Azure Arc-Enabled Servers in the specified resource group.
+    
+    :example: Sample command for list
+        connectedmachine list --resource-group myResourceGroup
     """
 
     _aaz_info = {
