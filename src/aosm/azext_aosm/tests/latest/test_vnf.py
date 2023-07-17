@@ -41,7 +41,7 @@ class TestVNF(unittest.TestCase):
                 assert os.path.exists("nfd-bicep-ubuntu-template")
             finally:
                 os.chdir(starting_directory)
-                
+
         with TemporaryDirectory() as test_dir:
             os.chdir(test_dir)
 
