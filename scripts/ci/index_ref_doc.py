@@ -55,13 +55,15 @@ class TestIndexRefDocsMeta(type):
                 if dep_url.get(ext_name):
                     dep_file = get_whl_from_url(dep_url[ext_name][0], dep_url[ext_name][1], self.whl_dir)
                 else:
-                    dep_file = ''
+                    dep_file = None
                 ext_file = get_whl_from_url(ext_url, filename, self.whl_dir)
                 ref_doc_out_dir = os.path.join(REF_DOC_OUT_DIR, ext_name)
                 if not os.path.isdir(ref_doc_out_dir):
                     os.mkdir(ref_doc_out_dir)
                 script_args = [sys.executable, REF_GEN_SCRIPT, '--extension-file', ext_file, '--output-dir',
-                               ref_doc_out_dir, '--dependent-file', dep_file]
+                               ref_doc_out_dir]
+                if dep_file:
+                    script_args.extend(['--dependent-file', dep_file])
                 try:
                     check_call(script_args)
                 except CalledProcessError as e:
