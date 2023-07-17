@@ -168,8 +168,6 @@ def cf_share_service(cli_ctx, kwargs):
     account_name = kwargs.pop('account_name', None)
     account_url = kwargs.pop('account_url', None)
     enable_file_backup_request_intent = kwargs.pop('enable_file_backup_request_intent', None)
-    # disallow_trailing_dot = kwargs.pop('disallow_trailing_dot', None)
-    # disallow_source_trailing_dot = kwargs.pop('disallow_source_trailing_dot', None)
     if token_credential is not None and not enable_file_backup_request_intent:
         raise RequiredArgumentMissingError("--enable-file-backup-request-intent is required for file share OAuth")
     if enable_file_backup_request_intent:
@@ -179,11 +177,6 @@ def cf_share_service(cli_ctx, kwargs):
     if not account_url:
         account_url = get_account_url(cli_ctx, account_name=account_name, service='file')
     credential = account_key or sas_token or token_credential
-    # if disallow_trailing_dot:
-    #     client_kwargs['allow_trailing_dot'] = False
-    #
-    # if disallow_source_trailing_dot:
-    #     client_kwargs['allow_source_trailing_dot'] = False
 
     return t_share_service(account_url=account_url, credential=credential, **client_kwargs)
 
