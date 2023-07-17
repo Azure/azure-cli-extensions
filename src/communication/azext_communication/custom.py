@@ -17,8 +17,8 @@ except ImportError:
 from azext_communication.aaz.latest.communication.identity import Assign as _IdentityAssign
 from azext_communication.aaz.latest.communication.identity import Remove as _IdentityRemove
 from azext_communication.aaz.latest.communication._create import Create as _CommunicationCreate
+from azure.cli.core.azclierror import ResourceNotFoundError
 from knack.log import get_logger
-from knack.util import CLIError
 
 logger = get_logger(__name__)
 
@@ -135,15 +135,13 @@ class IdentityRemove(_IdentityRemove):
 
         if has_value(args.user_assigned):
             if len(args.user_assigned) == 0:
-                print("heeey")
                 current_assigned_identities = []
             else:
                 for identity in args.user_assigned:
-                    print("neta")
                     if str(identity) in current_assigned_identities:
                         current_assigned_identities.pop(str(identity))
                     else:
-                        raise CLIError(
+                        raise ResourceNotFoundError(
                             'The following was not found as a managed identity for the current resource: ' + str(identity)
                         )
 
@@ -172,7 +170,8 @@ class CommunicationCreate(_CommunicationCreate):
             help="Space separated resource IDs to add user-assigned identities."
         )
         args_schema.user_assigned.Element = AAZResourceIdArg(
-            fmt=AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}")
+            fmt=AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
+                                                "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
         )
         args_schema.type._registered = False
         args_schema.type._required = False
