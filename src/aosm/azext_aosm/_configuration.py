@@ -355,7 +355,7 @@ class RETConfiguration(abc.ABC):
 
 
 @dataclass
-class NetworkFunctionDefinitionConfiguration(RETConfiguration):
+class NFDRETConfiguration(RETConfiguration):
     type: RETType = RETType.NETWORK_FUNCTION_DEFINITION
     publisher_name: str = DESCRIPTION_MAP["network_function_definition_publisher"]
     publisher_resource_group: str = "Publisher resource group."
@@ -406,12 +406,12 @@ class NetworkFunctionDefinitionConfiguration(RETConfiguration):
 class NSConfiguration(Configuration):
     resource_element_template_configurations: List[RETConfiguration] = field(
         default_factory=lambda: [
-            NetworkFunctionDefinitionConfiguration(),
+            NFDRETConfiguration(),
         ]
     )
-    nsd_name: str = DESCRIPTION_MAP["nsd_name"]
+    nsdg_name: str = DESCRIPTION_MAP["nsdg_name"]
     nsd_version: str = DESCRIPTION_MAP["nsd_version"]
-    nsd_description: str = DESCRIPTION_MAP["nsd_description"]
+    nsdv_description: str = DESCRIPTION_MAP["nsdv_description"]
 
     def validate(self):
         # validate that all of the configuration parameters are set
