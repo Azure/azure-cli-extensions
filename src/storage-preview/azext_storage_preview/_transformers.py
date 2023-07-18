@@ -199,3 +199,10 @@ def _decode_bytearray(result):
             result[k] = base64.urlsafe_b64encode(v).decode()
         elif isinstance(v, dict):
             _decode_bytearray(v)
+
+
+def transform_share_list_handle(result):
+    for item in result["items"]:
+        item["handleId"] = item.id
+        delattr(item, "id")
+    return result
