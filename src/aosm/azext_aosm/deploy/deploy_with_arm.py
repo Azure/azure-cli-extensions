@@ -27,11 +27,14 @@ from azext_aosm.deploy.pre_deploy import PreDeployerViaSDK
 from azext_aosm.util.constants import (
     ARTIFACT_UPLOAD,
     BICEP_PUBLISH,
+    CNF,
     CNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
     CNF_MANIFEST_BICEP_TEMPLATE_FILENAME,
     NF_DEFINITION_BICEP_FILENAME,
+    NSD,
     NSD_ARTIFACT_MANIFEST_BICEP_FILENAME,
     NSD_BICEP_FILENAME,
+    VNF,
     VNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
     VNF_MANIFEST_BICEP_TEMPLATE_FILENAME,
 )
@@ -59,6 +62,16 @@ class DeployerViaArm:
         self.api_clients = api_clients
         self.config = config
         self.pre_deployer = PreDeployerViaSDK(api_clients, self.config)
+
+        # Convenience variable to make conditional statements clearer
+        if isinstance(self.config, VNFConfiguration):
+            self.resource_type = VNF
+        elif isinstance(self.config, CNFConfiguration):
+            self.resource_type = CNF
+        elif isinstance(self.config, NSConfiguration):
+            self.resource_type = NSD
+        else:
+            raise TypeError(f"Unexpected config type. Expected [VNFConfiguration|CNFConfiguration|NSConfiguration], received {type(self.config)}")
 
     @staticmethod
     def read_parameters_from_file(parameters_json_file: str) -> Dict[str, Any]:
@@ -106,9 +119,9 @@ class DeployerViaArm:
             if not bicep_path:
                 # User has not passed in a bicep template, so we are deploying the default
                 # one produced from building the NFDV using this CLI
-                if isinstance(self.config, VNFConfiguration):
+                if self.resource_type == VNF:
                     file_name = VNF_DEFINITION_BICEP_TEMPLATE_FILENAME
-                if isinstance(self.config, CNFConfiguration):
+                if self.resource_type == CNF:
                     file_name = CNF_DEFINITION_BICEP_TEMPLATE_FILENAME
                 bicep_path = os.path.join(
                     self.config.output_directory_for_build,
@@ -156,9 +169,9 @@ class DeployerViaArm:
             print("Done")
             return
 
-        if isinstance(self.config, VNFConfiguration):
+        if self.resource_type == VNF:
             self._vnfd_artifact_upload()
-        if isinstance(self.config, CNFConfiguration):
+        if self.resource_type == CNF:
             self._cnfd_artifact_upload(cli_ctx)
 
     def _vnfd_artifact_upload(
@@ -278,9 +291,9 @@ class DeployerViaArm:
         self.pre_deployer.ensure_config_resource_group_exists()
         self.pre_deployer.ensure_config_publisher_exists()
         self.pre_deployer.ensure_acr_artifact_store_exists()
-        if isinstance(self.config, VNFConfiguration):
+        if self.resource_type == VNF:
             self.pre_deployer.ensure_sa_artifact_store_exists()
-        if isinstance(self.config, CNFConfiguration):
+        if self.resource_type == CNF:
             self.pre_deployer.ensure_config_source_registry_exists()
 
         self.pre_deployer.ensure_config_nfdg_exists()
@@ -292,7 +305,7 @@ class DeployerViaArm:
 
         :param config: The contents of the configuration file.
         """
-        if isinstance(self.config, VNFConfiguration):
+        if self.resource_type == VNF:
             return {
                 "location": {"value": self.config.location},
                 "publisherName": {"value": self.config.publisher_name},
@@ -304,7 +317,7 @@ class DeployerViaArm:
                 "vhdVersion": {"value": self.config.vhd.version},
                 "armTemplateVersion": {"value": self.config.arm_template.version},
             }
-        if isinstance(self.config, CNFConfiguration):
+        if self.resource_type == CNF:
             return {
                 "location": {"value": self.config.location},
                 "publisherName": {"value": self.config.publisher_name},
@@ -316,7 +329,7 @@ class DeployerViaArm:
 
     def construct_manifest_parameters(self) -> Dict[str, Any]:
         """Create the parmeters dictionary for VNF, CNF or NSD."""
-        if isinstance(self.config, VNFConfiguration):
+        if self.resource_type == VNF:
             return {
                 "location": {"value": self.config.location},
                 "publisherName": {"value": self.config.publisher_name},
@@ -328,14 +341,14 @@ class DeployerViaArm:
                 "vhdVersion": {"value": self.config.vhd.version},
                 "armTemplateVersion": {"value": self.config.arm_template.version},
             }
-        if isinstance(self.config, CNFConfiguration):
+        if self.resource_type == CNF:
             return {
                 "location": {"value": self.config.location},
                 "publisherName": {"value": self.config.publisher_name},
                 "acrArtifactStoreName": {"value": self.config.acr_artifact_store_name},
                 "acrManifestName": {"value": self.config.acr_manifest_name},
             }
-        if isinstance(self.config, NSConfiguration):
+        if self.resource_type == NSD:
             return {
                 "location": {"value": self.config.location},
                 "publisherName": {"value": self.config.publisher_name},
@@ -458,11 +471,11 @@ class DeployerViaArm:
 
         if not manifest_bicep_path:
             file_name: str = ""
-            if isinstance(self.config, NSConfiguration):
+            if self.resource_type == NSD:
                 file_name = NSD_ARTIFACT_MANIFEST_BICEP_FILENAME
-            if isinstance(self.config, VNFConfiguration):
+            if self.resource_type == VNF:
                 file_name = VNF_MANIFEST_BICEP_TEMPLATE_FILENAME
-            if isinstance(self.config, CNFConfiguration):
+            if self.resource_type == CNF:
                 file_name = CNF_MANIFEST_BICEP_TEMPLATE_FILENAME
 
             manifest_bicep_path = os.path.join(
