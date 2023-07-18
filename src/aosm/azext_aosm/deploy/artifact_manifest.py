@@ -10,12 +10,15 @@ from azure.storage.blob import BlobClient
 from knack.log import get_logger
 from oras.client import OrasClient
 
-from azext_aosm._configuration import NFConfiguration, NSConfiguration
+from azext_aosm._configuration import Configuration
 from azext_aosm.deploy.artifact import Artifact
 from azext_aosm.util.management_clients import ApiClients
-from azext_aosm.vendored_sdks.models import (ArtifactManifest, ArtifactType,
-                                             CredentialType,
-                                             ManifestArtifactFormat)
+from azext_aosm.vendored_sdks.models import (
+    ArtifactManifest,
+    ArtifactType,
+    CredentialType,
+    ManifestArtifactFormat,
+)
 
 logger = get_logger(__name__)
 
@@ -23,9 +26,10 @@ logger = get_logger(__name__)
 class ArtifactManifestOperator:
     """ArtifactManifest class."""
 
+    # pylint: disable=too-few-public-methods
     def __init__(
         self,
-        config: NFConfiguration or NSConfiguration,
+        config: Configuration,
         api_clients: ApiClients,
         store_name: str,
         manifest_name: str,
@@ -120,8 +124,8 @@ class ArtifactManifestOperator:
             # Check we have the required artifact types for this credential. Indicates
             # a coding error if we hit this but worth checking.
             if not (
-                artifact.artifact_type == ArtifactType.IMAGE_FILE
-                or artifact.artifact_type == ArtifactType.VHD_IMAGE_FILE
+                artifact.artifact_type
+                in (ArtifactType.IMAGE_FILE, ArtifactType.VHD_IMAGE_FILE)
             ):
                 raise AzCLIError(
                     f"Cannot upload artifact {artifact.artifact_name}."
@@ -131,24 +135,34 @@ class ArtifactManifestOperator:
                 )
 
             container_basename = artifact.artifact_name.replace("-", "")
-            blob_url = self._get_blob_url(
-                f"{container_basename}-{artifact.artifact_version}"
-            )
-            return BlobClient.from_blob_url(blob_url)
-        else:
-            return self._oras_client(self._manifest_credentials["acr_server_url"])
+            container_name = f"{container_basename}-{artifact.artifact_version}"
 
-    def _get_blob_url(self, container_name: str) -> str:
+            # For AOSM to work VHD blobs must have the suffix .vhd
+            if artifact.artifact_name.endswith("-vhd"):
+                blob_name = f"{artifact.artifact_name[:-4].replace('-', '')}-{artifact.artifact_version}.vhd"
+            else:
+                blob_name = container_name
+
+            logger.debug("container name: %s, blob name: %s", container_name, blob_name)
+
+            blob_url = self._get_blob_url(container_name, blob_name)
+            return BlobClient.from_blob_url(blob_url)
+        return self._oras_client(self._manifest_credentials["acr_server_url"])
+
+    def _get_blob_url(self, container_name: str, blob_name: str) -> str:
         """
         Get the URL for the blob to be uploaded to the storage account artifact store.
 
         :param container_name: name of the container
+        :param blob_name: the name that the blob will get uploaded with
         """
         for container_credential in self._manifest_credentials["container_credentials"]:
             if container_credential["container_name"] == container_name:
                 sas_uri = str(container_credential["container_sas_uri"])
-                sas_uri_prefix = sas_uri.split("?")[0]
-                sas_uri_token = sas_uri.split("?")[1]
+                sas_uri_prefix, sas_uri_token = sas_uri.split("?", maxsplit=1)
 
-                return f"{sas_uri_prefix}/{container_name}?{sas_uri_token}"
+                blob_url = f"{sas_uri_prefix}/{blob_name}?{sas_uri_token}"
+                logger.debug("Blob URL: %s", blob_url)
+
+                return blob_url
         raise KeyError(f"Manifest does not include a credential for {container_name}.")

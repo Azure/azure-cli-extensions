@@ -564,6 +564,7 @@ def aks_create(
     enable_node_restriction=False,
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
+    enable_network_observability=None,
     # nodepool
     crg_id=None,
     message_of_the_day=None,
@@ -580,6 +581,7 @@ def aks_create(
     enable_azure_service_mesh=None,
     # azure monitor profile
     enable_azuremonitormetrics=False,
+    enable_azure_monitor_metrics=False,
     azure_monitor_workspace_resource_id=None,
     ksm_metric_labels_allow_list=None,
     ksm_metric_annotations_allow_list=None,
@@ -729,12 +731,14 @@ def aks_update(
     disable_private_cluster=False,
     private_dns_zone=None,
     enable_azuremonitormetrics=False,
+    enable_azure_monitor_metrics=False,
     azure_monitor_workspace_resource_id=None,
     ksm_metric_labels_allow_list=None,
     ksm_metric_annotations_allow_list=None,
     grafana_resource_id=None,
     enable_windows_recording_rules=False,
     disable_azuremonitormetrics=False,
+    disable_azure_monitor_metrics=False,
     enable_vpa=False,
     disable_vpa=False,
     cluster_snapshot_id=None,
@@ -743,6 +747,7 @@ def aks_update(
     guardrails_level=None,
     guardrails_version=None,
     guardrails_excluded_ns=None,
+    enable_network_observability=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

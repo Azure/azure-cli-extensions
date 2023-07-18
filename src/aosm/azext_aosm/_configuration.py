@@ -1,63 +1,72 @@
+# --------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT
+# License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------
+"""Configuration class for input config file parsing,"""
 import abc
+import logging
+import json
 import os
+import re
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from azure.cli.core.azclierror import (InvalidArgumentValueError,
-                                       ValidationError)
+from azure.cli.core.azclierror import InvalidArgumentValueError, ValidationError
+from azext_aosm.util.constants import (
+    CNF,
+    NF_DEFINITION_OUTPUT_BICEP_PREFIX,
+    NF_DEFINITION_JSON_FILENAME,
+    NSD,
+    NSD_OUTPUT_BICEP_PREFIX,
+    VNF,
+    SOURCE_ACR_REGEX,
+)
 
-from azext_aosm.util.constants import (CNF, DEFINITION_OUTPUT_BICEP_PREFIX,
-                                       NF_DEFINITION_JSON_FILE, NSD,
-                                       NSD_DEFINITION_OUTPUT_BICEP_PREFIX, VNF)
+logger = logging.getLogger(__name__)
 
 DESCRIPTION_MAP: Dict[str, str] = {
     "publisher_resource_group_name": (
-        "Resource group for the Publisher resource. Will be "
-        "created if it does not exist."
+        "Resource group for the Publisher resource. "
+        "Will be created if it does not exist."
     ),
     "publisher_name": (
-        "Name of the Publisher resource you want your definition "
-        "published to. Will be created if it does not exist."
+        "Name of the Publisher resource you want your definition published to. "
+        "Will be created if it does not exist."
     ),
     "publisher_name_nsd": (
         "Name of the Publisher resource you want your design published to. "
-        "This published should be the same as the publisher used for your "
-        "NFDVs"
+        "This should be the same as the publisher used for your NFDVs"
     ),
-    "publisher_resource_group_name_nsd": (
-        "Resource group for the Publisher " "resource."
-    ),
+    "publisher_resource_group_name_nsd": "Resource group for the Publisher resource.",
     "nf_name": "Name of NF definition",
     "version": "Version of the NF definition",
     "acr_artifact_store_name": (
-        "Name of the ACR Artifact Store resource. "
-        "Will be created if it does not exist."
+        "Name of the ACR Artifact Store resource. Will be created if it does not exist."
     ),
     "location": "Azure location to use when creating resources.",
     "blob_artifact_store_name": (
-        "Name of the storage account Artifact Store resource. "
-        "Will be created if it does not exist."
+        "Name of the storage account Artifact Store resource. Will be created if it "
+        "does not exist."
     ),
     "artifact_name": "Name of the artifact",
     "file_path": (
-        "Optional. File path of the artifact you wish to upload from your "
-        "local disk. Delete if not required."
+        "Optional. File path of the artifact you wish to upload from your local disk. "
+        "Delete if not required."
     ),
     "blob_sas_url": (
-        "Optional. SAS URL of the blob artifact you wish to copy to your "
-        "Artifact Store. Delete if not required."
+        "Optional. SAS URL of the blob artifact you wish to copy to your Artifact"
+        " Store. Delete if not required."
     ),
     "artifact_version": (
         "Version of the artifact. For VHDs this must be in format A-B-C. "
         "For ARM templates this must be in format A.B.C"
     ),
-    "nsd_description": "Description of the NSDV",
-    "nsd_name": (
-        "Network Service Design Group Name. This is the collection "
-        "of Network Service Design Versions. Will be "
-        "created if it does not exist."
+    "nsdv_description": "Description of the NSDV",
+    "nsdg_name": (
+        "Network Service Design Group Name. This is the collection of Network Service"
+        " Design Versions. Will be created if it does not exist."
     ),
     "nsd_version": (
         "Version of the NSD to be created. This should be in the format A.B.C"
@@ -79,11 +88,29 @@ DESCRIPTION_MAP: Dict[str, str] = {
         "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz"
     ),
     "path_to_mappings": (
-        "File path of value mappings on local disk. Accepts .yaml or .yml"
+        "File path of value mappings on local disk where chosen values are replaced "
+        "with deploymentParameter placeholders. Accepts .yaml or .yml. If left as a "
+        "blank string, a value mappings file will be generated with every value "
+        "mapped to a deployment parameter. Use a blank string and --interactive on "
+        "the build command to interactively choose which values to map."
     ),
     "helm_depends_on": (
         "Names of the Helm packages this package depends on. "
         "Leave as an empty array if no dependencies"
+    ),
+    "image_name_parameter": (
+        "The parameter name in the VM ARM template which specifies the name of the "
+        "image to use for the VM."
+    ),
+    "source_registry_id": (
+        "Resource ID of the source acr registry from which to pull the image"
+    ),
+    "source_registry_namespace": (
+        "Optional. Namespace of the repository of the source acr registry from which "
+        "to pull. For example if your repository is samples/prod/nginx then set this to"
+        " samples/prod . Leave blank if the image is in the root namespace."
+        "See https://learn.microsoft.com/en-us/azure/container-registry/"
+        "container-registry-best-practices#repository-namespaces for further details."
     ),
 }
 
@@ -99,7 +126,58 @@ class ArtifactConfig:
 
 
 @dataclass
-class NFConfiguration:
+class Configuration(abc.ABC):
+    config_file: Optional[str] = None
+    publisher_name: str = DESCRIPTION_MAP["publisher_name"]
+    publisher_resource_group_name: str = DESCRIPTION_MAP[
+        "publisher_resource_group_name"
+    ]
+    acr_artifact_store_name: str = DESCRIPTION_MAP["acr_artifact_store_name"]
+    location: str = DESCRIPTION_MAP["location"]
+
+    def path_from_cli_dir(self, path: str) -> str:
+        """
+        Convert path from config file to path from current directory.
+
+        We assume that the path supplied in the config file is relative to the
+        configuration file.  That isn't the same as the path relative to where ever the
+        CLI is being run from.  This function fixes that up.
+
+        :param path: The path relative to the config file.
+        """
+        assert self.config_file
+
+        # If no path has been supplied we shouldn't try to update it.
+        if path == "":
+            return ""
+
+        # If it is an absolute path then we don't need to monkey around with it.
+        if os.path.isabs(path):
+            return path
+
+        config_file_dir = Path(self.config_file).parent
+
+        updated_path = str(config_file_dir / path)
+
+        logger.debug("Updated path: %s", updated_path)
+
+        return updated_path
+
+    @property
+    def output_directory_for_build(self) -> Path:
+        """Base class method to ensure subclasses implement this function."""
+        raise NotImplementedError("Subclass must define property")
+
+    @property
+    def acr_manifest_name(self) -> str:
+        """Base class method to ensure subclasses implement this function."""
+        raise NotImplementedError("Subclass must define property")
+
+
+@dataclass
+class NFConfiguration(Configuration):
+    """Network Function configuration."""
+
     publisher_name: str = DESCRIPTION_MAP["publisher_name"]
     publisher_resource_group_name: str = DESCRIPTION_MAP[
         "publisher_resource_group_name"
@@ -117,12 +195,14 @@ class NFConfiguration:
     @property
     def acr_manifest_name(self) -> str:
         """Return the ACR manifest name from the NFD name."""
-        return f"{self.nf_name}-acr-manifest-{self.version.replace('.', '-')}"
+        sanitized_nf_name = self.nf_name.lower().replace("_", "-")
+        return f"{sanitized_nf_name}-acr-manifest-{self.version.replace('.', '-')}"
 
 
 @dataclass
 class VNFConfiguration(NFConfiguration):
     blob_artifact_store_name: str = DESCRIPTION_MAP["blob_artifact_store_name"]
+    image_name_parameter: str = DESCRIPTION_MAP["image_name_parameter"]
     arm_template: Any = ArtifactConfig()
     vhd: Any = ArtifactConfig()
 
@@ -133,9 +213,14 @@ class VNFConfiguration(NFConfiguration):
         Used when creating VNFConfiguration object from a loaded json config file.
         """
         if isinstance(self.arm_template, dict):
+            self.arm_template["file_path"] = self.path_from_cli_dir(
+                self.arm_template["file_path"]
+            )
             self.arm_template = ArtifactConfig(**self.arm_template)
 
         if isinstance(self.vhd, dict):
+            if self.vhd.get("file_path"):
+                self.vhd["file_path"] = self.path_from_cli_dir(self.vhd["file_path"])
             self.vhd = ArtifactConfig(**self.vhd)
             self.validate()
 
@@ -145,17 +230,20 @@ class VNFConfiguration(NFConfiguration):
 
         :raises ValidationError for any invalid config
         """
+
         if self.vhd.version == DESCRIPTION_MAP["version"]:
             # Config has not been filled in. Don't validate.
             return
 
         if "." in self.vhd.version or "-" not in self.vhd.version:
             raise ValidationError(
-                "Config validation error. VHD artifact version should be in format A-B-C"
+                "Config validation error. VHD artifact version should be in format"
+                " A-B-C"
             )
         if "." not in self.arm_template.version or "-" in self.arm_template.version:
             raise ValidationError(
-                "Config validation error. ARM template artifact version should be in format A.B.C"
+                "Config validation error. ARM template artifact version should be in"
+                " format A.B.C"
             )
         filepath_set = (
             self.vhd.file_path and self.vhd.file_path != DESCRIPTION_MAP["file_path"]
@@ -167,7 +255,8 @@ class VNFConfiguration(NFConfiguration):
         # If these are the same, either neither is set or both are, both of which are errors
         if filepath_set == sas_set:
             raise ValidationError(
-                "Config validation error. VHD config must have either a local filepath or a blob SAS URL"
+                "Config validation error. VHD config must have either a local filepath"
+                " or a blob SAS URL"
             )
 
         if filepath_set:
@@ -180,13 +269,14 @@ class VNFConfiguration(NFConfiguration):
     @property
     def sa_manifest_name(self) -> str:
         """Return the Storage account manifest name from the NFD name."""
-        return f"{self.nf_name}-sa-manifest-{self.version.replace('.', '-')}"
+        sanitized_nf_name = self.nf_name.lower().replace("_", "-")
+        return f"{sanitized_nf_name}-sa-manifest-{self.version.replace('.', '-')}"
 
     @property
-    def build_output_folder_name(self) -> str:
+    def output_directory_for_build(self) -> Path:
         """Return the local folder for generating the bicep template to."""
-        arm_template_path = self.arm_template.file_path
-        return f"{DEFINITION_OUTPUT_BICEP_PREFIX}{Path(str(arm_template_path)).stem}"
+        arm_template_name = Path(self.arm_template.file_path).stem
+        return Path(f"{NF_DEFINITION_OUTPUT_BICEP_PREFIX}{arm_template_name}")
 
 
 @dataclass
@@ -201,6 +291,8 @@ class HelmPackageConfig:
 
 @dataclass
 class CNFConfiguration(NFConfiguration):
+    source_registry_id: str = DESCRIPTION_MAP["source_registry_id"]
+    source_registry_namespace: str = DESCRIPTION_MAP["source_registry_namespace"]
     helm_packages: List[Any] = field(default_factory=lambda: [HelmPackageConfig()])
 
     def __post_init__(self):
@@ -209,14 +301,37 @@ class CNFConfiguration(NFConfiguration):
 
         Used when creating CNFConfiguration object from a loaded json config file.
         """
-        for package in self.helm_packages:
+        for package_index, package in enumerate(self.helm_packages):
             if isinstance(package, dict):
-                package = HelmPackageConfig(**dict(package))
+                package["path_to_chart"] = self.path_from_cli_dir(
+                    package["path_to_chart"]
+                )
+                package["path_to_mappings"] = self.path_from_cli_dir(
+                    package["path_to_mappings"]
+                )
+                self.helm_packages[package_index] = HelmPackageConfig(**dict(package))
 
     @property
-    def build_output_folder_name(self) -> str:
-        """Return the local folder for generating the bicep template to."""
-        return f"{DEFINITION_OUTPUT_BICEP_PREFIX}{self.nf_name}"
+    def output_directory_for_build(self) -> Path:
+        """Return the directory the build command will writes its output to."""
+        return Path(f"{NF_DEFINITION_OUTPUT_BICEP_PREFIX}{self.nf_name}")
+
+    def validate(self):
+        """
+        Validate the CNF config.
+
+        :raises ValidationError: If source registry ID doesn't match the regex
+        """
+        if self.source_registry_id == DESCRIPTION_MAP["source_registry_id"]:
+            # Config has not been filled in. Don't validate.
+            return
+
+        source_registry_match = re.search(SOURCE_ACR_REGEX, self.source_registry_id)
+        if not source_registry_match or len(source_registry_match.groups()) < 2:
+            raise ValidationError(
+                "CNF config has an invalid source registry ID. Please run `az aosm "
+                "nfd generate-config` to see the valid formats."
+            )
 
 
 class RETType(str, Enum):
@@ -288,13 +403,7 @@ class NetworkFunctionDefinitionConfiguration(RETConfiguration):
 
 
 @dataclass
-class NSConfiguration:
-    location: str = DESCRIPTION_MAP["location"]
-    publisher_name: str = DESCRIPTION_MAP["publisher_name_nsd"]
-    publisher_resource_group_name: str = DESCRIPTION_MAP[
-        "publisher_resource_group_name_nsd"
-    ]
-    acr_artifact_store_name: str = DESCRIPTION_MAP["acr_artifact_store_name"]
+class NSConfiguration(Configuration):
     resource_element_template_configurations: List[RETConfiguration] = field(
         default_factory=lambda: [
             NetworkFunctionDefinitionConfiguration(),
@@ -338,7 +447,7 @@ class NSConfiguration:
     def build_output_folder_name(self) -> str:
         """Return the local folder for generating the bicep template to."""
         current_working_directory = os.getcwd()
-        return f"{current_working_directory}/{NSD_DEFINITION_OUTPUT_BICEP_PREFIX}"
+        return f"{current_working_directory}/{NSD_OUTPUT_BICEP_PREFIX}"
 
     @property
     def resource_element_name(self) -> str:
@@ -374,23 +483,35 @@ class NSConfiguration:
         artifact.artifact_name = f"{self.nsd_name.lower()}_nf_artifact"
         artifact.version = self.nsd_version
         artifact.file_path = os.path.join(
-            self.build_output_folder_name, NF_DEFINITION_JSON_FILE
+            self.build_output_folder_name, NF_DEFINITION_JSON_FILENAME
         )
         return artifact
 
 
 def get_configuration(
-    configuration_type: str, config_as_dict: Optional[Dict[Any, Any]] = None
-) -> NFConfiguration or NSConfiguration:
-    if config_as_dict is None:
+    configuration_type: str, config_file: Optional[str] = None
+) -> Configuration:
+    """
+    Return the correct configuration object based on the type.
+
+    :param configuration_type: The type of configuration to return
+    :param config_file: The path to the config file
+    :return: The configuration object
+    """
+    if config_file:
+        with open(config_file, "r", encoding="utf-8") as f:
+            config_as_dict = json.loads(f.read())
+    else:
         config_as_dict = {}
 
+    config: Configuration
+
     if configuration_type == VNF:
-        config = VNFConfiguration(**config_as_dict)
+        config = VNFConfiguration(config_file=config_file, **config_as_dict)
     elif configuration_type == CNF:
-        config = CNFConfiguration(**config_as_dict)
+        config = CNFConfiguration(config_file=config_file, **config_as_dict)
     elif configuration_type == NSD:
-        config = NSConfiguration(**config_as_dict)
+        config = NSConfiguration(config_file=config_file, **config_as_dict)
     else:
         raise InvalidArgumentValueError(
             "Definition type not recognized, options are: vnf, cnf or nsd"

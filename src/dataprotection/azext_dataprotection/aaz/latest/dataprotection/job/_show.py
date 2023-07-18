@@ -42,6 +42,13 @@ class Show(AAZCommand):
             return cls._args_schema
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
+        # define Arg Group ""
+
+        _args_schema = cls._args_schema
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
+        )
+
         # define Arg Group "Resource Id Arguments"
 
         _args_schema = cls._args_schema
@@ -51,11 +58,6 @@ class Show(AAZCommand):
             help="The Job ID. This is a GUID-formatted string (e.g. 00000000-0000-0000-0000-000000000000).",
             required=True,
             id_part="child_name_1",
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            arg_group="Resource Id Arguments",
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
-            required=True,
         )
         _args_schema.vault_name = AAZStrArg(
             options=["--vault-name"],
