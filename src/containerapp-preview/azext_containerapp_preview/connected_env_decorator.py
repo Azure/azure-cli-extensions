@@ -11,7 +11,6 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.util import CLIError
 from msrestazure.tools import is_valid_resource_id
 
-from _constants import CONTAINER_APPS_RP
 from ._client_factory import handle_raw_exception, providers_client_factory
 from ._constants import CONTAINER_APP_EXTENSION_TYPE, CONNECTED_ENVIRONMENT_RESOURCE_TYPE
 from ._models import ConnectedEnvironment as ConnectedEnvironmentModel, ExtendedLocation as ExtendedLocationModel
@@ -61,7 +60,7 @@ class BaseEnvironmentDecorator(_get_azext_containerapp_module("azext_containerap
 
     def _list_environment_locations(self, resource_type):
         providers_client = providers_client_factory(self.cmd.cli_ctx, get_subscription_id(self.cmd.cli_ctx))
-        resource_types = getattr(providers_client.get(CONTAINER_APPS_RP), 'resource_types', [])
+        resource_types = getattr(providers_client.get('Microsoft.App'), 'resource_types', [])
         res_locations = []
         for res in resource_types:
             if res and getattr(res, 'resource_type', "") == resource_type:
@@ -125,7 +124,7 @@ class ConnectedEnvironmentPreviewCreateDecorator(BaseEnvironmentDecorator):
 
         if self.get_argument_location():
             try:
-                _ensure_location_allowed(self.cmd, self.get_argument_location(), CONTAINER_APPS_RP, CONNECTED_ENVIRONMENT_RESOURCE_TYPE)
+                _ensure_location_allowed(self.cmd, self.get_argument_location(), 'Microsoft.App', CONNECTED_ENVIRONMENT_RESOURCE_TYPE)
 
             except Exception as e:  # pylint: disable=broad-except
                 raise ValidationError(

@@ -113,7 +113,7 @@ def show_connected_environment(cmd, name, resource_group_name):
     return connected_env_base_decorator.show_environment()
 
 
-def list_connected_environments(cmd, name, resource_group_name, custom_location=None):
+def list_connected_environments(cmd, resource_group_name=None, custom_location=None):
     raw_parameters = locals()
     connected_env_base_decorator = BaseEnvironmentDecorator(
         cmd=cmd,

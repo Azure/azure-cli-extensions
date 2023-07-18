@@ -5,12 +5,20 @@
 # --------------------------------------------------------------------------------------------
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
-from ._utils import (_get_azext_containerapp_module)
+
+
+def _get_azext_containerapp_client_factory():
+    # avoid circular import
+    from ._utils import (_get_azext_containerapp_module)
+    return _get_azext_containerapp_module("azext_containerapp._client_factory")
+
+
+def ex_handler_factory(no_throw=False):
+    return _get_azext_containerapp_client_factory().ex_handler_factory(no_throw)
 
 
 def handle_raw_exception(e):
-    azext_client_factory = _get_azext_containerapp_module("azext_containerapp._client_factory")
-    return azext_client_factory.handle_raw_exception(e)
+    return _get_azext_containerapp_client_factory().handle_raw_exception(e)
 
 
 def providers_client_factory(cli_ctx, subscription_id=None):
