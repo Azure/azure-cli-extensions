@@ -4,9 +4,10 @@
 # --------------------------------------------------------------------------------------------
 from knack.log import get_logger
 
-from ._clients import ContainerAppClient
 from ._constants import CONTAINER_APPS_RP
+from ._clients import ContainerAppClient, ConnectedEnvironmentClient
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, get_containerapp_base_decorator
+from .connected_env_decorator import BaseConnectedEnvironmentDecorator
 
 logger = get_logger(__name__)
 
@@ -95,3 +96,16 @@ def create_containerapp(cmd,
     containerapp_preview_create_decorator.construct_containerapp_for_post_process(r)
     r = containerapp_preview_create_decorator.post_process_containerapp(r)
     return r
+
+
+def show_connected_environment(cmd, name, resource_group_name):
+    raw_parameters = locals()
+    connected_env_base_decorator = BaseConnectedEnvironmentDecorator(
+        cmd=cmd,
+        client=ConnectedEnvironmentClient,
+        raw_parameters=raw_parameters,
+        models="azext_containerapp._sdk_models"
+    )
+    connected_env_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+
+    return connected_env_base_decorator.show_connected_environment()
