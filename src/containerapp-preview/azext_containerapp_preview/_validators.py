@@ -6,7 +6,9 @@ from ._constants import (MANAGED_ENVIRONMENT_TYPE,
                          CONNECTED_ENVIRONMENT_TYPE,
                          MANAGED_ENVIRONMENT_RESOURCE_TYPE,
                          CONNECTED_ENVIRONMENT_RESOURCE_TYPE,
-                         CONTAINER_APPS_RP)
+                         CONTAINER_APPS_RP,
+                         CUSTOM_LOCATION_RESOURCE_TYPE,
+                         EXTENDED_LOCATION_RP)
 
 
 def validate_env_name_or_id(cmd, namespace):
@@ -50,3 +52,20 @@ def validate_env_name_or_id(cmd, namespace):
                 type=MANAGED_ENVIRONMENT_RESOURCE_TYPE,
                 name=namespace.managed_env
             )
+
+
+def validate_custom_location_name_or_id(cmd, namespace):
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    from msrestazure.tools import is_valid_resource_id, resource_id
+
+    if not namespace.custom_location or not namespace.resource_group_name:
+        return
+
+    if not is_valid_resource_id(namespace.custom_location):
+        namespace.custom_location = resource_id(
+            subscription=get_subscription_id(cmd.cli_ctx),
+            resource_group=namespace.resource_group_name,
+            namespace=EXTENDED_LOCATION_RP,
+            type=CUSTOM_LOCATION_RESOURCE_TYPE,
+            name=namespace.custom_location
+        )

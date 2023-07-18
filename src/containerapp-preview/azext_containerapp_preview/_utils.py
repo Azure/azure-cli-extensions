@@ -4,11 +4,13 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from azure.cli.core.azclierror import NoTTYError, ValidationError
+from azure.cli.core.azclierror import ValidationError
 from knack.util import CLIError
 from knack.log import get_logger
+from msrestazure.tools import parse_resource_id
 
 from ._constants import MIN_GA_VERSION, GA_CONTAINERAPP_EXTENSION_NAME
+from ._client_factory import (k8s_extension_client_factory, customlocation_client_factory)
 
 logger = get_logger(__name__)
 
@@ -41,3 +43,33 @@ def _get_azext_containerapp_module(module_name):
         return azext_custom
     except ImportError as ie:
         raise CLIError(ie) from ie
+
+
+def get_cluster_extension(cmd, cluster_extension_id=None):
+    parsed_extension = parse_resource_id(cluster_extension_id)
+    subscription_id = parsed_extension.get("subscription")
+    cluster_rg = parsed_extension.get("resource_group")
+    cluster_rp = parsed_extension.get("namespace")
+    cluster_type = parsed_extension.get("type")
+    cluster_name = parsed_extension.get("name")
+    resource_name = parsed_extension.get("resource_name")
+
+    return k8s_extension_client_factory(cmd.cli_ctx, subscription_id=subscription_id).get(
+        resource_group_name=cluster_rg,
+        cluster_rp=cluster_rp,
+        cluster_resource_name=cluster_type,
+        cluster_name=cluster_name,
+        extension_name=resource_name)
+
+
+def get_custom_location(cmd, custom_location_id):
+    parsed_custom_loc = parse_resource_id(custom_location_id)
+    subscription_id = parsed_custom_loc.get("subscription")
+    custom_loc_name = parsed_custom_loc["name"]
+    custom_loc_rg = parsed_custom_loc["resource_group"]
+    custom_location = None
+    try:
+        custom_location = customlocation_client_factory(cmd.cli_ctx, subscription_id=subscription_id).get(resource_group_name=custom_loc_rg, resource_name=custom_loc_name)
+    except:
+        pass
+    return custom_location

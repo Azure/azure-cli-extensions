@@ -6,8 +6,9 @@ from knack.log import get_logger
 
 from ._constants import CONTAINER_APPS_RP
 from ._clients import ContainerAppClient, ConnectedEnvironmentClient
+from ._constants import CONNECTED_ENVIRONMENT_RESOURCE_TYPE
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, get_containerapp_base_decorator
-from .connected_env_decorator import BaseConnectedEnvironmentDecorator
+from .connected_env_decorator import BaseEnvironmentDecorator, ConnectedEnvironmentPreviewCreateDecorator
 
 logger = get_logger(__name__)
 
@@ -100,12 +101,57 @@ def create_containerapp(cmd,
 
 def show_connected_environment(cmd, name, resource_group_name):
     raw_parameters = locals()
-    connected_env_base_decorator = BaseConnectedEnvironmentDecorator(
+    connected_env_base_decorator = BaseEnvironmentDecorator(
         cmd=cmd,
         client=ConnectedEnvironmentClient,
         raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
+        models="azext_containerapp_preview._sdk_models",
+        resource_type=CONNECTED_ENVIRONMENT_RESOURCE_TYPE
     )
-    connected_env_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    connected_env_base_decorator.validate_subscription_registered('Microsoft.App')
 
-    return connected_env_base_decorator.show_connected_environment()
+    return connected_env_base_decorator.show_environment()
+
+
+def list_connected_environments(cmd, name, resource_group_name, custom_location=None):
+    raw_parameters = locals()
+    connected_env_base_decorator = BaseEnvironmentDecorator(
+        cmd=cmd,
+        client=ConnectedEnvironmentClient,
+        raw_parameters=raw_parameters,
+        models="azext_containerapp_preview._sdk_models",
+        resource_type=CONNECTED_ENVIRONMENT_RESOURCE_TYPE
+    )
+    connected_env_base_decorator.validate_subscription_registered('Microsoft.App')
+
+    return connected_env_base_decorator.list_connected_environments()
+
+
+def delete_connected_environment(cmd, name, resource_group_name, no_wait=False):
+    raw_parameters = locals()
+    connected_env_base_decorator = BaseEnvironmentDecorator(
+        cmd=cmd,
+        client=ConnectedEnvironmentClient,
+        raw_parameters=raw_parameters,
+        models="azext_containerapp_preview._sdk_models",
+        resource_type=CONNECTED_ENVIRONMENT_RESOURCE_TYPE
+    )
+    connected_env_base_decorator.validate_subscription_registered('Microsoft.App')
+
+    return connected_env_base_decorator.delete_environment()
+
+
+def create_connected_environment(cmd, name, resource_group_name, no_wait=False):
+    raw_parameters = locals()
+    connected_env_base_decorator = ConnectedEnvironmentPreviewCreateDecorator(
+        cmd=cmd,
+        client=ConnectedEnvironmentClient,
+        raw_parameters=raw_parameters,
+        models="azext_containerapp_preview._sdk_models",
+        resource_type=CONNECTED_ENVIRONMENT_RESOURCE_TYPE
+    )
+    connected_env_base_decorator.register_provider('Microsoft.App')
+    connected_env_base_decorator.validate_arguments()
+    connected_env_base_decorator.construct_connected_environment()
+    r = connected_env_base_decorator.create_connected_environment()
+    return r

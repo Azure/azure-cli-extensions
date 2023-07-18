@@ -34,7 +34,9 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'azure-mgmt-kubernetesconfiguration==2.0.0'
+]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()

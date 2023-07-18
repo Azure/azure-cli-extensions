@@ -20,7 +20,7 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_containerapp', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory(), is_preview=True)
         g.custom_command('create', 'create_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory(), table_transformer=transform_containerapp_output, is_preview=True)
 
-    with self.command_group('containerapp connected-env') as g:
+    with self.command_group('containerapp connected-env', is_preview=True) as g:
         g.custom_show_command('show', 'show_connected_environment')
         g.custom_command('list', 'list_connected_environments')
         g.custom_command('create', 'create_connected_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
