@@ -666,8 +666,8 @@ class TestAppCreate(BasicTest):
 
     def test_app_with_large_instance_count_enterprise(self):
         client = self._get_basic_mock_client(sku='Enterprise')
-        with self.assertRaisesRegexp(CLIError, 'Invalid --instance-count, should be in range \[1, 500\]'):
-            self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=501, client=client)
+        with self.assertRaisesRegexp(CLIError, 'Invalid --instance-count, should be in range \[1, 1000\]'):
+            self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1001, client=client)
 
     def test_app_with_large_instance_count(self):
         with self.assertRaisesRegexp(CLIError, 'Invalid --instance-count, should be in range \[1, 500\]'):

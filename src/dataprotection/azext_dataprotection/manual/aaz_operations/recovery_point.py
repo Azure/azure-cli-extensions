@@ -3,12 +3,18 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=protected-access
+# pylint: disable=line-too-long
+
 from azure.cli.core.aaz import AAZStrArg
-from azext_dataprotection.aaz.latest.dataprotection.recovery_point import List as _RecoveryPointList
+from azext_dataprotection.aaz.latest.dataprotection.recovery_point import List as _List
+from knack.log import get_logger
 from ..helpers import validate_recovery_point_datetime_format
 
+logger = get_logger(__name__)
 
-class RecoveryPointList(_RecoveryPointList):
+
+class List(_List):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -31,6 +37,10 @@ class RecoveryPointList(_RecoveryPointList):
     def pre_operations(self):
         start_time = validate_recovery_point_datetime_format(self.ctx.args.start_time)
         end_time = validate_recovery_point_datetime_format(self.ctx.args.end_time)
+        if start_time and end_time:
+            import dateutil.parser
+            if dateutil.parser.parse(start_time) > dateutil.parser.parse(end_time):
+                logger.warning("The argument --start-time is greater than --end-time.")
         rp_filter = ""
         if start_time:
             rp_filter += "startDate eq '" + start_time + "'"

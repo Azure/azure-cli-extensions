@@ -11,7 +11,7 @@ import time
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
-    ValidationError, ResourceNotFoundError)
+    ValidationError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 
 from knack.log import get_logger
@@ -21,7 +21,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from ._clients import ManagedEnvironmentClient
-from ._client_factory import handle_raw_exception
+from ._client_factory import handle_raw_exception, handle_non_404_exception
 
 from ._models import (
     Ingress as IngressModel,
@@ -311,6 +311,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
     ):
         super().__init__(cmd, client, raw_parameters, models)
+        self.containerapp_def = ContainerAppModel
 
     def validate_arguments(self):
         validate_container_app_name(self.get_argument_name(), AppType.ContainerApp.name)
@@ -339,8 +340,8 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
 
         try:
             managed_env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=managed_env_rg, name=managed_env_name)
-        except ResourceNotFoundError:
-            pass
+        except Exception as e:
+            handle_non_404_exception(e)
 
         if not managed_env_info:
             raise ValidationError("The environment '{}' does not exist. Specify a valid environment".format(self.get_argument_managed_env()))
@@ -506,37 +507,35 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         if self.get_argument_termination_grace_period() is not None:
             template_def["terminationGracePeriodSeconds"] = self.get_argument_termination_grace_period()
 
-        containerapp_def = ContainerAppModel
-        containerapp_def["location"] = location
-        containerapp_def["identity"] = identity_def
-        containerapp_def["properties"]["environmentId"] = self.get_argument_managed_env()
-        containerapp_def["properties"]["configuration"] = config_def
-        containerapp_def["properties"]["template"] = template_def
-        containerapp_def["tags"] = self.get_argument_tags()
+        self.containerapp_def["location"] = location
+        self.containerapp_def["identity"] = identity_def
+        self.containerapp_def["properties"]["environmentId"] = self.get_argument_managed_env()
+        self.containerapp_def["properties"]["configuration"] = config_def
+        self.containerapp_def["properties"]["template"] = template_def
+        self.containerapp_def["tags"] = self.get_argument_tags()
 
         if self.get_argument_workload_profile_name():
-            containerapp_def["properties"]["workloadProfileName"] = self.get_argument_workload_profile_name()
+            self.containerapp_def["properties"]["workloadProfileName"] = self.get_argument_workload_profile_name()
             ensure_workload_profile_supported(self.cmd, managed_env_name, managed_env_rg, self.get_argument_workload_profile_name(),
                                               managed_env_info)
 
         if self.get_argument_registry_identity():
             if is_registry_msi_system(self.get_argument_registry_identity()):
-                set_managed_identity(self.cmd, self.get_argument_resource_group_name(), containerapp_def, system_assigned=True)
+                set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.containerapp_def, system_assigned=True)
             else:
-                set_managed_identity(self.cmd, self.get_argument_resource_group_name(), containerapp_def, user_assigned=[self.get_argument_registry_identity()])
-        return containerapp_def
+                set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.containerapp_def, user_assigned=[self.get_argument_registry_identity()])
 
-    def create_containerapp(self, containerapp_def):
+    def create_containerapp(self):
         try:
             r = self.client.create_or_update(
-                cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name(), container_app_envelope=containerapp_def,
+                cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name(), container_app_envelope=self.containerapp_def,
                 no_wait=self.get_argument_no_wait())
 
             return r
         except Exception as e:
             handle_raw_exception(e)
 
-    def construct_containerapp_for_post_process(self, containerapp_def, r):
+    def construct_containerapp_for_post_process(self, r):
         if is_registry_msi_system(self.get_argument_registry_identity()):
             while r["properties"]["provisioningState"] == "InProgress":
                 r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
@@ -544,20 +543,19 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             logger.info("Creating an acrpull role assignment for the system identity")
             system_sp = r["identity"]["principalId"]
             create_acrpull_role_assignment(self.cmd, self.get_argument_registry_server(), registry_identity=None, service_principal=system_sp)
-            containers_def = safe_get(containerapp_def, "properties", "template", "containers")
+            containers_def = safe_get(self.containerapp_def, "properties", "template", "containers")
             containers_def[0]["image"] = self.get_argument_image()
 
-            safe_set(containerapp_def, "properties", "template", "revisionSuffix", value=self.get_argument_revision_suffix())
+            safe_set(self.containerapp_def, "properties", "template", "revisionSuffix", value=self.get_argument_revision_suffix())
 
             registries_def = RegistryCredentialsModel
             registries_def["server"] = self.get_argument_registry_server()
             registries_def["identity"] = self.get_argument_registry_identity()
-            safe_set(containerapp_def, "properties", "configuration", "registries", value=[registries_def])
-            return containerapp_def
+            safe_set(self.containerapp_def, "properties", "configuration", "registries", value=[registries_def])
 
-    def post_process_containerapp(self, containerapp_def, r):
+    def post_process_containerapp(self, r):
         if is_registry_msi_system(self.get_argument_registry_identity()):
-            r = self.create_containerapp(containerapp_def)
+            r = self.create_containerapp()
 
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not self.get_argument_no_wait():
             not self.get_argument_disable_warnings() and logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(self.get_argument_name(), self.get_argument_resource_group_name()))
@@ -609,11 +607,10 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             raise ValidationError('Containerapp type must be \"Microsoft.App/ContainerApps\"')
 
         # Deserialize the yaml into a ContainerApp object. Need this since we're not using SDK
-        containerapp_def = None
         try:
             deserializer = create_deserializer(self.models)
 
-            containerapp_def = deserializer('ContainerApp', yaml_containerapp)
+            self.containerapp_def = deserializer('ContainerApp', yaml_containerapp)
         except DeserializationError as ex:
             raise ValidationError(
                 'Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.') from ex
@@ -624,26 +621,26 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             tags = yaml_containerapp.get('tags')
             del yaml_containerapp['tags']
 
-        containerapp_def = _convert_object_from_snake_to_camel_case(_object_to_dict(containerapp_def))
-        containerapp_def['tags'] = tags
+        self.containerapp_def = _convert_object_from_snake_to_camel_case(_object_to_dict(self.containerapp_def))
+        self.containerapp_def['tags'] = tags
 
         # After deserializing, some properties may need to be moved under the "properties" attribute. Need this since we're not using SDK
-        containerapp_def = process_loaded_yaml(containerapp_def)
+        self.containerapp_def = process_loaded_yaml(self.containerapp_def)
 
         # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
-        _remove_additional_attributes(containerapp_def)
-        _remove_readonly_attributes(containerapp_def)
+        _remove_additional_attributes(self.containerapp_def)
+        _remove_readonly_attributes(self.containerapp_def)
 
         # Remove extra workloadProfileName introduced in deserialization
-        if "workloadProfileName" in containerapp_def:
-            del containerapp_def["workloadProfileName"]
+        if "workloadProfileName" in self.containerapp_def:
+            del self.containerapp_def["workloadProfileName"]
 
         # Validate managed environment
-        if not containerapp_def["properties"].get('environmentId'):
+        if not self.containerapp_def["properties"].get('environmentId'):
             raise RequiredArgumentMissingError(
                 'environmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
-        env_id = containerapp_def["properties"]['environmentId']
+        env_id = self.containerapp_def["properties"]['environmentId']
         env_name = None
         env_rg = None
         env_info = None
@@ -657,17 +654,15 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
 
         try:
             env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
-        except ResourceNotFoundError:
-            pass
+        except Exception as e:
+            handle_non_404_exception(e)
 
         if not env_info:
             raise ValidationError("The environment '{}' in resource group '{}' was not found".format(env_name, env_rg))
 
         # Validate location
-        if not containerapp_def.get('location'):
-            containerapp_def['location'] = env_info['location']
-
-        return containerapp_def
+        if not self.containerapp_def.get('location'):
+            self.containerapp_def['location'] = env_info['location']
 
     def set_up_scale_rule(self):
         scale_def = None

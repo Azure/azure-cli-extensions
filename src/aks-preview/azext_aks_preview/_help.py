@@ -561,6 +561,12 @@ helps['aks create'] = """
         - name: --enable-windows-recording-rules
           type: bool
           short-summary: Enable Windows Recording Rules when enabling the Azure Monitor Metrics addon
+        - name: --nodepool-labels
+          type: string
+          short-summary: The node labels for all node pools in this cluster. See https://aka.ms/node-labels for syntax of labels.
+        - name: --nodepool-taints
+          type: string
+          short-summary: The node taints for all node pools in this cluster.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -1037,6 +1043,12 @@ helps['aks update'] = """
         - name: --guardrails-excluded-ns
           type: string
           short-summary: Comma-separated list of Kubernetes namespaces to exclude from Guardrails. Use "" to clear a previously non-empty list
+        - name: --nodepool-taints
+          type: string
+          short-summary: The node taints for all node pool.
+        - name: --nodepool-labels
+          type: string
+          short-summary: The node labels for all node pool. See https://aka.ms/node-labels for syntax of labels.
         - name: --enable-network-observability
           type: bool
           short-summary: Enable network observability on a cluster.
@@ -2228,6 +2240,17 @@ helps['aks nodepool snapshot show'] = """
 helps['aks nodepool snapshot list'] = """
     type: command
     short-summary: List nodepool snapshots.
+"""
+
+helps['aks nodepool snapshot update'] = """
+    type: command
+    short-summary: Update tags on a snapshot of a nodepool.
+
+    examples:
+        - name: Update tags on a nodepool snapshot.
+          text: az aks nodepool snapshot update -g MyResourceGroup -n snapshot1 --tags "foo=bar" "key1=val1"
+        - name: Clear tags on a nodepool snapshot.
+          text: az aks nodepool snapshot update -g MyResourceGroup -n snapshot1 --tags ""
 """
 
 helps['aks nodepool snapshot create'] = """
