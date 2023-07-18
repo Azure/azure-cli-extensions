@@ -907,4 +907,5 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     for cmd in ['start', 'start-batch']:
         with self.argument_context('storage file copy ' + cmd) as c:
             c.extra('disallow_source_trailing_dot', arg_type=get_three_state_flag(), default=False, is_preview=True,
+                    options_list=["--disallow-source-trailing-dot", "--disallow-src-trailing-dot"],
                     help="If true, the trailing dot will be trimmed from the source URI. Default to False")
