@@ -186,12 +186,6 @@ class CommunicationCreate(_CommunicationCreate):
         user_assigned_flag = False
         user_dict = {}
 
-        from pprint import pprint
-        pprint(vars(args))
-
-        if not args.location:
-            args.location =  "global"
-
         if args.system_assigned:
             system_assigned_flag = True
 

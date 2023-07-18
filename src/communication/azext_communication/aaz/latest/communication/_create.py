@@ -107,6 +107,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.data_location = AAZStrArg(
             options=["--data-location"],
+            required=True,
             arg_group="Properties",
             help="The location where the communication service stores its data at rest.",
         )
