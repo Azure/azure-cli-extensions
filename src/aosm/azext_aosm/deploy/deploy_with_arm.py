@@ -71,7 +71,9 @@ class DeployerViaArm:
         elif isinstance(self.config, NSConfiguration):
             self.resource_type = NSD
         else:
-            raise TypeError(f"Unexpected config type. Expected [VNFConfiguration|CNFConfiguration|NSConfiguration], received {type(self.config)}")
+            raise TypeError(
+                f"Unexpected config type. Expected [VNFConfiguration|CNFConfiguration|NSConfiguration], received {type(self.config)}"
+            )
 
     @staticmethod
     def read_parameters_from_file(parameters_json_file: str) -> Dict[str, Any]:
@@ -124,8 +126,7 @@ class DeployerViaArm:
                 if self.resource_type == CNF:
                     file_name = CNF_DEFINITION_BICEP_TEMPLATE_FILENAME
                 bicep_path = os.path.join(
-                    self.config.output_directory_for_build,
-                    file_name
+                    self.config.output_directory_for_build, file_name
                 )
 
             if parameters_json_file:
@@ -174,9 +175,7 @@ class DeployerViaArm:
         if self.resource_type == CNF:
             self._cnfd_artifact_upload(cli_ctx)
 
-    def _vnfd_artifact_upload(
-        self
-    ) -> None:
+    def _vnfd_artifact_upload(self) -> None:
         """
         Uploads the VHD and ARM template artifacts
         """
@@ -203,10 +202,7 @@ class DeployerViaArm:
         arm_template_artifact.upload(self.config.arm_template)
         print("Done")
 
-    def _cnfd_artifact_upload(
-        self,
-        cli_ctx
-    ) -> None:
+    def _cnfd_artifact_upload(self, cli_ctx) -> None:
         """
         Uploads the Helm chart and any additional images.
         """
@@ -325,7 +321,9 @@ class DeployerViaArm:
                 "nfDefinitionGroup": {"value": self.config.nfdg_name},
                 "nfDefinitionVersion": {"value": self.config.version},
             }
-        raise TypeError(f"Unexpected config type. Expected [VNFConfiguration|CNFConfiguration], received {type(self.config)}")
+        raise TypeError(
+            f"Unexpected config type. Expected [VNFConfiguration|CNFConfiguration], received {type(self.config)}"
+        )
 
     def construct_manifest_parameters(self) -> Dict[str, Any]:
         """Create the parmeters dictionary for VNF, CNF or NSD."""
