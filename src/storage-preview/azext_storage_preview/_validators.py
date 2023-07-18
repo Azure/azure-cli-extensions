@@ -991,3 +991,11 @@ def validate_source_uri(cmd, namespace):  # pylint: disable=too-many-statements
         cmd.cli_ctx.cloud.suffixes.storage_endpoint)
 
     namespace.copy_source = uri
+
+
+def validate_share_close_handle(namespace):
+    from azure.cli.core.azclierror import InvalidArgumentValueError
+    if namespace.close_all and namespace.handle:
+        raise InvalidArgumentValueError("usage error: Please only specify either --handle-id or --close-all, not both.")
+    if not namespace.close_all and not namespace.handle:
+        raise InvalidArgumentValueError("usage error: Please specify either --handle-id or --close-all.")

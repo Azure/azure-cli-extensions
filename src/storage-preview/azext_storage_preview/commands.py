@@ -129,6 +129,11 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                                           message_func=_adls_deprecate_message)) as g:
         pass
 
+    share_client_sdk = CliCommandType(
+        operations_tmpl='azure.multiapi.storagev2.fileshare._share_client#ShareClient.{}',
+        client_factory=cf_share_client,
+        resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
+
     directory_client_sdk = CliCommandType(
         operations_tmpl='azext_storage_preview.vendored_sdks.azure_storagev2.fileshare._directory_client#ShareDirectoryClient.{}',
         client_factory=cf_share_directory_client,
@@ -138,6 +143,14 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         operations_tmpl='azext_storage_preview.vendored_sdks.azure_storagev2.fileshare._file_client#ShareFileClient.{}',
         client_factory=cf_share_file_client,
         resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
+
+    with self.command_group('storage share', command_type=share_client_sdk,
+                            custom_command_type=get_custom_sdk('fileshare', cf_share_client,
+                                                               CUSTOM_DATA_STORAGE_FILESHARE),
+                            resource_type=CUSTOM_DATA_STORAGE_FILESHARE, min_api='2022-11-02') as g:
+        from ._transformers import transform_share_list_handle
+        g.storage_custom_command_oauth('list-handle', 'list_handle', transform=transform_share_list_handle)
+        g.storage_custom_command_oauth('close-handle', 'close_handle')
 
     with self.command_group('storage directory', command_type=directory_client_sdk,
                             resource_type=CUSTOM_DATA_STORAGE_FILESHARE,
