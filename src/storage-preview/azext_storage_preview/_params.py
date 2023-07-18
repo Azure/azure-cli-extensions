@@ -887,6 +887,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         from ._validators import process_file_batch_source_parameters
         c.argument('source', options_list=('--source', '-s'), validator=process_file_batch_source_parameters)
 
+    for cmd in ['list-handle', 'close-handle']:
+        with self.argument_context('storage share ' + cmd) as c:
+            c.extra('disallow_trailing_dot', arg_type=get_three_state_flag(), default=False, is_preview=True,
+                    help="If true, the trailing dot will be trimmed from the target URI. Default to False")
+
     for cmd in ['create', 'delete', 'show', 'exists', 'metadata show', 'metadata update', 'list']:
         with self.argument_context('storage directory ' + cmd) as c:
             c.extra('disallow_trailing_dot', arg_type=get_three_state_flag(), default=False, is_preview=True,
