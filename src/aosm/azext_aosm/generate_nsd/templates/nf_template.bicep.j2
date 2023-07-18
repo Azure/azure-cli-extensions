@@ -29,11 +29,7 @@ param nfviType string = '{{nfvi_type}}'
 
 param resourceGroupId string = resourceGroup().id
 
-{{bicep_params}}
-
-var deploymentValues = {
-  {{deploymentValues}}
-}
+param deploymentParameters array
 
 var identityObject = (managedIdentity == '')  ? {
   type: 'SystemAssigned'
@@ -44,8 +40,8 @@ var identityObject = (managedIdentity == '')  ? {
   }
 }
 
-resource nf_resource 'Microsoft.HybridNetwork/networkFunctions@2023-04-01-preview' = {
-  name: '{{network_function_name}}'
+resource nf_resource 'Microsoft.HybridNetwork/networkFunctions@2023-04-01-preview' = [for (values, i) in deploymentParameters: {
+  name: '{{network_function_name}}${i}'
   location: location
   identity: identityObject
   properties: {
@@ -61,6 +57,6 @@ resource nf_resource 'Microsoft.HybridNetwork/networkFunctions@2023-04-01-previe
     nfviId: resourceGroupId
 {%- endif %}
     allowSoftwareUpdate: true
-    deploymentValues: string(deploymentValues)
+    deploymentValues: string(values)
   }
-}
+}]

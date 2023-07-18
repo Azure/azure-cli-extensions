@@ -11,7 +11,7 @@ import re
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from azure.cli.core.azclierror import InvalidArgumentValueError, ValidationError
 from azext_aosm.util.constants import (
@@ -82,6 +82,14 @@ DESCRIPTION_MAP: Dict[str, str] = {
     ),
     "network_function_definition_offering_location": (
         "Offering location of the Network Function Definition"
+    ),
+    "network_function_type": (
+        "Type of nf in the definition. Valid values are 'cnf' or 'vnf'"
+    ),
+    "multiple_instances": (
+        "Set to true or false.  Whether the NSD should allow arbitrary numbers of this "
+        "type of NF.  If set to false only a single instance will be allowed.  Only "
+        "supported on VNFs, must be set to false on CNFs."
     ),
     "helm_package_name": "Name of the Helm package",
     "path_to_chart": (
@@ -368,6 +376,8 @@ class NFDRETConfiguration(RETConfiguration):
     offering_location: str = DESCRIPTION_MAP[
         "network_function_definition_offering_location"
     ]
+    network_function_type: str = DESCRIPTION_MAP["network_function_type"]
+    multiple_instances: Union[str, bool] = DESCRIPTION_MAP["multiple_instances"]
 
     def validate(self) -> None:
         """
@@ -400,6 +410,18 @@ class NFDRETConfiguration(RETConfiguration):
             raise ValidationError(
                 "Network function definition offering location must be set"
             )
+
+        if self.network_function_type not in [CNF, VNF]:
+            raise ValueError("Network Function Type must be cnf or vnf")
+
+        if not isinstance(self.multiple_instances, bool):
+            raise ValueError("multiple_instances must be a boolean")
+
+        # There is currently a NFM bug that means that multiple copies of the same NF
+        # cannot be deployed to the same custom location:
+        # https://portal.microsofticm.com/imp/v3/incidents/details/405078667/home
+        if self.network_function_type == CNF and self.multiple_instances:
+            raise ValueError("Multiple instances is not supported on CNFs.")
 
 
 @dataclass
@@ -438,7 +460,7 @@ class NSConfiguration(Configuration):
         else:
             for configuration in self.resource_element_template_configurations:
                 configuration.validate()
-        if self.nsd_name == DESCRIPTION_MAP["nsdg_name"] or "":
+        if self.nsdg_name == DESCRIPTION_MAP["nsdg_name"] or "":
             raise ValueError("NSD name must be set")
         if self.nsd_version == DESCRIPTION_MAP["nsd_version"] or "":
             raise ValueError("NSD Version must be set")
@@ -459,19 +481,19 @@ class NSConfiguration(Configuration):
     def acr_manifest_name(self) -> str:
         """Return the ACR manifest name from the NFD name."""
         return (
-            f"{self.nsd_name.lower().replace('_', '-')}"
+            f"{self.nsdg_name.lower().replace('_', '-')}"
             f"-acr-manifest-{self.nsd_version.replace('.', '-')}"
         )
 
     @property
     def nfvi_site_name(self) -> str:
         """Return the name of the NFVI used for the NSDV."""
-        return f"{self.nsd_name}_NFVI"
+        return f"{self.nsdg_name}_NFVI"
 
     @property
     def cg_schema_name(self) -> str:
         """Return the name of the Configuration Schema used for the NSDV."""
-        return f"{self.nsd_name.replace('-', '_')}_ConfigGroupSchema"
+        return f"{self.nsdg_name.replace('-', '_')}_ConfigGroupSchema"
 
     @property
     def arm_template(self) -> ArtifactConfig:
@@ -480,7 +502,7 @@ class NSConfiguration(Configuration):
         the NSDV.
         """
         artifact = ArtifactConfig()
-        artifact.artifact_name = f"{self.nsd_name.lower()}_nf_artifact"
+        artifact.artifact_name = f"{self.nsdg_name.lower()}_nf_artifact"
         artifact.version = self.nsd_version
         artifact.file_path = os.path.join(
             self.build_output_folder_name, NF_DEFINITION_JSON_FILENAME

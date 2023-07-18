@@ -557,6 +557,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         :param d: The dictionary to traverse.
         :param target: The regex to search for.
         """
+
         #  pylint: disable=too-many-nested-blocks
         @dataclass
         class DictNode:
@@ -575,7 +576,6 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
             # For each key-value pair in the popped item
             for key, value in node.sub_dict.items():
-
                 # If the value is a dictionary
                 if isinstance(value, dict):
                     # Add the dictionary to the stack with the path

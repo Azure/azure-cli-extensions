@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------
 """Contains a class for generating NSDs and associated resources."""
 import json
-import copy
 import os
 import shutil
 import tempfile
@@ -63,10 +62,6 @@ class NSDGenerator:
         self.nsd_bicep_template_name = NSD_DEFINITION_JINJA2_SOURCE_TEMPLATE
         self.nf_bicep_template_name = NF_TEMPLATE_JINJA2_SOURCE_TEMPLATE
         self.nsd_bicep_output_name = NSD_BICEP_FILENAME
-        self.nfdv_parameter_name = (
-            f"{self.config.network_function_definition_group_name.replace('-', '_')}"
-            "_nfd_version"
-        )
         nfdv = self._get_nfdv(config, api_clients)
         print("Finding the deploy parameters of the NFDV resource")
         if not nfdv.deploy_parameters:
@@ -76,6 +71,10 @@ class NSDGenerator:
         self.deploy_parameters: Optional[Dict[str, Any]] = json.loads(
             nfdv.deploy_parameters
         )
+        self.nf_type = self.config.network_function_definition_group_name.replace(
+            "-", "_"
+        )
+        self.nfdv_parameter_name = f"{self.nf_type}_nfd_version"
 
     # pylint: disable=no-self-use
     def _get_nfdv(
@@ -101,7 +100,9 @@ class NSDGenerator:
 
         # Create temporary folder.
         with tempfile.TemporaryDirectory() as tmpdirname:
-            self.tmp_folder_name = tmpdirname  # pylint: disable=attribute-defined-outside-init
+            self.tmp_folder_name = (
+                tmpdirname  # pylint: disable=attribute-defined-outside-init
+            )
 
             self.create_config_group_schema_files()
             self.write_nsd_manifest()
@@ -127,24 +128,12 @@ class NSDGenerator:
         """
         assert self.deploy_parameters
 
-        # Take a copy of the deploy parameters.
-        cgs_dict = copy.deepcopy(self.deploy_parameters)
-
-        # Re-title it.
-        cgs_dict["title"] = self.config.cg_schema_name
-
-        # Add in the NFDV version as a parameter.
-        description_string = (
+        nfdv_version_description_string = (
             f"The version of the {self.config.network_function_definition_group_name} "
             "NFD to use.  This version must be compatible with (have the same "
             "parameters exposed as) "
             f"{self.config.network_function_definition_version_name}."
         )
-        cgs_dict["properties"][self.nfdv_parameter_name] = {
-            "type": "string",
-            "description": description_string,
-        }
-        cgs_dict.setdefault("required", []).append(self.nfdv_parameter_name)
 
         managed_identity_description_string = (
             "The managed identity to use to deploy NFs within this SNS.  This should "
@@ -153,13 +142,52 @@ class NSDGenerator:
             "userAssignedIdentities/{identityName}.  "
             "If you wish to use a system assigned identity, set this to a blank string."
         )
-        cgs_dict["properties"]["managedIdentity"] = {
-            "type": "string",
-            "description": managed_identity_description_string,
+
+        if self.config.multiple_instances:
+            deploy_parameters = {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": self.deploy_parameters["properties"],
+                },
+            }
+        else:
+            deploy_parameters = {
+                "type": "object",
+                "properties": self.deploy_parameters["properties"],
+            }
+
+        cgs_dict: Dict[str, Any] = {
+            "$schema": "https://json-schema.org/draft-07/schema#",
+            "title": self.config.cg_schema_name,
+            "type": "object",
+            "properties": {
+                self.config.network_function_definition_group_name: {
+                    "type": "object",
+                    "properties": {
+                        "deploymentParameters": deploy_parameters,
+                        self.nfdv_parameter_name: {
+                            "type": "string",
+                            "description": nfdv_version_description_string,
+                        },
+                    },
+                    "required": ["deploymentParameters", self.nfdv_parameter_name],
+                },
+                "managedIdentity": {
+                    "type": "string",
+                    "description": managed_identity_description_string,
+                },
+            },
+            "required": [
+                self.config.network_function_definition_group_name,
+                "managedIdentity",
+            ],
         }
-        cgs_dict["required"].append("managedIdentity")
 
         if self.config.network_function_type == CNF:
+            nf_schema = cgs_dict["properties"][
+                self.config.network_function_definition_group_name
+            ]
             custom_location_description_string = (
                 "The custom location ID of the ARC-Enabled AKS Cluster to deploy the CNF "
                 "to. Should be of the form "
@@ -167,11 +195,12 @@ class NSDGenerator:
                 "/{resourceGroupName}/providers/microsoft.extendedlocation/"
                 "customlocations/{customLocationName}'"
             )
-            cgs_dict["properties"]["customLocationId"] = {
+
+            nf_schema["properties"]["customLocationId"] = {
                 "type": "string",
                 "description": custom_location_description_string,
             }
-            cgs_dict["required"].append("customLocationId")
+            nf_schema["required"].append("customLocationId")
 
         return cgs_dict
 
@@ -208,13 +237,25 @@ class NSDGenerator:
 
         :param folder_path: The folder to put this file in.
         """
-        deploy_properties = self.config_group_schema_dict["properties"]
+        nf = self.config.network_function_definition_group_name
 
-        logger.debug("Create configMappings.json")
+        logger.debug("Create %s", NSD_CONFIG_MAPPING_FILENAME)
+
+        deployment_parameters = f"{{configurationparameters('{self.config.cg_schema_name}').{nf}.deploymentParameters}}"
+
+        if not self.config.multiple_instances:
+            deployment_parameters = f"[{deployment_parameters}]"
+
         config_mappings = {
-            key: f"{{configurationparameters('{self.config.cg_schema_name}').{key}}}"
-            for key in deploy_properties
+            "deploymentParameters": deployment_parameters,
+            self.nfdv_parameter_name: f"{{configurationparameters('{self.config.cg_schema_name}').{nf}.{self.nfdv_parameter_name}}}",
+            "managedIdentity": f"{{configurationparameters('{self.config.cg_schema_name}').managedIdentity}}",
         }
+
+        if self.config.network_function_type == CNF:
+            config_mappings[
+                "customLocationId"
+            ] = f"{{configurationparameters('{self.config.cg_schema_name}').{nf}.customLocationId}}"
 
         config_mappings_path = os.path.join(folder_path, NSD_CONFIG_MAPPING_FILENAME)
 
@@ -225,38 +266,10 @@ class NSDGenerator:
 
     def write_nf_bicep(self) -> None:
         """Write out the Network Function bicep file."""
-        bicep_params = ""
-
-        bicep_deploymentValues = ""
-
-        if not self.deploy_parameters or not self.deploy_parameters.get("properties"):
-            raise ValueError(
-                f"NFDV in {self.config.network_function_definition_group_name} has "
-                "no properties within deployParameters"
-            )
-        deploy_properties = self.deploy_parameters["properties"]
-        logger.debug("Deploy properties: %s", deploy_properties)
-
-        for key, value in deploy_properties.items():
-            # location is sometimes part of deploy_properties.
-            # We want to avoid having duplicate params in the bicep template
-            logger.debug(
-                "Adding deploy parameter key: %s, value: %s to nf template", key, value
-            )
-            if key != "location":
-                bicep_type = (
-                    NFV_TO_BICEP_PARAM_TYPES.get(value["type"]) or value["type"]
-                )
-                bicep_params += f"param {key} {bicep_type}\n"
-            bicep_deploymentValues += f"{key}: {key}\n  "
-
-        # pylint: disable=no-member
         self.generate_bicep(
             self.nf_bicep_template_name,
             NF_DEFINITION_BICEP_FILENAME,
             {
-                "bicep_params": bicep_params,
-                "deploymentValues": bicep_deploymentValues,
                 "network_function_name": self.config.network_function_name,
                 "publisher_name": self.config.publisher_name,
                 "network_function_definition_group_name": (
