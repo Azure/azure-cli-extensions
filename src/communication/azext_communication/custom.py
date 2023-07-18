@@ -177,6 +177,7 @@ class CommunicationCreate(_CommunicationCreate):
         args_schema.type._required = False
         args_schema.user_assigned_identities._registered = False
         args_schema.user_assigned_identities._required = False
+        args_schema.data_location._required = True
         return args_schema
 
     def pre_operations(self):
@@ -184,6 +185,12 @@ class CommunicationCreate(_CommunicationCreate):
         system_assigned_flag = False
         user_assigned_flag = False
         user_dict = {}
+
+        from pprint import pprint
+        pprint(vars(args))
+
+        if not args.location:
+            args.location =  "global"
 
         if args.system_assigned:
             system_assigned_flag = True
