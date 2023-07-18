@@ -82,6 +82,6 @@ if __name__ == '__main__':
     parser.add_argument('-o', '--output-dir', dest='output_dir',
                         help='Path to place the generated documentation. By default, a temporary directory will be created.', required=False, type=_type_path)
     parser.add_argument('-d', '--dependent-file', dest='dep_file',
-                        help='Path to the dependent extension .whl file.', required=True, type=str)
+                        help='Path to the dependent extension .whl file.', required=False, type=str)
     args = parser.parse_args()
     generate(args.ext_file, args.output_dir, args.dep_file)
