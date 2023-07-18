@@ -456,6 +456,8 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
     subscription_id = get_subscription_id(cmd.cli_ctx)
     workspace_resource_id = ''
     useAADAuth = True
+    if 'amalogs.useAADAuth' not in configuration_settings:
+        configuration_settings['amalogs.useAADAuth'] = "true"
     extensionSettings = {}
 
     if configuration_settings is not None:
@@ -472,11 +474,15 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
             logger.info("provided useAADAuth flag is : %s", useAADAuthSetting)
             if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
                 useAADAuth = True
+            else:
+                useAADAuth = False
         elif 'amalogs.useAADAuth' in configuration_settings:
             useAADAuthSetting = configuration_settings['amalogs.useAADAuth']
             logger.info("provided useAADAuth flag is : %s", useAADAuthSetting)
             if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
                 useAADAuth = True
+            else:
+                useAADAuth = False
         if useAADAuth and ('dataCollectionSettings' in configuration_settings):
             dataCollectionSettingsString = configuration_settings["dataCollectionSettings"]
             logger.info("provided dataCollectionSettings  is : %s", dataCollectionSettingsString)
@@ -496,6 +502,10 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
                 namspaces = dataCollectionSettings["namespaces"]
                 if isinstance(namspaces, list) is False:
                     raise InvalidArgumentValueError('namespaces must be an array type')
+            if 'enableContainerLogV2' in dataCollectionSettings.keys():
+                enableContainerLogV2Value = dataCollectionSettings["enableContainerLogV2"]
+                if not isinstance(enableContainerLogV2Value, bool):
+                    raise InvalidArgumentValueError('enableContainerLogV2Value value MUST be either true or false')
             if 'streams' in dataCollectionSettings.keys():
                 streams = dataCollectionSettings["streams"]
                 if isinstance(streams, list) is False:
