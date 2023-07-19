@@ -165,34 +165,25 @@ def publish_definition(
         container_registry_client=cf_acr_registries(cmd.cli_ctx),
     )
 
+    if definition_type not in (VNF, CNF):
+        raise ValueError(
+            "Definition type must be either 'vnf' or 'cnf'. Definition type"
+            f" '{definition_type}' is not valid for network function definitions."
+        )
+
     config = _get_config_from_file(
         config_file=config_file, configuration_type=definition_type
     )
 
-    if definition_type == VNF:
-        deployer = DeployerViaArm(api_clients, config=config)
-        deployer.deploy_vnfd_from_bicep(
-            bicep_path=definition_file,
-            parameters_json_file=parameters_json_file,
-            manifest_bicep_path=manifest_file,
-            manifest_parameters_json_file=manifest_parameters_json_file,
-            skip=skip,
-        )
-    elif definition_type == CNF:
-        deployer = DeployerViaArm(api_clients, config=config)
-        deployer.deploy_cnfd_from_bicep(
-            cli_ctx=cmd.cli_ctx,
-            bicep_path=definition_file,
-            parameters_json_file=parameters_json_file,
-            manifest_bicep_path=manifest_file,
-            manifest_parameters_json_file=manifest_parameters_json_file,
-            skip=skip,
-        )
-    else:
-        raise ValueError(
-            "Definition type must be either 'vnf' or 'cnf'. Definition type"
-            f" {definition_type} is not recognised."
-        )
+    deployer = DeployerViaArm(api_clients, config=config)
+    deployer.deploy_nfd_from_bicep(
+        cli_ctx=cmd.cli_ctx,
+        bicep_path=definition_file,
+        parameters_json_file=parameters_json_file,
+        manifest_bicep_path=manifest_file,
+        manifest_parameters_json_file=manifest_parameters_json_file,
+        skip=skip,
+    )
 
 
 def delete_published_definition(
