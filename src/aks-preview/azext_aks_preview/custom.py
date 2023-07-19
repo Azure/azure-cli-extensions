@@ -2488,12 +2488,13 @@ def aks_mesh_get_mesh_config(cmd, client, resource_group_name, name):
     from azure.cli.core import __version__ as local_version
     from packaging.version import parse
     from pprint import pprint
+    from kubernetes.client import CustomObjectsApi
     
     kubernetes.config.load_kube_config()
     v1 = kubernetes.client.CoreV1Api()
     namespace = 'istio-system'
     api_response = v1.list_namespaced_config_map(namespace)
-    api_resource = v1.get_api_resources()
+    # print(api_response)
     namespaces = v1.list_namespace
     api_items = api_response.items[0]
     meshconfig = api_items.data['mesh']
@@ -2503,16 +2504,22 @@ def aks_mesh_get_mesh_config(cmd, client, resource_group_name, name):
     proxy_set = set()
     version = parse(local_version)
     
+
     
     
     
+
     print("AZ version:")
     print(version)
     print("-----------------------------------")
     show_result = aks_show(cmd, client, resource_group_name, name)
+    is_cilium_installed(show_result)
+    is_osm_installed(show_result)
     print("Kubernetes version:")
     print(show_result.kubernetes_version)
     print('----------------------------------')
+
+    
     for keys in dct.keys():
         config_set.add(keys)
     proxy_config = dct['defaultConfig']
@@ -2523,7 +2530,24 @@ def aks_mesh_get_mesh_config(cmd, client, resource_group_name, name):
     print('----------------------------------')
     print("Proxyconfig current configuration: ")
     print(proxy_set)
+    print('------------------------------------')
     return
+
+def is_osm_installed(show_result):
+    if (show_result.addon_profiles):
+        if (show_result.addon_profiles['openServiceMesh'].enabled == True):
+            print("OSM addon installed.")
+    else:
+        print("OSM addon not installed")
+
+def is_cilium_installed(show_result):
+    if (show_result.network_profile.network_dataplane == "cilium"):
+        print("Cilium is installed.")
+    else:
+        print("Cilium is not installed.")
+
+
+
 
 
 def aks_mesh_migration_check(cmd, client, resource_group_name, name):
