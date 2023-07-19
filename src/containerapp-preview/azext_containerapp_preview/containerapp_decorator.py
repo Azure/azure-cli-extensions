@@ -7,7 +7,6 @@ from typing import Dict, Any
 from knack.log import get_logger
 
 from azure.cli.core.commands import AzCliCommand
-from azure.cli.core.azclierror import ValidationError, RequiredArgumentMissingError
 from msrestazure.tools import parse_resource_id
 
 from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, ContainerAppClient

@@ -8,8 +8,7 @@ from ._constants import CONTAINER_APPS_RP
 from ._clients import ContainerAppClient, ConnectedEnvironmentClient
 from ._constants import CONNECTED_ENVIRONMENT_RESOURCE_TYPE
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, get_containerapp_base_decorator
-from .connected_env_decorator import BaseEnvironmentDecorator, ConnectedEnvironmentPreviewCreateDecorator, \
-    ConnectedEnvironmentDecorator
+from .connected_env_decorator import ConnectedEnvironmentPreviewCreateDecorator, ConnectedEnvironmentDecorator
 
 logger = get_logger(__name__)
 

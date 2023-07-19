@@ -15,7 +15,6 @@ from ._client_factory import handle_raw_exception, providers_client_factory
 from ._constants import CONTAINER_APP_EXTENSION_TYPE, CONNECTED_ENVIRONMENT_RESOURCE_TYPE, CONTAINER_APPS_RP
 from ._models import ConnectedEnvironment as ConnectedEnvironmentModel, ExtendedLocation as ExtendedLocationModel
 from ._utils import (get_cluster_extension, get_custom_location, _get_azext_containerapp_module)
-from ._decorator_utils import _ensure_location_allowed
 
 
 class BaseEnvironmentDecorator:
@@ -127,7 +126,7 @@ class ConnectedEnvironmentDecorator(BaseEnvironmentDecorator):
 
         if self.get_argument_location():
             try:
-                _ensure_location_allowed(self.cmd, self.get_argument_location(), CONTAINER_APPS_RP, CONNECTED_ENVIRONMENT_RESOURCE_TYPE)
+                self.azext_default_utils._ensure_location_allowed(self.cmd, self.get_argument_location(), CONTAINER_APPS_RP, CONNECTED_ENVIRONMENT_RESOURCE_TYPE)
 
             except Exception as e:  # pylint: disable=broad-except
                 raise ValidationError(
