@@ -13,12 +13,13 @@ class ContainerappPreviewCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        auto_install_containerapp_extension_if_not_exist(self)
+
         containerapp_preview_custom = CliCommandType(
             operations_tmpl='azext_containerapp_preview.custom#{}',
             client_factory=None)
         super(ContainerappPreviewCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                                 custom_command_type=containerapp_preview_custom)
+        auto_install_containerapp_extension_if_not_exist(self)
 
     def load_command_table(self, args):
         from azext_containerapp_preview.commands import load_command_table
