@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.7.2
+++++++
+* Add additional test cases for ACS Rooms
+
 1.7.1b1
 ++++++
 * Adding managed identity support
