@@ -16,6 +16,7 @@ def cf_k8s_extension(cli_ctx, **kwargs):
 def cf_k8s_extension_operation(cli_ctx, *_):
     return cf_k8s_extension(cli_ctx).extensions
 
+
 def cf_k8s_extension_types(cli_ctx, *_):
     return cf_k8s_extension(cli_ctx, api_version=consts.EXTENSION_TYPE_API_VERSION).extension_types
 

@@ -369,16 +369,17 @@ def delete_k8s_extension(
         force_delete=force,
     )
 
+
 # list by location
 def list_extension_types_by_location(
-        client, 
+        client,
         location,
-        plan_publisher = None, 
-        plan_product = None, 
-        plan_name = None, 
-        release_train= None,
-        cluster_type = None):
-   
+        plan_publisher=None,
+        plan_product=None,
+        plan_name=None,
+        release_train=None,
+        cluster_type=None):
+
     """ List available Cluster Extension Types in a region."""
 
     return client.location_list(
@@ -389,29 +390,31 @@ def list_extension_types_by_location(
         release_train,
         cluster_type)
 
+
 # get by location
 def show_extension_type_by_location(client, location, extension_type):
-    
+
     """Get properties for a Cluster Extension Type in a region."""
     return client.location_get(
         location,
         extension_type
     )
 
+
 # list version by location
 def list_extension_type_versions_by_location(
-        client, 
-        location, 
-        extension_type,     
-        release_train = None,
-        cluster_type = None,
-        major_version = None,
-        show_latest = False):
-    
+        client,
+        location,
+        extension_type,
+        release_train=None,
+        cluster_type=None,
+        major_version=None,
+        show_latest=False):
+
     """ List available versions for a Cluster Extension Type versions in a region. """
-    
+
     versions_list = client.list_versions(
-        location, 
+        location,
         extension_type,
         release_train,
         cluster_type,
@@ -419,62 +422,65 @@ def list_extension_type_versions_by_location(
         show_latest)
     return versions_list
 
+
 # get version by location
-def show_extension_type_version_by_location(       
-        client, 
-        location, 
-        extension_type,        
+def show_extension_type_version_by_location(
+        client,
+        location,
+        extension_type,
         version):
-    
+
     """ Get properties associated with a Cluster Extension Type version in a region."""
     version = client.get_version(
-        location, 
+        location,
         extension_type,
         version)
     return version
 
-# list by cluster 
+
+# list by cluster
 def list_extension_types_by_cluster(
-    client, 
-    resource_group_name, 
-    cluster_name, 
-    cluster_type,  
-    plan_publisher = None, 
-    plan_name = None, 
-    plan_product = None, 
-    release_train = None):
-    
+        client,
+        resource_group_name,
+        cluster_name,
+        cluster_type,
+        plan_publisher=None,
+        plan_name=None,
+        plan_product=None,
+        release_train=None):
+
     """ List available Cluster Extension Types for an existing cluster."""
     cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
-    
+
     return client.list(
-        resource_group_name, 
-        cluster_rp, 
-        cluster_type, 
-        cluster_name, 
-        plan_publisher, 
-        plan_product, 
-        plan_name, 
+        resource_group_name,
+        cluster_rp,
+        cluster_type,
+        cluster_name,
+        plan_publisher,
+        plan_product,
+        plan_name,
         release_train)
 
+
 # get by cluster
-def show_extension_type_by_cluster(    
-    client, 
-    resource_group_name, 
-    cluster_name, 
-    cluster_type,  
-    extension_type):
+def show_extension_type_by_cluster(
+        client,
+        resource_group_name,
+        cluster_name,
+        cluster_type,
+        extension_type):
 
     """ Get properties for a Cluster Extension Type for an existing cluster"""
     cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
 
     return client.get(
-        resource_group_name, 
-        cluster_rp, 
+        resource_group_name,
+        cluster_rp,
         cluster_type,
-        cluster_name, 
-        extension_type
-       )
+        cluster_name,
+        extension_type)
+
 
 # list version by cluster
 def list_extension_type_versions_by_cluster(
@@ -483,25 +489,25 @@ def list_extension_type_versions_by_cluster(
         cluster_type,
         cluster_name,
         extension_type,
-        release_train = None,
-        major_version = None,
-        show_latest = False):
+        release_train=None,
+        major_version=None,
+        show_latest=False):
 
     """ List available versions for a Cluster Extension Type for a given cluster."""
     cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
 
     return client.cluster_list_versions(
-        resource_group_name, 
-        cluster_rp, 
+        resource_group_name,
+        cluster_rp,
         cluster_type,
-        cluster_name, 
+        cluster_name,
         extension_type,
         release_train,
         major_version,
-        show_latest
-       )
+        show_latest)
 
-# get version by cluster 
+
+# get version by cluster
 def show_extension_type_version_by_cluster(
         client,
         resource_group_name,
@@ -509,19 +515,19 @@ def show_extension_type_version_by_cluster(
         cluster_name,
         extension_type,
         version):
-    
+
     """ Get properties associated with a Cluster Extension Type version for an existing cluster"""
 
     cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
 
     return client.cluster_get_version(
-        resource_group_name, 
-        cluster_rp, 
+        resource_group_name,
+        cluster_rp,
         cluster_type,
-        cluster_name, 
+        cluster_name,
         extension_type,
-        version
-       )
+        version)
+
 
 def __create_identity(cmd, resource_group_name, cluster_name, cluster_type, cluster_rp):
     subscription_id = get_subscription_id(cmd.cli_ctx)

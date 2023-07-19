@@ -39,23 +39,23 @@ class K8sExtensionTypesScenarioTest(ScenarioTest):
                                        '--cluster-type {cluster_type}').get_output_in_json()
         assert len(extensionTypes_list) > 0
 
-        extensionTypes_locationList = self.cmd('k8s-extension extension-types list-by-location --location '
+        extensionTypes_locationList = self.cmd('k8s-extension extension-types list-by-location --location'
                                                '{location}').get_output_in_json()
         assert len(extensionTypes_locationList) > 0
 
-        extensionTypes_list = self.cmd('k8s-extension extension-types list-versions-by-cluster -g {rg} -c {cluster_name} --cluster-type {cluster_type} --extension-type {extension_type}')
+        extensionTypes_list = self.cmd('k8s-extension extension-types list-versions-by-cluster -g {rg} -c {cluster_name} --cluster-type {cluster_type} --extension-type {extension_type}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 
-        extensionTypes_list = self.cmd('k8s-extension extension-types list-versions-by-location --location {location} --extension-type {extension_type}')
+        extensionTypes_list = self.cmd('k8s-extension extension-types list-versions-by-location --location {location} --extension-type {extension_type}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 
-        extensionTypes_list = self.cmd('k8s-extension extension-types show-version-by-cluster -g {rg} -c {cluster_name} --cluster-type {cluster_type} --extension-type {extension_type} --version {version}')
+        extensionTypes_list = self.cmd('k8s-extension extension-types show-version-by-cluster -g {rg} -c {cluster_name} --cluster-type {cluster_type} --extension-type {extension_type} --version {version}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 
-        extensionTypes_list = self.cmd('k8s-extension extension-types show-version-by-location --location {location} --extension-type {extension_type} --version {version}')
+        extensionTypes_list = self.cmd('k8s-extension extension-types show-version-by-location --location {location} --extension-type {extension_type} --version {version}').get_output_in_json()
 
         assert len(extensionTypes_list) > 0
 

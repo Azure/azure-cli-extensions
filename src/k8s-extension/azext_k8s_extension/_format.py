@@ -43,7 +43,7 @@ def k8s_extension_type_show_table_format(result):
 
 def __get_extension_type_table_row(result):
     # Populate the values to be returned if they are not undefined
-    clusterTypes =''
+    clusterTypes = ''
     if result['properties']['supportedClusterTypes'] is not None:
         clusterTypes = ', '.join(result['properties']['supportedClusterTypes'])
 
@@ -69,8 +69,10 @@ def __get_extension_type_table_row(result):
 def k8s_extension_type_versions_list_table_format(results):
     return [__get_extension_type_versions_table_row(result) for result in results]
 
+
 def k8s_extension_type_version_show_table_format(results):
     return __get_extension_type_versions_table_row(results)
+
 
 def __get_extension_type_versions_table_row(result):
     return OrderedDict([

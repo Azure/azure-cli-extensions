@@ -111,13 +111,13 @@ def load_arguments(self, _):
                    help='Name of the extension type.')
         c.argument('location',
                    validator=get_default_location_from_resource_group,
-                   help='Name of the location. Values from: `az account list-locations`')  
+                   help='Name of the location. Values from: `az account list-locations`')
         c.argument('version',
                    help='Version for the extension type.')
         c.argument('plan_name',
                    arg_group="Marketplace",
                    options_list=['--plan-name'],
-                   help= 'The plan name is referring to the Marketplace Plan ID of the extension.')
+                   help='The plan name is referring to the Marketplace Plan ID of the extension.')
         c.argument('plan_product',
                    arg_group="Marketplace",
                    options_list=['--plan-product'],
@@ -125,8 +125,8 @@ def load_arguments(self, _):
         c.argument('plan_publisher',
                    arg_group="Marketplace",
                    options_list=['--plan-publisher'],
-                   help='The plan publisher is referring to the Marketplace Publisher ID of the extension')        
+                   help='The plan publisher is referring to the Marketplace Publisher ID of the extension')
         c.argument('major_version',
-                   help='Filter results by only the major version of an extension type. For example if 1 is specified, all versions with major version 1 (1.1, 1.1.2) will be shown. The default value is None')        
+                   help='Filter results by only the major version of an extension type. For example if 1 is specified, all versions with major version 1 (1.1, 1.1.2) will be shown. The default value is None')
         c.argument('show_latest',
                    help='Filter results by only the latest version. For example, if this flag is used the latest version of the extensionType will be shown.')

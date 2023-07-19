@@ -148,7 +148,7 @@ helps[f'{consts.EXTENSION_NAME} extension-types list-versions-by-cluster'] = f""
       - name: List available versions for a Cluster Extension Type for a given cluster
         text: |-
           az {consts.EXTENSION_NAME} extension-types list-versions-by-cluster --resource-group my-resource-group \
---cluster-name mycluster --cluster-type connectedClusters
+--cluster-name mycluster --cluster-type connectedClusters --extension-type microsoft.flux
 """
 
 helps[f'{consts.EXTENSION_NAME} extension-types list-versions-by-location'] = f"""
@@ -157,5 +157,5 @@ helps[f'{consts.EXTENSION_NAME} extension-types list-versions-by-location'] = f"
     examples:
       - name: List available versions for a Cluster Extension Type versions in a region
         text: |-
-          az {consts.EXTENSION_NAME} extension-types list-versions-by-location --location eastus
+          az {consts.EXTENSION_NAME} extension-types list-versions-by-location --location eastus --extension-type microsoft.flux
 """
