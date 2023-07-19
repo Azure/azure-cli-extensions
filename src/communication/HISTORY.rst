@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.7.2
+++++++
+* Update Email to the latest 1.0.0 version
+
+
 1.7.1b1
 ++++++
 * Adding managed identity support
