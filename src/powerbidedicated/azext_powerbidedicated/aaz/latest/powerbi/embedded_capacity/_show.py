@@ -47,7 +47,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
-            help="The name of the Dedicated capacity. It must be a minimum of 3 characters, and a maximum of 63.",
+            help="The name of the Dedicated capacity. It must be at least 3 characters in length, and no more than 63.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
