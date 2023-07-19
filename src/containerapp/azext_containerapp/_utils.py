@@ -467,7 +467,7 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
 
 
 def validate_binding_name(binding_name):
-    pattern = r'^(?=.{1,60}$)[a-zA-Z0-9._]+$'
+    pattern = r'^(?=.{1,60}$)[a-zA-Z0-9._-]+$'
     return bool(re.match(pattern, binding_name))
 
 
