@@ -12,24 +12,47 @@ class LoadConstants:
 
     # Test Plan constants
     LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config.yaml")
+    INVALID_LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"invalid-config.yaml")
     TEST_PLAN = os.path.join(TEST_RESOURCES_DIR, r"sample-JMX-file.jmx")
-    ADDITIONAL_FILE = os.path.join(TEST_RESOURCES_DIR, r"additional_data.csv")
+    ADDITIONAL_FILE =  os.path.join(TEST_RESOURCES_DIR, r"additional-data.csv")
     FILE_NAME = "sample-JMX-file.jmx"
+    FILE_TYPE ="JMX_FILE"
 
     ENV_VAR_DURATION_NAME = "duration_in_sec"
     ENV_VAR_DURATION_SHORT = "1"
     ENV_VAR_DURATION_LONG = "120"
 
+    SECRETS = r"secret_name1=https://sample-kv.vault.azure.net/secrets/secret-name1/8022ff4b79f04a4ca6c3ca8e3820e757 secret_name2=https://sample-kv.vault.azure.net/secrets/secret-name2/8022ff4b79f04a4ca6c3ca8e3820e757"
+    SECRET_NAME1 = "secret_name1"
+    SECRET_NAME2 = "secret_name2"
+    CERTIFICATE = r"cert=https://sample-kv.vault.azure.net/certificates/cert-name/0e35fd2807ce44368cf54274dd6f35cc"
+    INVALID_CERTIFICATE = r"cert1=cert.url/certificates"
+    INVALID_SECRET = r"secret_name1=secret.url/secrets secret_name2=https://sample-kv.vault.azure.net/secrets/secret-name2/8022ff4b79f04a4ca6c3ca8e3820e757 secret_name3=https://sample-kv.vault.azure.net/secrets/secret-name3/8022ff4b79f04a4ca6c3ca8e3820e757"
+    INVALID_ENV = "a"
+    VALID_ENV_RPS = "rps=10"
+    ENGINE_INSTANCE = 1
+
+    SPLIT_CSV_TRUE = "true"
+    SPLIT_CSV_FALSE = "false"
+
+    INVALID_SUBNET_ID = r"/subscriptions/invalid/resource/id"
+    KEYVAULT_REFERENCE_ID = r"/subscriptions/{subscription_id}/resourceGroups/sample-rg/providers/Microsoft.KeyVault/vaults/sample-kv"
     # App Component constants
     APP_COMPONENT_ID = r"/subscriptions/{subscription_id}/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss"
     APP_COMPONENT_TYPE = r"Microsoft.Compute/virtualMachineScaleSets"
     APP_COMPONENT_NAME = r"temp-vmss"
 
+    INVALID_APP_COMPONENT_ID = r"/subscriptions/invalid/resource/id"
+    INVALID_APP_COMPONENT_TYPE = r"Microsoft.Storage/storageAccounts"
+
     # Server Metric constants
-    SERVER_METRIC_ID = r"/subscriptions/{subscription_id}/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss/providers/microsoft.insights/metricdefinitions/Percentage CPU"
-    SERVER_METRIC_NAME = r"Percentage CPU"
-    SERVER_METRIC_NAMESPACE = r"microsoft.compute/virtualmachinescalesets"
+    SERVER_METRIC_ID = r"{}/providers/microsoft.insights/metricdefinitions/Availability"
+    SERVER_METRIC_ID2 = r"/subscriptions/0a00b000-0aa0-0aa0-aaa0-000000000/resourceGroups/sample-rg/providers/Microsoft.Storage/storageAccounts/sample-storage-account"
+    SERVER_METRIC_NAME = r"Availability"
+    SERVER_METRIC_NAMESPACE = r"microsoft.storage/storageaccounts"
     AGGREGATION = "Average"
+
+    INVALID_SERVER_METRIC_ID = r"/subscriptions/invalid/resource/id"
 
 
 class LoadTestConstants(LoadConstants):
@@ -44,6 +67,12 @@ class LoadTestConstants(LoadConstants):
     APP_COMPONENT_TEST_ID = "app-component-test-case"
     SERVER_METRIC_TEST_ID = "server-metric-test-case"
     FILE_TEST_ID = "file-test-case"
+
+    INVALID_UPDATE_TEST_ID = "invalid-update-test-case"
+    INVALID_PF_TEST_ID = "invalid-pf-test-case"
+    
+    DESCRIPTION = r"Sample_test_description"
+    DISPLAY_NAME = r"Sample_test_display_name"
 
 
 class LoadTestRunConstants(LoadConstants):
@@ -80,3 +109,7 @@ class LoadTestRunConstants(LoadConstants):
     UPDATE_TEST_RUN_ID = "update-test-run-case"
     DOWNLOAD_TEST_RUN_ID = "download-test-run-case"
     APP_COMPONENT_TEST_RUN_ID = "app-component-test-run-case"
+    INVALID_TEST_RUN_ID = r"A$%invalid-testrun-case-testrunid"
+
+    DESCRIPTION = r"Sample_testrun_description"
+    DISPLAY_NAME = r"Sample_testrun_display_name"
