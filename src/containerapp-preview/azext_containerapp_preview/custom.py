@@ -110,7 +110,7 @@ def show_connected_environment(cmd, name, resource_group_name):
     )
     connected_env_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    return connected_env_base_decorator.show_environment()
+    return connected_env_base_decorator.show()
 
 
 def list_connected_environments(cmd, resource_group_name=None, custom_location=None):
@@ -124,7 +124,7 @@ def list_connected_environments(cmd, resource_group_name=None, custom_location=N
     )
     connected_env_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    return connected_env_base_decorator.list_environments()
+    return connected_env_base_decorator.list()
 
 
 def delete_connected_environment(cmd, name, resource_group_name, no_wait=False):
@@ -138,7 +138,7 @@ def delete_connected_environment(cmd, name, resource_group_name, no_wait=False):
     )
     connected_env_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    return connected_env_base_decorator.delete_environment()
+    return connected_env_base_decorator.delete()
 
 
 def create_connected_environment(cmd,

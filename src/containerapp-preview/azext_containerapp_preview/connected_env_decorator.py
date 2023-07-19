@@ -17,15 +17,14 @@ from ._models import ConnectedEnvironment as ConnectedEnvironmentModel, Extended
 from ._utils import (get_cluster_extension, get_custom_location, _get_azext_containerapp_module)
 
 
-class BaseEnvironmentDecorator:
+class BaseResource:
     def __init__(
-        self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str, resource_type: str
+        self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
     ):
         self.raw_param = raw_parameters
         self.cmd = cmd
         self.client = client
         self.models = models
-        self.resource_type = resource_type
         self.azext_default_utils = _get_azext_containerapp_module("azext_containerapp._utils")
 
     def register_provider(self, *rp_name_list):
@@ -36,30 +35,28 @@ class BaseEnvironmentDecorator:
         for rp in rp_name_list:
             self.azext_default_utils._validate_subscription_registered(self.cmd, rp)
 
-    def list_environments(self):
+    def list(self):
         try:
-            resource_group_name = self.get_argument_resource_group_name()
             if self.get_argument_resource_group_name() is None:
-                envs = self.client.list_by_subscription(cmd=self.cmd)
+                return self.client.list_by_subscription(cmd=self.cmd)
             else:
-                envs = self.client.list_by_resource_group(cmd=self.cmd, resource_group_name=resource_group_name)
-            return envs
+                return self.client.list_by_resource_group(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name())
         except CLIError as e:
             handle_raw_exception(e)
 
-    def show_environment(self):
+    def show(self):
         try:
             return self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
         except CLIError as e:
             handle_raw_exception(e)
 
-    def delete_environment(self):
+    def delete(self):
         try:
             return self.client.delete(cmd=self.cmd, name=self.get_argument_name(), resource_group_name=self.get_argument_resource_group_name(), no_wait=self.get_argument_no_wait())
         except CLIError as e:
             handle_raw_exception(e)
 
-    def _list_environment_locations(self, resource_type):
+    def _list_resource_locations(self, resource_type):
         providers_client = providers_client_factory(self.cmd.cli_ctx, get_subscription_id(self.cmd.cli_ctx))
         resource_types = getattr(providers_client.get(CONTAINER_APPS_RP), 'resource_types', [])
         res_locations = []
@@ -105,14 +102,15 @@ class BaseEnvironmentDecorator:
         self.set_param("location", location)
 
 
-class ConnectedEnvironmentDecorator(BaseEnvironmentDecorator):
+class ConnectedEnvironmentDecorator(BaseResource):
     def __init__(
         self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str, resource_type: str
     ):
-        super().__init__(cmd, client, raw_parameters, models, resource_type)
+        super().__init__(cmd, client, raw_parameters, models)
+        self.resource_type = resource_type
 
-    def list_environments(self):
-        connected_envs = super().list_environments()
+    def list(self):
+        connected_envs = super().list()
         custom_location = self.get_argument_custom_location()
         if custom_location:
             connected_envs = [c for c in connected_envs if c["extendedLocation"]["name"].lower() == custom_location.lower()]
@@ -120,7 +118,7 @@ class ConnectedEnvironmentDecorator(BaseEnvironmentDecorator):
         return connected_envs
 
     def _validate_environment_location_and_set_default_location(self):
-        res_locations = self._list_environment_locations(self.resource_type)
+        res_locations = self._list_resource_locations(self.resource_type)
 
         allowed_locs = ", ".join(res_locations)
 
