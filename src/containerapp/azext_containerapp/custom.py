@@ -2152,14 +2152,14 @@ def start_containerappsjob(cmd,
                            memory=None,
                            registry_identity=None,
                            yaml=None):
-    
+
     if yaml:
         if image or container_name or env_vars or\
             startup_command or args or cpu or memory or\
                 startup_command or args:
             logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
         return start_containerappjob_execution_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml)
-    
+
     template_def = None
 
     if image is not None:
