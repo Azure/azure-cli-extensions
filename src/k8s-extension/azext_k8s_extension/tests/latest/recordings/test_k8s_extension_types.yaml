@@ -1,0 +1,369 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension extension-types show-by-cluster
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c --cluster-type --extension-type
+      User-Agent:
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-kubernetesconfiguration/0.1.0 Python/3.10.11
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes/microsoft.contoso.clusters?api-version=2023-05-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes/microsoft.contoso.clusters","name":"microsoft.contoso.clusters","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"microsoft.contoso.clusters","description":"Test
+        Cluster Extension for Microsoft Contoso Clusters","isSystemExtension":false,"publisher":"Microsoft
+        Contoso Clusters","isManagedIdentityRequired":false,"supportedClusterTypes":null,"supportedScopes":{"defaultScope":"namespace","clusterScopeSettings":{"allowMultipleInstances":true,"defaultReleaseNamespace":"contoso"}},"planInfo":{"offerId":null,"planId":null,"publisherId":"Microsoft
+        Contoso Clusters"}}}'
+    headers:
+      api-supported-versions:
+      - 2021-05-01-preview, 2022-01-15-preview, 2023-05-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '814'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Jul 2023 18:27:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension extension-types show-by-location
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l --extension-type
+      User-Agent:
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-kubernetesconfiguration/0.1.0 Python/3.10.11
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/microsoft.contoso.clusters?api-version=2023-05-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/microsoft.contoso.clusters","name":"microsoft.contoso.clusters","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"microsoft.contoso.clusters","description":"Test
+        Cluster Extension for Microsoft Contoso Clusters","isSystemExtension":false,"publisher":"Microsoft
+        Contoso Clusters","isManagedIdentityRequired":false,"supportedClusterTypes":null,"supportedScopes":{"defaultScope":"namespace","clusterScopeSettings":{"allowMultipleInstances":true,"defaultReleaseNamespace":"contoso"}},"planInfo":{"offerId":null,"planId":null,"publisherId":"Microsoft
+        Contoso Clusters"}}}'
+    headers:
+      api-supported-versions:
+      - 2021-05-01-preview, 2022-01-15-preview, 2023-05-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '745'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Jul 2023 18:27:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension extension-types list-by-cluster
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c --cluster-type
+      User-Agent:
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-kubernetesconfiguration/0.1.0 Python/3.10.11
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes?api-version=2023-05-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes/microsoft.azuremonitor.containers","name":"microsoft.azuremonitor.containers","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"microsoft.azuremonitor.containers","description":"Microsoft
+        Azure Monitor Containers Extension","isSystemExtension":false,"publisher":"Microsoft
+        Azure Monitor Containers","isManagedIdentityRequired":false,"supportedClusterTypes":["ConnectedClusters","ProvisionedClusters"],"supportedScopes":{"defaultScope":"cluster","clusterScopeSettings":{"allowMultipleInstances":false,"defaultReleaseNamespace":"kube-system"}},"planInfo":{"offerId":null,"planId":null,"publisherId":"Microsoft
+        Azure Monitor Containers"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes/microsoft.extensionsusage","name":"microsoft.extensionsusage","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"microsoft.extensionsusage","description":"Extension
+        to measure the billing","isSystemExtension":true,"publisher":"Microsoft Extension
+        Billing","isManagedIdentityRequired":false,"supportedClusterTypes":["Connectedclusters","Managedclusters"],"supportedScopes":{"defaultScope":"cluster","clusterScopeSettings":{"allowMultipleInstances":false,"defaultReleaseNamespace":"azure-extensions-usage-system"}},"planInfo":{"offerId":null,"planId":null,"publisherId":"Microsoft
+        Extension Billing"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes/marketplace.test.01","name":"marketplace.test.01","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"marketplace.test.01","description":"Test
+        extension for integration tests and DVTs","isSystemExtension":false,"publisher":"marketplacetest","isManagedIdentityRequired":false,"supportedClusterTypes":["managedclusters","connectedclusters"],"supportedScopes":{"defaultScope":"namespace","clusterScopeSettings":{"allowMultipleInstances":false,"defaultReleaseNamespace":null}},"planInfo":{"offerId":"testOffer","planId":"testPlan","publisherId":"marketplacetest"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes/marketplace.test.02","name":"marketplace.test.02","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"marketplace.test.02","description":"Test
+        extension for marketplace integration tests and DVTs","isSystemExtension":false,"publisher":"marketplacetest2","isManagedIdentityRequired":false,"supportedClusterTypes":["connectedclusters","managedclusters"],"supportedScopes":{"defaultScope":"namespace","clusterScopeSettings":{"allowMultipleInstances":false,"defaultReleaseNamespace":null}},"planInfo":{"offerId":"testOffer2","planId":"testPlan2","publisherId":"marketplacetest2"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes/microsoft.akri","name":"microsoft.akri","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"microsoft.akri","description":"resource
+        provider for Akri project","isSystemExtension":false,"publisher":"Microsoft
+        Akri","isManagedIdentityRequired":false,"supportedClusterTypes":["Connectedclusters","Managedclusters","Appliances","ProvisionedClusters"],"supportedScopes":{"defaultScope":"cluster","clusterScopeSettings":{"allowMultipleInstances":true,"defaultReleaseNamespace":"akri"}},"planInfo":{"offerId":null,"planId":null,"publisherId":"Microsoft
+        Akri"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes/microsoft.contoso.tests","name":"microsoft.contoso.tests","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"microsoft.contoso.tests","description":"Test
+        Cluster Extension for Microsoft Contoso Tests","isSystemExtension":false,"publisher":"Microsoft
+        Contoso Tests","isManagedIdentityRequired":false,"supportedClusterTypes":["Connectedclusters","Managedclusters","Appliances","ProvisionedClusters"],"supportedScopes":{"defaultScope":"namespace","clusterScopeSettings":{"allowMultipleInstances":true,"defaultReleaseNamespace":"contoso"}},"planInfo":{"offerId":null,"planId":null,"publisherId":"Microsoft
+        Contoso Tests"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes/microsoft.contoso.samples","name":"microsoft.contoso.samples","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"microsoft.contoso.samples","description":"Extension
+        for Testing only","isSystemExtension":false,"publisher":"Microsoft Contoso
+        Samples","isManagedIdentityRequired":true,"supportedClusterTypes":["Connectedclusters","Managedclusters","Appliances","ProvisionedClusters"],"supportedScopes":{"defaultScope":"namespace","clusterScopeSettings":null},"planInfo":{"offerId":null,"planId":null,"publisherId":"Microsoft
+        Contoso Samples"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes/microsoft.contoso.noautoupgrade","name":"microsoft.contoso.noautoupgrade","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"microsoft.contoso.noautoupgrade","description":"Test
+        Cluster Extension for Microsoft Contoso NoAutoUpgrade","isSystemExtension":false,"publisher":"Microsoft
+        Contoso NoAutoUpgrade","isManagedIdentityRequired":false,"supportedClusterTypes":["Connectedclusters","Managedclusters","Appliances","ProvisionedClusters"],"supportedScopes":{"defaultScope":"cluster","clusterScopeSettings":{"allowMultipleInstances":false,"defaultReleaseNamespace":"ansible"}},"planInfo":{"offerId":null,"planId":null,"publisherId":"Microsoft
+        Contoso NoAutoUpgrade"}}}],"nextLink":null}'
+    headers:
+      api-supported-versions:
+      - 2021-05-01-preview, 2022-01-15-preview, 2023-05-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '6763'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Jul 2023 18:27:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension extension-types list-by-location
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location
+      User-Agent:
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-kubernetesconfiguration/0.1.0 Python/3.10.11
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes?api-version=2023-05-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/cassandradatacentersoperator","name":"cassandradatacentersoperator","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"cassandradatacentersoperator","description":"Cassandra
+        data center operator","isSystemExtension":false,"publisher":"CassandraDataCenters","isManagedIdentityRequired":true,"supportedClusterTypes":["connectedclusters","managedclusters","appliances"],"supportedScopes":{"defaultScope":"namespace","clusterScopeSettings":null},"planInfo":{"offerId":null,"planId":null,"publisherId":"CassandraDataCenters"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/microsoft.azuremonitor.containers","name":"microsoft.azuremonitor.containers","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"microsoft.azuremonitor.containers","description":"Microsoft
+        Azure Monitor Containers Extension","isSystemExtension":false,"publisher":"Microsoft
+        Azure Monitor Containers","isManagedIdentityRequired":false,"supportedClusterTypes":["ConnectedClusters","ProvisionedClusters"],"supportedScopes":{"defaultScope":"cluster","clusterScopeSettings":{"allowMultipleInstances":false,"defaultReleaseNamespace":"kube-system"}},"planInfo":{"offerId":null,"planId":null,"publisherId":"Microsoft
+        Azure Monitor Containers"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/microsoft.extensionsusage","name":"microsoft.extensionsusage","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"microsoft.extensionsusage","description":"Extension
+        to measure the billing","isSystemExtension":true,"publisher":"Microsoft Extension
+        Billing","isManagedIdentityRequired":false,"supportedClusterTypes":["Connectedclusters","Managedclusters"],"supportedScopes":{"defaultScope":"cluster","clusterScopeSettings":{"allowMultipleInstances":false,"defaultReleaseNamespace":"azure-extensions-usage-system"}},"planInfo":{"offerId":null,"planId":null,"publisherId":"Microsoft
+        Extension Billing"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/microsoft.contoso.clusters","name":"microsoft.contoso.clusters","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"microsoft.contoso.clusters","description":"Test
+        Cluster Extension for Microsoft Contoso Clusters","isSystemExtension":false,"publisher":"Microsoft
+        Contoso Clusters","isManagedIdentityRequired":false,"supportedClusterTypes":null,"supportedScopes":{"defaultScope":"namespace","clusterScopeSettings":{"allowMultipleInstances":true,"defaultReleaseNamespace":"contoso"}},"planInfo":{"offerId":null,"planId":null,"publisherId":"Microsoft
+        Contoso Clusters"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/marketplace.test.01","name":"marketplace.test.01","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"marketplace.test.01","description":"Test
+        extension for integration tests and DVTs","isSystemExtension":false,"publisher":"marketplacetest","isManagedIdentityRequired":false,"supportedClusterTypes":["managedclusters","connectedclusters"],"supportedScopes":{"defaultScope":"namespace","clusterScopeSettings":{"allowMultipleInstances":false,"defaultReleaseNamespace":null}},"planInfo":{"offerId":"testOffer","planId":"testPlan","publisherId":"marketplacetest"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/marketplace.test.02","name":"marketplace.test.02","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"marketplace.test.02","description":"Test
+        extension for marketplace integration tests and DVTs","isSystemExtension":false,"publisher":"marketplacetest2","isManagedIdentityRequired":false,"supportedClusterTypes":["connectedclusters","managedclusters"],"supportedScopes":{"defaultScope":"namespace","clusterScopeSettings":{"allowMultipleInstances":false,"defaultReleaseNamespace":null}},"planInfo":{"offerId":"testOffer2","planId":"testPlan2","publisherId":"marketplacetest2"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/traefiklabs.traefikproxy","name":"traefiklabs.traefikproxy","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"traefiklabs.traefikproxy","description":"containous","isSystemExtension":false,"publisher":"containous","isManagedIdentityRequired":false,"supportedClusterTypes":["managedClusters"],"supportedScopes":{"defaultScope":"cluster","clusterScopeSettings":{"allowMultipleInstances":false,"defaultReleaseNamespace":"traefik"}},"planInfo":{"offerId":"traefik-proxy","planId":"traefik-proxy","publisherId":"containous"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/bitnami.nginxmain","name":"bitnami.nginxmain","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"bitnami.nginxmain","description":"bitnami","isSystemExtension":false,"publisher":"bitnami","isManagedIdentityRequired":true,"supportedClusterTypes":["managedClusters"],"supportedScopes":{"defaultScope":"namespace","clusterScopeSettings":{"allowMultipleInstances":false,"defaultReleaseNamespace":null}},"planInfo":{"offerId":"nginx-cnab","planId":"main","publisherId":"bitnami"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/bitnami.redismain","name":"bitnami.redismain","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"bitnami.redismain","description":"bitnami","isSystemExtension":false,"publisher":"bitnami","isManagedIdentityRequired":true,"supportedClusterTypes":["managedClusters"],"supportedScopes":{"defaultScope":"namespace","clusterScopeSettings":{"allowMultipleInstances":false,"defaultReleaseNamespace":null}},"planInfo":{"offerId":"redis-cnab","planId":"main","publisherId":"bitnami"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/bitnami.postgresqlmain","name":"bitnami.postgresqlmain","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"bitnami.postgresqlmain","description":"bitnami","isSystemExtension":false,"publisher":"bitnami","isManagedIdentityRequired":true,"supportedClusterTypes":["managedClusters"],"supportedScopes":{"defaultScope":"namespace","clusterScopeSettings":{"allowMultipleInstances":false,"defaultReleaseNamespace":null}},"planInfo":{"offerId":"postgresql-cnab","planId":"main","publisherId":"bitnami"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/bitnami.rabbitmqmain","name":"bitnami.rabbitmqmain","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"bitnami.rabbitmqmain","description":"bitnami","isSystemExtension":false,"publisher":"bitnami","isManagedIdentityRequired":true,"supportedClusterTypes":["managedClusters"],"supportedScopes":{"defaultScope":"namespace","clusterScopeSettings":{"allowMultipleInstances":false,"defaultReleaseNamespace":null}},"planInfo":{"offerId":"rabbitmq-cnab","planId":"main","publisherId":"bitnami"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/bitnami.miniomain","name":"bitnami.miniomain","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"bitnami.miniomain","description":"bitnami","isSystemExtension":false,"publisher":"bitnami","isManagedIdentityRequired":true,"supportedClusterTypes":["managedClusters"],"supportedScopes":{"defaultScope":"namespace","clusterScopeSettings":{"allowMultipleInstances":false,"defaultReleaseNamespace":null}},"planInfo":{"offerId":"minio-cnab","planId":"main","publisherId":"bitnami"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/cmx.custommeteruatone.predefined","name":"cmx.custommeteruatone.predefined","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"cmx.custommeteruatone.predefined","description":"test_test_pmc2pc1","isSystemExtension":false,"publisher":"test_test_pmc2pc1","isManagedIdentityRequired":false,"supportedClusterTypes":["managedClusters"],"supportedScopes":{"defaultScope":"cluster","clusterScopeSettings":{"allowMultipleInstances":false,"defaultReleaseNamespace":"contoso"}},"planInfo":{"offerId":"cmx_tcontainer_custommeteruatone","planId":"predefinedplan","publisherId":"test_test_pmc2pc1"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/randoli.perclusterappdirectoragentoperator","name":"randoli.perclusterappdirectoragentoperator","type":"Microsoft.KubernetesConfiguration/extensionTypes","properties":{"extensionType":"randoli.perclusterappdirectoragentoperator","description":"randoliinc1663021532656","isSystemExtension":false,"publisher":"randoliinc1663021532656","isManagedIdentityRequired":false,"supportedClusterTypes":["managedClusters"],"supportedScopes":{"defaultScope":"cluster","clusterScopeSettings":{"allowMultipleInstances":false,"defaultReleaseNamespace":"app-director"}},"planInfo":{"offerId":"randoli_appdir_11072022","planId":"appdir_per_cluster","publisherId":"randoliinc1663021532656"}}}],"nextLink":null}'
+    headers:
+      api-supported-versions:
+      - 2021-05-01-preview, 2022-01-15-preview, 2023-05-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '10151'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Jul 2023 18:27:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension extension-types list-versions-by-cluster
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c --cluster-type --extension-type
+      User-Agent:
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-kubernetesconfiguration/0.1.0 Python/3.10.11
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes/microsoft.contoso.clusters/versions?showLatest=false&api-version=2023-05-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes/microsoft.contoso.clusters/versions/2.0.0","name":"2.0.0","type":"Microsoft.KubernetesConfiguration/extensionTypes/versions","properties":{"version":"2.0.0","unsupportedKubernetesVersions":{"connectedCluster":null,"provisionedCluster":null,"managedCluster":null,"appliances":null}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes/microsoft.contoso.clusters/versions/1.3.0","name":"1.3.0","type":"Microsoft.KubernetesConfiguration/extensionTypes/versions","properties":{"version":"1.3.0","unsupportedKubernetesVersions":{"connectedCluster":null,"provisionedCluster":null,"managedCluster":null,"appliances":null}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes/microsoft.contoso.clusters/versions/1.2.0-arcplatform","name":"1.2.0-arcplatform","type":"Microsoft.KubernetesConfiguration/extensionTypes/versions","properties":{"version":"1.2.0-arcplatform","unsupportedKubernetesVersions":{"connectedCluster":null,"provisionedCluster":null,"managedCluster":null,"appliances":null}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes/microsoft.contoso.clusters/versions/1.2.0","name":"1.2.0","type":"Microsoft.KubernetesConfiguration/extensionTypes/versions","properties":{"version":"1.2.0","unsupportedKubernetesVersions":{"connectedCluster":null,"provisionedCluster":null,"managedCluster":null,"appliances":null}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes/microsoft.contoso.clusters/versions/1.1.0","name":"1.1.0","type":"Microsoft.KubernetesConfiguration/extensionTypes/versions","properties":{"version":"1.1.0","unsupportedKubernetesVersions":{"connectedCluster":null,"provisionedCluster":null,"managedCluster":null,"appliances":null}}}],"nextLink":null}'
+    headers:
+      api-supported-versions:
+      - 2021-05-01-preview, 2022-01-15-preview, 2023-05-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '2523'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Jul 2023 18:27:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension extension-types list-versions-by-location
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --extension-type
+      User-Agent:
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-kubernetesconfiguration/0.1.0 Python/3.10.11
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/microsoft.contoso.clusters/versions?showLatest=false&api-version=2023-05-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/microsoft.contoso.clusters/versions/2.0.0","name":"2.0.0","type":"Microsoft.KubernetesConfiguration/extensionTypes/versions","properties":{"version":"2.0.0","unsupportedKubernetesVersions":{"connectedCluster":null,"provisionedCluster":null,"managedCluster":null,"appliances":null}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/microsoft.contoso.clusters/versions/1.3.0","name":"1.3.0","type":"Microsoft.KubernetesConfiguration/extensionTypes/versions","properties":{"version":"1.3.0","unsupportedKubernetesVersions":{"connectedCluster":null,"provisionedCluster":null,"managedCluster":null,"appliances":null}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/microsoft.contoso.clusters/versions/1.2.0-arcplatform","name":"1.2.0-arcplatform","type":"Microsoft.KubernetesConfiguration/extensionTypes/versions","properties":{"version":"1.2.0-arcplatform","unsupportedKubernetesVersions":{"connectedCluster":null,"provisionedCluster":null,"managedCluster":null,"appliances":null}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/microsoft.contoso.clusters/versions/1.2.0","name":"1.2.0","type":"Microsoft.KubernetesConfiguration/extensionTypes/versions","properties":{"version":"1.2.0","unsupportedKubernetesVersions":{"connectedCluster":null,"provisionedCluster":null,"managedCluster":null,"appliances":null}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration/locations/eastus2euap/extensionTypes/microsoft.contoso.clusters/versions/1.1.0","name":"1.1.0","type":"Microsoft.KubernetesConfiguration/extensionTypes/versions","properties":{"version":"1.1.0","unsupportedKubernetesVersions":{"connectedCluster":null,"provisionedCluster":null,"managedCluster":null,"appliances":null}}}],"nextLink":null}'
+    headers:
+      api-supported-versions:
+      - 2021-05-01-preview, 2022-01-15-preview, 2023-05-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '2178'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Jul 2023 18:27:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - k8s-extension extension-types show-version-by-cluster
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c --cluster-type --extension-type --version
+      User-Agent:
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-kubernetesconfiguration/0.1.0 Python/3.10.11
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes/microsoft.contoso.clusters/versions/1.1.0?api-version=2023-05-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensionTypes/microsoft.contoso.clusters/versions/1.1.0","name":"1.1.0","type":"Microsoft.KubernetesConfiguration/extensionTypes/versions","properties":{"version":"1.1.0","unsupportedKubernetesVersions":{"connectedCluster":null,"provisionedCluster":null,"managedCluster":null,"appliances":null}}}'
+    headers:
+      api-supported-versions:
+      - 2021-05-01-preview, 2022-01-15-preview, 2023-05-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '491'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Jul 2023 18:27:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

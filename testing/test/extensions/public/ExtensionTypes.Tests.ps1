@@ -31,7 +31,7 @@ Describe 'Extension Types Testing' {
         $output | Should -Not -BeNullOrEmpty
     }
 
-    It "Performs a location-scoped show extension type version call" {
+    It "Performs a  show-version-by-cluster  extension type version call" {
         $output = az $Env:K8sExtensionName extension-types show-version-by-cluster -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters --extension-type $extensionType --version 1.0.0
         $? | Should -BeTrue
         $output | Should -Not -BeNullOrEmpty
@@ -43,8 +43,8 @@ Describe 'Extension Types Testing' {
         $output | Should -Not -BeNullOrEmpty
     }
 
-    It "Performs a cluster-scoped list extension type versions call" {
-        $output = az $Env:K8sExtensionName extension-types list-versions-by-cluster --location $location --extension-type $extensionType
+    It "Performs a list-versions-by-cluster extension type versions call" {
+        $output = az $Env:K8sExtensionName extension-types list-versions-by-cluster -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters --extension-type $extensionType
         $? | Should -BeTrue
         $output | Should -Not -BeNullOrEmpty
     }

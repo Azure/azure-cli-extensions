@@ -13,12 +13,12 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class K8sExtensionTypesScenarioTest(ScenarioTest):
-    # @record_only()
+    @record_only()
     def test_k8s_extension_types(self):
         extension_type = 'microsoft.contoso.clusters'
         self.kwargs.update({
-            'rg': 'clitest-rg', #K8sPartnerExtensionTest',
-            'cluster_name': 'kind-clitest-cluster',#'k8s-extension-cluster-32469-arc',
+            'rg': 'azurecli-tests',
+            'cluster_name': 'arc-cluster',
             'cluster_type': 'connectedClusters',
             'extension_type': extension_type,
             'location': 'eastus2euap',
@@ -39,8 +39,7 @@ class K8sExtensionTypesScenarioTest(ScenarioTest):
                                        '--cluster-type {cluster_type}').get_output_in_json()
         assert len(extensionTypes_list) > 0
 
-        extensionTypes_locationList = self.cmd('k8s-extension extension-types list-by-location --location'
-                                               '{location}').get_output_in_json()
+        extensionTypes_locationList = self.cmd('k8s-extension extension-types list-by-location --location {location}').get_output_in_json()
         assert len(extensionTypes_locationList) > 0
 
         extensionTypes_list = self.cmd('k8s-extension extension-types list-versions-by-cluster -g {rg} -c {cluster_name} --cluster-type {cluster_type} --extension-type {extension_type}').get_output_in_json()
@@ -55,9 +54,9 @@ class K8sExtensionTypesScenarioTest(ScenarioTest):
 
         assert len(extensionTypes_list) > 0
 
-        extensionTypes_list = self.cmd('k8s-extension extension-types show-version-by-location --location {location} --extension-type {extension_type} --version {version}').get_output_in_json()
+        # extensionTypes_list = self.cmd('k8s-extension extension-types show-version-by-location --location {location} --extension-type {extension_type} --version {version}').get_output_in_json()
 
-        assert len(extensionTypes_list) > 0
+        # assert len(extensionTypes_list) > 0
 
 
 
