@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.3.37
+++++++
+* 'az containerapp create': fix `InvalidArgumentValueError` exception when binding has `-` dash in its name.
+
 0.3.36
 ++++++
 * 'az containerapp hostname bind': fix exception when not bringing --validation-method inputs
