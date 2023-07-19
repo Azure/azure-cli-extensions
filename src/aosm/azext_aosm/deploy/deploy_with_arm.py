@@ -72,7 +72,9 @@ class DeployerViaArm:
             self.resource_type = NSD
         else:
             raise TypeError(
-                f"Unexpected config type. Expected [VNFConfiguration|CNFConfiguration|NSConfiguration], received {type(self.config)}"
+                "Unexpected config type. Expected"
+                " [VNFConfiguration|CNFConfiguration|NSConfiguration], received"
+                f" {type(self.config)}"
             )
 
     @staticmethod
@@ -322,7 +324,8 @@ class DeployerViaArm:
                 "nfDefinitionVersion": {"value": self.config.version},
             }
         raise TypeError(
-            f"Unexpected config type. Expected [VNFConfiguration|CNFConfiguration], received {type(self.config)}"
+            "Unexpected config type. Expected [VNFConfiguration|CNFConfiguration],"
+            f" received {type(self.config)}"
         )
 
     def construct_manifest_parameters(self) -> Dict[str, Any]:
