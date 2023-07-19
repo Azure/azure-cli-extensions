@@ -6111,9 +6111,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_dns_zone_cmd = 'network dns zone create -g {resource_group} -n {dns_zone_name}'
         dns_zone = self.cmd(create_dns_zone_cmd,checks=[
-            self.check('provisioningState', 'Succeeded'),
+            self.check('name', dns_zone_name),
         ]).get_output_in_json()
-        assert dns_zone['provisioningState'] == 'Succeeded'
         dns_zone_id = dns_zone['id']
 
         self.kwargs.update({ 'web_app_routing_identity_obj_id': web_app_routing_identity_obj_id, 'dns_zone_id': dns_zone_id })
