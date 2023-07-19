@@ -10,7 +10,7 @@ from ..storage_test_util import StorageScenarioMixin
 from azure.cli.testsdk.scenario_tests import record_only
 
 
-class StorageFileShareScenarios(StorageScenarioMixin, ScenarioTest):
+class StorageFileSharePreviewScenarios(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer()
     @StorageAccountPreparer(location='EastUS2')
     def test_storage_file_trailing_dot_scenario(self, resource_group, storage_account):
