@@ -62,3 +62,50 @@ helps['containerapp create'] = """
               --image my-app:v1.0 --environment MyContainerappConnectedEnv \\
               --environment-type connected
 """
+
+# Connected Environment Commands
+helps['containerapp connected-env'] = """
+    type: group
+    short-summary: Commands to manage Container Apps Connected environments for use with Arc enabled Container Apps.
+"""
+
+helps['containerapp connected-env create'] = """
+    type: command
+    short-summary: Create a Container Apps connected environment.
+    long-summary: Create a Container Apps Connected environment for use with Arc enabled Container Apps.  Environments are an isolation boundary around a collection of container apps.
+    examples:
+    - name: Create a connected environment
+      text: |
+          az containerapp connected-env create -n MyContainerappConnectedEnv -g MyResourceGroup \\
+              --location northcentralusstage --custom-location MyCustomLocationResourceID
+"""
+
+
+helps['containerapp connected-env delete'] = """
+    type: command
+    short-summary: Delete a Container Apps connected environment.
+    examples:
+    - name: Delete a connected environment.
+      text: az containerapp connected-env delete -n MyContainerappConnectedEnv -g MyResourceGroup
+"""
+
+helps['containerapp connected-env show'] = """
+    type: command
+    short-summary: Show details of a Container Apps connected environment.
+    examples:
+    - name: Show the details of a connected environment.
+      text: |
+          az containerapp connected-env show -n MyContainerappConnectedEnv -g MyResourceGroup
+"""
+
+helps['containerapp connected-env list'] = """
+    type: command
+    short-summary: List Container Apps connected environments by subscription or resource group.
+    examples:
+    - name: List connected environments in the current subscription.
+      text: |
+          az containerapp connected-env list
+    - name: List connected environments by resource group.
+      text: |
+          az containerapp connected-env list -g MyResourceGroup
+"""

@@ -11,7 +11,6 @@ from msrestazure.tools import parse_resource_id
 
 from ._constants import MIN_GA_VERSION, GA_CONTAINERAPP_EXTENSION_NAME
 from ._client_factory import (k8s_extension_client_factory, customlocation_client_factory)
-
 logger = get_logger(__name__)
 
 
