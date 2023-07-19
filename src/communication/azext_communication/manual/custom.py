@@ -310,8 +310,10 @@ def communication_email_send(client,
                              disable_tracking=False,
                              text=None,
                              html=None,
+                             importance=None,
                              recipients_cc=None,
                              recipients_bcc=None,
+                             reply_to=None,
                              attachments=None,
                              attachment_types=None):
 
@@ -356,11 +358,20 @@ def communication_email_send(client,
                         {"address": recipient} for recipient in recipients_bcc[0].split(',')
                     ]
             },
+            "replyTo": None if reply_to is None else
+                [
+                    {"address": reply_to}
+                ],
             "attachments": None if attachments_list is None else
                 [
                     json.loads(attachment) for attachment in attachments_list
                 ],
-            "senderAddress": sender
+            "senderAddress": sender,
+            "userEngagementTrackingDisabled": disable_tracking,
+            "headers": None if importance is None else
+                {
+                    "x-priority": importance
+                }
         }
 
         return client.begin_send(message)

@@ -564,11 +564,6 @@ helps['communication email'] = """
     short-summary: Commands to send emails and get the status of emails previously sent using Azure Communication Services Email service.
 """
 
-helps['communication email status'] = """
-    type: group
-    short-summary: Commands to get the status of emails previously sent using Azure Communication Services Email service.
-"""
-
 helps['communication email send'] = """
     type: command
     short-summary: "Send an email and get final status."
