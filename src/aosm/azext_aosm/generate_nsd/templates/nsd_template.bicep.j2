@@ -16,10 +16,6 @@ param nsDesignGroup string
 param nsDesignVersion string
 @description('Name of the nfvi site')
 param nfviSiteName string = '{{nfvi_site_name}}'
-@description('The version that you want to name the NF template artifact, in format A-B-C. e.g. 6-13-0. Suggestion that this matches as best possible the SIMPL released version. If testing for development, you can use any numbers you like.')
-param armTemplateVersion string = '{{armTemplateVersion}}'
-@description('Name of the NF template artifact')
-var armTemplateName = '{{armTemplateName}}'
 
 // The publisher resource is the top level AOSM resource under which all other designer resources
 // are created. 
@@ -81,8 +77,11 @@ resource nsdVersion 'Microsoft.Hybridnetwork/publishers/networkservicedesigngrou
     // This field lists the templates that will be deployed by AOSM and the config mappings
     // to the values in the CG schemas.
     resourceElementTemplates: [
+{%- set comma = joiner(",") %}
+{%- for index in range(nf_count) %}
+{{- comma() }}
       {
-        name: '{{ResourceElementName}}'
+        name: '{{ResourceElementName[index]}}'
         // The type of resource element can be ArmResourceDefinition, ConfigurationDefinition or NetworkFunctionDefinition.
         type: 'NetworkFunctionDefinition'
         // The configuration object may be different for different types of resource element.
@@ -92,8 +91,8 @@ resource nsdVersion 'Microsoft.Hybridnetwork/publishers/networkservicedesigngrou
             artifactStoreReference: {
               id: acrArtifactStore.id
             }
-            artifactName:  armTemplateName
-            artifactVersion: armTemplateVersion
+            artifactName:  {{armTemplateName[index]}}
+            artifactVersion: {{armTemplateVersion}}
           }
           templateType: 'ArmTemplate'
           // The parameter values map values from the CG schema, to values required by the template
@@ -110,7 +109,8 @@ resource nsdVersion 'Microsoft.Hybridnetwork/publishers/networkservicedesigngrou
           uninstallDependsOn: []
           updateDependsOn: []
         }
-      }      
+      }
+{%- endfor %}     
     ]
   }
 }

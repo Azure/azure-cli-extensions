@@ -9,7 +9,6 @@ import json
 import os
 import re
 from dataclasses import dataclass, field
-from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
@@ -71,26 +70,6 @@ DESCRIPTION_MAP: Dict[str, str] = {
     "nsd_version": (
         "Version of the NSD to be created. This should be in the format A.B.C"
     ),
-    "network_function_definition_publisher": (
-        "Name of the Publisher resource for an existing " "Network Function Definition."
-    ),
-    "network_function_definition_name": (
-        "Name of an existing Network Function Definition."
-    ),
-    "network_function_definition_version": (
-        "Version of the existing Network Function Definition."
-    ),
-    "network_function_definition_offering_location": (
-        "Offering location of the Network Function Definition"
-    ),
-    "network_function_type": (
-        "Type of nf in the definition. Valid values are 'cnf' or 'vnf'"
-    ),
-    "multiple_instances": (
-        "Set to true or false.  Whether the NSD should allow arbitrary numbers of this "
-        "type of NF.  If set to false only a single instance will be allowed.  Only "
-        "supported on VNFs, must be set to false on CNFs."
-    ),
     "helm_package_name": "Name of the Helm package",
     "path_to_chart": (
         "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz"
@@ -130,7 +109,7 @@ class ArtifactConfig:
     # there if you change the descriptions.
     file_path: Optional[str] = DESCRIPTION_MAP["file_path"]
     blob_sas_url: Optional[str] = DESCRIPTION_MAP["blob_sas_url"]
-    version: str = DESCRIPTION_MAP["artifact_version"]
+    version: Optional[str] = DESCRIPTION_MAP["artifact_version"]
 
 
 @dataclass
@@ -342,16 +321,30 @@ class CNFConfiguration(NFConfiguration):
             )
 
 
-class RETType(str, Enum):
-    NETWORK_FUNCTION_DEFINITION = ("NetworkFunctionDefinition",)
-    NETWORK_SERVICE_DEFINITION = ("NetworkServiceDefinition",)
-    ARM_RESOURCE_DEFINTION = ("ARMResourceDefinition",)
-    CONFIGURATION_DEFINITION = ("ConfigurationDefinition",)
+NFD_NAME = (
+    "The name of the existing Network Function Definition to deploy using this NSD"
+)
+NFD_VERSION = "The version of the existing Network Function Definition to base this NSD on.  This NSD will be able to deploy any NFDV with deployment parameters compatible with this version."
+NFD_LOCATION = "The region that the NFDV is published to."
+PUBLISHER_RESOURCE_GROUP = "The resource group that the publisher is hosted in."
+PUBLISHER_NAME = "The name of the publisher that this NFDV is published under."
+NFD_TYPE = "Type of Network Function. Valid values are 'cnf' or 'vnf'"
+MULTIPLE_INSTANCES = (
+    "Set to true or false.  Whether the NSD should allow arbitrary numbers of this "
+    "type of NF.  If set to false only a single instance will be allowed.  Only "
+    "supported on VNFs, must be set to false on CNFs."
+)
 
 
 @dataclass
-class RETConfiguration(abc.ABC):
-    type: RETType
+class NFDRETConfiguration:
+    publisher: str = PUBLISHER_NAME
+    publisher_resource_group: str = PUBLISHER_RESOURCE_GROUP
+    name: str = NFD_NAME
+    version: str = NFD_VERSION
+    publisher_offering_location: str = NFD_LOCATION
+    type: str = NFD_TYPE
+    multiple_instances: Union[str, bool] = MULTIPLE_INSTANCES
 
     def validate(self) -> None:
         """
@@ -359,74 +352,76 @@ class RETConfiguration(abc.ABC):
 
         :raises ValidationError for any invalid config
         """
-        raise NotImplementedError
-
-
-@dataclass
-class NFDRETConfiguration(RETConfiguration):
-    type: RETType = RETType.NETWORK_FUNCTION_DEFINITION
-    publisher_name: str = DESCRIPTION_MAP["network_function_definition_publisher"]
-    publisher_resource_group: str = "Publisher resource group."
-    network_function_definition_name: str = DESCRIPTION_MAP[
-        "network_function_definition_name"
-    ]
-    network_function_definition_version: str = DESCRIPTION_MAP[
-        "network_function_definition_version"
-    ]
-    offering_location: str = DESCRIPTION_MAP[
-        "network_function_definition_offering_location"
-    ]
-    network_function_type: str = DESCRIPTION_MAP["network_function_type"]
-    multiple_instances: Union[str, bool] = DESCRIPTION_MAP["multiple_instances"]
-
-    def validate(self) -> None:
-        """
-        Validate the configuration passed in.
-
-        :raises ValidationError for any invalid config
-        """
-        if (
-            self.publisher_name
-            == DESCRIPTION_MAP["network_function_definition_publisher"]
-        ):
-            raise ValidationError("Publisher name must be set")
-
-        if (
-            self.network_function_definition_name
-            == DESCRIPTION_MAP["network_function_definition_name"]
-        ):
+        if self.name == NFD_NAME:
             raise ValidationError("Network function definition name must be set")
 
-        if (
-            self.network_function_definition_version
-            == DESCRIPTION_MAP["network_function_definition_version"]
-        ):
-            raise ValidationError("Network function definition version must be set")
+        if self.publisher == PUBLISHER_NAME:
+            raise ValidationError(f"Publisher name must be set for {self.name}")
 
-        if (
-            self.offering_location
-            == DESCRIPTION_MAP["network_function_definition_offering_location"]
-        ):
+        if self.publisher_resource_group == PUBLISHER_RESOURCE_GROUP:
             raise ValidationError(
-                "Network function definition offering location must be set"
+                f"Publisher resource group name must be set for {self.name}"
             )
 
-        if self.network_function_type not in [CNF, VNF]:
-            raise ValueError("Network Function Type must be cnf or vnf")
+        if self.version == NFD_VERSION:
+            raise ValidationError(
+                f"Network function definition version must be set for {self.name}"
+            )
+
+        if self.publisher_offering_location == NFD_LOCATION:
+            raise ValidationError(
+                f"Network function definition offering location must be set, for {self.name}"
+            )
+
+        if self.type not in [CNF, VNF]:
+            raise ValueError(
+                f"Network Function Type must be cnf or vnf for {self.name}"
+            )
 
         if not isinstance(self.multiple_instances, bool):
-            raise ValueError("multiple_instances must be a boolean")
+            raise ValueError(
+                f"multiple_instances must be a boolean for for {self.name}"
+            )
 
         # There is currently a NFM bug that means that multiple copies of the same NF
         # cannot be deployed to the same custom location:
         # https://portal.microsofticm.com/imp/v3/incidents/details/405078667/home
-        if self.network_function_type == CNF and self.multiple_instances:
+        if self.type == CNF and self.multiple_instances:
             raise ValueError("Multiple instances is not supported on CNFs.")
+
+    @property
+    def build_output_folder_name(self) -> str:
+        """Return the local folder for generating the bicep template to."""
+        current_working_directory = os.getcwd()
+        return f"{current_working_directory}/{NSD_OUTPUT_BICEP_PREFIX}"
+
+    @property
+    def arm_template(self) -> ArtifactConfig:
+        """
+        Return the parameters of the ARM template to be uploaded as part of
+        the NSDV.
+        """
+        artifact = ArtifactConfig()
+        artifact.artifact_name = f"{self.name.lower()}_nf_artifact"
+
+        # We want the ARM template version to match the NSD version, but we don't have
+        # that information here.
+        artifact.version = None
+        artifact.file_path = os.path.join(
+            self.build_output_folder_name, NF_DEFINITION_JSON_FILENAME
+        )
+        return artifact
+
+    @property
+    def resource_element_name(self) -> str:
+        """Return the name of the resource element."""
+        artifact_name = self.arm_template.artifact_name
+        return f"{artifact_name}_resource_element"
 
 
 @dataclass
 class NSConfiguration(Configuration):
-    resource_element_template_configurations: List[RETConfiguration] = field(
+    network_functions: List[NFDRETConfiguration] = field(
         default_factory=lambda: [
             NFDRETConfiguration(),
         ]
@@ -453,12 +448,10 @@ class NSConfiguration(Configuration):
             or ""
         ):
             raise ValueError("ACR Artifact Store name must be set")
-        if self.resource_element_template_configurations == [] or None:
-            raise ValueError(
-                ("At least one resource element template " "configuration must be set.")
-            )
+        if self.network_functions == [] or None:
+            raise ValueError(("At least one network function must be included."))
         else:
-            for configuration in self.resource_element_template_configurations:
+            for configuration in self.network_functions:
                 configuration.validate()
         if self.nsdg_name == DESCRIPTION_MAP["nsdg_name"] or "":
             raise ValueError("NSD name must be set")
@@ -470,12 +463,6 @@ class NSConfiguration(Configuration):
         """Return the local folder for generating the bicep template to."""
         current_working_directory = os.getcwd()
         return f"{current_working_directory}/{NSD_OUTPUT_BICEP_PREFIX}"
-
-    @property
-    def resource_element_name(self) -> str:
-        """Return the name of the resource element."""
-        artifact_name = self.arm_template.artifact_name
-        return f"{artifact_name}-resource-element"
 
     @property
     def acr_manifest_name(self) -> str:
@@ -494,20 +481,6 @@ class NSConfiguration(Configuration):
     def cg_schema_name(self) -> str:
         """Return the name of the Configuration Schema used for the NSDV."""
         return f"{self.nsdg_name.replace('-', '_')}_ConfigGroupSchema"
-
-    @property
-    def arm_template(self) -> ArtifactConfig:
-        """
-        Return the parameters of the ARM template to be uploaded as part of
-        the NSDV.
-        """
-        artifact = ArtifactConfig()
-        artifact.artifact_name = f"{self.nsdg_name.lower()}_nf_artifact"
-        artifact.version = self.nsd_version
-        artifact.file_path = os.path.join(
-            self.build_output_folder_name, NF_DEFINITION_JSON_FILENAME
-        )
-        return artifact
 
 
 def get_configuration(
