@@ -2488,27 +2488,31 @@ def aks_mesh_get_mesh_config(cmd, client, resource_group_name, name):
     from azure.cli.core import __version__ as local_version
     from packaging.version import parse
     from pprint import pprint
-    from kubernetes.client import CustomObjectsApi
     
-    kubernetes.config.load_kube_config()
+    print('---')
+    contexts, active_context = kubernetes.config.list_kube_config_contexts()
+    if not contexts:
+        print("No context in the kube config file.")
+        return  
+    for item in contexts:
+        if(item['context']['cluster'] == name):
+            cur_context = item['name']
+        
+            
+    kubernetes.config.load_kube_config(context = cur_context)
     v1 = kubernetes.client.CoreV1Api()
-    namespace = 'istio-system'
-    api_response = v1.list_namespaced_config_map(namespace)
+    # namespace = 'istio-system'
+    # api_response = v1.list_namespaced_config_map(namespace)
     # print(api_response)
     namespaces = v1.list_namespace
-    api_items = api_response.items[0]
-    meshconfig = api_items.data['mesh']
-    istio_version = api_items.metadata.labels['operator.istio.io/version']
-    dct = yaml.safe_load(meshconfig)
-    config_set = set()
-    proxy_set = set()
+    # api_items = api_response.items[0]
+    # meshconfig = api_items.data['mesh']
+    # istio_version = api_items.metadata.labels['operator.istio.io/version']
+    # dct = yaml.safe_load(meshconfig)
+    # config_set = set()
+    # proxy_set = set()
     version = parse(local_version)
     
-
-    
-    
-    
-
     print("AZ version:")
     print(version)
     print("-----------------------------------")
@@ -2518,19 +2522,71 @@ def aks_mesh_get_mesh_config(cmd, client, resource_group_name, name):
     print("Kubernetes version:")
     print(show_result.kubernetes_version)
     print('----------------------------------')
+    
+    
+    group = "telemetry.istio.io"
+    v = "v1alpha1"
+    plural = "telemetries"
+    instance = kubernetes.client.CustomObjectsApi()
+    if (instance.list_cluster_custom_object(group=group,version=v, plural=plural)):
+        telemetry_cr = instance.list_cluster_custom_object(group=group,version=v, plural=plural)
+        pprint(telemetry_cr)
+
+
+    group1 = "networking.istio.io"
+    v1 = "v1alpha3"
+    plural1 = "envoyfilters"
+    if (instance.list_cluster_custom_object(group=group1,version=v1, plural=plural1)):
+        envoy_filter = instance.list_cluster_custom_object(group=group1,version=v1, plural=plural1)
+        # pprint(envoy_filter)
+    
+    
+    group2 = "extensions.istio.io"
+    v2 = "v1alpha1"
+    plural2 = "wasmplugins"
+    if(instance.list_cluster_custom_object(group=group2,version=v2, plural=plural2)):
+        wasm_plugin = instance.list_cluster_custom_object(group=group2,version=v2, plural=plural2)
+        # pprint(wasm_plugin)
+
+    group2 = "install.istio.io"
+    v2 = "v1alpha1"
+    plural2 = "istiooperators"
+    if (instance.list_namespaced_custom_object(group=group2,version=v2, plural=plural2, namespace="istio-system")):
+        istio_operators = instance.list_namespaced_custom_object(group=group2,version=v2, plural=plural2, namespace="istio-system")
+        # pprint(istio_operators)
+    
+    group3 = "networking.istio.io"
+    v3 = "v1beta1"
+    plural3 = "workloadentries"
+    if (instance.list_cluster_custom_object(group=group3,version=v3, plural=plural3)):
+        workloadentries = instance.list_cluster_custom_object(group=group3,version=v3, plural=plural3)
+        # pprint(workloadentries)
+    
+    group4 = "networking.istio.io"
+    v4 = "v1beta1"
+    plural4 = "workloadgroups"
+    if (instance.list_cluster_custom_object(group=group4,version=v4, plural=plural4)):
+        workloadgroups = instance.list_cluster_custom_object(group=group4,version=v4, plural=plural4)
+        # pprint(workloadgroups)
+    
+
+
+
 
     
-    for keys in dct.keys():
-        config_set.add(keys)
-    proxy_config = dct['defaultConfig']
-    for keys in proxy_config.keys():
-        proxy_set.add(keys)
-    print("Meshconfig current configuration:")
-    print(config_set)
-    print('----------------------------------')
-    print("Proxyconfig current configuration: ")
-    print(proxy_set)
-    print('------------------------------------')
+    
+    
+    # for keys in dct.keys():
+    #     config_set.add(keys)
+    # proxy_config = dct['defaultConfig']
+    # for keys in proxy_config.keys():
+    #     proxy_set.add(keys)
+    # print("Meshconfig current configuration:")
+    # print(config_set)
+    # print('----------------------------------')
+    # print("Proxyconfig current configuration: ")
+    # print(proxy_set)
+    # print('------------------------------------')
     return
 
 def is_osm_installed(show_result):
