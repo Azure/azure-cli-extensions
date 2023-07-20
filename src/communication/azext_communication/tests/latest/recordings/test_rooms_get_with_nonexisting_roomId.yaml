@@ -13,14 +13,15 @@ interactions:
       x-ms-content-sha256:
       - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
       x-ms-date:
-      - Wed, 19 Jul 2023 21:11:14 GMT
+      - Wed, 19 Jul 2023 21:11:16 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: GET
-    uri: https://sanitized.communication.azure.com/rooms?api-version=2023-06-14
+    uri: https://sanitized.communication.azure.com/rooms/9949484443000000?api-version=2023-06-14
   response:
     body:
-      string: '{"value": []}'
+      string: '{"error": {"code": "NotFound", "message": "The server cannot find the
+        requested resource."}}'
     headers:
       api-deprecated-versions:
       - 2021-04-07, 2022-02-01
@@ -29,18 +30,20 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 19 Jul 2023 21:11:15 GMT
+      - Wed, 19 Jul 2023 21:11:17 GMT
       ms-cv:
-      - zhvQySdIjUCjTOvAtOHJKw.0
+      - KTYoVSer7kewvihKtnCsmw.0
       request-context:
       - appId=
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0c1G4ZAAAAAC5vKctPbDkSbhObwJxiGDjWVZSMzExMDAwMTE1MDUxADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 0dVG4ZAAAAAA5gvzAaol3QqXgHqejtACZWVZSMzExMDAwMTE1MDM1ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
+      x-ms-error-code:
+      - NotFound
     status:
-      code: 200
-      message: OK
+      code: 404
+      message: Not Found
 version: 1
