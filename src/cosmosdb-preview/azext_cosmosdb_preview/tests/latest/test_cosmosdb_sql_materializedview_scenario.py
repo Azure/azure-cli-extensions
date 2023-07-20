@@ -50,8 +50,12 @@ class Cosmosdb_previewMaterialiedviewScenarioTest(ScenarioTest):
 
         # Create Materialized view container
         print('Creatin Materializedview container {mvDefinition}')
-        self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {mvCol1} -p /mvpk --materialized_view_definition @{mvDefinitionFilePath}').get_output_in_json()
-        self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {mvCol2} -p /mvpk --materialized_view_definition {mvDefinition}').get_output_in_json()
+        self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {mvCol1} -p /mvpk --materialized_view_definition @{mvDefinitionFilePath}',
+                 checks=[self.check('resource.materializedViewDefinition.sourceCollectionId', "src1")])
+        self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {mvCol2} -p /mvpk --materialized_view_definition {mvDefinition}',
+                 checks=[self.check('resource.materializedViewDefinition.sourceCollectionId', "src1")])
+
+
 
         #delete account
         self.cmd('az cosmosdb delete -n {acc} -g {rg} --yes')
