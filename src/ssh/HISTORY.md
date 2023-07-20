@@ -1,5 +1,10 @@
 Release History
 ===============
+2.0.1
+-----
+* [Bug fix] For connections to arc resources, stop attempting to create new service configuration if user has no permission to read service configuration.
+
+
 2.0.0
 -----
 * [BREAKING CHANGE] Update Microsoft.HybridConnectivity SDK to stable version, which adds functionality to enable SSH connections on specified ports in your Arc Server using an API, instead of enabling ports for connection locally in the Arc Agent running in the target machine. New connections might fail after updating the extension, since the port for connection will need to be enabled at the HybridConnectivity Resource Provider at the first connection attempt. This change doesn't affect those who use this extension to connect to Azure Virtual Machines.
