@@ -69,7 +69,7 @@ MONGO_USER_DEFINITION_EXAMPLE = """--body "{
 """
 
 SQL_MATERIALIZEDVIEW_DEFINITION_EXAMPLE = """--materialized-view-definition -m '{
-    \"sourceCollectionId\": \"MySourceCollectionName\", 
+    \"sourceCollectionId\": \"MySourceCollectionName\",
     \"definition\": \"SELECT * FROM root r\"}'
 """
 
