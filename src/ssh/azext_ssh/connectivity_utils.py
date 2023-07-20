@@ -89,7 +89,7 @@ def _check_service_configuration(cmd, resource_uri, port):
         # is not setup correctly, the connection will fail.
         # The more likely scenario is that the request failed with a "Authorization Error",
         # in case the user isn't an owner/contributor.
-        return None
+        return True
     if port:
         return serviceConfig['port'] == int(port)
 
