@@ -2,7 +2,7 @@
 
 Release History
 ===============
-0.3.37
+upcoming
 ++++++
 * 'az containerapp create': fix `InvalidArgumentValueError` exception when binding has `-` dash in its name.
 
