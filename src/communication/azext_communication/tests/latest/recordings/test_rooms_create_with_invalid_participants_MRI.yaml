@@ -1,6 +1,7 @@
 interactions:
 - request:
-    body: '{"validFrom": null, "validUntil": null}'
+    body: '{"validFrom": null, "validUntil": null, "participants": {"acs:8-invalidMRI":
+      {"role": "Presenter"}}}'
     headers:
       Accept:
       - application/json
@@ -9,27 +10,27 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '39'
+      - '100'
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - Wed, 19 Jul 2023 21:09:40 GMT
+      - Wed, 19 Jul 2023 21:09:39 GMT
       Repeatability-Request-ID:
-      - 931bbada-2678-11ee-8922-8cf8c5abc371
+      - 92b8c4c1-2678-11ee-b1ee-8cf8c5abc371
       User-Agent:
       - AzureCli/1.7.1b1 azsdk-python-communication-rooms/1.0.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
-      - vBTkhrLFogng0nIWoP6/XqO3xl87GjFK9aShkzc8E3g=
+      - AAtYkVC5Fj2xxZgiwy2bs8TavUaAS5/r+ZKxxGIMwx4=
       x-ms-date:
-      - Wed, 19 Jul 2023 21:09:40 GMT
+      - Wed, 19 Jul 2023 21:09:39 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
     uri: https://sanitized.communication.azure.com/rooms?api-version=2023-06-14
   response:
     body:
-      string: '{"id": "sanitized", "createdAt": "2023-07-19T21:09:41.8438322+00:00",
-        "validFrom": "2023-07-19T21:09:41.3291103+00:00", "validUntil": "2024-01-15T21:09:41.3291103+00:00"}'
+      string: '{"error": {"code": "BadRequest", "message": "Invalid format for communication
+        identifier."}}'
     headers:
       api-deprecated-versions:
       - 2021-04-07, 2022-02-01
@@ -38,22 +39,20 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 19 Jul 2023 21:09:41 GMT
-      location:
-      - '99466925302321528'
+      - Wed, 19 Jul 2023 21:09:40 GMT
       ms-cv:
-      - wjL3Cikp5UeblApmT+PQ1g.0
-      repeatability-result:
-      - accepted
+      - Ykg/CfkMEEmO7XTpAJY/Uw.0
       request-context:
       - appId=
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0FVG4ZAAAAAAtv3JsWeYNRIjJiyN+k0GTWVZSMzExMDAwMTE1MDI5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 0FFG4ZAAAAACKpfsU1P7jSbFyxLYOcpw+WVZSMzExMDAwMTE1MDMxADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
+      x-ms-error-code:
+      - BadRequest
     status:
-      code: 201
-      message: Created
+      code: 400
+      message: Bad Request
 version: 1
