@@ -32,25 +32,22 @@ class QuantumTargetsScenarioTest(ScenarioTest):
         assert len(targets) > 0
 
         # set
-        self.cmd(f'az quantum target set -t microsoft.paralleltempering.cpu -o json', checks=[
-            self.check("targetId", "microsoft.paralleltempering.cpu")
+        self.cmd(f'az quantum target set -t microsoft.estimator -o json', checks=[
+            self.check("targetId", "microsoft.estimator")
         ])
 
         # show
         self.cmd(f'az quantum target show -o json', checks=[
-            self.check("targetId", "microsoft.paralleltempering.cpu")
-        ])
-        self.cmd(f'az quantum target show -t microsoft.simulatedannealing.cpu -o json', checks=[
-            self.check("targetId", "microsoft.simulatedannealing.cpu")
+            self.check("targetId", "microsoft.estimator")
         ])
 
         # clear
         self.cmd(f'az quantum target clear')
 
-    # @pytest.fixture(autouse=True)
-    # def _pass_fixtures(self, capsys):
-    #     self.capsys = capsys
-    # # See "TODO" in issue_cmd_with_param_missing un utils.py
+        # show
+        self.cmd(f'az quantum target show -t microsoft.estimator -o json', checks=[
+            self.check("targetId", "microsoft.estimator")
+        ])
 
     def test_target_errors(self):
         self.cmd(f'az quantum target clear')
