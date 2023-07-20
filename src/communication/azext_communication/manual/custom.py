@@ -310,7 +310,7 @@ def communication_email_send(client,
                              disable_tracking=False,
                              text=None,
                              html=None,
-                             importance=None,
+                             importance='normal',
                              recipients_cc=None,
                              recipients_bcc=None,
                              reply_to=None,
@@ -324,6 +324,13 @@ def communication_email_send(client,
 
         if recipients_to is None and recipients_cc is None and recipients_bcc is None:
             raise CLIError('At least one recipient is required.')
+        
+        if importance == 'low':
+            priority = '5'
+        elif importance == 'high':
+            priority = '1'
+        else:
+            priority = '3'
 
         attachments_list = []
         if attachments is None and attachment_types is None:
@@ -368,9 +375,9 @@ def communication_email_send(client,
                 ],
             "senderAddress": sender,
             "userEngagementTrackingDisabled": disable_tracking,
-            "headers": None if importance is None else
+            "headers":
                 {
-                    "x-priority": importance
+                    "x-priority": priority
                 }
         }
 

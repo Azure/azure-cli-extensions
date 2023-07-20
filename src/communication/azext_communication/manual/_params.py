@@ -256,9 +256,9 @@ def _load_email_arguments(self):
         c.argument('text', options_list=['--text'], type=str, help='Plain text version of the email message. Optional.')
         c.argument('html', options_list=['--html'], type=str, help='Html version of the email message. Optional.')
         c.argument('recipients_to', options_list=['--to'], nargs='+', help='Recepients email addresses.')
-        c.argument('importance', options_list=['--importance'], arg_type=get_enum_type(['1','2','3','4','5']),
-                   help='The importance type for the email. Possible values include: 1(High), 2(High),'
-                   '3(Normal), 4(Low), 5(Low). Optional.')
+        c.argument('importance', options_list=['--importance'], arg_type=get_enum_type(['normal', 'low', 'high']),
+                   help='The importance type for the email. Known values are: high,'
+                   ' normal, and low. Default is normal. Optional')
         c.argument('recipients_cc', options_list=['--cc'], nargs='+', help='Carbon copy email addresses.')
         c.argument('recipients_bcc', options_list=['--bcc'], nargs='+', help='Blind carbon copy email addresses.')
         c.argument('reply_to', options_list=['--reply-to'], type=str, help='Reply-to email address. Optional.')
