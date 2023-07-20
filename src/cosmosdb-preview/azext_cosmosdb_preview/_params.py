@@ -68,10 +68,9 @@ MONGO_USER_DEFINITION_EXAMPLE = """--body "{
 }"
 """
 
-SQL_MATERIALIZEDVIEW_DEFINITION_EXAMPLE = """--materialized-view-definition -m "{
-    \\"sourceCollectionId\\": \\"MySourceCollectionName\\",
-    \\"definition\\": \\"SELECT * FROM root\\"
-}"
+SQL_MATERIALIZEDVIEW_DEFINITION_EXAMPLE = """--materialized-view-definition -m '{
+    \"sourceCollectionId\": \"MySourceCollectionName\", 
+    \"definition\": \"SELECT * FROM root r\"}'
 """
 
 SQL_GREMLIN_INDEXING_POLICY_EXAMPLE = """--idx "{
@@ -458,7 +457,7 @@ def load_arguments(self, _):
         c.argument('max_throughput', max_throughput_type)
         c.argument('throughput', help='The throughput of SQL container (RU/s). Default value is 400. Omit this parameter if the database has shared throughput unless the container should have dedicated throughput.')
         c.argument('analytical_storage_ttl', options_list=['--analytical-storage-ttl', '-t'], type=int, help='Analytical TTL, when analytical storage is enabled.')
-        c.argument('materialized_view_definition', options_list=['--materialized_view_definition', '-m'], type=shell_safe_json_parse, help='Materialized View Definition, you can enter it as a string or as a file, e.g., --materialized-view-definition @materializedview-definition-file.json or ' + SQL_MATERIALIZEDVIEW_DEFINITION_EXAMPLE)
+        c.argument('materialized_view_definition', options_list=['--materialized-view-definition', '-m'], type=shell_safe_json_parse, help='Materialized View Definition, you can enter it as a string or as a file, e.g., --materialized-view-definition @materializedview-definition-file.json or ' + SQL_MATERIALIZEDVIEW_DEFINITION_EXAMPLE)
 
     # Sql container partition merge
     database_name_type = CLIArgumentType(options_list=['--database-name', '-d'], help='Database name.')
