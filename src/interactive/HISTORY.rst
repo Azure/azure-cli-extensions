@@ -5,7 +5,7 @@ Release History
 
 upcoming
 +++++
-* Fix error
+* Fix `KeyError` when entering param not in sample in scenario mode
 
 0.5.1
 +++++
