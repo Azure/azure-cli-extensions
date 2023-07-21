@@ -4,15 +4,29 @@
 # --------------------------------------------------------------------------------------------
 """Constants used across aosm cli extension."""
 
+from enum import Enum
+
 # The types of definition that can be generated
 VNF = "vnf"
 CNF = "cnf"
 NSD = "nsd"
 SCHEMA = "schema"
 
+
+class DeployableResourceTypes(str, Enum):
+    VNF = VNF
+    CNF = CNF
+    NSD = NSD
+
 # Skip steps
 BICEP_PUBLISH = "bicep-publish"
 ARTIFACT_UPLOAD = "artifact-upload"
+IMAGE_UPLOAD = "image-upload"
+
+class SkipSteps(Enum):
+    BICEP_PUBLISH = BICEP_PUBLISH
+    ARTIFACT_UPLOAD = ARTIFACT_UPLOAD
+    IMAGE_UPLOAD = IMAGE_UPLOAD
 
 # Names of files used in the repo
 
