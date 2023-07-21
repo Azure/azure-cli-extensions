@@ -397,10 +397,10 @@ class NFDRETConfiguration:
             raise ValueError("Multiple instances is not supported on CNFs.")
 
     @property
-    def build_output_folder_name(self) -> str:
+    def build_output_folder_name(self) -> Path:
         """Return the local folder for generating the bicep template to."""
         current_working_directory = os.getcwd()
-        return f"{current_working_directory}/{NSD_OUTPUT_BICEP_PREFIX}"
+        return Path(current_working_directory, NSD_OUTPUT_BICEP_PREFIX)
 
     @property
     def arm_template(self) -> ArtifactConfig:
@@ -449,7 +449,9 @@ class NSConfiguration(Configuration):
         Covert things to the correct format.
         """
         if self.network_functions and isinstance(self.network_functions[0], dict):
-            nf_ret_list = [NFDRETConfiguration(**config) for config in self.network_functions]
+            nf_ret_list = [
+                NFDRETConfiguration(**config) for config in self.network_functions
+            ]
             self.network_functions = nf_ret_list
 
     def validate(self):
@@ -481,10 +483,10 @@ class NSConfiguration(Configuration):
             raise ValueError("NSD Version must be set")
 
     @property
-    def build_output_folder_name(self) -> str:
+    def output_directory_for_build(self) -> Path:
         """Return the local folder for generating the bicep template to."""
         current_working_directory = os.getcwd()
-        return f"{current_working_directory}/{NSD_OUTPUT_BICEP_PREFIX}"
+        return Path(current_working_directory, NSD_OUTPUT_BICEP_PREFIX)
 
     @property
     def nfvi_site_name(self) -> str:

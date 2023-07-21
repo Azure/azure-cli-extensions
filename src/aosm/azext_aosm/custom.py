@@ -375,7 +375,7 @@ def _generate_nsd(config: NSConfiguration, api_clients: ApiClients):
     else:
         raise CLIInternalError("Generate NSD called without a config file")
 
-    if os.path.exists(config.build_output_folder_name):
+    if os.path.exists(config.output_directory_for_build):
         carry_on = input(
             f"The folder {config.output_directory_for_build} already exists - delete it"
             " and continue? (y/n)"
@@ -383,6 +383,6 @@ def _generate_nsd(config: NSConfiguration, api_clients: ApiClients):
         if carry_on != "y":
             raise UnclassifiedUserFault("User aborted! ")
 
-        shutil.rmtree(config.build_output_folder_name)
+        shutil.rmtree(config.output_directory_for_build)
 
     nsd_generator.generate_nsd()

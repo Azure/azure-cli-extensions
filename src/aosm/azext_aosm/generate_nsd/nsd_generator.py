@@ -197,6 +197,7 @@ class NSDGenerator:
             "cg_schema_name": self.config.cg_schema_name,
             "nsdv_description": self.config.nsdv_description,
             "ResourceElementName": ret_names,
+            "nf_count": len(self.nf_ret_generators),
         }
 
         self._generate_bicep(
