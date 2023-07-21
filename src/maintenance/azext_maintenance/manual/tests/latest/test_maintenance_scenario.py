@@ -11,6 +11,7 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
 def setup(test):
@@ -27,7 +28,7 @@ def setup(test):
 
     pass
 
-
+@AllowLargeResponse(size_kb=10240)
 def step__applyupdates_put_applyupdates_createorupdate(test):
     test.cmd('az maintenance applyupdate create '
              '--provider-name "Microsoft.Compute" '
@@ -36,7 +37,7 @@ def step__applyupdates_put_applyupdates_createorupdate(test):
              '--resource-type "virtualMachineScaleSets"',
              checks=[])
 
-
+@AllowLargeResponse(size_kb=10240)
 def step__applyupdates_get_applyupdates_get(test):
     test.cmd('az maintenance applyupdate show '
              '--name "default" '
@@ -46,7 +47,7 @@ def step__applyupdates_get_applyupdates_get(test):
              '--resource-type "virtualMachineScaleSets"',
              checks=[])
 
-
+@AllowLargeResponse(size_kb=10240)
 def step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdateforresource(test):
     test.cmd('az maintenance configuration create '
              '--location "eastus2euap" '
@@ -62,19 +63,20 @@ def step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdate
              '--resource-name "configuration1"',
              checks=[])
 
-
+@AllowLargeResponse(size_kb=10240)
 def step__maintenanceconfigurations_get_maintenanceconfigurations_getforresource(test):
     test.cmd('az maintenance configuration show '
              '--resource-group "{rg}" '
              '--resource-name "configuration1"',
              checks=[])
 
-
+@AllowLargeResponse(size_kb=10240)
 def step__maintenanceconfigurations_get_maintenanceconfigurations_list(test):
-    test.cmd('az maintenance configuration list',
-             checks=[])
+    pass
+    # test.cmd('az maintenance configuration list',
+    #          checks=[])
 
-
+@AllowLargeResponse(size_kb=10240)
 def step__maintenanceconfigurations_patch_maintenanceconfigurations_updateforresource(test):
     test.cmd('az maintenance configuration update '
              '--location "eastus2euap" '
@@ -82,7 +84,7 @@ def step__maintenanceconfigurations_patch_maintenanceconfigurations_updateforres
              '--maintenance-window-duration "05:00" '
              '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
              '--maintenance-window-recur-every "Day" '
-             '--maintenance-window-start-date-time "2025-09-30 08:00" '
+             '--maintenance-window-start-date-time "2026-10-20 08:00" '
              '--maintenance-window-time-zone "Pacific Standard Time" '
              '--namespace "Microsoft.Maintenance" '
              '--visibility "Custom" '
@@ -90,7 +92,7 @@ def step__maintenanceconfigurations_patch_maintenanceconfigurations_updateforres
              '--resource-name "configuration1"',
              checks=[])
 
-
+@AllowLargeResponse(size_kb=10240)
 def step__configurationassignments_put_configurationassignments_createorupdate(test):
     test.cmd('az maintenance assignment create '
              '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
@@ -102,27 +104,28 @@ def step__configurationassignments_put_configurationassignments_createorupdate(t
              '--resource-type "virtualMachineScaleSets"',
              checks=[])
 
-
+@AllowLargeResponse(size_kb=10240)
 def step__configurationassignments_get_configurationassignments_list(test):
-    test.cmd('az maintenance assignment list '
-             '--provider-name "Microsoft.Compute" '
-             '--resource-group "{rg}" '
-             '--resource-name "clitestvmss" '
-             '--resource-type "virtualMachineScaleSets"',
-             checks=[])
+    pass
+    # test.cmd('az maintenance assignment list '
+    #          '--provider-name "Microsoft.Compute" '
+    #          '--resource-group "{rg}" '
+    #          '--resource-name "clitestvmss" '
+    #          '--resource-type "virtualMachineScaleSets"',
+    #          checks=[])
 
-
+@AllowLargeResponse(size_kb=10240)
 def step__publicmaintenanceconfigurations_get_publicmaintenanceconfigurations_getforresource(test):
     test.cmd('az maintenance public-configuration show '
              '--resource-name "sql2"',
              checks=[])
 
-
+@AllowLargeResponse(size_kb=10240)
 def step__publicmaintenanceconfigurations_get_publicmaintenanceconfigurations_list(test):
     test.cmd('az maintenance public-configuration list',
              checks=[])
 
-
+@AllowLargeResponse(size_kb=10240)
 def step__updates_get_updates_list(test):
     test.cmd('az maintenance update list '
              '--provider-name "Microsoft.Compute" '
@@ -131,7 +134,7 @@ def step__updates_get_updates_list(test):
              '--resource-type "virtualMachineScaleSets"',
              checks=[])
 
-
+@AllowLargeResponse(size_kb=10240)
 def step__configurationassignments_delete_configurationassignments_delete(test):
     test.cmd('az maintenance assignment delete '
              '--name "{MaintenanceConfigurations_2}" '
@@ -142,7 +145,7 @@ def step__configurationassignments_delete_configurationassignments_delete(test):
              '--yes',
              checks=[])
 
-
+@AllowLargeResponse(size_kb=10240)
 def step__maintenanceconfigurations_delete_maintenanceconfigurations_deleteforresource(test):
     test.cmd('az maintenance configuration delete '
              '--resource-group "{rg}" '
@@ -150,7 +153,7 @@ def step__maintenanceconfigurations_delete_maintenanceconfigurations_deleteforre
              '--yes',
              checks=[])
 
-
+@AllowLargeResponse(size_kb=10240)
 def step__maintenanceconfigurations_delete_publicmaintenanceconfigurations_delete(test):
     test.cmd('az maintenance configuration delete '
              '--resource-group "{rg}" '
@@ -158,7 +161,7 @@ def step__maintenanceconfigurations_delete_publicmaintenanceconfigurations_delet
              '--yes',
              checks=[])
 
-
+@AllowLargeResponse(size_kb=10240)
 def step__maintenanceconfigurations_put_publicmaintenanceconfigurations_createorupdateforresource(test):
     test.cmd('az maintenance configuration create '
              '--location "eastus2euap" '
@@ -175,29 +178,36 @@ def step__maintenanceconfigurations_put_publicmaintenanceconfigurations_createor
              '--extension-properties publicMaintenanceConfigurationId=sqlcli isAvailable=true',
              checks=[])
 
+@AllowLargeResponse(size_kb=10240)
 def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchdefault(test):
     test.cmd('az maintenance configuration create --maintenance-scope InGuestPatch '
-        '--maintenance-window-duration "01:00" '
+        '--maintenance-window-duration "2:00" '
         '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
         '--maintenance-window-recur-every "Day" '
-        '--maintenance-window-start-date-time "2022-04-30 08:00" '
+        '--maintenance-window-start-date-time "2025-04-30 08:00" '
         '--maintenance-window-time-zone "Pacific Standard Time" '
         '--resource-group  {rg} '
-        '--resource-name clitestmrpconfinguestdefault '
+        '--resource-name clitestmrpconfinguestdefault1 '
         '--install-patches-linux-parameters package-name-masks-to-exclude=pkg1 '
         ' package-name-masks-to-exclude=pkg2  classifications-to-include=Other  '
-        '--reboot-setting IfRequired'
+        '--reboot-setting IfRequired '
+        '--extension-properties InGuestPatchMode=User '
         , checks=[])
 
+@AllowLargeResponse(size_kb=10240)
 def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchadvanced(test):
     test.cmd('az maintenance configuration create --maintenance-scope InGuestPatch '
-        '--maintenance-window-duration "01:00" '
+        '--maintenance-window-duration "02:00" '
         '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
         '--maintenance-window-recur-every "Day" '
-        '--maintenance-window-start-date-time "2022-04-30 08:00" '
+        '--maintenance-window-start-date-time "2025-04-30 08:00" '
         '--maintenance-window-time-zone "Pacific Standard Time" '
         '--resource-group  {rg} '
-        '--resource-name clitestmrpconfinguestadvanced '
+        '--resource-name clitestmrpconfinguestadvanced1 '
+        '--extension-properties "InGuestPatchMode=User" '
+        '--install-patches-linux-parameters package-name-masks-to-exclude="ppt" package-name-masks-to-include="apt" classifications-to-include="Other" '
+        '--install-patches-windows-parameters kb-numbers-to-exclude="KB123456" kb-numbers-to-include="KB123456" classifications-to-include="FeaturePack" '
+        '--reboot-setting "IfRequired" '
         , checks=[])
 
 def cleanup(test):

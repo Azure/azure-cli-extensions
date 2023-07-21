@@ -1,5 +1,5 @@
-Microsoft Azure CLI 'maintenance' Extension
-==========================================
+# Azure CLI Maintenance Extension #
+This is an extension to Azure CLI to manage Maintenance resources.
 
-This package is for the 'maintenance' extension.
-i.e. 'az maintenance'
+## How to use ##
+Please add commands usage here.
