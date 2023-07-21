@@ -156,8 +156,10 @@ class Configuration(abc.ABC):
         raise NotImplementedError("Subclass must define property")
 
     @property
-    def acr_manifest_name(self) -> str:
-        """Base class method to ensure subclasses implement this function."""
+    def acr_manifest_names(self) -> List[str]:
+        """
+        The list of ACR manifest names..
+        """
         raise NotImplementedError("Subclass must define property")
 
 
@@ -180,10 +182,15 @@ class NFConfiguration(Configuration):
         return f"{self.nf_name}-nfdg"
 
     @property
-    def acr_manifest_name(self) -> str:
-        """Return the ACR manifest name from the NFD name."""
+    def acr_manifest_names(self) -> List[str]:
+        """
+        Return the ACR manifest name from the NFD name.
+
+        This is returned in a list for consistency with the NSConfiguration, where there
+        can be multiple ACR manifests.
+        """
         sanitized_nf_name = self.nf_name.lower().replace("_", "-")
-        return f"{sanitized_nf_name}-acr-manifest-{self.version.replace('.', '-')}"
+        return [f"{sanitized_nf_name}-acr-manifest-{self.version.replace('.', '-')}"]
 
 
 @dataclass
@@ -418,6 +425,13 @@ class NFDRETConfiguration:
         artifact_name = self.arm_template.artifact_name
         return f"{artifact_name}_resource_element"
 
+    def acr_manifest_name(self, nsd_version: str) -> str:
+        """Return the ACR manifest name from the NFD name."""
+        return (
+            f"{self.name.lower().replace('_', '-')}"
+            f"-nf-acr-manifest-{nsd_version.replace('.', '-')}"
+        )
+
 
 @dataclass
 class NSConfiguration(Configuration):
@@ -429,6 +443,14 @@ class NSConfiguration(Configuration):
     nsdg_name: str = DESCRIPTION_MAP["nsdg_name"]
     nsd_version: str = DESCRIPTION_MAP["nsd_version"]
     nsdv_description: str = DESCRIPTION_MAP["nsdv_description"]
+
+    def __post_init__(self):
+        """
+        Covert things to the correct format.
+        """
+        if self.network_functions and isinstance(self.network_functions[0], dict):
+            nf_ret_list = [NFDRETConfiguration(**config) for config in self.network_functions]
+            self.network_functions = nf_ret_list
 
     def validate(self):
         # validate that all of the configuration parameters are set
@@ -465,14 +487,6 @@ class NSConfiguration(Configuration):
         return f"{current_working_directory}/{NSD_OUTPUT_BICEP_PREFIX}"
 
     @property
-    def acr_manifest_name(self) -> str:
-        """Return the ACR manifest name from the NFD name."""
-        return (
-            f"{self.nsdg_name.lower().replace('_', '-')}"
-            f"-acr-manifest-{self.nsd_version.replace('.', '-')}"
-        )
-
-    @property
     def nfvi_site_name(self) -> str:
         """Return the name of the NFVI used for the NSDV."""
         return f"{self.nsdg_name}_NFVI"
@@ -481,6 +495,13 @@ class NSConfiguration(Configuration):
     def cg_schema_name(self) -> str:
         """Return the name of the Configuration Schema used for the NSDV."""
         return f"{self.nsdg_name.replace('-', '_')}_ConfigGroupSchema"
+
+    @property
+    def acr_manifest_names(self) -> List[str]:
+        """
+        The list of ACR manifest names for all the NF ARM templates.
+        """
+        return [nf.acr_manifest_name(self.nsd_version) for nf in self.network_functions]
 
 
 def get_configuration(

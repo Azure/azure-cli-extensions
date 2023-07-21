@@ -188,9 +188,11 @@ class NSDGenerator:
             nf.config.arm_template.artifact_name for nf in self.nf_ret_generators
         ]
 
+        # We want the armTemplateVersion to be the same as the NSD Version.  That means
+        # that if we create a new NSDV then the existing artifacts won't be overwritten.
         params = {
             "nfvi_site_name": self.config.nfvi_site_name,
-            "armTemplateName": arm_template_names,
+            "armTemplateNames": arm_template_names,
             "armTemplateVersion": self.config.nsd_version,
             "cg_schema_name": self.config.cg_schema_name,
             "nsdv_description": self.config.nsdv_description,

@@ -7,11 +7,11 @@ param publisherName string
 @description('Name of an existing ACR-backed Artifact Store, deployed under the publisher.')
 param acrArtifactStoreName string
 @description('Name of the manifest to deploy for the ACR-backed Artifact Store')
-param acrManifestName string
+param acrManifestNames array
 @description('The name under which to store the ARM template')
-param armTemplateName string
+param armTemplateNames array
 @description('The version that you want to name the NFM template artifact, in format A.B.C. e.g. 6.13.0. If testing for development, you can use any numbers you like.')
-param armTemplateVersion string
+param armTemplateVersions array
 
 resource publisher 'Microsoft.HybridNetwork/publishers@2023-04-01-preview' existing = {
   name: publisherName
@@ -23,17 +23,17 @@ resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@202
   name: acrArtifactStoreName
 }
 
-resource acrArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2023-04-01-preview' = {
+resource acrArtifactManifests 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2023-04-01-preview' = [for (values, i) in armTemplateNames: {
   parent: acrArtifactStore
-  name: acrManifestName
+  name: acrManifestNames[i]
   location: location
   properties: {
     artifacts: [
       {
-        artifactName: armTemplateName
+        artifactName: armTemplateNames[i]
         artifactType: 'ArmTemplate'
-        artifactVersion: armTemplateVersion
+        artifactVersion: armTemplateVersions[i]
       }
     ]
   }
-}
+}]

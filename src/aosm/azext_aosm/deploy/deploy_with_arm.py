@@ -181,6 +181,7 @@ class DeployerViaArm:
         """
         Uploads the VHD and ARM template artifacts
         """
+        assert isinstance(self.config, VNFConfiguration)
         storage_account_manifest = ArtifactManifestOperator(
             self.config,
             self.api_clients,
@@ -191,7 +192,7 @@ class DeployerViaArm:
             self.config,
             self.api_clients,
             self.config.acr_artifact_store_name,
-            self.config.acr_manifest_name,
+            self.config.acr_manifest_names[0],
         )
 
         vhd_artifact = storage_account_manifest.artifacts[0]
@@ -304,6 +305,7 @@ class DeployerViaArm:
         :param config: The contents of the configuration file.
         """
         if self.resource_type == VNF:
+            assert isinstance(self.config, VNFConfiguration)
             return {
                 "location": {"value": self.config.location},
                 "publisherName": {"value": self.config.publisher_name},
@@ -316,6 +318,7 @@ class DeployerViaArm:
                 "armTemplateVersion": {"value": self.config.arm_template.version},
             }
         if self.resource_type == CNF:
+            assert isinstance(self.config, CNFConfiguration)
             return {
                 "location": {"value": self.config.location},
                 "publisherName": {"value": self.config.publisher_name},
@@ -329,34 +332,43 @@ class DeployerViaArm:
         )
 
     def construct_manifest_parameters(self) -> Dict[str, Any]:
-        """Create the parmeters dictionary for VNF, CNF or NSD."""
+        """Create the parameters dictionary for VNF, CNF or NSD."""
         if self.resource_type == VNF:
+            assert isinstance(self.config, VNFConfiguration)
             return {
                 "location": {"value": self.config.location},
                 "publisherName": {"value": self.config.publisher_name},
                 "acrArtifactStoreName": {"value": self.config.acr_artifact_store_name},
                 "saArtifactStoreName": {"value": self.config.blob_artifact_store_name},
-                "acrManifestName": {"value": self.config.acr_manifest_name},
+                "acrManifestName": {"value": self.config.acr_manifest_names[0]},
                 "saManifestName": {"value": self.config.sa_manifest_name},
                 "nfName": {"value": self.config.nf_name},
                 "vhdVersion": {"value": self.config.vhd.version},
                 "armTemplateVersion": {"value": self.config.arm_template.version},
             }
         if self.resource_type == CNF:
+            assert isinstance(self.config, CNFConfiguration)
             return {
                 "location": {"value": self.config.location},
                 "publisherName": {"value": self.config.publisher_name},
                 "acrArtifactStoreName": {"value": self.config.acr_artifact_store_name},
-                "acrManifestName": {"value": self.config.acr_manifest_name},
+                "acrManifestName": {"value": self.config.acr_manifest_names[0]},
             }
         if self.resource_type == NSD:
+            assert isinstance(self.config, NSConfiguration)
+            arm_template_names = [
+                nf.arm_template.artifact_name for nf in self.config.network_functions
+            ]
+            arm_template_versions = [
+                nf.arm_template.version for nf in self.config.network_functions
+            ]
             return {
                 "location": {"value": self.config.location},
                 "publisherName": {"value": self.config.publisher_name},
                 "acrArtifactStoreName": {"value": self.config.acr_artifact_store_name},
-                "acrManifestName": {"value": self.config.acr_manifest_name},
-                "armTemplateName": {"value": self.config.arm_template_artifact_name},
-                "armTemplateVersion": {"value": self.config.arm_template.version},
+                "acrManifestNames": {"value": self.config.acr_manifest_names},
+                "armTemplateNames": {"value": arm_template_names},
+                "armTemplateVersions": {"value": arm_template_versions},
             }
         raise ValueError("Unknown configuration type")
 
@@ -410,7 +422,7 @@ class DeployerViaArm:
                 )
             else:
                 print(
-                    f"Artifact manifests {self.config.acr_manifest_name} already exists"
+                    f"Artifact manifests {self.config.acr_manifest_names} already exist"
                 )
 
             message = (
@@ -430,32 +442,33 @@ class DeployerViaArm:
             print("Done")
             return
 
-        acr_manifest = ArtifactManifestOperator(
-            self.config,
-            self.api_clients,
-            self.config.acr_artifact_store_name,
-            self.config.acr_manifest_name,
-        )
-
-        arm_template_artifact = acr_manifest.artifacts[0]
-
-        # Convert the NF bicep to ARM
-        arm_template_artifact_json = self.convert_bicep_to_arm(
-            os.path.join(
-                self.config.output_directory_for_build, NF_DEFINITION_BICEP_FILENAME
+        for manifest, nf in zip(
+            self.config.acr_manifest_names, self.config.network_functions
+        ):
+            acr_manifest = ArtifactManifestOperator(
+                self.config,
+                self.api_clients,
+                self.config.acr_artifact_store_name,
+                manifest,
             )
-        )
 
-        # appease mypy
-        assert (
-            self.config.arm_template.file_path
-        ), "Config missing ARM template file path"
-        with open(self.config.arm_template.file_path, "w", encoding="utf-8") as file:
-            file.write(json.dumps(arm_template_artifact_json, indent=4))
+            arm_template_artifact = acr_manifest.artifacts[0]
 
-        print("Uploading ARM template artifact")
-        arm_template_artifact.upload(self.config.arm_template)
-        print("Done")
+            # Convert the NF bicep to ARM
+            arm_template_artifact_json = self.convert_bicep_to_arm(
+                os.path.join(
+                    self.config.output_directory_for_build, NF_DEFINITION_BICEP_FILENAME
+                )
+            )
+
+            # appease mypy
+            assert nf.arm_template.file_path, "Config missing ARM template file path"
+            with open(nf.arm_template.file_path, "w", encoding="utf-8") as file:
+                file.write(json.dumps(arm_template_artifact_json, indent=4))
+
+            print("Uploading ARM template artifact")
+            arm_template_artifact.upload(nf.arm_template)
+            print("Done")
 
     def deploy_manifest_template(
         self, manifest_parameters_json_file, manifest_bicep_path
@@ -516,7 +529,6 @@ class DeployerViaArm:
             "nsDesignGroup": {"value": self.config.nsdg_name},
             "nsDesignVersion": {"value": self.config.nsd_version},
             "nfviSiteName": {"value": self.config.nfvi_site_name},
-            "armTemplateVersion": {"value": self.config.arm_template.version},
         }
 
     def deploy_bicep_template(

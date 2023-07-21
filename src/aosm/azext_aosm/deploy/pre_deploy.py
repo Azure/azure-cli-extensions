@@ -388,12 +388,17 @@ class PreDeployerViaSDK:
         self,
     ) -> bool:
         """Returns True if all required manifests exist, False otherwise."""
-        acr_manny_exists: bool = self.does_artifact_manifest_exist(
-            rg_name=self.config.publisher_resource_group_name,
-            publisher_name=self.config.publisher_name,
-            store_name=self.config.acr_artifact_store_name,
-            manifest_name=self.config.acr_manifest_name,
-        )
+        all_acr_mannys_exist = True
+        any_acr_mannys_exist = False if self.config.acr_manifest_names else True
+        for manifest in self.config.acr_manifest_names:
+            acr_manny_exists: bool = self.does_artifact_manifest_exist(
+                rg_name=self.config.publisher_resource_group_name,
+                publisher_name=self.config.publisher_name,
+                store_name=self.config.acr_artifact_store_name,
+                manifest_name=manifest,
+            )
+            all_acr_mannys_exist &= acr_manny_exists
+            any_acr_mannys_exist |= acr_manny_exists
 
         if isinstance(self.config, VNFConfiguration):
             sa_manny_exists: bool = self.does_artifact_manifest_exist(
@@ -402,13 +407,13 @@ class PreDeployerViaSDK:
                 store_name=self.config.blob_artifact_store_name,
                 manifest_name=self.config.sa_manifest_name,
             )
-            if acr_manny_exists and sa_manny_exists:
+            if all_acr_mannys_exist and sa_manny_exists:
                 return True
-            if acr_manny_exists or sa_manny_exists:
+            if any_acr_mannys_exist or sa_manny_exists:
                 raise AzCLIError(
-                    "Only one artifact manifest exists. Cannot proceed. Please delete"
-                    " the NFDV using `az aosm nfd delete` and start the publish again"
-                    " from scratch."
+                    "Only a subset of artifact manifest exists. Cannot proceed. Please delete"
+                    " the NFDV or NSDV as appropriate using the `az aosm nfd delete` or "
+                    "`az aosm nsd delete` command."
                 )
             return False
 

@@ -91,7 +91,7 @@ resource nsdVersion 'Microsoft.Hybridnetwork/publishers/networkservicedesigngrou
             artifactStoreReference: {
               id: acrArtifactStore.id
             }
-            artifactName:  {{armTemplateName[index]}}
+            artifactName:  {{armTemplateNames[index]}}
             artifactVersion: {{armTemplateVersion}}
           }
           templateType: 'ArmTemplate'

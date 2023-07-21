@@ -10,8 +10,11 @@ from .util.constants import CNF, VNF, BICEP_PUBLISH, ARTIFACT_UPLOAD
 
 
 def load_arguments(self: AzCommandsLoader, _):
-    from azure.cli.core.commands.parameters import (file_type, get_enum_type,
-                                                    get_three_state_flag)
+    from azure.cli.core.commands.parameters import (
+        file_type,
+        get_enum_type,
+        get_three_state_flag,
+    )
 
     definition_type = get_enum_type([VNF, CNF])
     skip_steps = get_enum_type([BICEP_PUBLISH, ARTIFACT_UPLOAD])
