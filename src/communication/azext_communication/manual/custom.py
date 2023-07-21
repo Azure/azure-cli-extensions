@@ -295,9 +295,9 @@ def __get_attachment_content(filename, filetype):
     file_bytes_b64 = base64.b64encode(file_bytes)
 
     attachment = {
-        "name" : tail,
-        "contentType" : filetype,
-        "contentInBase64" : file_bytes_b64.decode(),
+        "name": tail,
+        "contentType": filetype,
+        "contentInBase64": file_bytes_b64.decode(),
     }
 
     return json.dumps(attachment)
@@ -324,7 +324,7 @@ def communication_email_send(client,
 
         if recipients_to is None and recipients_cc is None and recipients_bcc is None:
             raise CLIError('At least one recipient is required.')
-        
+
         if importance == 'low':
             priority = '5'
         elif importance == 'high':
@@ -352,15 +352,15 @@ def communication_email_send(client,
                 "html": html
             },
             "recipients": {
-                "to": None if recipients_to is None else 
+                "to": None if recipients_to is None else
                     [
                         {"address": recipient} for recipient in recipients_to[0].split(',')
                     ],
-                "cc": None if recipients_cc is None else 
+                "cc": None if recipients_cc is None else
                     [
                         {"address": recipient} for recipient in recipients_cc[0].split(',')
                     ],
-                "bcc": None if recipients_bcc is None else 
+                "bcc": None if recipients_bcc is None else
                     [
                         {"address": recipient} for recipient in recipients_bcc[0].split(',')
                     ]
