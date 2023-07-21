@@ -1605,6 +1605,64 @@ maintenance assignment create-or-update-parent:
     maintenance_configuration_id:
       rule_exclusions:
       - option_length_too_long
+maintenance assignment create-resource-group:
+  parameters:
+    configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+    maintenance_configuration_id:
+      rule_exclusions:
+      - option_length_too_long
+maintenance assignment delete-resource-group:
+  parameters:
+    configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+    maintenance_configuration_id:
+      rule_exclusions:
+      - option_length_too_long
+maintenance assignment update-resource-group:
+  parameters:
+    configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+    maintenance_configuration_id:
+      rule_exclusions:
+      - option_length_too_long
+maintenance assignment show-resource-group:
+  parameters:
+    configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+maintenance assignment create-subscription:
+  parameters:
+    configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+    maintenance_configuration_id:
+      rule_exclusions:
+      - option_length_too_long
+maintenance assignment delete-subscription:
+  parameters:
+    configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+    maintenance_configuration_id:
+      rule_exclusions:
+      - option_length_too_long
+maintenance assignment update-subscription:
+  parameters:
+    configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+    maintenance_configuration_id:
+      rule_exclusions:
+      - option_length_too_long
+maintenance assignment show-subscription:
+  parameters:
+    configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
 maintenance assignment delete:
   parameters:
     configuration_assignment_name:
@@ -1615,6 +1673,14 @@ maintenance configuration update:
     maintenanceScope:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+maintenance assignment update-parent:
+  parameters:
+    configuration_assignment_name:
+      rule_exclusions:
+      - option_length_too_long
+    maintenance_configuration_id:
+      rule_exclusions:
+      - option_length_too_long
 ml computetarget create aks:
   parameters:
     ssl_leaf_domain_label:
