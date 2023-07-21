@@ -352,33 +352,17 @@ def communication_email_send(client,
                 "html": html
             },
             "recipients": {
-                "to": None if recipients_to is None else
-                    [
-                        {"address": recipient} for recipient in recipients_to[0].split(',')
-                    ],
-                "cc": None if recipients_cc is None else
-                    [
-                        {"address": recipient} for recipient in recipients_cc[0].split(',')
-                    ],
-                "bcc": None if recipients_bcc is None else
-                    [
-                        {"address": recipient} for recipient in recipients_bcc[0].split(',')
-                    ]
+                "to": None if recipients_to is None else [{"address": recipient} for recipient in recipients_to[0].split(',')],
+                "cc": None if recipients_cc is None else [{"address": recipient} for recipient in recipients_cc[0].split(',')],
+                "bcc": None if recipients_bcc is None else [{"address": recipient} for recipient in recipients_bcc[0].split(',')]
             },
-            "replyTo": None if reply_to is None else
-                [
-                    {"address": reply_to}
-                ],
-            "attachments": None if attachments_list is None else
-                [
-                    json.loads(attachment) for attachment in attachments_list
-                ],
+            "replyTo": None if reply_to is None else [{"address": reply_to}],
+            "attachments": None if attachments_list is None else [json.loads(attachment) for attachment in attachments_list],
             "senderAddress": sender,
             "userEngagementTrackingDisabled": disable_tracking,
-            "headers":
-                {
-                    "x-priority": priority
-                }
+            "headers": {
+                "x-priority": priority
+            }
         }
 
         return client.begin_send(message)

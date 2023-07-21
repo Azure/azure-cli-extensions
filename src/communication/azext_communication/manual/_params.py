@@ -263,8 +263,8 @@ def _load_email_arguments(self):
         c.argument('recipients_bcc', options_list=['--bcc'], nargs='+', help='Blind carbon copy email addresses.')
         c.argument('reply_to', options_list=['--reply-to'], type=str, help='Reply-to email address. Optional.')
         c.argument('disable_tracking', options_list=['--disable-tracking'], arg_type=get_three_state_flag(),
-                   help='Indicates whether user engagement tracking should be disabled for this request if'
-                   'the resource-level user engagement tracking setting was already enabled. Optional.')
+                   help='Indicates whether user engagement tracking should be disabled for this specific request. '
+                   'This is only applicable if the resource-level user engagement tracking setting was already enabled in control plane. Optional.')
         c.argument('attachments', options_list=['--attachments'], nargs='+',
                    help='List of email attachments. Optional.')
         c.argument('attachment_types', options_list=['--attachment-types'], nargs='+',
