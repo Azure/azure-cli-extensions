@@ -1668,11 +1668,25 @@ maintenance assignment delete:
     configuration_assignment_name:
       rule_exclusions:
       - option_length_too_long
+maintenance configuration create:
+  parameters:
+    install_patches_linux_parameters:
+      rule_exclusions:
+      - option_length_too_long
+    install_patches_windows_parameters:
+      rule_exclusions:
+      - option_length_too_long
 maintenance configuration update:
   parameters:
     maintenanceScope:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+    install_patches_linux_parameters:
+      rule_exclusions:
+      - option_length_too_long
+    install_patches_windows_parameters:
+      rule_exclusions:
+      - option_length_too_long
 maintenance assignment update-parent:
   parameters:
     configuration_assignment_name:
