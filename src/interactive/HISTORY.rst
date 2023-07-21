@@ -3,6 +3,10 @@
 Release History
 ===============
 
+upcoming
++++++
+* Fix error
+
 0.5.1
 +++++
 * Fix bugs to prevent users from exiting the entire az interactive by using Ctrl+C during command execution
