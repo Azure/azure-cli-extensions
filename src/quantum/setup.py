@@ -56,3 +56,5 @@ setup(
     install_requires=DEPENDENCIES,
     package_data={'azext_quantum': ['azext_metadata.json', 'operations/templates/create-workspace-and-assign-role.json']},
 )
+
+# Test
