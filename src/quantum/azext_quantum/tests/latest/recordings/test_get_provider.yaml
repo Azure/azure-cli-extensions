@@ -16,7 +16,7 @@ interactions:
       - AZURECLI/2.50.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.9.16 (Windows-10-10.0.22621-SP0)
         az-cli-ext/0.19.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/eastus/offerings?api-version=2022-01-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Quantum/locations/westus2/offerings?api-version=2022-01-10-preview
   response:
     body:
       string: "{\"value\":[{\"id\":\"1qbit\",\"name\":\"1Qloud Optimization Platform\",\"properties\":{\"description\":\"1QBit
@@ -282,21 +282,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:05:20 GMT
+      - Sun, 23 Jul 2023 15:13:16 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - de45009a-2a87-4996-b6d7-66a6d0f29d2f
+      - 04a7a5ef-1d06-42dc-89c6-3f93d09a3545
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       set-cookie:
-      - ARRAffinity=62231f4a8d0b0c0d9e2ea445516fe9bb14f36ceec9b723adba4e55eb58068b5f;Path=/;HttpOnly;Secure;Domain=rpcontrol-eastus.azurewebsites.net
-      - ARRAffinitySameSite=62231f4a8d0b0c0d9e2ea445516fe9bb14f36ceec9b723adba4e55eb58068b5f;Path=/;HttpOnly;SameSite=None;Secure;Domain=rpcontrol-eastus.azurewebsites.net
-      - ASLBSA=0003d13935650cf31d7e45a2965de836d9380840104ec0f25184069b1cc224bc1c6d;
+      - ARRAffinity=ebe2790d749702022a54ce9bf5ef49208f8970a38b82360408bfec3955380433;Path=/;HttpOnly;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ARRAffinitySameSite=ebe2790d749702022a54ce9bf5ef49208f8970a38b82360408bfec3955380433;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westus2.azurewebsites.net
+      - ASLBSA=00039e93da06869631dc266ec1760b564d9f06fec0804fe8d9a7e5de7dbd613ca339;
         Path=/; Secure; HttpOnly;
-      - ASLBSACORS=0003d13935650cf31d7e45a2965de836d9380840104ec0f25184069b1cc224bc1c6d;
+      - ASLBSACORS=00039e93da06869631dc266ec1760b564d9f06fec0804fe8d9a7e5de7dbd613ca339;
         SameSite=none; Path=/; Secure; HttpOnly;
       strict-transport-security:
       - max-age=31536000; includeSubDomains
@@ -305,7 +305,7 @@ interactions:
       vary:
       - Accept-Encoding,Accept-Encoding
       x-azure-ref:
-      - 20230723T110519Z-s40ztd5hqx6zh3t7m4tbux9xfg00000000wg00000000g7x8
+      - 20230723T151316Z-qt9ab37y2d34pbnn8pam5kg44w00000001u0000000008z2a
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -337,7 +337,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/ionqinc1582730893633/offers/ionq-aq/plans/pay-as-you-go-cred/agreements/current?api-version=2021-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/ionqinc1582730893633/offers/ionq-aq/plans/pay-as-you-go-cred/agreements/current","name":"pay-as-you-go-cred","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"ionqinc1582730893633","product":"ionq-aq","plan":"pay-as-you-go-cred","licenseTextLink":"https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_IONQINC1582730893633%253a24IONQ%253a2DAQ%253a24PAY%253a2DAS%253a2DYOU%253a2DGO%253a2DCRED%253a247ODGLEAK7RQISNHUEU4KJYVC6QLVZF5IANNQFGBHOKJMXWIW3OPRUADLB63ROSGS5FVYSHLINGX5BK7GF7Y2ZO24HKBHSPKMXBHFBAQ.txt","privacyPolicyLink":"https://ionq.com/privacy","marketplaceTermsLink":"https://mpcprodsa.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2023-07-23T11:05:23.1758885Z","signature":"SJN4RYDIIWZ5TNPXTK4AZ2IMEDX3PMQC4VT6MBQL6U5ZAFNDDG3JIYCF4265QD3UWCH46IHMQWDINCHDC75CEI3REIQ62VALWKOLGOY","accepted":true},"systemData":{"createdBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","createdByType":"ManagedIdentity","createdAt":"2023-07-23T11:05:23.3008996+00:00","lastModifiedBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2023-07-23T11:05:23.3008996+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/ionqinc1582730893633/offers/ionq-aq/plans/pay-as-you-go-cred/agreements/current","name":"pay-as-you-go-cred","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"ionqinc1582730893633","product":"ionq-aq","plan":"pay-as-you-go-cred","licenseTextLink":"https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_IONQINC1582730893633%253a24IONQ%253a2DAQ%253a24PAY%253a2DAS%253a2DYOU%253a2DGO%253a2DCRED%253a247ODGLEAK7RQISNHUEU4KJYVC6QLVZF5IANNQFGBHOKJMXWIW3OPRUADLB63ROSGS5FVYSHLINGX5BK7GF7Y2ZO24HKBHSPKMXBHFBAQ.txt","privacyPolicyLink":"https://ionq.com/privacy","marketplaceTermsLink":"https://mpcprodsa.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2023-07-23T15:13:19.4688254Z","signature":"VLDQKF3HC4T7MHFLSE3WOMH7RU3UZH3GYMCMKDJ6CYVBS5DV5PQR23NIWY2HUCWKWY2XGEEEZXAL2LENYHR4DQQZXKRDGSTRRRS5LWY","accepted":true},"systemData":{"createdBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","createdByType":"ManagedIdentity","createdAt":"2023-07-23T15:13:19.7031975+00:00","lastModifiedBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2023-07-23T15:13:19.7031975+00:00"}}'
     headers:
       cache-control:
       - no-cache
@@ -346,7 +346,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:05:22 GMT
+      - Sun, 23 Jul 2023 15:13:19 GMT
       expires:
       - '-1'
       pragma:
@@ -388,16 +388,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/quantinuumllc1640113159771/offers/quantinuum-aq/plans/credits1/agreements/current?api-version=2021-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/quantinuumllc1640113159771/offers/quantinuum-aq/plans/credits1/agreements/current","name":"credits1","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"quantinuumllc1640113159771","product":"quantinuum-aq","plan":"credits1","licenseTextLink":"https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_QUANTINUUMLLC1640113159771%253a24QUANTINUUM%253a2DAQ%253a24CREDITS1%253a24D2BUEUHHK37KZKS3NVJEFCOZYZDDILGVLODAP6ECHTF6JVCAKMVRIAQIIDKS2TCS3QW7HUPIXIO6IXSNDPO4N6WHRX2T254CLKLY3RQ.txt","privacyPolicyLink":"https://www.quantinuum.com/privacy-statement","marketplaceTermsLink":"https://mpcprodsa.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2023-07-23T11:05:25.652795Z","signature":"K4CMGIKBGS3XUID2LYLXN3HWQ6PYOI2HVAHABTB7IY2X43ITSKNBZGVWDH5GA6QKTYZPL4NTQMJDCVZAXEBYCVV2NHYHM6P6ZLW67MA","accepted":true},"systemData":{"createdBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","createdByType":"ManagedIdentity","createdAt":"2023-07-23T11:05:25.7465482+00:00","lastModifiedBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2023-07-23T11:05:25.7465482+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/quantinuumllc1640113159771/offers/quantinuum-aq/plans/credits1/agreements/current","name":"credits1","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"quantinuumllc1640113159771","product":"quantinuum-aq","plan":"credits1","licenseTextLink":"https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_QUANTINUUMLLC1640113159771%253a24QUANTINUUM%253a2DAQ%253a24CREDITS1%253a24D2BUEUHHK37KZKS3NVJEFCOZYZDDILGVLODAP6ECHTF6JVCAKMVRIAQIIDKS2TCS3QW7HUPIXIO6IXSNDPO4N6WHRX2T254CLKLY3RQ.txt","privacyPolicyLink":"https://www.quantinuum.com/privacy-statement","marketplaceTermsLink":"https://mpcprodsa.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2023-07-23T15:13:22.4362984Z","signature":"GJALJKCBX5OIYSVWJEGO7KFOFVXL5UXUJMBLXFEYHQHH6VJLGPD66KOCMMA555A5B2E765LPC6IBJVPUQMYKDE2RIP57ELHLXG35C4Y","accepted":true},"systemData":{"createdBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","createdByType":"ManagedIdentity","createdAt":"2023-07-23T15:13:22.6706817+00:00","lastModifiedBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2023-07-23T15:13:22.6706817+00:00"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1439'
+      - '1440'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:05:25 GMT
+      - Sun, 23 Jul 2023 15:13:22 GMT
       expires:
       - '-1'
       pragma:
@@ -439,7 +439,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/rigetticoinc1644276861431/offers/rigetti-aq/plans/azure-quantum-credits/agreements/current?api-version=2021-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/rigetticoinc1644276861431/offers/rigetti-aq/plans/azure-quantum-credits/agreements/current","name":"azure-quantum-credits","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"rigetticoinc1644276861431","product":"rigetti-aq","plan":"azure-quantum-credits","licenseTextLink":"https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_RIGETTICOINC1644276861431%253a24RIGETTI%253a2DAQ%253a24AZURE%253a2DQUANTUM%253a2DCREDITS%253a24H35R3FYQURHQDNSLAZ4YCHIHABQ4NR4UI66LMJ3K53EHCQWZJMC3BLGZODKSAMOQ4ZI5CVO37XQXKFBQ3YWK444S7B3XGBK67JHVZNI.txt","privacyPolicyLink":"https://www.rigetti.com/privacy-policy","marketplaceTermsLink":"https://mpcprodsa.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2023-07-23T11:05:27.7087695Z","signature":"Y6XRC73OI43UBB4KUF7EJGY25VKFXOASLITDUGN7OYHZIF64B4NGAGQ5A4WGUMFVVWFQNL7FZYATEKRC7DLOWLCXJQZCYUGP4V5KTYY","accepted":true},"systemData":{"createdBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","createdByType":"ManagedIdentity","createdAt":"2023-07-23T11:05:27.9275161+00:00","lastModifiedBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2023-07-23T11:05:27.9275161+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/rigetticoinc1644276861431/offers/rigetti-aq/plans/azure-quantum-credits/agreements/current","name":"azure-quantum-credits","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"rigetticoinc1644276861431","product":"rigetti-aq","plan":"azure-quantum-credits","licenseTextLink":"https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_RIGETTICOINC1644276861431%253a24RIGETTI%253a2DAQ%253a24AZURE%253a2DQUANTUM%253a2DCREDITS%253a24H35R3FYQURHQDNSLAZ4YCHIHABQ4NR4UI66LMJ3K53EHCQWZJMC3BLGZODKSAMOQ4ZI5CVO37XQXKFBQ3YWK444S7B3XGBK67JHVZNI.txt","privacyPolicyLink":"https://www.rigetti.com/privacy-policy","marketplaceTermsLink":"https://mpcprodsa.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2023-07-23T15:13:24.8675191Z","signature":"Y3AZKBI7NNPMWMBRQS3KEL2262I6SXAFIS6VT53GKOAASOZ4V3YC2EZRVZOKH5S6PFXWIESX3SUUH3CFAYXX5VUZS3T7WN7ATJ2527A","accepted":true},"systemData":{"createdBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","createdByType":"ManagedIdentity","createdAt":"2023-07-23T15:13:24.9612459+00:00","lastModifiedBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2023-07-23T15:13:24.9612459+00:00"}}'
     headers:
       cache-control:
       - no-cache
@@ -448,7 +448,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:05:27 GMT
+      - Sun, 23 Jul 2023 15:13:24 GMT
       expires:
       - '-1'
       pragma:
@@ -490,7 +490,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/ionqinc1582730893633/offers/ionq-aq/plans/pay-as-you-go-cred/agreements/current?api-version=2021-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/ionqinc1582730893633/offers/ionq-aq/plans/pay-as-you-go-cred/agreements/current","name":"pay-as-you-go-cred","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"ionqinc1582730893633","product":"ionq-aq","plan":"pay-as-you-go-cred","licenseTextLink":"https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_IONQINC1582730893633%253a24IONQ%253a2DAQ%253a24PAY%253a2DAS%253a2DYOU%253a2DGO%253a2DCRED%253a247ODGLEAK7RQISNHUEU4KJYVC6QLVZF5IANNQFGBHOKJMXWIW3OPRUADLB63ROSGS5FVYSHLINGX5BK7GF7Y2ZO24HKBHSPKMXBHFBAQ.txt","privacyPolicyLink":"https://ionq.com/privacy","marketplaceTermsLink":"https://mpcprodsa.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2023-07-23T11:05:30.3958918Z","signature":"YOYUQQSJYNXNVBVRUOS5QR445ES6324QY3PXYEMNOMZIEJ2PRQHQOPU22CD5RSP2KSHUWSSUYYXC2A36XR35TYIBB5TCAF4MTN2BA2Q","accepted":true},"systemData":{"createdBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","createdByType":"ManagedIdentity","createdAt":"2023-07-23T11:05:30.4896728+00:00","lastModifiedBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2023-07-23T11:05:30.4896728+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/ionqinc1582730893633/offers/ionq-aq/plans/pay-as-you-go-cred/agreements/current","name":"pay-as-you-go-cred","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"ionqinc1582730893633","product":"ionq-aq","plan":"pay-as-you-go-cred","licenseTextLink":"https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_IONQINC1582730893633%253a24IONQ%253a2DAQ%253a24PAY%253a2DAS%253a2DYOU%253a2DGO%253a2DCRED%253a247ODGLEAK7RQISNHUEU4KJYVC6QLVZF5IANNQFGBHOKJMXWIW3OPRUADLB63ROSGS5FVYSHLINGX5BK7GF7Y2ZO24HKBHSPKMXBHFBAQ.txt","privacyPolicyLink":"https://ionq.com/privacy","marketplaceTermsLink":"https://mpcprodsa.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2023-07-23T15:13:27.3737713Z","signature":"BSEYZL2YSAT7UH6HLBDJ3QTZ6LKPEBERFKURESDKVZZAGWR7UAME2GRZ766DGQXCZYMAONZWZCWJ2EKGYX4E4JVFDWBE3XSLLHG6J5A","accepted":true},"systemData":{"createdBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","createdByType":"ManagedIdentity","createdAt":"2023-07-23T15:13:27.4675305+00:00","lastModifiedBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2023-07-23T15:13:27.4675305+00:00"}}'
     headers:
       cache-control:
       - no-cache
@@ -499,7 +499,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:05:30 GMT
+      - Sun, 23 Jul 2023 15:13:27 GMT
       expires:
       - '-1'
       pragma:
@@ -541,7 +541,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/quantinuumllc1640113159771/offers/quantinuum-aq/plans/credits1/agreements/current?api-version=2021-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/quantinuumllc1640113159771/offers/quantinuum-aq/plans/credits1/agreements/current","name":"credits1","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"quantinuumllc1640113159771","product":"quantinuum-aq","plan":"credits1","licenseTextLink":"https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_QUANTINUUMLLC1640113159771%253a24QUANTINUUM%253a2DAQ%253a24CREDITS1%253a24D2BUEUHHK37KZKS3NVJEFCOZYZDDILGVLODAP6ECHTF6JVCAKMVRIAQIIDKS2TCS3QW7HUPIXIO6IXSNDPO4N6WHRX2T254CLKLY3RQ.txt","privacyPolicyLink":"https://www.quantinuum.com/privacy-statement","marketplaceTermsLink":"https://mpcprodsa.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2023-07-23T11:05:32.6838712Z","signature":"TQUBHUNEEMN76KFAFLNNQIWV2M2DHQU7HT4I6KMEXHAIXFTFGDXAB35SCORTRCMUQ3T3PZG7A6KPAYLLKJUIDHCHT27EGKHEC3TQCJQ","accepted":true},"systemData":{"createdBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","createdByType":"ManagedIdentity","createdAt":"2023-07-23T11:05:32.7932124+00:00","lastModifiedBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2023-07-23T11:05:32.7932124+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/quantinuumllc1640113159771/offers/quantinuum-aq/plans/credits1/agreements/current","name":"credits1","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"quantinuumllc1640113159771","product":"quantinuum-aq","plan":"credits1","licenseTextLink":"https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_QUANTINUUMLLC1640113159771%253a24QUANTINUUM%253a2DAQ%253a24CREDITS1%253a24D2BUEUHHK37KZKS3NVJEFCOZYZDDILGVLODAP6ECHTF6JVCAKMVRIAQIIDKS2TCS3QW7HUPIXIO6IXSNDPO4N6WHRX2T254CLKLY3RQ.txt","privacyPolicyLink":"https://www.quantinuum.com/privacy-statement","marketplaceTermsLink":"https://mpcprodsa.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2023-07-23T15:13:29.4806021Z","signature":"CRUNC5OW7ITN6OGMLPWQAOPGAXZ7LU2R6S5AGKJKNAZB3STUDGVFHRMTYJYO6VJABWQAD4IMQMQ43XWUBJYZ5GMVOCXLJDA6IQJN3FQ","accepted":true},"systemData":{"createdBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","createdByType":"ManagedIdentity","createdAt":"2023-07-23T15:13:29.5431031+00:00","lastModifiedBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2023-07-23T15:13:29.5431031+00:00"}}'
     headers:
       cache-control:
       - no-cache
@@ -550,7 +550,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:05:32 GMT
+      - Sun, 23 Jul 2023 15:13:28 GMT
       expires:
       - '-1'
       pragma:
@@ -592,7 +592,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/virtualmachine/publishers/rigetticoinc1644276861431/offers/rigetti-aq/plans/azure-quantum-credits/agreements/current?api-version=2021-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/rigetticoinc1644276861431/offers/rigetti-aq/plans/azure-quantum-credits/agreements/current","name":"azure-quantum-credits","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"rigetticoinc1644276861431","product":"rigetti-aq","plan":"azure-quantum-credits","licenseTextLink":"https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_RIGETTICOINC1644276861431%253a24RIGETTI%253a2DAQ%253a24AZURE%253a2DQUANTUM%253a2DCREDITS%253a24H35R3FYQURHQDNSLAZ4YCHIHABQ4NR4UI66LMJ3K53EHCQWZJMC3BLGZODKSAMOQ4ZI5CVO37XQXKFBQ3YWK444S7B3XGBK67JHVZNI.txt","privacyPolicyLink":"https://www.rigetti.com/privacy-policy","marketplaceTermsLink":"https://mpcprodsa.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2023-07-23T11:05:34.8142824Z","signature":"B2ICNMOYAANPAPNZ4D6TGQDVFI7RSDD2C6VAZSWBGPUNMAY2C65HCGLNMRCFEKL332IXEORRRGLWSMFCZN3WAHQIYRURWNQWROJ2LZY","accepted":true},"systemData":{"createdBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","createdByType":"ManagedIdentity","createdAt":"2023-07-23T11:05:35.0336112+00:00","lastModifiedBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2023-07-23T11:05:35.0336112+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/VirtualMachine/publishers/rigetticoinc1644276861431/offers/rigetti-aq/plans/azure-quantum-credits/agreements/current","name":"azure-quantum-credits","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"rigetticoinc1644276861431","product":"rigetti-aq","plan":"azure-quantum-credits","licenseTextLink":"https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_RIGETTICOINC1644276861431%253a24RIGETTI%253a2DAQ%253a24AZURE%253a2DQUANTUM%253a2DCREDITS%253a24H35R3FYQURHQDNSLAZ4YCHIHABQ4NR4UI66LMJ3K53EHCQWZJMC3BLGZODKSAMOQ4ZI5CVO37XQXKFBQ3YWK444S7B3XGBK67JHVZNI.txt","privacyPolicyLink":"https://www.rigetti.com/privacy-policy","marketplaceTermsLink":"https://mpcprodsa.blob.core.windows.net/marketplaceterms/3EDEF_marketplaceterms_AZUREAPPLICATION%253a24OF7TIMHFEMPZHRBYEO3SVLC7Q2MPXXAASJ5BO2FUY4UC6EZCN5TIL2KIGTA7WI2CSM3WV4L7QMPNRYPE2I7BOCM34RGOL3XTC6ADIMI.txt","retrieveDatetime":"2023-07-23T15:13:31.4603908Z","signature":"XK4QEDFVFK5ZJ4TJGUB3TCBR26TA7W3HTYQFCOGTYWKZHQEVUK2FNFETOUPCDE2AL6DTR2YM7GFADAHZF5D5KCOZ6G3EZNOJSGL2OPQ","accepted":true},"systemData":{"createdBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","createdByType":"ManagedIdentity","createdAt":"2023-07-23T15:13:31.5540884+00:00","lastModifiedBy":"916dfd6d-030c-4bd9-b579-7bb6d1926e97","lastModifiedByType":"ManagedIdentity","lastModifiedAt":"2023-07-23T15:13:31.5540884+00:00"}}'
     headers:
       cache-control:
       - no-cache
@@ -601,7 +601,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:05:34 GMT
+      - Sun, 23 Jul 2023 15:13:31 GMT
       expires:
       - '-1'
       pragma:
@@ -639,19 +639,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-azure-mgmt-storage/21.0.0 Python/3.9.16 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Storage/storageAccounts?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts?api-version=2022-09-01
   response:
     body:
-      string: '{"value":[{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Storage/storageAccounts/azuresdkteststo","name":"azuresdkteststo","type":"Microsoft.Storage/storageAccounts","location":"eastus","tags":{},"properties":{"defaultToOAuthAuthentication":false,"keyCreationTime":{"key1":"2022-01-14T15:18:25.8471893Z","key2":"2022-01-14T15:18:25.8471893Z"},"allowCrossTenantReplication":true,"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_2","allowBlobPublicAccess":true,"allowSharedKeyAccess":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"requireInfrastructureEncryption":false,"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2022-01-14T15:18:25.8471893Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2022-01-14T15:18:25.8471893Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2022-01-14T15:18:25.7065629Z","primaryEndpoints":{"dfs":"https://azuresdkteststo.dfs.core.windows.net/","web":"https://azuresdkteststo.z13.web.core.windows.net/","blob":"https://azuresdkteststo.blob.core.windows.net/","queue":"https://azuresdkteststo.queue.core.windows.net/","table":"https://azuresdkteststo.table.core.windows.net/","file":"https://azuresdkteststo.file.core.windows.net/"},"primaryLocation":"eastus","statusOfPrimary":"available","secondaryLocation":"westus","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://azuresdkteststo-secondary.dfs.core.windows.net/","web":"https://azuresdkteststo-secondary.z13.web.core.windows.net/","blob":"https://azuresdkteststo-secondary.blob.core.windows.net/","queue":"https://azuresdkteststo-secondary.queue.core.windows.net/","table":"https://azuresdkteststo-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Storage/storageAccounts/e2etests1","name":"e2etests1","type":"Microsoft.Storage/storageAccounts","location":"eastus","tags":{},"properties":{"keyCreationTime":{"key1":"2023-07-20T20:05:13.5012668Z","key2":"2023-07-20T20:05:13.5012668Z"},"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-07-20T20:05:13.5012668Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-07-20T20:05:13.5012668Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2023-07-20T20:05:13.0325168Z","primaryEndpoints":{"blob":"https://e2etests1.blob.core.windows.net/","queue":"https://e2etests1.queue.core.windows.net/","table":"https://e2etests1.table.core.windows.net/","file":"https://e2etests1.file.core.windows.net/"},"primaryLocation":"eastus","statusOfPrimary":"available"}},{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Storage/storageAccounts/e2etests3","name":"e2etests3","type":"Microsoft.Storage/storageAccounts","location":"eastus","tags":{},"properties":{"keyCreationTime":{"key1":"2023-07-21T21:00:19.9575758Z","key2":"2023-07-21T21:00:19.9575758Z"},"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-07-21T21:00:19.9731782Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-07-21T21:00:19.9731782Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2023-07-21T21:00:19.7700526Z","primaryEndpoints":{"blob":"https://e2etests3.blob.core.windows.net/","queue":"https://e2etests3.queue.core.windows.net/","table":"https://e2etests3.table.core.windows.net/","file":"https://e2etests3.file.core.windows.net/"},"primaryLocation":"eastus","statusOfPrimary":"available"}}]}'
+      string: '{"value":[{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests","name":"e2etests","type":"Microsoft.Storage/storageAccounts","location":"westus2","tags":{},"properties":{"keyCreationTime":{"key1":"2021-04-13T19:13:16.5082330Z","key2":"2021-04-13T19:13:16.5082330Z"},"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2021-04-13T19:13:16.5082330Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2021-04-13T19:13:16.5082330Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2021-04-13T19:13:16.3988354Z","primaryEndpoints":{"blob":"https://e2etests.blob.core.windows.net/","queue":"https://e2etests.queue.core.windows.net/","table":"https://e2etests.table.core.windows.net/","file":"https://e2etests.file.core.windows.net/"},"primaryLocation":"westus2","statusOfPrimary":"available"}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etestsgrs","name":"e2etestsgrs","type":"Microsoft.Storage/storageAccounts","location":"westus2","tags":{},"properties":{"defaultToOAuthAuthentication":false,"keyCreationTime":{"key1":"2022-03-14T19:40:06.3610257Z","key2":"2022-03-14T19:40:06.3610257Z"},"allowCrossTenantReplication":true,"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_2","allowBlobPublicAccess":true,"allowSharedKeyAccess":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"requireInfrastructureEncryption":false,"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2022-03-14T19:40:06.3610257Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2022-03-14T19:40:06.3610257Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2022-03-14T19:40:06.2360414Z","primaryEndpoints":{"dfs":"https://e2etestsgrs.dfs.core.windows.net/","web":"https://e2etestsgrs.z5.web.core.windows.net/","blob":"https://e2etestsgrs.blob.core.windows.net/","queue":"https://e2etestsgrs.queue.core.windows.net/","table":"https://e2etestsgrs.table.core.windows.net/","file":"https://e2etestsgrs.file.core.windows.net/"},"primaryLocation":"westus2","statusOfPrimary":"available","secondaryLocation":"westcentralus","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://e2etestsgrs-secondary.dfs.core.windows.net/","web":"https://e2etestsgrs-secondary.z5.web.core.windows.net/","blob":"https://e2etestsgrs-secondary.blob.core.windows.net/","queue":"https://e2etestsgrs-secondary.queue.core.windows.net/","table":"https://e2etestsgrs-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/sanjguptquantumtest","name":"sanjguptquantumtest","type":"Microsoft.Storage/storageAccounts","location":"westus2","tags":{},"properties":{"keyCreationTime":{"key1":"2021-11-15T22:53:56.1304863Z","key2":"2021-11-15T22:53:56.1304863Z"},"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2021-11-15T22:53:56.1304863Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2021-11-15T22:53:56.1304863Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2021-11-15T22:53:56.0523312Z","primaryEndpoints":{"blob":"https://sanjguptquantumtest.blob.core.windows.net/","queue":"https://sanjguptquantumtest.queue.core.windows.net/","table":"https://sanjguptquantumtest.table.core.windows.net/","file":"https://sanjguptquantumtest.file.core.windows.net/"},"primaryLocation":"westus2","statusOfPrimary":"available"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4481'
+      - '4482'
       content-type:
       - application/json
       date:
-      - Sun, 23 Jul 2023 11:05:35 GMT
+      - Sun, 23 Jul 2023 15:13:31 GMT
       expires:
       - '-1'
       pragma:
@@ -708,15 +708,15 @@ interactions:
       "principalId": "[reference(concat(''Microsoft.Quantum/Workspaces/'', parameters(''quantumWorkspaceName'')),
       ''2019-11-04-preview'', ''Full'').identity.principalId]", "principalType": "ServicePrincipal"},
       "dependsOn": ["[parameters(''storageAccountId'')]"]}]}}}], "outputs": {}}, "parameters":
-      {"quantumWorkspaceName": {"value": "e2e-test-w6025638"}, "location": {"value":
-      "eastus"}, "tags": {"value": {}}, "providers": {"value": [{"providerId": "microsoft-qc",
+      {"quantumWorkspaceName": {"value": "e2e-test-w2857838"}, "location": {"value":
+      "westus2"}, "tags": {"value": {}}, "providers": {"value": [{"providerId": "microsoft-qc",
       "providerSku": "learn-and-develop"}, {"providerId": "ionq", "providerSku": "pay-as-you-go-cred"},
       {"providerId": "quantinuum", "providerSku": "credits1"}, {"providerId": "rigetti",
-      "providerSku": "azure-quantum-credits"}]}, "storageAccountName": {"value": "e2etests4"},
-      "storageAccountId": {"value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Storage/storageAccounts/e2etests4"},
-      "storageAccountLocation": {"value": "eastus"}, "storageAccountSku": {"value":
+      "providerSku": "azure-quantum-credits"}]}, "storageAccountName": {"value": "e2etests"},
+      "storageAccountId": {"value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests"},
+      "storageAccountLocation": {"value": "westus2"}, "storageAccountSku": {"value":
       "Standard_LRS"}, "storageAccountKind": {"value": "Storage"}, "storageAccountDeploymentName":
-      {"value": "Microsoft.StorageAccount-23-Jul-2023-11-05-36"}}, "mode": "Incremental"}}'
+      {"value": "Microsoft.StorageAccount-23-Jul-2023-15-13-32"}}, "mode": "Incremental"}}'
     headers:
       Accept:
       - application/json
@@ -725,27 +725,27 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '4283'
+      - '4279'
       Content-Type:
       - application/json
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.16 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azure-sdk-test-rg/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w6025638","name":"Microsoft.AzureQuantum-e2e-test-w6025638","type":"Microsoft.Resources/deployments","properties":{"templateHash":"6354453805046911057","parameters":{"quantumWorkspaceName":{"type":"String","value":"e2e-test-w6025638"},"location":{"type":"String","value":"eastus"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"microsoft-qc","providerSku":"learn-and-develop"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred"},{"providerId":"quantinuum","providerSku":"credits1"},{"providerId":"rigetti","providerSku":"azure-quantum-credits"}]},"storageAccountName":{"type":"String","value":"e2etests4"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Storage/storageAccounts/e2etests4"},"storageAccountLocation":{"type":"String","value":"eastus"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"Storage"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-23-Jul-2023-11-05-36"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2023-07-23T11:05:41.0044007Z","duration":"PT0.0001795S","correlationId":"e087e1be-2466-4493-a188-7c0dd02993d8","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["eastus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Quantum/Workspaces/e2e-test-w6025638","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"e2e-test-w6025638"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Quantum/workspaces/e2e-test-w6025638","resourceType":"Microsoft.Quantum/workspaces","resourceName":"e2e-test-w6025638","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-23-Jul-2023-11-05-36","resourceType":"Microsoft.Resources/deployments","resourceName":"Microsoft.StorageAccount-23-Jul-2023-11-05-36"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w2857838","name":"Microsoft.AzureQuantum-e2e-test-w2857838","type":"Microsoft.Resources/deployments","properties":{"templateHash":"6354453805046911057","parameters":{"quantumWorkspaceName":{"type":"String","value":"e2e-test-w2857838"},"location":{"type":"String","value":"westus2"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"microsoft-qc","providerSku":"learn-and-develop"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred"},{"providerId":"quantinuum","providerSku":"credits1"},{"providerId":"rigetti","providerSku":"azure-quantum-credits"}]},"storageAccountName":{"type":"String","value":"e2etests"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests"},"storageAccountLocation":{"type":"String","value":"westus2"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"Storage"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-23-Jul-2023-15-13-32"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2023-07-23T15:13:34.6813521Z","duration":"PT0.0007375S","correlationId":"aa6fed3c-9cca-4bf7-b2c0-6aa2b0e04f02","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["westus2"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w2857838","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"e2e-test-w2857838"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w2857838","resourceType":"Microsoft.Quantum/workspaces","resourceName":"e2e-test-w2857838","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-23-Jul-2023-15-13-32","resourceType":"Microsoft.Resources/deployments","resourceName":"Microsoft.StorageAccount-23-Jul-2023-15-13-32"}]}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azure-sdk-test-rg/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w6025638/operationStatuses/08585114965460273671?api-version=2022-09-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w2857838/operationStatuses/08585114816716295499?api-version=2022-09-01
       cache-control:
       - no-cache
       content-length:
-      - '2511'
+      - '2492'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:05:41 GMT
+      - Sun, 23 Jul 2023 15:13:34 GMT
       expires:
       - '-1'
       pragma:
@@ -771,7 +771,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.16 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azure-sdk-test-rg/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114965460273671?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114816716295499?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Accepted"}'
@@ -783,7 +783,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:05:41 GMT
+      - Sun, 23 Jul 2023 15:13:34 GMT
       expires:
       - '-1'
       pragma:
@@ -809,7 +809,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.16 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azure-sdk-test-rg/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114965460273671?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114816716295499?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -821,7 +821,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:06:11 GMT
+      - Sun, 23 Jul 2023 15:14:04 GMT
       expires:
       - '-1'
       pragma:
@@ -847,7 +847,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.16 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azure-sdk-test-rg/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114965460273671?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114816716295499?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -859,7 +859,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:06:41 GMT
+      - Sun, 23 Jul 2023 15:14:34 GMT
       expires:
       - '-1'
       pragma:
@@ -885,7 +885,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.16 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azure-sdk-test-rg/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114965460273671?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114816716295499?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -897,7 +897,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:07:12 GMT
+      - Sun, 23 Jul 2023 15:15:04 GMT
       expires:
       - '-1'
       pragma:
@@ -923,7 +923,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.16 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azure-sdk-test-rg/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114965460273671?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114816716295499?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -935,7 +935,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:07:42 GMT
+      - Sun, 23 Jul 2023 15:15:34 GMT
       expires:
       - '-1'
       pragma:
@@ -961,7 +961,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.16 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azure-sdk-test-rg/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114965460273671?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114816716295499?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -973,7 +973,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:08:12 GMT
+      - Sun, 23 Jul 2023 15:16:05 GMT
       expires:
       - '-1'
       pragma:
@@ -999,7 +999,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.16 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azure-sdk-test-rg/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114965460273671?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114816716295499?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -1011,7 +1011,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:08:42 GMT
+      - Sun, 23 Jul 2023 15:16:34 GMT
       expires:
       - '-1'
       pragma:
@@ -1037,7 +1037,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.16 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azure-sdk-test-rg/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114965460273671?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114816716295499?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -1049,7 +1049,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:09:12 GMT
+      - Sun, 23 Jul 2023 15:17:05 GMT
       expires:
       - '-1'
       pragma:
@@ -1075,7 +1075,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.16 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azure-sdk-test-rg/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114965460273671?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114816716295499?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -1087,7 +1087,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:09:42 GMT
+      - Sun, 23 Jul 2023 15:17:35 GMT
       expires:
       - '-1'
       pragma:
@@ -1113,7 +1113,7 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.16 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azure-sdk-test-rg/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114965460273671?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114816716295499?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Running"}'
@@ -1125,7 +1125,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:10:13 GMT
+      - Sun, 23 Jul 2023 15:18:05 GMT
       expires:
       - '-1'
       pragma:
@@ -1151,7 +1151,45 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.16 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azure-sdk-test-rg/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114965460273671?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114816716295499?api-version=2022-09-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 23 Jul 2023 15:18:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.16 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585114816716295499?api-version=2022-09-01
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -1163,7 +1201,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:10:43 GMT
+      - Sun, 23 Jul 2023 15:19:05 GMT
       expires:
       - '-1'
       pragma:
@@ -1189,19 +1227,19 @@ interactions:
       User-Agent:
       - azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.16 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azure-sdk-test-rg/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/e2e-scenarios/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w6025638","name":"Microsoft.AzureQuantum-e2e-test-w6025638","type":"Microsoft.Resources/deployments","properties":{"templateHash":"6354453805046911057","parameters":{"quantumWorkspaceName":{"type":"String","value":"e2e-test-w6025638"},"location":{"type":"String","value":"eastus"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"microsoft-qc","providerSku":"learn-and-develop"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred"},{"providerId":"quantinuum","providerSku":"credits1"},{"providerId":"rigetti","providerSku":"azure-quantum-credits"}]},"storageAccountName":{"type":"String","value":"e2etests4"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Storage/storageAccounts/e2etests4"},"storageAccountLocation":{"type":"String","value":"eastus"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"Storage"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-23-Jul-2023-11-05-36"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2023-07-23T11:10:37.1269649Z","duration":"PT4M56.1227437S","correlationId":"e087e1be-2466-4493-a188-7c0dd02993d8","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["eastus"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Quantum/Workspaces/e2e-test-w6025638","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"e2e-test-w6025638"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Quantum/workspaces/e2e-test-w6025638","resourceType":"Microsoft.Quantum/workspaces","resourceName":"e2e-test-w6025638","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-23-Jul-2023-11-05-36","resourceType":"Microsoft.Resources/deployments","resourceName":"Microsoft.StorageAccount-23-Jul-2023-11-05-36"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Quantum/workspaces/e2e-test-w6025638"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Storage/storageAccounts/e2etests4"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Storage/storageAccounts/e2etests4/fileServices/default"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Storage/storageAccounts/e2etests4/providers/Microsoft.Authorization/roleAssignments/3b520d87-325b-5c70-8564-fe1f4e9cdb09"}]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.AzureQuantum-e2e-test-w2857838","name":"Microsoft.AzureQuantum-e2e-test-w2857838","type":"Microsoft.Resources/deployments","properties":{"templateHash":"6354453805046911057","parameters":{"quantumWorkspaceName":{"type":"String","value":"e2e-test-w2857838"},"location":{"type":"String","value":"westus2"},"tags":{"type":"Object","value":{}},"providers":{"type":"Array","value":[{"providerId":"microsoft-qc","providerSku":"learn-and-develop"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred"},{"providerId":"quantinuum","providerSku":"credits1"},{"providerId":"rigetti","providerSku":"azure-quantum-credits"}]},"storageAccountName":{"type":"String","value":"e2etests"},"storageAccountId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests"},"storageAccountLocation":{"type":"String","value":"westus2"},"storageAccountSku":{"type":"String","value":"Standard_LRS"},"storageAccountKind":{"type":"String","value":"Storage"},"storageAccountDeploymentName":{"type":"String","value":"Microsoft.StorageAccount-23-Jul-2023-15-13-32"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2023-07-23T15:18:39.3245687Z","duration":"PT5M4.6439541S","correlationId":"aa6fed3c-9cca-4bf7-b2c0-6aa2b0e04f02","providers":[{"namespace":"Microsoft.Quantum","resourceTypes":[{"resourceType":"workspaces","locations":["westus2"]}]},{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-test-w2857838","resourceType":"Microsoft.Quantum/Workspaces","resourceName":"e2e-test-w2857838"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w2857838","resourceType":"Microsoft.Quantum/workspaces","resourceName":"e2e-test-w2857838","apiVersion":"2019-11-04-preview"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Resources/deployments/Microsoft.StorageAccount-23-Jul-2023-15-13-32","resourceType":"Microsoft.Resources/deployments","resourceName":"Microsoft.StorageAccount-23-Jul-2023-15-13-32"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w2857838"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests/fileServices/default"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests/providers/Microsoft.Authorization/roleAssignments/9200eedd-e12f-5123-97f2-450542b777ee"}]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3251'
+      - '3212'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:10:43 GMT
+      - Sun, 23 Jul 2023 15:19:05 GMT
       expires:
       - '-1'
       pragma:
@@ -1227,10 +1265,10 @@ interactions:
       User-Agent:
       - az-cli-ext/0.19.0 azsdk-python-quantum/0.0.0.1 Python/3.9.16 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://eastus.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Quantum/workspaces/e2e-test-w6025638/providerStatus
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w2857838/providerStatus
   response:
     body:
-      string: '{"value":[{"id":"microsoft-qc","currentAvailability":"Available","targets":[{"id":"microsoft.estimator","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]},{"id":"ionq","currentAvailability":"Degraded","targets":[{"id":"ionq.qpu","currentAvailability":"Unavailable","averageQueueTime":584316,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-1","currentAvailability":"Unavailable","averageQueueTime":136561,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://status.ionq.co"}]},{"id":"quantinuum","currentAvailability":"Degraded","targets":[{"id":"quantinuum.hqs-lt-s1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s1-apival","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s2","currentAvailability":"Degraded","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s2-apival","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s1-sim","currentAvailability":"Available","averageQueueTime":8,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s2-sim","currentAvailability":"Available","averageQueueTime":6,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.qpu.h1-1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1sc","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.qpu.h1-2","currentAvailability":"Degraded","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-2sc","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1e","currentAvailability":"Available","averageQueueTime":8,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-2e","currentAvailability":"Available","averageQueueTime":6,"statusPage":"https://www.quantinuum.com/hardware/h1"}]},{"id":"rigetti","currentAvailability":"Degraded","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.aspen-m-2","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.aspen-m-3","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]}],"nextLink":null}'
+      string: '{"value":[{"id":"microsoft-qc","currentAvailability":"Available","targets":[{"id":"microsoft.estimator","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]},{"id":"ionq","currentAvailability":"Degraded","targets":[{"id":"ionq.qpu","currentAvailability":"Unavailable","averageQueueTime":599771,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-1","currentAvailability":"Unavailable","averageQueueTime":151266,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://status.ionq.co"}]},{"id":"quantinuum","currentAvailability":"Degraded","targets":[{"id":"quantinuum.hqs-lt-s1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s1-apival","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s2","currentAvailability":"Degraded","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s2-apival","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s1-sim","currentAvailability":"Available","averageQueueTime":9,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s2-sim","currentAvailability":"Available","averageQueueTime":6,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.qpu.h1-1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1sc","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.qpu.h1-2","currentAvailability":"Degraded","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-2sc","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1e","currentAvailability":"Available","averageQueueTime":9,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-2e","currentAvailability":"Available","averageQueueTime":6,"statusPage":"https://www.quantinuum.com/hardware/h1"}]},{"id":"rigetti","currentAvailability":"Degraded","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.aspen-m-2","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.aspen-m-3","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]}],"nextLink":null}'
     headers:
       connection:
       - keep-alive
@@ -1239,9 +1277,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:10:46 GMT
+      - Sun, 23 Jul 2023 15:19:09 GMT
       mise-correlation-id:
-      - 8f12c704-63cd-47b2-ad0e-80a9e2f4eade
+      - d9eb7f9f-e526-4b85-8480-ae92d0168276
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -1250,8 +1288,8 @@ interactions:
       - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; Path=/; SameSite=None;
         Secure
       - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; Path=/
-      - ARRAffinity=9d716053ef092553e7bdd2639d89f002241b80715630c2dbb839c205a5e8d5f8;Path=/;HttpOnly;Secure;Domain=app-jobscheduler-westus-003.ase-jobscheduler-westus-003.appserviceenvironment.net
-      - ARRAffinitySameSite=9d716053ef092553e7bdd2639d89f002241b80715630c2dbb839c205a5e8d5f8;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-jobscheduler-westus-003.ase-jobscheduler-westus-003.appserviceenvironment.net
+      - ARRAffinity=f08099ddc6d1b5b480ee26565f489b862c28fda9abd95391f75b0cea107d6318;Path=/;HttpOnly;Secure;Domain=app-jobscheduler-westus2-003.ase-jobscheduler-westus2-003.appserviceenvironment.net
+      - ARRAffinitySameSite=f08099ddc6d1b5b480ee26565f489b862c28fda9abd95391f75b0cea107d6318;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-jobscheduler-westus2-003.ase-jobscheduler-westus2-003.appserviceenvironment.net
       strict-transport-security:
       - max-age=2592000; includeSubDomains
       transfer-encoding:
@@ -1275,10 +1313,10 @@ interactions:
       User-Agent:
       - az-cli-ext/0.19.0 azsdk-python-quantum/0.0.0.1 Python/3.9.16 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://eastus.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Quantum/workspaces/e2e-test-w6025638/providerStatus
+    uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w2857838/providerStatus
   response:
     body:
-      string: '{"value":[{"id":"microsoft-qc","currentAvailability":"Available","targets":[{"id":"microsoft.estimator","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]},{"id":"ionq","currentAvailability":"Degraded","targets":[{"id":"ionq.qpu","currentAvailability":"Unavailable","averageQueueTime":584316,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-1","currentAvailability":"Unavailable","averageQueueTime":136561,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://status.ionq.co"}]},{"id":"quantinuum","currentAvailability":"Degraded","targets":[{"id":"quantinuum.hqs-lt-s1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s1-apival","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s2","currentAvailability":"Degraded","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s2-apival","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s1-sim","currentAvailability":"Available","averageQueueTime":8,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s2-sim","currentAvailability":"Available","averageQueueTime":6,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.qpu.h1-1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1sc","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.qpu.h1-2","currentAvailability":"Degraded","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-2sc","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1e","currentAvailability":"Available","averageQueueTime":8,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-2e","currentAvailability":"Available","averageQueueTime":6,"statusPage":"https://www.quantinuum.com/hardware/h1"}]},{"id":"rigetti","currentAvailability":"Degraded","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.aspen-m-2","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.aspen-m-3","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]}],"nextLink":null}'
+      string: '{"value":[{"id":"microsoft-qc","currentAvailability":"Available","targets":[{"id":"microsoft.estimator","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]},{"id":"ionq","currentAvailability":"Degraded","targets":[{"id":"ionq.qpu","currentAvailability":"Unavailable","averageQueueTime":599771,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-1","currentAvailability":"Unavailable","averageQueueTime":151266,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://status.ionq.co"}]},{"id":"quantinuum","currentAvailability":"Degraded","targets":[{"id":"quantinuum.hqs-lt-s1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s1-apival","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s2","currentAvailability":"Degraded","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s2-apival","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s1-sim","currentAvailability":"Available","averageQueueTime":9,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s2-sim","currentAvailability":"Available","averageQueueTime":6,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.qpu.h1-1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1sc","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.qpu.h1-2","currentAvailability":"Degraded","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-2sc","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1e","currentAvailability":"Available","averageQueueTime":9,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-2e","currentAvailability":"Available","averageQueueTime":6,"statusPage":"https://www.quantinuum.com/hardware/h1"}]},{"id":"rigetti","currentAvailability":"Degraded","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.aspen-m-2","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.aspen-m-3","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]}],"nextLink":null}'
     headers:
       connection:
       - keep-alive
@@ -1287,9 +1325,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:10:46 GMT
+      - Sun, 23 Jul 2023 15:19:09 GMT
       mise-correlation-id:
-      - c4f93012-e368-43b0-a727-0ed389aef7b4
+      - 305cb37c-13d6-4be3-9871-ffee48e6b6d4
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
@@ -1298,8 +1336,8 @@ interactions:
       - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; Path=/; SameSite=None;
         Secure
       - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; Path=/
-      - ARRAffinity=9d716053ef092553e7bdd2639d89f002241b80715630c2dbb839c205a5e8d5f8;Path=/;HttpOnly;Secure;Domain=app-jobscheduler-westus-003.ase-jobscheduler-westus-003.appserviceenvironment.net
-      - ARRAffinitySameSite=9d716053ef092553e7bdd2639d89f002241b80715630c2dbb839c205a5e8d5f8;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-jobscheduler-westus-003.ase-jobscheduler-westus-003.appserviceenvironment.net
+      - ARRAffinity=f08099ddc6d1b5b480ee26565f489b862c28fda9abd95391f75b0cea107d6318;Path=/;HttpOnly;Secure;Domain=app-jobscheduler-westus2-003.ase-jobscheduler-westus2-003.appserviceenvironment.net
+      - ARRAffinitySameSite=f08099ddc6d1b5b480ee26565f489b862c28fda9abd95391f75b0cea107d6318;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-jobscheduler-westus2-003.ase-jobscheduler-westus2-003.appserviceenvironment.net
       strict-transport-security:
       - max-age=2592000; includeSubDomains
       transfer-encoding:
@@ -1330,13 +1368,13 @@ interactions:
       - AZURECLI/2.50.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.9.16 (Windows-10-10.0.22621-SP0)
         az-cli-ext/0.19.0
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Quantum/workspaces/e2e-test-w6025638?api-version=2022-01-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w2857838?api-version=2022-01-10-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/541e40d8-f63c-455d-b1a8-f4afd6e9d274*9F21C031A3A55D02B81CEDCB346D9A1B0C80592E74D058384971812E70741B4F?api-version=2022-01-10-preview
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/WESTUS2/operationStatuses/d7445872-7dfe-4f3b-88cd-04f71ce2acbd*790E540A94980147994DE979B99D53131BE6434D5C7E64C931DABF3B5BC16A76?api-version=2022-01-10-preview
       cache-control:
       - no-cache
       content-length:
@@ -1344,30 +1382,30 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:10:47 GMT
+      - Sun, 23 Jul 2023 15:19:11 GMT
       etag:
-      - '"ab07b0ce-0000-0100-0000-64bd0ab80000"'
+      - '"1000aa07-0000-0800-0000-64bd44ef0000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.Quantum/locations/EASTUS/operationStatuses/541e40d8-f63c-455d-b1a8-f4afd6e9d274*9F21C031A3A55D02B81CEDCB346D9A1B0C80592E74D058384971812E70741B4F?api-version=2022-01-10-preview
+      - https://management.azure.com/providers/Microsoft.Quantum/locations/WESTUS2/operationStatuses/d7445872-7dfe-4f3b-88cd-04f71ce2acbd*790E540A94980147994DE979B99D53131BE6434D5C7E64C931DABF3B5BC16A76?api-version=2022-01-10-preview
       mise-correlation-id:
-      - 4879052e-790b-460d-8ab3-7b61a0c47023
+      - f6c5d8e2-493a-4cb7-aedf-337cf3410577
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       set-cookie:
-      - ARRAffinity=62231f4a8d0b0c0d9e2ea445516fe9bb14f36ceec9b723adba4e55eb58068b5f;Path=/;HttpOnly;Secure;Domain=rpcontrol-eastus.azurewebsites.net
-      - ARRAffinitySameSite=62231f4a8d0b0c0d9e2ea445516fe9bb14f36ceec9b723adba4e55eb58068b5f;Path=/;HttpOnly;SameSite=None;Secure;Domain=rpcontrol-eastus.azurewebsites.net
-      - ASLBSA=0003d13935650cf31d7e45a2965de836d9380840104ec0f25184069b1cc224bc1c6d;
+      - ARRAffinity=4ce668106245945e8dda9e42991d79022418540cecff31efc73a602944bd7557;Path=/;HttpOnly;Secure;Domain=app-cp-westcentralus.azurewebsites.net
+      - ARRAffinitySameSite=4ce668106245945e8dda9e42991d79022418540cecff31efc73a602944bd7557;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-cp-westcentralus.azurewebsites.net
+      - ASLBSA=0003b38ed1bc07f0e7a71797156a6453b1ee270fb1885f1d150649444979a7c6757d;
         path=/; secure
-      - ASLBSACORS=0003d13935650cf31d7e45a2965de836d9380840104ec0f25184069b1cc224bc1c6d;
+      - ASLBSACORS=0003b38ed1bc07f0e7a71797156a6453b1ee270fb1885f1d150649444979a7c6757d;
         samesite=none; path=/; secure
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-azure-ref:
-      - 0uAq9ZAAAAABFdQsurwlMR5/pzeZ68a60TU5aMjIxMDYwNjEzMDA5AGU0ODIyNTNiLTllMDUtNDA1ZS1hODNmLTU4NmVlMWQ1NTNlNA==
+      - 070S9ZAAAAABV/O8moWkbQ41zmGoa9KcNV1NURURHRTAxMTQAMzJhNzJjYWUtNWM3YS00NTk4LWEyOWYtYzkyMzM3OWUzMzcx
       x-cache:
       - CONFIG_NOCACHE
       x-content-type-options:
@@ -1393,29 +1431,29 @@ interactions:
       Connection:
       - keep-alive
       Cookie:
-      - ASLBSA=0003d13935650cf31d7e45a2965de836d9380840104ec0f25184069b1cc224bc1c6d;
-        ASLBSACORS=0003d13935650cf31d7e45a2965de836d9380840104ec0f25184069b1cc224bc1c6d
+      - ASLBSA=0003b38ed1bc07f0e7a71797156a6453b1ee270fb1885f1d150649444979a7c6757d;
+        ASLBSACORS=0003b38ed1bc07f0e7a71797156a6453b1ee270fb1885f1d150649444979a7c6757d
       ParameterSetName:
       - -g -w
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.9.16 (Windows-10-10.0.22621-SP0)
         az-cli-ext/0.19.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Quantum/workspaces/e2e-test-w6025638?api-version=2022-01-10-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w2857838?api-version=2022-01-10-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Quantum/workspaces/e2e-test-w6025638","name":"e2e-test-w6025638","type":"microsoft.quantum/workspaces","location":"eastus","tags":{},"systemData":{"createdBy":"victorxfield@microsoft.com","createdByType":"User","createdAt":"2023-07-23T11:05:42.8722758Z","lastModifiedBy":"victorxfield@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-23T11:05:42.8722758Z"},"identity":{"principalId":"c2b88db0-efe8-4e07-a81e-f3926cd72521","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"microsoft-qc","providerSku":"learn-and-develop","applicationName":"e2e-test-w6025638-microsoft-qc","provisioningState":"Succeeded"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred","applicationName":"e2e-test-w6025638-ionq","provisioningState":"Succeeded","resourceUsageId":"52652a7c-a592-4b8b-98ef-84133ead3735"},{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w6025638-quantinuum","provisioningState":"Succeeded","resourceUsageId":"bce49026-1540-4ac6-99ad-328a206e1f65"},{"providerId":"rigetti","providerSku":"azure-quantum-credits","applicationName":"e2e-test-w6025638-rigetti","provisioningState":"Succeeded","resourceUsageId":"5ee1548f-309b-4b68-9522-1f363f67d10a"}],"provisioningState":"Deleting","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-sdk-test-rg/providers/Microsoft.Storage/storageAccounts/e2etests4","endpointUri":"https://e2e-test-w6025638.eastus.quantum.azure.com"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-test-w2857838","name":"e2e-test-w2857838","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"victorxfield@microsoft.com","createdByType":"User","createdAt":"2023-07-23T15:13:36.0236535Z","lastModifiedBy":"victorxfield@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-23T15:13:36.0236535Z"},"identity":{"principalId":"4c4f584c-7548-4601-a737-7a26c3944a96","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"microsoft-qc","providerSku":"learn-and-develop","applicationName":"e2e-test-w2857838-microsoft-qc","provisioningState":"Succeeded"},{"providerId":"ionq","providerSku":"pay-as-you-go-cred","applicationName":"e2e-test-w2857838-ionq","provisioningState":"Succeeded","resourceUsageId":"2f221d47-2859-4cef-ba4f-917fd1f72de9"},{"providerId":"quantinuum","providerSku":"credits1","applicationName":"e2e-test-w2857838-quantinuum","provisioningState":"Succeeded","resourceUsageId":"1d8838de-0694-4e1e-8a2c-f84f85c6c88b"},{"providerId":"rigetti","providerSku":"azure-quantum-credits","applicationName":"e2e-test-w2857838-rigetti","provisioningState":"Succeeded","resourceUsageId":"b8e67eac-e5d3-4b41-9bf2-e6f69da9cbfb"}],"provisioningState":"Deleting","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests","endpointUri":"https://e2e-test-w2857838.westus2.quantum.azure.com"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1654'
+      - '1647'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sun, 23 Jul 2023 11:10:48 GMT
+      - Sun, 23 Jul 2023 15:19:11 GMT
       etag:
-      - '"ab07b0ce-0000-0100-0000-64bd0ab80000"'
+      - '"1000aa07-0000-0800-0000-64bd44ef0000"'
       expires:
       - '-1'
       pragma:
