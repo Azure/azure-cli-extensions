@@ -21,7 +21,7 @@ def print_status(msg=''):
     print('-- '+msg)
 
 
-def generate(ext_file, output_dir):
+def generate(ext_file, output_dir, dep_file):
     # Verify sphinx installed in environment before we get started
     check_call(['sphinx-build', '--version'])
     if not output_dir:
@@ -29,6 +29,12 @@ def generate(ext_file, output_dir):
     print_status('Using output directory {}'.format(output_dir))
     temp_extension_dir = tempfile.mkdtemp()
     try:
+        if dep_file:
+            pip_cmd = [sys.executable, '-m', 'pip', 'install', '--target',
+                       os.path.join(temp_extension_dir, 'extension'),
+                       dep_file, '--disable-pip-version-check', '--no-cache-dir']
+            print_status('Executing "{}"'.format(' '.join(pip_cmd)))
+            check_call(pip_cmd)
         pip_cmd = [sys.executable, '-m', 'pip', 'install', '--target', os.path.join(temp_extension_dir, 'extension'),
                    ext_file, '--disable-pip-version-check', '--no-cache-dir']
         print_status('Executing "{}"'.format(' '.join(pip_cmd)))
@@ -75,6 +81,7 @@ if __name__ == '__main__':
                         help='Path to the extension .whl file.', required=True, type=_type_ext_file)
     parser.add_argument('-o', '--output-dir', dest='output_dir',
                         help='Path to place the generated documentation. By default, a temporary directory will be created.', required=False, type=_type_path)
-
+    parser.add_argument('-d', '--dependent-file', dest='dep_file',
+                        help='Path to the dependent extension .whl file.', required=False, type=str)
     args = parser.parse_args()
-    generate(args.ext_file, args.output_dir)
+    generate(args.ext_file, args.output_dir, args.dep_file)

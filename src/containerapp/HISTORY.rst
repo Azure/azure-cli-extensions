@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.3.36
+++++++
+* 'az containerapp hostname bind': fix exception when not bringing --validation-method inputs
 
 0.3.35
 ++++++

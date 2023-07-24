@@ -82,6 +82,9 @@ class VmwareScenarioTest(ScenarioTest):
         # cluster create
         self.cmd('vmware cluster create -g {rg} -c {privatecloud} -n {cluster} --sku av20 --size 3 --hosts {hosts}')
 
+        # cluster create without --hosts
+        self.cmd('vmware cluster create -g {rg} -c {privatecloud} -n {cluster} --sku av20 --size 3')
+
         # cluster list should report 1
         count = len(self.cmd('vmware cluster list -g {rg} -c {privatecloud}').get_output_in_json())
         self.assertEqual(count, 1, 'cluster count expected to be 1')
