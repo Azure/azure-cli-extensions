@@ -2651,10 +2651,13 @@ configuration:
       - requestReview:
           reviewer: jiasli
       - requestReview:
+          reviewer: zhoxing-ms
+      - requestReview:
           reviewer: yonzhan
       - assignTo:
           users:
           - jiasli
+          - zhoxing-ms
       description: '[ssh] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
@@ -2663,10 +2666,10 @@ configuration:
             action: Opened
       - or:
         - titleContains:
-            pattern: az connectedk8s
+            pattern: '\b(connectedk8s)\b'
             isRegex: True
         - bodyContains:
-            pattern: az connectedk8s
+            pattern: '\b(connectedk8s)\b'
             isRegex: True
       then:
       - addLabel:
