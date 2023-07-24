@@ -115,8 +115,8 @@ def _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_
             "share_name": share_name
         }
     }
-    if username_uri or password_uri:
-        args["credential"] = {
+    if username_uri is not None or password_uri is not None:
+        args["smb_mount"]["credentials"] = {
             "username_uri": username_uri,
             "password_uri": password_uri,
             "type": "AzureKeyVaultSmb"

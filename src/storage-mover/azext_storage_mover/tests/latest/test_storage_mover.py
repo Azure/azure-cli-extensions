@@ -143,22 +143,29 @@ class StorageMoverScenario(ScenarioTest):
                              '--nsg-rule NONE --admin-username ubuntuuser '
                              '--generate-ssh-keys').get_output_in_json()["publicIpAddress"]
         self.cmd('az storage-mover endpoint create-for-smb -g {rg} --storage-mover-name {mover_name} -n {endpoint_smb}'
-                 ' --description endpointSmbDesc --share-name {smb_share_name} --username-uri username '
-                 '--password-uri Password!23 --host '+vm_smb_ip)
+                 ' --description endpointSmbDesc --share-name {smb_share_name} '
+                 '--username-uri "https://smb-demo-kv.vault.azure.net/secrets/username" '
+                 '--password-uri "https://smb-demo-kv.vault.azure.net/secrets/password" --host '+vm_smb_ip)
         self.cmd('az storage-mover endpoint show -g {rg} --storage-mover-name {mover_name} -n {endpoint_smb}',
                        checks=[JMESPathCheck('name', self.kwargs.get('endpoint_smb', '')),
                                JMESPathCheck('properties.endpointType', "SmbMount"),
                                JMESPathCheck('properties.host', vm_smb_ip),
                                JMESPathCheck('properties.shareName', self.kwargs.get('smb_share_name', '')),
-                               JMESPathCheck('properties.description', "endpointSmbDesc")])
+                               JMESPathCheck('properties.description', "endpointSmbDesc"),
+                               JMESPathCheck('properties.credentials.passwordUri',
+                                             "https://smb-demo-kv.vault.azure.net/secrets/password"),
+                               JMESPathCheck('properties.credentials.usernameUri',
+                                             "https://smb-demo-kv.vault.azure.net/secrets/username")])
 
         # update for smb mount
         self.cmd('az storage-mover endpoint update-for-smb -g {rg} '
                  '--storage-mover-name {mover_name} '
-                 '-n {endpoint_smb} --description endpointSmbDescUpdate '
+                 '-n {endpoint_smb} --username-uri "" --password-uri "" --description endpointSmbDescUpdate '
                  '--share-name {smb_share_name} --host ' + vm_smb_ip,
                  checks=[JMESPathCheck('name', self.kwargs.get('endpoint_smb', '')),
-                         JMESPathCheck('properties.description', "endpointSmbDescUpdate")])
+                         JMESPathCheck('properties.description', "endpointSmbDescUpdate"),
+                         JMESPathCheck('properties.credentials.passwordUri', None),
+                         JMESPathCheck('properties.credentials.usernameUri', None)])
 
         self.cmd('az storage-mover endpoint list -g {rg} --storage-mover-name {mover_name}',
                  checks=[JMESPathCheck('length(@)', 4)])

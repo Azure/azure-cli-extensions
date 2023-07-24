@@ -347,6 +347,7 @@ class Update(AAZCommand):
             credentials = _builder.get(".properties{endpointType:SmbMount}.credentials")
             if credentials is not None:
                 credentials.set_prop("passwordUri", AAZStrType, ".password_uri")
+                credentials.set_const("type", "AzureKeyVaultSmb", AAZStrType, ".", typ_kwargs={"flags": {"required": True}})
                 credentials.set_prop("usernameUri", AAZStrType, ".username_uri")
 
             return _instance_value
