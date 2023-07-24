@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.0
+++++++
+* Add optional "purpose" parameter for controller creation
+
 0.1.3
 ++++++
 * Correct bug with delegate subnet
