@@ -63,4 +63,3 @@ class BaseResource:
 
     def get_argument_no_wait(self):
         return self.get_param("no_wait")
-
