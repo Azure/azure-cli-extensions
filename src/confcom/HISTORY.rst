@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.2.16
+* adding stop signals as a field that is picked up from image manifest and placed into policy
+* updating --print-existing-policy to print the whole policy
+* refactoring tests to be more portable across releases
+
 0.2.15
 * updating dmverity-vhd interface to be more flexible with output formats
 * bugfix for --print-existing-policy flag with parameter values
