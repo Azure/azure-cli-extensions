@@ -18,7 +18,7 @@ SERVICE_LINKER_RP = "Microsoft.ServiceLinker"
 MANAGED_CERTIFICATE_RT = "managedCertificates"
 PRIVATE_CERTIFICATE_RT = "certificates"
 
-DEV_SERVICE_LIST = ["kafka", "postgres", "redis"]
+DEV_SERVICE_LIST = ["kafka", "postgres", "redis", "mariadb"]
 
 DEV_KAFKA_IMAGE = 'kafka'
 DEV_KAFKA_SERVICE_TYPE = 'kafka'
@@ -31,6 +31,10 @@ DEV_POSTGRES_CONTAINER_NAME = 'postgres'
 DEV_REDIS_IMAGE = 'redis'
 DEV_REDIS_SERVICE_TYPE = 'redis'
 DEV_REDIS_CONTAINER_NAME = 'redis'
+
+DEV_MARIADB_IMAGE = 'mariadb'
+DEV_MARIADB_SERVICE_TYPE = 'mariadb'
+DEV_MARIADB_CONTAINER_NAME = 'mariadb'
 
 PENDING_STATUS = "Pending"
 SUCCEEDED_STATUS = "Succeeded"
