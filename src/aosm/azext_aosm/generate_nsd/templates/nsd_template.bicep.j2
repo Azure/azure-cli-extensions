@@ -12,11 +12,11 @@ param publisherName string
 param acrArtifactStoreName string
 @description('Name of an existing Network Service Design Group')
 param nsDesignGroup string
-@description('The version of the NSDV you want to create, in format A-B-C')
+@description('The version of the NSDV you want to create, in format A.B.C')
 param nsDesignVersion string
 @description('Name of the nfvi site')
 param nfviSiteName string = '{{nfvi_site_name}}'
-@description('The version that you want to name the NF template artifact, in format A-B-C. e.g. 6-13-0. Suggestion that this matches as best possible the SIMPL released version. If testing for development, you can use any numbers you like.')
+@description('The version that you want to name the NF template artifact, in format A.B.C. e.g. 6.13.0. If testing for development, you can use any numbers you like.')
 param armTemplateVersion string = '{{armTemplateVersion}}'
 @description('Name of the NF template artifact')
 var armTemplateName = '{{armTemplateName}}'
