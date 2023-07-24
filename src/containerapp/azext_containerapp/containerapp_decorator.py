@@ -95,6 +95,7 @@ class BaseContainerAppDecorator(BaseResource):
         except CLIError as e:
             handle_raw_exception(e)
 
+    # deprecate, will be removed in the future
     def list_containerapp(self):
         try:
             resource_group_name = self.get_argument_resource_group_name()
@@ -116,6 +117,7 @@ class BaseContainerAppDecorator(BaseResource):
         except CLIError as e:
             handle_raw_exception(e)
 
+    # deprecate, will be removed in the future
     def show_containerapp(self):
         try:
             r = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
@@ -125,6 +127,7 @@ class BaseContainerAppDecorator(BaseResource):
         except CLIError as e:
             handle_raw_exception(e)
 
+    # deprecate, will be removed in the future
     def delete_containerapp(self):
         try:
             return self.client.delete(cmd=self.cmd, name=self.get_argument_name(), resource_group_name=self.get_argument_resource_group_name(), no_wait=self.get_argument_no_wait())

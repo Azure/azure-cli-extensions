@@ -1031,7 +1031,7 @@ def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
     )
     containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    return containerapp_base_decorator.delete_containerapp()
+    return containerapp_base_decorator.delete()
 
 
 def create_managed_environment(cmd,
