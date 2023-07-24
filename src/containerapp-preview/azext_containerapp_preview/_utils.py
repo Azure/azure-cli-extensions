@@ -38,6 +38,12 @@ def _get_azext_containerapp_module(module_name):
         # Import the extension module
         from importlib import import_module
         azext_custom = import_module(module_name)
+
+        # need to reload preview's _help, because the containerapp's _help will overwrite the preview's _help after importing the containerapp module.
+        from azext_containerapp_preview import _help
+        from importlib import reload
+        reload(_help)
+
         return azext_custom
     except ImportError as ie:
         raise CLIError(ie) from ie
