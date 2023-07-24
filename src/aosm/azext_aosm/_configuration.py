@@ -104,9 +104,9 @@ DESCRIPTION_MAP: Dict[str, str] = {
 
 @dataclass
 class ArtifactConfig:
-    artifact_name: str = DESCRIPTION_MAP["artifact_name"]
     # artifact.py checks for the presence of the default descriptions, change
     # there if you change the descriptions.
+    artifact_name: str = DESCRIPTION_MAP["artifact_name"]
     file_path: Optional[str] = DESCRIPTION_MAP["file_path"]
     blob_sas_url: Optional[str] = DESCRIPTION_MAP["blob_sas_url"]
     version: Optional[str] = DESCRIPTION_MAP["artifact_version"]
@@ -158,7 +158,7 @@ class Configuration(abc.ABC):
     @property
     def acr_manifest_names(self) -> List[str]:
         """
-        The list of ACR manifest names..
+        The list of ACR manifest names.
         """
         raise NotImplementedError("Subclass must define property")
 

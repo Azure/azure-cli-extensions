@@ -89,7 +89,7 @@ class nfRET:
 
     @property
     def nf_bicep_substitutions(self) -> Dict[str, Any]:
-        """Write out the Network Function bicep file."""
+        """Returns the jinja2 parameters for the NF bicep template template."""
         return {
             "network_function_name": self.config.name,
             "publisher_name": self.config.publisher,
@@ -112,9 +112,7 @@ class nfRET:
     @property
     def config_schema_snippet(self) -> Dict[str, Any]:
         """
-
-        :return: _description_
-        :rtype: Dict[str, Any]
+        Return the CGS snippet for this NF.
         """
         nfdv_version_description_string = (
             f"The version of the {self.config.name} "
