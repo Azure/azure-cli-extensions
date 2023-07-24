@@ -2485,11 +2485,6 @@ def _aks_mesh_update(
     return aks_update_decorator.update_mc(mc)
 
 
-
-
-
-
-
 MESH_CONFIG_ALLOW_LIST = {
     '1.17.2': {
     'proxyListenPort', 
@@ -2611,16 +2606,6 @@ PROXY_CONFIG_ALLOW_LIST = {
 migration_checks = ['AKS version', 'Istio version', 'OSM version', 'Cilium' ,'Windows Server Container', 'Meshconfig', 'Proxyconfig', 'Telemetry', 'WasmPlugin', 'WorkloadGroup', 'WorkloadEntry', 'IstioOperator', 'EnvoyFilter']
 result_dict = {item: {'status': False, 'message': ''} for item in migration_checks}
 
-def load_kube_context(name, contexts):
-    if not contexts:
-        raise CLIError("Couldn't find any contexts in the kubeconfig file.")
-        # print("No context in the kube config file.")
-        return  
-    cur_context = ''
-    for item in contexts:
-        if(item['context']['cluster'] == name):
-            cur_context = item['name']
-    return cur_context    
 
 
 
@@ -2637,28 +2622,17 @@ def aks_mesh_migration_check(cmd, client, resource_group_name, name):
     if (cur_context == ''):
         raise CLIError("Couldn't load the kube context with the clustername provided. Please check cluster name or kubeconfig.")
 
-
     kubernetes.config.load_kube_config(context = cur_context)
     v1 = kubernetes.client.CoreV1Api()
-    test_passed = 0
-    aks_mesh_check_base_requirements(cmd, client, resource_group_name, name, v1, test_passed)
-    aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1, test_passed)
+    aks_mesh_check_base_requirements(cmd, client, resource_group_name, name, v1)
+    aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1)
     instance = kubernetes.client.CustomObjectsApi()
-    aks_mesh_check_crd_config(cmd, client, resource_group_name, name, test_passed, instance)
+    aks_mesh_check_crd_config(cmd, client, resource_group_name, name, instance)
     display_migrationcheck(result_dict)
     return
 
 
-
-def display_migrationcheck(result_dictionary):
-    for item, value in result_dictionary.items():
-        if value['status']:
-            test_status = "Passed"
-        else:
-            test_status = "Failed"
-        print("{} test {}. {}".format(item, test_status, value['message']))
-
-def aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1, test_passed):
+def aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1):
     from pprint import pprint
     cm = v1.list_config_map_for_all_namespaces()
     mesh_config = {}
@@ -2666,7 +2640,6 @@ def aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1,
     istio_version = ''
     proxy_config = {}
     
-
     for item in cm.items:
         if (item.data and 'mesh' in item.data):
             mesh_config = yaml.safe_load(item.data['mesh'])
@@ -2698,50 +2671,10 @@ def aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1,
     check_config(proxy_config, PROXY_CONFIG_ALLOW_LIST, istio_version, "Proxyconfig")
     
     
-def check_istio_version(supported_versions, istio_version, result_dict):
-    if istio_version == '':
-        result_dict['Istio version']['message'] = "No Istio version found."
-        return
-    is_greater = True
-    for supported_version in supported_versions:
-        if (version.parse(istio_version) < version.parse(supported_version)):
-            is_greater = False
-            result_dict['Istio version']['message'] = "Unsupported Istio version found."
-        else:
-            is_greater = True
-    if not is_greater:
-        result_dict['Istio version']['message'] = "Supported version but couldn't process it. Consider updating the tool."
-    return
 
 
-def check_config(config_set, allow_list, istio_version, config_name):
-    if len(istio_version) == 0:
-        result_dict[config_name] = {
-            'status': False,
-            'message': "No {} configuration found. Couldn't determine Istio version.".format(config_name)
-        }
-        return;
-    
-    if len(config_set) == 0:
-        result_dict[config_name] = {
-            'status': True,
-            'message': "No {} configuration found.".format(config_name)
-        }
-    else:
-        result_dict[config_name] = {
-            'status' : True,
-            'message': "Now unallowed {} configuration found.".format(config_name)
-        }
-        
-    for item,value in config_set.items():
-        if (item not in allow_list[istio_version]):
-            if (value == True or len(value) == 0):
-                result_dict[config_name]['status'] = False
-                result_dict[config_name]['message'] = "Unallowed {} configuration found.".format(config_name)
-    return 
 
-
-def aks_mesh_check_base_requirements(cmd, client, resource_group_name, name, v1, test_passed):
+def aks_mesh_check_base_requirements(cmd, client, resource_group_name, name, v1):
     from pprint import pprint
     show_result = aks_show(cmd, client, resource_group_name, name)
     KUBERNETES_VERSION = show_result.kubernetes_version
@@ -2796,7 +2729,7 @@ def aks_mesh_check_base_requirements(cmd, client, resource_group_name, name, v1,
     return
 
 
-def aks_mesh_check_crd_config(cmd, client, resource_group_name, name, test_passed, instance):
+def aks_mesh_check_crd_config(cmd, client, resource_group_name, name, instance):
     all_crs_map = {
         'Telemetry' : {'group' : "telemetry.istio.io", 'version' : "v1alpha1", 'plural' : "telemetries"},
         'WorkloadGroup' : {'group' : "networking.istio.io", 'version' : "v1beta1", 'plural' : "workloadgroups"},
@@ -2825,8 +2758,6 @@ def aks_mesh_check_crd_config(cmd, client, resource_group_name, name, test_passe
                 'message': "non-default {} custom resource not found".format(cr_name)
             }
     return
-        
-    
     
 def aks_mesh_check_crds(cr_name, cr_values_map, instance):
     from pprint import pprint
@@ -2837,11 +2768,14 @@ def aks_mesh_check_crds(cr_name, cr_values_map, instance):
                          'operator.istio.io/version': '1.17.2'}
     crd_response = instance.list_cluster_custom_object(group=cr_values_map['group'],version=cr_values_map['version'], plural=cr_values_map['plural'])
     
-    #EnvoyFilter and IstioOperator CR are expected to exist by default
+    #EnvoyFilter and IstioOperator CR are expected to exist by default on instioctl installation
     if cr_name == 'IstioOperator':
         #TODO: test istiooperator
+        for item in crd_response['items']:
+            if item['metadata']['name'] != "installed-state":
+                return False
         return True
-        # return (len(crd_response['items']) < 2) and (crd_response['items'][0]['metadata']['name'] == "installed-state")
+    
     #Istioctl installation of istio can install some EnvoyFilter configuration which is always labeled liked label_selector
     elif cr_name == 'EnvoyFilter':
         # TODO: test envoyfilters
@@ -2856,6 +2790,70 @@ def aks_mesh_check_crds(cr_name, cr_values_map, instance):
     else:
         return len(crd_response['items']) == 0
 
+
+def load_kube_context(name, contexts):
+    if not contexts:
+        raise CLIError("Couldn't find any contexts in the kubeconfig file.")
+        # print("No context in the kube config file.")
+        return  
+    cur_context = ''
+    for item in contexts:
+        if(item['context']['cluster'] == name):
+            cur_context = item['name']
+    return cur_context    
+
+
+def display_migrationcheck(result_dictionary):
+    for item, value in result_dictionary.items():
+        if value['status']:
+            test_status = "Passed"
+        else:
+            test_status = "Failed"
+        print("{} test {}. {}".format(item, test_status, value['message']))
+        
+        
+def check_istio_version(supported_versions, istio_version, result_dict):
+    if istio_version == '':
+        result_dict['Istio version']['message'] = "No Istio version found."
+        return
+    is_greater = True
+    for supported_version in supported_versions:
+        if (version.parse(istio_version) < version.parse(supported_version)):
+            is_greater = False
+            result_dict['Istio version']['message'] = "Unsupported Istio version found."
+        else:
+            is_greater = True
+    if not is_greater:
+        result_dict['Istio version']['message'] = "Supported version but couldn't process it. Consider updating the tool."
+    return
+
+
+def check_config(config_set, allow_list, istio_version, config_name):
+    if len(istio_version) == 0:
+        result_dict[config_name] = {
+            'status': False,
+            'message': "No {} configuration found. Couldn't determine Istio version.".format(config_name)
+        }
+        return;
+    
+    if len(config_set) == 0:
+        result_dict[config_name] = {
+            'status': True,
+            'message': "No {} configuration found.".format(config_name)
+        }
+    else:
+        result_dict[config_name] = {
+            'status' : True,
+            'message': "No unallowed {} configuration found.".format(config_name)
+        }
+        
+    for item,value in config_set.items():
+        if (item not in allow_list[istio_version]):
+            if (value == True or len(value) == 0):
+                result_dict[config_name]['status'] = False
+                result_dict[config_name]['message'] = "Unallowed {} configuration found.".format(config_name)
+    return 
+        
 
 
 
