@@ -119,10 +119,8 @@ def _load_rooms_command_table(self):
 
 
 def _load_email_command_table(self):
-    rooms_arguments = ['connection_string']
-    self.command_group('communication email', is_preview=True)
+    email_arguments = ['connection_string']
+    self.command_group('communication email')
 
-    with self.command_group('communication email', client_factory=cf_communication_email, is_preview=True) as g:
-        g.communication_custom_command('send', 'communication_email_send', rooms_arguments)
-    with self.command_group('communication email', client_factory=cf_communication_email, is_preview=True) as g:
-        g.communication_custom_command('status get', 'communication_email_get_status', rooms_arguments)
+    with self.command_group('communication email', client_factory=cf_communication_email) as g:
+        g.communication_custom_command('send', 'communication_email_send', email_arguments)
