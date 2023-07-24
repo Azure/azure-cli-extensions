@@ -74,14 +74,23 @@ class Create(_Create, CustomSshOptions):
                 "The image will need to have keys or credentials "
                 "setup in order to access."
             )
-        args.ssh_public_keys = ssh_keys
+        if len(ssh_keys) > 0:
+            args.ssh_public_keys = ssh_keys
 
         # control plane node configuration
         ssh_keys_control_plane = []
         ssh_keys_control_plane += CustomSshOptions.add_ssh_key_action(
             list(args.control_plane_node_configuration.ssh_key_values)
         )
-        args.control_plane_node_configuration.ssh_public_keys = ssh_keys_control_plane
+
+        # When control_plane_node_configuration contains no ssh keys in the input, empty 'sshPublicKey' array is not sent to the backend
+        # as it will erase the existing keys in that level. When control_plane_node_configuration sshPublicKey is not sent,
+        # the top level cluster ssh keys will be used
+        # Check if added here to avoid sending empty sshPublicKeys
+        if len(ssh_keys_control_plane) > 0:
+            args.control_plane_node_configuration.ssh_public_keys = (
+                ssh_keys_control_plane
+            )
 
         # initial agent pool configuration
         for x in args.initial_agent_pool_configurations:
@@ -90,5 +99,10 @@ class Create(_Create, CustomSshOptions):
                 ssh_keys_initial_pool += CustomSshOptions.add_ssh_key_action(
                     (x.ssh_key_values.to_serialized_data())
                 )
-            x.ssh_public_keys = ssh_keys_initial_pool
+            # When initial_agent_pool_configurations contains no ssh keys in the input, empty 'sshPublicKey' array is not sent to the backend
+            # as it will erase the existing keys in that level. When initial_agent_pool_configurations sshPublicKey is not sent,
+            # the top level cluster ssh keys will be used
+            # Check if added here to avoid sending empty sshPublicKeys
+            if len(ssh_keys_initial_pool) > 0:
+                x.ssh_public_keys = ssh_keys_initial_pool
         return args
