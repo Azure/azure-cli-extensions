@@ -10,7 +10,11 @@ from azure.cli.testsdk import *
 
 class DncScenario(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_dnc')
+    ###
+    # Controller tests
+    ###
+
+    @ResourceGroupPreparer(name_prefix='cli_test_dnc', location='centraluseuap')
     def test_dnc_controller_create(self, resource_group):
         self.kwargs.update({
             'controllerName': 'clitestcontroller',
@@ -21,10 +25,11 @@ class DncScenario(ScenarioTest):
             self.check('name', '{controllerName}'),
             self.check('properties.provisioningState', 'Succeeded'),
             self.exists('properties.resourceGuid'),
-            self.exists('properties.controllerProperties.dncEndpoint')
+            self.exists('properties.dncAppId'),
+            self.exists('properties.dncEndpoint')
         ])
 
-    @ResourceGroupPreparer(name_prefix='cli_test_dnc')
+    @ResourceGroupPreparer(name_prefix='cli_test_dnc', location='centraluseuap')
     def test_dnc_controller_create_test_purpose(self, resource_group):
         self.kwargs.update({
             'controllerName': 'clitestcontroller',
@@ -35,10 +40,11 @@ class DncScenario(ScenarioTest):
             self.check('name', '{controllerName}'),
             self.check('properties.provisioningState', 'Succeeded'),
             self.exists('properties.resourceGuid'),
-            self.exists('properties.controllerProperties.dncEndpoint')
+            self.exists('properties.dncAppId'),
+            self.exists('properties.dncEndpoint')
         ])
 
-    @ResourceGroupPreparer(name_prefix='cli_test_dnc')
+    @ResourceGroupPreparer(name_prefix='cli_test_dnc', location='centraluseuap')
     def test_dnc_controller_delete(self, resource_group):
         self.kwargs.update({
             'controllerName': 'clitestcontroller',
@@ -47,7 +53,7 @@ class DncScenario(ScenarioTest):
 
         self.cmd('dnc controller delete --resource-name {controllerName} --resource-group {rg} --yes')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_dnc')
+    @ResourceGroupPreparer(name_prefix='cli_test_dnc', location='centraluseuap')
     def test_dnc_controller_show(self, resource_group):
         self.kwargs.update({
             'controllerName': 'clitestcontroller',
@@ -59,14 +65,16 @@ class DncScenario(ScenarioTest):
             self.check('name', '{controllerName}'),
             self.check('properties.provisioningState', 'Succeeded'),
             self.exists('properties.resourceGuid'),
-            self.exists('properties.controllerProperties.dncEndpoint')
+            self.exists('properties.dncAppId'),
+            self.exists('properties.dncEndpoint')
         ])
 
         self.cmd('dnc controller show --resource-name {controllerName} --resource-group {rg}', checks=[
             self.check('name', '{controllerName}'),
             self.check('properties.provisioningState', 'Succeeded'),
             self.exists('properties.resourceGuid'),
-            self.exists('properties.controllerProperties.dncEndpoint')
+            self.exists('properties.dncAppId'),
+            self.exists('properties.dncEndpoint')
         ])
 
         
