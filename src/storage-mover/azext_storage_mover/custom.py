@@ -98,7 +98,7 @@ def endpoint_create_for_nfs(cmd, endpoint_name, resource_group, storage_mover_na
 
 
 def endpoint_update_for_nfs(cmd, endpoint_name, resource_group, storage_mover_name,
-                            export=None, host=None, nfs_version=None,  description=None):
+                            export=None, host=None, nfs_version=None, description=None):
     Update_Endpoint = Update(cmd.loader)
     args = _get_args_for_endpoint_for_nfs(endpoint_name, resource_group, storage_mover_name,
                                           export, host, nfs_version, description)
