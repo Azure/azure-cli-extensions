@@ -29,8 +29,7 @@ resource publisher 'Microsoft.HybridNetwork/publishers@2023-04-01-preview' exist
 }
 
 // The artifact store is the resource in which all the artifacts required to deploy the NF are stored. 
-// You can either create one especially for SIMPL or share a manifest with other NSDs. In this example
-// the artifact store is expected to be shared and should be created upfront.
+// The artifact store is created by the az aosm CLI before this template is deployed.
 resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-04-01-preview' existing = {
   parent: publisher
   name: acrArtifactStoreName
@@ -98,11 +97,6 @@ resource nsdVersion 'Microsoft.Hybridnetwork/publishers/networkservicedesigngrou
           templateType: 'ArmTemplate'
           // The parameter values map values from the CG schema, to values required by the template
           // deployed by this resource element.
-          // This NSD does not support the NF-Agent as it has no Configuration Resource Elements.
-          // If Configuration resource elements (SDFs, Perimeta config) are added, the configMapping
-          // must be edited to have these lines (instead of blank values. SNSSelf is null if there are no Configuration elements)
-          // "<name of service bus param>": "{configurationparameters('SNSSelf').nfAgentConfiguration.resourceNamespace}",
-          // "<name of nf agent UAMI param>": "{configurationparameters('SNSSelf').nfAgentConfiguration.userAssignedIdentityResourceId}",
           parameterValues: string(loadJsonContent('configMappings/configMappings.json'))
         }
         dependsOnProfile: {
