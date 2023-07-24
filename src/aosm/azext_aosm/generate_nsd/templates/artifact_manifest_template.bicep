@@ -11,7 +11,7 @@ param acrManifestNames array
 @description('The name under which to store the ARM template')
 param armTemplateNames array
 @description('The version that you want to name the NFM template artifact, in format A.B.C. e.g. 6.13.0. If testing for development, you can use any numbers you like.')
-param armTemplateVersions array
+param armTemplateVersion string
 
 resource publisher 'Microsoft.HybridNetwork/publishers@2023-04-01-preview' existing = {
   name: publisherName
@@ -32,7 +32,7 @@ resource acrArtifactManifests 'Microsoft.Hybridnetwork/publishers/artifactStores
       {
         artifactName: armTemplateNames[i]
         artifactType: 'ArmTemplate'
-        artifactVersion: armTemplateVersions[i]
+        artifactVersion: armTemplateVersion
       }
     ]
   }

@@ -65,11 +65,6 @@ class PreDeployerViaSDK:
         if not self.api_clients.resource_client.resource_groups.check_existence(
             resource_group_name
         ):
-            if isinstance(self.config, NSConfiguration):
-                raise AzCLIError(
-                    f"Resource Group {resource_group_name} does not exist. Please"
-                    " create it before running this command."
-                )
             logger.info("RG %s not found. Create it.", resource_group_name)
             print(f"Creating resource group {resource_group_name}.")
             rg_params: ResourceGroup = ResourceGroup(location=self.config.location)
@@ -110,12 +105,7 @@ class PreDeployerViaSDK:
                 f"Publisher {publisher.name} exists in resource group"
                 f" {resource_group_name}"
             )
-        except azure_exceptions.ResourceNotFoundError as ex:
-            if isinstance(self.config, NSConfiguration):
-                raise AzCLIError(
-                    f"Publisher {publisher_name} does not exist. Please create it"
-                    " before running this command."
-                ) from ex
+        except azure_exceptions.ResourceNotFoundError:
             # Create the publisher
             logger.info("Creating publisher %s if it does not exist", publisher_name)
             print(

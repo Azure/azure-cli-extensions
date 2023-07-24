@@ -172,10 +172,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                     f"Generated NFD bicep template created in {self.output_directory}"
                 )
                 print(
-                    "Please review these templates."
-                    "If you are happy with them, you should manually deploy your bicep "
-                    "templates and upload your charts and images to your "
-                    "artifact store."
+                    "Please review these templates. When you are happy with them run "
+                    "`az aosm nfd publish` with the same arguments."
                 )
             except InvalidTemplateError as e:
                 raise e

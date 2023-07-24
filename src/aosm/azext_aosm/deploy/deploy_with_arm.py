@@ -233,7 +233,7 @@ class DeployerViaArm:
             self.config,
             self.api_clients,
             self.config.acr_artifact_store_name,
-            self.config.acr_manifest_name,
+            self.config.acr_manifest_names[0],
         )
 
         artifact_dictionary = {}
@@ -359,16 +359,16 @@ class DeployerViaArm:
             arm_template_names = [
                 nf.arm_template.artifact_name for nf in self.config.network_functions
             ]
-            arm_template_versions = [
-                nf.arm_template.version for nf in self.config.network_functions
-            ]
+
+            # Set the artifact version to be the same as the NSD version, so that they
+            # don't get over written when a new NSD is published.
             return {
                 "location": {"value": self.config.location},
                 "publisherName": {"value": self.config.publisher_name},
                 "acrArtifactStoreName": {"value": self.config.acr_artifact_store_name},
                 "acrManifestNames": {"value": self.config.acr_manifest_names},
                 "armTemplateNames": {"value": arm_template_names},
-                "armTemplateVersions": {"value": arm_template_versions},
+                "armTemplateVersion": {"value": self.config.nsd_version},
             }
         raise ValueError("Unknown configuration type")
 
@@ -457,7 +457,7 @@ class DeployerViaArm:
             # Convert the NF bicep to ARM
             arm_template_artifact_json = self.convert_bicep_to_arm(
                 os.path.join(
-                    self.config.output_directory_for_build, NF_DEFINITION_BICEP_FILENAME
+                    self.config.output_directory_for_build, nf.nf_bicep_filename
                 )
             )
 
@@ -542,6 +542,7 @@ class DeployerViaArm:
                 that the template produces
         """
         logger.info("Deploy %s", bicep_template_path)
+        logger.debug("Parameters: %s", parameters)
         arm_template_json = self.convert_bicep_to_arm(bicep_template_path)
 
         return self.validate_and_deploy_arm_template(

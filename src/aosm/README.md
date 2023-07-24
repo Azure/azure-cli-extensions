@@ -198,17 +198,3 @@ az config set logging.enable_log_file=false
 
 ## Development
 Information about setting up and maintaining a development environment for this extension can be found [here](./development.md).
-
-## Linting
-Please run mypy on your changes and fix up any issues before merging.
-```bash
-cd src/aosm
-mypy . --ignore-missing-imports --no-namespace-packages --exclude "azext_aosm/vendored_sdks/*"
-```
-
-## Pipelines
-The pipelines for the Azure CLI run in ADO, not in github.
-To trigger a pipeline you need to create a PR against main.
-Until we do the initial merge to main we don't want to have a PR to main for every code review.
-Instead we have a single PR for the `add-aosm-extension` branch: https://github.com/Azure/azure-cli-extensions/pull/6426
-Once you have merged your changes to `add-aosm-extension` then look at the Azure Pipelines under https://github.com/Azure/azure-cli-extensions/pull/6426/checks, click on the link that says `<X> errors / <Y> warnings`.

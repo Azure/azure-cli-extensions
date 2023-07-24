@@ -43,8 +43,10 @@ Make sure your VSCode is running in the same python virtual environment
 ```bash
 azdev style aosm
 azdev linter --include-whl-extensions aosm
-(Not written any tests yet)
 azdev test aosm
+
+cd src/aosm
+mypy . --ignore-missing-imports --no-namespace-packages --exclude "azext_aosm/vendored_sdks/*"
 ```
 The standard Python tool, `black`, is useful for automatically formatting your code.
 

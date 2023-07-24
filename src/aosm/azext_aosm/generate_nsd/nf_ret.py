@@ -6,7 +6,7 @@
 
 import json
 
-from typing import Dict, Any
+from typing import Dict, Any, List, Union
 from knack.log import get_logger
 
 from azext_aosm._configuration import NFDRETConfiguration
@@ -42,7 +42,6 @@ class nfRET:
         self.nf_type = self.config.name.replace("-", "_")
         self.nfdv_parameter_name = f"{self.nf_type}_nfd_version"
         self.config_mapping_filename = f"{self.config.name}_config_mapping.json"
-        self.nf_bicep_filename = f"{self.config.name}_nf.bicep"
 
     def _get_nfdv(
         self, config: NFDRETConfiguration, api_clients
@@ -61,7 +60,7 @@ class nfRET:
         return nfdv_object
 
     @property
-    def config_mappings(self) -> Dict[str, str]:
+    def config_mappings(self) -> Dict[str, Any]:
         """
         Return the contents of the config mapping file for this RET.
         """
@@ -69,10 +68,11 @@ class nfRET:
 
         logger.debug("Create %s", self.config_mapping_filename)
 
-        deployment_parameters = f"{{configurationparameters('{self.cg_schema_name}').{nf}.deploymentParameters}}"
+        deployment_parameters: Union[str, List[str]] = f"{{configurationparameters('{self.cg_schema_name}').{nf}.deploymentParameters}}"
 
         if not self.config.multiple_instances:
-            deployment_parameters = f"[{deployment_parameters}]"
+            assert isinstance(deployment_parameters, str)
+            deployment_parameters = [deployment_parameters]
 
         config_mappings = {
             "deploymentParameters": deployment_parameters,

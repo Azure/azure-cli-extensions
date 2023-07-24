@@ -420,6 +420,11 @@ class NFDRETConfiguration:
         return artifact
 
     @property
+    def nf_bicep_filename(self) -> str:
+        """Return the name of the bicep template for deploying the NFs."""
+        return f"{self.name}_nf.bicep"
+
+    @property
     def resource_element_name(self) -> str:
         """Return the name of the resource element."""
         artifact_name = self.arm_template.artifact_name

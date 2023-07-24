@@ -177,7 +177,7 @@ class NSDGenerator:
 
             self._generate_bicep(
                 NF_TEMPLATE_JINJA2_SOURCE_TEMPLATE,
-                os.path.join(output_directory, nf.nf_bicep_filename),
+                os.path.join(output_directory, nf.config.nf_bicep_filename),
                 substitutions,
             )
 
@@ -186,6 +186,9 @@ class NSDGenerator:
         ret_names = [nf.config.resource_element_name for nf in self.nf_ret_generators]
         arm_template_names = [
             nf.config.arm_template.artifact_name for nf in self.nf_ret_generators
+        ]
+        config_mapping_files = [
+            nf.config_mapping_filename for nf in self.nf_ret_generators
         ]
 
         # We want the armTemplateVersion to be the same as the NSD Version.  That means
@@ -197,6 +200,7 @@ class NSDGenerator:
             "cg_schema_name": self.config.cg_schema_name,
             "nsdv_description": self.config.nsdv_description,
             "ResourceElementName": ret_names,
+            "configMappingFiles": config_mapping_files,
             "nf_count": len(self.nf_ret_generators),
         }
 

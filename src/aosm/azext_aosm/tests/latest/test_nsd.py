@@ -55,7 +55,27 @@ MULTIPLE_INSTANCES_CGV_DATA = {
 }
 
 
-deploy_parameters = {
+MULTIPLE_NFs_CGV_DATA = {
+    "managedIdentity": "managed_identity",
+    "nginx-nfdg": {
+        "customLocationId": "custom_location",
+        "nginx_nfdg_nfd_version": "1.0.0",
+        "deploymentParameters": {"service_port": 5222, "serviceAccount_create": False},
+    },
+    "ubuntu-nfdg": {
+        "ubuntu_nfdg_nfd_version": "1.0.0",
+        "deploymentParameters": {
+            "location": "eastus",
+            "subnetName": "ubuntu-vm-subnet",
+            "ubuntuVmName": "ubuntu-vm",
+            "virtualNetworkId": "ubuntu-vm-vnet",
+            "sshPublicKeyAdmin": "public_key",
+        },
+    },
+}
+
+
+ubuntu_deploy_parameters = {
     "$schema": "https://json-schema.org/draft-07/schema#",
     "title": "DeployParametersSchema",
     "type": "object",
@@ -67,7 +87,16 @@ deploy_parameters = {
     },
 }
 
-deploy_parameters_string = json.dumps(deploy_parameters)
+nginx_deploy_parameters = {
+    "$schema": "https://json-schema.org/draft-07/schema#",
+    "title": "DeployParametersSchema",
+    "type": "object",
+    "properties": {
+        "serviceAccount_create": {"type": "boolean"},
+        "service_port": {"type": "integer"},
+    },
+    "required": ["serviceAccount_create", "service_port"],
+}
 
 
 # We don't want to get details from a real NFD (calling out to Azure) in a UT.
@@ -77,12 +106,12 @@ class NFDV:
     deploy_parameters: str
 
 
-nfdv = NFDV(deploy_parameters_string)
-
-
 class NFDVs:
-    def get(self, **_):
-        return nfdv
+    def get(self, network_function_definition_group_name, **_):
+        if "nginx" in network_function_definition_group_name:
+            return NFDV(json.dumps(nginx_deploy_parameters))
+        else:
+            return NFDV(json.dumps(ubuntu_deploy_parameters))
 
 
 class AOSMClient:
@@ -185,9 +214,6 @@ class TestNSDGenerator:
                     CGV_DATA,
                     "nsd-bicep-templates/schemas/ubuntu_ConfigGroupSchema.json",
                 )
-                # build_bicep("nsd-bicep-templates/nf_definition.bicep")
-                # build_bicep("nsd-bicep-templates/nsd_definition.bicep")
-                # build_bicep("nsd-bicep-templates/artifact_manifest.bicep")
             finally:
                 os.chdir(starting_directory)
 
@@ -213,8 +239,37 @@ class TestNSDGenerator:
                     "nsd-bicep-templates/schemas/ubuntu_ConfigGroupSchema.json",
                 )
 
-                # Don't bother validating the bicep here.  It takes ages and there
-                # nothing different about the bicep in the multiple instances case.
+            finally:
+                os.chdir(starting_directory)
+
+    @patch("azext_aosm.custom.cf_resources")
+    def test_build_multiple_nfs(self, cf_resources):
+        """
+        Test building the NSD bicep templates with multiple NFs allowed.
+        """
+        starting_directory = os.getcwd()
+        with TemporaryDirectory() as test_dir:
+            os.chdir(test_dir)
+
+            try:
+                build_design(
+                    mock_cmd,
+                    client=mock_client,
+                    config_file=str(mock_nsd_folder / "input_multi_nf_nsd.json"),
+                )
+
+                assert os.path.exists("nsd-bicep-templates")
+                validate_json_against_schema(
+                    MULTIPLE_NFs_CGV_DATA,
+                    "nsd-bicep-templates/schemas/multinf_ConfigGroupSchema.json",
+                )
+
+                # The bicep checks take a while, so we only do them here and not on the
+                # other tests.
+                build_bicep("nsd-bicep-templates/nginx-nfdg_nf.bicep")
+                build_bicep("nsd-bicep-templates/ubuntu-nfdg_nf.bicep")
+                build_bicep("nsd-bicep-templates/nsd_definition.bicep")
+                build_bicep("nsd-bicep-templates/artifact_manifest.bicep")
 
             finally:
                 os.chdir(starting_directory)
