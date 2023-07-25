@@ -34,6 +34,7 @@ from knack.prompting import prompt_y_n, prompt as prompt_str
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
+from .containerapp_auth_decorator import ContainerAppAuthDecorator
 from .containerapp_decorator import ContainerAppCreateDecorator, BaseContainerAppDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_exception
 from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient, WorkloadProfileClient, ContainerAppsJobClient
@@ -5297,64 +5298,28 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
                        redirect_provider=None, require_https=None,
                        proxy_convention=None, proxy_custom_host_header=None,
                        proxy_custom_proto_header=None, excluded_paths=None):
-    from ._utils import set_field_in_auth_settings, update_http_settings_in_auth_settings
-    existing_auth = {}
-    try:
-        existing_auth = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
-    except:
-        existing_auth["platform"] = {}
-        existing_auth["platform"]["enabled"] = True
-        existing_auth["globalValidation"] = {}
-        existing_auth["login"] = {}
+    raw_parameters = locals()
+    containerapp_auth_decorator = ContainerAppAuthDecorator(
+        cmd=cmd,
+        client=AuthClient,
+        raw_parameters=raw_parameters,
+        models="azext_containerapp._sdk_models"
+    )
 
-    existing_auth = set_field_in_auth_settings(existing_auth, set_string)
-
-    if enabled is not None:
-        if "platform" not in existing_auth:
-            existing_auth["platform"] = {}
-        existing_auth["platform"]["enabled"] = enabled
-
-    if runtime_version is not None:
-        if "platform" not in existing_auth:
-            existing_auth["platform"] = {}
-        existing_auth["platform"]["runtimeVersion"] = runtime_version
-
-    if config_file_path is not None:
-        if "platform" not in existing_auth:
-            existing_auth["platform"] = {}
-        existing_auth["platform"]["configFilePath"] = config_file_path
-
-    if unauthenticated_client_action is not None:
-        if "globalValidation" not in existing_auth:
-            existing_auth["globalValidation"] = {}
-        existing_auth["globalValidation"]["unauthenticatedClientAction"] = unauthenticated_client_action
-
-    if redirect_provider is not None:
-        if "globalValidation" not in existing_auth:
-            existing_auth["globalValidation"] = {}
-        existing_auth["globalValidation"]["redirectToProvider"] = redirect_provider
-
-    if excluded_paths is not None:
-        if "globalValidation" not in existing_auth:
-            existing_auth["globalValidation"] = {}
-        existing_auth["globalValidation"]["excludedPaths"] = excluded_paths.split(",")
-
-    existing_auth = update_http_settings_in_auth_settings(existing_auth, require_https,
-                                                          proxy_convention, proxy_custom_host_header,
-                                                          proxy_custom_proto_header)
-    try:
-        return AuthClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current", auth_config_envelope=existing_auth)
-    except Exception as e:
-        handle_raw_exception(e)
+    containerapp_auth_decorator.construct_payload()
+    return containerapp_auth_decorator.create_or_update()
 
 
 def show_auth_config(cmd, resource_group_name, name):
-    auth_settings = {}
-    try:
-        auth_settings = AuthClient.get(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, auth_config_name="current")["properties"]
-    except:
-        pass
-    return auth_settings
+    raw_parameters = locals()
+    containerapp_auth_decorator = ContainerAppAuthDecorator(
+        cmd=cmd,
+        client=AuthClient,
+        raw_parameters=raw_parameters,
+        models="azext_containerapp._sdk_models"
+    )
+
+    return containerapp_auth_decorator.show()
 
 
 # Compose
