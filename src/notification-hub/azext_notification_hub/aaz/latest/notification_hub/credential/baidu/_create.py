@@ -49,7 +49,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.notification_hub_name = AAZStrArg(
-            options=["--notification-hub-name"],
+            options=["-n", "--name", "--notification-hub-name"],
             help="The notification hub name.",
             required=True,
         )

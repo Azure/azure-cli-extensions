@@ -65,8 +65,8 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The certificate key for this credential.",
         )
-        _args_schema.mpns_certificate = AAZStrArg(
-            options=["--mpns-certificate"],
+        _args_schema.mpns_certificate_org = AAZStrArg(
+            options=["--mpns-certificate-org"],
             arg_group="Properties",
             help="The MPNS certificate.",
         )
@@ -313,7 +313,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("certificateKey", AAZStrType, ".certificate_key")
-                properties.set_prop("mpnsCertificate", AAZStrType, ".mpns_certificate")
+                properties.set_prop("mpnsCertificate", AAZStrType, ".mpns_certificate_org")
 
             return _instance_value
 

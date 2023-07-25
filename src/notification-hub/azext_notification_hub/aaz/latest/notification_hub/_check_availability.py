@@ -59,7 +59,7 @@ class CheckAvailability(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
-            options=["--name"],
+            options=["-n", "--name"],
             arg_group="Parameters",
             help="Resource name",
             required=True,

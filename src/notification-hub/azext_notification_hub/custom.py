@@ -10,10 +10,20 @@
 # pylint: disable=protected-access
 
 from azure.cli.core.aaz import has_value
+from azext_notification_hub.aaz.latest.notification_hub import Create as _CreateNotificationHub
 from azext_notification_hub.aaz.latest.notification_hub import Update as _UpdateNotificationHub
 from azext_notification_hub.aaz.latest.notification_hub.credential.apns import Create as _ApnsUpdate
 from azext_notification_hub.aaz.latest.notification_hub.credential.mpns import Create as _MpnsUpdate
 from azext_notification_hub.aaz.latest.notification_hub.credential.baidu import Create as _BaiduUpdate
+from azext_notification_hub.aaz.latest.notification_hub.authorization_rule import RegenerateKeys as _RegenerateKeys
+
+
+class NotificationHubCreate(_CreateNotificationHub):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.location._required = True
+        return args_schema
 
 
 class NotificationHubUpdate(_UpdateNotificationHub):
@@ -39,12 +49,23 @@ class ApnsUpdate(_ApnsUpdate):
             help='The APNS certificate.',
             fmt=AAZFreeFormDictArgFormat()
         )
+        args_schema.apns_certificate_org._registered = False
         return args_schema
 
     def pre_operations(self):
         args = self.ctx.args
         if has_value(args.apns_certificate):
             args.apns_certificate_org = args.apns_certificate
+
+
+class AdmUpdate(_UpdateNotificationHub):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.client_id._required = True
+        args_schema.client_secret._required = True
+        return args_schema
+
 
 
 class MpnsUpdate(_MpnsUpdate):
@@ -58,6 +79,7 @@ class MpnsUpdate(_MpnsUpdate):
             fmt=AAZFreeFormDictArgFormat(),
             required=True
         )
+        args_schema.mpns_certificate_org._registered = False
         return args_schema
 
     def pre_operations(self):
@@ -86,3 +108,13 @@ class BaiduUpdate(_BaiduUpdate):
         args = self.ctx.args
         args.baidu_api_key = args.api_key
         args.baidu_secret_key = args.secret_key
+
+
+class RuleRegenerateKeys(_RegenerateKeys):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZArgEnum
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.policy_key._required = True
+        args_schema.policy_key.enum = AAZArgEnum({'primary key': 'Primary Key', 'secondary key': 'Secondary Key'})
+        return args_schema
