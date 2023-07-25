@@ -60,6 +60,15 @@ class Create(AAZCommand):
             ),
         )
 
+        # define Arg Group "ControllerDetails"
+
+        _args_schema = cls._args_schema
+        _args_schema.id = AAZStrArg(
+            options=["--id"],
+            arg_group="ControllerDetails",
+            help="controller arm resource id",
+        )
+
         # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
@@ -79,29 +88,12 @@ class Create(AAZCommand):
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
 
-        # define Arg Group "Properties"
+        # define Arg Group "SubnetDetails"
 
         _args_schema = cls._args_schema
-        _args_schema.controller_details = AAZObjectArg(
-            options=["--controller-details"],
-            arg_group="Properties",
-            help="Properties of the controller.",
-        )
-        _args_schema.subnet_details = AAZObjectArg(
-            options=["--subnet-details"],
-            arg_group="Properties",
-            help="subnet details",
-        )
-
-        controller_details = cls._args_schema.controller_details
-        controller_details.id = AAZStrArg(
-            options=["id"],
-            help="controller arm resource id",
-        )
-
-        subnet_details = cls._args_schema.subnet_details
-        subnet_details.id = AAZStrArg(
-            options=["id"],
+        _args_schema.subnet_details_id = AAZStrArg(
+            options=["--subnet-details-id"],
+            arg_group="SubnetDetails",
             help="subnet arm resource id",
         )
         return cls._args_schema
@@ -218,8 +210,8 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("controllerDetails", AAZObjectType, ".controller_details")
-                properties.set_prop("subnetDetails", AAZObjectType, ".subnet_details")
+                properties.set_prop("controllerDetails", AAZObjectType)
+                properties.set_prop("subnetDetails", AAZObjectType)
 
             controller_details = _builder.get(".properties.controllerDetails")
             if controller_details is not None:
@@ -227,7 +219,7 @@ class Create(AAZCommand):
 
             subnet_details = _builder.get(".properties.subnetDetails")
             if subnet_details is not None:
-                subnet_details.set_prop("id", AAZStrType, ".id")
+                subnet_details.set_prop("id", AAZStrType, ".subnet_details_id")
 
             tags = _builder.get(".tags")
             if tags is not None:

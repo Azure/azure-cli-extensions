@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create a orchestrator instance.
 
     :example: Create an orchestrator instance
-        az dnc orchestrator-instance-service create --type "SystemAssigned" --location "West US" --api-server-endpoint "https://testk8s.cloudapp.net" --cluster-root-ca "ddsadsad344mfdsfdl" --id "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.DelegatedNetwork/controller/testcontroller" --orchestrator-app-id "546192d7-503f-477a-9cfe-4efc3ee2b6e1" --orchestrator-tenant-id "da6192d7-503f-477a-9cfe-4efc3ee2b6c3" --priv-link-resource-id "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.Network/privateLinkServices/plresource1" --resource-group "TestRG" --resource-name "testk8s1"
+        az dnc orchestrator-instance-service create --type "SystemAssigned" --location "West US" --kind "Kubernetes" --api-server-endpoint "https://testk8s.cloudapp.net" --cluster-root-ca "ddsadsad344mfdsfdl" --id "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.DelegatedNetwork/controller/testcontroller" --orchestrator-app-id "546192d7-503f-477a-9cfe-4efc3ee2b6e1" --orchestrator-tenant-id "da6192d7-503f-477a-9cfe-4efc3ee2b6c3" --priv-link-resource-id "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.Network/privateLinkServices/plresource1" --resource-group "TestRG" --resource-name "testk8s1"
     """
 
     _aaz_info = {
@@ -60,19 +60,34 @@ class Create(AAZCommand):
             ),
         )
 
+        # define Arg Group "ControllerDetails"
+
+        _args_schema = cls._args_schema
+        _args_schema.id = AAZStrArg(
+            options=["--id"],
+            arg_group="ControllerDetails",
+            help="controller arm resource id",
+        )
+
+        # define Arg Group "Identity"
+
+        _args_schema = cls._args_schema
+        _args_schema.type = AAZStrArg(
+            options=["--type"],
+            arg_group="Identity",
+            help="The type of identity used for orchestrator cluster. Type 'SystemAssigned' will use an implicitly created identity orchestrator clusters",
+            enum={"None": "None", "SystemAssigned": "SystemAssigned"},
+        )
+
         # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
-        _args_schema.identity = AAZObjectArg(
-            options=["--identity"],
-            arg_group="Parameters",
-            help="The identity of the orchestrator",
-        )
         _args_schema.kind = AAZStrArg(
             options=["--kind"],
             arg_group="Parameters",
             help="The kind of workbook. Choices are user and shared.",
             required=True,
+            default="Kubernetes",
             enum={"Kubernetes": "Kubernetes"},
         )
         _args_schema.location = AAZResourceLocationArg(
@@ -86,13 +101,6 @@ class Create(AAZCommand):
             options=["--tags"],
             arg_group="Parameters",
             help="The resource tags.",
-        )
-
-        identity = cls._args_schema.identity
-        identity.type = AAZStrArg(
-            options=["type"],
-            help="The type of identity used for orchestrator cluster. Type 'SystemAssigned' will use an implicitly created identity orchestrator clusters",
-            enum={"None": "None", "SystemAssigned": "SystemAssigned"},
         )
 
         tags = cls._args_schema.tags
@@ -111,11 +119,6 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="RootCA certificate of kubernetes cluster base64 encoded",
         )
-        _args_schema.controller_details = AAZObjectArg(
-            options=["--controller-details"],
-            arg_group="Properties",
-            help="Properties of the controller.",
-        )
         _args_schema.orchestrator_app_id = AAZStrArg(
             options=["--orchestrator-app-id"],
             arg_group="Properties",
@@ -126,16 +129,10 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="TenantID of server App ID",
         )
-        _args_schema.private_link_resource_id = AAZStrArg(
-            options=["--private-link-resource-id"],
+        _args_schema.priv_link_resource_id = AAZStrArg(
+            options=["--priv-link-resource-id"],
             arg_group="Properties",
             help="private link arm resource id. Either one of apiServerEndpoint or privateLinkResourceId can be specified",
-        )
-
-        controller_details = cls._args_schema.controller_details
-        controller_details.id = AAZStrArg(
-            options=["id"],
-            help="controller arm resource id",
         )
         return cls._args_schema
 
@@ -245,7 +242,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("identity", AAZObjectType)
             _builder.set_prop("kind", AAZStrType, ".kind", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType)
@@ -259,10 +256,10 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("apiServerEndpoint", AAZStrType, ".api_server_endpoint")
                 properties.set_prop("clusterRootCA", AAZStrType, ".cluster_root_ca")
-                properties.set_prop("controllerDetails", AAZObjectType, ".controller_details", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("controllerDetails", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("orchestratorAppId", AAZStrType, ".orchestrator_app_id")
                 properties.set_prop("orchestratorTenantId", AAZStrType, ".orchestrator_tenant_id")
-                properties.set_prop("privateLinkResourceId", AAZStrType, ".private_link_resource_id")
+                properties.set_prop("privateLinkResourceId", AAZStrType, ".priv_link_resource_id")
 
             controller_details = _builder.get(".properties.controllerDetails")
             if controller_details is not None:
