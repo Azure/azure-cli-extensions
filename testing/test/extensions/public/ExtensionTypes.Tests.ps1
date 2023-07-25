@@ -1,6 +1,6 @@
 Describe 'Extension Types Testing' {
     BeforeAll {
-        $extensionType = "microsoft.contoso.clusters"
+        $extensionType = "microsoft.contoso.samples"
         $location = "eastus2euap"
         
         . $PSScriptRoot/../../helper/Constants.ps1
@@ -31,17 +31,17 @@ Describe 'Extension Types Testing' {
         $output | Should -Not -BeNullOrEmpty
     }
 
-    # It "Performs a show-version-by-cluster  extension type version call" {
-    #     $output = az $Env:K8sExtensionName extension-types show-version-by-cluster -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters --extension-type $extensionType --version 1.0.0
-    #     $? | Should -BeTrue
-    #     $output | Should -Not -BeNullOrEmpty
-    # }
+    It "Performs a show-version-by-cluster  extension type version call" {
+        $output = az $Env:K8sExtensionName extension-types show-version-by-cluster -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters --extension-type $extensionType --version 1.1.0
+        $? | Should -BeTrue
+        $output | Should -Not -BeNullOrEmpty
+    }
 
-    # It "Performs a show-version-by-location extension type version call" {
-    #     $output = az $Env:K8sExtensionName extension-types show-versions-by-location --location $location --extension-type $extensionType --version 1.0.0
-    #     $? | Should -BeTrue
-    #     $output | Should -Not -BeNullOrEmpty
-    # }
+    It "Performs a show-version-by-location extension type version call" {
+        $output = az $Env:K8sExtensionName extension-types show-version-by-location --location $location --extension-type $extensionType --version 1.1.0
+        $? | Should -BeTrue
+        $output | Should -Not -BeNullOrEmpty
+    }
 
     It "Performs a list-versions-by-cluster extension type versions call" {
         $output = az $Env:K8sExtensionName extension-types list-versions-by-cluster -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters --extension-type $extensionType

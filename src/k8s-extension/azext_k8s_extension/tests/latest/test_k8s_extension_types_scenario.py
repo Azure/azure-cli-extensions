@@ -15,7 +15,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class K8sExtensionTypesScenarioTest(ScenarioTest):
     @record_only()
     def test_k8s_extension_types(self):
-        extension_type = 'microsoft.contoso.clusters'
+        extension_type = 'microsoft.contoso.samples'
         self.kwargs.update({
             'rg': 'azurecli-tests',
             'cluster_name': 'arc-cluster',
@@ -54,9 +54,9 @@ class K8sExtensionTypesScenarioTest(ScenarioTest):
 
         assert len(extensionTypes_list) > 0
 
-        # extensionTypes_list = self.cmd('k8s-extension extension-types show-version-by-location --location {location} --extension-type {extension_type} --version {version}').get_output_in_json()
+        extensionTypes_list = self.cmd('k8s-extension extension-types show-version-by-location --location {location} --extension-type {extension_type} --version {version}').get_output_in_json()
 
-        # assert len(extensionTypes_list) > 0
+        assert len(extensionTypes_list) > 0
 
 
 
