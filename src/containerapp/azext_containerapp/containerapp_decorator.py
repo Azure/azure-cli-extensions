@@ -567,6 +567,10 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             else:
                 set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.containerapp_def, user_assigned=[self.get_argument_registry_identity()])
 
+        if self.get_argument_source():
+            app = self.set_up_create_containerapp_if_source_or_repo(containerapp_def=self.containerapp_def)
+            containerapp_def = self.set_up_create_containerapp_source(app=app, containerapp_def=self.containerapp_def)
+
     def create_containerapp(self):
         try:
             r = self.client.create_or_update(
