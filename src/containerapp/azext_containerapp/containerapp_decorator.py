@@ -568,8 +568,8 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
                 set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.containerapp_def, user_assigned=[self.get_argument_registry_identity()])
 
         if self.get_argument_source():
-            app = self.set_up_create_containerapp_if_source_or_repo(containerapp_def=self.containerapp_def)
-            containerapp_def = self.set_up_create_containerapp_source(app=app, containerapp_def=self.containerapp_def)
+            app = self.set_up_create_containerapp_if_source_or_repo()
+            self.containerapp_def = self.set_up_create_containerapp_source(app=app)
 
     def create_containerapp(self):
         try:
@@ -626,15 +626,15 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
                                                             linker_name=item["linker_name"]).result()
 
         if self.get_argument_repo():
-            app = self.set_up_create_containerapp_if_source_or_repo(containerapp_def=containerapp_def)
+            app = self.set_up_create_containerapp_if_source_or_repo()
             r = self.set_up_create_containerapp_repo(app=app, r=r, env=app.env, env_rg=app.resource_group.name)
         return r
 
-    def set_up_create_containerapp_if_source_or_repo(self, containerapp_def):
+    def set_up_create_containerapp_if_source_or_repo(self):
         from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image)
 
         # Parse resource group name and managed env name
-        env_id = containerapp_def["properties"]['environmentId']
+        env_id = self.containerapp_def["properties"]['environmentId']
         parsed_managed_env = parse_resource_id(env_id)
         env_name = parsed_managed_env['name']
         env_rg = parsed_managed_env['resource_group']
@@ -653,7 +653,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
 
         return app
 
-    def set_up_create_containerapp_source(self, app, containerapp_def):
+    def set_up_create_containerapp_source(self, app):
         from ._up_utils import (_get_registry_details, get_token, _has_dockerfile, _get_dockerfile_content, _get_ingress_and_target_port)
         dockerfile = "Dockerfile"
         token = get_token(self.cmd, self.get_argument_repo(), self.get_argument_token())
@@ -669,8 +669,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         app.run_acr_build(dockerfile, self.get_argument_source(), quiet=False, build_from_source=not _has_dockerfile(self.get_argument_source(), dockerfile))
 
         # Update image
-        containerapp_def["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
-        return containerapp_def
+        self.containerapp_def["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
 
     def set_up_create_containerapp_repo(self, app, r, env, env_rg):
         from ._up_utils import (_create_github_action, get_token)
