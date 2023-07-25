@@ -14,20 +14,16 @@ from jinja2 import Template
 from knack.log import get_logger
 
 from azext_aosm._configuration import NSConfiguration
-from azext_aosm.generate_nsd.nf_ret import nfRET
+from azext_aosm.generate_nsd.nf_ret import NFRETGenerator
 from azext_aosm.util.constants import (
-    CNF,
     CONFIG_MAPPINGS_DIR_NAME,
-    NF_DEFINITION_BICEP_FILENAME,
     NF_TEMPLATE_JINJA2_SOURCE_TEMPLATE,
     NSD_ARTIFACT_MANIFEST_BICEP_FILENAME,
     NSD_ARTIFACT_MANIFEST_SOURCE_TEMPLATE_FILENAME,
-    NSD_CONFIG_MAPPING_FILENAME,
     NSD_BICEP_FILENAME,
     NSD_DEFINITION_JINJA2_SOURCE_TEMPLATE,
     SCHEMAS_DIR_NAME,
     TEMPLATES_DIR_NAME,
-    VNF,
 )
 from azext_aosm.util.management_clients import ApiClients
 
@@ -43,7 +39,7 @@ NFV_TO_BICEP_PARAM_TYPES: Dict[str, str] = {
 }
 
 
-class NSDGenerator:
+class NSDGenerator:  # pylint: disable=too-few-public-methods
     """
     NSD Generator.
 
@@ -61,7 +57,7 @@ class NSDGenerator:
         self.nsd_bicep_template_name = NSD_DEFINITION_JINJA2_SOURCE_TEMPLATE
         self.nsd_bicep_output_name = NSD_BICEP_FILENAME
         self.nf_ret_generators = [
-            nfRET(api_clients, nf_config, self.config.cg_schema_name)
+            NFRETGenerator(api_clients, nf_config, self.config.cg_schema_name)
             for nf_config in self.config.network_functions
         ]
 
@@ -92,7 +88,8 @@ class NSDGenerator:
         """
         :return: The Config Group Schema as a dictionary.
 
-        This function cannot be called before deployment parameters have been supplied.
+        See src/aosm/azext_aosm/tests/latest/nsd_output/*/schemas for examples of the
+        output from this function.
         """
         managed_identity_description_string = (
             "The managed identity to use to deploy NFs within this SNS.  This should "
@@ -220,8 +217,9 @@ class NSDGenerator:
             {},
         )
 
+    @staticmethod
     def _generate_bicep(
-        self, template_name: str, output_file_name: str, params: Dict[Any, Any]
+        template_name: str, output_file_name: str, params: Dict[Any, Any]
     ) -> None:
         """
         Render the bicep templates with the correct parameters and copy them into the build output folder.

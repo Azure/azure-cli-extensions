@@ -8,24 +8,19 @@
 VNF = "vnf"
 CNF = "cnf"
 NSD = "nsd"
-SCHEMA = "schema"
 
 # Skip steps
 BICEP_PUBLISH = "bicep-publish"
 ARTIFACT_UPLOAD = "artifact-upload"
 
 # Names of files used in the repo
-
 NF_TEMPLATE_JINJA2_SOURCE_TEMPLATE = "nf_template.bicep.j2"
-NF_DEFINITION_BICEP_FILENAME = "nf_definition.bicep"
 NF_DEFINITION_JSON_FILENAME = "nf_definition.json"
 NF_DEFINITION_OUTPUT_BICEP_PREFIX = "nfd-bicep-"
 NSD_DEFINITION_JINJA2_SOURCE_TEMPLATE = "nsd_template.bicep.j2"
 NSD_BICEP_FILENAME = "nsd_definition.bicep"
 NSD_OUTPUT_BICEP_PREFIX = "nsd-bicep-templates"
 NSD_ARTIFACT_MANIFEST_BICEP_FILENAME = "artifact_manifest.bicep"
-NSD_ARTIFACT_MANIFEST_JSON_FILENAME = "artifact_manifest.json"
-NSD_CONFIG_MAPPING_FILENAME = "configMappings.json"
 NSD_ARTIFACT_MANIFEST_SOURCE_TEMPLATE_FILENAME = "artifact_manifest_template.bicep"
 
 VNF_DEFINITION_BICEP_TEMPLATE_FILENAME = "vnfdefinition.bicep"

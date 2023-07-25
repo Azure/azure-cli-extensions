@@ -8,6 +8,7 @@ from dataclasses import dataclass
 import json
 import shutil
 import subprocess
+from filecmp import dircmp
 from pathlib import Path
 from unittest.mock import patch
 from tempfile import TemporaryDirectory
@@ -17,6 +18,7 @@ import jsonschema
 from azext_aosm.custom import generate_design_config, build_design
 
 mock_nsd_folder = ((Path(__file__).parent) / "mock_nsd").resolve()
+output_folder = ((Path(__file__).parent) / "nsd_output").resolve()
 
 
 CGV_DATA = {
@@ -178,6 +180,26 @@ def build_bicep(bicep_template_path):
         raise RuntimeError("Invalid Bicep")
 
 
+def compare_to_expected_output(expected_folder_name: str):
+    """
+    Compares nsd-bicep-templates to the supplied folder name
+
+    :param expected_folder_name: The name of the folder within nsd_output to compare
+    with.
+    """
+    # Check files and folders within the top level directory are the same.
+    comparison = dircmp("nsd-bicep-templates", output_folder / expected_folder_name)
+    assert len(comparison.diff_files) == 0
+    assert len(comparison.left_only) == 0
+    assert len(comparison.right_only) == 0
+
+    # Check the files and folders within each of the subdirectories are the same.
+    for subdir in comparison.subdirs.values():
+        assert len(subdir.diff_files) == 0
+        assert len(subdir.left_only) == 0
+        assert len(subdir.right_only) == 0
+
+
 class TestNSDGenerator:
     def test_generate_config(self):
         """
@@ -214,6 +236,8 @@ class TestNSDGenerator:
                     CGV_DATA,
                     "nsd-bicep-templates/schemas/ubuntu_ConfigGroupSchema.json",
                 )
+
+                compare_to_expected_output("test_build")
             finally:
                 os.chdir(starting_directory)
 
@@ -239,6 +263,7 @@ class TestNSDGenerator:
                     "nsd-bicep-templates/schemas/ubuntu_ConfigGroupSchema.json",
                 )
 
+                compare_to_expected_output("test_build_multiple_instances")
             finally:
                 os.chdir(starting_directory)
 
@@ -271,5 +296,6 @@ class TestNSDGenerator:
                 build_bicep("nsd-bicep-templates/nsd_definition.bicep")
                 build_bicep("nsd-bicep-templates/artifact_manifest.bicep")
 
+                compare_to_expected_output("test_build_multiple_nfs")
             finally:
                 os.chdir(starting_directory)

@@ -12,7 +12,6 @@ from knack.log import get_logger
 
 from azext_aosm._configuration import (
     Configuration,
-    NSConfiguration,
     VNFConfiguration,
     CNFConfiguration,
 )
@@ -379,7 +378,8 @@ class PreDeployerViaSDK:
     ) -> bool:
         """Returns True if all required manifests exist, False otherwise."""
         all_acr_mannys_exist = True
-        any_acr_mannys_exist = False if self.config.acr_manifest_names else True
+        any_acr_mannys_exist: bool = not self.config.acr_manifest_names
+
         for manifest in self.config.acr_manifest_names:
             acr_manny_exists: bool = self.does_artifact_manifest_exist(
                 rg_name=self.config.publisher_resource_group_name,

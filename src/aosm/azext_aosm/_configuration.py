@@ -34,10 +34,6 @@ DESCRIPTION_MAP: Dict[str, str] = {
         "Name of the Publisher resource you want your definition published to. "
         "Will be created if it does not exist."
     ),
-    "publisher_name_nsd": (
-        "Name of the Publisher resource you want your design published to. "
-        "This should be the same as the publisher used for your NFDVs"
-    ),
     "publisher_resource_group_name_nsd": "Resource group for the Publisher resource.",
     "nf_name": "Name of NF definition",
     "version": "Version of the NF definition",
@@ -328,10 +324,12 @@ class CNFConfiguration(NFConfiguration):
             )
 
 
-NFD_NAME = (
-    "The name of the existing Network Function Definition to deploy using this NSD"
+NFD_NAME = "The name of the existing Network Function Definition Group to deploy using this NSD"
+NFD_VERSION = (
+    "The version of the existing Network Function Definition to base this NSD on.  "
+    "This NSD will be able to deploy any NFDV with deployment parameters compatible "
+    "with this version."
 )
-NFD_VERSION = "The version of the existing Network Function Definition to base this NSD on.  This NSD will be able to deploy any NFDV with deployment parameters compatible with this version."
 NFD_LOCATION = "The region that the NFDV is published to."
 PUBLISHER_RESOURCE_GROUP = "The resource group that the publisher is hosted in."
 PUBLISHER_NAME = "The name of the publisher that this NFDV is published under."
@@ -345,6 +343,10 @@ MULTIPLE_INSTANCES = (
 
 @dataclass
 class NFDRETConfiguration:
+    """
+    The configuration required for an NFDV that you want to include in an NSDV.
+    """
+
     publisher: str = PUBLISHER_NAME
     publisher_resource_group: str = PUBLISHER_RESOURCE_GROUP
     name: str = NFD_NAME
@@ -405,7 +407,7 @@ class NFDRETConfiguration:
     @property
     def arm_template(self) -> ArtifactConfig:
         """
-        Return the parameters of the ARM template to be uploaded as part of
+        Return the parameters of the ARM template for this RET to be uploaded as part of
         the NSDV.
         """
         artifact = ArtifactConfig()
@@ -462,29 +464,28 @@ class NSConfiguration(Configuration):
     def validate(self):
         # validate that all of the configuration parameters are set
 
-        if self.location == DESCRIPTION_MAP["location"] or "":
+        if self.location in (DESCRIPTION_MAP["location"], ""):
             raise ValueError("Location must be set")
-        if self.publisher_name == DESCRIPTION_MAP["publisher_name_nsd"] or "":
+        if self.publisher_name in (DESCRIPTION_MAP["publisher_name"], ""):
             raise ValueError("Publisher name must be set")
-        if (
-            self.publisher_resource_group_name
-            == DESCRIPTION_MAP["publisher_resource_group_name_nsd"]
-            or ""
+        if self.publisher_resource_group_name in (
+            DESCRIPTION_MAP["publisher_resource_group_name_nsd"],
+            "",
         ):
             raise ValueError("Publisher resource group name must be set")
-        if (
-            self.acr_artifact_store_name == DESCRIPTION_MAP["acr_artifact_store_name"]
-            or ""
+        if self.acr_artifact_store_name in (
+            DESCRIPTION_MAP["acr_artifact_store_name"],
+            "",
         ):
             raise ValueError("ACR Artifact Store name must be set")
-        if self.network_functions == [] or None:
+        if self.network_functions in ([], None):
             raise ValueError(("At least one network function must be included."))
-        else:
-            for configuration in self.network_functions:
-                configuration.validate()
-        if self.nsdg_name == DESCRIPTION_MAP["nsdg_name"] or "":
+
+        for configuration in self.network_functions:
+            configuration.validate()
+        if self.nsdg_name in (DESCRIPTION_MAP["nsdg_name"], ""):
             raise ValueError("NSD name must be set")
-        if self.nsd_version == DESCRIPTION_MAP["nsd_version"] or "":
+        if self.nsd_version in (DESCRIPTION_MAP["nsd_version"], ""):
             raise ValueError("NSD Version must be set")
 
     @property

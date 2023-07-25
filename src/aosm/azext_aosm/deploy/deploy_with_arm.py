@@ -30,7 +30,6 @@ from azext_aosm.util.constants import (
     CNF,
     CNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
     CNF_MANIFEST_BICEP_TEMPLATE_FILENAME,
-    NF_DEFINITION_BICEP_FILENAME,
     NSD,
     NSD_ARTIFACT_MANIFEST_BICEP_FILENAME,
     NSD_BICEP_FILENAME,
@@ -421,9 +420,11 @@ class DeployerViaArm:
                     manifest_parameters_json_file, manifest_bicep_path
                 )
             else:
-                print(
-                    f"Artifact manifests {self.config.acr_manifest_names} already exist"
+                logger.debug(
+                    "Artifact manifests %s already exist",
+                    self.config.acr_manifest_names,
                 )
+                print("Artifact manifests already exist")
 
             message = (
                 f"Deploy bicep template for NSDV {self.config.nsd_version} "
@@ -466,7 +467,7 @@ class DeployerViaArm:
             with open(nf.arm_template.file_path, "w", encoding="utf-8") as file:
                 file.write(json.dumps(arm_template_artifact_json, indent=4))
 
-            print("Uploading ARM template artifact")
+            print(f"Uploading ARM template artifact: {nf.arm_template.file_path}")
             arm_template_artifact.upload(nf.arm_template)
             print("Done")
 

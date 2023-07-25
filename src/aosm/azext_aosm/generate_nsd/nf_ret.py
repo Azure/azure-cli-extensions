@@ -18,7 +18,7 @@ from azext_aosm.vendored_sdks.models import NetworkFunctionDefinitionVersion, NF
 logger = get_logger(__name__)
 
 
-class nfRET:
+class NFRETGenerator:
     """
     Represents a single network function resource element template withing an NSD.
     """
@@ -39,12 +39,13 @@ class nfRET:
             )
         self.deploy_parameters: Dict[str, Any] = json.loads(nfdv.deploy_parameters)
 
-        self.nf_type = self.config.name.replace("-", "_")
-        self.nfdv_parameter_name = f"{self.nf_type}_nfd_version"
+        self.nfd_group_name = self.config.name.replace("-", "_")
+        self.nfdv_parameter_name = f"{self.nfd_group_name}_nfd_version"
         self.config_mapping_filename = f"{self.config.name}_config_mapping.json"
 
+    @staticmethod
     def _get_nfdv(
-        self, config: NFDRETConfiguration, api_clients
+        config: NFDRETConfiguration, api_clients
     ) -> NetworkFunctionDefinitionVersion:
         """Get the existing NFDV resource object."""
         print(
@@ -62,21 +63,38 @@ class nfRET:
     @property
     def config_mappings(self) -> Dict[str, Any]:
         """
-        Return the contents of the config mapping file for this RET.
+                Return the contents of the config mapping file for this RET.
+
+                Output will look something like:
+        {
+            "deploymentParameters": [
+                "{configurationparameters('foo_ConfigGroupSchema').bar.deploymentParameters}"
+            ],
+            "nginx_nfdg_nfd_version": "{configurationparameters('foo_ConfigGroupSchema').bar.bar_nfd_version}",
+            "managedIdentity": "{configurationparameters('foo_ConfigGroupSchema').managedIdentity}",
+            "customLocationId": "{configurationparameters('foo_ConfigGroupSchema').bar.customLocationId}"
+        }
         """
         nf = self.config.name
 
         logger.debug("Create %s", self.config_mapping_filename)
 
-        deployment_parameters: Union[str, List[str]] = f"{{configurationparameters('{self.cg_schema_name}').{nf}.deploymentParameters}}"
+        deployment_parameters: Union[
+            str, List[str]
+        ] = f"{{configurationparameters('{self.cg_schema_name}').{nf}.deploymentParameters}}"
 
         if not self.config.multiple_instances:
             assert isinstance(deployment_parameters, str)
             deployment_parameters = [deployment_parameters]
 
+        version_parameter = (
+            f"{{configurationparameters('{self.cg_schema_name}')."
+            f"{nf}.{self.nfdv_parameter_name}}}"
+        )
+
         config_mappings = {
             "deploymentParameters": deployment_parameters,
-            self.nfdv_parameter_name: f"{{configurationparameters('{self.cg_schema_name}').{nf}.{self.nfdv_parameter_name}}}",
+            self.nfdv_parameter_name: version_parameter,
             "managedIdentity": f"{{configurationparameters('{self.cg_schema_name}').managedIdentity}}",
         }
 
@@ -102,9 +120,9 @@ class nfRET:
             # NF, as we do for deployParameters, but the SDK currently doesn't
             # support this and needs to be rebuilt to do so.
             "nfvi_type": (
-                NFVIType.AZURE_CORE.value  # type: ignore[attr-defined]
+                NFVIType.AZURE_CORE.value  # type: ignore[attr-defined] # pylint: disable=no-member
                 if self.config.type == VNF
-                else NFVIType.AZURE_ARC_KUBERNETES.value  # type: ignore[attr-defined]
+                else NFVIType.AZURE_ARC_KUBERNETES.value  # type: ignore[attr-defined] # pylint: disable=no-member
             ),
             "CNF": self.config.type == CNF,
         }
