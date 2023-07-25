@@ -1005,7 +1005,7 @@ def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
     )
     containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    return containerapp_base_decorator.show_containerapp()
+    return containerapp_base_decorator.show()
 
 
 def list_containerapp(cmd, resource_group_name=None, managed_env=None):
@@ -1018,7 +1018,7 @@ def list_containerapp(cmd, resource_group_name=None, managed_env=None):
     )
     containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    return containerapp_base_decorator.list_containerapp()
+    return containerapp_base_decorator.list()
 
 
 def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
@@ -1031,7 +1031,7 @@ def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
     )
     containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    return containerapp_base_decorator.delete_containerapp()
+    return containerapp_base_decorator.delete()
 
 
 def create_managed_environment(cmd,
