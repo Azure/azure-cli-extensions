@@ -15,6 +15,7 @@ from azext_notification_hub.aaz.latest.notification_hub import Update as _Update
 from azext_notification_hub.aaz.latest.notification_hub.credential.apns import Create as _ApnsUpdate
 from azext_notification_hub.aaz.latest.notification_hub.credential.mpns import Create as _MpnsUpdate
 from azext_notification_hub.aaz.latest.notification_hub.credential.baidu import Create as _BaiduUpdate
+from azext_notification_hub.aaz.latest.notification_hub.credential.adm import Create as _AdmUpdate
 from azext_notification_hub.aaz.latest.notification_hub.authorization_rule import RegenerateKeys as _RegenerateKeys
 
 
@@ -58,14 +59,13 @@ class ApnsUpdate(_ApnsUpdate):
             args.apns_certificate_org = args.apns_certificate
 
 
-class AdmUpdate(_UpdateNotificationHub):
+class AdmUpdate(_AdmUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.client_id._required = True
         args_schema.client_secret._required = True
         return args_schema
-
 
 
 class MpnsUpdate(_MpnsUpdate):
