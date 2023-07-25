@@ -469,10 +469,10 @@ def create_containerapp(cmd,
     containerapp_create_decorator.register_provider(CONTAINER_APPS_RP)
     containerapp_create_decorator.validate_arguments()
 
-    containerapp_def = containerapp_create_decorator.construct_containerapp()
-    r = containerapp_create_decorator.create_containerapp(containerapp_def)
-    containerapp_def = containerapp_create_decorator.construct_containerapp_for_post_process(containerapp_def, r)
-    r = containerapp_create_decorator.post_process_containerapp(containerapp_def, r)
+    containerapp_create_decorator.construct_containerapp()
+    r = containerapp_create_decorator.create_containerapp()
+    containerapp_create_decorator.construct_containerapp_for_post_process(r)
+    r = containerapp_create_decorator.post_process_containerapp(r)
     return r
 
 
@@ -1013,7 +1013,7 @@ def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
     )
     containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    return containerapp_base_decorator.show_containerapp()
+    return containerapp_base_decorator.show()
 
 
 def list_containerapp(cmd, resource_group_name=None, managed_env=None):
@@ -1026,7 +1026,7 @@ def list_containerapp(cmd, resource_group_name=None, managed_env=None):
     )
     containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    return containerapp_base_decorator.list_containerapp()
+    return containerapp_base_decorator.list()
 
 
 def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
@@ -1039,7 +1039,7 @@ def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
     )
     containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    return containerapp_base_decorator.delete_containerapp()
+    return containerapp_base_decorator.delete()
 
 
 def create_managed_environment(cmd,
@@ -4468,6 +4468,8 @@ def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, cer
                     cert_name = random_name
             logger.warning("Creating managed certificate '%s' for %s.\nIt may take up to 20 minutes to create and issue a managed certificate.", cert_name, standardized_hostname)
 
+            if validation_method is None:
+                raise RequiredArgumentMissingError('Please specify the parameter: --validation-method')
             validation = validation_method.upper()
             while validation not in ["TXT", "CNAME", "HTTP"]:
                 validation = prompt_str('\nPlease choose one of the following domain validation methods: TXT, CNAME, HTTP\nYour answer: ').upper()

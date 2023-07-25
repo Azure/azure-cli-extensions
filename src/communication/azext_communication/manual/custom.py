@@ -285,26 +285,28 @@ def communication_rooms_remove_participants(client, room_id, participants):
 
 def __get_attachment_content(filename, filetype):
     import base64
+    import json
     import os
-    from azure.communication.email import EmailAttachment
 
     _, tail = os.path.split(filename)
-    with open(filename, "r", encoding="utf-8") as file:
-        file_content = file.read()
 
-    base64_content = base64.b64encode(bytes(file_content, 'utf-8'))
+    with open(filename, "rb") as file:
+        file_bytes = file.read()
+    file_bytes_b64 = base64.b64encode(file_bytes)
 
-    return EmailAttachment(
-        name=tail,
-        attachment_type=filetype,
-        content_bytes_base64=base64_content.decode(),
-    )
+    attachment = {
+        "name": tail,
+        "contentType": filetype,
+        "contentInBase64": file_bytes_b64.decode(),
+    }
+
+    return json.dumps(attachment)
 
 
 def communication_email_send(client,
                              subject,
                              sender,
-                             recipients_to,
+                             recipients_to=None,
                              disable_tracking=False,
                              text=None,
                              html=None,
@@ -315,20 +317,22 @@ def communication_email_send(client,
                              attachments=None,
                              attachment_types=None):
 
-    from azure.communication.email import EmailContent, EmailAddress, EmailMessage, EmailRecipients
+    import json
     from knack.util import CLIError
 
     try:
-        email_content = EmailContent(
-            subject=subject,
-            plain_text=text,
-            html=html,
-        )
 
-        to_address = [EmailAddress(email=r) for r in recipients_to]
+        if recipients_to is None and recipients_cc is None and recipients_bcc is None:
+            raise CLIError('At least one recipient is required.')
 
-        reply_to_address = None if reply_to is None else [EmailAddress(email=reply_to)]
+        if importance == 'low':
+            priority = '5'
+        elif importance == 'high':
+            priority = '1'
+        else:
+            priority = '3'
 
+        attachments_list = []
         if attachments is None and attachment_types is None:
             attachments_list = None
         elif attachments is None or attachment_types is None:
@@ -336,34 +340,32 @@ def communication_email_send(client,
         elif len(attachments) != len(attachment_types):
             raise CLIError('Number of attachments and attachment-types should match.')
         else:
-            attachments_list = [
-                __get_attachment_content(attachments[i], attachment_types[i])
-                for i in range(len(attachments))
-            ]
+            all_attachments = attachments[0].split(',')
+            all_attachment_types = attachment_types[0].split(',')
+            for i in range(len(all_attachments)):
+                attachments_list.append(__get_attachment_content(all_attachments[i], all_attachment_types[i]))
 
-        message = EmailMessage(
-            sender=sender,
-            content=email_content,
-            recipients=EmailRecipients(
-                to=to_address,
-                cc=[] if recipients_cc is None else [EmailAddress(email=r) for r in recipients_cc],
-                bcc=[] if recipients_bcc is None else [EmailAddress(email=r) for r in recipients_bcc]),
-            importance=importance,
-            reply_to=reply_to_address,
-            disable_user_engagement_tracking=disable_tracking,
-            attachments=attachments_list,
-        )
+        message = {
+            "content": {
+                "subject": subject,
+                "plainText": text,
+                "html": html
+            },
+            "recipients": {
+                "to": None if recipients_to is None else [{"address": recipient} for recipient in recipients_to[0].split(',')],
+                "cc": None if recipients_cc is None else [{"address": recipient} for recipient in recipients_cc[0].split(',')],
+                "bcc": None if recipients_bcc is None else [{"address": recipient} for recipient in recipients_bcc[0].split(',')]
+            },
+            "replyTo": None if reply_to is None else [{"address": reply_to}],
+            "attachments": None if attachments_list is None else [json.loads(attachment) for attachment in attachments_list],
+            "senderAddress": sender,
+            "userEngagementTrackingDisabled": disable_tracking,
+            "headers": {
+                "x-priority": priority
+            }
+        }
 
-        return client.send(message)
-    except HttpResponseError:
-        raise
-    except Exception as ex:
-        sys.exit(str(ex))
-
-
-def communication_email_get_status(client, message_id):
-    try:
-        return client.get_send_status(message_id)
+        return client.begin_send(message)
     except HttpResponseError:
         raise
     except Exception as ex:

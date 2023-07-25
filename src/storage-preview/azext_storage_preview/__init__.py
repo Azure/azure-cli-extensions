@@ -9,7 +9,7 @@ from azure.cli.core.commands import AzCommandGroup, AzArgumentContext
 
 import azext_storage_preview._help  # pylint: disable=unused-import
 from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_DATA_STORAGE_ADLS, \
-    CUSTOM_DATA_STORAGE_FILESHARE, CUSTOM_DATA_STORAGE_FILEDATALAKE
+    CUSTOM_DATA_STORAGE_FILESHARE, CUSTOM_DATA_STORAGE_FILEDATALAKE, CUSTOM_DATA_STORAGE_BLOB
 
 
 class StorageCommandsLoader(AzCommandsLoader):
@@ -19,7 +19,8 @@ class StorageCommandsLoader(AzCommandsLoader):
         register_resource_type('latest', CUSTOM_DATA_STORAGE, '2018-03-28')
         register_resource_type('latest', CUSTOM_DATA_STORAGE_ADLS, '2019-02-02-preview')
         register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2022-09-01')
-        register_resource_type('latest', CUSTOM_DATA_STORAGE_FILESHARE, '2020-02-10')
+        register_resource_type('latest', CUSTOM_DATA_STORAGE_FILESHARE, '2022-11-02')
+        register_resource_type('latest', CUSTOM_DATA_STORAGE_BLOB, '2022-11-02')
         register_resource_type('latest', CUSTOM_DATA_STORAGE_FILEDATALAKE, '2020-06-12')
 
         storage_custom = CliCommandType(operations_tmpl='azext_storage_preview.custom#{}')
@@ -50,11 +51,11 @@ class StorageArgumentContext(AzArgumentContext):
                            'only IPv4 style addresses.')
         self.argument('expiry', type=get_datetime_type(True),
                       help='Specifies the UTC datetime (Y-m-d\'T\'H:M\'Z\') at which the SAS becomes invalid. Do not '
-                           'use if a stored access policy is referenced with --id that specifies this value.')
+                           'use if a stored access policy is referenced with --policy-name that specifies this value.')
         self.argument('start', type=get_datetime_type(True),
                       help='Specifies the UTC datetime (Y-m-d\'T\'H:M\'Z\') at which the SAS becomes valid. Do not use '
-                           'if a stored access policy is referenced with --id that specifies this value. Defaults to '
-                           'the time of the request.')
+                           'if a stored access policy is referenced with --policy-name that specifies this value. '
+                           'Defaults to the time of the request.')
         self.argument('protocol', options_list=('--https-only',), action='store_const', const='https',
                       help='Only permit requests made with the HTTPS protocol. If omitted, requests from both the HTTP '
                            'and HTTPS protocol are permitted.')
@@ -62,6 +63,7 @@ class StorageArgumentContext(AzArgumentContext):
     def register_content_settings_argument(self, settings_class, update, arg_group=None, guess_from_file=None,
                                            process_md5=False):
         from ._validators import get_content_setting_validator
+        from azure.cli.core.commands.parameters import get_three_state_flag
 
         self.ignore('content_settings')
 
@@ -77,40 +79,55 @@ class StorageArgumentContext(AzArgumentContext):
         self.extra('content_disposition', default=None, arg_group=arg_group,
                    help='Conveys additional information about how to process the response payload, and can also be '
                         'used to attach additional metadata.')
-        self.extra('content_cache_control', default=None, help='The cache control string.', arg_group=arg_group)
+        self.extra('content_cache_control', options_list=['--content-cache-control', '--content-cache'],
+                   default=None, help='The cache control string.',
+                   arg_group=arg_group)
         self.extra('content_md5', default=None, help='The content\'s MD5 hash.', arg_group=arg_group)
+        if update:
+            self.extra('clear_content_settings',
+                       help='If this flag is set, then if any one or more of the '
+                            'following properties (--content-cache-control, --content-disposition, --content-encoding, '
+                            '--content-language, --content-md5, --content-type) is set, then all of these properties are '
+                            'set together. If a value is not provided for a given property when at least one of the '
+                            'properties listed below is set, then that property will be cleared.',
+                       arg_type=get_three_state_flag())
 
-    def register_path_argument(self, default_file_param=None, options_list=None):
+    def register_path_argument(self, default_file_param=None, options_list=None, fileshare=False):
         from ._validators import get_file_path_validator
         from .completers import file_path_completer
 
-        path_help = 'The path to the file within the file share.'
+        path_partial = '/directory' if fileshare else ''
+        path_help = f'The path to the file{path_partial} within the file share.'
         if default_file_param:
             path_help = '{} If the file name is omitted, the source file name will be used.'.format(path_help)
         self.extra('path', options_list=options_list or ('--path', '-p'),
                    required=default_file_param is None, help=path_help,
                    validator=get_file_path_validator(default_file_param=default_file_param),
                    completer=file_path_completer)
+        self.ignore('file_name')
+        self.ignore('directory_name')
 
-    def register_source_uri_arguments(self, validator, blob_only=False):
-        self.argument('source_uri', options_list=('--source-uri', '-u'), validator=validator, required=False,
-                      arg_group='Copy Source')
-        self.extra('source_sas', default=None, arg_group='Copy Source',
+    def register_source_uri_arguments(self, validator, blob_only=False, arg_group='Copy Source'):
+        self.argument('copy_source', options_list=('--source-uri', '-u'), validator=validator, required=False,
+                      arg_group=arg_group)
+        self.argument('source_url', options_list=('--source-uri', '-u'), validator=validator, required=False,
+                      arg_group=arg_group)
+        self.extra('source_sas', default=None, arg_group=arg_group,
                    help='The shared access signature for the source storage account.')
-        self.extra('source_container', default=None, arg_group='Copy Source',
+        self.extra('source_container', default=None, arg_group=arg_group,
                    help='The container name for the source storage account.')
-        self.extra('source_blob', default=None, arg_group='Copy Source',
+        self.extra('source_blob', default=None, arg_group=arg_group,
                    help='The blob name for the source storage account.')
-        self.extra('source_snapshot', default=None, arg_group='Copy Source',
+        self.extra('source_snapshot', default=None, arg_group=arg_group,
                    help='The blob snapshot for the source storage account.')
-        self.extra('source_account_name', default=None, arg_group='Copy Source',
+        self.extra('source_account_name', default=None, arg_group=arg_group,
                    help='The storage account name of the source blob.')
-        self.extra('source_account_key', default=None, arg_group='Copy Source',
+        self.extra('source_account_key', default=None, arg_group=arg_group,
                    help='The storage account key of the source blob.')
         if not blob_only:
-            self.extra('source_path', default=None, arg_group='Copy Source',
+            self.extra('source_path', default=None, arg_group=arg_group,
                        help='The file path for the source storage account.')
-            self.extra('source_share', default=None, arg_group='Copy Source',
+            self.extra('source_share', default=None, arg_group=arg_group,
                        help='The share name for the source storage account.')
 
     def register_common_storage_account_options(self):
@@ -243,6 +260,13 @@ If you want to use the old authentication method and allow querying for the righ
                          'for the authentication. The legacy "key" mode will attempt to query for '
                          'an account key if no authentication parameters for the account are provided. '
                          'Environment variable: AZURE_STORAGE_AUTH_MODE')
+            if command_name.startswith('storage share') or command_name.startswith('storage directory') \
+                    or command_name.startswith('storage file'):
+                c.extra('enable_file_backup_request_intent', action='store_true',
+                        options_list=['--enable-file-backup-request-intent', '--backup-intent'],
+                        help='Required parameter to use with OAuth (Azure AD) Authentication for Files. This will '
+                             'bypass any file/directory level permission checks and allow access, based on the '
+                             'allowed data actions, even if there are ACLs in place for those files/directories.')
 
 
 def _merge_new_exception_handler(kwargs, handler):
