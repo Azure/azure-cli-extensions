@@ -8,7 +8,7 @@ where:
 configuration:
   resourceManagementConfiguration:
     scheduledSearches:
-    - description: 
+    - description: Close stale issues
       frequencies:
       - daily:
           time: 1:0
@@ -23,7 +23,7 @@ configuration:
           days: 14
       actions:
       - closeIssue
-    - description: 
+    - description: Add no recent activity label to issues
       frequencies:
       - hourly:
           hour: 6
@@ -41,7 +41,7 @@ configuration:
           label: no-recent-activity
       - addReply:
           reply: Hi, we're sending this friendly reminder because we haven't heard back from you in a while. We need more information about this issue to help address it. Please be sure to give us your input within the next **7 days**. If we don't hear back from you within **14 days** of this comment the issue will be automatically closed. Thank you!
-    - description: 
+    - description: '[Resolve Workflow] Close Addressed Issues'
       frequencies:
       - hourly:
           hour: 6
@@ -71,7 +71,7 @@ configuration:
           label: needs-team-attention
       - removeLabel:
           label: needs-author-feedback
-      description: 
+      description: Replace needs author feedback label with needs attention label when the author comments on an issue
     - if:
       - payloadType: Issues
       - not:
@@ -82,7 +82,7 @@ configuration:
       then:
       - removeLabel:
           label: no-recent-activity
-      description: 
+      description: Remove no recent activity label from issues
     - if:
       - payloadType: Issue_Comment
       - hasLabel:
@@ -90,7 +90,7 @@ configuration:
       then:
       - removeLabel:
           label: no-recent-activity
-      description: 
+      description: Remove no recent activity label when an issue is commented on
     - if:
       - payloadType: Issues
       - isAction:
@@ -111,7 +111,7 @@ configuration:
       then:
       - addLabel:
           label: question
-      description: 
+      description: 'Add question label to new issues '
     - if:
       - payloadType: Issues
       - labelAdded:
@@ -129,7 +129,7 @@ configuration:
           label: needs-author-feedback
       - removeLabel:
           label: no-recent-activity
-      description: 
+      description: '[Resolve Workflow] Issue Addressed Label Applied'
     - if:
       - payloadType: Issue_Comment
       - hasLabel:
@@ -150,7 +150,7 @@ configuration:
           label: issue-addressed
       - addLabel:
           label: needs-team-attention
-      description: 
+      description: '[Resolve Workflow] Unresolve Command by Author'
     - if:
       - payloadType: Issue_Comment
       - hasLabel:
@@ -171,7 +171,7 @@ configuration:
       then:
       - addReply:
           reply: Hi ${contextualAuthor}, only the original author of the issue can ask that it be unresolved.  Please open a new issue with your scenario and details if you would like to discuss this topic with the team.
-      description: 
+      description: '[Resolve Workflow] Unresolve Command Without Permissions'
     - if:
       - payloadType: Issues
       - isOpen
@@ -191,7 +191,7 @@ configuration:
       then:
       - removeLabel:
           label: issue-addressed
-      description: 
+      description: '[Resolve Workflow] Unresolve on WIP Labels'
     - if:
       - payloadType: Issues
       - isOpen
@@ -202,7 +202,7 @@ configuration:
       then:
       - addLabel:
           label: needs-team-triage
-      description: 
+      description: Add label after "Service Attention" is removed
     - if:
       - or:
         - payloadType: Issues
@@ -2438,7 +2438,7 @@ configuration:
             - calvinsID
             replyTemplate: Thanks for the feedback! We are routing this to the appropriate team for follow-up. cc ${mentionees}.
             assignMentionees: False
-      description: 
+      description: Triage issues to the service team
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -2461,7 +2461,7 @@ configuration:
           label: customer-reported
       - addReply:
           reply: Thank you for your contribution ${issueAuthor}! We will review the pull request and get back to you soon.
-      description: 
+      description: 'Add customer-reported label to PRs from customers '
     - if:
       - payloadType: Issues
       - isAction:
@@ -2484,7 +2484,7 @@ configuration:
           label: customer-reported
       - addLabel:
           label: question
-      description: 
+      description: Add customer-reported label to issues coming from non-collaborators
     - if:
       - payloadType: Issues
       - isOpen
@@ -2496,7 +2496,7 @@ configuration:
       then:
       - addReply:
           reply: Thank you for your feedback.  This has been routed to the support team for assistance.
-      description: 
+      description: '[CXP Pilot] CXP Attention Responder'
     - if:
       - payloadType: Issues
       - or:
@@ -2516,7 +2516,7 @@ configuration:
           label: CXP Attention
       - addLabel:
           label: Auto-Assign
-      description: 
+      description: '[AKS] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -2541,7 +2541,7 @@ configuration:
           reviewer: FumingZhang
       - addLabel:
           label: AKS
-      description: 
+      description: '[aks] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -2563,7 +2563,7 @@ configuration:
           label: Machine Learning
       - addLabel:
           label: extension/ml
-      description: 
+      description: '[machine learning] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -2589,7 +2589,7 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
-      description: 
+      description: '[machine learning] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -2611,7 +2611,7 @@ configuration:
           label: DevOps
       - addLabel:
           label: CXP Attention
-      description: 
+      description: '[pipelines] auto assign labels and users based on issue description. '
     - if:
       - payloadType: Issues
       - or:
@@ -2631,7 +2631,7 @@ configuration:
           label: VM SSH
       - addLabel:
           label: CXP Attention
-      description: 
+      description: '[ssh] auto assign labels and users based on issue description. '
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -2651,11 +2651,14 @@ configuration:
       - requestReview:
           reviewer: jiasli
       - requestReview:
+          reviewer: zhoxing-ms
+      - requestReview:
           reviewer: yonzhan
       - assignTo:
           users:
           - jiasli
-      description: 
+          - zhoxing-ms
+      description: '[ssh] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -2663,10 +2666,10 @@ configuration:
             action: Opened
       - or:
         - titleContains:
-            pattern: az connectedk8s
+            pattern: '\b(connectedk8s)\b'
             isRegex: True
         - bodyContains:
-            pattern: az connectedk8s
+            pattern: '\b(connectedk8s)\b'
             isRegex: True
       then:
       - addLabel:
@@ -2675,7 +2678,7 @@ configuration:
           label: Connected Kubernetes
       - addLabel:
           label: CXP Attention
-      description: 
+      description: '[connectedk8s] auto assign labels and users based on issue description. '
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -2703,7 +2706,7 @@ configuration:
           - zhoxing-ms
       - requestReview:
           reviewer: yanzhudd
-      description: 
+      description: '[connectedk8s] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -2723,7 +2726,7 @@ configuration:
           label: CXP Attention
       - addLabel:
           label: Spring Cloud
-      description: 
+      description: '[spring-cloud] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -2749,7 +2752,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[spring-cloud] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -2774,7 +2777,7 @@ configuration:
           label: Azure CLI Team
       - addLabel:
           label: question
-      description: 
+      description: '[monitor] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -2802,7 +2805,7 @@ configuration:
       - assignTo:
           users:
           - AllyW
-      description: 
+      description: '[monitor] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -2827,7 +2830,7 @@ configuration:
           - necusjz
       - addLabel:
           label: Network
-      description: 
+      description: '[Network] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -2852,7 +2855,7 @@ configuration:
           label: Azure CLI Team
       - addLabel:
           label: question
-      description: 
+      description: '[Network] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Issues
       - or:
@@ -2872,7 +2875,7 @@ configuration:
           label: CXP Attention
       - addLabel:
           label: Auto-Assign
-      description: 
+      description: '[iot] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -2895,7 +2898,7 @@ configuration:
           - zhoxing-ms
       - addLabel:
           label: IoT/CLI
-      description: 
+      description: '[iot] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -2915,7 +2918,7 @@ configuration:
           label: Azure Data Explorer
       - addLabel:
           label: CXP Attention
-      description: 
+      description: '[kusto] auto assign labels and users based on issue description. '
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -2944,7 +2947,7 @@ configuration:
       - assignTo:
           users:
           - jsntcy
-      description: 
+      description: '[kusto] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -2972,7 +2975,7 @@ configuration:
           label: Azure CLI Team
       - addLabel:
           label: question
-      description: 
+      description: '[Storage] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -2998,7 +3001,7 @@ configuration:
           - evelyn-ys
       - addLabel:
           label: Storage
-      description: 
+      description: '[Storage] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3019,7 +3022,7 @@ configuration:
           - evelyn-ys
       - addLabel:
           label: KeyVault
-      description: 
+      description: '[keyvault] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -3044,7 +3047,7 @@ configuration:
           label: Azure CLI Team
       - addLabel:
           label: question
-      description: 
+      description: '[keyvault] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Issues
       - or:
@@ -3064,7 +3067,7 @@ configuration:
           label: CXP Attention
       - addLabel:
           label: Cosmos
-      description: 
+      description: '[cosmosdb] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3090,7 +3093,7 @@ configuration:
       - assignTo:
           users:
           - evelyn-ys
-      description: 
+      description: '[cosmosdb] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -3110,7 +3113,7 @@ configuration:
           label: CXP Attention
       - addLabel:
           label: Event Grid
-      description: 
+      description: '[eventgrid] auto assign labels and users based on issue description. '
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3134,7 +3137,7 @@ configuration:
           - jiasli
       - addLabel:
           label: Account
-      description: 
+      description: '[account] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -3159,7 +3162,7 @@ configuration:
           label: Azure CLI Team
       - addLabel:
           label: question
-      description: 
+      description: '[account] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3180,7 +3183,7 @@ configuration:
       - assignTo:
           users:
           - evelyn-ys
-      description: 
+      description: '[ datashare ]  Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3201,7 +3204,7 @@ configuration:
       - assignTo:
           users:
           - necusjz
-      description: 
+      description: '[ edgeorder ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3222,7 +3225,7 @@ configuration:
       - assignTo:
           users:
           - evelyn-ys
-      description: 
+      description: '[ cosmosdb-preview ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3243,7 +3246,7 @@ configuration:
       - assignTo:
           users:
           - necusjz
-      description: 
+      description: '[ application-insights ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3264,7 +3267,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ aks-preview ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3285,7 +3288,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ connectedk8s ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3306,7 +3309,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ appservice-kube ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3327,7 +3330,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ account ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3348,7 +3351,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ vmware ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3369,7 +3372,7 @@ configuration:
       - assignTo:
           users:
           - necusjz
-      description: 
+      description: '[ stream-analytics ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3390,7 +3393,7 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
-      description: 
+      description: '[ confidentialledger ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3411,7 +3414,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ hack ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3432,7 +3435,7 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
-      description: 
+      description: '[ alertsmanagement ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3453,7 +3456,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ vm-repair ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3474,7 +3477,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ image-copy ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3495,7 +3498,7 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
-      description: 
+      description: '[ quantum ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3516,7 +3519,7 @@ configuration:
       - assignTo:
           users:
           - evelyn-ys
-      description: 
+      description: '[ rdbms-connect ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3537,7 +3540,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ azurestackhci ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3558,7 +3561,7 @@ configuration:
       - assignTo:
           users:
           - jsntcy
-      description: 
+      description: '[ logic ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3579,7 +3582,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ databricks ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3600,7 +3603,7 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
-      description: 
+      description: '[ resource-mover ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3621,7 +3624,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ k8s-configuration ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3642,7 +3645,7 @@ configuration:
       - assignTo:
           users:
           - evelyn-ys
-      description: 
+      description: '[ storage-preview ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3663,7 +3666,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ enterprise-edge ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3684,7 +3687,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ k8s-extension ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3705,7 +3708,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ communication ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3726,7 +3729,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ connectedvmware ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3747,7 +3750,7 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
-      description: 
+      description: '[ scheduled-query ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3768,7 +3771,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ init ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3789,7 +3792,7 @@ configuration:
       - assignTo:
           users:
           - necusjz
-      description: 
+      description: '[ network-manager ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3810,7 +3813,7 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
-      description: 
+      description: '[ azure-firewall ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3831,7 +3834,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ acrtransfer ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3852,7 +3855,7 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
-      description: 
+      description: '[ virtual-wan ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3873,7 +3876,7 @@ configuration:
       - assignTo:
           users:
           - jiasli
-      description: 
+      description: '[ ssh ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3894,7 +3897,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ image-gallery ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3915,7 +3918,7 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
-      description: 
+      description: '[ webpubsub ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3936,7 +3939,7 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
-      description: 
+      description: '[ support ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3957,7 +3960,7 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
-      description: 
+      description: '[ logz ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3978,7 +3981,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ kusto ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -3999,7 +4002,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ connectedmachine ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4020,7 +4023,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ functionapp ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4041,7 +4044,7 @@ configuration:
       - assignTo:
           users:
           - calvinhzy
-      description: 
+      description: '[ diskpool ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4062,7 +4065,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[ spring-cloud ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4084,7 +4087,7 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
-      description: 
+      description: '[arcdata] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4108,7 +4111,7 @@ configuration:
           - kairu-ms
       - requestReview:
           reviewer: yonzhan
-      description: 
+      description: '[quota] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -4132,7 +4135,7 @@ configuration:
       - assignTo:
           users:
           - necusjz
-      description: 
+      description: '[codegen] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4158,7 +4161,7 @@ configuration:
           reviewer: yonzhan
       - addLabel:
           label: Code Gen
-      description: 
+      description: '[codegen] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4186,7 +4189,7 @@ configuration:
           label: Quantum
       - requestReview:
           reviewer: wangzelin007
-      description: 
+      description: '[quantum] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -4211,7 +4214,7 @@ configuration:
           label: Azure CLI Team
       - addLabel:
           label: question
-      description: 
+      description: '[Compute] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4237,7 +4240,7 @@ configuration:
           - zhoxing-ms
       - addLabel:
           label: Compute
-      description: 
+      description: '[Compute] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -4261,7 +4264,7 @@ configuration:
           label: extension/webapp
       - addLabel:
           label: Web Apps
-      description: 
+      description: '[appservice] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4299,7 +4302,7 @@ configuration:
           label: Web Apps
       - addLabel:
           label: extension/webapp
-      description: 
+      description: '[appservice] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -4319,7 +4322,7 @@ configuration:
           label: CXP Attention
       - addLabel:
           label: Data Migration
-      description: 
+      description: '[datamigration] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4345,7 +4348,7 @@ configuration:
           - evelyn-ys
       - requestReview:
           reviewer: yonzhan
-      description: 
+      description: '[datamigration] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -4365,7 +4368,7 @@ configuration:
           label: extension/grafana
       - addLabel:
           label: CXP Attention
-      description: 
+      description: '[grafana] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4393,7 +4396,7 @@ configuration:
           reviewer: kairu-ms
       - requestReview:
           reviewer: jsntcy
-      description: 
+      description: '[grafana] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -4413,7 +4416,7 @@ configuration:
           label: CXP Attention
       - addLabel:
           label: Functions
-      description: 
+      description: '[functionapp] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4439,7 +4442,7 @@ configuration:
           label: Functions
       - requestReview:
           reviewer: zhoxing-ms
-      description: 
+      description: '[functionapp] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4465,7 +4468,7 @@ configuration:
           reviewer: calvinhzy
       - requestReview:
           reviewer: evelyn-ys
-      description: 
+      description: '[eventgrid] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -4486,7 +4489,7 @@ configuration:
       - assignTo:
           users:
           - wangzelin007
-      description: 
+      description: '[desktopvirtualization] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4514,7 +4517,7 @@ configuration:
           reviewer: jsntcy
       - requestReview:
           reviewer: kairu-ms
-      description: 
+      description: '[desktopvirtualization] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -4534,7 +4537,7 @@ configuration:
           label: ContainerApp
       - addLabel:
           label: CXP Attention
-      description: 
+      description: '[container app] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4588,7 +4591,7 @@ configuration:
           reviewer: Juliehzl
       - requestReview:
           reviewer: jijohn14
-      description: 
+      description: '[container app] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -4608,7 +4611,7 @@ configuration:
           label: Alerts Management
       - addLabel:
           label: CXP Attention
-      description: 
+      description: '[Alerts Management] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4636,7 +4639,7 @@ configuration:
           reviewer: 'kairu-ms '
       - requestReview:
           reviewer: zhoxing-ms
-      description: 
+      description: '[Alerts Management] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -4656,7 +4659,7 @@ configuration:
           label: Data Protection
       - addLabel:
           label: CXP Attention
-      description: 
+      description: '[dataprotection] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4682,7 +4685,7 @@ configuration:
           label: Data Protection
       - requestReview:
           reviewer: calvinhzy
-      description: 
+      description: '[dataprotection] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -4704,7 +4707,7 @@ configuration:
           label: Network - Bastion
       - addLabel:
           label: Network
-      description: 
+      description: '[network bastion] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4732,7 +4735,7 @@ configuration:
       - assignTo:
           users:
           - wangzelin007
-      description: 
+      description: '[ci] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -4759,7 +4762,7 @@ configuration:
       - assignTo:
           users:
           - necusjz
-      description: 
+      description: '[NetworkManager] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4791,7 +4794,7 @@ configuration:
           label: Network
       - requestReview:
           reviewer: jsntcy
-      description: 
+      description: '[NetworkManager] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -4811,7 +4814,7 @@ configuration:
           label: Redis Enterprise
       - addLabel:
           label: CXP Attention
-      description: 
+      description: '[redis enterprise] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4837,7 +4840,7 @@ configuration:
           label: Redis Enterprise
       - requestReview:
           reviewer: calvinhzy
-      description: 
+      description: '[redis enterprise] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -4857,7 +4860,7 @@ configuration:
           label: Kubernetes Configuration
       - addLabel:
           label: CXP Attention
-      description: 
+      description: '[k8sconfiguration] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4883,7 +4886,7 @@ configuration:
           label: Kubernetes Configuration
       - requestReview:
           reviewer: wangzelin007
-      description: 
+      description: '[k8sconfiguration] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -4909,7 +4912,7 @@ configuration:
           label: Compute - Images
       - addLabel:
           label: CXP Attention
-      description: 
+      description: '[image-gallery] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -4938,7 +4941,7 @@ configuration:
           label: Compute - Images
       - requestReview:
           reviewer: wangzelin007
-      description: 
+      description: '[image-gallery] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -4958,7 +4961,7 @@ configuration:
           label: Quantum
       - addLabel:
           label: CXP Attention
-      description: 
+      description: '[quantum] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Issues
       - or:
@@ -4978,7 +4981,7 @@ configuration:
           label: arcdata
       - addLabel:
           label: CXP Attention
-      description: 
+      description: '[acrdata] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -5006,7 +5009,7 @@ configuration:
           reviewer: calvinhzy
       - requestReview:
           reviewer: jiasli
-      description: 
+      description: '[sql] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -5026,7 +5029,7 @@ configuration:
           label: SQL
       - addLabel:
           label: CXP Attention
-      description: 
+      description: '[sql] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Issues
       - or:
@@ -5046,7 +5049,7 @@ configuration:
           label: Attestation
       - addLabel:
           label: CXP Attention
-      description: 
+      description: '[attestation] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -5070,7 +5073,7 @@ configuration:
           - zhoxing-ms
       - requestReview:
           reviewer: wangzelin007
-      description: 
+      description: '[k8s-extension] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -5091,7 +5094,7 @@ configuration:
       - assignTo:
           users:
           - jsntcy
-      description: 
+      description: '[stream-analytics] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -5117,7 +5120,7 @@ configuration:
           label: Stream Analytics
       - requestReview:
           reviewer: kairu-ms
-      description: 
+      description: '[stream-analytics] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -5141,7 +5144,7 @@ configuration:
           - zhoxing-ms
       - requestReview:
           reviewer: wangzelin007
-      description: 
+      description: '[connectedmachine] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -5162,7 +5165,7 @@ configuration:
       - assignTo:
           users:
           - wangzelin007
-      description: 
+      description: '[healthcareapis] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -5188,7 +5191,7 @@ configuration:
           label: extension/healthcare
       - requestReview:
           reviewer: jsntcy
-      description: 
+      description: '[healthcareapis] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -5210,7 +5213,7 @@ configuration:
             Hi @wangzelin007,
 
             Please review the pull request.
-      description: 
+      description: '[ healthcareapis ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -5234,7 +5237,7 @@ configuration:
             Hi @zhoxing-ms,
 
             Please review the pull request.
-      description: 
+      description: '[ subscription ] Notify to review Update index.json PR'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -5258,7 +5261,7 @@ configuration:
           - zhoxing-ms
       - addLabel:
           label: Subscription
-      description: 
+      description: '[subscription] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -5279,7 +5282,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[subscription] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Issues
       - or:
@@ -5297,7 +5300,7 @@ configuration:
           label: Auto-Assign
       - addLabel:
           label: Test
-      description: 
+      description: '[bot] Test'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -5319,7 +5322,7 @@ configuration:
           - kairu-ms
       - addLabel:
           label: Serial Console
-      description: 
+      description: '[Serial-Console] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -5339,7 +5342,7 @@ configuration:
       - assignTo:
           users:
           - evelyn-ys
-      description: 
+      description: '[Regression-Test] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -5361,7 +5364,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[Spring] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -5383,7 +5386,7 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
-      description: 
+      description: '[Fleet] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -5405,7 +5408,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      description: 
+      description: '[vm-repair] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -5425,7 +5428,7 @@ configuration:
           label: AzureStackHCI
       - addLabel:
           label: CXP Attention
-      description: 
+      description: '[azurestackhci] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Issues
       - or:
@@ -5445,7 +5448,7 @@ configuration:
           label: Communication
       - addLabel:
           label: CXP Attention
-      description: 
+      description: '[Communication] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -5469,7 +5472,7 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
-      description: 
+      description: '[load] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
@@ -5489,7 +5492,7 @@ configuration:
           label: MySQL
       - addLabel:
           label: Service Attention
-      description: 
+      description: '[MySQL] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -5511,7 +5514,7 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
-      description: 
+      description: '[devcenter] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Pull_Request
       - isAction:
@@ -5531,6 +5534,6 @@ configuration:
       - assignTo:
           users:
           - kairu-ms
-      description: 
+      description: '[Arc Appliance] Auto assign labels and reviewers based on PR title/description.'
 onFailure: 
 onSuccess: 
