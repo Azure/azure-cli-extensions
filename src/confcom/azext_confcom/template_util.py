@@ -846,11 +846,27 @@ def print_existing_policy_from_arm_template(arm_template_path, parameter_data_pa
         )
         container_group_name = get_container_group_name(input_arm_json, parameter_data, i)
 
-        (containers, _) = extract_confidential_properties(container_group_properties)
-        if not containers:
+        # extract the existing cce policy if that's what was being asked
+        confidential_compute_properties = case_insensitive_dict_get(
+            container_group_properties, config.ACI_FIELD_TEMPLATE_CONFCOM_PROPERTIES
+        )
+
+        if confidential_compute_properties is None:
+            eprint(
+                f"""Field ["{config.ACI_FIELD_TEMPLATE_CONFCOM_PROPERTIES}"]
+                not found in ["{config.ACI_FIELD_TEMPLATE_PROPERTIES}"]"""
+            )
+
+        cce_policy = case_insensitive_dict_get(
+            confidential_compute_properties, config.ACI_FIELD_TEMPLATE_CCE_POLICY
+        )
+
+        if not cce_policy:
             eprint("CCE Policy is either in an supported format or not present")
+
+        cce_policy = os_util.base64_to_str(cce_policy)
         print(f"CCE Policy for Container Group: {container_group_name}\n")
-        print(pretty_print_func(containers))
+        print(cce_policy)
 
 
 def process_seccomp_policy(policy2):
