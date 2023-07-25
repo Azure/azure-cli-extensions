@@ -87,6 +87,166 @@ class Update(AAZCommand):
         )
 
         # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.adm_credential = AAZObjectArg(
+            options=["--adm-credential"],
+            arg_group="Properties",
+            help="The AdmCredential of the created NotificationHub",
+            nullable=True,
+        )
+        _args_schema.apns_credential = AAZObjectArg(
+            options=["--apns-credential"],
+            arg_group="Properties",
+            help="The ApnsCredential of the created NotificationHub",
+            nullable=True,
+        )
+        _args_schema.baidu_credential = AAZObjectArg(
+            options=["--baidu-credential"],
+            arg_group="Properties",
+            help="The BaiduCredential of the created NotificationHub",
+            nullable=True,
+        )
+        _args_schema.gcm_credential = AAZObjectArg(
+            options=["--gcm-credential"],
+            arg_group="Properties",
+            help="The GcmCredential of the created NotificationHub",
+            nullable=True,
+        )
+        _args_schema.mpns_credential = AAZObjectArg(
+            options=["--mpns-credential"],
+            arg_group="Properties",
+            help="The MpnsCredential of the created NotificationHub",
+            nullable=True,
+        )
+        _args_schema.wns_credential = AAZObjectArg(
+            options=["--wns-credential"],
+            arg_group="Properties",
+            help="The WnsCredential of the created NotificationHub",
+            nullable=True,
+        )
+
+        adm_credential = cls._args_schema.adm_credential
+        adm_credential.auth_token_url = AAZStrArg(
+            options=["auth-token-url"],
+            help="The URL of the authorization token.",
+            nullable=True,
+        )
+        adm_credential.client_id = AAZStrArg(
+            options=["client-id"],
+            help="The client identifier.",
+            nullable=True,
+        )
+        adm_credential.client_secret = AAZStrArg(
+            options=["client-secret"],
+            help="The credential secret access key.",
+            nullable=True,
+        )
+
+        apns_credential = cls._args_schema.apns_credential
+        apns_credential.apns_certificate = AAZStrArg(
+            options=["apns-certificate"],
+            help="The APNS certificate. Specify if using Certificate Authentication Mode.",
+            nullable=True,
+        )
+        apns_credential.app_id = AAZStrArg(
+            options=["app-id"],
+            help="The issuer (iss) registered claim key. The value is a 10-character TeamId, obtained from your developer account. Specify if using Token Authentication Mode.",
+            nullable=True,
+        )
+        apns_credential.app_name = AAZStrArg(
+            options=["app-name"],
+            help="The name of the application or BundleId. Specify if using Token Authentication Mode.",
+            nullable=True,
+        )
+        apns_credential.certificate_key = AAZStrArg(
+            options=["certificate-key"],
+            help="The APNS certificate password if it exists.",
+            nullable=True,
+        )
+        apns_credential.endpoint = AAZStrArg(
+            options=["endpoint"],
+            help="The APNS endpoint of this credential. If using Certificate Authentication Mode and Sandbox specify 'gateway.sandbox.push.apple.com'. If using Certificate Authentication Mode and Production specify 'gateway.push.apple.com'. If using Token Authentication Mode and Sandbox specify 'https://api.development.push.apple.com:443/3/device'. If using Token Authentication Mode and Production specify 'https://api.push.apple.com:443/3/device'.",
+            nullable=True,
+        )
+        apns_credential.key_id = AAZStrArg(
+            options=["key-id"],
+            help="A 10-character key identifier (kid) key, obtained from your developer account. Specify if using Token Authentication Mode.",
+            nullable=True,
+        )
+        apns_credential.thumbprint = AAZStrArg(
+            options=["thumbprint"],
+            help="The APNS certificate thumbprint. Specify if using Certificate Authentication Mode.",
+            nullable=True,
+        )
+        apns_credential.token = AAZStrArg(
+            options=["token"],
+            help="Provider Authentication Token, obtained through your developer account. Specify if using Token Authentication Mode.",
+            nullable=True,
+        )
+
+        baidu_credential = cls._args_schema.baidu_credential
+        baidu_credential.baidu_api_key = AAZStrArg(
+            options=["baidu-api-key"],
+            help="Baidu Api Key.",
+            nullable=True,
+        )
+        baidu_credential.baidu_end_point = AAZStrArg(
+            options=["baidu-end-point"],
+            help="Baidu Endpoint.",
+            nullable=True,
+        )
+        baidu_credential.baidu_secret_key = AAZStrArg(
+            options=["baidu-secret-key"],
+            help="Baidu Secret Key",
+            nullable=True,
+        )
+
+        gcm_credential = cls._args_schema.gcm_credential
+        gcm_credential.gcm_endpoint = AAZStrArg(
+            options=["gcm-endpoint"],
+            help="The FCM legacy endpoint. Default value is 'https://fcm.googleapis.com/fcm/send'",
+            nullable=True,
+        )
+        gcm_credential.google_api_key = AAZStrArg(
+            options=["google-api-key"],
+            help="The Google API key.",
+            nullable=True,
+        )
+
+        mpns_credential = cls._args_schema.mpns_credential
+        mpns_credential.certificate_key = AAZStrArg(
+            options=["certificate-key"],
+            help="The certificate key for this credential.",
+            nullable=True,
+        )
+        mpns_credential.mpns_certificate = AAZStrArg(
+            options=["mpns-certificate"],
+            help="The MPNS certificate.",
+            nullable=True,
+        )
+        mpns_credential.thumbprint = AAZStrArg(
+            options=["thumbprint"],
+            help="The MPNS certificate Thumbprint",
+            nullable=True,
+        )
+
+        wns_credential = cls._args_schema.wns_credential
+        wns_credential.package_sid = AAZStrArg(
+            options=["package-sid"],
+            help="The package ID for this credential.",
+            nullable=True,
+        )
+        wns_credential.secret_key = AAZStrArg(
+            options=["secret-key"],
+            help="The secret key.",
+            nullable=True,
+        )
+        wns_credential.windows_live_endpoint = AAZStrArg(
+            options=["windows-live-endpoint"],
+            help="The Windows Live endpoint.",
+            nullable=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -322,7 +482,77 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("admCredential", AAZObjectType, ".adm_credential")
+                properties.set_prop("apnsCredential", AAZObjectType, ".apns_credential")
+                properties.set_prop("baiduCredential", AAZObjectType, ".baidu_credential")
+                properties.set_prop("gcmCredential", AAZObjectType, ".gcm_credential")
+                properties.set_prop("mpnsCredential", AAZObjectType, ".mpns_credential")
                 properties.set_prop("name", AAZStrType, ".notification_hub_name")
+                properties.set_prop("wnsCredential", AAZObjectType, ".wns_credential")
+
+            adm_credential = _builder.get(".properties.admCredential")
+            if adm_credential is not None:
+                adm_credential.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+
+            properties = _builder.get(".properties.admCredential.properties")
+            if properties is not None:
+                properties.set_prop("authTokenUrl", AAZStrType, ".auth_token_url")
+                properties.set_prop("clientId", AAZStrType, ".client_id")
+                properties.set_prop("clientSecret", AAZStrType, ".client_secret")
+
+            apns_credential = _builder.get(".properties.apnsCredential")
+            if apns_credential is not None:
+                apns_credential.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+
+            properties = _builder.get(".properties.apnsCredential.properties")
+            if properties is not None:
+                properties.set_prop("apnsCertificate", AAZStrType, ".apns_certificate")
+                properties.set_prop("appId", AAZStrType, ".app_id")
+                properties.set_prop("appName", AAZStrType, ".app_name")
+                properties.set_prop("certificateKey", AAZStrType, ".certificate_key")
+                properties.set_prop("endpoint", AAZStrType, ".endpoint")
+                properties.set_prop("keyId", AAZStrType, ".key_id")
+                properties.set_prop("thumbprint", AAZStrType, ".thumbprint")
+                properties.set_prop("token", AAZStrType, ".token")
+
+            baidu_credential = _builder.get(".properties.baiduCredential")
+            if baidu_credential is not None:
+                baidu_credential.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+
+            properties = _builder.get(".properties.baiduCredential.properties")
+            if properties is not None:
+                properties.set_prop("baiduApiKey", AAZStrType, ".baidu_api_key")
+                properties.set_prop("baiduEndPoint", AAZStrType, ".baidu_end_point")
+                properties.set_prop("baiduSecretKey", AAZStrType, ".baidu_secret_key")
+
+            gcm_credential = _builder.get(".properties.gcmCredential")
+            if gcm_credential is not None:
+                gcm_credential.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+
+            properties = _builder.get(".properties.gcmCredential.properties")
+            if properties is not None:
+                properties.set_prop("gcmEndpoint", AAZStrType, ".gcm_endpoint")
+                properties.set_prop("googleApiKey", AAZStrType, ".google_api_key")
+
+            mpns_credential = _builder.get(".properties.mpnsCredential")
+            if mpns_credential is not None:
+                mpns_credential.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+
+            properties = _builder.get(".properties.mpnsCredential.properties")
+            if properties is not None:
+                properties.set_prop("certificateKey", AAZStrType, ".certificate_key")
+                properties.set_prop("mpnsCertificate", AAZStrType, ".mpns_certificate")
+                properties.set_prop("thumbprint", AAZStrType, ".thumbprint")
+
+            wns_credential = _builder.get(".properties.wnsCredential")
+            if wns_credential is not None:
+                wns_credential.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+
+            properties = _builder.get(".properties.wnsCredential.properties")
+            if properties is not None:
+                properties.set_prop("packageSid", AAZStrType, ".package_sid")
+                properties.set_prop("secretKey", AAZStrType, ".secret_key")
+                properties.set_prop("windowsLiveEndpoint", AAZStrType, ".windows_live_endpoint")
 
             tags = _builder.get(".tags")
             if tags is not None:

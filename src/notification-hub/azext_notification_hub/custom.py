@@ -10,9 +10,23 @@
 # pylint: disable=protected-access
 
 from azure.cli.core.aaz import has_value
+from azext_notification_hub.aaz.latest.notification_hub import Update as _UpdateNotificationHub
 from azext_notification_hub.aaz.latest.notification_hub.credential.apns import Create as _ApnsUpdate
 from azext_notification_hub.aaz.latest.notification_hub.credential.mpns import Create as _MpnsUpdate
 from azext_notification_hub.aaz.latest.notification_hub.credential.baidu import Create as _BaiduUpdate
+
+
+class NotificationHubUpdate(_UpdateNotificationHub):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.adm_credential._registered = False
+        args_schema.apns_credential._registered = False
+        args_schema.baidu_credential._registered = False
+        args_schema.gcm_credential._registered = False
+        args_schema.mpns_credential._registered = False
+        args_schema.wns_credential._registered = False
+        return args_schema
 
 
 class ApnsUpdate(_ApnsUpdate):
