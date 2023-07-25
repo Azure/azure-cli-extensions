@@ -218,6 +218,9 @@ class BaseContainerAppDecorator(BaseResource):
 
     def get_argument_ingress(self):
         return self.get_param("ingress")
+    
+    def get_argument_allow_insecure(self):
+        return self.get_param("allow_insecure")
 
     def get_argument_revisions_mode(self):
         return self.get_param("revisions_mode")
@@ -388,6 +391,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             ingress_def["targetPort"] = self.get_argument_target_port()
             ingress_def["transport"] = self.get_argument_transport()
             ingress_def["exposedPort"] = self.get_argument_exposed_port() if self.get_argument_transport() == "tcp" else None
+            ingress_def["allowInsecure"] = self.get_argument_allow_insecure()
 
         secrets_def = None
         if self.get_argument_secrets() is not None:
