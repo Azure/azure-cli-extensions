@@ -15,15 +15,16 @@ from azure.cli.core.aaz import *
     "connectedmachine extension update",
 )
 class Update(AAZCommand):
-    """Update operation to create or update the extension.
+    """Update operation to update the extension.
+
     :example: Sample command for extension update
-        connectedmachine extension update --name CustomScriptExtension --type CustomScriptExtension --publisher Microsoft.Compute --type-handler-version 1.10 --machine-name myMachine --resource-group myResourceGroup
+        az connectedmachine extension update --name CustomScriptExtension --type CustomScriptExtension --publisher Microsoft.Compute --type-handler-version 1.10 --machine-name myMachine --resource-group myResourceGroup
     """
 
     _aaz_info = {
-        "version": "2022-12-27-preview",
+        "version": "2022-12-27",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2022-12-27-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2022-12-27"],
         ]
     }
 
@@ -58,7 +59,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="^[a-zA-Z0-9-_\.]{1,54}$",
                 max_length=54,
                 min_length=1,
             ),
@@ -273,7 +274,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27-preview",
+                    "api-version", "2022-12-27",
                     required=True,
                 ),
             }
@@ -376,7 +377,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27-preview",
+                    "api-version", "2022-12-27",
                     required=True,
                 ),
             }
@@ -434,7 +435,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -516,9 +517,7 @@ class _UpdateHelper:
         machine_extension_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        machine_extension_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
+        machine_extension_read.properties = AAZObjectType()
         machine_extension_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},

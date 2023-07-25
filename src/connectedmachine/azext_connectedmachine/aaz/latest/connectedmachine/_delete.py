@@ -12,28 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine extension delete",
+    "connectedmachine delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """The operation to delete the extension.
+    """Delete operation to delete an Azure Arc-Enabled Server.
 
-    :example: Sample command for extension delete
-        az connectedmachine extension delete --name myName --machine-name myMachine --resource-group myResourceGroup
+    :example: Sample command for delete
+        az connectedmachine delete --name myMachine --resource-group myResourceGroup
     """
 
     _aaz_info = {
         "version": "2022-12-27",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2022-12-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2022-12-27"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return None
 
     _args_schema = None
 
@@ -46,15 +45,9 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.extension_name = AAZStrArg(
-            options=["-n", "--name", "--extension-name"],
-            help="The name of the machine extension.",
-            required=True,
-            id_part="child_name_1",
-        )
         _args_schema.machine_name = AAZStrArg(
-            options=["--machine-name"],
-            help="The name of the machine where the extension should be deleted.",
+            options=["-n", "--name", "--machine-name"],
+            help="The name of the hybrid machine.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -70,7 +63,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.MachineExtensionsDelete(ctx=self.ctx)()
+        self.MachinesDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -81,46 +74,23 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class MachineExtensionsDelete(AAZHttpOperation):
+    class MachinesDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200(session)
             if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/extensions/{extensionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}",
                 **self.url_parameters
             )
 
@@ -135,10 +105,6 @@ class Delete(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "extensionName", self.ctx.args.extension_name,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "machineName", self.ctx.args.machine_name,
                     required=True,

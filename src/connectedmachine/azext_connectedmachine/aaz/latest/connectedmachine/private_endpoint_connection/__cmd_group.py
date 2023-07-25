@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "connectedmachine private-endpoint-connection",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage a private-endpoint-connection with connectedmachine.
+    """Manage private endpoint connection with an Azure Arc-Enabled Server.
     """
     pass
 

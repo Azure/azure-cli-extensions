@@ -37,10 +37,10 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_privatelink')
     def test_private_link(self):
-        rand_string = self.create_random_name('', 5)
+        rand_string = 'test'
         self.kwargs.update({
             'machine': 'testMachine',
-            'rg': 'az-sdk-test-private-link',
+            'rg': 'az-sdk-test',
             'scope': 'scope-' + rand_string,
             'vnet': 'vnet-' + rand_string,
             'subnet': 'subnet-' + rand_string,
@@ -73,7 +73,6 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
 
         # Update the private link scope
         self.cmd('az connectedmachine private-link-scope update '
-                '--location "{location}" '
                 '--tags Tag1="Value1" '
                 '--public-network-access Enabled '
                 '--resource-group "{rg}" '
@@ -101,18 +100,6 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
         private_link_scope = self.cmd('az connectedmachine private-link-scope show --scope-name {scope} -g {rg}').get_output_in_json()
         self.kwargs['scope_id'] = private_link_scope['id']
 
-        # # Private link scope show validation detail
-        # self.cmd('az connectedmachine private-link-scope show-validation-detail '
-        #         '--location eastus2euap ' 
-        #         '--private-link-scope-id "{scope_id}"', 
-        #         checks=[])
-
-        # # Private link scope show validation detail for machine
-        # self.cmd('az connectedmachine private-link-scope show-validation-detail-for-machine '
-        #         '--resource-group "{rg}" ' 
-        #         '--machine-name "{machine}"', 
-        #         checks=[])
-
         # Test private link resource show
         self.cmd('az connectedmachine private-link-resource show --scope-name {scope} -g {rg} --group-name hybridcompute', checks=[
             # self.check('length(@)', 6)
@@ -131,13 +118,13 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
         self.kwargs['private_endpoint_connection_name'] = connection_list[0]['name']
 
         self.cmd('az connectedmachine private-endpoint-connection update '
-                '--connection-state description="Rejected by AZ CLI test" status="Rejected" '
+                '--connection-state "{{\\"description\\":\\"Rejected by AZ CLI\\", \\"status\\":\\"Rejected\\"}}" '
                 '--name "{private_endpoint_connection_name}" '
                 '--resource-group "{rg}" '
                 '--scope-name "{scope}"',
                 checks=[
                     self.check('name', '{private_endpoint_connection_name}'),
-                    self.check('properties.privateLinkServiceConnectionState.description', 'Rejected by AZ CLI test'),
+                    self.check('properties.privateLinkServiceConnectionState.description', 'Rejected by AZ CLI'),
                     self.check('properties.privateLinkServiceConnectionState.status', 'Rejected')
                 ])
 
@@ -147,7 +134,7 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
                 '--scope-name "{scope}"',
                 checks=[
                     self.check('name', '{private_endpoint_connection_name}'),
-                    self.check('properties.privateLinkServiceConnectionState.description', 'Rejected by AZ CLI test'),
+                    self.check('properties.privateLinkServiceConnectionState.description', 'Rejected by AZ CLI'),
                     self.check('properties.privateLinkServiceConnectionState.status', 'Rejected')
                 ])
         

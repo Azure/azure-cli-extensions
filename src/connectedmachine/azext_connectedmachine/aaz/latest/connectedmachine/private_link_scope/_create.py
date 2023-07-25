@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create (or updates) a Azure Arc PrivateLinkScope. Note: You cannot specify a different value for InstrumentationKey nor AppId in the Put operation.
+
+    :example: Sample command for private-link-scope create
+        az connectedmachine private-link-scope create --location westus --resource-group my-resource-group --scope-name my-privatelinkscope
     """
 
     _aaz_info = {
-        "version": "2022-12-27-preview",
+        "version": "2022-12-27",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2022-12-27-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2022-12-27"],
         ]
     }
 
@@ -147,7 +150,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27-preview",
+                    "api-version", "2022-12-27",
                     required=True,
                 ),
             }

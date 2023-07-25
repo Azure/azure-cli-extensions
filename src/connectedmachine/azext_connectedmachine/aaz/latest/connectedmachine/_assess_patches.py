@@ -17,8 +17,8 @@ from azure.cli.core.aaz import *
 class AssessPatches(AAZCommand):
     """Assess patches on an Azure Arc-Enabled Server.
 
-    :example: Sample command for access-patches
-        az connectedmachine machine assess-patches --resource-group MyResourceGroup --name MyMachine
+    :example: Sample command for assess-patches
+        az connectedmachine assess-patches --resource-group MyResourceGroup --name MyMachine
     """
 
     _aaz_info = {

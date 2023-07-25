@@ -13,7 +13,5 @@ from ._create import *
 from ._delete import *
 from ._list import *
 from ._show import *
-from ._show_validation_detail import *
-from ._show_validation_detail_for_machine import *
 from ._update import *
 from ._wait import *

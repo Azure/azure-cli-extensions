@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "connectedmachine extension image",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage VM extension images available for Azure Arc-Enabled Servers.
+    """Manage VM extension metadata available for Azure Arc-Enabled Servers.
     """
     pass
 

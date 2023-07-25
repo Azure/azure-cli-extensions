@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "connectedmachine private-link-scope",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage a private-link-scope with connectedmachine.
+    """Manage private link scope of an Azure Arc-Enabled Server.
     """
     pass
 

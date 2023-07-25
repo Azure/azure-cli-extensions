@@ -16,14 +16,15 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """The operation to get all extensions of a Non-Azure machine.
+
     :example: Sample command for extension list
-        connectedmachine extension list --machine-name myMachine --resource-group myResourceGroup
+        az connectedmachine extension list --machine-name myMachine --resource-group myResourceGroup
     """
 
     _aaz_info = {
-        "version": "2022-12-27-preview",
+        "version": "2022-12-27",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions", "2022-12-27-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions", "2022-12-27"],
         ]
     }
 
@@ -47,7 +48,7 @@ class List(AAZCommand):
             help="The name of the machine containing the extension.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="^[a-zA-Z0-9-_\.]{1,54}$",
                 max_length=54,
                 min_length=1,
             ),
@@ -130,7 +131,7 @@ class List(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27-preview",
+                    "api-version", "2022-12-27",
                     required=True,
                 ),
             }
@@ -181,9 +182,7 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _element.properties = AAZObjectType()
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},

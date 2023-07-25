@@ -15,14 +15,18 @@ from azure.cli.core.aaz import *
     "connectedmachine private-link-scope list",
 )
 class List(AAZCommand):
-    """List a list of all Azure Arc PrivateLinkScopes within a resource group. And gets all the private scopes within a given subscription.
+    """Get a list of Azure Arc PrivateLinkScopes within a resource                                          group. And Gets a list of all Azure Arc PrivateLinkScopes within a subscription.
+
+    :example: Sample command for private-link-scope list
+        az connectedmachine private-link-scope list --resource-group my-resource-group
+        az connectedmachine private-link-scope list
     """
 
     _aaz_info = {
-        "version": "2022-12-27-preview",
+        "version": "2022-12-27",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/privatelinkscopes", "2022-12-27-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes", "2022-12-27-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridcompute/privatelinkscopes", "2022-12-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes", "2022-12-27"],
         ]
     }
 
@@ -111,7 +115,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27-preview",
+                    "api-version", "2022-12-27",
                     required=True,
                 ),
             }
@@ -305,7 +309,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27-preview",
+                    "api-version", "2022-12-27",
                     required=True,
                 ),
             }

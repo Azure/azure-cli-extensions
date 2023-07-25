@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "connectedmachine private-link-resource",
 )
 class __CMDGroup(AAZCommandGroup):
-    """manage a private-link-resource with connectedmachine.
+    """Manage private link resource of an Azure Arc-Enabled Server.
     """
     pass
 

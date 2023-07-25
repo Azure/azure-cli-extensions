@@ -15,13 +15,16 @@ from azure.cli.core.aaz import *
     "connectedmachine private-link-resource list",
 )
 class List(AAZCommand):
-    """Get the private link resources that need to be created for a Azure Monitor PrivateLinkScope.
+    """List the private link resources that need to be created for an Azure Monitor PrivateLinkScope.
+
+    :example: Sample command for private-link-resource list
+        az connectedmachine private-link-resource list --resource-group myResourceGroup --scope-name myPrivateLinkScope
     """
 
     _aaz_info = {
-        "version": "2022-12-27-preview",
+        "version": "2022-12-27",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/privatelinkresources", "2022-12-27-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/privatelinkresources", "2022-12-27"],
         ]
     }
 
@@ -44,7 +47,7 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.scope_name = AAZStrArg(
-            options=["--scope-name"],
+            options=["-n", "--scope-name"],
             help="The name of the Azure Arc PrivateLinkScope resource.",
             required=True,
         )
@@ -116,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27-preview",
+                    "api-version", "2022-12-27",
                     required=True,
                 ),
             }

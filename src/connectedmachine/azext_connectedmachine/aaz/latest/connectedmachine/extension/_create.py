@@ -16,14 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """The operation to create the extension.
+
     :example: Sample command for extension create
-        connectedmachine extension create --name CustomScriptExtension --location eastus2euap --type CustomScriptExtension --publisher Microsoft.Compute --type-handler-version 1.10 --machine-name myMachine --resource-group myResourceGroup
+        az connectedmachine extension create --name CustomScriptExtension --location eastus2euap --type CustomScriptExtension --publisher Microsoft.Compute --type-handler-version 1.10 --machine-name myMachine --resource-group myResourceGroup
     """
 
     _aaz_info = {
-        "version": "2022-12-27-preview",
+        "version": "2022-12-27",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2022-12-27-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2022-12-27"],
         ]
     }
 
@@ -54,7 +55,7 @@ class Create(AAZCommand):
             help="The name of the machine where the extension should be created or updated.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="[a-zA-Z0-9-_\.]+",
+                pattern="^[a-zA-Z0-9-_\.]{1,54}$",
                 max_length=54,
                 min_length=1,
             ),
@@ -62,18 +63,21 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "ExtensionParameters"
-
-        _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
-            arg_group="ExtensionParameters",
             help="The geo-location where the resource lives",
             required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
         )
+        _args_schema.type = AAZStrArg(
+            options=["--type"],
+            help="Specifies the type of the extension; an example is \"CustomScriptExtension\".",
+        )
+
+        # define Arg Group "ExtensionParameters"
+
+        _args_schema = cls._args_schema
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="ExtensionParameters",
@@ -120,11 +124,6 @@ class Create(AAZCommand):
             options=["--settings"],
             arg_group="Properties",
             help="Json formatted public settings for the extension.",
-        )
-        _args_schema.type = AAZStrArg(
-            options=["--type"],
-            arg_group="Properties",
-            help="Specifies the type of the extension; an example is \"CustomScriptExtension\".",
         )
         _args_schema.type_handler_version = AAZStrArg(
             options=["--type-handler-version"],
@@ -259,7 +258,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27-preview",
+                    "api-version", "2022-12-27",
                     required=True,
                 ),
             }
@@ -285,7 +284,7 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -356,9 +355,7 @@ class Create(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},

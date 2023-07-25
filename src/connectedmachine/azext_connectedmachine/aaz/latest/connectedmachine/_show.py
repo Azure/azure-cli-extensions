@@ -12,26 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine list",
+    "connectedmachine show",
 )
-class List(AAZCommand):
-    """List all the Azure Arc-Enabled Servers in the specified resource group.
+class Show(AAZCommand):
+    """Get information about the model view or the instance view of an Azure Arc-Enabled Server.
 
-    :example: Sample command for list
-        az connectedmachine list --resource-group myResourceGroup
-        az connectedmachine list
+    :example: Sample command for show
+        az connectedmachine show --name myMachine --resource-group myResourceGroup
     """
 
     _aaz_info = {
         "version": "2022-12-27",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines", "2022-12-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2022-12-27"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -44,14 +44,30 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.machine_name = AAZStrArg(
+            options=["-n", "--name", "--machine-name"],
+            help="The name of the hybrid machine.",
+            required=True,
+            id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-_\.]{1,54}$",
+                max_length=54,
+                min_length=1,
+            ),
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+        _args_schema.expand = AAZStrArg(
+            options=["--expand"],
+            help="The expand expression to apply on the operation.",
+            enum={"instanceView": "instanceView"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MachinesListByResourceGroup(ctx=self.ctx)()
+        self.MachinesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -63,11 +79,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class MachinesListByResourceGroup(AAZHttpOperation):
+    class MachinesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -81,7 +96,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}",
                 **self.url_parameters
             )
 
@@ -97,6 +112,10 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "machineName", self.ctx.args.machine_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
@@ -110,6 +129,9 @@ class List(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
+                **self.serialize_query_param(
+                    "$expand", self.ctx.args.expand,
+                ),
                 **self.serialize_query_param(
                     "api-version", "2022-12-27",
                     required=True,
@@ -144,44 +166,33 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.identity = AAZObjectType()
-            _element.location = AAZStrType(
+            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
-            _element.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _element.resources = AAZListType(
+            _schema_on_200.resources = AAZListType(
                 flags={"read_only": True},
             )
-            _element.system_data = AAZObjectType(
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _ListHelper._build_schema_system_data_read(_element.system_data)
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
+            _ShowHelper._build_schema_system_data_read(_schema_on_200.system_data)
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            identity = cls._schema_on_200.value.Element.identity
+            identity = cls._schema_on_200.identity
             identity.principal_id = AAZStrType(
                 serialized_name="principalId",
                 flags={"read_only": True},
@@ -192,7 +203,7 @@ class List(AAZCommand):
             )
             identity.type = AAZStrType()
 
-            properties = cls._schema_on_200.value.Element.properties
+            properties = cls._schema_on_200.properties
             properties.ad_fqdn = AAZStrType(
                 serialized_name="adFqdn",
                 flags={"read_only": True},
@@ -291,7 +302,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            agent_configuration = cls._schema_on_200.value.Element.properties.agent_configuration
+            agent_configuration = cls._schema_on_200.properties.agent_configuration
             agent_configuration.config_mode = AAZStrType(
                 serialized_name="configMode",
                 flags={"read_only": True},
@@ -325,21 +336,21 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            extensions_allow_list = cls._schema_on_200.value.Element.properties.agent_configuration.extensions_allow_list
+            extensions_allow_list = cls._schema_on_200.properties.agent_configuration.extensions_allow_list
             extensions_allow_list.Element = AAZObjectType()
-            _ListHelper._build_schema_configuration_extension_read(extensions_allow_list.Element)
+            _ShowHelper._build_schema_configuration_extension_read(extensions_allow_list.Element)
 
-            extensions_block_list = cls._schema_on_200.value.Element.properties.agent_configuration.extensions_block_list
+            extensions_block_list = cls._schema_on_200.properties.agent_configuration.extensions_block_list
             extensions_block_list.Element = AAZObjectType()
-            _ListHelper._build_schema_configuration_extension_read(extensions_block_list.Element)
+            _ShowHelper._build_schema_configuration_extension_read(extensions_block_list.Element)
 
-            incoming_connections_ports = cls._schema_on_200.value.Element.properties.agent_configuration.incoming_connections_ports
+            incoming_connections_ports = cls._schema_on_200.properties.agent_configuration.incoming_connections_ports
             incoming_connections_ports.Element = AAZStrType()
 
-            proxy_bypass = cls._schema_on_200.value.Element.properties.agent_configuration.proxy_bypass
+            proxy_bypass = cls._schema_on_200.properties.agent_configuration.proxy_bypass
             proxy_bypass.Element = AAZStrType()
 
-            agent_upgrade = cls._schema_on_200.value.Element.properties.agent_upgrade
+            agent_upgrade = cls._schema_on_200.properties.agent_upgrade
             agent_upgrade.correlation_id = AAZStrType(
                 serialized_name="correlationId",
             )
@@ -362,23 +373,23 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            cloud_metadata = cls._schema_on_200.value.Element.properties.cloud_metadata
+            cloud_metadata = cls._schema_on_200.properties.cloud_metadata
             cloud_metadata.provider = AAZStrType(
                 flags={"read_only": True},
             )
 
-            detected_properties = cls._schema_on_200.value.Element.properties.detected_properties
+            detected_properties = cls._schema_on_200.properties.detected_properties
             detected_properties.Element = AAZStrType()
 
-            error_details = cls._schema_on_200.value.Element.properties.error_details
+            error_details = cls._schema_on_200.properties.error_details
             error_details.Element = AAZObjectType()
-            _ListHelper._build_schema_error_detail_read(error_details.Element)
+            _ShowHelper._build_schema_error_detail_read(error_details.Element)
 
-            extensions = cls._schema_on_200.value.Element.properties.extensions
+            extensions = cls._schema_on_200.properties.extensions
             extensions.Element = AAZObjectType()
-            _ListHelper._build_schema_machine_extension_instance_view_read(extensions.Element)
+            _ShowHelper._build_schema_machine_extension_instance_view_read(extensions.Element)
 
-            location_data = cls._schema_on_200.value.Element.properties.location_data
+            location_data = cls._schema_on_200.properties.location_data
             location_data.city = AAZStrType()
             location_data.country_or_region = AAZStrType(
                 serialized_name="countryOrRegion",
@@ -388,7 +399,7 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            os_profile = cls._schema_on_200.value.Element.properties.os_profile
+            os_profile = cls._schema_on_200.properties.os_profile
             os_profile.computer_name = AAZStrType(
                 serialized_name="computerName",
                 flags={"read_only": True},
@@ -400,34 +411,34 @@ class List(AAZCommand):
                 serialized_name="windowsConfiguration",
             )
 
-            linux_configuration = cls._schema_on_200.value.Element.properties.os_profile.linux_configuration
+            linux_configuration = cls._schema_on_200.properties.os_profile.linux_configuration
             linux_configuration.patch_settings = AAZObjectType(
                 serialized_name="patchSettings",
                 flags={"client_flatten": True},
             )
-            _ListHelper._build_schema_patch_settings_read(linux_configuration.patch_settings)
+            _ShowHelper._build_schema_patch_settings_read(linux_configuration.patch_settings)
 
-            windows_configuration = cls._schema_on_200.value.Element.properties.os_profile.windows_configuration
+            windows_configuration = cls._schema_on_200.properties.os_profile.windows_configuration
             windows_configuration.patch_settings = AAZObjectType(
                 serialized_name="patchSettings",
                 flags={"client_flatten": True},
             )
-            _ListHelper._build_schema_patch_settings_read(windows_configuration.patch_settings)
+            _ShowHelper._build_schema_patch_settings_read(windows_configuration.patch_settings)
 
-            service_statuses = cls._schema_on_200.value.Element.properties.service_statuses
+            service_statuses = cls._schema_on_200.properties.service_statuses
             service_statuses.extension_service = AAZObjectType(
                 serialized_name="extensionService",
             )
-            _ListHelper._build_schema_service_status_read(service_statuses.extension_service)
+            _ShowHelper._build_schema_service_status_read(service_statuses.extension_service)
             service_statuses.guest_configuration_service = AAZObjectType(
                 serialized_name="guestConfigurationService",
             )
-            _ListHelper._build_schema_service_status_read(service_statuses.guest_configuration_service)
+            _ShowHelper._build_schema_service_status_read(service_statuses.guest_configuration_service)
 
-            resources = cls._schema_on_200.value.Element.resources
+            resources = cls._schema_on_200.resources
             resources.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.resources.Element
+            _element = cls._schema_on_200.resources.Element
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -442,13 +453,13 @@ class List(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _ListHelper._build_schema_system_data_read(_element.system_data)
+            _ShowHelper._build_schema_system_data_read(_element.system_data)
             _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.resources.Element.properties
+            properties = cls._schema_on_200.resources.Element.properties
             properties.auto_upgrade_minor_version = AAZBoolType(
                 serialized_name="autoUpgradeMinorVersion",
             )
@@ -461,7 +472,7 @@ class List(AAZCommand):
             properties.instance_view = AAZObjectType(
                 serialized_name="instanceView",
             )
-            _ListHelper._build_schema_machine_extension_instance_view_read(properties.instance_view)
+            _ShowHelper._build_schema_machine_extension_instance_view_read(properties.instance_view)
             properties.protected_settings = AAZFreeFormDictType(
                 serialized_name="protectedSettings",
             )
@@ -476,17 +487,17 @@ class List(AAZCommand):
                 serialized_name="typeHandlerVersion",
             )
 
-            tags = cls._schema_on_200.value.Element.resources.Element.tags
+            tags = cls._schema_on_200.resources.Element.tags
             tags.Element = AAZStrType()
 
-            tags = cls._schema_on_200.value.Element.tags
+            tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ShowHelper:
+    """Helper class for Show"""
 
     _schema_configuration_extension_read = None
 
@@ -682,4 +693,4 @@ class _ListHelper:
         _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
 
 
-__all__ = ["List"]
+__all__ = ["Show"]

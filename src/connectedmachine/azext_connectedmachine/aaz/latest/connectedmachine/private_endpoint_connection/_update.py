@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a private endpoint connection with a given name.
+
+    :example: Sample command for private-endpoint-connection update
+        az connectedmachine private-endpoint-connection update --connection-state "{{"description":"Rejected by AZ CLI", "status":"Rejected"}}" --name private-endpoint-connection-name --resource-group myResourceGroup --scope-name myPrivateLinkScope
     """
 
     _aaz_info = {
-        "version": "2022-12-27-preview",
+        "version": "2022-12-27",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/privateendpointconnections/{}", "2022-12-27-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/privateendpointconnections/{}", "2022-12-27"],
         ]
     }
 
@@ -70,7 +73,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.private_link_service_connection_state = AAZObjectArg(
-            options=["--private-link-service-connection-state"],
+            options=["--connection-state", "--private-link-service-connection-state"],
             arg_group="Properties",
             help="Connection state of the private endpoint connection.",
             nullable=True,
@@ -176,7 +179,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27-preview",
+                    "api-version", "2022-12-27",
                     required=True,
                 ),
             }
@@ -279,7 +282,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27-preview",
+                    "api-version", "2022-12-27",
                     required=True,
                 ),
             }

@@ -12,7 +12,6 @@
 import azext_connectedmachine._help
 from azure.cli.core import AzCommandsLoader
 
-
 class ConnectedMachineCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
