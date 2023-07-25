@@ -702,6 +702,7 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
         {
             "location": workspace_region,
             "tags": existing_tags,
+            "kind": "Linux",
             "properties": {
                 "dataSources": {
                     "extensions": [
