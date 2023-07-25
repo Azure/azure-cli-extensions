@@ -2175,16 +2175,25 @@ networkfabric controller create:
     workload_er_connections:
       rule_exclusions:
       - option_length_too_long
+networkfabric controller update:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric fabric update:
+  rule_exclusions:
+  - missing_command_test_coverage
 networkfabric rack create:
   rule_exclusions:
   - missing_command_test_coverage
 networkfabric rack delete:
   rule_exclusions:
   - missing_command_test_coverage
-networkfabric device delete:
+networkfabric interface delete:
   rule_exclusions:
   - missing_command_test_coverage
-networkfabric interface delete:
+networkfabric nni update:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric l2domain update:
   rule_exclusions:
   - missing_command_test_coverage
 networkfabric l3domain create:
@@ -2201,11 +2210,26 @@ networkfabric l3domain create:
     redistribute_static_routes:
       rule_exclusions:
       - option_length_too_long
+networkfabric l3domain update:
+  rule_exclusions:
+  - missing_command_test_coverage
 networkfabric internalnetwork create:
   parameters:
     static_route_configuration:
       rule_exclusions:
       - option_length_too_long
+networkfabric internalnetwork update:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric externalnetwork update:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric npb list:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric npb show:
+  rule_exclusions:
+  - missing_command_test_coverage
 notification-hub authorization-rule create:
   parameters:
     notification_hub_name:

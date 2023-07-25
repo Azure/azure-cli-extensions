@@ -1,0 +1,99 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric rack show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkRacks/nfa-tool-ts-GA-nf071423-aggrack?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkRacks/nfa-tool-ts-GA-nf071423-aggrack","name":"nfa-tool-ts-GA-nf071423-aggrack","type":"microsoft.managednetworkfabric/networkracks","location":"eastus2euap","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-07-14T09:23:11.0442956Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-14T11:45:26.3549779Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfa-tool-ts-GA-nf071423","networkDevices":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-AggrRack-CE1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-AggrRack-CE2","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-AggrRack-TOR17","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-AggrRack-TOR18","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-AggrRack-MgmtSwitch1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-AggrRack-MgmtSwitch2","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-AggrRack-NPB1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-AggrRack-NPB2"],"provisioningState":"Succeeded","networkRackType":"Aggregate"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2509'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Jul 2023 05:33:26 GMT
+      etag:
+      - '"00002800-0000-3400-0000-64b135560000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 54330B3862EC477290C74A65BF0F72EF Ref B: MAA201060516045 Ref C: 2023-07-18T05:33:25Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric rack list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkRacks?api-version=2023-06-15
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkRacks/nfa-tool-ts-GA-nf071423-aggrack","name":"nfa-tool-ts-GA-nf071423-aggrack","type":"microsoft.managednetworkfabric/networkracks","location":"eastus2euap","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-07-14T09:23:11.0442956Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-14T11:45:26.3549779Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfa-tool-ts-GA-nf071423","networkDevices":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-AggrRack-CE1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-AggrRack-CE2","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-AggrRack-TOR17","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-AggrRack-TOR18","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-AggrRack-MgmtSwitch1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-AggrRack-MgmtSwitch2","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-AggrRack-NPB1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-AggrRack-NPB2"],"provisioningState":"Succeeded","networkRackType":"Aggregate"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkRacks/nfa-tool-ts-GA-nf071423-comprack1","name":"nfa-tool-ts-GA-nf071423-comprack1","type":"microsoft.managednetworkfabric/networkracks","location":"eastus2euap","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-07-14T09:23:14.1955109Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-14T11:45:26.6049792Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfa-tool-ts-GA-nf071423","networkDevices":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-CompRack1-TOR1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-CompRack1-TOR2","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-CompRack1-MgmtSwitch"],"provisioningState":"Succeeded","networkRackType":"Compute"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkRacks/nfa-tool-ts-GA-nf071423-comprack2","name":"nfa-tool-ts-GA-nf071423-comprack2","type":"microsoft.managednetworkfabric/networkracks","location":"eastus2euap","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-07-14T09:23:19.5249228Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-14T11:45:26.8081114Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfa-tool-ts-GA-nf071423","networkDevices":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-CompRack2-TOR3","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-CompRack2-TOR4","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-GA-nfrg071323/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-nf071423-CompRack2-MgmtSwitch"],"provisioningState":"Succeeded","networkRackType":"Compute"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5535'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 Jul 2023 05:33:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 9ab6a924-8674-4826-9ef3-4b221db452de
+      - 5918b1b4-ef9a-4662-9349-0b4a827964b2
+      - 1bd4c559-88ad-4fd7-ad67-3369b44c2401
+      - 42f62b11-0048-48da-a9f8-449b127315c6
+      x-msedge-ref:
+      - 'Ref A: BD5A66652A394137B7BDF43A8A0765F1 Ref B: MAA201060513009 Ref C: 2023-07-18T05:33:26Z'
+    status:
+      code: 200
+      message: OK
+version: 1
