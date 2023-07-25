@@ -12,27 +12,23 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "notification-hub update",
+    "notification-hub credential baidu create",
     is_experimental=True,
 )
-class Update(AAZCommand):
-    """Update a notification hub in a namespace.
-
-    :example: Update the notification hub
-        az notification-hub update --resource-group MyResourceGroup --namespace-name my-namespace --name "sdk-notificationHubs-8708"
+class Create(AAZCommand):
+    """Update credential for Baidu(Andrioid China).
     """
 
     _aaz_info = {
         "version": "2017-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.notificationhubs/namespaces/{}/notificationhubs/{}", "2017-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.notificationhubs/namespaces/{}/notificationhubs/{}", "2017-04-01", "properties.baiduCredential"],
         ]
     }
 
-    AZ_SUPPORT_GENERIC_UPDATE = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
+        self.SubresourceSelector(ctx=self.ctx, name="subresource")
         self._execute_operations()
         return self._output()
 
@@ -51,51 +47,37 @@ class Update(AAZCommand):
             options=["--namespace-name"],
             help="The namespace name.",
             required=True,
-            id_part="name",
         )
         _args_schema.notification_hub_name = AAZStrArg(
-            options=["-n", "--name", "--notification-hub-name"],
+            options=["--notification-hub-name"],
             help="The notification hub name.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
 
-        # define Arg Group "Parameters"
+        # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Parameters",
-            help="Resource location",
-            nullable=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
+        _args_schema.baidu_api_key = AAZStrArg(
+            options=["--baidu-api-key"],
+            arg_group="Properties",
+            help="Baidu Api Key.",
         )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Parameters",
-            help="Resource tags",
-            nullable=True,
+        _args_schema.baidu_secret_key = AAZStrArg(
+            options=["--baidu-secret-key"],
+            arg_group="Properties",
+            help="Baidu Secret Key",
         )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        # define Arg Group "Properties"
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
         self.NotificationHubsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
+        self.pre_instance_create()
+        self.InstanceCreateByJson(ctx=self.ctx)()
+        self.post_instance_create(self.ctx.selectors.subresource.required())
         self.NotificationHubsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
@@ -108,16 +90,27 @@ class Update(AAZCommand):
         pass
 
     @register_callback
-    def pre_instance_update(self, instance):
+    def pre_instance_create(self):
         pass
 
     @register_callback
-    def post_instance_update(self, instance):
+    def post_instance_create(self, instance):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.selectors.subresource.required(), client_flatten=True)
         return result
+
+    class SubresourceSelector(AAZJsonSelector):
+
+        def _get(self):
+            result = self.ctx.vars.instance
+            return result.properties.baiduCredential
+
+        def _set(self, value):
+            result = self.ctx.vars.instance
+            result.properties.baiduCredential = value
+            return
 
     class NotificationHubsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -202,7 +195,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_notification_hub_resource_read(cls._schema_on_200)
+            _CreateHelper._build_schema_notification_hub_resource_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -301,46 +294,32 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_notification_hub_resource_read(cls._schema_on_200_201)
+            _CreateHelper._build_schema_notification_hub_resource_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
+    class InstanceCreateByJson(AAZJsonInstanceCreateOperation):
 
         def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
+            self.ctx.selectors.subresource.set(self._create_instance())
 
-        def _update_instance(self, instance):
+        def _create_instance(self):
             _instance_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("location", AAZStrType, ".location")
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("name", AAZStrType, ".notification_hub_name")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
+                properties.set_prop("baiduApiKey", AAZStrType, ".baidu_api_key")
+                properties.set_prop("baiduSecretKey", AAZStrType, ".baidu_secret_key")
 
             return _instance_value
 
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
 
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
-            )
-
-
-class _UpdateHelper:
-    """Helper class for Update"""
+class _CreateHelper:
+    """Helper class for Create"""
 
     _schema_notification_hub_resource_read = None
 
@@ -563,4 +542,4 @@ class _UpdateHelper:
         _schema.type = cls._schema_notification_hub_resource_read.type
 
 
-__all__ = ["Update"]
+__all__ = ["Create"]
