@@ -18,14 +18,8 @@ from azure.cli.core.aaz import *
 class TestSend(AAZCommand):
     """Test send a push notification.
 
-    :example: Test send notification with message body
-        az notification-hub test-send --resource-group MyResourceGroup --namespace-name my-namespace --notification-hub-name my-hub --notification-format gcm --message "test notification"
-
-    :example: Test send notification from file
-        az notification-hub test-send --resource-group MyResourceGroup --namespace-name my-namespace --notification-hub-name my-hub --notification-format gcm --payload path/to/file
-
-    :example: Test send notification with json string
-        az notification-hub test-send --resource-group MyResourceGroup --namespace-name my-namespace --notification-hub-name my-hub --notification-format gcm --payload "{\\\"data\\\":{\\\"message\\\":\\\"test notification\\\"}}"
+    :example: Test send notification
+        az notification-hub test-send --resource-group MyResourceGroup --namespace-name my-namespace --notification-hub-name my-hub
     """
 
     _aaz_info = {

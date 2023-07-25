@@ -12,6 +12,6 @@ from .__cmd_group import *
 from ._create import *
 from ._delete import *
 from ._list import *
-from ._list_key import *
-from ._regenerate_key import *
+from ._list_keys import *
+from ._regenerate_keys import *
 from ._show import *

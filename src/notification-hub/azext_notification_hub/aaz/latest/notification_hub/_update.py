@@ -93,11 +93,6 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="The ApnsCredential of the created NotificationHub",
         )
-        _args_schema.authorization_rules = AAZListArg(
-            options=["--authorization-rules"],
-            arg_group="Properties",
-            help="The AuthorizationRules of the created NotificationHub",
-        )
         _args_schema.baidu_credential = AAZObjectArg(
             options=["--baidu-credential"],
             arg_group="Properties",
@@ -165,20 +160,6 @@ class Update(AAZCommand):
         apns_credential.token = AAZStrArg(
             options=["token"],
             help="Provider Authentication Token, obtained through your developer account. Specify if using Token Authentication Mode.",
-        )
-
-        authorization_rules = cls._args_schema.authorization_rules
-        authorization_rules.Element = AAZObjectArg()
-
-        _element = cls._args_schema.authorization_rules.Element
-        _element.rights = AAZListArg(
-            options=["rights"],
-            help="The rights associated with the rule.",
-        )
-
-        rights = cls._args_schema.authorization_rules.Element.rights
-        rights.Element = AAZStrArg(
-            enum={"Listen": "Listen", "Manage": "Manage", "Send": "Send"},
         )
 
         baidu_credential = cls._args_schema.baidu_credential
@@ -336,7 +317,6 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("admCredential", AAZObjectType, ".adm_credential")
                 properties.set_prop("apnsCredential", AAZObjectType, ".apns_credential")
-                properties.set_prop("authorizationRules", AAZListType, ".authorization_rules")
                 properties.set_prop("baiduCredential", AAZObjectType, ".baidu_credential")
                 properties.set_prop("gcmCredential", AAZObjectType, ".gcm_credential")
                 properties.set_prop("mpnsCredential", AAZObjectType, ".mpns_credential")
@@ -367,18 +347,6 @@ class Update(AAZCommand):
                 properties.set_prop("keyId", AAZStrType, ".key_id")
                 properties.set_prop("thumbprint", AAZStrType, ".thumbprint")
                 properties.set_prop("token", AAZStrType, ".token")
-
-            authorization_rules = _builder.get(".properties.authorizationRules")
-            if authorization_rules is not None:
-                authorization_rules.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.authorizationRules[]")
-            if _elements is not None:
-                _elements.set_prop("rights", AAZListType, ".rights")
-
-            rights = _builder.get(".properties.authorizationRules[].rights")
-            if rights is not None:
-                rights.set_elements(AAZStrType, ".")
 
             baidu_credential = _builder.get(".properties.baiduCredential")
             if baidu_credential is not None:

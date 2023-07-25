@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "notification-hub namespace authorization-rule list-key",
+    "notification-hub namespace authorization-rule regenerate-keys",
     is_experimental=True,
 )
-class ListKey(AAZCommand):
-    """List the primary and secondary connection strings to the namespace.
+class RegenerateKeys(AAZCommand):
+    """Regenerate the primary/secondary keys to the namespace authorization rule.
 
-    :example: List keys of the namesapce authorization rule
-        az notification-hub namespace authorization-rule list-keys --resource-group MyResourceGroup --namespace-name my-namespace --name "RootManageSharedAccessKey"
+    :example: Regenerate keys of the namesapce authorization rule
+        az notification-hub namespace authorization-rule regenerate-keys --resource-group MyResourceGroup --namespace-name my-namespace --name "RootManageSharedAccessKey" --policy-key "Secondary Key"
     """
 
     _aaz_info = {
         "version": "2017-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.notificationhubs/namespaces/{}/authorizationrules/{}/listkeys", "2017-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.notificationhubs/namespaces/{}/authorizationrules/{}/regeneratekeys", "2017-04-01"],
         ]
     }
 
@@ -45,8 +45,8 @@ class ListKey(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.authorization_rule_name = AAZStrArg(
-            options=["--authorization-rule-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="The connection string of the namespace for the specified authorizationRule.",
             required=True,
             id_part="child_name_1",
@@ -60,11 +60,20 @@ class ListKey(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Parameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.policy_key = AAZStrArg(
+            options=["--policy-key"],
+            arg_group="Parameters",
+            help="Name of the key that has to be regenerated for the Namespace/Notification Hub Authorization Rule. The value can be Primary Key/Secondary Key.",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.NamespacesListKeys(ctx=self.ctx)()
+        self.NamespacesRegenerateKeys(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -79,7 +88,7 @@ class ListKey(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class NamespacesListKeys(AAZHttpOperation):
+    class NamespacesRegenerateKeys(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -93,7 +102,7 @@ class ListKey(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NotificationHubs/namespaces/{namespaceName}/AuthorizationRules/{authorizationRuleName}/listKeys",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NotificationHubs/namespaces/{namespaceName}/AuthorizationRules/{authorizationRuleName}/regenerateKeys",
                 **self.url_parameters
             )
 
@@ -109,7 +118,7 @@ class ListKey(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "authorizationRuleName", self.ctx.args.authorization_rule_name,
+                    "authorizationRuleName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -141,10 +150,24 @@ class ListKey(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("policyKey", AAZStrType, ".policy_key")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -183,8 +206,8 @@ class ListKey(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListKeyHelper:
-    """Helper class for ListKey"""
+class _RegenerateKeysHelper:
+    """Helper class for RegenerateKeys"""
 
 
-__all__ = ["ListKey"]
+__all__ = ["RegenerateKeys"]

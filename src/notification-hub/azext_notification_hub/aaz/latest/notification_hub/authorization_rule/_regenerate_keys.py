@@ -45,8 +45,8 @@ class RegenerateKeys(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.authorization_rule_name = AAZStrArg(
-            options=["--authorization-rule-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="The connection string of the NotificationHub for the specified authorizationRule.",
             required=True,
             id_part="child_name_2",
@@ -124,7 +124,7 @@ class RegenerateKeys(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "authorizationRuleName", self.ctx.args.authorization_rule_name,
+                    "authorizationRuleName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
