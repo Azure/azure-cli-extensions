@@ -16,7 +16,12 @@ from azext_notification_hub.aaz.latest.notification_hub.credential.apns import C
 from azext_notification_hub.aaz.latest.notification_hub.credential.mpns import Create as _MpnsUpdate
 from azext_notification_hub.aaz.latest.notification_hub.credential.baidu import Create as _BaiduUpdate
 from azext_notification_hub.aaz.latest.notification_hub.credential.adm import Create as _AdmUpdate
+from azext_notification_hub.aaz.latest.notification_hub.credential.wns import Create as _WnsUpdate
+from azext_notification_hub.aaz.latest.notification_hub.credential.gcm import Create as _GcmUpdate
 from azext_notification_hub.aaz.latest.notification_hub.authorization_rule import RegenerateKeys as _RegenerateKeys
+from azext_notification_hub.aaz.latest.notification_hub.namespace import Create as _NamespaceCreate
+from azext_notification_hub.aaz.latest.notification_hub.namespace.authorization_rule import Create as _NamespaceRuleCreate
+from azext_notification_hub.aaz.latest.notification_hub.namespace.authorization_rule import RegenerateKeys as _NamespaceRuleRegenerateKeys
 
 
 class NotificationHubCreate(_CreateNotificationHub):
@@ -68,6 +73,23 @@ class AdmUpdate(_AdmUpdate):
         return args_schema
 
 
+class WnsUpdate(_WnsUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.package_sid._required = True
+        args_schema.secret_key._required = True
+        return args_schema
+
+
+class GcmUpdate(_GcmUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.google_api_key._required = True
+        return args_schema
+
+
 class MpnsUpdate(_MpnsUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -79,6 +101,7 @@ class MpnsUpdate(_MpnsUpdate):
             fmt=AAZFreeFormDictArgFormat(),
             required=True
         )
+        args_schema.certificate_key._required = True
         args_schema.mpns_certificate_org._registered = False
         return args_schema
 
@@ -116,5 +139,31 @@ class RuleRegenerateKeys(_RegenerateKeys):
         from azure.cli.core.aaz import AAZArgEnum
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.policy_key._required = True
-        args_schema.policy_key.enum = AAZArgEnum({'primary key': 'Primary Key', 'secondary key': 'Secondary Key'})
+        args_schema.policy_key.enum = AAZArgEnum({'Primary Key': 'Primary Key', 'Secondary Key': 'Secondary Key'})
+        return args_schema
+
+
+class NamespaceCreate(_NamespaceCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.sku._required = True
+        return args_schema
+
+
+class NamespaceRuleCreate(_NamespaceRuleCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.rights._required = True
+        return args_schema
+
+
+class NamespaceRuleRegenerateKeys(_NamespaceRuleRegenerateKeys):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZArgEnum
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.policy_key._required = True
+        args_schema.policy_key.enum = AAZArgEnum({'Primary Key': 'Primary Key', 'Secondary Key': 'Secondary Key'})
         return args_schema

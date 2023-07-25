@@ -11,8 +11,7 @@
 
 def load_command_table(self, _):
     with self.command_group('notification-hub'):
-        from azext_notification_hub.custom import NotificationHubUpdate
-        from azext_notification_hub.custom import NotificationHubCreate
+        from azext_notification_hub.custom import NotificationHubCreate, NotificationHubUpdate
         self.command_table['notification-hub create'] = NotificationHubCreate(loader=self)
         self.command_table['notification-hub update'] = NotificationHubUpdate(loader=self)
 
@@ -20,10 +19,17 @@ def load_command_table(self, _):
         from azext_notification_hub.custom import RuleRegenerateKeys
         self.command_table['notification-hub authorization-rule regenerate-keys'] = RuleRegenerateKeys(loader=self)
 
+    with self.command_group('notification-hub namespace'):
+        from azext_notification_hub.custom import NamespaceCreate
+        self.command_table['notification-hub namespace create'] = NamespaceCreate(loader=self)
+
+    with self.command_group('notification-hub namespace authorization-rule'):
+        from azext_notification_hub.custom import NamespaceRuleCreate, NamespaceRuleRegenerateKeys
+        self.command_table['notification-hub namespace authorization-rule create'] = NamespaceRuleCreate(loader=self)
+        self.command_table['notification-hub namespace authorization-rule regenerate-keys'] = NamespaceRuleRegenerateKeys(loader=self)
+
     with self.command_group('notification-hub credential'):
-        from azext_notification_hub.aaz.latest.notification_hub.credential.gcm import Create as GcmUpdate
-        from azext_notification_hub.aaz.latest.notification_hub.credential.wns import Create as WnsUpdate
-        from azext_notification_hub.custom import BaiduUpdate, ApnsUpdate, MpnsUpdate, AdmUpdate
+        from azext_notification_hub.custom import BaiduUpdate, ApnsUpdate, MpnsUpdate, AdmUpdate, WnsUpdate, GcmUpdate
         self.command_table['notification-hub credential gcm update'] = GcmUpdate(loader=self)
         self.command_table['notification-hub credential adm update'] = AdmUpdate(loader=self)
         self.command_table['notification-hub credential apns update'] = ApnsUpdate(loader=self)
