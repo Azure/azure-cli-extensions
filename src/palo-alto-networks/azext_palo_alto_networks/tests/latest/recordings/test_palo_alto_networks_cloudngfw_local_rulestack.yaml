@@ -1,0 +1,2067 @@
+interactions:
+- request:
+    body: '{"identity": {"type": "None"}, "location": "eastus", "properties": {"defaultMode":
+      "IPS", "description": "local rulestacks", "minAppIdVersion": "8595-7473", "scope":
+      "LOCAL", "securityServices": {"antiSpywareProfile": "BestPractice", "antiVirusProfile":
+      "BestPractice", "dnsSubscription": "BestPractice", "fileBlockingProfile": "BestPractice",
+      "urlFilteringProfile": "BestPractice", "vulnerabilityProfile": "BestPractice"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '424'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --identity --location --default-mode --description --min-app-id-version
+        --scope --security-services
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-25T09:49:50.5335203Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-25T09:49:50.5335203Z"},"identity":{"type":"None"},"properties":{"scope":"LOCAL","description":"local
+        rulestacks","minAppIdVersion":"8595-7473","provisioningState":"Accepted","securityServices":{"vulnerabilityProfile":"BestPractice","antiSpywareProfile":"BestPractice","antiVirusProfile":"BestPractice","urlFilteringProfile":"BestPractice","fileBlockingProfile":"BestPractice","dnsSubscription":"BestPractice","outboundUnTrustCertificate":null,"outboundTrustCertificate":null},"defaultMode":"IPS"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c0bc8973-7df5-41ba-b095-83b013e60bab*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D?api-version=2022-08-29
+      cache-control:
+      - no-cache
+      content-length:
+      - '1027'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:49:52 GMT
+      etag:
+      - '"0b00ad81-0000-0100-0000-64bf9ac00000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c0bc8973-7df5-41ba-b095-83b013e60bab*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D?api-version=2022-08-29
+      mise-correlation-id:
+      - dcd68115-ca1d-49fc-b57a-809123f01300
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --identity --location --default-mode --description --min-app-id-version
+        --scope --security-services
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c0bc8973-7df5-41ba-b095-83b013e60bab*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c0bc8973-7df5-41ba-b095-83b013e60bab*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D","name":"c0bc8973-7df5-41ba-b095-83b013e60bab*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Accepted","startTime":"2023-07-25T09:49:51.6325617Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '573'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:49:52 GMT
+      etag:
+      - '"6e00df70-0000-0100-0000-64bf9abf0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --identity --location --default-mode --description --min-app-id-version
+        --scope --security-services
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c0bc8973-7df5-41ba-b095-83b013e60bab*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c0bc8973-7df5-41ba-b095-83b013e60bab*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D","name":"c0bc8973-7df5-41ba-b095-83b013e60bab*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Accepted","startTime":"2023-07-25T09:49:51.6325617Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '573'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:50:24 GMT
+      etag:
+      - '"6e00df70-0000-0100-0000-64bf9abf0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --identity --location --default-mode --description --min-app-id-version
+        --scope --security-services
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c0bc8973-7df5-41ba-b095-83b013e60bab*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/c0bc8973-7df5-41ba-b095-83b013e60bab*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D","name":"c0bc8973-7df5-41ba-b095-83b013e60bab*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Succeeded","startTime":"2023-07-25T09:49:51.6325617Z","endTime":"2023-07-25T09:50:31.3669459Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '644'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:50:54 GMT
+      etag:
+      - '"6e002871-0000-0100-0000-64bf9ae70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --identity --location --default-mode --description --min-app-id-version
+        --scope --security-services
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-25T09:49:50.5335203Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-25T09:49:50.5335203Z"},"identity":{"type":"None"},"properties":{"scope":"LOCAL","description":"local
+        rulestacks","minAppIdVersion":"8595-7473","provisioningState":"Succeeded","securityServices":{"vulnerabilityProfile":"BestPractice","antiSpywareProfile":"BestPractice","antiVirusProfile":"BestPractice","urlFilteringProfile":"BestPractice","fileBlockingProfile":"BestPractice","dnsSubscription":"BestPractice"},"defaultMode":"IPS","panEtag":"a51dad40-2ad0-11ee-9b89-e69a6f85f08a"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1011'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:50:54 GMT
+      etag:
+      - '"0b00ba81-0000-0100-0000-64bf9ae70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-25T09:49:50.5335203Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-25T09:49:50.5335203Z"},"identity":{"type":"None"},"properties":{"scope":"LOCAL","description":"local
+        rulestacks","minAppIdVersion":"8595-7473","provisioningState":"Succeeded","securityServices":{"vulnerabilityProfile":"BestPractice","antiSpywareProfile":"BestPractice","antiVirusProfile":"BestPractice","urlFilteringProfile":"BestPractice","fileBlockingProfile":"BestPractice","dnsSubscription":"BestPractice"},"defaultMode":"IPS","panEtag":"a51dad40-2ad0-11ee-9b89-e69a6f85f08a"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1011'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:50:57 GMT
+      etag:
+      - '"0b00ba81-0000-0100-0000-64bf9ae70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "None"}, "location": "eastus", "properties": {"defaultMode":
+      "IPS", "description": "local rulestacks", "minAppIdVersion": "8595-7473", "panEtag":
+      "a51dad40-2ad0-11ee-9b89-e69a6f85f08a", "provisioningState": "Succeeded", "scope":
+      "LOCAL", "securityServices": {"antiSpywareProfile": "BestPractice", "antiVirusProfile":
+      "BestPractice", "dnsSubscription": "BestPractice", "fileBlockingProfile": "BestPractice",
+      "urlFilteringProfile": "BestPractice", "vulnerabilityProfile": "BestPractice"}},
+      "tags": {"tag-name": "value"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '540'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","tags":{"tag-name":"value"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-25T09:49:50.5335203Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-25T09:50:58.3131395Z"},"identity":{"type":"None"},"properties":{"panEtag":"a51dad40-2ad0-11ee-9b89-e69a6f85f08a","scope":"LOCAL","description":"local
+        rulestacks","minAppIdVersion":"8595-7473","provisioningState":"Accepted","securityServices":{"vulnerabilityProfile":"BestPractice","antiSpywareProfile":"BestPractice","antiVirusProfile":"BestPractice","urlFilteringProfile":"BestPractice","fileBlockingProfile":"BestPractice","dnsSubscription":"BestPractice","outboundUnTrustCertificate":null,"outboundTrustCertificate":null},"defaultMode":"IPS"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/1909c3f4-7902-4893-8f38-8d08dba224c3*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D?api-version=2022-08-29
+      cache-control:
+      - no-cache
+      content-length:
+      - '1104'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:51:01 GMT
+      etag:
+      - '"0b00c181-0000-0100-0000-64bf9b020000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/1909c3f4-7902-4893-8f38-8d08dba224c3*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D?api-version=2022-08-29
+      mise-correlation-id:
+      - c6e70550-fa87-4d1d-bfb2-3bd650772377
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/1909c3f4-7902-4893-8f38-8d08dba224c3*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/1909c3f4-7902-4893-8f38-8d08dba224c3*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D","name":"1909c3f4-7902-4893-8f38-8d08dba224c3*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Accepted","startTime":"2023-07-25T09:50:58.7374602Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '573'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:51:01 GMT
+      etag:
+      - '"6e002e71-0000-0100-0000-64bf9b020000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/1909c3f4-7902-4893-8f38-8d08dba224c3*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/1909c3f4-7902-4893-8f38-8d08dba224c3*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D","name":"1909c3f4-7902-4893-8f38-8d08dba224c3*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Succeeded","startTime":"2023-07-25T09:50:58.7374602Z","endTime":"2023-07-25T09:51:06.1976595Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '644'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:51:31 GMT
+      etag:
+      - '"6e002f71-0000-0100-0000-64bf9b0a0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","name":"localrulestack000002","type":"paloaltonetworks.cloudngfw/localrulestacks","location":"eastus","tags":{"tag-name":"value"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-25T09:49:50.5335203Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-25T09:50:58.3131395Z"},"identity":{"type":"None"},"properties":{"panEtag":"c523f018-2ad0-11ee-9b70-4ad68220d447","scope":"LOCAL","description":"local
+        rulestacks","minAppIdVersion":"8595-7473","provisioningState":"Succeeded","securityServices":{"vulnerabilityProfile":"BestPractice","antiSpywareProfile":"BestPractice","antiVirusProfile":"BestPractice","urlFilteringProfile":"BestPractice","fileBlockingProfile":"BestPractice","dnsSubscription":"BestPractice"},"defaultMode":"IPS"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1039'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:51:32 GMT
+      etag:
+      - '"0b00c681-0000-0100-0000-64bf9b0a0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack get-change-log
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/getChangeLog?api-version=2022-08-29
+  response:
+    body:
+      string: '{"changes":["Rulestack"],"lastCommitted":"2023-07-25T09:50:10.761900+00:00","lastModified":"2023-07-25T09:51:04.463988+00:00"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:51:35 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 4ca2cabe-cac6-4636-a073-fc87d0ffb542
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack get-support-info
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/getSupportInfo?api-version=2022-08-29
+  response:
+    body:
+      string: '{"productSku":"PAN-CLOUD-NGFW-AZURE-PAYG","productSerial":null,"accountRegistered":"FALSE","accountId":null,"userDomainSupported":"TRUE","userRegistered":"FALSE","freeTrial":"TRUE","freeTrialDaysLeft":30,"freeTrialCreditLeft":0,"helpURL":"https://live.paloaltonetworks.com?productSku=PAN-CLOUD-NGFW-AZURE-PAYG","supportURL":"https://support.paloaltonetworks.com?productSku=PAN-CLOUD-NGFW-AZURE-PAYG&userEmail=v-taoxuzeng@microsoft.com","registerURL":"https://support.paloaltonetworks.com/Home/Register?tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7&productSku=PAN-CLOUD-NGFW-AZURE-PAYG&userEmail=v-taoxuzeng@microsoft.com"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '622'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:51:42 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - ca08d2ef-81ab-4d5a-9295-28401ac051f8
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack list-app-id
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listAppIds?api-version=2022-08-29
+  response:
+    body:
+      string: '{"value":["100bao","104apci-supervisory","104apci-unnumbered","104apci-unnumbered-startdt-act","104apci-unnumbered-startdt-con","104apci-unnumbered-stopdt-act","104apci-unnumbered-stopdt-con","104apci-unnumbered-test-act","104apci-unnumbered-test-con","104asdu-file-transfer","104asdu-file-transfer-type120","104asdu-file-transfer-type121","104asdu-file-transfer-type122","104asdu-file-transfer-type123","104asdu-file-transfer-type124","104asdu-file-transfer-type125","104asdu-file-transfer-type126","104asdu-file-transfer-type127","104asdu-param-control","104asdu-param-control-type110","104asdu-param-control-type111","104asdu-param-control-type112","104asdu-param-control-type113","104asdu-process-control","104asdu-process-control-type45","104asdu-process-control-type46","104asdu-process-control-type47","104asdu-process-control-type48","104asdu-process-control-type49","104asdu-process-control-type50","104asdu-process-control-type51","104asdu-process-control-type58","104asdu-process-control-type59","104asdu-process-control-type60","104asdu-process-control-type61","104asdu-process-control-type62","104asdu-process-control-type63","104asdu-process-control-type64","104asdu-process-monitor","104asdu-process-monitor-type1","104asdu-process-monitor-type10","104asdu-process-monitor-type11","104asdu-process-monitor-type12","104asdu-process-monitor-type13","104asdu-process-monitor-type14","104asdu-process-monitor-type15","104asdu-process-monitor-type16","104asdu-process-monitor-type17","104asdu-process-monitor-type18","104asdu-process-monitor-type19","104asdu-process-monitor-type2","104asdu-process-monitor-type20","104asdu-process-monitor-type21","104asdu-process-monitor-type3","104asdu-process-monitor-type30","104asdu-process-monitor-type31","104asdu-process-monitor-type32","104asdu-process-monitor-type33","104asdu-process-monitor-type34","104asdu-process-monitor-type35","104asdu-process-monitor-type36","104asdu-process-monitor-type37","104asdu-process-monitor-type38","104asdu-process-monitor-type39","104asdu-process-monitor-type4","104asdu-process-monitor-type40","104asdu-process-monitor-type5","104asdu-process-monitor-type6","104asdu-process-monitor-type7","104asdu-process-monitor-type8","104asdu-process-monitor-type9","104asdu-system-control","104asdu-system-control-type100","104asdu-system-control-type101","104asdu-system-control-type102","104asdu-system-control-type103","104asdu-system-control-type104","104asdu-system-control-type105","104asdu-system-control-type106","104asdu-system-control-type107","104asdu-system-monitor","104asdu-system-monitor-type70","1c-enterprise","1und1-mail","24sevenoffice","2ch-base","2ch-posting","360-safeguard-update","3pc","4shared","4sync","51.com-base","51.com-bbs","51.com-games","51.com-mail","51.com-music","51.com-posting","51.com-webdisk","7shifts","8x8"],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listAppIds?api-version=2022-08-29&$skipToken=Im5leHQtdG9rZW46ZXlKd2F5STZJQ0pCVUZCSlJGOU1TVk5VSXpnMU9UVXROelEzTXlJc0lDSnpheUk2SUNJNGVEZ2lmUT09XG4i"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3218'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:51:44 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - f263a4fa-9667-4740-a5cb-2ebc1f101e92
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack list-country
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listCountries?api-version=2022-08-29
+  response:
+    body:
+      string: '{"value":[{"code":"A1","description":"Anonymous Proxy"},{"code":"A2","description":"Satellite
+        Provider"},{"code":"AD","description":"Andorra"},{"code":"AE","description":"United
+        Arab Emirates"},{"code":"AF","description":"Afghanistan"},{"code":"AG","description":"Antigua
+        And Barbuda"},{"code":"AI","description":"Anguilla"},{"code":"AL","description":"Albania"},{"code":"AM","description":"Armenia"},{"code":"AN","description":"Netherlands
+        Antilles"},{"code":"AO","description":"Angola"},{"code":"AP","description":"Asia
+        Pacific Region"},{"code":"AQ","description":"Antarctica"},{"code":"AR","description":"Argentina"},{"code":"AS","description":"American
+        Samoa"},{"code":"AT","description":"Austria"},{"code":"AU","description":"Australia"},{"code":"AW","description":"Aruba"},{"code":"AX","description":"Land
+        Islands"},{"code":"AZ","description":"Azerbaijan"},{"code":"BA","description":"Bosnia
+        And Herzegovina"},{"code":"BB","description":"Barbados"},{"code":"BD","description":"Bangladesh"},{"code":"BE","description":"Belgium"},{"code":"BF","description":"Burkina
+        Faso"},{"code":"BG","description":"Bulgaria"},{"code":"BH","description":"Bahrain"},{"code":"BI","description":"Burundi"},{"code":"BJ","description":"Benin"},{"code":"BL","description":"Saint
+        BarthLemy"},{"code":"BM","description":"Bermuda"},{"code":"BN","description":"Brunei
+        Darussalam"},{"code":"BO","description":"Bolivia Plurinational State Of"},{"code":"BQ","description":"Bonaire
+        Saint Eustatius And Saba"},{"code":"BR","description":"Brazil"},{"code":"BS","description":"Bahamas"},{"code":"BT","description":"Bhutan"},{"code":"BV","description":"Bouvet
+        Island"},{"code":"BW","description":"Botswana"},{"code":"BY","description":"Belarus"},{"code":"BZ","description":"Belize"},{"code":"CA","description":"Canada"},{"code":"CC","description":"Cocos
+        Islands"},{"code":"CD","description":"Congo The Democratic Republic Of The"},{"code":"CE","description":"Crimea"},{"code":"CF","description":"Central
+        African Republic"},{"code":"CG","description":"Congo"},{"code":"CH","description":"Switzerland"},{"code":"CI","description":"CTe
+        D Ivoire"},{"code":"CK","description":"Cook Islands"},{"code":"CL","description":"Chile"},{"code":"CM","description":"Cameroon"},{"code":"CN","description":"China"},{"code":"CO","description":"Colombia"},{"code":"CR","description":"Costa
+        Rica"},{"code":"CU","description":"Cuba"},{"code":"CV","description":"Cape
+        Verde"},{"code":"CW","description":"Curacao"},{"code":"CX","description":"Christmas
+        Island"},{"code":"CY","description":"Cyprus"},{"code":"CZ","description":"Czech
+        Republic"},{"code":"DE","description":"Germany"},{"code":"DJ","description":"Djibouti"},{"code":"DK","description":"Denmark"},{"code":"DM","description":"Dominica"},{"code":"DO","description":"Dominican
+        Republic"},{"code":"DZ","description":"Algeria"},{"code":"EC","description":"Ecuador"},{"code":"EE","description":"Estonia"},{"code":"EG","description":"Egypt"},{"code":"EH","description":"Western
+        Sahara"},{"code":"ER","description":"Eritrea"},{"code":"ES","description":"Spain"},{"code":"ET","description":"Ethiopia"},{"code":"EU","description":"European
+        Union"},{"code":"FI","description":"Finland"},{"code":"FJ","description":"Fiji"},{"code":"FK","description":"Falkland
+        Islands (Malvinas)"},{"code":"FM","description":"Micronesia Federated States
+        Of"},{"code":"FO","description":"Faroe Islands"},{"code":"FR","description":"France"},{"code":"GA","description":"Gabon"},{"code":"GB","description":"United
+        Kingdom"},{"code":"GD","description":"Grenada"},{"code":"GE","description":"Georgia"},{"code":"GF","description":"French
+        Guiana"},{"code":"GG","description":"Guernsey"},{"code":"GH","description":"Ghana"},{"code":"GI","description":"Gibraltar"},{"code":"GL","description":"Greenland"},{"code":"GM","description":"Gambia"},{"code":"GN","description":"Guinea"},{"code":"GP","description":"Guadeloupe"},{"code":"GQ","description":"Equatorial
+        Guinea"},{"code":"GR","description":"Greece"},{"code":"GS","description":"South
+        Georgia And The South Sandwich Islands"},{"code":"GT","description":"Guatemala"},{"code":"GU","description":"Guam"},{"code":"GW","description":"Guinea-Bissau"},{"code":"GY","description":"Guyana"}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listCountries?api-version=2022-08-29&$skipToken=Im5leHQtdG9rZW46ZXlKd2F5STZJQ0pIUlU5SlVGOURUMVZPVkZKWkl5SXNJQ0p6YXlJNklDSkhXU0o5XG4i"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4584'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:51:45 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 71421fa7-2db7-4f69-9cc3-f94cd45c86fc
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack list-firewall
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listFirewalls?api-version=2022-08-29
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:51:47 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - cd5373ff-bea8-462d-911a-34cf7a995aec
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack list-predefined-url-category
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listPredefinedUrlCategories?api-version=2022-08-29
+  response:
+    body:
+      string: '{"value":[{"action":"allow","name":"abortion"},{"action":"block","name":"abused-drugs"},{"action":"block","name":"adult"},{"action":"allow","name":"alcohol-and-tobacco"},{"action":"allow","name":"auctions"},{"action":"allow","name":"business-and-economy"},{"action":"block","name":"command-and-control"},{"action":"allow","name":"computer-and-internet-info"},{"action":"allow","name":"content-delivery-networks"},{"action":"allow","name":"copyright-infringement"},{"action":"alert","name":"cryptocurrency"},{"action":"allow","name":"dating"},{"action":"allow","name":"dynamic-dns"},{"action":"allow","name":"educational-institutions"},{"action":"allow","name":"entertainment-and-arts"},{"action":"allow","name":"extremism"},{"action":"allow","name":"financial-services"},{"action":"block","name":"gambling"},{"action":"allow","name":"games"},{"action":"allow","name":"government"},{"action":"block","name":"grayware"},{"action":"block","name":"hacking"},{"action":"allow","name":"health-and-medicine"},{"action":"alert","name":"high-risk"},{"action":"allow","name":"home-and-garden"},{"action":"allow","name":"hunting-and-fishing"},{"action":"allow","name":"insufficient-content"},{"action":"allow","name":"internet-communications-and-telephony"},{"action":"allow","name":"internet-portals"},{"action":"allow","name":"job-search"},{"action":"allow","name":"legal"},{"action":"allow","name":"low-risk"},{"action":"block","name":"malware"},{"action":"alert","name":"medium-risk"},{"action":"allow","name":"military"},{"action":"allow","name":"motor-vehicles"},{"action":"allow","name":"music"},{"action":"alert","name":"newly-registered-domain"},{"action":"allow","name":"news"},{"action":"allow","name":"not-resolved"},{"action":"allow","name":"nudity"},{"action":"allow","name":"online-storage-and-backup"},{"action":"allow","name":"parked"},{"action":"allow","name":"peer-to-peer"},{"action":"allow","name":"personal-sites-and-blogs"},{"action":"allow","name":"philosophy-and-political-advocacy"},{"action":"block","name":"phishing"},{"action":"allow","name":"private-ip-addresses"},{"action":"allow","name":"proxy-avoidance-and-anonymizers"},{"action":"block","name":"questionable"},{"action":"allow","name":"real-estate"},{"action":"alert","name":"real-time-detection"},{"action":"allow","name":"recreation-and-hobbies"},{"action":"allow","name":"reference-and-research"},{"action":"allow","name":"religion"},{"action":"allow","name":"search-engines"},{"action":"allow","name":"sex-education"},{"action":"allow","name":"shareware-and-freeware"},{"action":"allow","name":"shopping"},{"action":"allow","name":"social-networking"},{"action":"allow","name":"society"},{"action":"allow","name":"sports"},{"action":"allow","name":"stock-advice-and-tools"},{"action":"allow","name":"streaming-media"},{"action":"allow","name":"swimsuits-and-intimate-apparel"},{"action":"allow","name":"training-and-tools"},{"action":"allow","name":"translation"},{"action":"allow","name":"travel"},{"action":"allow","name":"unknown"},{"action":"block","name":"weapons"},{"action":"allow","name":"web-advertisements"},{"action":"allow","name":"web-based-email"},{"action":"allow","name":"web-hosting"}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listPredefinedUrlCategories?api-version=2022-08-29&$skipToken="}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3487'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:51:49 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 981da6e9-0096-4d9b-a47e-a2784920be9a
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack revert
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/revert?api-version=2022-08-29
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:51:53 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 00ed642e-a9eb-4780-aa6c-70a86009f6f5
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack list-advanced-security-object
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --type
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listAdvancedSecurityObjects?type=feeds&api-version=2022-08-29
+  response:
+    body:
+      string: '{"error":{"code":"ResourcePostActionFailed","message":"ResourcePostActionFailed:
+        Not Found"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '93'
+      content-type:
+      - application/json
+      date:
+      - Tue, 25 Jul 2023 09:51:55 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 9209363a-58ae-4861-9bc3-14822960a5a8
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack list-security-service
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n --type
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/listSecurityServices?type=antiSpyware&api-version=2022-08-29
+  response:
+    body:
+      string: '{"error":{"code":"ResourcePostActionFailed","message":"ResourcePostActionFailed:
+        Not Found"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '93'
+      content-type:
+      - application/json
+      date:
+      - Tue, 25 Jul 2023 09:51:56 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 29222911-88f5-48d8-9e04-7b50ac93fa89
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"properties": {"auditComment": "comment", "certificateSelfSigned": "TRUE",
+      "description": "description"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack certificate create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '106'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --local-rulestack-name --name --audit-comment --certificate-self-signed
+        --description
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/certificates/certificate000003?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/certificates/certificate000003","name":"certificate000003","type":"paloaltonetworks.cloudngfw/localrulestacks/certificates","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-25T09:51:57.8286612Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-25T09:51:57.8286612Z"},"properties":{"certificateSelfSigned":"TRUE","auditComment":"comment","description":"description","etag":"e64cecae-2ad0-11ee-991c-4ad68220d447","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '751'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:00 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 07b27ab3-4068-4cf4-9265-c911cd7b11b8
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack certificate list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --local-rulestack-name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/certificates?api-version=2022-08-29
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/certificates/certificate000003","name":"certificate000003","type":"localRulestacks/certificates","properties":{"certificateSelfSigned":"TRUE","auditComment":"comment","description":"description","etag":"e64cecae-2ad0-11ee-991c-4ad68220d447","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '494'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:04 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - fb398093-d9c7-4489-9406-58155bf1aaaf
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack certificate show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --local-rulestack-name --name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/certificates/certificate000003?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/certificates/certificate000003","name":"certificate000003","type":"localRulestacks/certificates","properties":{"certificateSelfSigned":"TRUE","auditComment":"comment","description":"description","etag":"e64cecae-2ad0-11ee-991c-4ad68220d447","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '482'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:07 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 3f13b9f7-9c8c-4f49-a6d4-bf370de53039
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack certificate delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --local-rulestack-name --name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/certificates/certificate000003?api-version=2022-08-29
+  response:
+    body:
+      string: 'null'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:11 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 9b83185b-392f-4bda-af74-b3357c0874dc
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"auditComment": "string", "description": "description",
+      "fqdnList": ["string1", "string2"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack fqdnlist create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '108'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --local-rulestack-name --name --audit-comment --description --fqdn-list
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/fqdnlists/fqdnlist000004?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/fqdnlists/fqdnlist000004","name":"fqdnlist000004","type":"paloaltonetworks.cloudngfw/localrulestacks/fqdnlists","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-25T09:52:13.00251Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-25T09:52:13.00251Z"},"properties":{"description":"description","fqdnList":["string1","string2"],"etag":"ef2f5ece-2ad0-11ee-9b70-4ad68220d447","auditComment":"string","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '736'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:15 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 4b872071-c83f-4388-a60a-28e800185daa
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack fqdnlist list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --local-rulestack-name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/fqdnlists?api-version=2022-08-29
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/fqdnlists/fqdnlist000004","name":"fqdnlist000004","type":"localRulestacks/prefixlists","properties":{"description":"description","fqdnList":["string1","string2"],"etag":"ef2f5ece-2ad0-11ee-9b70-4ad68220d447","auditComment":"string","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '485'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:17 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - c006bda2-9f77-4eca-a023-4962efa3f758
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack fqdnlist show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --local-rulestack-name --name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/fqdnlists/fqdnlist000004?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/fqdnlists/fqdnlist000004","name":"fqdnlist000004","type":"localRulestacks/prefixlists","properties":{"description":"description","fqdnList":["string1","string2"],"etag":"ef2f5ece-2ad0-11ee-9b70-4ad68220d447","auditComment":"string","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '473'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:19 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - b4a12c61-603d-48c0-b6d9-b352c8b1c2d4
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack fqdnlist delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --local-rulestack-name --name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/fqdnlists/fqdnlist000004?api-version=2022-08-29
+  response:
+    body:
+      string: 'null'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:22 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 958f3393-4ce1-4a9a-b8a2-d0799d2428af
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"auditComment": "comment", "description": "string", "prefixList":
+      ["1.0.0.0/24"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack prefixlist create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '98'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --local-rulestack-name --name --audit-comment --description --prefix-list
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/prefixlists/prefixlist000006?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/prefixlists/prefixlist000006","name":"prefixlist000006","type":"paloaltonetworks.cloudngfw/localrulestacks/prefixlists","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-25T09:52:23.8004361Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-25T09:52:23.8004361Z"},"properties":{"description":"string","prefixList":["1.0.0.0/24"],"etag":"f5bd992c-2ad0-11ee-b95a-4ad68220d447","auditComment":"comment","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '739'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:26 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - adca6e67-e074-4b3e-adf8-23fe60ee2842
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack prefixlist list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --local-rulestack-name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/prefixlists?api-version=2022-08-29
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/prefixlists/prefixlist000006","name":"prefixlist000006","type":"localRulestacks/prefixlists","properties":{"description":"string","prefixList":["1.0.0.0/24"],"etag":"f5bd992c-2ad0-11ee-b95a-4ad68220d447","auditComment":"comment","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '482'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:28 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - cd0325be-fdce-497a-991b-2784f986cf5d
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack prefixlist show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --local-rulestack-name --name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/prefixlists/prefixlist000006?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/prefixlists/prefixlist000006","name":"prefixlist000006","type":"localRulestacks/prefixlists","properties":{"description":"string","prefixList":["1.0.0.0/24"],"etag":"f5bd992c-2ad0-11ee-b95a-4ad68220d447","auditComment":"comment","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '470'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:31 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 3c55be9b-1018-4779-aeed-6b092cbab081
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack prefixlist delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --local-rulestack-name --name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/prefixlists/prefixlist000006?api-version=2022-08-29
+  response:
+    body:
+      string: 'null'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:33 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - c68b678d-bed4-4c91-83fa-09efbbd27cf9
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"actionType": "Allow", "enableLogging": "DISABLED", "protocol":
+      "application-default", "ruleName": "local_rule000005", "ruleState": "DISABLED"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack local-rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '160'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --local-rulestack-name --rule-name --priority --action-type --enable-logging
+        --rule-state
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1","name":"1","type":"paloaltonetworks.cloudngfw/localrulestacks/localrules","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-07-25T09:52:35.2212247Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-25T09:52:35.2212247Z"},"properties":{"ruleName":"local_rule000005","priority":1,"ruleState":"DISABLED","source":{"cidrs":["any"],"countries":null,"feeds":null,"prefixLists":null},"negateSource":"FALSE","destination":{"cidrs":["any"],"countries":null,"feeds":null,"prefixLists":null,"fqdnLists":null},"negateDestination":"FALSE","applications":["any"],"protocol":"application-default","actionType":"Allow","enableLogging":"DISABLED","decryptionRuleType":"None","etag":"fcb298a4-2ad0-11ee-9c46-4ad68220d447","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1054'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:37 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - d7211e96-6934-4826-b3d7-9908a708cdf3
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack local-rule list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --local-rulestack-name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules?api-version=2022-08-29
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1","name":"1","type":"localRulestacks/localRules","properties":{"ruleName":"local_rule000005","priority":1,"ruleState":"DISABLED","source":{"cidrs":["any"],"countries":null,"feeds":null,"prefixLists":null},"negateSource":"FALSE","destination":{"cidrs":["any"],"countries":null,"feeds":null,"prefixLists":null,"fqdnLists":null},"negateDestination":"FALSE","applications":["any"],"protocol":"application-default","actionType":"Allow","enableLogging":"DISABLED","decryptionRuleType":"None","etag":"fcb298a4-2ad0-11ee-9c46-4ad68220d447"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1000000","name":"1000000","type":"localRulestacks/localRules","properties":{"ruleName":"cloud-ngfw-default-rule","priority":1000000,"ruleState":"ENABLED","source":{"cidrs":["any"],"countries":null,"feeds":null,"prefixLists":null},"negateSource":"FALSE","destination":{"cidrs":["any"],"countries":null,"feeds":null,"prefixLists":null,"fqdnLists":null},"negateDestination":"FALSE","applications":["any"],"protocol":"any","actionType":"Allow","enableLogging":"ENABLED","decryptionRuleType":"None","etag":"a500beec-2ad0-11ee-9b89-e69a6f85f08a"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1526'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:40 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 8db253f5-dcba-484a-8bba-d4f8dee78c33
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack local-rule show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --local-rulestack-name --priority
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1","name":"1","type":"localRulestacks/localRules","properties":{"ruleName":"local_rule000005","priority":1,"ruleState":"DISABLED","source":{"cidrs":["any"],"countries":null,"feeds":null,"prefixLists":null},"negateSource":"FALSE","destination":{"cidrs":["any"],"countries":null,"feeds":null,"prefixLists":null,"fqdnLists":null},"negateDestination":"FALSE","applications":["any"],"protocol":"application-default","actionType":"Allow","enableLogging":"DISABLED","decryptionRuleType":"None","etag":"fcb298a4-2ad0-11ee-9c46-4ad68220d447"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '753'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:42 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 5104e654-f30a-4c07-b250-59d26628b456
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack local-rule delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --local-rulestack-name --priority
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1?api-version=2022-08-29
+  response:
+    body:
+      string: 'null'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:45 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 08dd9ec4-d372-4593-a48b-4fdb53f25b14
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack local-rule delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --local-rulestack-name --priority
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002/localRules/1000000?api-version=2022-08-29
+  response:
+    body:
+      string: 'null'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:48 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 4b857d0d-3023-4d6e-b39c-a34f44e71747
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002?api-version=2022-08-29
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/f72b7aef-efd0-4dc2-99d9-38beae5de45c*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D?api-version=2022-08-29
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:52 GMT
+      etag:
+      - '"0b00d481-0000-0100-0000-64bf9b740000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/f72b7aef-efd0-4dc2-99d9-38beae5de45c*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D?api-version=2022-08-29
+      mise-correlation-id:
+      - 45f31d0f-be2d-40b3-b49f-e536fae6ec08
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:4aa06bd6-38f4-4944-9612-cd84d39b5e90
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/f72b7aef-efd0-4dc2-99d9-38beae5de45c*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/f72b7aef-efd0-4dc2-99d9-38beae5de45c*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D","name":"f72b7aef-efd0-4dc2-99d9-38beae5de45c*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Deleting","startTime":"2023-07-25T09:52:52.082905Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/eastus/operationStatuses/f72b7aef-efd0-4dc2-99d9-38beae5de45c*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D?api-version=2022-08-29
+      cache-control:
+      - no-cache
+      content-length:
+      - '572'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:52:52 GMT
+      etag:
+      - '"6e006271-0000-0100-0000-64bf9b740000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/eastus/operationStatuses/f72b7aef-efd0-4dc2-99d9-38beae5de45c*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D?api-version=2022-08-29
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - palo-alto cloudngfw local-rulestack delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/f72b7aef-efd0-4dc2-99d9-38beae5de45c*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D?api-version=2022-08-29
+  response:
+    body:
+      string: '{"id":"/providers/PaloAltoNetworks.Cloudngfw/locations/EASTUS/operationStatuses/f72b7aef-efd0-4dc2-99d9-38beae5de45c*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D","name":"f72b7aef-efd0-4dc2-99d9-38beae5de45c*6CFC39AADC4004CFC3B320029A54C424754C962B42455F590E3E07F2F5C8C53D","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_palo_alto_networks_cloudngfw_local_rulestack000001/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/localrulestack000002","status":"Succeeded","startTime":"2023-07-25T09:52:52.082905Z","endTime":"2023-07-25T09:52:54.1589364Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '643'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 09:53:22 GMT
+      etag:
+      - '"6e006471-0000-0100-0000-64bf9b760000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
