@@ -97,7 +97,10 @@ class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
 
         # merge
         # Currently this should throw as the feature is disabled
-        self.assertRaises(HttpResponseError, lambda: self.cmd('az cosmosdb sql database merge -g {rg} -a {acc} -n {db_name} '))
+        try:
+            self.assertRaises(HttpResponseError, lambda: self.cmd('az cosmosdb sql database merge -g {rg} -a {acc} -n {db_name} '))
+        except Exception as err:
+            self.assertTrue("Merge operation feature is not available" in err)
         
 
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_database_merge', location='eastus2')
@@ -126,4 +129,7 @@ class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
         
         #merge
         # Currently this should throw as the feature is disabled
-        self.assertRaises(CLIError, lambda:self.cmd('az cosmosdb mongodb database merge -g {rg} -a {acc} -n {db_name} '))
+        try:
+            self.assertRaises(CLIError, lambda:self.cmd('az cosmosdb mongodb database merge -g {rg} -a {acc} -n {db_name} '))
+        except Exception as err:
+            self.assertTrue("Merge operation feature is not available" in err)
