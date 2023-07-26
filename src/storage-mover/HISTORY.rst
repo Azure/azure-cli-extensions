@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.1.2
+1.0.0b1
 ++++++
 * Add new endpoints for storage-smb-file-share and smb mount.
 
