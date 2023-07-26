@@ -14,11 +14,12 @@ from azure.cli.core.commands.parameters import (
     get_location_type,
     get_three_state_flag
 )
+
 from azure.cli.core.commands.validators import (
     validate_file_or_dict
 )
 
-from azext_dataprotection.manual._validators import datetime_type, schedule_days_type
+from azext_dataprotection.manual._validators import datetime_type, schedule_days_type, namespaced_name_resource_type
 from azext_dataprotection.manual.enums import (
     get_protection_status_values,
     get_backup_frequency_values,
@@ -43,7 +44,6 @@ from azext_dataprotection.manual.enums import (
     get_conflict_policy_values
 )
 
-
 def load_arguments(self, _):
 
     with self.argument_context('dataprotection backup-instance validate-for-backup') as c:
@@ -66,7 +66,7 @@ def load_arguments(self, _):
                    options_list=['--include-cluster-scope-resources', '--include-cluster-scope'],
                    help="Boolean parameter to decide whether cluster scope resources are included for restore. By default this is taken as true.")
         c.argument('backup_hook_references',
-                   type=str, nargs='+',
+                   type=namespaced_name_resource_type, nargs='+',
                    options_list=['--backup-hook-references', '--backup-hook-refs'],
                    help='Property sets the hook reference to be executed during backup.')
 
