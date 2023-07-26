@@ -17,15 +17,18 @@ class DeployableResourceTypes(str, Enum):
     CNF = CNF
     NSD = NSD
 
+
 # Skip steps
 BICEP_PUBLISH = "bicep-publish"
 ARTIFACT_UPLOAD = "artifact-upload"
 IMAGE_UPLOAD = "image-upload"
 
+
 class SkipSteps(Enum):
     BICEP_PUBLISH = BICEP_PUBLISH
     ARTIFACT_UPLOAD = ARTIFACT_UPLOAD
     IMAGE_UPLOAD = IMAGE_UPLOAD
+
 
 # Names of files used in the repo
 NF_TEMPLATE_JINJA2_SOURCE_TEMPLATE = "nf_template.bicep.j2"

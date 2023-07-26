@@ -96,8 +96,8 @@ class ResourceDeleter:
 
         print(
             "Are you sure you want to delete the NSD Version"
-            f" {self.config.nsd_version}, the associated manifest"
-            f" {self.config.acr_manifest_name} and configuration group schema"
+            f" {self.config.nsd_version}, the associated manifests"
+            f" {self.config.acr_manifest_names} and configuration group schema"
             f" {self.config.cg_schema_name}?"
         )
         print("There is no undo. Type 'delete' to confirm")

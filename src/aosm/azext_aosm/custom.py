@@ -373,6 +373,7 @@ def publish_design(
 
     deployer.deploy_nsd_from_bicep()
 
+
 def _generate_nsd(config: NSConfiguration, api_clients: ApiClients):
     """Generate a Network Service Design for the given type and config."""
     if config:

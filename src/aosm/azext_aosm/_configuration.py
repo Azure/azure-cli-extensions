@@ -36,7 +36,7 @@ DESCRIPTION_MAP: Dict[str, str] = {
     ),
     "publisher_resource_group_name_nsd": "Resource group for the Publisher resource.",
     "nf_name": "Name of NF definition",
-    "version": "Version of the NF definition",
+    "version": "Version of the NF definition in A.B.C format.",
     "acr_artifact_store_name": (
         "Name of the ACR Artifact Store resource. Will be created if it does not exist."
     ),

@@ -3,7 +3,6 @@
 # License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------
 """Contains class for deploying generated definitions using ARM."""
-from dataclasses import dataclass
 import json
 import os
 import shutil
@@ -46,36 +45,46 @@ from azext_aosm.util.management_clients import ApiClients
 logger = get_logger(__name__)
 
 
-@dataclass
-class DeployerViaArm:
+class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
     """
     A class to deploy Artifact Manifests, NFDs and NSDs from bicep templates using ARM.
 
     Uses the SDK to pre-deploy less complex resources and then ARM to deploy the bicep
     templates.
-
-    :param api_clients: ApiClients object for AOSM and ResourceManagement
-    :param config: The configuration for this NF
-    :param bicep_path: The path to the bicep template of the nfdv
-    :param parameters_json_file: path to an override file of set parameters for the nfdv
-    :param manifest_bicep_path: The path to the bicep template of the manifest
-    :param manifest_parameters_json_file: path to an override file of set parameters for
-    the manifest
-    :param skip: options to skip, either publish bicep or upload artifacts
-    :param cli_ctx: The CLI context. Only used with CNFs.
     """
 
-    api_clients: ApiClients
-    resource_type: DeployableResourceTypes
-    config: Configuration
-    bicep_path: Optional[str] = None
-    parameters_json_file: Optional[str] = None
-    manifest_bicep_path: Optional[str] = None
-    manifest_parameters_json_file: Optional[str] = None
-    skip: Optional[SkipSteps] = None
-    cli_ctx: Optional[object] = None
-
-    def __post_init__(self):
+    def __init__(
+        self,
+        api_clients: ApiClients,
+        resource_type: DeployableResourceTypes,
+        config: Configuration,
+        bicep_path: Optional[str] = None,
+        parameters_json_file: Optional[str] = None,
+        manifest_bicep_path: Optional[str] = None,
+        manifest_parameters_json_file: Optional[str] = None,
+        skip: Optional[SkipSteps] = None,
+        cli_ctx: Optional[object] = None,
+    ):
+        """
+        :param api_clients: ApiClients object for AOSM and ResourceManagement
+        :param config: The configuration for this NF
+        :param bicep_path: The path to the bicep template of the nfdv
+        :param parameters_json_file: path to an override file of set parameters for the nfdv
+        :param manifest_bicep_path: The path to the bicep template of the manifest
+        :param manifest_parameters_json_file: path to an override file of set parameters for
+        the manifest
+        :param skip: options to skip, either publish bicep or upload artifacts
+        :param cli_ctx: The CLI context. Only used with CNFs.
+        """
+        self.api_clients = api_clients
+        self.resource_type = resource_type
+        self.config = config
+        self.bicep_path = bicep_path
+        self.parameters_json_file = parameters_json_file
+        self.manifest_bicep_path = manifest_bicep_path
+        self.manifest_parameters_json_file = manifest_parameters_json_file
+        self.skip = skip
+        self.cli_ctx = cli_ctx
         self.pre_deployer = PreDeployerViaSDK(self.api_clients, self.config)
 
     def deploy_nfd_from_bicep(self) -> None:
@@ -357,8 +366,8 @@ class DeployerViaArm:
                 "location": {"value": self.config.location},
                 "publisherName": {"value": self.config.publisher_name},
                 "acrArtifactStoreName": {"value": self.config.acr_artifact_store_name},
-                "acrManifestName": {"value": self.config.acr_manifest_names},
-                "armTemplateName": {"value": arm_template_names},
+                "acrManifestNames": {"value": self.config.acr_manifest_names},
+                "armTemplateNames": {"value": arm_template_names},
                 "armTemplateVersion": {"value": self.config.nsd_version},
             }
         raise ValueError("Unknown configuration type")
