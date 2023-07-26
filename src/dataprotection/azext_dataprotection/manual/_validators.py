@@ -13,8 +13,7 @@ def datetime_type(string):
     # accepted_date_formats = ['%Y-%m-%dT%H:%M:%S']
     try:
         newtime = parser.isoparse(string).strftime("%Y-%m-%dT%H:%M:%S.%f")+"0Z"
-        print(string, " vs ", newtime)
-        return string + ".0000000Z"
+        return newtime
     except ValueError:  # checks next format
         pass
     raise ValueError(f"Input '{string}' not valid. Valid example:2017-12-31T05:30:00")
