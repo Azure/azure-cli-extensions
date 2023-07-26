@@ -50,6 +50,11 @@ class NotificationHubUpdate(_UpdateNotificationHub):
     is_experimental=True,
 )
 class ApnsUpdate(_ApnsUpdate):
+    """Update credential for Apple(APNS).
+
+    :example: Update APNS certificate
+        az notification-hub credential apns update --namespace-name my-namespace --notification-hub-name my-hub --apns-certificate "/path/to/certificate" --certificate-key "xxxxxx" --resource-group MyResourceGroup
+    """
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZFileArg, AAZFileArgBase64EncodeFormat
@@ -73,6 +78,8 @@ class ApnsUpdate(_ApnsUpdate):
     is_experimental=True,
 )
 class AdmUpdate(_AdmUpdate):
+    """Update credential for Amazon(ADM).
+    """
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -86,6 +93,8 @@ class AdmUpdate(_AdmUpdate):
     is_experimental=True,
 )
 class WnsUpdate(_WnsUpdate):
+    """Update credential for Windows(WNS).
+    """
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -99,6 +108,11 @@ class WnsUpdate(_WnsUpdate):
     is_experimental=True,
 )
 class GcmUpdate(_GcmUpdate):
+    """Update the Google GCM/FCM API key.
+
+        :example: Update Android push API key
+            az notification-hub credential gcm update --resource-group groupName --namespace-name spaceName --notification-hub-name hubName --google-api-key keyValue
+        """
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -111,6 +125,8 @@ class GcmUpdate(_GcmUpdate):
     is_experimental=True,
 )
 class MpnsUpdate(_MpnsUpdate):
+    """Update credential for Windows Phone(MPNS).
+    """
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZFileArg, AAZFileArgBase64EncodeFormat
@@ -135,6 +151,8 @@ class MpnsUpdate(_MpnsUpdate):
     is_experimental=True,
 )
 class BaiduUpdate(_BaiduUpdate):
+    """Update credential for Baidu(Andrioid China).
+    """
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZStrArg
