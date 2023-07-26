@@ -18,8 +18,7 @@ class ContainerAppAuthDecorator(BaseResource):
     def show(self):
         auth_settings = {}
         try:
-            auth_settings = self.client.get(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), container_app_name=self.get_argument_name(),
-                                           auth_config_name="current")["properties"]
+            auth_settings = self.client.get(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), container_app_name=self.get_argument_name(), auth_config_name="current")["properties"]
         except:
             pass
         return auth_settings
@@ -28,8 +27,7 @@ class ContainerAppAuthDecorator(BaseResource):
         from ._utils import set_field_in_auth_settings, update_http_settings_in_auth_settings
         self.existing_auth = {}
         try:
-            self.existing_auth = self.client.get(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), container_app_name=self.get_argument_name(),
-                                           auth_config_name="current")["properties"]
+            self.existing_auth = self.client.get(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), container_app_name=self.get_argument_name(), auth_config_name="current")["properties"]
         except:
             self.existing_auth["platform"] = {}
             self.existing_auth["platform"]["enabled"] = True
