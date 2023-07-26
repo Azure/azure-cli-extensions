@@ -65,6 +65,10 @@ def load_arguments(self, _):
         c.argument('include_cluster_scope_resources', arg_type=get_three_state_flag(),
                    options_list=['--include-cluster-scope-resources', '--include-cluster-scope'],
                    help="Boolean parameter to decide whether cluster scope resources are included for restore. By default this is taken as true.")
+        c.argument('backup_hook_references',
+                   type=str, nargs='+',
+                   options_list=['--backup-hook-references', '--backup-hook-refs'],
+                   help='Property sets the hook reference to be executed during backup.')
 
     with self.argument_context('dataprotection backup-instance initialize') as c:
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
