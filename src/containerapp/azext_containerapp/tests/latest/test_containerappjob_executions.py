@@ -143,13 +143,8 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
 
         # start job execution with yaml file
         execution = self.cmd("az containerapp job start --resource-group {} --name {} --yaml {}".format(resource_group, job, containerappjob_file_name)).get_output_in_json()
-
-        if "id" in execution:
-            # check if the job execution id is in the response
-            self.assertEqual(job in execution['id'], True)
-        if "name" in execution:
-            # check if the job execution name is in the response
-            self.assertEqual(job in execution['name'], True)
+        self.assertEqual(job in execution['id'], True)
+        self.assertEqual(job in execution['name'], True)            
 
         # get the execution and check if the custom container information is present
         self.cmd("az containerapp job execution show --resource-group {} --name {} --job-execution-name {}".format(resource_group, job, execution['name']), checks=[
