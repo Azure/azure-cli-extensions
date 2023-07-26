@@ -206,7 +206,7 @@ def compare_to_expected_output(expected_folder_name: str):
         copy_tree("nsd-bicep-templates", str(expected_output_path))
         print(
             f"Output has changed in {expected_output_path}, use git diff to check if "
-            f"you are happy with those changes"
+            f"you are happy with those changes."
         )
         raise
 
