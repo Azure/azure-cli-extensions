@@ -27,11 +27,11 @@ def validate_create(registry_identity, registry_pass, registry_user, registry_se
     if source or repo:
         if not registry_server or not registry_user or not registry_pass:
             raise RequiredArgumentMissingError('Usage error: --registry-server, --registry-username and --registry-password are required while using --source or --repo.')
-        if "azurecr.io" in registry_server:
-            parsed = urlparse(registry_server)
-            registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]
-            if registry_name and len(registry_name) > MAXIMUM_SECRET_LENGTH:
-                raise ValidationError(f"--registry-server ACR name must be less than {MAXIMUM_SECRET_LENGTH} "
+    if repo and registry_server and "azurecr.io" in registry_server:
+        parsed = urlparse(registry_server)
+        registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]
+        if registry_name and len(registry_name) > MAXIMUM_SECRET_LENGTH:
+            raise ValidationError(f"--registry-server ACR name must be less than {MAXIMUM_SECRET_LENGTH} "
                                   "characters when using --repo")
     if registry_identity and (registry_pass or registry_user):
         raise MutuallyExclusiveArgumentError("Cannot provide both registry identity and username/password")
