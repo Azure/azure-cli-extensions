@@ -66,7 +66,7 @@ def load_arguments(self, _):
                    options_list=['--include-cluster-scope-resources', '--include-cluster-scope'],
                    help="Boolean parameter to decide whether cluster scope resources are included for restore. By default this is taken as true.")
         c.argument('backup_hook_references',
-                   type=namespaced_name_resource_type, nargs='+',
+                   type=namespaced_name_resource_type,
                    options_list=['--backup-hook-references', '--backup-hook-refs'],
                    help='Property sets the hook reference to be executed during backup.')
 
@@ -186,6 +186,10 @@ def load_arguments(self, _):
         c.argument('include_cluster_scope_resources', arg_type=get_three_state_flag(),
                    options_list=['--include-cluster-scope-resources', '--include-cluster-scope'],
                    help="Boolean parameter to decide whether cluster scope resources are included for restore. By default this is taken as true.")
+        c.argument('restore_hook_references',
+                   type=namespaced_name_resource_type,
+                   options_list=['--restore-hook-references', '--restore-hook-refs'],
+                   help='Property sets the hook reference to be executed during restore.')
 
     with self.argument_context('dataprotection backup-instance restore initialize-for-data-recovery') as c:
         c.argument('target_resource_id', type=str, help="specify the resource ID to which the data will be restored.")

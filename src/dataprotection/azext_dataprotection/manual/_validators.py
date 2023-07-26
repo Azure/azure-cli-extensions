@@ -6,11 +6,14 @@
 from azure.cli.core.commands.validators import (
     validate_file_or_dict
 )
+from dateutil import parser
 
 def datetime_type(string):
     """ Validate UTC datettime in accepted format. Examples: 31-12-2017, 31-12-2017-05:30:00 """
     # accepted_date_formats = ['%Y-%m-%dT%H:%M:%S']
     try:
+        newtime = parser.isoparse(string).strftime("%Y-%m-%dT%H:%M:%S.%f")+"0Z"
+        print(string, " vs ", newtime)
         return string + ".0000000Z"
     except ValueError:  # checks next format
         pass
