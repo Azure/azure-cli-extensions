@@ -49,9 +49,6 @@ class BaseResource:
         except CLIError as e:
             handle_raw_exception(e)
 
-    def construct_payload(self):
-        raise NotImplementedError()
-
     def get_param(self, key) -> Any:
         return self.raw_param.get(key)
 

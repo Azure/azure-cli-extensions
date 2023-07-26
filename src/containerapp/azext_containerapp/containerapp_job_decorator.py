@@ -14,54 +14,30 @@ from azure.cli.core.azclierror import (
 from azure.cli.core.commands.client_factory import get_subscription_id
 
 from knack.log import get_logger
-from knack.util import CLIError
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from ._decorator_utils import process_loaded_yaml, load_yaml_file, create_deserializer
 from ._constants import HELLO_WORLD_IMAGE, CONTAINER_APPS_RP
-from ._utils import validate_container_app_name, AppType
 from ._validators import validate_create
 from .base_resource import BaseResource
 from ._clients import ManagedEnvironmentClient
-from ._client_factory import handle_raw_exception, handle_non_404_exception
+from ._client_factory import handle_raw_exception
 
 from ._models import (
-    ManagedEnvironment as ManagedEnvironmentModel,
-    VnetConfiguration as VnetConfigurationModel,
-    AppLogsConfiguration as AppLogsConfigurationModel,
-    LogAnalyticsConfiguration as LogAnalyticsConfigurationModel,
-    Ingress as IngressModel,
-    Configuration as ConfigurationModel,
     JobConfiguration as JobConfigurationModel,
     ManualTriggerConfig as ManualTriggerModel,
     ScheduleTriggerConfig as ScheduleTriggerModel,
     EventTriggerConfig as EventTriggerModel,
-    Template as TemplateModel,
     JobTemplate as JobTemplateModel,
-    JobExecutionTemplate as JobExecutionTemplateModel,
     RegistryCredentials as RegistryCredentialsModel,
-    ContainerApp as ContainerAppModel,
     ContainerAppsJob as ContainerAppsJobModel,
-    Dapr as DaprModel,
     ContainerResources as ContainerResourcesModel,
-    Scale as ScaleModel,
-    Service as ServiceModel,
     JobScale as JobScaleModel,
     Container as ContainerModel,
-    GitHubActionConfiguration,
-    RegistryInfo as RegistryInfoModel,
-    AzureCredentials as AzureCredentialsModel,
-    SourceControl as SourceControlModel,
     ManagedServiceIdentity as ManagedServiceIdentityModel,
-    ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
-    ContainerAppCustomDomain as ContainerAppCustomDomainModel,
-    AzureFileProperties as AzureFilePropertiesModel,
-    CustomDomainConfiguration as CustomDomainConfigurationModel,
-    ScaleRule as ScaleRuleModel,
-    Volume as VolumeModel,
-    VolumeMount as VolumeMountModel)
+    ScaleRule as ScaleRuleModel)
 
 from ._utils import (_ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
@@ -75,8 +51,8 @@ from ._utils import (_ensure_location_allowed,
                      create_acrpull_role_assignment, is_registry_msi_system,
                      safe_set, parse_metadata_flags, parse_auth_flags,
                      get_default_workload_profile_name_from_env,
-                     ensure_workload_profile_supported, _generate_secret_volume_name,
-                     parse_service_bindings, check_unique_bindings, AppType, get_linker_client,
+                     ensure_workload_profile_supported,
+                     AppType,
                      safe_get)
 
 logger = get_logger(__name__)
@@ -99,7 +75,7 @@ class ContainerAppJobDecorator(BaseResource):
         return self.get_param("container_name")
 
     def set_argument_image(self, image):
-        return self.set_param("image", image)
+        self.set_param("image", image)
 
     def get_argument_managed_env(self):
         return self.get_param("managed_env")
@@ -188,6 +164,9 @@ class ContainerAppJobDecorator(BaseResource):
     def get_argument_workload_profile_name(self):
         return self.get_param("workload_profile_name")
 
+    def set_augument_workload_profile_name(self, workload_profile_name):
+        self.set_param("workload_profile_name", workload_profile_name)
+
 
 class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
@@ -270,6 +249,7 @@ class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
 
         if not self.get_argument_workload_profile_name() and "workloadProfiles" in managed_env_info:
             workload_profile_name = get_default_workload_profile_name_from_env(self.cmd, managed_env_info, managed_env_rg)
+            self.set_augument_workload_profile_name(workload_profile_name)
 
         manualTriggerConfig_def = None
         if self.get_argument_trigger_type() is not None and self.get_argument_trigger_type().lower() == "manual":
