@@ -5,6 +5,7 @@
 
 import os
 from dataclasses import dataclass
+from distutils.dir_util import copy_tree
 import json
 import shutil
 import subprocess
@@ -188,16 +189,26 @@ def compare_to_expected_output(expected_folder_name: str):
     with.
     """
     # Check files and folders within the top level directory are the same.
-    comparison = dircmp("nsd-bicep-templates", output_folder / expected_folder_name)
-    assert len(comparison.diff_files) == 0
-    assert len(comparison.left_only) == 0
-    assert len(comparison.right_only) == 0
+    expected_output_path = output_folder / expected_folder_name
+    comparison = dircmp("nsd-bicep-templates", expected_output_path)
 
-    # Check the files and folders within each of the subdirectories are the same.
-    for subdir in comparison.subdirs.values():
-        assert len(subdir.diff_files) == 0
-        assert len(subdir.left_only) == 0
-        assert len(subdir.right_only) == 0
+    try:
+        assert len(comparison.diff_files) == 0
+        assert len(comparison.left_only) == 0
+        assert len(comparison.right_only) == 0
+
+        # Check the files and folders within each of the subdirectories are the same.
+        for subdir in comparison.subdirs.values():
+            assert len(subdir.diff_files) == 0
+            assert len(subdir.left_only) == 0
+            assert len(subdir.right_only) == 0
+    except:
+        copy_tree("nsd-bicep-templates", str(expected_output_path))
+        print(
+            f"Output has changed in {expected_output_path}, use git diff to check if "
+            f"you are happy with those changes"
+        )
+        raise
 
 
 class TestNSDGenerator:
