@@ -6,7 +6,7 @@
 # pylint: disable=too-few-public-methods,unnecessary-pass,unused-argument
 
 """
-Rack tests scenarios
+Network Packet Broker tests scenarios
 """
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
@@ -23,40 +23,33 @@ def cleanup_scenario1(test):
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
     setup_scenario1(test)
-    step_show(test, checks=[])
-    step_list_resource_group(test, checks=[])
     step_list_subscription(test, checks=[])
+    step_list_resource_group(test, checks=[])
     cleanup_scenario1(test)
 
-def step_show(test, checks=None):
-    '''Rack show operation'''
+def step_list_resource_group(test, checks=None):
+    '''Network Packet Broker list by resource group operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric rack show --resource-name {name} --resource-group {rg}')
-
-def step_list_resource_group(test, checks=None):
-    '''Rack list by resource group operation'''
-    if checks is None:
-        checks = []
-    test.cmd('az networkfabric rack list --resource-group {rg}')
+        'az networkfabric npb list --resource-group {rg}')
 
 def step_list_subscription(test, checks=None):
-    '''Rack list by subscription'''
+    '''Network Packet Broker list by subscription operation'''
     if checks is None:
         checks = []
-    test.cmd('az networkfabric rack list')
+    test.cmd(
+        'az networkfabric npb list')
 
-class GA_RackScenarioTest1(ScenarioTest):
-    ''' RackScenario test'''
+class GA_NpbScenarioTest1(ScenarioTest):
+    ''' Network Packet Broker Scenario test'''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.kwargs.update({
-            'name': CONFIG.get('NETWORK_RACK', 'name'),
-            'rg': CONFIG.get('NETWORK_RACK', 'resource_group')
+            'rg': CONFIG.get('NETWORK_PACKE_BROKER', 'resource_group')
         })
 
-    def test_GA_Rack_scenario1(self):
-        ''' test scenario for Rack CRUD operations'''
+    def test_GA_npb_scenario1(self):
+        ''' test scenario for Network Packet Broker CRUD operations'''
         call_scenario1(self)

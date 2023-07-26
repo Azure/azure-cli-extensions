@@ -26,6 +26,7 @@ def call_scenario1(test):
     step_create(test, checks=[])
     step_show(test, checks=[])
     step_list_resource_group(test, checks=[])
+    step_list_subscription(test, checks=[])
     step_provision(test)
     step_deprovision(test)
     step_delete(test, checks=[])
@@ -51,6 +52,12 @@ def step_list_resource_group(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az networkfabric fabric list --resource-group {rg}')
+
+def step_list_subscription(test, checks=None):
+    '''nf list by subscription'''
+    if checks is None:
+        checks = []
+    test.cmd('az networkfabric fabric list')
 
 def step_provision(test, checks=None):
     '''nf provision operation'''
@@ -90,8 +97,7 @@ class GA_NFScenarioTest1(ScenarioTest):
             'rack_count': CONFIG.get('NETWORK_FABRIC', 'rack_count'),
             'server_count_per_rack': CONFIG.get('NETWORK_FABRIC', 'server_count_per_rack'),
             'terminalServerConf': CONFIG.get('NETWORK_FABRIC', 'terminalServerConf'),
-            'managedNetworkConf': CONFIG.get('NETWORK_FABRIC', 'managedNetworkConf'),
-            'postActionResourceName': CONFIG.get('NETWORK_FABRIC', 'post_action_resource_name')
+            'managedNetworkConf': CONFIG.get('NETWORK_FABRIC', 'managedNetworkConf')
         })
 
     def test_GA_nf_scenario1(self):

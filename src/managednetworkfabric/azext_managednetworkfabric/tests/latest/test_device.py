@@ -27,6 +27,7 @@ def call_scenario1(test):
     setup_scenario1(test)
     step_show(test, checks=[])
     step_list_resource_group(test, checks=[])
+    step_list_subscription(test, checks=[])
     step_update(test, checks=[])
     cleanup_scenario1(test)
 
@@ -42,6 +43,12 @@ def step_list_resource_group(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az networkfabric device list --resource-group {rg}')
+
+def step_list_subscription(test, checks=None):
+    '''Device list by subscription operation'''
+    if checks is None:
+        checks = []
+    test.cmd('az networkfabric device list')
 
 def step_update(test, checks=None):
     '''Device create operation'''

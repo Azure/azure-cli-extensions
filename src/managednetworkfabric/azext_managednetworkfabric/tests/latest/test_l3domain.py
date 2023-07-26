@@ -26,6 +26,7 @@ def call_scenario1(test):
     step_create(test, checks=[])
     step_show(test, checks=[])
     step_list_resource_group(test, checks=[])
+    step_list_subscription(test, checks=[])
     step_update_admin_state_Enable(test, checks=[])
     step_update_admin_state_Disable(test, checks=[])
     step_delete(test, checks=[])
@@ -51,6 +52,12 @@ def step_list_resource_group(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az networkfabric l3domain list --resource-group {rg}')
+
+def step_list_subscription(test, checks=None):
+    '''l3domain list by subscription operation'''
+    if checks is None:
+        checks = []
+    test.cmd('az networkfabric l3domain list')
 
 def step_update_admin_state_Enable(test, checks=None):
     '''l3domain Update admin state operation'''
