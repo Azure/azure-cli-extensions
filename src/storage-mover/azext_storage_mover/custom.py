@@ -36,11 +36,10 @@ def endpoint_create_for_storage_container(cmd, endpoint_name, resource_group, st
     return Create_Endpoint(args)
 
 
-def endpoint_update_for_storage_container(cmd, endpoint_name, resource_group, storage_mover_name,
-                                          blob_container_name=None, storage_account_resource_id=None, description=None):
+def endpoint_update_for_storage_container(cmd, endpoint_name, resource_group, storage_mover_name, description=None):
     Update_Endpoint = Update(cmd.loader)
     args = _get_args_for_endpoint_for_storage_container(endpoint_name, resource_group, storage_mover_name,
-                                                        blob_container_name, storage_account_resource_id, description)
+                                                        description=description)
     return Update_Endpoint(args)
 
 
@@ -67,11 +66,10 @@ def endpoint_create_for_storage_smb_file_share(cmd, endpoint_name, resource_grou
 
 
 def endpoint_update_for_storage_smb_file_share(cmd, endpoint_name, resource_group, storage_mover_name,
-                                               file_share_name=None, storage_account_resource_id=None,
                                                description=None):
     Update_Endpoint = Update(cmd.loader)
     args = _get_args_for_endpoint_for_storage_smb_file_share(endpoint_name, resource_group, storage_mover_name,
-                                                             file_share_name, storage_account_resource_id, description)
+                                                             description=description)
     return Update_Endpoint(args)
 
 
@@ -97,11 +95,9 @@ def endpoint_create_for_nfs(cmd, endpoint_name, resource_group, storage_mover_na
     return Create_Endpoint(args)
 
 
-def endpoint_update_for_nfs(cmd, endpoint_name, resource_group, storage_mover_name,
-                            export=None, host=None, nfs_version=None, description=None):
+def endpoint_update_for_nfs(cmd, endpoint_name, resource_group, storage_mover_name, description=None):
     Update_Endpoint = Update(cmd.loader)
-    args = _get_args_for_endpoint_for_nfs(endpoint_name, resource_group, storage_mover_name,
-                                          export, host, nfs_version, description)
+    args = _get_args_for_endpoint_for_nfs(endpoint_name, resource_group, storage_mover_name, description=description)
     return Update_Endpoint(args)
 
 
@@ -133,8 +129,8 @@ def endpoint_create_for_smb(cmd, endpoint_name, resource_group, storage_mover_na
 
 
 def endpoint_update_for_smb(cmd, endpoint_name, resource_group, storage_mover_name,
-                            host=None, share_name=None, username_uri=None, password_uri=None, description=None):
+                            username_uri=None, password_uri=None, description=None):
     Update_Endpoint = Update(cmd.loader)
     args = _get_args_for_endpoint_for_smb(endpoint_name, resource_group, storage_mover_name,
-                                          host, share_name, username_uri, password_uri, description)
+                                          username_uri=username_uri, password_uri=password_uri, description=description)
     return Update_Endpoint(args)

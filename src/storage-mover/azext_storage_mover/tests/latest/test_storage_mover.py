@@ -90,8 +90,7 @@ class StorageMoverScenario(ScenarioTest):
 
         # update for storage container
         self.cmd('az storage-mover endpoint update-for-storage-container -g {rg} --storage-mover-name {mover_name} '
-                 '-n {endpoint_container} --description endpointDescUpdate '
-                 '--container-name {container_name} --storage-account-id {account_id}',
+                 '-n {endpoint_container} --description endpointDescUpdate',
                  checks=[JMESPathCheck('name', self.kwargs.get('endpoint_container', '')),
                          JMESPathCheck('properties.description', "endpointDescUpdate")])
 
@@ -113,8 +112,7 @@ class StorageMoverScenario(ScenarioTest):
         # update for storage smb file share
         self.cmd('az storage-mover endpoint update-for-storage-smb-file-share -g {rg} '
                  '--storage-mover-name {mover_name} '
-                 '-n {endpoint_file_share} --description endpointFileShareDescUpdate '
-                 '--file-share-name {file_share_name} --storage-account-id {account_id}',
+                 '-n {endpoint_file_share} --description endpointFileShareDescUpdate',
                  checks=[JMESPathCheck('name', self.kwargs.get('endpoint_file_share', '')),
                          JMESPathCheck('properties.description', "endpointFileShareDescUpdate")])
 
@@ -133,8 +131,7 @@ class StorageMoverScenario(ScenarioTest):
 
         # update for nfs mount
         self.cmd('az storage-mover endpoint update-for-nfs -g {rg} --storage-mover-name {mover_name} '
-                 '-n {endpoint_nfs} --description endpointDescUpdate '
-                 '--export exportfolder --nfs-version NFSv4 --host ' + vm_ip,
+                 '-n {endpoint_nfs} --description endpointDescUpdate',
                  checks=[JMESPathCheck('name', self.kwargs.get('endpoint_nfs', '')),
                          JMESPathCheck('properties.description', "endpointDescUpdate")])
 
@@ -160,8 +157,7 @@ class StorageMoverScenario(ScenarioTest):
         # update for smb mount
         self.cmd('az storage-mover endpoint update-for-smb -g {rg} '
                  '--storage-mover-name {mover_name} '
-                 '-n {endpoint_smb} --username-uri "" --password-uri "" --description endpointSmbDescUpdate '
-                 '--share-name {smb_share_name} --host ' + vm_smb_ip,
+                 '-n {endpoint_smb} --username-uri "" --password-uri "" --description endpointSmbDescUpdate',
                  checks=[JMESPathCheck('name', self.kwargs.get('endpoint_smb', '')),
                          JMESPathCheck('properties.description', "endpointSmbDescUpdate"),
                          JMESPathCheck('properties.credentials.passwordUri', None),
