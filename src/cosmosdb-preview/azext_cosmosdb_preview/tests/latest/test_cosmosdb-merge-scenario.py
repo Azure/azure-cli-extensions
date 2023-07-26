@@ -130,6 +130,6 @@ class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
         #merge
         # Currently this should throw as the feature is disabled
         try:
-            self.assertRaises(CLIError, lambda:self.cmd('az cosmosdb mongodb database merge -g {rg} -a {acc} -n {db_name} '))
+            self.assertRaises(HttpResponseError, lambda:self.cmd('az cosmosdb mongodb database merge -g {rg} -a {acc} -n {db_name} '))
         except Exception as err:
             self.assertTrue("Merge operation feature is not available" in err)
