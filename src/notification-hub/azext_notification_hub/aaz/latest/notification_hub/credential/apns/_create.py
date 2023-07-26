@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "notification-hub credential apns create",
-    is_experimental=True,
-)
 class Create(AAZCommand):
     """Update credential for Apple(APNS).
 

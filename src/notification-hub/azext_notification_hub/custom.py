@@ -7,9 +7,9 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
-# pylint: disable=protected-access
+# pylint: disable=protected-access, consider-using-f-string
 
-from azure.cli.core.aaz import has_value
+from azure.cli.core.aaz import has_value, register_command
 from azext_notification_hub.aaz.latest.notification_hub import Create as _CreateNotificationHub
 from azext_notification_hub.aaz.latest.notification_hub import Update as _UpdateNotificationHub
 from azext_notification_hub.aaz.latest.notification_hub.credential.apns import Create as _ApnsUpdate
@@ -45,15 +45,19 @@ class NotificationHubUpdate(_UpdateNotificationHub):
         return args_schema
 
 
+@register_command(
+    "notification-hub credential apns update",
+    is_experimental=True,
+)
 class ApnsUpdate(_ApnsUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZFreeFormDictArg, AAZFreeFormDictArgFormat
+        from azure.cli.core.aaz import AAZFileArg, AAZFileArgBase64EncodeFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.apns_certificate = AAZFreeFormDictArg(
+        args_schema.apns_certificate = AAZFileArg(
             options=['--apns-certificate'],
             help='The APNS certificate.',
-            fmt=AAZFreeFormDictArgFormat()
+            fmt=AAZFileArgBase64EncodeFormat()
         )
         args_schema.apns_certificate_org._registered = False
         return args_schema
@@ -64,6 +68,10 @@ class ApnsUpdate(_ApnsUpdate):
             args.apns_certificate_org = args.apns_certificate
 
 
+@register_command(
+    "notification-hub credential adm update",
+    is_experimental=True,
+)
 class AdmUpdate(_AdmUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -73,6 +81,10 @@ class AdmUpdate(_AdmUpdate):
         return args_schema
 
 
+@register_command(
+    "notification-hub credential wns update",
+    is_experimental=True,
+)
 class WnsUpdate(_WnsUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -82,6 +94,10 @@ class WnsUpdate(_WnsUpdate):
         return args_schema
 
 
+@register_command(
+    "notification-hub credential gcm update",
+    is_experimental=True,
+)
 class GcmUpdate(_GcmUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -90,15 +106,19 @@ class GcmUpdate(_GcmUpdate):
         return args_schema
 
 
+@register_command(
+    "notification-hub credential mpns update",
+    is_experimental=True,
+)
 class MpnsUpdate(_MpnsUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZFreeFormDictArg, AAZFreeFormDictArgFormat
+        from azure.cli.core.aaz import AAZFileArg, AAZFileArgBase64EncodeFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.mpns_certificate = AAZFreeFormDictArg(
+        args_schema.mpns_certificate = AAZFileArg(
             options=['--mpns-certificate'],
             help='The MPNS certificate.',
-            fmt=AAZFreeFormDictArgFormat(),
+            fmt=AAZFileArgBase64EncodeFormat(),
             required=True
         )
         args_schema.certificate_key._required = True
@@ -110,6 +130,10 @@ class MpnsUpdate(_MpnsUpdate):
         args.mpns_certificate_org = args.mpns_certificate
 
 
+@register_command(
+    "notification-hub credential baidu update",
+    is_experimental=True,
+)
 class BaiduUpdate(_BaiduUpdate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -167,3 +191,44 @@ class NamespaceRuleRegenerateKeys(_NamespaceRuleRegenerateKeys):
         args_schema.policy_key._required = True
         args_schema.policy_key.enum = AAZArgEnum({'Primary Key': 'Primary Key', 'Secondary Key': 'Secondary Key'})
         return args_schema
+
+
+def debug_send_notificationhubs_hub(cmd, client,
+                                    resource_group_name,
+                                    namespace_name,
+                                    notification_hub_name,
+                                    notification_format,
+                                    message=None,
+                                    title='',
+                                    payload=None,
+                                    tag=None):
+    # Refer to tutorials in https://docs.microsoft.com/azure/notification-hubs/ for more details
+    if message is not None:
+        if notification_format == 'gcm':
+            parameters = {"data": {"message": message}}
+        elif notification_format == 'baidu':
+            parameters = {"title": title, "description": message}
+        elif notification_format == 'apple':
+            parameters = {"aps": {"alert": message}}
+        elif notification_format == 'template':
+            parameters = {"message": message}
+        elif notification_format == 'windows':
+            parameters = message
+        elif notification_format == 'windowsphone':
+            parameters = '''<?xml version= "1.0" encoding= "utf-8" ?>
+<root>
+<Value1>{}</Value1>
+<Value2>{}</Value2>
+</root>
+'''.format(title, message)
+    else:
+        if notification_format not in ['windows', 'windowsphone']:
+            import json
+            parameters = json.loads(payload)
+        else:
+            parameters = payload
+    custom_headers = {"servicebusnotification-format": notification_format}
+    if tag is not None:
+        custom_headers['servicebusnotification-tags'] = tag
+
+    return client.debug_send(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=parameters, custom_headers=custom_headers)

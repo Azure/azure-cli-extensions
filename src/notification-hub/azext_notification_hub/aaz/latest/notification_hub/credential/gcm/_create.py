@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "notification-hub credential gcm create",
-    is_experimental=True,
-)
 class Create(AAZCommand):
     """Update the Google GCM/FCM API key.
 

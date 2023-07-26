@@ -11,10 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command_group(
-    "notification-hub credential adm",
-    is_experimental=True,
-)
 class __CMDGroup(AAZCommandGroup):
     """Commands to manage notification hub credential for Amazon(ADM).
     """
