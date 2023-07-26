@@ -94,7 +94,7 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      parse_service_bindings, get_linker_client, check_unique_bindings,
                      get_current_mariner_tags, patchable_check, get_pack_exec_path, is_docker_running, trigger_workflow, AppType,
                      format_location)
-from ._validators import validate_create, validate_revision_suffix
+from ._validators import validate_create, validate_revision_suffix, validate_source
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
 from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, FACEBOOK_SECRET_SETTING_NAME, GITHUB_SECRET_SETTING_NAME,
@@ -502,9 +502,11 @@ def update_containerapp_logic(cmd,
                               registry_server=None,
                               registry_user=None,
                               registry_pass=None,
-                              secret_volume_mount=None):
+                              secret_volume_mount=None,
+                              source=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     validate_revision_suffix(revision_suffix)
+    validate_source(registry_pass=registry_pass, registry_user=registry_user, registry_server=registry_server,source=source)
 
     # Validate that max_replicas is set to 0-1000
     if max_replicas is not None:
@@ -523,12 +525,14 @@ def update_containerapp_logic(cmd,
         containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
     except:
         pass
-
     if not containerapp_def:
         raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
 
     new_containerapp = {}
     new_containerapp["properties"] = {}
+    if source:
+            new_containerapp = update_container_app_source(cmd=cmd,containerapp_def=containerapp_def, name=name, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, image=image, set_env_vars=set_env_vars, workload_profile_name=workload_profile_name, ingress=ingress, source=source)
+            image = new_containerapp["properties"]["template"]["containers"][0]["image"]
     if from_revision:
         try:
             r = ContainerAppClient.show_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=from_revision)
@@ -905,7 +909,7 @@ def update_containerapp_logic(cmd,
 
     try:
         r = ContainerAppClient.update(
-            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=new_containerapp, no_wait=no_wait)
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=new_containerapp, no_wait=no_wait, source=source)
 
         if not no_wait and "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting":
             logger.warning('Containerapp update in progress. Please monitor the update using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
@@ -932,6 +936,39 @@ def update_containerapp_logic(cmd,
     except Exception as e:
         handle_raw_exception(e)
 
+def update_container_app_source(cmd, containerapp_def, name, target_port, registry_server, registry_user, registry_pass, image, set_env_vars, workload_profile_name, ingress, source):
+        from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image, _get_registry_details, get_token, _has_dockerfile, _get_dockerfile_content, _get_ingress_and_target_port)
+        # Parse resource group name and managed env name
+        env_id = containerapp_def["properties"]['environmentId']
+        parsed_managed_env = parse_resource_id(env_id)
+        env_name = parsed_managed_env['name']
+        env_rg = parsed_managed_env['resource_group']
+
+        # Parse location
+        env_info = cmd.get_environment_client().show(cmd=cmd, resource_group_name=env_rg, name=env_name)
+        location = env_info['location']
+
+        # Set image to None if it was previously set to the default image (case where image was not provided by the user) else reformat it
+        image = None if image.__eq__(HELLO_WORLD_IMAGE) else _reformat_image(source=source, image = image)
+
+        # Construct ContainerApp
+        resource_group = ResourceGroup(cmd, env_rg, location=location)
+        env = ContainerAppEnvironment(cmd, env_name, resource_group, location=location)
+        app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, set_env_vars, workload_profile_name, ingress)
+
+        dockerfile = "Dockerfile"
+       # token = get_token(cmd=cmd, token)
+        _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
+
+        if source and not _has_dockerfile(source, dockerfile):
+            pass
+
+        # Uses buildpacks to generate image if Dockerfile was not provided by the user
+        app.run_acr_build(dockerfile, source, quiet=False, build_from_source=not _has_dockerfile(source, dockerfile))
+
+        # Update image
+        containerapp_def["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
+        return containerapp_def
 
 def update_containerapp(cmd,
                         name,
@@ -961,7 +998,8 @@ def update_containerapp(cmd,
                         workload_profile_name=None,
                         termination_grace_period=None,
                         no_wait=False,
-                        secret_volume_mount=None):
+                        secret_volume_mount=None,
+                        source=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
