@@ -1,0 +1,18 @@
+{
+    "publisher_name": "ubuntuPublisher",
+    "publisher_resource_group_name": "{{publisher_resource_group_name}}",
+    "acr_artifact_store_name": "ubuntu-acr",
+    "location": "uksouth",
+    "nf_name": "ubuntu-vm",
+    "version": "1.0.0",
+    "blob_artifact_store_name": "ubuntu-blob-store",
+    "image_name_parameter": "imageName",
+    "arm_template": {
+        "file_path": "../vnf_mocks/ubuntu_template.json",
+        "version": "1.0.0"
+    },
+    "vhd": {
+        "blob_sas_url": "https://ubuntuimage.blob.core.windows.net/images/livecd.ubuntu-cpc.azure.vhd?sp=r&st=2023-07-25T13:50:40Z&se=2024-07-25T21:50:40Z&spr=https&sv=2022-11-02&sr=b&sig=NlqXIleMtL9wIACerJdtxZ5kXdF0Gbe4uoYRmcDsFq8%3D",
+        "version": "1-0-0"
+    }
+}

@@ -44,6 +44,7 @@ def build_definition(
     config_file: str,
     order_params: bool = False,
     interactive: bool = False,
+    force: bool = False,
 ):
     """
     Build a definition.
@@ -66,6 +67,7 @@ def build_definition(
         config=config,
         order_params=order_params,
         interactive=interactive,
+        force=force,
     )
 
 
@@ -100,7 +102,7 @@ def _get_config_from_file(config_file: str, configuration_type: str) -> Configur
 
 
 def _generate_nfd(
-    definition_type: str, config: NFConfiguration, order_params: bool, interactive: bool
+    definition_type: str, config: NFConfiguration, order_params: bool, interactive: bool, force: bool = False
 ):
     """Generate a Network Function Definition for the given type and config."""
     nfd_generator: NFDGenerator
@@ -116,12 +118,13 @@ def _generate_nfd(
             " have been implemented."
         )
     if nfd_generator.nfd_bicep_path:
-        carry_on = input(
-            f"The {nfd_generator.nfd_bicep_path.parent} directory already exists -"
-            " delete it and continue? (y/n)"
-        )
-        if carry_on != "y":
-            raise UnclassifiedUserFault("User aborted!")
+        if not force:
+            carry_on = input(
+                f"The {nfd_generator.nfd_bicep_path.parent} directory already exists -"
+                " delete it and continue? (y/n)"
+            )
+            if carry_on != "y":
+                raise UnclassifiedUserFault("User aborted!")
 
         shutil.rmtree(nfd_generator.nfd_bicep_path.parent)
     nfd_generator.generate_nfd()
@@ -195,6 +198,7 @@ def delete_published_definition(
     definition_type,
     config_file,
     clean=False,
+    force=False
 ):
     """
     Delete a published definition.
@@ -215,9 +219,9 @@ def delete_published_definition(
 
     delly = ResourceDeleter(api_clients, config)
     if definition_type == VNF:
-        delly.delete_nfd(clean=clean)
+        delly.delete_nfd(clean=clean, force=force)
     elif definition_type == CNF:
-        delly.delete_nfd(clean=clean)
+        delly.delete_nfd(clean=clean, force=force)
     else:
         raise ValueError(
             "Definition type must be either 'vnf' or 'cnf'. Definition type"
@@ -271,7 +275,7 @@ def _generate_config(configuration_type: str, output_file: str = "input.json"):
         )
 
 
-def build_design(cmd, client: HybridNetworkManagementClient, config_file: str):
+def build_design(cmd, client: HybridNetworkManagementClient, config_file: str, force: bool = False):
     """
     Build a Network Service Design.
 
@@ -296,6 +300,7 @@ def build_design(cmd, client: HybridNetworkManagementClient, config_file: str):
     _generate_nsd(
         config=config,
         api_clients=api_clients,
+        force=force,
     )
 
 
@@ -303,6 +308,7 @@ def delete_published_design(
     cmd,
     client: HybridNetworkManagementClient,
     config_file,
+    force=False,
 ):
     """
     Delete a published NSD.
@@ -319,7 +325,7 @@ def delete_published_design(
     )
 
     destroyer = ResourceDeleter(api_clients, config)
-    destroyer.delete_nsd()
+    destroyer.delete_nsd(force=force)
 
 
 def publish_design(
@@ -374,20 +380,21 @@ def publish_design(
     deployer.deploy_nsd_from_bicep()
 
 
-def _generate_nsd(config: NSConfiguration, api_clients: ApiClients):
-    """Generate a Network Service Design for the given type and config."""
+def _generate_nsd(config: NSConfiguration, api_clients: ApiClients, force: bool = False):
+    """Generate a Network Service Design for the given config."""
     if config:
         nsd_generator = NSDGenerator(config=config, api_clients=api_clients)
     else:
         raise CLIInternalError("Generate NSD called without a config file")
 
     if os.path.exists(config.output_directory_for_build):
-        carry_on = input(
-            f"The folder {config.output_directory_for_build} already exists - delete it"
-            " and continue? (y/n)"
-        )
-        if carry_on != "y":
-            raise UnclassifiedUserFault("User aborted! ")
+        if not force:
+            carry_on = input(
+                f"The folder {config.output_directory_for_build} already exists - delete it"
+                " and continue? (y/n)"
+            )
+            if carry_on != "y":
+                raise UnclassifiedUserFault("User aborted! ")
 
         shutil.rmtree(config.output_directory_for_build)
 
