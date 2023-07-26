@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.commands.parameters import (get_enum_type, get_three_state_flag, get_location_type,
-                                                tags_type, edge_zone_type)
+                                                tags_type, edge_zone_type, file_type)
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction, ALL
 
@@ -13,9 +13,11 @@ from ._validators import (get_datetime_type, validate_metadata, validate_bypass,
                           validate_azcopy_target_url, validate_included_datasets, validate_custom_domain,
                           validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url,
                           validate_storage_data_plane_list, validate_immutability_arguments,
-                          process_resource_group, validate_encryption_source)
+                          process_resource_group, validate_encryption_source,
+                          get_permission_help_string, get_permission_validator,
+                          add_progress_callback, validate_share_close_handle)
 
-from .profiles import CUSTOM_MGMT_STORAGE
+from .profiles import CUSTOM_MGMT_STORAGE, CUSTOM_DATA_STORAGE_FILESHARE
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements
@@ -173,8 +175,18 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                     '[default:]user|group|other|mask:[entity id or UPN]:r|-w|-x|-,...". '
                                     'e.g."user::rwx,user:john.doe@contoso:rwx,group::r--,other::---,mask::rwx".')
 
+    directory_type = CLIArgumentType(options_list=['--directory-name', '-d'], help='The directory name.',
+                                     completer=get_storage_name_completion_list(t_file_service,
+                                                                                'list_directories_and_files',
+                                                                                parent='share_name'))
+    file_name_type = CLIArgumentType(options_list=['--file-name', '-f'],
+                                     completer=get_storage_name_completion_list(t_file_service,
+                                                                                'list_directories_and_files',
+                                                                                parent='share_name'))
+
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
+        c.argument('directory_name', directory_type)
         c.argument('share_name', share_name_type)
         c.argument('table_name', table_name_type)
         c.argument('retry_wait', options_list=('--retry-interval',))
@@ -600,3 +612,300 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help='Recursively upload blobs. If enabled, all the blobs including the blobs in subdirectories will'
                         ' be uploaded.')
         c.ignore('destination')
+
+    from argcomplete.completers import FilesCompleter
+
+    from knack.arguments import ignore_type
+
+    with self.argument_context('storage share') as c:
+        c.argument('share_name', share_name_type, options_list=('--name', '-n'))
+
+    with self.argument_context('storage share list-handle') as c:
+        c.register_path_argument(default_file_param="", fileshare=True)
+        c.extra('share_name', share_name_type, options_list=('--name', '-n'), required=True)
+        c.extra('marker', help='An opaque continuation token. This value can be retrieved from the '
+                               'next_marker field of a previous generator object if max_results was '
+                               'specified and that generator has finished enumerating results. If '
+                               'specified, this generator will begin returning results from the point '
+                               'where the previous generator stopped.')
+        c.extra('num_results', options_list='--max-results', type=int,
+                help='Specifies the maximum number of handles taken on files and/or directories '
+                     'to return. If the request does not specify max_results or specifies a '
+                     'value greater than 5,000, the server will return up to 5,000 items. '
+                     'Setting max_results to a value less than or equal to zero results in '
+                     'error response code 400 (Bad Request).')
+        c.extra('recursive', arg_type=get_three_state_flag(),
+                help='Boolean that specifies if operation should apply to the directory specified in the URI, '
+                     'its files, with its subdirectories and their files.')
+        c.extra('snapshot', help="A string that represents the snapshot version, if applicable.")
+        c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+
+    with self.argument_context('storage share close-handle') as c:
+        c.register_path_argument(default_file_param="", fileshare=True)
+        c.extra('share_name', share_name_type, options_list=('--name', '-n'), required=True)
+        c.extra('recursive', arg_type=get_three_state_flag(),
+                help="Boolean that specifies if operation should apply to the directory specified in the URI, its "
+                     "files, with its subdirectories and their files.")
+        c.extra('close_all', arg_type=get_three_state_flag(), validator=validate_share_close_handle,
+                help="Whether or not to close all the file handles. Specify close-all or a specific handle-id.")
+        c.extra('handle', options_list='--handle-id',
+                help="Specifies handle ID opened on the file or directory to be closed. "
+                     "Astrix (‘*’) is a wildcard that specifies all handles.")
+        c.extra('snapshot', help="A string that represents the snapshot version, if applicable.")
+        c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+
+    for scope in ['create', 'delete', 'show', 'exists', 'metadata show', 'metadata update']:
+        with self.argument_context(f'storage directory {scope}') as c:
+            c.extra('share_name', share_name_type, required=True)
+            c.extra('snapshot', help="A string that represents the snapshot version, if applicable.")
+            c.extra('directory_path', directory_type, options_list=('--name', '-n'), required=True)
+            c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+
+    with self.argument_context('storage directory list') as c:
+        c.extra('share_name', share_name_type, required=True)
+        c.extra('directory_path', directory_type, options_list=('--name', '-n'))
+        c.argument('exclude_extended_info',
+                   help='Specify to exclude "timestamps", "Etag", "Attributes", "PermissionKey" info from response')
+        c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+
+    with self.argument_context('storage directory create') as c:
+        c.argument('fail_on_exist', help='Throw an exception if the directory already exists.')
+
+    with self.argument_context('storage directory delete') as c:
+        c.argument('fail_not_exist', help='Throw an exception if the directory does not exist.')
+
+    with self.argument_context('storage directory metadata update') as c:
+        c.argument('metadata', required=False)
+
+    with self.argument_context('storage file') as c:
+        c.argument('file_name', file_name_type, options_list=('--name', '-n'))
+        c.argument('directory_name', directory_type, required=False)
+
+    with self.argument_context('storage file copy') as c:
+        c.argument('share_name', share_name_type, options_list=('--destination-share', '-s'),
+                   help='Name of the destination share. The share must exist.')
+
+    with self.argument_context('storage file copy start') as c:
+        from .completers import dir_path_completer
+        from ._validators import validate_source_uri
+        c.register_path_argument(options_list=('--destination-path', '-p'))
+        c.register_source_uri_arguments(validator=validate_source_uri)
+        c.extra('share_name', share_name_type, options_list=('--destination-share', '-s'), required=True,
+                help='Name of the destination share. The share must exist.')
+        c.extra('file_snapshot', default=None, arg_group='Copy Source',
+                help='The file snapshot for the source storage account.')
+        c.extra('metadata', nargs='+',
+                help='Metadata in space-separated key=value pairs. This overwrites any existing metadata.',
+                validator=validate_metadata)
+        c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+
+    with self.argument_context('storage file copy cancel') as c:
+        c.register_path_argument(options_list=('--destination-path', '-p'))
+        c.extra('share_name', share_name_type, options_list=('--destination-share', '-s'), required=True,
+                help='Name of the destination share. The share must exist.')
+        c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+
+    with self.argument_context('storage file copy start-batch') as c:
+        c.argument('share_name', share_name_type, options_list=('--destination-share'),
+                   help='Name of the destination share. The share must exist.')
+
+    with self.argument_context('storage file copy start-batch', arg_group='Copy Source') as c:
+        from ._validators import get_source_file_or_blob_service_client_track2
+        c.argument('source_client', ignore_type, validator=get_source_file_or_blob_service_client_track2)
+        c.extra('source_account_name')
+        c.extra('source_account_key')
+        c.extra('source_uri')
+        c.argument('source_sas')
+        c.argument('source_container')
+        c.argument('source_share')
+
+    with self.argument_context('storage file delete') as c:
+        c.register_path_argument()
+        c.extra('share_name', share_name_type, required=True)
+        c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+
+    progress_type = CLIArgumentType(help='Include this flag to disable progress reporting for the command.',
+                                    action='store_true', validator=add_progress_callback)
+
+    with self.argument_context('storage file download') as c:
+        c.register_path_argument()
+        c.extra('share_name', share_name_type, required=True)
+        c.extra('destination_path', options_list=('--dest',), type=file_type, required=False,
+                help='Path of the file to write to. The source filename will be used if not specified.',
+                completer=FilesCompleter())
+        c.extra('no_progress', progress_type, validator=add_progress_callback)
+        c.argument('max_connections', type=int, help='Maximum number of parallel connections to use.')
+        c.extra('start_range', type=int, help='Start of byte range to use for downloading a section of the file. '
+                                              'If no --end-range is given, all bytes after the --start-range will be '
+                                              'downloaded. The --start-range and --end-range params are inclusive. Ex: '
+                                              '--start-range=0, --end-range=511 will download first 512 bytes of file.')
+        c.extra('end_range', type=int, help='End of byte range to use for downloading a section of the file. If '
+                                            '--end-range is given, --start-range must be provided. The --start-range '
+                                            'and --end-range params are inclusive. Ex: --start-range=0, '
+                                            '--end-range=511 will download first 512 bytes of file.')
+        c.argument('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+        c.extra('snapshot', help="A string that represents the snapshot version, if applicable.")
+        c.argument('open_mode', help="Mode to use when opening the file. Note that specifying append only "
+                                     "open_mode prevents parallel download. So, --max-connections must be "
+                                     "set to 1 if this --open-mode is used.")
+        c.extra('validate_content', help="If set to true, validates an MD5 hash for each retrieved portion of the file."
+                                         " This is primarily valuable for detecting bitflips on the wire if using "
+                                         "http instead of https as https (the default) will already validate. "
+                                         "As computing the MD5 takes processing time and more requests will "
+                                         "need to be done due to the reduced chunk size there may be some increase "
+                                         "in latency.")
+
+    with self.argument_context('storage file exists') as c:
+        c.register_path_argument()
+        c.extra('share_name', share_name_type, required=True)
+        c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+        c.extra('snapshot', help="A string that represents the snapshot version, if applicable.")
+
+    sas_help = 'The permissions the SAS grants. Allowed values: {}. Do not use if a stored access policy is ' \
+               'referenced with --id that specifies this value. Can be combined.'
+
+    with self.argument_context('storage file generate-sas') as c:
+        from .completers import get_storage_acl_name_completion_list
+
+        c.register_path_argument()
+        c.register_sas_arguments()
+        c.extra('share_name', share_name_type, required=True)
+        t_file_svc = self.get_sdk('file.fileservice#FileService')
+        t_file_permissions = self.get_sdk('_models#FileSasPermissions',
+                                          resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
+        c.argument('id', options_list='--policy-name',
+                   help='The name of a stored access policy within the container\'s ACL.',
+                   completer=get_storage_acl_name_completion_list(t_file_svc, 'container_name', 'get_container_acl'))
+        c.argument('permission', options_list='--permissions',
+                   help=sas_help.format(get_permission_help_string(t_file_permissions)),
+                   validator=get_permission_validator(t_file_permissions))
+        c.extra('cache_control', help='Response header value for Cache-Control when resource is accessed '
+                                      'using this shared access signature.')
+        c.extra('content_disposition', help='Response header value for Content-Disposition when resource is accessed '
+                                            'using this shared access signature.')
+        c.extra('content_encoding', help='Response header value for Content-Encoding when resource is accessed '
+                                         'using this shared access signature.')
+        c.extra('content_language', help='Response header value for Content-Language when resource is accessed '
+                                         'using this shared access signature.')
+        c.extra('content_type', help='Response header value for Content-Type when resource is accessed '
+                                     'using this shared access signature.')
+        c.ignore('sas_token')
+
+    marker_type = CLIArgumentType(
+        help='A string value that identifies the portion of the list of containers to be '
+             'returned with the next listing operation. The operation returns the NextMarker value within '
+             'the response body if the listing operation did not return all containers remaining to be listed '
+             'with the current page. If specified, this generator will begin returning results from the point '
+             'where the previous generator stopped.')
+
+    with self.argument_context('storage file list') as c:
+        c.extra('share_name', share_name_type, required=True)
+        c.extra('snapshot', help="A string that represents the snapshot version, if applicable.")
+        c.argument('directory_name', options_list=('--path', '-p'), help='The directory path within the file share.',
+                   completer=dir_path_completer)
+        c.argument('num_results', arg_type=num_results_type)
+        c.argument('marker', arg_type=marker_type)
+        c.argument('exclude_extended_info',
+                   help='Specify to exclude "timestamps", "Etag", "Attributes", "PermissionKey" info from response')
+
+    with self.argument_context('storage file metadata show') as c:
+        c.register_path_argument()
+        c.extra('share_name', share_name_type, required=True)
+        c.extra('snapshot', help="A string that represents the snapshot version, if applicable.")
+        c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+
+    with self.argument_context('storage file metadata update') as c:
+        c.register_path_argument()
+        c.extra('share_name', share_name_type, required=True)
+        c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+
+    with self.argument_context('storage file resize') as c:
+        c.register_path_argument()
+        c.extra('share_name', share_name_type, required=True)
+        c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+        c.argument('content_length', options_list='--size', type=int)
+
+    with self.argument_context('storage file show') as c:
+        c.register_path_argument()
+        c.extra('share_name', share_name_type, required=True)
+        c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+        c.extra('snapshot', help='A string that represents the snapshot version, if applicable.')
+
+    with self.argument_context('storage file update') as c:
+        t_file_content_settings = self.get_sdk('_models#ContentSettings',
+                                               resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
+        c.extra('share_name', share_name_type, required=True)
+        c.register_path_argument()
+        c.register_content_settings_argument(t_file_content_settings, update=True, process_md5=True)
+        c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+
+    with self.argument_context('storage file upload') as c:
+        t_file_content_settings = self.get_sdk('_models#ContentSettings',
+                                               resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
+
+        c.register_path_argument(default_file_param='local_file_path')
+        c.register_content_settings_argument(t_file_content_settings, update=False, guess_from_file='local_file_path',
+                                             process_md5=True)
+        c.argument('local_file_path', options_list='--source', type=file_type, completer=FilesCompleter(),
+                   help='Path of the local file to upload as the file content.')
+        c.extra('no_progress', progress_type, validator=add_progress_callback)
+        c.argument('max_connections', type=int, help='Maximum number of parallel connections to use.')
+        c.extra('share_name', share_name_type, required=True)
+        c.argument('validate_content', action='store_true', min_api='2016-05-31',
+                   help='If true, calculates an MD5 hash for each range of the file. The storage service checks the '
+                        'hash of the content that has arrived with the hash that was sent. This is primarily valuable '
+                        'for detecting bitflips on the wire if using http instead of https as https (the default) will '
+                        'already validate. Note that this MD5 hash is not stored with the file.')
+
+    with self.argument_context('storage file url') as c:
+        c.register_path_argument(fileshare=True)
+        c.extra('share_name', share_name_type, required=True)
+        c.argument('protocol', arg_type=get_enum_type(['http', 'https'], 'https'), help='Protocol to use.')
+
+    with self.argument_context('storage file upload-batch') as c:
+        t_file_content_settings = self.get_sdk('_models#ContentSettings',
+                                               resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
+        from ._validators import process_file_upload_batch_parameters
+        c.argument('source', options_list=('--source', '-s'), validator=process_file_upload_batch_parameters)
+        c.argument('destination', options_list=('--destination', '-d'))
+        c.argument('max_connections', arg_group='Download Control', type=int)
+        c.argument('validate_content', action='store_true', min_api='2016-05-31')
+        c.register_content_settings_argument(t_file_content_settings, update=False, arg_group='Content Settings')
+        c.extra('no_progress', progress_type, validator=add_progress_callback)
+
+    with self.argument_context('storage file download-batch') as c:
+        from ._validators import process_file_download_batch_parameters
+        c.argument('source', options_list=('--source', '-s'), validator=process_file_download_batch_parameters)
+        c.argument('destination', options_list=('--destination', '-d'))
+        c.argument('max_connections', arg_group='Download Control', type=int)
+        c.argument('validate_content', action='store_true', min_api='2016-05-31')
+        c.extra('no_progress', progress_type, validator=add_progress_callback)
+        c.extra('snapshot', help='The snapshot parameter is an opaque DateTime value that, when present, '
+                                 'specifies the snapshot.')
+
+    with self.argument_context('storage file delete-batch') as c:
+        from ._validators import process_file_batch_source_parameters
+        c.argument('source', options_list=('--source', '-s'), validator=process_file_batch_source_parameters)
+
+    for cmd in ['list-handle', 'close-handle']:
+        with self.argument_context('storage share ' + cmd) as c:
+            c.extra('disallow_trailing_dot', arg_type=get_three_state_flag(), default=False, is_preview=True,
+                    help="If true, the trailing dot will be trimmed from the target URI. Default to False")
+
+    for cmd in ['create', 'delete', 'show', 'exists', 'metadata show', 'metadata update', 'list']:
+        with self.argument_context('storage directory ' + cmd) as c:
+            c.extra('disallow_trailing_dot', arg_type=get_three_state_flag(), default=False, is_preview=True,
+                    help="If true, the trailing dot will be trimmed from the target URI. Default to False")
+
+    for cmd in ['list', 'delete', 'delete-batch', 'resize', 'url', 'generate-sas', 'show', 'update',
+                'exists', 'metadata show', 'metadata update', 'copy start', 'copy cancel', 'copy start-batch',
+                'upload', 'upload-batch', 'download', 'download-batch']:
+        with self.argument_context('storage file ' + cmd) as c:
+            c.extra('disallow_trailing_dot', arg_type=get_three_state_flag(), default=False, is_preview=True,
+                    help="If true, the trailing dot will be trimmed from the target URI. Default to False")
+
+    for cmd in ['start', 'start-batch']:
+        with self.argument_context('storage file copy ' + cmd) as c:
+            c.extra('disallow_source_trailing_dot', arg_type=get_three_state_flag(), default=False, is_preview=True,
+                    options_list=["--disallow-source-trailing-dot", "--disallow-src-trailing"],
+                    help="If true, the trailing dot will be trimmed from the source URI. Default to False")

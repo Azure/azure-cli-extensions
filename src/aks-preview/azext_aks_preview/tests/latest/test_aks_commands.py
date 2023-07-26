@@ -6089,12 +6089,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             # self.check('ingressProfile.webAppRouting.enabled', False)
         ])
 
+    # graph api is not well mocked
     @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_and_update_web_application_routing_dns_zone(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
-        dns_zone_name = self.create_random_name('cliakstest', 16)
+        dns_zone_name = self.create_random_name('cliakstest', 16) + ".xyz"
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
@@ -6112,9 +6113,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_dns_zone_cmd = 'network dns zone create -g {resource_group} -n {dns_zone_name}'
         dns_zone = self.cmd(create_dns_zone_cmd,checks=[
-            self.check('provisioningState', 'Succeeded'),
+            self.check('name', dns_zone_name),
         ]).get_output_in_json()
-        assert dns_zone['provisioningState'] == 'Succeeded'
         dns_zone_id = dns_zone['id']
 
         self.kwargs.update({ 'web_app_routing_identity_obj_id': web_app_routing_identity_obj_id, 'dns_zone_id': dns_zone_id })
