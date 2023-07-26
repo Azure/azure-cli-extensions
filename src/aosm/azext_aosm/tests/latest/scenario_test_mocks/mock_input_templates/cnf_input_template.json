@@ -1,0 +1,18 @@
+{
+    "publisher_name": "nginx-publisher",
+    "publisher_resource_group_name": "{{publisher_resource_group_name}}",
+    "nf_name": "nginx",
+    "version": "1.0.0",
+    "acr_artifact_store_name": "nginx-nsd-acr",
+    "location": "uksouth",
+    "source_registry_id": "/subscriptions/602a6b57-fb02-4c3d-bc44-5f8852be10ee/resourceGroups/CLI_testing_resources/providers/Microsoft.ContainerRegistry/registries/CliTestRegistry",
+    "source_registry_namespace": "",
+    "helm_packages": [
+        {
+            "name": "nginxdemo",
+            "path_to_chart": "{{path_to_chart}}",
+            "path_to_mappings": "",
+            "depends_on": []
+        }
+    ]
+}
