@@ -75,3 +75,7 @@ class ContainerAppAuthTest(ScenarioTest):
                 JMESPathCheck('properties.identityProviders.azureActiveDirectory.registration.clientSecretSettingName', "microsoft-provider-authentication-secret"),
                 JMESPathCheck('properties.identityProviders.azureActiveDirectory.registration.openIdIssuer', issuer),
             ])
+
+        self.cmd('containerapp show  -g {} -n {}'.format(resource_group, app), checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded")
+        ])
