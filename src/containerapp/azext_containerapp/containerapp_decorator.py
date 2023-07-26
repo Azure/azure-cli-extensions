@@ -569,7 +569,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
 
         if self.get_argument_source():
             app = self.set_up_create_containerapp_if_source_or_repo()
-            self.containerapp_def = self.set_up_create_containerapp_source(app=app)
+            self.set_up_create_containerapp_source(app=app)
 
     def create_containerapp(self):
         try:
