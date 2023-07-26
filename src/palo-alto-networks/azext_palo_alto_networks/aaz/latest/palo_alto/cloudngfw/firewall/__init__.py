@@ -11,7 +11,6 @@
 from .__cmd_group import *
 from ._create import *
 from ._delete import *
-from ._get_global_rulestack import *
 from ._get_log_profile import *
 from ._get_support_info import *
 from ._list import *

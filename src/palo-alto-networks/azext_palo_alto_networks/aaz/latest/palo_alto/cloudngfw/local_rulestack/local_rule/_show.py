@@ -48,7 +48,7 @@ class Show(AAZCommand):
             id_part="name",
         )
         _args_schema.priority = AAZStrArg(
-            options=["-n", "--name", "--priority"],
+            options=["--priority"],
             help="Local Rule priority",
             required=True,
             id_part="child_name_1",

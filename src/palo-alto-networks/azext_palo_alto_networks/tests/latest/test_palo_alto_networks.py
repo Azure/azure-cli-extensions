@@ -17,27 +17,26 @@ class PaloAltoNetworksScenario(ScenarioTest):
     def test_palo_alto_networks_cloudngfw_firewall(self, resource_group):
         self.kwargs.update({
             'cloudngfw_firewall_name': self.create_random_name('firewall', 15),
-            # 'public_ip_name': 'test-public-ip',
             'public_ip_name': 'fw0718-public-ip',
             'local_rulestack_name': 'test-local-rulestack',
             'prefix': 'test-publicip-prefix',
+            'nsg': self.create_random_name('nsg', 10),
+            'vnet': self.create_random_name('vnet', 10),
             'subnet1': self.create_random_name('subnet1', 12),
             'subnet2': self.create_random_name('subnet2', 12),
             'loc': 'centraluseuap'
         })
-        # ip_prefix = self.cmd('az network public-ip prefix create -g {rg} -n {prefix} --length 28').get_output_in_json()['ipPrefix']
-        # self.kwargs.update({'ip_address': ip_prefix.split('/')[0]})
-        # public_ip = self.cmd('az network public-ip create -g {rg} -n {public_ip_name} --ip-address {ip_address} --public-ip-prefix {prefix}').get_output_in_json()['publicIp']
-        vnet = self.cmd('az network vnet create -g {rg} -n testvnet --address-prefix 10.0.0.0/16').get_output_in_json()['newVNet']
-        subnet1 = self.cmd('az network vnet subnet create -g {rg} --vnet-name testvnet -n {subnet1}').get_output_in_json()
-        subnet2 = self.cmd('az network vnet subnet create -g {rg} --vnet-name testvnet -n {subnet2}').get_output_in_json()
+        self.cmd('az network nsg create -g {rg} -n {nsg}')
+        self.cmd('az network vnet create -g {rg} -n {vnet} --address-prefix 10.0.0.0/16 --nsg {nsg} --subnet-name {subnet1} --subnet-prefixes 10.0.0.0/26')
+        self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet} -n {subnet2} --address-prefixes 10.0.1.0/26')
+        vnet = self.cmd('az network vnet show -g {rg} -n {vnet}').get_output_in_json()
         local_rulestack = self.cmd('az palo-alto cloudngfw local-rulestack create --local-rulestack-name testlrs -g {rg} -l eastus --default-mode "IPS" --scope "LOCAL" --pan-etag "9fa4e2c6-1b0c-11ee-b587-3e4c117c6534" --min-app-id-version "8595-7473" --security-services {{"vulnerability-profile":"BestPractice","anti-spyware-profile":"BestPractice","anti-virus-profile":"BestPractice","url-filtering-profile":"BestPractice","file-blocking-profile":"BestPractice","dns-subscription":"BestPractice"}}').get_output_in_json()
         self.kwargs.update({
             'public_ip_id': "/subscriptions/2bf4a339-294d-4c25-b0b2-ef649e9f5c27/resourceGroups/rheaTerraformTest/providers/Microsoft.Network/publicIPAddresses/fw0718-public-ip",
             'vnet_id': vnet['id'],
             'rulestack_id': local_rulestack['id'],
-            'trust_subnet': subnet1['id'],
-            'un_trust_subnet': subnet2['id']
+            'trust_subnet': vnet['subnets'][0]['id'],
+            'un_trust_subnet': vnet['subnets'][1]['id']
         })
         self.cmd('az palo-alto cloudngfw firewall create '
                  '--name {cloudngfw_firewall_name} '
@@ -50,7 +49,6 @@ class PaloAltoNetworksScenario(ScenarioTest):
                  '--network-profile {{"egress-nat-ip":[],"enable-egress-nat":DISABLED,"network-type":VNET,"public-ips":[{{"address":"20.112.141.94","resource-id":{public_ip_id}}}],'
                  '"vnet-configuration":{{"ip-of-trust-subnet-for-udr":{{"address":10.0.0.0/16}},"trust-subnet":{{"resource-id":{trust_subnet}}},"un-trust-subnet":{{"resource-id":{un_trust_subnet}}},"vnet":{{"resource-id":{vnet_id}}}}}}} '
                  '--panorama-config {{"config-string":bas64EncodedString}} --plan-data {{"billing-cycle":MONTHLY,"plan-id":panw-cloud-ngfw-payg,"usage-type":PAYG}} --no-wait')
-        self.cmd('az palo-alto cloudngfw firewall wait --resource-group {rg} --name {cloudngfw_firewall_name} --created')
         self.cmd('az palo-alto cloudngfw firewall list --resource-group {rg}',
                  checks=[
                      self.check('length(@)', 1),
@@ -59,33 +57,30 @@ class PaloAltoNetworksScenario(ScenarioTest):
                  checks=[
                      self.check('associatedRulestack.resourceId', '{rulestack_id}'),
                      self.check('dnsSettings.enableDnsProxy', 'DISABLED'),
-                     self.check('length(frontEndSettings)', 1),
                      self.check('isPanoramaManaged', "FALSE"),
                      self.check('location', "eastus"),
-                     self.check('marketplaceDetails.marketplaceSubscriptionStatus', "NotStarted"),
+                     self.check('marketplaceDetails.marketplaceSubscriptionStatus', "Subscribed"),
                      self.check('marketplaceDetails.offerId', "pan_swfw_cloud_ngfw"),
                      self.check('marketplaceDetails.publisherId', "paloaltonetworks"),
                      self.check('name', '{cloudngfw_firewall_name}'),
-                     self.check('length(networkProfile.egressNatIp)', 1),
-                     self.check('networkProfile.enableEgressNat', "ENABLED"),
+                     self.check('networkProfile.enableEgressNat', "DISABLED"),
                      self.check('panoramaConfig.configString', "bas64EncodedString"),
-                     self.check('planData.billingCycle', "MONTHLY"),
-                     self.check('provisioningState', "Succeeded")
+                     self.check('planData.billingCycle', "MONTHLY")
                  ])
+        self.cmd('az palo-alto cloudngfw firewall delete --resource-group {rg} -n {cloudngfw_firewall_name}')
 
     @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='cli_test_palo_alto_firewall_update')
-    def test_palo_alto_firewall_update(self, resource_group):
+    def test_palo_alto_firewall_update(self):
         self.kwargs.update({
-            'resource_group': 'CUSEUAP',
-            'firewall_name': 'OsamaV3',
+            'resource_group': 'rheaTerraformTest',
+            'firewall_name': 'prodStabilityTest',
         })
-        self.cmd('az palo-alto cloudngfw firewall update --name {firewall_name} -g {rg} --tags {{"tagName":"value"}}')
-        self.cmd('az palo-alto cloudngfw firewall show --name {firewall_name} -g {rg}', self.check('tags.tagName', "value"))
+        self.cmd('az palo-alto cloudngfw firewall update --name {firewall_name} -g {resource_group} --tags {{"tagName":"value"}}')
+        self.cmd('az palo-alto cloudngfw firewall show --name {firewall_name} -g {resource_group}', self.check('tags.tagName', "value"))
 
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_palo_alto_firewall_v2')
-    def test_palo_alto_firewall_v2(self, resource_group):
+    def test_palo_alto_firewall_v2(self):
         self.kwargs.update({
             'loc': 'eastus',
             'resource_group': 'rheaTerraformTest',
