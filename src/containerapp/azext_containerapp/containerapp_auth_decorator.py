@@ -73,8 +73,8 @@ class ContainerAppAuthDecorator(BaseResource):
     def create_or_update(self):
         try:
             return self.client.create_or_update(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                                               container_app_name=self.get_argument_name(), auth_config_name="current",
-                                               auth_config_envelope=self.existing_auth)
+                                                container_app_name=self.get_argument_name(), auth_config_name="current",
+                                                auth_config_envelope=self.existing_auth)
         except Exception as e:
             handle_raw_exception(e)
 
