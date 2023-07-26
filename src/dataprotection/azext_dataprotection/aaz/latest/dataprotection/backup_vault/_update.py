@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-01-01",
+        "version": "2023-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2023-05-01"],
         ]
     }
 
@@ -61,12 +61,25 @@ class Update(AAZCommand):
         # define Arg Group "FeatureSettings"
 
         _args_schema = cls._args_schema
+        _args_schema.cross_region_restore_settings = AAZObjectArg(
+            options=["--cross-region-restore-settings"],
+            arg_group="FeatureSettings",
+            nullable=True,
+        )
         _args_schema.cross_subscription_restore_state = AAZStrArg(
             options=["--csr-state", "--cross-subscription-restore-state"],
             arg_group="FeatureSettings",
             help="CrossSubscriptionRestore state",
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled", "PermanentlyDisabled": "PermanentlyDisabled"},
+        )
+
+        cross_region_restore_settings = cls._args_schema.cross_region_restore_settings
+        cross_region_restore_settings.state = AAZStrArg(
+            options=["state"],
+            help="CrossRegionRestore state",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
         # define Arg Group "Identity"
@@ -77,6 +90,18 @@ class Update(AAZCommand):
             arg_group="Identity",
             help="The identityType which can be either SystemAssigned or None",
             nullable=True,
+        )
+        _args_schema.user_assigned_identities = AAZDictArg(
+            options=["--user-assigned-identities"],
+            arg_group="Identity",
+            help="Gets or sets the user assigned identities.",
+            nullable=True,
+        )
+
+        user_assigned_identities = cls._args_schema.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
+            nullable=True,
+            blank={},
         )
 
         # define Arg Group "Monitoring Settings Azure Monitor Alert Settings"
@@ -214,7 +239,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01",
+                    "api-version", "2023-05-01",
                     required=True,
                 ),
             }
@@ -313,7 +338,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01",
+                    "api-version", "2023-05-01",
                     required=True,
                 ),
             }
@@ -378,6 +403,11 @@ class Update(AAZCommand):
             identity = _builder.get(".identity")
             if identity is not None:
                 identity.set_prop("type", AAZStrType, ".type")
+                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+
+            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
+            if user_assigned_identities is not None:
+                user_assigned_identities.set_elements(AAZObjectType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -387,7 +417,12 @@ class Update(AAZCommand):
 
             feature_settings = _builder.get(".properties.featureSettings")
             if feature_settings is not None:
+                feature_settings.set_prop("crossRegionRestoreSettings", AAZObjectType, ".cross_region_restore_settings")
                 feature_settings.set_prop("crossSubscriptionRestoreSettings", AAZObjectType)
+
+            cross_region_restore_settings = _builder.get(".properties.featureSettings.crossRegionRestoreSettings")
+            if cross_region_restore_settings is not None:
+                cross_region_restore_settings.set_prop("state", AAZStrType, ".state")
 
             cross_subscription_restore_settings = _builder.get(".properties.featureSettings.crossSubscriptionRestoreSettings")
             if cross_subscription_restore_settings is not None:
@@ -487,6 +522,22 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         identity.type = AAZStrType()
+        identity.user_assigned_identities = AAZDictType(
+            serialized_name="userAssignedIdentities",
+        )
+
+        user_assigned_identities = _schema_backup_vault_resource_read.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectType()
+
+        _element = _schema_backup_vault_resource_read.identity.user_assigned_identities.Element
+        _element.client_id = AAZStrType(
+            serialized_name="clientId",
+            flags={"read_only": True},
+        )
+        _element.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
 
         properties = _schema_backup_vault_resource_read.properties
         properties.feature_settings = AAZObjectType(
@@ -510,6 +561,10 @@ class _UpdateHelper:
             serialized_name="resourceMoveState",
             flags={"read_only": True},
         )
+        properties.secure_score = AAZStrType(
+            serialized_name="secureScore",
+            flags={"read_only": True},
+        )
         properties.security_settings = AAZObjectType(
             serialized_name="securitySettings",
         )
@@ -519,9 +574,15 @@ class _UpdateHelper:
         )
 
         feature_settings = _schema_backup_vault_resource_read.properties.feature_settings
+        feature_settings.cross_region_restore_settings = AAZObjectType(
+            serialized_name="crossRegionRestoreSettings",
+        )
         feature_settings.cross_subscription_restore_settings = AAZObjectType(
             serialized_name="crossSubscriptionRestoreSettings",
         )
+
+        cross_region_restore_settings = _schema_backup_vault_resource_read.properties.feature_settings.cross_region_restore_settings
+        cross_region_restore_settings.state = AAZStrType()
 
         cross_subscription_restore_settings = _schema_backup_vault_resource_read.properties.feature_settings.cross_subscription_restore_settings
         cross_subscription_restore_settings.state = AAZStrType()
