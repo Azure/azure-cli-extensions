@@ -2488,73 +2488,38 @@ def _aks_mesh_update(
 
 MESH_CONFIG_ALLOW_LIST = {
     '1.17.2': {
-    'proxyListenPort', 
-    'proxyInboundListenPort',
-    'proxyHttpPort',
-    'connectTimeout',
-    'tcpKeepalive',
-    'defaultConfig',
-    'outboundTrafficPolicy',
-    'configSources',
-    'defaultProviders',
-    'enableTracing',
-    'accessLogFile',
-    'accessLogFormat',
-    'accessLogEncoding',
-    'accessEnvoyAccessLogService',
-    'disablEnvoyListenerLog',
-    'trustDomain',
-    'trustDomainAliases',
-    'caCertificates',
-    'defaultServiceExportTo',
-    'defaultVirtualServiceExportTo',
-    'defaultDestinationRuleExportTo',
-    'localityLbSetting',
-    'dnsRefreshRate',
-    'h2UpgradePolicy',
-    'enablePrometheusMerge',
-    'discoverySelectors',
-    'pathNormalization',
-    'defaultHttpRetryPolicy',
-    'ServiceSettings.Settings.clusterLocal',
-    'meshMTLS',
-    'tlsDefaults',
-    'rootNamespace'
+        'defaultConfig',
+        'outboundTrafficPolicy',
+        'extensionProviders'
+        'configSources',
+        'defaultProviders',
+        'enableTracing',
+        'accessLogFile',
+        'accessLogFormat',
+        'accessLogEncoding',
+        'accessEnvoyAccessLogService',
+        'disablEnvoyListenerLog',
+        'caCertificates',
+        'enablePrometheusMerge',
+        'discoverySelectors',
+        'rootNamespace'
     },
     '1.18.0': {
-    'proxyListenPort', 
-    'proxyInboundListenPort',
-    'proxyHttpPort',
-    'connectTimeout',
-    'tcpKeepalive',
-    'defaultConfig',
-    'outboundTrafficPolicy',
-    'configSources',
-    'extensionProviders',
-    'defaultProviders',
-    'enableTracing',
-    'accessLogFile',
-    'accessLogFormat',
-    'accessLogEncoding',
-    'accessEnvoyAccessLogService',
-    'disablEnvoyListenerLog',
-    'trustDomain',
-    'trustDomainAliases',
-    'caCertificates',
-    'defaultServiceExportTo',
-    'defaultVirtualServiceExportTo',
-    'defaultDestinationRuleExportTo',
-    'localityLbSetting',
-    'dnsRefreshRate',
-    'h2UpgradePolicy',
-    'enablePrometheusMerge',
-    'discoverySelectors',
-    'pathNormalization',
-    'defaultHttpRetryPolicy',
-    'ServiceSettings.Settings.clusterLocal',
-    'meshMTLS',
-    'tlsDefaults',
-    'rootNamespace'
+        'defaultConfig',
+        'outboundTrafficPolicy',
+        'extensionProviders'
+        'configSources',
+        'defaultProviders',
+        'enableTracing',
+        'accessLogFile',
+        'accessLogFormat',
+        'accessLogEncoding',
+        'accessEnvoyAccessLogService',
+        'disablEnvoyListenerLog',
+        'caCertificates',
+        'enablePrometheusMerge',
+        'discoverySelectors',
+        'rootNamespace'
     }
 }
 
@@ -2563,39 +2528,20 @@ PROXY_CONFIG_ALLOW_LIST = {
     '1.17.2': {
         'tracingServiceName',
         'drainDuration',
-        'statsUdpAddress',
-        'proxyAdminPort',
         'tracing',
         'concurrency',
         'envoyMetricsService',
-        'proxyMetadata',
-        'statusPort',
-        'extraStatTags',
-        'proxyStatsMatcher',
         'terminationDrainDuration',
-        'meshId',
-        'caCertificatesPem',
-        'privateKeyProvider',
-        'discoveryAddress'
+        'caCertificatesPem'
     },
     '1.18.0': {
         'tracingServiceName',
         'drainDuration',
-        'statsUdpAddress',
-        'proxyAdminPort',
         'tracing',
         'concurrency',
         'envoyMetricsService',
-        'proxyMetadata',
-        'statusPort',
-        'extraStatTags',
-        'proxyStatsMatcher',
         'terminationDrainDuration',
-        'meshId',
-        'holdApplicationUntilProxyStarts',
-        'caCertificatesPem',
-        'privateKeyProvider',
-        'discoveryAddress'
+        'caCertificatesPem'
     }
 
 }
@@ -2629,10 +2575,10 @@ def aks_mesh_migration_check(cmd, client, resource_group_name, name, kubeconfig 
     aks_mesh_check_base_requirements(cmd, client, resource_group_name, name, v1)
 
     if aks_mesh_check_istio_existence(v1):
-        istio_version = aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1)
+        istio_version, compatible_version = aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1)
         instance = kubernetes.client.CustomObjectsApi()
-        aks_mesh_check_crd_config(cmd, client, resource_group_name, name, instance, istio_version)
-    
+        if compatible_version:
+            aks_mesh_check_crd_config(cmd, client, resource_group_name, name, instance, istio_version)
     display_migrationcheck(result_dict)
     return
 
@@ -2640,12 +2586,16 @@ def aks_mesh_check_istio_existence(v1):
     pod_info = v1.list_pod_for_all_namespaces(label_selector="app=istiod")
     result_dict['Istio existence'] = {}
     if len(pod_info.items) == 0:
-        result_dict['Istio existence']['status'] = False
-        result_dict['Istio existence']['message'] = "Open-source Istio is not installed. You may proceed with installing the Istio-based service mesh add-on if all other checks have passed."
+        result_dict['Istio existence'] = {
+            'status' : False,
+            'message' : 'Istio installation found.'
+        }
         return False
 
-    result_dict['Istio existence']['status'] = True
-    result_dict['Istio existence']['message'] = "Istio installation found."
+    result_dict['Istio existence'] = {
+        'status' : True,
+        'message' : 'Istio installation found.'
+    }
     return True
 
 def aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1):
@@ -2673,10 +2623,11 @@ def aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1)
                 continue
     
     #MeshConfig allowlist only contains supported ASM versions
+    compatible_version = True
     if istio_version not in MESH_CONFIG_ALLOW_LIST.keys():
+        compatible_version = False
         result_dict['Istio version'] = {'status': False}
         supported_versions = [value for value in MESH_CONFIG_ALLOW_LIST.keys()]
-
         check_istio_version(supported_versions, istio_version, result_dict)
     else:
         result_dict["Istio version"] = {
@@ -2686,16 +2637,16 @@ def aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1)
     
     if len(mesh_config) != 0:
         proxy_config = mesh_config['defaultConfig']
-
-    check_config(mesh_config, MESH_CONFIG_ALLOW_LIST, istio_version, "Meshconfig")
-    check_config(proxy_config, PROXY_CONFIG_ALLOW_LIST, istio_version, "Proxyconfig")
-    return istio_version
+    if compatible_version:
+        check_config(mesh_config, MESH_CONFIG_ALLOW_LIST, istio_version, "Meshconfig")
+        check_config(proxy_config, PROXY_CONFIG_ALLOW_LIST, istio_version, "Proxyconfig")
+    return [istio_version, compatible_version]
     
 
 def aks_mesh_check_base_requirements(cmd, client, resource_group_name, name, v1):
     from pprint import pprint
-    show_result = aks_show(cmd, client, resource_group_name, name)
-    KUBERNETES_VERSION = show_result.kubernetes_version
+    KUBERNETES_VERSION = aks_show(cmd, client, resource_group_name, name).kubernetes_version
+    # KUBERNETES_VERSION = show_result.kubernetes_version
     
     if (version.parse(KUBERNETES_VERSION) < version.parse('1.24.9')):
         result_dict['AKS version'] = {
@@ -2707,7 +2658,6 @@ def aks_mesh_check_base_requirements(cmd, client, resource_group_name, name, v1)
             'status': True,
             'message': "Supported Kubernetes version found."
         }
-
     try:
         mc = client.get(resource_group_name, name)
     except Exception as ex:
@@ -2827,10 +2777,12 @@ def display_migrationcheck(result_dictionary):
         if value['status']:
             test_status = "Passed"
             color = 'green'
+            sign = u'\u2713'
         else:
             test_status = "Failed"
             color = 'red'
-        print(colored("{}: {} test. {}".format(test_status, item, value['message']), color))
+            sign = "X"
+        print(colored("{}: {} test. {} {}".format(test_status, item, value['message'], sign), color))
         time.sleep(1)
         
         
@@ -2845,7 +2797,7 @@ def check_istio_version(supported_versions, istio_version, result_dict):
             result_dict['Istio version']['message'] = "Unsupported Istio version found. Please upgrade istio before trying to migrate."
         else:
             is_greater = True
-    if not is_greater:
+    if is_greater:
         result_dict['Istio version']['message'] = "Istio version {} may not yet be supported or recognized by the CLI. Please check the available add-on versions at  https://learn.microsoft.com/en-us/azure/aks/istio-upgrade or try updating aks-preview CLI extension to refresh version information".format(istio_version)
     return
 
@@ -2875,12 +2827,10 @@ def check_config(config_set, allow_list, istio_version, config_name):
             'status' : True,
             'message': "No disallowed configuration found in {}.".format(config_name)
         }
-
     else:
         result_dict[config_name] = {
             'status' : False,
             'message': "Disallowed configuration found in {}: {}".format(config_name, disallowed_configs)
         }
-
     return 
 
