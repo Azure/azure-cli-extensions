@@ -798,9 +798,9 @@ helps['cosmosdb mongodb collection merge'] = """
 
 helps['cosmosdb sql database merge'] = """
     type: command
-    short-summary: "Merges the partitions of a sql database."
+    short-summary: "Merge the partitions of a sql database."
     examples:
-      - name: merge partitions of database my-database
+      - name: Merge partitions of database my-database
         text: |-
                az cosmosdb sql database merge -g my-resource-group -a my-account --name my-database
 """
