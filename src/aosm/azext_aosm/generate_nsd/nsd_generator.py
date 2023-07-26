@@ -247,7 +247,9 @@ class NSDGenerator:
 
         config_mappings = {
             "deploymentParameters": deployment_parameters,
-            self.nfdv_parameter_name: f"{{configurationparameters('{self.config.cg_schema_name}').{nf}.{self.nfdv_parameter_name}}}",
+            self.nfdv_parameter_name: (
+                f"{{configurationparameters('{self.config.cg_schema_name}').{nf}.{self.nfdv_parameter_name}}}"
+            ),
             "managedIdentity": f"{{configurationparameters('{self.config.cg_schema_name}').managedIdentity}}",
         }
 

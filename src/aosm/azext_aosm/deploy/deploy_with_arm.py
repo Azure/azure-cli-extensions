@@ -525,7 +525,7 @@ class DeployerViaArm:
         current_time = str(time.time()).split(".", maxsplit=1)[0]
 
         # Add a timestamp to the deployment name to ensure it is unique
-        deployment_name = f"AOSM_CLI_deployment_into_{resource_group}_{current_time}"
+        deployment_name = f"AOSM_CLI_deployment_{current_time}"
 
         validation = self.api_clients.resource_client.deployments.begin_validate(
             resource_group_name=resource_group,

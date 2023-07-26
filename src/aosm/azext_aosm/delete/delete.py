@@ -35,7 +35,7 @@ class ResourceDeleter:
         self.api_clients = api_clients
         self.config = config
 
-    def delete_nfd(self, clean: bool = False):
+    def delete_nfd(self, clean: bool = False, force: bool = False) -> None:
         """
         Delete the NFDV and manifests.  If they don't exist it still reports them as deleted.
 
@@ -44,33 +44,34 @@ class ResourceDeleter:
         """
         assert isinstance(self.config, NFConfiguration)
 
-        if clean:
-            print(
-                "Are you sure you want to delete all resources associated with NFD"
-                f" {self.config.nf_name} including the artifact stores and publisher"
-                f" {self.config.publisher_name}?"
-            )
-            logger.warning(
-                "This command will fail if other NFD versions exist in the NFD group."
-            )
-            logger.warning(
-                "Only do this if you are SURE you are not sharing the publisher and"
-                " artifact stores with other NFDs"
-            )
-            print("There is no undo.  Type the publisher name to confirm.")
-            if not input_ack(self.config.publisher_name.lower(), "Confirm delete:"):
-                print("Not proceeding with delete")
-                return
-        else:
-            print(
-                "Are you sure you want to delete the NFD Version"
-                f" {self.config.version} and associated manifests from group"
-                f" {self.config.nfdg_name} and publisher {self.config.publisher_name}?"
-            )
-            print("There is no undo. Type 'delete' to confirm")
-            if not input_ack("delete", "Confirm delete:"):
-                print("Not proceeding with delete")
-                return
+        if not force:
+            if clean:
+                print(
+                    "Are you sure you want to delete all resources associated with NFD"
+                    f" {self.config.nf_name} including the artifact stores and publisher"
+                    f" {self.config.publisher_name}?"
+                )
+                logger.warning(
+                    "This command will fail if other NFD versions exist in the NFD group."
+                )
+                logger.warning(
+                    "Only do this if you are SURE you are not sharing the publisher and"
+                    " artifact stores with other NFDs"
+                )
+                print("There is no undo.  Type the publisher name to confirm.")
+                if not input_ack(self.config.publisher_name.lower(), "Confirm delete:"):
+                    print("Not proceeding with delete")
+                    return
+            else:
+                print(
+                    "Are you sure you want to delete the NFD Version"
+                    f" {self.config.version} and associated manifests from group"
+                    f" {self.config.nfdg_name} and publisher {self.config.publisher_name}?"
+                )
+                print("There is no undo. Type 'delete' to confirm")
+                if not input_ack("delete", "Confirm delete:"):
+                    print("Not proceeding with delete")
+                    return
 
         self.delete_nfdv()
 
@@ -86,7 +87,7 @@ class ResourceDeleter:
                 self.delete_artifact_store("sa")
             self.delete_publisher()
 
-    def delete_nsd(self):
+    def delete_nsd(self, force: bool = False) -> None:
         """
         Delete the NSDV and manifests.
 
@@ -94,16 +95,17 @@ class ResourceDeleter:
         """
         assert isinstance(self.config, NSConfiguration)
 
-        print(
-            "Are you sure you want to delete the NSD Version"
-            f" {self.config.nsd_version}, the associated manifest"
-            f" {self.config.acr_manifest_name} and configuration group schema"
-            f" {self.config.cg_schema_name}?"
-        )
-        print("There is no undo. Type 'delete' to confirm")
-        if not input_ack("delete", "Confirm delete:"):
-            print("Not proceeding with delete")
-            return
+        if not force:
+            print(
+                "Are you sure you want to delete the NSD Version"
+                f" {self.config.nsd_version}, the associated manifest"
+                f" {self.config.acr_manifest_name} and configuration group schema"
+                f" {self.config.cg_schema_name}?"
+            )
+            print("There is no undo. Type 'delete' to confirm")
+            if not input_ack("delete", "Confirm delete:"):
+                print("Not proceeding with delete")
+                return
 
         self.delete_nsdv()
         self.delete_artifact_manifest("acr")
