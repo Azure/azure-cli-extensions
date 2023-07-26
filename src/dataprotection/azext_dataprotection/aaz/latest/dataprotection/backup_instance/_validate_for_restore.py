@@ -81,7 +81,7 @@ class ValidateForRestore(AAZCommand):
         )
         restore_request_object.identity_details = AAZObjectArg(
             options=["identity-details"],
-            help="Contains information of the Identity Details for the BI. If it is null, default will be considered as System Assigned.",
+            help="Contains information of the Identity Details for the BI. If it is null, default will be considered as System Assigned.",
         )
         restore_request_object.restore_target_info = AAZObjectArg(
             options=["restore-target-info"],

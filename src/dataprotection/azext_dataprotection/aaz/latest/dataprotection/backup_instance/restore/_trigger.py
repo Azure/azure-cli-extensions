@@ -65,7 +65,7 @@ class Trigger(AAZCommand):
         _args_schema.identity_details = AAZObjectArg(
             options=["--identity-details"],
             arg_group="Parameters",
-            help="Contains information of the Identity Details for the BI. If it is null, default will be considered as System Assigned.",
+            help="Contains information of the Identity Details for the BI. If it is null, default will be considered as System Assigned.",
         )
 
         identity_details = cls._args_schema.identity_details

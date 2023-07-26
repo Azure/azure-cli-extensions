@@ -105,7 +105,7 @@ class Update(AAZCommand):
         _args_schema.identity_details = AAZObjectArg(
             options=["--identity-details"],
             arg_group="Properties",
-            help="Contains information of the Identity Details for the BI. If it is null, default will be considered as System Assigned.",
+            help="Contains information of the Identity Details for the BI. If it is null, default will be considered as System Assigned.",
             nullable=True,
         )
         _args_schema.object_type = AAZStrArg(
