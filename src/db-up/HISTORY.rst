@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.2.8 (2023-07-26)
+++++++++++++++++++
+* Upgrade `psycopg2-binary` to support Python 3.11
+
 0.2.7 (2022-04-02)
 ++++++++++++++++++
 * Upgrade `pymssql` to support Python 3.10
