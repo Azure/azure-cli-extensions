@@ -5,6 +5,8 @@ Release History
 
 unreleased
 ++++++++++
+* Added integration tests for `publish` and `delete` commands.
+* Added a `--force` flag to the aosm `build` and `delete` commands. This command will force the `build` or `delete` commands to proceed without waiting on user input to confirm.
 * `az aosm nfd build` options `--order-params` and `--interactive` to help users choose which NF parameters to expose as deployParameters. Feature added that allows CNF value mappings file to be generated if none is supplied.
 * NFDV version exposed as a CGV on an SNS.
 * `az aosm nfd publish` option added for `--definition-type cnf` to publish the CNF bicep templates, upload helm charts from disk to the ACR and copy the images from a source ACR to the target ACR.
