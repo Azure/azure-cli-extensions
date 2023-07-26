@@ -218,7 +218,7 @@ class BaseContainerAppDecorator(BaseResource):
 
     def get_argument_ingress(self):
         return self.get_param("ingress")
-    
+
     def get_argument_allow_insecure(self):
         return self.get_param("allow_insecure")
 
