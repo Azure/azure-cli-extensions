@@ -132,6 +132,20 @@ def create_and_verify_containerapp_create(
         test_cls.assertEqual(app["properties"]["provisioningState"], "Succeeded")
         test_cls.assertEqual(app["properties"]["template"]["containers"][0]["image"].split(":")[0], image_name)
 
+        # Construct the 'az containerapp update' command
+        update_cmd = 'containerapp update -g {} -n {} --source {}'.format(
+            resource_group, app_name, source_path)
+
+        # Execute the 'az containerapp update' command
+        test_cls.cmd(update_cmd)
+
+        # Verify successful execution
+        app = test_cls.cmd(f"containerapp show -g {resource_group} -n {app_name}").get_output_in_json()
+        test_cls.assertEqual(app["properties"]["configuration"]["registries"][0]["server"], registry_server)
+        test_cls.assertEqual(app["properties"]["configuration"]["registries"][0]["username"], registry_user)
+        test_cls.assertEqual(app["properties"]["provisioningState"], "Succeeded")
+        test_cls.assertEqual(app["properties"]["template"]["containers"][0]["image"].split("/")[0], image_name.split("/")[0])
+
 def _reformat_image(image):
     image = image.split("/")[-1]
     image = image.replace(":","")
