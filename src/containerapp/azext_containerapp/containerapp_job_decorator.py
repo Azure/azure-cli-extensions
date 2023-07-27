@@ -325,10 +325,9 @@ class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
         config_def["triggerType"] = self.get_argument_trigger_type()
         config_def["replicaTimeout"] = self.get_argument_replica_timeout()
         config_def["replicaRetryLimit"] = self.get_argument_replica_retry_limit()
-        config_def["manualTriggerConfig"] = manualTriggerConfig_def if manualTriggerConfig_def is not None else None
-        config_def[
-            "scheduleTriggerConfig"] = scheduleTriggerConfig_def if scheduleTriggerConfig_def is not None else None
-        config_def["eventTriggerConfig"] = eventTriggerConfig_def if eventTriggerConfig_def is not None else None
+        config_def["manualTriggerConfig"] = manualTriggerConfig_def
+        config_def["scheduleTriggerConfig"] = scheduleTriggerConfig_def
+        config_def["eventTriggerConfig"] = eventTriggerConfig_def
         config_def["registries"] = [registries_def] if registries_def is not None else None
 
         # Identity actions
