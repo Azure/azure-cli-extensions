@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster bmckeyset create",
-    is_experimental=True,
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new baseboard management controller key set or update the existing one for the provided cluster.
@@ -23,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01-preview",
+        "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/bmckeysets/{}", "2023-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/bmckeysets/{}", "2023-07-01"],
         ]
     }
 
@@ -251,7 +251,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }

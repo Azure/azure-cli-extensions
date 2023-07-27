@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine uncordon",
-    is_experimental=True,
+    is_preview=True,
 )
 class Uncordon(AAZCommand):
     """Uncordon the provided bare metal machine's Kubernetes node.
@@ -23,9 +23,9 @@ class Uncordon(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01-preview",
+        "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/uncordon", "2023-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}/uncordon", "2023-07-01"],
         ]
     }
 
@@ -150,7 +150,7 @@ class Uncordon(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }

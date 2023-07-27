@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster list",
-    is_experimental=True,
+    is_preview=True,
 )
 class List(AAZCommand):
     """List Kubernetes clusters in the provided subscription.
@@ -26,10 +26,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01-preview",
+        "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/kubernetesclusters", "2023-05-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters", "2023-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/kubernetesclusters", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters", "2023-07-01"],
         ]
     }
 
@@ -118,7 +118,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }
@@ -761,7 +761,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }

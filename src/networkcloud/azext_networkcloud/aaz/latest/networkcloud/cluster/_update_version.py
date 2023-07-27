@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster update-version",
-    is_experimental=True,
+    is_preview=True,
 )
 class UpdateVersion(AAZCommand):
     """Update the version of the provided cluster to one of the available supported versions.
@@ -23,9 +23,9 @@ class UpdateVersion(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01-preview",
+        "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/updateversion", "2023-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/updateversion", "2023-07-01"],
         ]
     }
 
@@ -160,7 +160,7 @@ class UpdateVersion(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }
