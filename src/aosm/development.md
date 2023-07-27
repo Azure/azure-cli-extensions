@@ -141,6 +141,11 @@ python-static-checks fmt
 ### Unit tests
 To run unit tests run `azdev test aosm`.  All tests are expected to pass.
 
+If one of the publish tests fails, then it might be because you have made small tweaks and the recording is now out of date.
+Delete the relevant file under tests/latest/recordings (the file names match the name of the tests), and re-run the test.
+If that passes it will create a new recording for you to check in.
+
+
 To get code coverage run:
 ```bash
 pip install coverage 
