@@ -143,7 +143,11 @@ To run unit tests run `azdev test aosm`.  All tests are expected to pass.
 
 If one of the publish tests fails, then it might be because you have made small tweaks and the recording is now out of date.
 Delete the relevant file under tests/latest/recordings (the file names match the name of the tests), and re-run the test.
-If that passes it will create a new recording for you to check in.
+If that passes it will create a new recording for you.
+
+*DO NOT CHECK the recording in.*
+
+There is an issue at the moment where it doesn't redact credentials and that will mean you get pinged by S360.
 
 
 To get code coverage run:
