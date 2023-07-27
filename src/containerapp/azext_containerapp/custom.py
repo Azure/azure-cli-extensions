@@ -35,6 +35,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from .containerapp_job_decorator import ContainerAppJobDecorator, ContainerAppJobCreateDecorator
+from .containerapp_env_decorator import ContainerAppEnvDecorator, ContainerAppEnvCreateDecorator
 from .containerapp_auth_decorator import ContainerAppAuthDecorator
 from .containerapp_decorator import ContainerAppCreateDecorator, BaseContainerAppDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_exception
@@ -1059,98 +1060,20 @@ def create_managed_environment(cmd,
                                enable_workload_profiles=False,
                                mtls_enabled=None,
                                no_wait=False):
-    if zone_redundant:
-        if not infrastructure_subnet_resource_id:
-            raise RequiredArgumentMissingError("Cannot use --zone-redundant/-z without "
-                                               "--infrastructure-subnet-resource-id/-s")
-        if not is_valid_resource_id(infrastructure_subnet_resource_id):
-            raise ValidationError("--infrastructure-subnet-resource-id must be a valid resource id")
-        vnet_location = get_vnet_location(cmd, infrastructure_subnet_resource_id)
-        if location:
-            if _normalize_location(cmd, location) != vnet_location:
-                raise ValidationError(f"Location '{location}' does not match the subnet's location: '{vnet_location}'. "
-                                      "Please change either --location/-l or --infrastructure-subnet-resource-id/-s")
-        else:
-            location = vnet_location
+    raw_parameters = locals()
+    containerapp_env_create_decorator = ContainerAppEnvCreateDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentClient,
+        raw_parameters=raw_parameters,
+        models="azext_containerapp._sdk_models"
+    )
+    containerapp_env_create_decorator.validate_arguments()
+    containerapp_env_create_decorator.register_provider(CONTAINER_APPS_RP)
 
-    location = validate_environment_location(cmd, location)
-
-    register_provider_if_needed(cmd, CONTAINER_APPS_RP)
-    _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
-
-    if (logs_customer_id is None or logs_key is None) and logs_destination == "log-analytics":
-        logs_customer_id, logs_key = _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, location, resource_group_name)
-
-    if logs_destination == "log-analytics":
-        log_analytics_config_def = LogAnalyticsConfigurationModel
-        log_analytics_config_def["customerId"] = logs_customer_id
-        log_analytics_config_def["sharedKey"] = logs_key
-    else:
-        log_analytics_config_def = None
-
-    app_logs_config_def = AppLogsConfigurationModel
-    app_logs_config_def["destination"] = logs_destination if logs_destination != "none" else None
-    app_logs_config_def["logAnalyticsConfiguration"] = log_analytics_config_def
-
-    managed_env_def = ManagedEnvironmentModel
-    managed_env_def["location"] = location
-    managed_env_def["properties"]["appLogsConfiguration"] = app_logs_config_def
-    managed_env_def["tags"] = tags
-    managed_env_def["properties"]["zoneRedundant"] = zone_redundant
-
-    if enable_workload_profiles is True:
-        managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(cmd, location)
-
-    if hostname:
-        customDomain = CustomDomainConfigurationModel
-        blob, _ = load_cert_file(certificate_file, certificate_password)
-        customDomain["dnsSuffix"] = hostname
-        customDomain["certificatePassword"] = certificate_password
-        customDomain["certificateValue"] = blob
-        managed_env_def["properties"]["customDomainConfiguration"] = customDomain
-
-    if instrumentation_key is not None:
-        managed_env_def["properties"]["daprAIInstrumentationKey"] = instrumentation_key
-
-    if infrastructure_subnet_resource_id or docker_bridge_cidr or platform_reserved_cidr or platform_reserved_dns_ip:
-        vnet_config_def = VnetConfigurationModel
-
-        if infrastructure_subnet_resource_id is not None:
-            vnet_config_def["infrastructureSubnetId"] = infrastructure_subnet_resource_id
-
-        if docker_bridge_cidr is not None:
-            vnet_config_def["dockerBridgeCidr"] = docker_bridge_cidr
-
-        if platform_reserved_cidr is not None:
-            vnet_config_def["platformReservedCidr"] = platform_reserved_cidr
-
-        if platform_reserved_dns_ip is not None:
-            vnet_config_def["platformReservedDnsIP"] = platform_reserved_dns_ip
-
-        managed_env_def["properties"]["vnetConfiguration"] = vnet_config_def
-
-    if internal_only:
-        if not infrastructure_subnet_resource_id:
-            raise ValidationError('Infrastructure subnet resource ID needs to be supplied for internal only environments.')
-        managed_env_def["properties"]["vnetConfiguration"]["internal"] = True
-
-    if mtls_enabled is not None:
-        safe_set(managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=mtls_enabled)
-    try:
-        r = ManagedEnvironmentClient.create(
-            cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=managed_env_def, no_wait=no_wait)
-
-    except Exception as e:
-        handle_raw_exception(e)
-
-    _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, logs_destination)
-
-    # return ENV
-    if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() != "succeeded" and not no_wait:
-        not disable_warnings and logger.warning('Containerapp environment creation in progress. Please monitor the creation using `az containerapp env show -n {} -g {}`'.format(name, resource_group_name))
-
-    if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "succeeded":
-        not disable_warnings and logger.warning("\nContainer Apps environment created. To deploy a container app, use: az containerapp create --help\n")
+    containerapp_env_create_decorator.construct_payload()
+    r = containerapp_env_create_decorator.create()
+    containerapp_env_create_decorator.construct_for_post_process(r)
+    r = containerapp_env_create_decorator.post_process(r)
 
     return r
 
@@ -1257,36 +1180,42 @@ def update_managed_environment(cmd,
 
 
 def show_managed_environment(cmd, name, resource_group_name):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    raw_parameters = locals()
+    containerapp_env_decorator = ContainerAppEnvDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentClient,
+        raw_parameters=raw_parameters,
+        models="azext_containerapp._sdk_models"
+    )
+    containerapp_env_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    try:
-        return ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
-    except CLIError as e:
-        handle_raw_exception(e)
+    return containerapp_env_decorator.show()
 
 
 def list_managed_environments(cmd, resource_group_name=None):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    raw_parameters = locals()
+    containerapp_env_decorator = ContainerAppEnvDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentClient,
+        raw_parameters=raw_parameters,
+        models="azext_containerapp._sdk_models"
+    )
+    containerapp_env_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    try:
-        managed_envs = []
-        if resource_group_name is None:
-            managed_envs = ManagedEnvironmentClient.list_by_subscription(cmd=cmd)
-        else:
-            managed_envs = ManagedEnvironmentClient.list_by_resource_group(cmd=cmd, resource_group_name=resource_group_name)
-
-        return managed_envs
-    except CLIError as e:
-        handle_raw_exception(e)
+    return containerapp_env_decorator.list()
 
 
 def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    raw_parameters = locals()
+    containerapp_env_decorator = ContainerAppEnvDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentClient,
+        raw_parameters=raw_parameters,
+        models="azext_containerapp._sdk_models"
+    )
+    containerapp_env_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    try:
-        return ManagedEnvironmentClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
-    except CLIError as e:
-        handle_raw_exception(e)
+    return containerapp_env_decorator.delete()
 
 
 def create_containerappsjob(cmd,
