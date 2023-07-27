@@ -35,7 +35,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from .containerapp_job_decorator import ContainerAppJobDecorator, ContainerAppJobCreateDecorator
-from .containerapp_env_decorator import ContainerAppEnvDecorator, ContainerAppEnvCreateDecorator
+from .containerapp_env_decorator import ContainerAppEnvDecorator, ContainerAppEnvCreateDecorator, ContainerAppEnvUpdateDecorator
 from .containerapp_auth_decorator import ContainerAppAuthDecorator
 from .containerapp_decorator import ContainerAppCreateDecorator, BaseContainerAppDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_exception
@@ -1072,7 +1072,6 @@ def create_managed_environment(cmd,
 
     containerapp_env_create_decorator.construct_payload()
     r = containerapp_env_create_decorator.create()
-    containerapp_env_create_decorator.construct_for_post_process(r)
     r = containerapp_env_create_decorator.post_process(r)
 
     return r
@@ -1095,86 +1094,17 @@ def update_managed_environment(cmd,
                                max_nodes=None,
                                mtls_enabled=None,
                                no_wait=False):
-    if logs_destination == "log-analytics" or logs_customer_id or logs_key:
-        if logs_destination != "log-analytics":
-            raise ValidationError("When configuring Log Analytics workspace, --logs-destination should be \"log-analytics\"")
-        if not logs_customer_id or not logs_key:
-            raise ValidationError("Must provide --logs-workspace-id and --logs-workspace-key if updating logs destination to type 'log-analytics'.")
-
-    try:
-        r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
-    except CLIError as e:
-        handle_raw_exception(e)
-
-    # General setup
-    env_def = {}
-    safe_set(env_def, "location", value=r["location"])  # required for API
-    if tags:
-        safe_set(env_def, "tags", value=tags)
-
-    # Logs
-    if logs_destination:
-        logs_destination = None if logs_destination == "none" else logs_destination
-        safe_set(env_def, "properties", "appLogsConfiguration", "destination", value=logs_destination)
-
-    if logs_destination == "log-analytics":
-        safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "customerId", value=logs_customer_id)
-        safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "sharedKey", value=logs_key)
-    elif logs_destination:
-        safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", value=None)
-
-    # Custom domains
-    if hostname:
-        safe_set(env_def, "properties", "customDomainConfiguration", value={})
-        cert_def = env_def["properties"]["customDomainConfiguration"]
-        if certificate_file:
-            blob, _ = load_cert_file(certificate_file, certificate_password)
-            safe_set(cert_def, "certificateValue", value=blob)
-        safe_set(cert_def, "dnsSuffix", value=hostname)
-        if certificate_password:
-            safe_set(cert_def, "certificatePassword", value=certificate_password)
-
-    if workload_profile_name:
-        if "workloadProfiles" not in r["properties"] or not r["properties"]["workloadProfiles"]:
-            raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enable-workload-profiles'")
-
-        if workload_profile_type:
-            workload_profile_type = workload_profile_type.upper()
-        workload_profiles = r["properties"]["workloadProfiles"]
-        profile = [p for p in workload_profiles if p["name"].lower() == workload_profile_name.lower()]
-        update = False  # flag for updating an existing profile
-        if profile:
-            profile = profile[0]
-            update = True
-        else:
-            profile = {"name": workload_profile_name}
-
-        if workload_profile_type:
-            profile["workloadProfileType"] = workload_profile_type
-        if max_nodes:
-            profile["maximumCount"] = max_nodes
-        if min_nodes:
-            profile["minimumCount"] = min_nodes
-
-        if not update:
-            workload_profiles.append(profile)
-        else:
-            idx = [i for i, p in enumerate(workload_profiles) if p["name"].lower() == workload_profile_name.lower()][0]
-            workload_profiles[idx] = profile
-
-        safe_set(env_def, "properties", "workloadProfiles", value=workload_profiles)
-
-    if mtls_enabled is not None:
-        safe_set(env_def, "properties", "peerAuthentication", "mtls", "enabled", value=mtls_enabled)
-
-    try:
-        r = ManagedEnvironmentClient.update(
-            cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=env_def, no_wait=no_wait)
-
-    except Exception as e:
-        handle_raw_exception(e)
-
-    _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, logs_destination)
+    raw_parameters = locals()
+    containerapp_env_update_decorator = ContainerAppEnvUpdateDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentClient,
+        raw_parameters=raw_parameters,
+        models="azext_containerapp._sdk_models"
+    )
+    containerapp_env_update_decorator.validate_arguments()
+    containerapp_env_update_decorator.construct_payload()
+    r = containerapp_env_update_decorator.update()
+    r = containerapp_env_update_decorator.post_process(r)
 
     return r
 
