@@ -137,6 +137,16 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
                   resources:
                     cpu: 0.5
                     memory: 1Gi
+            initContainers:
+                - command:
+                    - /bin/sh
+                    - -c
+                    - sleep 10
+                  image: k8seteste2e.azurecr.io/e2e-apps/kuar:green
+                  name: simple-sleep-container
+                  resources:
+                    cpu: "0.25"
+                    memory: 0.5Gi
             """
         containerappjob_file_name = f"{self._testMethodName}_containerappjob.yml"
         write_test_file(containerappjob_file_name, containerappjobexecution_yaml_text)
@@ -151,6 +161,10 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
             JMESPathCheck('properties.template.containers[0].name', "test-yaml-execution"),
             JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
             JMESPathCheck('properties.template.containers[0].resources.cpu', '0.5'),
-            JMESPathCheck('properties.template.containers[0].resources.memory', '1Gi')
+            JMESPathCheck('properties.template.containers[0].resources.memory', '1Gi'),
+            JMESPathCheck('properties.template.initContainers[0].name', "simple-sleep-container"),
+            JMESPathCheck('properties.template.initContainers[0].image', "k8seteste2e.azurecr.io/e2e-apps/kuar:green"),
+            JMESPathCheck('properties.template.initContainers[0].resources.cpu', '0.25'),
+            JMESPathCheck('properties.template.initContainers[0].resources.memory', '0.5Gi')
         ])
         clean_up_test_file(containerappjob_file_name)
