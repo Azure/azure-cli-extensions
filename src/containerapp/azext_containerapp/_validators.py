@@ -21,7 +21,18 @@ logger = get_logger(__name__)
 
 
 # called directly from custom method bc otherwise it disrupts the --environment auto RID functionality
-def validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait):
+def validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait, source=None, repo=None):
+    if source and repo:
+        raise MutuallyExclusiveArgumentError("Cannot use --source and --repo together. Can either deploy from a local directory or a GitHub repository")
+    if source or repo:
+        if not registry_server or not registry_user or not registry_pass:
+            raise RequiredArgumentMissingError('Usage error: --registry-server, --registry-username and --registry-password are required while using --source or --repo.')
+    if repo and registry_server and "azurecr.io" in registry_server:
+        parsed = urlparse(registry_server)
+        registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]
+        if registry_name and len(registry_name) > MAXIMUM_SECRET_LENGTH:
+            raise ValidationError(f"--registry-server ACR name must be less than {MAXIMUM_SECRET_LENGTH} "
+                                  "characters when using --repo")
     if registry_identity and (registry_pass or registry_user):
         raise MutuallyExclusiveArgumentError("Cannot provide both registry identity and username/password")
     if is_registry_msi_system(registry_identity) and no_wait:
