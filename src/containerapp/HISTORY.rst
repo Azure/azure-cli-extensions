@@ -5,7 +5,7 @@ Release History
 
 Upcoming
 ++++++
-* 'az containerapp job start': update start execution payload format to exlude template property from API version 2023-05-01-preview onwards
+* 'az containerapp job start': update start execution payload format to exlude template property from API version 2023-05-01 onwards
 
 0.3.36
 ++++++
