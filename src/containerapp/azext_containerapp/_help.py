@@ -90,10 +90,7 @@ helps['containerapp update'] = """
               --scale-rule-auth triggerparam=secretref triggerparam=secretref
     - name: Create a Container App from the provided application source
       text: |
-          az containerapp update -n MyContainerapp -g MyResourceGroup \\
-          --environment MyContainerappEnv --registry-server MyRegistryServer \\
-          --registry-user MyRegistryUser --registry-pass MyRegistryPass \\
-          --source .
+          az containerapp update -n MyContainerapp -g MyResourceGroup --source . \\
 """
 
 helps['containerapp delete'] = """

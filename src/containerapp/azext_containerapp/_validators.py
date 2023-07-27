@@ -31,18 +31,6 @@ def validate_create(registry_identity, registry_pass, registry_user, registry_se
     if registry_identity and ACR_IMAGE_SUFFIX not in (registry_server or ""):
         raise InvalidArgumentValueError("--registry-identity: expected an ACR registry (*.azurecr.io) for --registry-server")
 
-def validate_source(registry_pass, registry_user, registry_server,source=None):
-    if source:
-        if not registry_server or not registry_user or not registry_pass:
-            raise RequiredArgumentMissingError('Usage error: --registry-server, --registry-username and --registry-password are required while using --source or --repo.')
-        if registry_server and "azurecr.io" not in registry_server:
-            raise ValidationError("Container Registry must be ACR if source is used.")
-        if registry_server and "azurecr.io" in registry_server:
-            parsed = urlparse(registry_server)
-            registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]
-            if registry_name and len(registry_name) > MAXIMUM_SECRET_LENGTH:
-                raise ValidationError(f"--registry-server ACR name must be less than {MAXIMUM_SECRET_LENGTH} "
-                                  "characters when using --repo")
 
 def _is_number(s):
     try:
