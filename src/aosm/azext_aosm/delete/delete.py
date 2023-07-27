@@ -98,8 +98,8 @@ class ResourceDeleter:
         if not force:
             print(
                 "Are you sure you want to delete the NSD Version"
-                f" {self.config.nsd_version}, the associated manifest"
-                f" {self.config.acr_manifest_name} and configuration group schema"
+                f" {self.config.nsd_version}, the associated manifests"
+                f" {self.config.acr_manifest_names} and configuration group schema"
                 f" {self.config.cg_schema_name}?"
             )
             print("There is no undo. Type 'delete' to confirm")
@@ -172,10 +172,10 @@ class ResourceDeleter:
         if store_type == "sa":
             assert isinstance(self.config, VNFConfiguration)
             store_name = self.config.blob_artifact_store_name
-            manifest_name = self.config.sa_manifest_name
+            manifest_names = [self.config.sa_manifest_name]
         elif store_type == "acr":
             store_name = self.config.acr_artifact_store_name
-            manifest_name = self.config.acr_manifest_name
+            manifest_names = self.config.acr_manifest_names
         else:
             from azure.cli.core.azclierror import CLIInternalError
 
@@ -183,27 +183,27 @@ class ResourceDeleter:
                 "Delete artifact manifest called for invalid store type. Valid types"
                 " are sa and acr."
             )
-        message = (
-            f"Delete Artifact manifest {manifest_name} from artifact store {store_name}"
-        )
-        logger.debug(message)
-        print(message)
-        try:
-            poller = self.api_clients.aosm_client.artifact_manifests.begin_delete(
-                resource_group_name=self.config.publisher_resource_group_name,
-                publisher_name=self.config.publisher_name,
-                artifact_store_name=store_name,
-                artifact_manifest_name=manifest_name,
-            )
-            poller.result()
-            print("Deleted Artifact Manifest")
-        except Exception:
-            logger.error(
-                "Failed to delete Artifact manifest %s from artifact store %s",
-                manifest_name,
-                store_name,
-            )
-            raise
+
+        for manifest_name in manifest_names:
+            message = f"Delete Artifact manifest {manifest_name} from artifact store {store_name}"
+            logger.debug(message)
+            print(message)
+            try:
+                poller = self.api_clients.aosm_client.artifact_manifests.begin_delete(
+                    resource_group_name=self.config.publisher_resource_group_name,
+                    publisher_name=self.config.publisher_name,
+                    artifact_store_name=store_name,
+                    artifact_manifest_name=manifest_name,
+                )
+                poller.result()
+                print("Deleted Artifact Manifest")
+            except Exception:
+                logger.error(
+                    "Failed to delete Artifact manifest %s from artifact store %s",
+                    manifest_name,
+                    store_name,
+                )
+                raise
 
     def delete_nsdg(self) -> None:
         """Delete the NSDG."""

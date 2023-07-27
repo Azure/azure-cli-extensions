@@ -12,7 +12,7 @@ param saArtifactStoreName string
 param nfName string
 @description('Name of an existing Network Function Definition Group')
 param nfDefinitionGroup string
-@description('The version of the NFDV you want to deploy, in format A-B-C')
+@description('The version of the NFDV you want to deploy, in format A.B.C')
 param nfDefinitionVersion string
 @description('The version that you want to name the NFM VHD artifact, in format A-B-C. e.g. 6-13-0')
 param vhdVersion string

@@ -379,8 +379,14 @@ def publish_design(
 
     deployer.deploy_nsd_from_bicep()
 
+
 def _generate_nsd(config: NSConfiguration, api_clients: ApiClients, force: bool = False):
     """Generate a Network Service Design for the given config."""
+    if config:
+        nsd_generator = NSDGenerator(config=config, api_clients=api_clients)
+    else:
+        raise CLIInternalError("Generate NSD called without a config file")
+
     if os.path.exists(config.output_directory_for_build):
         if not force:
             carry_on = input(
@@ -391,5 +397,5 @@ def _generate_nsd(config: NSConfiguration, api_clients: ApiClients, force: bool 
                 raise UnclassifiedUserFault("User aborted! ")
 
         shutil.rmtree(config.output_directory_for_build)
-    nsd_generator = NSDGenerator(api_clients, config)
+
     nsd_generator.generate_nsd()

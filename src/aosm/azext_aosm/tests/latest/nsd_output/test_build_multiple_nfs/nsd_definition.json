@@ -1,0 +1,216 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.15.31.15270",
+      "templateHash": "15013200147840669823"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string"
+    },
+    "publisherName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of an existing publisher, expected to be in the resource group where you deploy the template"
+      }
+    },
+    "acrArtifactStoreName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of an existing ACR-backed Artifact Store, deployed under the publisher."
+      }
+    },
+    "nsDesignGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of an existing Network Service Design Group"
+      }
+    },
+    "nsDesignVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "The version of the NSDV you want to create, in format A.B.C"
+      }
+    },
+    "nfviSiteName": {
+      "type": "string",
+      "defaultValue": "multinf_NFVI",
+      "metadata": {
+        "description": "Name of the nfvi site"
+      }
+    }
+  },
+  "variables": {
+    "$fxv#0": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "title": "multinf_ConfigGroupSchema",
+      "type": "object",
+      "properties": {
+        "nginx-nfdg": {
+          "type": "object",
+          "properties": {
+            "deploymentParameters": {
+              "type": "object",
+              "properties": {
+                "serviceAccount_create": {
+                  "type": "boolean"
+                },
+                "service_port": {
+                  "type": "integer"
+                }
+              }
+            },
+            "nginx_nfdg_nfd_version": {
+              "type": "string",
+              "description": "The version of the nginx-nfdg NFD to use.  This version must be compatible with (have the same parameters exposed as) nginx-nfdg."
+            },
+            "customLocationId": {
+              "type": "string",
+              "description": "The custom location ID of the ARC-Enabled AKS Cluster to deploy the CNF to. Should be of the form '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.extendedlocation/customlocations/{customLocationName}'"
+            }
+          },
+          "required": [
+            "deploymentParameters",
+            "nginx_nfdg_nfd_version",
+            "customLocationId"
+          ]
+        },
+        "ubuntu-nfdg": {
+          "type": "object",
+          "properties": {
+            "deploymentParameters": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string"
+                },
+                "subnetName": {
+                  "type": "string"
+                },
+                "virtualNetworkId": {
+                  "type": "string"
+                },
+                "sshPublicKeyAdmin": {
+                  "type": "string"
+                }
+              }
+            },
+            "ubuntu_nfdg_nfd_version": {
+              "type": "string",
+              "description": "The version of the ubuntu-nfdg NFD to use.  This version must be compatible with (have the same parameters exposed as) ubuntu-nfdg."
+            }
+          },
+          "required": [
+            "deploymentParameters",
+            "ubuntu_nfdg_nfd_version"
+          ]
+        },
+        "managedIdentity": {
+          "type": "string",
+          "description": "The managed identity to use to deploy NFs within this SNS.  This should be of the form '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}.  If you wish to use a system assigned identity, set this to a blank string."
+        }
+      },
+      "required": [
+        "nginx-nfdg",
+        "ubuntu-nfdg",
+        "managedIdentity"
+      ]
+    },
+    "$fxv#1": {
+      "deploymentParameters": [
+        "{configurationparameters('multinf_ConfigGroupSchema').nginx-nfdg.deploymentParameters}"
+      ],
+      "nginx_nfdg_nfd_version": "{configurationparameters('multinf_ConfigGroupSchema').nginx-nfdg.nginx_nfdg_nfd_version}",
+      "managedIdentity": "{configurationparameters('multinf_ConfigGroupSchema').managedIdentity}",
+      "customLocationId": "{configurationparameters('multinf_ConfigGroupSchema').nginx-nfdg.customLocationId}"
+    },
+    "$fxv#2": {
+      "deploymentParameters": [
+        "{configurationparameters('multinf_ConfigGroupSchema').ubuntu-nfdg.deploymentParameters}"
+      ],
+      "ubuntu_nfdg_nfd_version": "{configurationparameters('multinf_ConfigGroupSchema').ubuntu-nfdg.ubuntu_nfdg_nfd_version}",
+      "managedIdentity": "{configurationparameters('multinf_ConfigGroupSchema').managedIdentity}"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Hybridnetwork/publishers/configurationGroupSchemas",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[format('{0}/{1}', parameters('publisherName'), 'multinf_ConfigGroupSchema')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "schemaDefinition": "[string(variables('$fxv#0'))]"
+      }
+    },
+    {
+      "type": "Microsoft.Hybridnetwork/publishers/networkservicedesigngroups/networkservicedesignversions",
+      "apiVersion": "2023-04-01-preview",
+      "name": "[format('{0}/{1}/{2}', parameters('publisherName'), parameters('nsDesignGroup'), parameters('nsDesignVersion'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "description": "Test deploying multiple NFs",
+        "versionState": "Preview",
+        "configurationGroupSchemaReferences": {
+          "multinf_ConfigGroupSchema": {
+            "id": "[resourceId('Microsoft.Hybridnetwork/publishers/configurationGroupSchemas', parameters('publisherName'), 'multinf_ConfigGroupSchema')]"
+          }
+        },
+        "nfvisFromSite": {
+          "nfvi1": {
+            "name": "[parameters('nfviSiteName')]",
+            "type": "AzureCore"
+          }
+        },
+        "resourceElementTemplates": [
+          {
+            "name": "nginx-nfdg_nf_artifact_resource_element",
+            "type": "NetworkFunctionDefinition",
+            "configuration": {
+              "artifactProfile": {
+                "artifactStoreReference": {
+                  "id": "[resourceId('Microsoft.HybridNetwork/publishers/artifactStores', parameters('publisherName'), parameters('acrArtifactStoreName'))]"
+                },
+                "artifactName": "nginx-nfdg_nf_artifact",
+                "artifactVersion": "1.0.1"
+              },
+              "templateType": "ArmTemplate",
+              "parameterValues": "[string(variables('$fxv#1'))]"
+            },
+            "dependsOnProfile": {
+              "installDependsOn": [],
+              "uninstallDependsOn": [],
+              "updateDependsOn": []
+            }
+          },
+          {
+            "name": "ubuntu-nfdg_nf_artifact_resource_element",
+            "type": "NetworkFunctionDefinition",
+            "configuration": {
+              "artifactProfile": {
+                "artifactStoreReference": {
+                  "id": "[resourceId('Microsoft.HybridNetwork/publishers/artifactStores', parameters('publisherName'), parameters('acrArtifactStoreName'))]"
+                },
+                "artifactName": "ubuntu-nfdg_nf_artifact",
+                "artifactVersion": "1.0.1"
+              },
+              "templateType": "ArmTemplate",
+              "parameterValues": "[string(variables('$fxv#2'))]"
+            },
+            "dependsOnProfile": {
+              "installDependsOn": [],
+              "uninstallDependsOn": [],
+              "updateDependsOn": []
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Hybridnetwork/publishers/configurationGroupSchemas', parameters('publisherName'), 'multinf_ConfigGroupSchema')]"
+      ]
+    }
+  ]
+}

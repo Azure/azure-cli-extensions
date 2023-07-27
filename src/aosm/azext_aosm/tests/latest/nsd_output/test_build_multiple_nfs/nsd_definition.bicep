@@ -15,7 +15,7 @@ param nsDesignGroup string
 @description('The version of the NSDV you want to create, in format A.B.C')
 param nsDesignVersion string
 @description('Name of the nfvi site')
-param nfviSiteName string = '{{nfvi_site_name}}'
+param nfviSiteName string = 'multinf_NFVI'
 
 // The publisher resource is the top level AOSM resource under which all other designer resources
 // are created. 
@@ -42,10 +42,10 @@ resource nsdGroup 'Microsoft.Hybridnetwork/publishers/networkservicedesigngroups
 // The operator will create a config group values object that will satisfy this schema.
 resource cgSchema 'Microsoft.Hybridnetwork/publishers/configurationGroupSchemas@2023-04-01-preview' = {
   parent: publisher
-  name: '{{cg_schema_name}}'
+  name: 'multinf_ConfigGroupSchema'
   location: location
   properties: {
-    schemaDefinition: string(loadJsonContent('schemas/{{cg_schema_name}}.json'))
+    schemaDefinition: string(loadJsonContent('schemas/multinf_ConfigGroupSchema.json'))
   }
 }
 
@@ -55,14 +55,14 @@ resource nsdVersion 'Microsoft.Hybridnetwork/publishers/networkservicedesigngrou
   name: nsDesignVersion
   location: location
   properties: {
-    description: '{{nsdv_description}}'
+    description: 'Test deploying multiple NFs'
     // The version state can be Preview, Active or Deprecated.
     // Once in an Active state, the NSDV becomes immutable.
     versionState: 'Preview'
     // The `configurationgroupsSchemaReferences` field contains references to the schemas required to
     // be filled out to configure this NSD.
     configurationGroupSchemaReferences: {
-      {{cg_schema_name}}: {
+      multinf_ConfigGroupSchema: {
         id: cgSchema.id
       }
     }
@@ -76,9 +76,8 @@ resource nsdVersion 'Microsoft.Hybridnetwork/publishers/networkservicedesigngrou
     // This field lists the templates that will be deployed by AOSM and the config mappings
     // to the values in the CG schemas.
     resourceElementTemplates: [
-{%- for index in range(nf_count) %}
       {
-        name: '{{ResourceElementName[index]}}'
+        name: 'nginx-nfdg_nf_artifact_resource_element'
         // The type of resource element can be ArmResourceDefinition, ConfigurationDefinition or NetworkFunctionDefinition.
         type: 'NetworkFunctionDefinition'
         // The configuration object may be different for different types of resource element.
@@ -88,13 +87,13 @@ resource nsdVersion 'Microsoft.Hybridnetwork/publishers/networkservicedesigngrou
             artifactStoreReference: {
               id: acrArtifactStore.id
             }
-            artifactName: '{{armTemplateNames[index]}}'
-            artifactVersion: '{{armTemplateVersion}}'
+            artifactName: 'nginx-nfdg_nf_artifact'
+            artifactVersion: '1.0.1'
           }
           templateType: 'ArmTemplate'
           // The parameter values map values from the CG schema, to values required by the template
           // deployed by this resource element.
-          parameterValues: string(loadJsonContent('configMappings/{{configMappingFiles[index]}}'))
+          parameterValues: string(loadJsonContent('configMappings/nginx-nfdg_config_mapping.json'))
         }
         dependsOnProfile: {
           installDependsOn: []
@@ -102,7 +101,31 @@ resource nsdVersion 'Microsoft.Hybridnetwork/publishers/networkservicedesigngrou
           updateDependsOn: []
         }
       }
-{%- endfor %}     
+      {
+        name: 'ubuntu-nfdg_nf_artifact_resource_element'
+        // The type of resource element can be ArmResourceDefinition, ConfigurationDefinition or NetworkFunctionDefinition.
+        type: 'NetworkFunctionDefinition'
+        // The configuration object may be different for different types of resource element.
+        configuration: {
+          // This field points AOSM at the artifact in the artifact store.
+          artifactProfile: {
+            artifactStoreReference: {
+              id: acrArtifactStore.id
+            }
+            artifactName: 'ubuntu-nfdg_nf_artifact'
+            artifactVersion: '1.0.1'
+          }
+          templateType: 'ArmTemplate'
+          // The parameter values map values from the CG schema, to values required by the template
+          // deployed by this resource element.
+          parameterValues: string(loadJsonContent('configMappings/ubuntu-nfdg_config_mapping.json'))
+        }
+        dependsOnProfile: {
+          installDependsOn: []
+          uninstallDependsOn: []
+          updateDependsOn: []
+        }
+      }     
     ]
   }
 }

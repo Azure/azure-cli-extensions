@@ -12,7 +12,6 @@ from knack.log import get_logger
 
 from azext_aosm._configuration import (
     Configuration,
-    NSConfiguration,
     VNFConfiguration,
     CNFConfiguration,
 )
@@ -65,11 +64,6 @@ class PreDeployerViaSDK:
         if not self.api_clients.resource_client.resource_groups.check_existence(
             resource_group_name
         ):
-            if isinstance(self.config, NSConfiguration):
-                raise AzCLIError(
-                    f"Resource Group {resource_group_name} does not exist. Please"
-                    " create it before running this command."
-                )
             logger.info("RG %s not found. Create it.", resource_group_name)
             print(f"Creating resource group {resource_group_name}.")
             rg_params: ResourceGroup = ResourceGroup(location=self.config.location)
@@ -110,12 +104,7 @@ class PreDeployerViaSDK:
                 f"Publisher {publisher.name} exists in resource group"
                 f" {resource_group_name}"
             )
-        except azure_exceptions.ResourceNotFoundError as ex:
-            if isinstance(self.config, NSConfiguration):
-                raise AzCLIError(
-                    f"Publisher {publisher_name} does not exist. Please create it"
-                    " before running this command."
-                ) from ex
+        except azure_exceptions.ResourceNotFoundError:
             # Create the publisher
             logger.info("Creating publisher %s if it does not exist", publisher_name)
             print(
@@ -388,12 +377,18 @@ class PreDeployerViaSDK:
         self,
     ) -> bool:
         """Returns True if all required manifests exist, False otherwise."""
-        acr_manny_exists: bool = self.does_artifact_manifest_exist(
-            rg_name=self.config.publisher_resource_group_name,
-            publisher_name=self.config.publisher_name,
-            store_name=self.config.acr_artifact_store_name,
-            manifest_name=self.config.acr_manifest_name,
-        )
+        all_acr_mannys_exist = True
+        any_acr_mannys_exist: bool = not self.config.acr_manifest_names
+
+        for manifest in self.config.acr_manifest_names:
+            acr_manny_exists: bool = self.does_artifact_manifest_exist(
+                rg_name=self.config.publisher_resource_group_name,
+                publisher_name=self.config.publisher_name,
+                store_name=self.config.acr_artifact_store_name,
+                manifest_name=manifest,
+            )
+            all_acr_mannys_exist &= acr_manny_exists
+            any_acr_mannys_exist |= acr_manny_exists
 
         if isinstance(self.config, VNFConfiguration):
             sa_manny_exists: bool = self.does_artifact_manifest_exist(
@@ -402,13 +397,13 @@ class PreDeployerViaSDK:
                 store_name=self.config.blob_artifact_store_name,
                 manifest_name=self.config.sa_manifest_name,
             )
-            if acr_manny_exists and sa_manny_exists:
+            if all_acr_mannys_exist and sa_manny_exists:
                 return True
-            if acr_manny_exists or sa_manny_exists:
+            if any_acr_mannys_exist or sa_manny_exists:
                 raise AzCLIError(
-                    "Only one artifact manifest exists. Cannot proceed. Please delete"
-                    " the NFDV using `az aosm nfd delete` and start the publish again"
-                    " from scratch."
+                    "Only a subset of artifact manifest exists. Cannot proceed. Please delete"
+                    " the NFDV or NSDV as appropriate using the `az aosm nfd delete` or "
+                    "`az aosm nsd delete` command."
                 )
             return False
 

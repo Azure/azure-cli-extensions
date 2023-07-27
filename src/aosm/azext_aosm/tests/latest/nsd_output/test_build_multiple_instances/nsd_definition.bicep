@@ -15,7 +15,7 @@ param nsDesignGroup string
 @description('The version of the NSDV you want to create, in format A.B.C')
 param nsDesignVersion string
 @description('Name of the nfvi site')
-param nfviSiteName string = '{{nfvi_site_name}}'
+param nfviSiteName string = 'ubuntu_NFVI'
 
 // The publisher resource is the top level AOSM resource under which all other designer resources
 // are created. 
@@ -42,10 +42,10 @@ resource nsdGroup 'Microsoft.Hybridnetwork/publishers/networkservicedesigngroups
 // The operator will create a config group values object that will satisfy this schema.
 resource cgSchema 'Microsoft.Hybridnetwork/publishers/configurationGroupSchemas@2023-04-01-preview' = {
   parent: publisher
-  name: '{{cg_schema_name}}'
+  name: 'ubuntu_ConfigGroupSchema'
   location: location
   properties: {
-    schemaDefinition: string(loadJsonContent('schemas/{{cg_schema_name}}.json'))
+    schemaDefinition: string(loadJsonContent('schemas/ubuntu_ConfigGroupSchema.json'))
   }
 }
 
@@ -55,14 +55,14 @@ resource nsdVersion 'Microsoft.Hybridnetwork/publishers/networkservicedesigngrou
   name: nsDesignVersion
   location: location
   properties: {
-    description: '{{nsdv_description}}'
+    description: 'Plain ubuntu VM'
     // The version state can be Preview, Active or Deprecated.
     // Once in an Active state, the NSDV becomes immutable.
     versionState: 'Preview'
     // The `configurationgroupsSchemaReferences` field contains references to the schemas required to
     // be filled out to configure this NSD.
     configurationGroupSchemaReferences: {
-      {{cg_schema_name}}: {
+      ubuntu_ConfigGroupSchema: {
         id: cgSchema.id
       }
     }
@@ -76,9 +76,8 @@ resource nsdVersion 'Microsoft.Hybridnetwork/publishers/networkservicedesigngrou
     // This field lists the templates that will be deployed by AOSM and the config mappings
     // to the values in the CG schemas.
     resourceElementTemplates: [
-{%- for index in range(nf_count) %}
       {
-        name: '{{ResourceElementName[index]}}'
+        name: 'ubuntu-vm-nfdg_nf_artifact_resource_element'
         // The type of resource element can be ArmResourceDefinition, ConfigurationDefinition or NetworkFunctionDefinition.
         type: 'NetworkFunctionDefinition'
         // The configuration object may be different for different types of resource element.
@@ -88,21 +87,20 @@ resource nsdVersion 'Microsoft.Hybridnetwork/publishers/networkservicedesigngrou
             artifactStoreReference: {
               id: acrArtifactStore.id
             }
-            artifactName: '{{armTemplateNames[index]}}'
-            artifactVersion: '{{armTemplateVersion}}'
+            artifactName: 'ubuntu-vm-nfdg_nf_artifact'
+            artifactVersion: '1.0.0'
           }
           templateType: 'ArmTemplate'
           // The parameter values map values from the CG schema, to values required by the template
           // deployed by this resource element.
-          parameterValues: string(loadJsonContent('configMappings/{{configMappingFiles[index]}}'))
+          parameterValues: string(loadJsonContent('configMappings/ubuntu-vm-nfdg_config_mapping.json'))
         }
         dependsOnProfile: {
           installDependsOn: []
           uninstallDependsOn: []
           updateDependsOn: []
         }
-      }
-{%- endfor %}     
+      }     
     ]
   }
 }

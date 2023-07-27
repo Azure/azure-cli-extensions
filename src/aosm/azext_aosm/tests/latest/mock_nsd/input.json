@@ -3,12 +3,18 @@
     "publisher_name": "jamie-mobile-publisher",
     "publisher_resource_group_name": "Jamie-publisher",
     "acr_artifact_store_name": "ubuntu-acr",
-    "network_function_definition_group_name": "ubuntu-vm-nfdg",
-    "network_function_definition_version_name": "1.0.0",
-    "network_function_definition_offering_location": "eastus",
-    "network_function_type": "vnf",
+    "network_functions": [
+        {
+            "name": "ubuntu-vm-nfdg",
+            "version": "1.0.0",
+            "publisher_offering_location": "eastus",
+            "type": "vnf",
+            "multiple_instances": false,
+            "publisher": "jamie-mobile-publisher",
+            "publisher_resource_group": "Jamie-publisher"
+        }
+    ],
     "nsdg_name": "ubuntu",
     "nsd_version": "1.0.0",
-    "nsdv_description": "Plain ubuntu VM",
-    "multiple_instances": false
+    "nsdv_description": "Plain ubuntu VM"
 }

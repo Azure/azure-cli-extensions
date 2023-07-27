@@ -111,7 +111,16 @@ def load_arguments(self: AzCommandsLoader, _):
                 " alternative parameters."
             ),
         )
-        c.argument("skip", arg_type=nf_skip_steps, help="Optional skip steps. 'bicep-publish' will skip deploying the bicep template; 'artifact-upload' will skip uploading any artifacts; 'image-upload' will skip uploading the VHD image (for VNFs) or the container images (for CNFs).")
+        c.argument(
+            "skip",
+            arg_type=nf_skip_steps,
+            help=(
+                "Optional skip steps. 'bicep-publish' will skip deploying the bicep "
+                "template; 'artifact-upload' will skip uploading any artifacts; "
+                "'image-upload' will skip uploading the VHD image (for VNFs) or the "
+                "container images (for CNFs)."
+            ),
+        )
 
     with self.argument_context("aosm nsd") as c:
         c.argument(
