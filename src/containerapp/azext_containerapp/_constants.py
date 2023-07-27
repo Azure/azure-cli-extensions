@@ -11,6 +11,8 @@ LONG_POLLING_INTERVAL_SECS = 10
 
 ACR_IMAGE_SUFFIX = ".azurecr.io"
 
+CONTAINER_APPS_SDK_MODELS = "azext_containerapp._sdk_models"
+
 LOG_ANALYTICS_RP = "Microsoft.OperationalInsights"
 CONTAINER_APPS_RP = "Microsoft.App"
 SERVICE_LINKER_RP = "Microsoft.ServiceLinker"

@@ -144,7 +144,7 @@ class ContainerAppEnvCreateDecorator(ContainerAppEnvDecorator):
     def create(self):
         try:
             return self.client.create(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                                                name=self.get_argument_name(), managed_environment_envelope=self.managed_env_def,no_wait=self.get_argument_no_wait())
+                                      name=self.get_argument_name(), managed_environment_envelope=self.managed_env_def, no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
 
@@ -152,16 +152,11 @@ class ContainerAppEnvCreateDecorator(ContainerAppEnvDecorator):
         _azure_monitor_quickstart(self.cmd, self.get_argument_name(), self.get_argument_resource_group_name(), self.get_argument_storage_account(), self.get_argument_logs_destination())
 
         # return ENV
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"][
-            "provisioningState"].lower() != "succeeded" and not self.get_argument_no_wait():
-            not self.get_argument_disable_warnings() and logger.warning(
-                'Containerapp environment creation in progress. Please monitor the creation using `az containerapp env show -n {} -g {}`'.format(
-                    self.get_argument_name(), self.get_argument_resource_group_name()))
+        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() != "succeeded" and not self.get_argument_no_wait():
+            not self.get_argument_disable_warnings() and logger.warning('Containerapp environment creation in progress. Please monitor the creation using `az containerapp env show -n {} -g {}`'.format(self.get_argument_name(), self.get_argument_resource_group_name()))
 
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"][
-            "provisioningState"].lower() == "succeeded":
-            not self.get_argument_disable_warnings() and logger.warning(
-                "\nContainer Apps environment created. To deploy a container app, use: az containerapp create --help\n")
+        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "succeeded":
+            not self.get_argument_disable_warnings() and logger.warning("\nContainer Apps environment created. To deploy a container app, use: az containerapp create --help\n")
 
         return r
 
@@ -177,12 +172,12 @@ class ContainerAppEnvCreateDecorator(ContainerAppEnvDecorator):
 
         # Custom domains
         if self.get_argument_hostname():
-            customDomain = CustomDomainConfigurationModel
+            custom_domain = CustomDomainConfigurationModel
             blob, _ = load_cert_file(self.get_argument_certificate_file(), self.get_argument_certificate_password())
-            customDomain["dnsSuffix"] = self.get_argument_hostname()
-            customDomain["certificatePassword"] = self.get_argument_certificate_password()
-            customDomain["certificateValue"] = blob
-            self.managed_env_def["properties"]["customDomainConfiguration"] = customDomain
+            custom_domain["dnsSuffix"] = self.get_argument_hostname()
+            custom_domain["certificatePassword"] = self.get_argument_certificate_password()
+            custom_domain["certificateValue"] = blob
+            self.managed_env_def["properties"]["customDomainConfiguration"] = custom_domain
 
         if self.get_argument_instrumentation_key() is not None:
             self.managed_env_def["properties"]["daprAIInstrumentationKey"] = self.get_argument_instrumentation_key()
@@ -331,8 +326,7 @@ class ContainerAppEnvUpdateDecorator(ContainerAppEnvDecorator):
             if not update:
                 workload_profiles.append(profile)
             else:
-                idx = \
-                [i for i, p in enumerate(workload_profiles) if p["name"].lower() == workload_profile_name.lower()][0]
+                idx = [i for i, p in enumerate(workload_profiles) if p["name"].lower() == workload_profile_name.lower()][0]
                 workload_profiles[idx] = profile
 
             safe_set(self.managed_env_def, "properties", "workloadProfiles", value=workload_profiles)
@@ -340,7 +334,7 @@ class ContainerAppEnvUpdateDecorator(ContainerAppEnvDecorator):
     def update(self):
         try:
             return self.client.update(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                                                name=self.get_argument_name(), managed_environment_envelope=self.managed_env_def,no_wait=self.get_argument_no_wait())
+                                      name=self.get_argument_name(), managed_environment_envelope=self.managed_env_def, no_wait=self.get_argument_no_wait())
         except Exception as e:
             handle_raw_exception(e)
 

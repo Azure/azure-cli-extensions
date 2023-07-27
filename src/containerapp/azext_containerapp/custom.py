@@ -105,7 +105,7 @@ from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, F
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, HELLO_WORLD_IMAGE, LOG_TYPE_SYSTEM, LOG_TYPE_CONSOLE,
                          MANAGED_CERTIFICATE_RT, PRIVATE_CERTIFICATE_RT, PENDING_STATUS, SUCCEEDED_STATUS, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
                          DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
-                         DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_SERVICE_LIST)
+                         DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS)
 
 logger = get_logger(__name__)
 
@@ -168,7 +168,7 @@ def create_deserializer():
     from msrest import Deserializer
     import inspect
 
-    sdkClasses = inspect.getmembers(sys.modules["azext_containerapp._sdk_models"])
+    sdkClasses = inspect.getmembers(sys.modules[CONTAINER_APPS_SDK_MODELS])
     deserializer = {}
 
     for sdkClass in sdkClasses:
@@ -459,7 +459,7 @@ def create_containerapp(cmd,
         cmd=cmd,
         client=ContainerAppClient,
         raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
+        models=CONTAINER_APPS_SDK_MODELS
     )
     containerapp_create_decorator.register_provider(CONTAINER_APPS_RP)
     containerapp_create_decorator.validate_arguments()
@@ -1004,7 +1004,7 @@ def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
         cmd=cmd,
         client=ContainerAppClient,
         raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
+        models=CONTAINER_APPS_SDK_MODELS
     )
     containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
@@ -1017,7 +1017,7 @@ def list_containerapp(cmd, resource_group_name=None, managed_env=None):
         cmd=cmd,
         client=ContainerAppClient,
         raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
+        models=CONTAINER_APPS_SDK_MODELS
     )
     containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
@@ -1030,7 +1030,7 @@ def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
         cmd=cmd,
         client=ContainerAppClient,
         raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
+        models=CONTAINER_APPS_SDK_MODELS
     )
     containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
@@ -1065,7 +1065,7 @@ def create_managed_environment(cmd,
         cmd=cmd,
         client=ManagedEnvironmentClient,
         raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
+        models=CONTAINER_APPS_SDK_MODELS
     )
     containerapp_env_create_decorator.validate_arguments()
     containerapp_env_create_decorator.register_provider(CONTAINER_APPS_RP)
@@ -1099,7 +1099,7 @@ def update_managed_environment(cmd,
         cmd=cmd,
         client=ManagedEnvironmentClient,
         raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
+        models=CONTAINER_APPS_SDK_MODELS
     )
     containerapp_env_update_decorator.validate_arguments()
     containerapp_env_update_decorator.construct_payload()
@@ -1115,7 +1115,7 @@ def show_managed_environment(cmd, name, resource_group_name):
         cmd=cmd,
         client=ManagedEnvironmentClient,
         raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
+        models=CONTAINER_APPS_SDK_MODELS
     )
     containerapp_env_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
@@ -1128,7 +1128,7 @@ def list_managed_environments(cmd, resource_group_name=None):
         cmd=cmd,
         client=ManagedEnvironmentClient,
         raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
+        models=CONTAINER_APPS_SDK_MODELS
     )
     containerapp_env_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
@@ -1141,7 +1141,7 @@ def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
         cmd=cmd,
         client=ManagedEnvironmentClient,
         raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
+        models=CONTAINER_APPS_SDK_MODELS
     )
     containerapp_env_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
@@ -1189,7 +1189,7 @@ def create_containerappsjob(cmd,
         cmd=cmd,
         client=ContainerAppsJobClient,
         raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
+        models=CONTAINER_APPS_SDK_MODELS
     )
     containerapp_job_create_decorator.register_provider(CONTAINER_APPS_RP)
     containerapp_job_create_decorator.validate_arguments()
@@ -1208,7 +1208,7 @@ def show_containerappsjob(cmd, name, resource_group_name):
         cmd=cmd,
         client=ContainerAppsJobClient,
         raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
+        models=CONTAINER_APPS_SDK_MODELS
     )
     containerapp_job_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
@@ -1221,7 +1221,7 @@ def list_containerappsjob(cmd, resource_group_name=None):
         cmd=cmd,
         client=ContainerAppsJobClient,
         raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
+        models=CONTAINER_APPS_SDK_MODELS
     )
     containerapp_job_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
@@ -1234,7 +1234,7 @@ def delete_containerappsjob(cmd, name, resource_group_name, no_wait=False):
         cmd=cmd,
         client=ContainerAppsJobClient,
         raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
+        models=CONTAINER_APPS_SDK_MODELS
     )
     containerapp_job_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
@@ -5019,7 +5019,7 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
         cmd=cmd,
         client=AuthClient,
         raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
+        models=CONTAINER_APPS_SDK_MODELS
     )
 
     containerapp_auth_decorator.construct_payload()
@@ -5032,7 +5032,7 @@ def show_auth_config(cmd, resource_group_name, name):
         cmd=cmd,
         client=AuthClient,
         raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
+        models=CONTAINER_APPS_SDK_MODELS
     )
 
     return containerapp_auth_decorator.show()
