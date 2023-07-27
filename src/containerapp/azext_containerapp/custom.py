@@ -2194,7 +2194,7 @@ def start_containerappsjob(cmd,
 def start_containerappjob_execution_yaml(cmd, name, resource_group_name, file_name, no_wait=False):
     yaml_containerappjob_execution = load_yaml_file(file_name)
     if type(yaml_containerappjob_execution) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapp job execution YAML.')
+        raise InvalidArgumentValueError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapp job execution YAML.')
 
     containerappjob_def = None
 
@@ -2205,7 +2205,7 @@ def start_containerappjob_execution_yaml(cmd, name, resource_group_name, file_na
         pass
 
     if not containerappjob_def:
-        raise ValidationError("The containerapp job '{}' does not exist".format(name))
+        raise ResourceNotFoundError("The containerapp job '{}' does not exist".format(name))
 
     containerappjobexec_def = None
 
@@ -2214,7 +2214,7 @@ def start_containerappjob_execution_yaml(cmd, name, resource_group_name, file_na
         deserializer = create_deserializer()
         containerappjobexec_def = deserializer('JobExecutionTemplate', yaml_containerappjob_execution)
     except DeserializationError as ex:
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapp job execution YAML.') from ex
+        raise InvalidArgumentValueError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapp job execution YAML.') from ex
 
     containerappjobexec_def = _convert_object_from_snake_to_camel_case(_object_to_dict(containerappjobexec_def))
 
