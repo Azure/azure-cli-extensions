@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a PrefixListResource
 
     :example: Create a PrefixListResource
-        az palo-alto cloudngfw local-rulestack prefixlist create -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --name MyPrefixlist --audit-comment "comment" --description "string" --prefix-list ["1.0.0.0/24"]
+        az palo-alto cloudngfw local-rulestack prefixlist create -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --name MyPrefixlist --audit-comment "comment" --description "string" --prefix-list "1.0.0.0/24"
     """
 
     _aaz_info = {
