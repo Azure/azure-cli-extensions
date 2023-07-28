@@ -96,13 +96,6 @@ def upload_cmd_tree():
 
 if __name__ == '__main__':
     for ext in sys.argv[1:]:
-        # When two extensions have the same command, the following error will be reported:
-        # `Exception: Key: show already exists in containerapp. 2 extensions cannot have the same command!`
-        # Temporarily skip the containerapp-preview extension,
-        # Which will cause the containerapp-preview extension to be unable to use the dynamic load function.
-        # That is, when using the unique command of containerapp-preview, the extension cannot be automatically prompted to install.
-        # TODO: remove this after support for building dependencies in command index between extensions
-        if ext != 'containerapp-preview':
-            update_cmd_tree(ext)
-            print()
+        update_cmd_tree(ext)
+        print()
     upload_cmd_tree()
