@@ -74,7 +74,7 @@ class Create(AAZCommand):
         _args_schema.principal_object_id = AAZStrArg(
             options=["--principal-object-id"],
             arg_group="Properties",
-            help="The objectId of the principal in Azure Active Directory.",
+            help="The objectId of the principal in Azure Active Directory. Values from: az ad user, az ad sp.",
         )
         _args_schema.roles = AAZListArg(
             options=["--roles"],

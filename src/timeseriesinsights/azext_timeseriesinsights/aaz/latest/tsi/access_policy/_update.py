@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "tsi access-policy update",
 )
 class Update(AAZCommand):
-    """Update an access policy in the specified environment.
+    """Update the access policy with the specified name in the specified subscription, resource group, and environment.
 
     :example: AccessPoliciesUpdate
         az tsi access-policy update --name "ap1" --roles "Reader" --roles "Contributor" --environment-name "env1" --resource-group "rg1"
@@ -27,8 +27,6 @@ class Update(AAZCommand):
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.timeseriesinsights/environments/{}/accesspolicies/{}", "2020-05-15"],
         ]
     }
-
-    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -69,30 +67,22 @@ class Update(AAZCommand):
             options=["--description"],
             arg_group="Properties",
             help="An description of the access policy.",
-            nullable=True,
         )
         _args_schema.roles = AAZListArg(
             options=["--roles"],
             arg_group="Properties",
             help="The list of roles the principal is assigned on the environment.",
-            nullable=True,
         )
 
         roles = cls._args_schema.roles
         roles.Element = AAZStrArg(
-            nullable=True,
             enum={"Contributor": "Contributor", "Reader": "Reader"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.AccessPoliciesGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        self.AccessPoliciesCreateOrUpdate(ctx=self.ctx)()
+        self.AccessPoliciesUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -103,19 +93,11 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class AccessPoliciesGet(AAZHttpOperation):
+    class AccessPoliciesUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -135,94 +117,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "ODataV4Format"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "accessPolicyName", self.ctx.args.access_policy_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "environmentName", self.ctx.args.environment_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2020-05-15",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_access_policy_resource_read(cls._schema_on_200)
-
-            return cls._schema_on_200
-
-    class AccessPoliciesCreateOrUpdate(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200, 201]:
-                return self.on_200_201(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.TimeSeriesInsights/environments/{environmentName}/accessPolicies/{accessPolicyName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -276,43 +171,10 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=self.ctx.vars.instance,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200_201
-            )
-
-        _schema_on_200_201 = None
-
-        @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
-
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_access_policy_resource_read(cls._schema_on_200_201)
-
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
-            )
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -323,61 +185,54 @@ class Update(AAZCommand):
             if roles is not None:
                 roles.set_elements(AAZStrType, ".")
 
-            return _instance_value
+            return self.serialize_content(_content_value)
 
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
             )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.description = AAZStrType()
+            properties.principal_object_id = AAZStrType(
+                serialized_name="principalObjectId",
+            )
+            properties.roles = AAZListType()
+
+            roles = cls._schema_on_200.properties.roles
+            roles.Element = AAZStrType()
+
+            return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_access_policy_resource_read = None
-
-    @classmethod
-    def _build_schema_access_policy_resource_read(cls, _schema):
-        if cls._schema_access_policy_resource_read is not None:
-            _schema.id = cls._schema_access_policy_resource_read.id
-            _schema.name = cls._schema_access_policy_resource_read.name
-            _schema.properties = cls._schema_access_policy_resource_read.properties
-            _schema.type = cls._schema_access_policy_resource_read.type
-            return
-
-        cls._schema_access_policy_resource_read = _schema_access_policy_resource_read = AAZObjectType()
-
-        access_policy_resource_read = _schema_access_policy_resource_read
-        access_policy_resource_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        access_policy_resource_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        access_policy_resource_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-        access_policy_resource_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        properties = _schema_access_policy_resource_read.properties
-        properties.description = AAZStrType()
-        properties.principal_object_id = AAZStrType(
-            serialized_name="principalObjectId",
-        )
-        properties.roles = AAZListType()
-
-        roles = _schema_access_policy_resource_read.properties.roles
-        roles.Element = AAZStrType()
-
-        _schema.id = cls._schema_access_policy_resource_read.id
-        _schema.name = cls._schema_access_policy_resource_read.name
-        _schema.properties = cls._schema_access_policy_resource_read.properties
-        _schema.type = cls._schema_access_policy_resource_read.type
 
 
 __all__ = ["Update"]
