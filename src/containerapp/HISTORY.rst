@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+Upcoming
+++++++
+* 'az containerapp job start': update start execution payload format to exlude template property from API version 2023-05-01 onwards
+
 0.3.36
 ++++++
 * 'az containerapp hostname bind': fix exception when not bringing --validation-method inputs

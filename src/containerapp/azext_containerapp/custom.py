@@ -1963,7 +1963,16 @@ def start_containerappsjob(cmd,
                            args=None,
                            cpu=None,
                            memory=None,
-                           registry_identity=None):
+                           registry_identity=None,
+                           yaml=None):
+
+    if yaml:
+        if image or container_name or env_vars or\
+            startup_command or args or cpu or memory or\
+                startup_command or args:
+            logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
+        return start_containerappjob_execution_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml)
+
     template_def = None
 
     if image is not None:
@@ -1986,10 +1995,46 @@ def start_containerappsjob(cmd,
         if resources_def is not None:
             container_def["resources"] = resources_def
 
-        template_def["template"]["containers"] = [container_def]
+        template_def["containers"] = [container_def]
 
     try:
         return ContainerAppsJobClient.start_job(cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_start_envelope=template_def)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def start_containerappjob_execution_yaml(cmd, name, resource_group_name, file_name, no_wait=False):
+    yaml_containerappjob_execution = load_yaml_file(file_name)
+    if type(yaml_containerappjob_execution) != dict:  # pylint: disable=unidiomatic-typecheck
+        raise InvalidArgumentValueError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapp job execution YAML.')
+
+    containerappjob_def = None
+
+    # Check if containerapp exists
+    try:
+        containerappjob_def = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except Exception:
+        pass
+
+    if not containerappjob_def:
+        raise ResourceNotFoundError("The containerapp job '{}' does not exist".format(name))
+
+    containerappjobexec_def = None
+
+    # Deserialize the yaml into a ContainerApp job execution object. Need this since we're not using SDK
+    try:
+        deserializer = create_deserializer()
+        containerappjobexec_def = deserializer('JobExecutionTemplate', yaml_containerappjob_execution)
+    except DeserializationError as ex:
+        raise InvalidArgumentValueError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapp job execution YAML.') from ex
+
+    containerappjobexec_def = _convert_object_from_snake_to_camel_case(_object_to_dict(containerappjobexec_def))
+
+    # Clean null values since this is an update
+    containerappjobexec_def = clean_null_values(containerappjobexec_def)
+
+    try:
+        return ContainerAppsJobClient.start_job(cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_start_envelope=containerappjobexec_def)
     except CLIError as e:
         handle_raw_exception(e)
 
