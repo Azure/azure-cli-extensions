@@ -1893,7 +1893,7 @@ def _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, l
 
 
 def certificate_location_matches(certificate_object, location=None):
-    return certificate_object["location"] == location or not location
+    return format_location(certificate_object["location"]) == format_location(location) or not location
 
 
 def certificate_thumbprint_matches(certificate_object, thumbprint=None):
