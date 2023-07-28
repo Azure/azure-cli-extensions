@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "palo-alto cloudngfw local-rulestack get-change-log",
+    "palo-alto cloudngfw local-rulestack local-rule show-counter",
 )
-class GetChangeLog(AAZCommand):
-    """Get changelog
+class ShowCounter(AAZCommand):
+    """Get counters
 
-    :example: Get changelog
-        az palo-alto cloudngfw local-rulestack get-change-log -g MyResourceGroup -n MyLocalRulestacks
+    :example: Get counters
+        az palo-alto cloudngfw local-rulestack local-rule get-counter -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --priority "1"
     """
 
     _aaz_info = {
         "version": "2022-08-29",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/getchangelog", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/localrules/{}/getcounters", "2022-08-29"],
         ]
     }
 
@@ -45,19 +45,29 @@ class GetChangeLog(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.local_rulestack_name = AAZStrArg(
-            options=["-n", "--name", "--local-rulestack-name"],
+            options=["--local-rulestack-name"],
             help="LocalRulestack resource name",
             required=True,
             id_part="name",
         )
+        _args_schema.priority = AAZStrArg(
+            options=["--priority"],
+            help="Local Rule priority",
+            required=True,
+            id_part="child_name_1",
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+        _args_schema.firewall_name = AAZStrArg(
+            options=["--firewall-name"],
+            help="Firewall resource name",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.LocalRulestacksGetChangeLog(ctx=self.ctx)()
+        self.LocalRulesGetCounters(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,7 +82,7 @@ class GetChangeLog(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class LocalRulestacksGetChangeLog(AAZHttpOperation):
+    class LocalRulesGetCounters(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -86,7 +96,7 @@ class GetChangeLog(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/{localRulestackName}/getChangeLog",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/{localRulestackName}/localRules/{priority}/getCounters",
                 **self.url_parameters
             )
 
@@ -106,6 +116,10 @@ class GetChangeLog(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
+                    "priority", self.ctx.args.priority,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
@@ -119,6 +133,9 @@ class GetChangeLog(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
+                **self.serialize_query_param(
+                    "firewallName", self.ctx.args.firewall_name,
+                ),
                 **self.serialize_query_param(
                     "api-version", "2022-08-29",
                     required=True,
@@ -153,24 +170,78 @@ class GetChangeLog(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.changes = AAZListType(
+            _schema_on_200.app_seen = AAZObjectType(
+                serialized_name="appSeen",
+            )
+            _schema_on_200.firewall_name = AAZStrType(
+                serialized_name="firewallName",
+            )
+            _schema_on_200.hit_count = AAZIntType(
+                serialized_name="hitCount",
+            )
+            _schema_on_200.last_updated_timestamp = AAZStrType(
+                serialized_name="lastUpdatedTimestamp",
+            )
+            _schema_on_200.priority = AAZStrType(
                 flags={"required": True},
             )
-            _schema_on_200.last_committed = AAZStrType(
-                serialized_name="lastCommitted",
+            _schema_on_200.request_timestamp = AAZStrType(
+                serialized_name="requestTimestamp",
             )
-            _schema_on_200.last_modified = AAZStrType(
-                serialized_name="lastModified",
+            _schema_on_200.rule_list_name = AAZStrType(
+                serialized_name="ruleListName",
+            )
+            _schema_on_200.rule_name = AAZStrType(
+                serialized_name="ruleName",
+                flags={"required": True},
+            )
+            _schema_on_200.rule_stack_name = AAZStrType(
+                serialized_name="ruleStackName",
+            )
+            _schema_on_200.timestamp = AAZStrType()
+
+            app_seen = cls._schema_on_200.app_seen
+            app_seen.app_seen_list = AAZListType(
+                serialized_name="appSeenList",
+                flags={"required": True},
+            )
+            app_seen.count = AAZIntType(
+                flags={"required": True},
             )
 
-            changes = cls._schema_on_200.changes
-            changes.Element = AAZStrType()
+            app_seen_list = cls._schema_on_200.app_seen.app_seen_list
+            app_seen_list.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.app_seen.app_seen_list.Element
+            _element.category = AAZStrType(
+                flags={"required": True},
+            )
+            _element.risk = AAZStrType(
+                flags={"required": True},
+            )
+            _element.standard_ports = AAZStrType(
+                serialized_name="standardPorts",
+                flags={"required": True},
+            )
+            _element.sub_category = AAZStrType(
+                serialized_name="subCategory",
+                flags={"required": True},
+            )
+            _element.tag = AAZStrType(
+                flags={"required": True},
+            )
+            _element.technology = AAZStrType(
+                flags={"required": True},
+            )
+            _element.title = AAZStrType(
+                flags={"required": True},
+            )
 
             return cls._schema_on_200
 
 
-class _GetChangeLogHelper:
-    """Helper class for GetChangeLog"""
+class _ShowCounterHelper:
+    """Helper class for ShowCounter"""
 
 
-__all__ = ["GetChangeLog"]
+__all__ = ["ShowCounter"]

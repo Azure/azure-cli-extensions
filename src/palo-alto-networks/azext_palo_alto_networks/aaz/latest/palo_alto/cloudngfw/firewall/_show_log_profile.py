@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "palo-alto cloudngfw firewall get-log-profile",
+    "palo-alto cloudngfw firewall show-log-profile",
 )
-class GetLogProfile(AAZCommand):
+class ShowLogProfile(AAZCommand):
     """Get Log Profile for Firewall
 
     :example: Get Log Profile for Firewall
-        az palo-alto cloudngfw firewall get-log-profile --resource-group MyResourceGroup -n MyCloudngfwFirewall
+        az palo-alto cloudngfw firewall show-log-profile --resource-group MyResourceGroup -n MyCloudngfwFirewall
     """
 
     _aaz_info = {
@@ -159,11 +159,11 @@ class GetLogProfile(AAZCommand):
             _schema_on_200.common_destination = AAZObjectType(
                 serialized_name="commonDestination",
             )
-            _GetLogProfileHelper._build_schema_log_destination_read(_schema_on_200.common_destination)
+            _ShowLogProfileHelper._build_schema_log_destination_read(_schema_on_200.common_destination)
             _schema_on_200.decrypt_log_destination = AAZObjectType(
                 serialized_name="decryptLogDestination",
             )
-            _GetLogProfileHelper._build_schema_log_destination_read(_schema_on_200.decrypt_log_destination)
+            _ShowLogProfileHelper._build_schema_log_destination_read(_schema_on_200.decrypt_log_destination)
             _schema_on_200.log_option = AAZStrType(
                 serialized_name="logOption",
             )
@@ -173,11 +173,11 @@ class GetLogProfile(AAZCommand):
             _schema_on_200.threat_log_destination = AAZObjectType(
                 serialized_name="threatLogDestination",
             )
-            _GetLogProfileHelper._build_schema_log_destination_read(_schema_on_200.threat_log_destination)
+            _ShowLogProfileHelper._build_schema_log_destination_read(_schema_on_200.threat_log_destination)
             _schema_on_200.traffic_log_destination = AAZObjectType(
                 serialized_name="trafficLogDestination",
             )
-            _GetLogProfileHelper._build_schema_log_destination_read(_schema_on_200.traffic_log_destination)
+            _ShowLogProfileHelper._build_schema_log_destination_read(_schema_on_200.traffic_log_destination)
 
             application_insights = cls._schema_on_200.application_insights
             application_insights.id = AAZStrType()
@@ -186,8 +186,8 @@ class GetLogProfile(AAZCommand):
             return cls._schema_on_200
 
 
-class _GetLogProfileHelper:
-    """Helper class for GetLogProfile"""
+class _ShowLogProfileHelper:
+    """Helper class for ShowLogProfile"""
 
     _schema_log_destination_read = None
 
@@ -252,4 +252,4 @@ class _GetLogProfileHelper:
         _schema.storage_configurations = cls._schema_log_destination_read.storage_configurations
 
 
-__all__ = ["GetLogProfile"]
+__all__ = ["ShowLogProfile"]

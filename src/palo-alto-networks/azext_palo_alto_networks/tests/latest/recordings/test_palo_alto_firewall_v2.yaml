@@ -23,7 +23,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/fw0718/saveLogProfile?api-version=2022-08-29
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest/saveLogProfile?api-version=2022-08-29
   response:
     body:
       string: ''
@@ -33,11 +33,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 25 Jul 2023 09:10:07 GMT
+      - Fri, 28 Jul 2023 03:01:19 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 5a7b3898-166e-4061-a76c-029801e655b8
+      - c20e1369-8f7e-4d1d-ad1d-5e812bd06cf7
       pragma:
       - no-cache
       request-context:
@@ -61,7 +61,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - palo-alto cloudngfw firewall get-log-profile
+      - palo-alto cloudngfw firewall show-log-profile
       Connection:
       - keep-alive
       Content-Length:
@@ -71,7 +71,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/fw0718/getLogProfile?api-version=2022-08-29
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest/getLogProfile?api-version=2022-08-29
   response:
     body:
       string: '{"logType":"TRAFFIC","logOption":"SAME_DESTINATION","applicationInsights":{"id":null,"key":null},"commonDestination":{"storageConfigurations":null,"eventHubConfigurations":null,"monitorConfigurations":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sudh_fire_test/providers/Microsoft.OperationalInsights/workspaces/testAnalyticsX","subscriptionId":null,"workspace":"63e674d3-cc87-48c6-94cb-2d28a0b245fc","primaryKey":"7R5uguOLkTF6zByLV9ef5402y4dQnhiSlNMTKNSpEbjZoBrGrNnM2rD4E7+0v1yFg5y6h3RlrIa7th7qJnoHcQ==","secondaryKey":"7lmsLYTVizgkstJpno4fY6u36qmVw4rkaIfzhx82ymLIdYDy0wbq7Tdydkje3z50KbKsQnzhg8KAPFpEki/Buw=="}},"trafficLogDestination":null,"threatLogDestination":null,"decryptLogDestination":null}'
@@ -83,11 +83,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 25 Jul 2023 09:10:11 GMT
+      - Fri, 28 Jul 2023 03:01:35 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 35722f54-7038-41a1-92c6-c843f8412bab
+      - f68a43d4-6701-436f-9f81-baff072f2538
       pragma:
       - no-cache
       request-context:
@@ -115,7 +115,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - palo-alto cloudngfw firewall get-support-info
+      - palo-alto cloudngfw firewall show-support-info
       Connection:
       - keep-alive
       Content-Length:
@@ -125,7 +125,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/fw0718/getSupportInfo?api-version=2022-08-29
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest/getSupportInfo?api-version=2022-08-29
   response:
     body:
       string: '{"productSku":"PAN-CLOUD-NGFW-AZURE-PAYG","productSerial":null,"accountRegistered":"FALSE","accountId":null,"userDomainSupported":"TRUE","userRegistered":"FALSE","freeTrial":"TRUE","freeTrialDaysLeft":30,"freeTrialCreditLeft":0,"helpURL":"https://live.paloaltonetworks.com?productSku=PAN-CLOUD-NGFW-AZURE-PAYG","supportURL":"https://support.paloaltonetworks.com?productSku=PAN-CLOUD-NGFW-AZURE-PAYG&userEmail=v-taoxuzeng@microsoft.com","registerURL":"https://support.paloaltonetworks.com/Home/Register?tenantId=888d76fa-54b2-4ced-8ee5-aac1585adee7&productSku=PAN-CLOUD-NGFW-AZURE-PAYG&userEmail=v-taoxuzeng@microsoft.com"}'
@@ -137,11 +137,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 25 Jul 2023 09:10:16 GMT
+      - Fri, 28 Jul 2023 03:01:45 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 0d12eaa5-9401-4457-8f96-fe0a5f5d9761
+      - 6d1a120f-0a29-4db1-a51e-b03df23c18bf
       pragma:
       - no-cache
       request-context:
@@ -177,24 +177,23 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/fw0718/statuses?api-version=2022-08-29
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest/statuses?api-version=2022-08-29
   response:
     body:
-      string: '{"value":[{"properties":{"isPanoramaManaged":"FALSE","healthStatus":"RED","healthReason":"Server
-        side error. You may file a ticket with CorrelationId: 41a6c8cf-a0b4-4efb-928d-648bc9d37413","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"properties":{"isPanoramaManaged":"FALSE","healthStatus":"GREEN","provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '224'
+      - '111'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 25 Jul 2023 09:10:20 GMT
+      - Fri, 28 Jul 2023 03:01:51 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - f30469df-f77d-45c4-bcb7-9e608639bd54
+      - a94a273b-f18f-42d8-9934-73fc590e06c3
       pragma:
       - no-cache
       request-context:
@@ -228,24 +227,23 @@ interactions:
       User-Agent:
       - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/fw0718/statuses/default?api-version=2022-08-29
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/firewalls/prodStabilityTest/statuses/default?api-version=2022-08-29
   response:
     body:
-      string: '{"properties":{"isPanoramaManaged":"FALSE","healthStatus":"RED","healthReason":"Server
-        side error. You may file a ticket with CorrelationId: 69682620-895b-4923-bbe4-0665af468870","provisioningState":"Succeeded"}}'
+      string: '{"properties":{"isPanoramaManaged":"FALSE","healthStatus":"GREEN","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '212'
+      - '99'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 25 Jul 2023 09:10:23 GMT
+      - Fri, 28 Jul 2023 03:01:58 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - a9664b56-4529-4036-8c81-ef95f75f8236
+      - 3bce174d-949f-4df9-a4ce-6292183246a0
       pragma:
       - no-cache
       request-context:

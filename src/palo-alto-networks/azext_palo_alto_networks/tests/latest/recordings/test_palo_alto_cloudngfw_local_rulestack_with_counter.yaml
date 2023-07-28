@@ -7,7 +7,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - palo-alto cloudngfw local-rulestack local-rule get-counter
+      - palo-alto cloudngfw local-rulestack local-rule show-counter
       Connection:
       - keep-alive
       Content-Length:
@@ -20,7 +20,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/fw0718-lrs/localRules/1000000/getCounters?api-version=2022-08-29
   response:
     body:
-      string: '{"priority":"1000000","ruleStackName":"fw0718-lrs","ruleListName":"LocalRule","ruleName":"cloud-ngfw-default-rule","hitCount":0,"timestamp":"2023-07-25T09:25:29.057606+00:00"}'
+      string: '{"priority":"1000000","ruleStackName":"fw0718-lrs","ruleListName":"LocalRule","ruleName":"cloud-ngfw-default-rule","hitCount":0,"timestamp":"2023-07-28T02:49:24.038509+00:00"}'
     headers:
       cache-control:
       - no-cache
@@ -29,11 +29,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 25 Jul 2023 09:25:28 GMT
+      - Fri, 28 Jul 2023 02:49:24 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - c0c7a0e8-5423-41b6-897e-d37ded72b0b2
+      - 802be47b-3fe6-41d1-9b32-877e1c468f26
       pragma:
       - no-cache
       request-context:
@@ -74,53 +74,6 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/fw0718-lrs/localRules/1000000/refreshCounters?api-version=2022-08-29
   response:
     body:
-      string: '{"error":{"code":"GatewayTimeout","message":"The gateway did not receive
-        a response from ''PaloAltoNetworks.Cloudngfw'' within the specified time period."}}'
-    headers:
-      cache-control:
-      - no-cache
-      connection:
-      - close
-      content-length:
-      - '154'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 25 Jul 2023 09:26:20 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - service
-    status:
-      code: 504
-      message: Gateway Timeout
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - palo-alto cloudngfw local-rulestack local-rule refresh-counter
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - -g --local-rulestack-name --priority
-      User-Agent:
-      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rheaTerraformTest/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/fw0718-lrs/localRules/1000000/refreshCounters?api-version=2022-08-29
-  response:
-    body:
       string: ''
     headers:
       cache-control:
@@ -128,11 +81,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 25 Jul 2023 09:26:25 GMT
+      - Fri, 28 Jul 2023 02:49:36 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 20b1c49a-998b-41ad-a07f-9d7aa6e8645b
+      - fef25fc4-3623-45e6-b744-18e61839f1f9
       pragma:
       - no-cache
       request-context:
@@ -178,11 +131,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 25 Jul 2023 09:26:29 GMT
+      - Fri, 28 Jul 2023 02:49:53 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 82897f78-fa9d-41a0-bd0d-096cefc056f3
+      - c4bae129-d11b-4888-8dcf-64f61bfa4e45
       pragma:
       - no-cache
       request-context:

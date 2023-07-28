@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "palo-alto cloudngfw firewall get-support-info",
+    "palo-alto cloudngfw local-rulestack show-support-info",
 )
-class GetSupportInfo(AAZCommand):
-    """Support info for firewall.
+class ShowSupportInfo(AAZCommand):
+    """Support info for rulestack.
 
-    :example: Get support info for firewall.
-        az palo-alto cloudngfw firewall get-support-info --resource-group MyResourceGroup -n MyCloudngfwFirewall
+    :example: Support info for rulestack.
+        az palo-alto cloudngfw local-rulestack show-support-info -g MyResourceGroup -n MyLocalRulestacks
     """
 
     _aaz_info = {
         "version": "2022-08-29",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}/getsupportinfo", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/getsupportinfo", "2022-08-29"],
         ]
     }
 
@@ -44,9 +44,9 @@ class GetSupportInfo(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.firewall_name = AAZStrArg(
-            options=["-n", "--name", "--firewall-name"],
-            help="Firewall resource name",
+        _args_schema.local_rulestack_name = AAZStrArg(
+            options=["-n", "--name", "--local-rulestack-name"],
+            help="LocalRulestack resource name",
             required=True,
             id_part="name",
         )
@@ -61,7 +61,7 @@ class GetSupportInfo(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.FirewallsGetSupportInfo(ctx=self.ctx)()
+        self.LocalRulestacksGetSupportInfo(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,7 +76,7 @@ class GetSupportInfo(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class FirewallsGetSupportInfo(AAZHttpOperation):
+    class LocalRulestacksGetSupportInfo(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -90,7 +90,7 @@ class GetSupportInfo(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/firewalls/{firewallName}/getSupportInfo",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/{localRulestackName}/getSupportInfo",
                 **self.url_parameters
             )
 
@@ -106,7 +106,7 @@ class GetSupportInfo(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "firewallName", self.ctx.args.firewall_name,
+                    "localRulestackName", self.ctx.args.local_rulestack_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -200,8 +200,8 @@ class GetSupportInfo(AAZCommand):
             return cls._schema_on_200
 
 
-class _GetSupportInfoHelper:
-    """Helper class for GetSupportInfo"""
+class _ShowSupportInfoHelper:
+    """Helper class for ShowSupportInfo"""
 
 
-__all__ = ["GetSupportInfo"]
+__all__ = ["ShowSupportInfo"]

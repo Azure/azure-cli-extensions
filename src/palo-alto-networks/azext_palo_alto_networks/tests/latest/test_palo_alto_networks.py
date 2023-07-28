@@ -79,19 +79,18 @@ class PaloAltoNetworksScenario(ScenarioTest):
         self.cmd('az palo-alto cloudngfw firewall show --name {firewall_name} -g {resource_group}', self.check('tags.tagName', "value"))
 
     @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='cli_test_palo_alto_firewall_v2')
     def test_palo_alto_firewall_v2(self):
         self.kwargs.update({
             'loc': 'eastus',
             'resource_group': 'rheaTerraformTest',
-            'firewall_name': 'fw0718',
+            'firewall_name': 'prodStabilityTest',
             'workspace': self.create_random_name('workspace', 15),
         })
         self.cmd('az palo-alto cloudngfw firewall save-log-profile --resource-group {resource_group} -n {firewall_name} '
                  '--log-option "SAME_DESTINATION" --log-type "TRAFFIC" '
                  '--common-destination {{"monitor-configurations":{{"id":"/subscriptions/2bf4a339-294d-4c25-b0b2-ef649e9f5c27/resourceGroups/sudh_fire_test/providers/Microsoft.OperationalInsights/workspaces/testAnalyticsX","primary-key":"7R5uguOLkTF6zByLV9ef5402y4dQnhiSlNMTKNSpEbjZoBrGrNnM2rD4E7+0v1yFg5y6h3RlrIa7th7qJnoHcQ==","secondary-key":"7lmsLYTVizgkstJpno4fY6u36qmVw4rkaIfzhx82ymLIdYDy0wbq7Tdydkje3z50KbKsQnzhg8KAPFpEki/Buw==","subscription-id":"2bf4a339-294d-4c25-b0b2-ef649e9f5c27","workspace":"63e674d3-cc87-48c6-94cb-2d28a0b245fc"}}}}')
-        self.cmd('az palo-alto cloudngfw firewall get-log-profile --resource-group {resource_group} -n {firewall_name}')
-        self.cmd('az palo-alto cloudngfw firewall get-support-info --resource-group {resource_group} -n {firewall_name}')
+        self.cmd('az palo-alto cloudngfw firewall show-log-profile --resource-group {resource_group} -n {firewall_name} ', self.check('type(@)', 'object'))
+        self.cmd('az palo-alto cloudngfw firewall show-support-info --resource-group {resource_group} -n {firewall_name}')
 
         self.cmd('az palo-alto cloudngfw firewall status list --resource-group {resource_group} -n {firewall_name}')
         self.cmd('az palo-alto cloudngfw firewall status default show --resource-group {resource_group} -n {firewall_name}')
@@ -118,8 +117,8 @@ class PaloAltoNetworksScenario(ScenarioTest):
         self.cmd('az palo-alto cloudngfw local-rulestack update -g {rg} -n {local_rulestack_name} --tags {{"tag-name":"value"}}')
         self.cmd('az palo-alto cloudngfw local-rulestack list -g {rg}')
         self.cmd('az palo-alto cloudngfw local-rulestack show -g {rg} -n {local_rulestack_name}')
-        self.cmd('az palo-alto cloudngfw local-rulestack get-change-log -g {rg} -n {local_rulestack_name}')
-        self.cmd('az palo-alto cloudngfw local-rulestack get-support-info -g {rg} -n {local_rulestack_name}')
+        self.cmd('az palo-alto cloudngfw local-rulestack show-change-log -g {rg} -n {local_rulestack_name}')
+        self.cmd('az palo-alto cloudngfw local-rulestack show-support-info -g {rg} -n {local_rulestack_name}')
         self.cmd('az palo-alto cloudngfw local-rulestack list-app-id -g {rg} -n {local_rulestack_name}')
         self.cmd('az palo-alto cloudngfw local-rulestack list-country -g {rg} -n {local_rulestack_name}')
         self.cmd('az palo-alto cloudngfw local-rulestack list-firewall -g {rg} -n {local_rulestack_name}')
@@ -182,6 +181,6 @@ class PaloAltoNetworksScenario(ScenarioTest):
             'local_rulestack_name': "fw0718-lrs",
             'priority': "1000000"
             })
-        self.cmd('az palo-alto cloudngfw local-rulestack local-rule get-counter -g {resource_group} --local-rulestack-name {local_rulestack_name} --priority {priority}')
+        self.cmd('az palo-alto cloudngfw local-rulestack local-rule show-counter -g {resource_group} --local-rulestack-name {local_rulestack_name} --priority {priority}')
         self.cmd('az palo-alto cloudngfw local-rulestack local-rule refresh-counter -g {resource_group} --local-rulestack-name {local_rulestack_name} --priority {priority}')
         self.cmd('az palo-alto cloudngfw local-rulestack local-rule reset-counter -g {resource_group} --local-rulestack-name {local_rulestack_name} --priority {priority}')

@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "palo-alto cloudngfw local-rulestack local-rule get-counter",
+    "palo-alto cloudngfw firewall show-support-info",
 )
-class GetCounter(AAZCommand):
-    """Get counters
+class ShowSupportInfo(AAZCommand):
+    """Support info for firewall.
 
-    :example: Get counters
-        az palo-alto cloudngfw local-rulestack local-rule get-counter -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --priority "1"
+    :example: Get support info for firewall.
+        az palo-alto cloudngfw firewall show-support-info --resource-group MyResourceGroup -n MyCloudngfwFirewall
     """
 
     _aaz_info = {
         "version": "2022-08-29",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/localrules/{}/getcounters", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls/{}/getsupportinfo", "2022-08-29"],
         ]
     }
 
@@ -44,30 +44,24 @@ class GetCounter(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.local_rulestack_name = AAZStrArg(
-            options=["--local-rulestack-name"],
-            help="LocalRulestack resource name",
+        _args_schema.firewall_name = AAZStrArg(
+            options=["-n", "--name", "--firewall-name"],
+            help="Firewall resource name",
             required=True,
             id_part="name",
-        )
-        _args_schema.priority = AAZStrArg(
-            options=["--priority"],
-            help="Local Rule priority",
-            required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.firewall_name = AAZStrArg(
-            options=["--firewall-name"],
-            help="Firewall resource name",
+        _args_schema.email = AAZStrArg(
+            options=["--email"],
+            help="email address on behalf of which this API called",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.LocalRulesGetCounters(ctx=self.ctx)()
+        self.FirewallsGetSupportInfo(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -82,7 +76,7 @@ class GetCounter(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class LocalRulesGetCounters(AAZHttpOperation):
+    class FirewallsGetSupportInfo(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -96,7 +90,7 @@ class GetCounter(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/{localRulestackName}/localRules/{priority}/getCounters",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/firewalls/{firewallName}/getSupportInfo",
                 **self.url_parameters
             )
 
@@ -112,11 +106,7 @@ class GetCounter(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "localRulestackName", self.ctx.args.local_rulestack_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "priority", self.ctx.args.priority,
+                    "firewallName", self.ctx.args.firewall_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -134,7 +124,7 @@ class GetCounter(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "firewallName", self.ctx.args.firewall_name,
+                    "email", self.ctx.args.email,
                 ),
                 **self.serialize_query_param(
                     "api-version", "2022-08-29",
@@ -170,78 +160,48 @@ class GetCounter(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.app_seen = AAZObjectType(
-                serialized_name="appSeen",
+            _schema_on_200.account_id = AAZStrType(
+                serialized_name="accountId",
             )
-            _schema_on_200.firewall_name = AAZStrType(
-                serialized_name="firewallName",
+            _schema_on_200.account_registered = AAZStrType(
+                serialized_name="accountRegistered",
             )
-            _schema_on_200.hit_count = AAZIntType(
-                serialized_name="hitCount",
+            _schema_on_200.free_trial = AAZStrType(
+                serialized_name="freeTrial",
             )
-            _schema_on_200.last_updated_timestamp = AAZStrType(
-                serialized_name="lastUpdatedTimestamp",
+            _schema_on_200.free_trial_credit_left = AAZIntType(
+                serialized_name="freeTrialCreditLeft",
             )
-            _schema_on_200.priority = AAZStrType(
-                flags={"required": True},
+            _schema_on_200.free_trial_days_left = AAZIntType(
+                serialized_name="freeTrialDaysLeft",
             )
-            _schema_on_200.request_timestamp = AAZStrType(
-                serialized_name="requestTimestamp",
+            _schema_on_200.help_url = AAZStrType(
+                serialized_name="helpURL",
             )
-            _schema_on_200.rule_list_name = AAZStrType(
-                serialized_name="ruleListName",
+            _schema_on_200.product_serial = AAZStrType(
+                serialized_name="productSerial",
             )
-            _schema_on_200.rule_name = AAZStrType(
-                serialized_name="ruleName",
-                flags={"required": True},
+            _schema_on_200.product_sku = AAZStrType(
+                serialized_name="productSku",
             )
-            _schema_on_200.rule_stack_name = AAZStrType(
-                serialized_name="ruleStackName",
+            _schema_on_200.register_url = AAZStrType(
+                serialized_name="registerURL",
             )
-            _schema_on_200.timestamp = AAZStrType()
-
-            app_seen = cls._schema_on_200.app_seen
-            app_seen.app_seen_list = AAZListType(
-                serialized_name="appSeenList",
-                flags={"required": True},
+            _schema_on_200.support_url = AAZStrType(
+                serialized_name="supportURL",
             )
-            app_seen.count = AAZIntType(
-                flags={"required": True},
+            _schema_on_200.user_domain_supported = AAZStrType(
+                serialized_name="userDomainSupported",
             )
-
-            app_seen_list = cls._schema_on_200.app_seen.app_seen_list
-            app_seen_list.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.app_seen.app_seen_list.Element
-            _element.category = AAZStrType(
-                flags={"required": True},
-            )
-            _element.risk = AAZStrType(
-                flags={"required": True},
-            )
-            _element.standard_ports = AAZStrType(
-                serialized_name="standardPorts",
-                flags={"required": True},
-            )
-            _element.sub_category = AAZStrType(
-                serialized_name="subCategory",
-                flags={"required": True},
-            )
-            _element.tag = AAZStrType(
-                flags={"required": True},
-            )
-            _element.technology = AAZStrType(
-                flags={"required": True},
-            )
-            _element.title = AAZStrType(
-                flags={"required": True},
+            _schema_on_200.user_registered = AAZStrType(
+                serialized_name="userRegistered",
             )
 
             return cls._schema_on_200
 
 
-class _GetCounterHelper:
-    """Helper class for GetCounter"""
+class _ShowSupportInfoHelper:
+    """Helper class for ShowSupportInfo"""
 
 
-__all__ = ["GetCounter"]
+__all__ = ["ShowSupportInfo"]

@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "palo-alto cloudngfw local-rulestack get-support-info",
+    "palo-alto cloudngfw local-rulestack show-change-log",
 )
-class GetSupportInfo(AAZCommand):
-    """Support info for rulestack.
+class ShowChangeLog(AAZCommand):
+    """Get changelog
 
-    :example: Support info for rulestack.
-        az palo-alto cloudngfw local-rulestack get-support-info -g MyResourceGroup -n MyLocalRulestacks
+    :example: Get changelog
+        az palo-alto cloudngfw local-rulestack show-change-log -g MyResourceGroup -n MyLocalRulestacks
     """
 
     _aaz_info = {
         "version": "2022-08-29",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/getsupportinfo", "2022-08-29"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/getchangelog", "2022-08-29"],
         ]
     }
 
@@ -53,15 +53,11 @@ class GetSupportInfo(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.email = AAZStrArg(
-            options=["--email"],
-            help="email address on behalf of which this API called",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.LocalRulestacksGetSupportInfo(ctx=self.ctx)()
+        self.LocalRulestacksGetChangeLog(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,7 +72,7 @@ class GetSupportInfo(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class LocalRulestacksGetSupportInfo(AAZHttpOperation):
+    class LocalRulestacksGetChangeLog(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -90,7 +86,7 @@ class GetSupportInfo(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/{localRulestackName}/getSupportInfo",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/PaloAltoNetworks.Cloudngfw/localRulestacks/{localRulestackName}/getChangeLog",
                 **self.url_parameters
             )
 
@@ -123,9 +119,6 @@ class GetSupportInfo(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
-                **self.serialize_query_param(
-                    "email", self.ctx.args.email,
-                ),
                 **self.serialize_query_param(
                     "api-version", "2022-08-29",
                     required=True,
@@ -160,48 +153,24 @@ class GetSupportInfo(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.account_id = AAZStrType(
-                serialized_name="accountId",
+            _schema_on_200.changes = AAZListType(
+                flags={"required": True},
             )
-            _schema_on_200.account_registered = AAZStrType(
-                serialized_name="accountRegistered",
+            _schema_on_200.last_committed = AAZStrType(
+                serialized_name="lastCommitted",
             )
-            _schema_on_200.free_trial = AAZStrType(
-                serialized_name="freeTrial",
+            _schema_on_200.last_modified = AAZStrType(
+                serialized_name="lastModified",
             )
-            _schema_on_200.free_trial_credit_left = AAZIntType(
-                serialized_name="freeTrialCreditLeft",
-            )
-            _schema_on_200.free_trial_days_left = AAZIntType(
-                serialized_name="freeTrialDaysLeft",
-            )
-            _schema_on_200.help_url = AAZStrType(
-                serialized_name="helpURL",
-            )
-            _schema_on_200.product_serial = AAZStrType(
-                serialized_name="productSerial",
-            )
-            _schema_on_200.product_sku = AAZStrType(
-                serialized_name="productSku",
-            )
-            _schema_on_200.register_url = AAZStrType(
-                serialized_name="registerURL",
-            )
-            _schema_on_200.support_url = AAZStrType(
-                serialized_name="supportURL",
-            )
-            _schema_on_200.user_domain_supported = AAZStrType(
-                serialized_name="userDomainSupported",
-            )
-            _schema_on_200.user_registered = AAZStrType(
-                serialized_name="userRegistered",
-            )
+
+            changes = cls._schema_on_200.changes
+            changes.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _GetSupportInfoHelper:
-    """Helper class for GetSupportInfo"""
+class _ShowChangeLogHelper:
+    """Helper class for ShowChangeLog"""
 
 
-__all__ = ["GetSupportInfo"]
+__all__ = ["ShowChangeLog"]

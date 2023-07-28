@@ -12,8 +12,6 @@ from .__cmd_group import *
 from ._commit import *
 from ._create import *
 from ._delete import *
-from ._get_change_log import *
-from ._get_support_info import *
 from ._list import *
 from ._list_advanced_security_object import *
 from ._list_app_id import *
@@ -23,5 +21,7 @@ from ._list_predefined_url_category import *
 from ._list_security_service import *
 from ._revert import *
 from ._show import *
+from ._show_change_log import *
+from ._show_support_info import *
 from ._update import *
 from ._wait import *
