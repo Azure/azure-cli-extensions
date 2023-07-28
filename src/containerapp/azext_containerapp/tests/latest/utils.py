@@ -71,7 +71,7 @@ def create_and_verify_containerapp_up(
             up_cmd += f" -l {location.upper()}"
             test_cls.cmd(up_cmd)
 
-def create_and_verify_containerapp_create(
+def create_and_verify_containerapp_create_and_update(
             test_cls,
             resource_group,
             env_name = None,
@@ -110,8 +110,8 @@ def create_and_verify_containerapp_create(
         image_name = registry_server + "/" + app_name
 
         # Construct the 'az containerapp create' command
-        create_cmd = 'containerapp create -g {} -n {} --environment {} --registry-username {} --registry-server {} --registry-password {} --source {}'.format(
-            resource_group, app_name, env_name, registry_user, registry_server, registry_pass, source_path)
+        create_cmd = 'containerapp create -g {} -n {} --environment {} --registry-username {} --registry-server {} --registry-password {}'.format(
+            resource_group, app_name, env_name, registry_user, registry_server, registry_pass)
         if source_path:
             create_cmd += f" --source \"{source_path}\""
         if image:
@@ -131,10 +131,15 @@ def create_and_verify_containerapp_create(
         test_cls.assertEqual(app["properties"]["configuration"]["registries"][0]["username"], registry_user)
         test_cls.assertEqual(app["properties"]["provisioningState"], "Succeeded")
         test_cls.assertEqual(app["properties"]["template"]["containers"][0]["image"].split(":")[0], image_name)
+        old_image = app["properties"]["template"]["containers"][0]["image"]
 
         # Construct the 'az containerapp update' command
-        update_cmd = 'containerapp update -g {} -n {} --source {}'.format(
-            resource_group, app_name, source_path)
+        update_cmd = 'containerapp update -g {} -n {}'.format(
+            resource_group, app_name)
+        if source_path:
+            update_cmd += f" --source \"{source_path}\""
+        if image:
+            update_cmd += f" --image {image}"
 
         # Execute the 'az containerapp update' command
         test_cls.cmd(update_cmd)
@@ -144,7 +149,8 @@ def create_and_verify_containerapp_create(
         test_cls.assertEqual(app["properties"]["configuration"]["registries"][0]["server"], registry_server)
         test_cls.assertEqual(app["properties"]["configuration"]["registries"][0]["username"], registry_user)
         test_cls.assertEqual(app["properties"]["provisioningState"], "Succeeded")
-        test_cls.assertEqual(app["properties"]["template"]["containers"][0]["image"].split("/")[0], image_name.split("/")[0])
+        test_cls.assertEqual(app["properties"]["template"]["containers"][0]["image"].split(":")[0], image_name)
+        test_cls.assertNotEqual(app["properties"]["template"]["containers"][0]["image"], old_image)
 
 def _reformat_image(image):
     image = image.split("/")[-1]
