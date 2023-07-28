@@ -8,6 +8,8 @@
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from .aaz.latest.tsi.environment import Create as _EnvironmentCreate
+from .aaz.latest.tsi.environment import Update as _EnvironmentUpdate
+from .aaz.latest.tsi.environment import List as _EnvironmentList
 from .aaz.latest.tsi.reference_data_set import Create as _ReferenceDataSetCreate
 from .aaz.latest.tsi.reference_data_set import List as _ReferenceDataSetList
 
@@ -19,7 +21,8 @@ def timeseriesinsights_environment_gen1_create(cmd, resource_group_name,
                                                data_retention_time,
                                                tags=None,
                                                storage_limit_exceeded_behavior=None,
-                                               partition_key_properties=None):
+                                               partition_key_properties=None,
+                                               no_wait=False):
     Create = _EnvironmentCreate(cmd.loader)
     parameters = {}
     parameters['resource_group'] = resource_group_name
@@ -31,14 +34,17 @@ def timeseriesinsights_environment_gen1_create(cmd, resource_group_name,
     parameters['gen1']['data_retention_time'] = data_retention_time
     parameters['gen1']['storage_limit_exceeded_behavior'] = storage_limit_exceeded_behavior
     parameters['gen1']['partition_key_properties'] = partition_key_properties
+    parameters['no_wait'] = no_wait
 
     return Create(parameters)
 
-# def timeseriesinsights_environment_list(client,
-#                                         resource_group_name=None):
-#     if resource_group_name:
-#         return client.list_by_resource_group(resource_group_name=resource_group_name).value
-#     return client.list_by_subscription().value
+def timeseriesinsights_environment_list(cmd,
+                                        resource_group_name=None):
+    List = _EnvironmentList(cmd.loader)
+    parameters = {}
+    parameters['resource_group'] = resource_group_name
+
+    return List(parameters)["value"]
 #
 #
 # def timeseriesinsights_environment_show(client,
@@ -57,46 +63,26 @@ def timeseriesinsights_environment_gen1_create(cmd, resource_group_name,
 #                          environment_name=environment_name)
 #
 #
+def timeseriesinsights_environment_gen1_update(cmd,
+                                               resource_group_name,
+                                               environment_name,
+                                               sku=None,
+                                               data_retention_time=None,
+                                               tags=None,
+                                               storage_limit_exceeded_behavior=None,
+                                               no_wait=False):
+    Patch = _EnvironmentUpdate(cmd.loader)
+    parameters = {}
+    parameters['resource_group'] = resource_group_name
+    parameters['environment_name'] = environment_name
+    parameters['gen1'] = {}
+    parameters['sku'] = sku
+    parameters['gen1']['data_retention_time'] = data_retention_time
+    parameters['gen1']['storage_limit_exceeded_behavior'] = storage_limit_exceeded_behavior
+    parameters['tags'] = tags
+    parameters['no_wait'] = no_wait
 
-
-# # def timeseriesinsights_environment_gen1_update(client,
-# #                                                resource_group_name,
-# #                                                environment_name,
-# #                                                sku=None,
-# #                                                data_retention_time=None,
-# #                                                tags=None,
-# #                                                storage_limit_exceeded_behavior=None,
-# #                                                no_wait=False):
-# #     instance = timeseriesinsights_environment_show(client, resource_group_name, environment_name)
-# #     body = instance.as_dict(keep_readonly=False)
-# #     if body['kind'] != 'Gen1':
-# #         raise InvalidArgumentValueError('Instance kind value is "{}", not match "{}"'.format(body['kind'], 'Gen1'))
-# #
-# #     patch_parameters = {
-# #         'kind': 'Gen1'
-# #     }
-# #     if sku is not None:
-# #         patch_parameters['sku'] = sku
-# #     if data_retention_time is not None:
-# #         patch_parameters['data_retention_time'] = data_retention_time
-# #     if storage_limit_exceeded_behavior is not None:
-# #         patch_parameters['storage_limit_exceeded_behavior'] = storage_limit_exceeded_behavior
-# #     if tags is not None:
-# #         patch_parameters['tags'] = tags
-# #
-# #     if len(patch_parameters) > 2:  # Only a single event source property can be updated per PATCH request
-# #         body.update(patch_parameters)
-# #         return sdk_no_wait(no_wait,
-# #                            client.begin_create_or_update,
-# #                            resource_group_name=resource_group_name,
-# #                            environment_name=environment_name,
-# #                            parameters=body)
-# #     return sdk_no_wait(no_wait,
-# #                        client.begin_update,
-# #                        resource_group_name=resource_group_name,
-# #                        environment_name=environment_name,
-# #                        environment_update_parameters=patch_parameters)
-#
+    return Patch(parameters)
 #
 # def timeseriesinsights_environment_gen2_create(client,
 #                                                resource_group_name,

@@ -74,25 +74,25 @@ Currently, only a single partition key property is supported."
 "P31D" --partition-key-properties name="DeviceId1" type="String" --sku name="S1" capacity=1 --resource-group "rg1"
 """
 
-# helps['tsi environment gen1 update'] = """
-#     type: command
-#     short-summary: "Update a gen1 environment in the specified subscription and resource group."
-#     parameters:
-#       - name: --sku
-#         short-summary: "The sku determines the type of environment, either S1 or S2. For Gen1 \
-# environments the sku determines the capacity of the environment, the ingress rate, and the billing rate."
-#         long-summary: |
-#             Usage: --sku name=XX capacity=XX
-#
-#             name: Required. The name of this SKU.
-#             capacity: Required. The capacity of the sku. This value can be changed to support scale out of \
-#             environments after they have been created.
-#     examples:
-#       - name: EnvironmentsGen1Update
-#         text: |-
-#                az tsi environment gen1 update --name "env1" --sku name="S1" capacity=2 \
-#                --resource-group "rg1" --data-retention-time "P30D" --storage-limit-exceeded-behavior PurgeOldData
-# """
+helps['tsi environment gen1 update'] = """
+    type: command
+    short-summary: "Update a gen1 environment in the specified subscription and resource group."
+    parameters:
+      - name: --sku
+        short-summary: "The sku determines the type of environment, either S1 or S2. For Gen1 \
+environments the sku determines the capacity of the environment, the ingress rate, and the billing rate."
+        long-summary: |
+            Usage: --sku name=XX capacity=XX
+
+            name: Required. The name of this SKU.
+            capacity: Required. The capacity of the sku. This value can be changed to support scale out of \
+            environments after they have been created.
+    examples:
+      - name: EnvironmentsGen1Update
+        text: |-
+               az tsi environment gen1 update --name "env1" --sku name="S1" capacity=2 \
+               --resource-group "rg1" --data-retention-time "P30D" --storage-limit-exceeded-behavior PurgeOldData
+"""
 #
 # helps['tsi environment gen2'] = """
 #     type: group

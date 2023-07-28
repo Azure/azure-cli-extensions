@@ -136,7 +136,17 @@ class Update(AAZCommand):
         time_series_id_properties.Element = AAZObjectArg(
             nullable=True,
         )
-        cls._build_args_time_series_id_property_update(time_series_id_properties.Element)
+
+        _element = cls._args_schema.gen2.time_series_id_properties.Element
+        _element.name = AAZStrArg(
+            options=["name"],
+            nullable=True,
+        )
+        _element.type = AAZStrArg(
+            options=["type"],
+            nullable=True,
+            enum={"String": "String"},
+        )
 
         warm_store_configuration = cls._args_schema.gen2.warm_store_configuration
         warm_store_configuration.data_retention = AAZDurationArg(
@@ -164,35 +174,6 @@ class Update(AAZCommand):
             nullable=True,
         )
         return cls._args_schema
-
-    _args_time_series_id_property_update = None
-
-    @classmethod
-    def _build_args_time_series_id_property_update(cls, _schema):
-        if cls._args_time_series_id_property_update is not None:
-            _schema.name = cls._args_time_series_id_property_update.name
-            _schema.type = cls._args_time_series_id_property_update.type
-            return
-
-        cls._args_time_series_id_property_update = AAZObjectArg(
-            nullable=True,
-        )
-
-        time_series_id_property_update = cls._args_time_series_id_property_update
-        time_series_id_property_update.name = AAZStrArg(
-            options=["name"],
-            help="The name of the property.",
-            nullable=True,
-        )
-        time_series_id_property_update.type = AAZStrArg(
-            options=["type"],
-            help="The type of the property.",
-            nullable=True,
-            enum={"String": "String"},
-        )
-
-        _schema.name = cls._args_time_series_id_property_update.name
-        _schema.type = cls._args_time_series_id_property_update.type
 
     def _execute_operations(self):
         self.pre_operations()
@@ -479,7 +460,12 @@ class Update(AAZCommand):
 
             time_series_id_properties = _builder.get("{kind:Gen2}.properties.timeSeriesIdProperties")
             if time_series_id_properties is not None:
-                _UpdateHelper._build_schema_time_series_id_property_update(time_series_id_properties.set_elements(AAZObjectType, "."))
+                time_series_id_properties.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get("{kind:Gen2}.properties.timeSeriesIdProperties[]")
+            if _elements is not None:
+                _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_prop("type", AAZStrType, ".type")
 
             warm_store_configuration = _builder.get("{kind:Gen2}.properties.warmStoreConfiguration")
             if warm_store_configuration is not None:
@@ -498,13 +484,6 @@ class Update(AAZCommand):
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    @classmethod
-    def _build_schema_time_series_id_property_update(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("name", AAZStrType, ".name")
-        _builder.set_prop("type", AAZStrType, ".type")
 
     _schema_environment_resource_read = None
 

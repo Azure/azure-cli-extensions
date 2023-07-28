@@ -33,7 +33,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitsi.rg')
     def test_timeseriesinsights_environment_gen1(self, resource_group):
         self.kwargs.update({
-            'env1': self.create_random_name('cli-test-tsi-env1', 24),
+            'env1': self.create_random_name('cli-test-tsi-env1', 24)
         })
 
         # Test `environment gen1 create` with optional arguments
@@ -50,7 +50,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
                          self.check('sku.capacity', 1),
                          self.check('partitionKeyProperties', [{"name": "DeviceId1", "type": "String"}]),
                          self.check('storageLimitExceededBehavior', 'PauseIngress'),
-                         self.check('dataRetentionTime', '31 days, 0:00:00')
+                         self.check('dataRetentionTime', 'P31D')
                          ])
 
         self.cmd('az tsi environment show '
@@ -64,13 +64,13 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
 
         self.cmd('az tsi environment gen1 update --resource-group {rg} --name {env1} '
                  '--storage-limit-exceeded-behavior PurgeOldData',
-                 checks=[self.check('properties.storageLimitExceededBehavior', 'PurgeOldData')])
+                 checks=[self.check('storageLimitExceededBehavior', 'PurgeOldData')])
 
         self.cmd('az tsi environment gen1 update --resource-group {rg} --name {env1} '
                  '--storage-limit-exceeded-behavior PauseIngress '
                  '--sku name=S1 capacity=1',
                  checks=[
-                     self.check('properties.storageLimitExceededBehavior', 'PauseIngress'),
+                     self.check('storageLimitExceededBehavior', 'PauseIngress'),
                      self.check('sku.capacity', '1')])
 
         self.cmd('az tsi environment gen1 update --resource-group {rg} --name {env1} '
