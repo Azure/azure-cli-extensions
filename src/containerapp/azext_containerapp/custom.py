@@ -948,6 +948,7 @@ def update_containerapp_logic(cmd,
     except Exception as e:
         handle_raw_exception(e)
 
+
 def update_container_app_source(cmd, containerapp_def, name, target_port, image, workload_profile_name, ingress, source, registry_server, registry_user, registry_pass):
         from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image, _get_registry_details, _has_dockerfile)
 
@@ -979,6 +980,7 @@ def update_container_app_source(cmd, containerapp_def, name, target_port, image,
         containerapp_def["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
 
         return containerapp_def
+
 
 def update_containerapp(cmd,
                         name,
