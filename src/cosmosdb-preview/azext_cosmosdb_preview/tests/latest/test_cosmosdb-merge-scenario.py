@@ -96,13 +96,9 @@ class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb sql database throughput update -g {rg} -a {acc} -n {db_name} --throughput 3000').get_output_in_json()
 
         # merge
-        # Currently this should throw as the feature is disabled
-        try:
-            self.assertRaises(HttpResponseError, lambda: self.cmd('az cosmosdb sql database merge -g {rg} -a {acc} -n {db_name} '))
-        except Exception as err:
-            self.assertTrue("Merge operation feature is not available" in err)
+        merge_info = self.cmd('az cosmosdb sql database merge -g {rg} -a {acc} -n {db_name} ').get_output_in_json()
+        print(merge_info)
         
-
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_mongodb_database_merge', location='eastus2')
     def test_cosmosdb_mongodb_database_merge(self, resource_group):
         col = self.create_random_name(prefix='cli', length=15)
@@ -128,8 +124,5 @@ class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb mongodb database throughput update -g {rg} -a {acc} -n {db_name} --throughput 1000')
         
         #merge
-        # Currently this should throw as the feature is disabled
-        try:
-            self.assertRaises(HttpResponseError, lambda:self.cmd('az cosmosdb mongodb database merge -g {rg} -a {acc} -n {db_name} '))
-        except Exception as err:
-            self.assertTrue("Merge operation feature is not available" in err)
+        merge_info = self.cmd('az cosmosdb mongodb database merge -g {rg} -a {acc} -n {db_name} ').get_output_in_json()
+        print(merge_info)
