@@ -2543,8 +2543,8 @@ PROXY_CONFIG_ALLOW_LIST = {
         'terminationDrainDuration',
         'caCertificatesPem'
     }
-
 }
+
 
 result_dict = {}
 
@@ -2553,6 +2553,14 @@ def aks_mesh_migration_check(cmd, client, resource_group_name, name, kubeconfig 
     from azure.cli.core import __version__ as local_version
     from packaging.version import parse
     from pprint import pprint
+    import os
+    from colorama import init as colorama_init
+    from colorama import Fore
+    from colorama import Style
+
+    colorama_init()
+
+
     
     #Look for KUBECONFIG env variable in case of no argument from user
     if "KUBECONFIG" in os.environ and kubeconfig == os.path.join(os.path.expanduser('~'), '.kube', 'config'):
@@ -2562,13 +2570,15 @@ def aks_mesh_migration_check(cmd, client, resource_group_name, name, kubeconfig 
             kubeconfig = kubeconfig_path
         else:
             logger.warning("Invalid path '%s' defined in KUBECONFIG.", kubeconfig_path)
- 
+    else:
+        kubeconfig_path = os.path.normpath(kubeconfig)
+        kubeconfig = open(kubeconfig, 'r')
     contexts, _ = kubernetes.config.list_kube_config_contexts()
     cur_context = load_kube_context(name, contexts)
     
     #ERROR_HANDLING
     if (cur_context == ''):
-        raise CLIError("Couldn't load the kube context with the clustername provided. Please check cluster name or kubeconfig.")
+        raise CLIError("Couldn't load the kube context with the clustername provided. Please check cluster name, resource group or kubeconfig.")
 
     kubernetes.config.load_kube_config(context = cur_context, config_file = kubeconfig)
     v1 = kubernetes.client.CoreV1Api()
@@ -2579,16 +2589,31 @@ def aks_mesh_migration_check(cmd, client, resource_group_name, name, kubeconfig 
         instance = kubernetes.client.CustomObjectsApi()
         if compatible_version:
             aks_mesh_check_crd_config(cmd, client, resource_group_name, name, instance, istio_version)
-    display_migrationcheck(result_dict)
+    can_migrate, total_passed = display_migrationcheck(result_dict)
+
+    if can_migrate:
+        print(f"{Fore.GREEN}\n13/13 checks passed. Your cluster is ready for migration to the AKS service mesh add-on! For more information on enabling the add-on, please read: https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon{Style.RESET_ALL}")
+        # 10/10 checks passed. Your cluster is ready for migration to the AKS service mesh add-on! For more information on enabling the add-on, please read: <ASM installation link>
+    else:
+        print(f"{Fore.RED}\nOnly {total_passed}/13 migration checks passed. Please follow suggestions inline to fix these before attempting to migrate to the AKS service mesh add-on.{Style.RESET_ALL}")
+        # if has_unallowed_config: 
+        #     print(f"{Fore.RED}\nFailed: Migration check. You have misconfigured configurations on your cluster. Try removing those configuration and and try again!{Style.RESET_ALL}")
+        # # "3/10 migration checks failed. Please follow suggestions inline to fix these before attempting to migrate to the AKS service mesh add-on."
+        # else:
+        #     print(f"{Fore.RED}\nFailed: Migration check. Your cluster is not ready to migrate to ASM(Azure Service Mesh). Make necessary changes to your installation and please try again.{Style.RESET_ALL}")
     return
+
+ 
 
 def aks_mesh_check_istio_existence(v1):
     pod_info = v1.list_pod_for_all_namespaces(label_selector="app=istiod")
-    result_dict['Istio existence'] = {}
+    asm_test = v1.list_namespaced_pod("aks-istio-system", label_selector="app=istiod")
+    if len(asm_test.items) != 0:
+        raise CLIError("ASM installation found. Check aborted")
     if len(pod_info.items) == 0:
         result_dict['Istio existence'] = {
             'status' : False,
-            'message' : 'Istio installation found.'
+            'message' : 'OSS Istio installation not found. If all the other test pass, directly install Azure Service Mesh(ASM). For more info, https://learn.microsoft.com/en-us/azure/aks/istio-about'
         }
         return False
 
@@ -2597,6 +2622,7 @@ def aks_mesh_check_istio_existence(v1):
         'message' : 'Istio installation found.'
     }
     return True
+# ['metadata']['labels']['app']
 
 def aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1):
     from pprint import pprint
@@ -2621,9 +2647,10 @@ def aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1)
                 istio_version = yaml.safe_load(item.data['values'])['global']['tag']
             except Exception:
                 continue
-    
-    #MeshConfig allowlist only contains supported ASM versions
+            
     compatible_version = True
+    #MeshConfig allowlist only contains supported ASM versions
+
     if istio_version not in MESH_CONFIG_ALLOW_LIST.keys():
         compatible_version = False
         result_dict['Istio version'] = {'status': False}
@@ -2645,30 +2672,40 @@ def aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1)
 
 def aks_mesh_check_base_requirements(cmd, client, resource_group_name, name, v1):
     from pprint import pprint
-    KUBERNETES_VERSION = aks_show(cmd, client, resource_group_name, name).kubernetes_version
-    # KUBERNETES_VERSION = show_result.kubernetes_version
+    # KUBERNETES_VERSION = aks_show(cmd, client, resource_group_name, name).kubernetes_version
+    # # KUBERNETES_VERSION = show_result.kubernetes_version
     
-    if (version.parse(KUBERNETES_VERSION) < version.parse('1.24.9')):
-        result_dict['AKS version'] = {
-            'status': False,
-            'message': "Unsupported kubernetes version found."
-        }
-    else:
-        result_dict['AKS version'] = {
-            'status': True,
-            'message': "Supported Kubernetes version found."
-        }
+    # if (version.parse(KUBERNETES_VERSION) < version.parse('1.24.9')):
+    #     result_dict['AKS version'] = {
+    #         'status': False,
+    #         'message': "Unsupported kubernetes version found."
+    #     }
+    # else:
+    #     result_dict['AKS version'] = {
+    #         'status': True,
+    #         'message': "Supported Kubernetes version found."
+    #     }
+
     try:
         mc = client.get(resource_group_name, name)
     except Exception as ex:
         raise CLIError("failed to get cluster, error: %s", ex)
+    
+    try: 
+        if mc.service_mesh_profile.mode == "Istio":
+            raise CLIError("ASM installation found. Aborting checks.")
+    except Exception:
+        pass
+    
+    # if (mc.service_mesh_profile and mc.service_mesh_profile.mode == "Istio"):
+    #     raise CLIError("ASM installation already found. Aborting checks.")
 
 
     if (mc.addon_profiles and CONST_OPEN_SERVICE_MESH_ADDON_NAME in mc.addon_profiles and
     mc.addon_profiles[CONST_OPEN_SERVICE_MESH_ADDON_NAME].enabled):
         result_dict['OSM installation'] = {
             'status': False,
-            'message': "OSM installation found."
+            'message': "OSM add-on must be disabled before migration to the Istio-based service mesh add-on. For more information, https://learn.microsoft.com/en-us/azure/aks/open-service-mesh-uninstall-add-on"
         }
     else:
         result_dict['OSM installation'] = {
@@ -2679,7 +2716,7 @@ def aks_mesh_check_base_requirements(cmd, client, resource_group_name, name, v1)
     if ((mc.network_profile) and (mc.network_profile.network_dataplane == "cilium")):
         result_dict['Cilium'] = {
             'status': False,
-            'message': "Azure CNI Cilium installation found."
+            'message': "Azure CNI Cilium must be uninstalled before migrating to the Istio-based service mesh add-on"
         }
     else:
         result_dict['Cilium'] = {
@@ -2696,7 +2733,7 @@ def aks_mesh_check_base_requirements(cmd, client, resource_group_name, name, v1)
         if (item.os_type == "Windows"):
             result_dict['Windows Server Container'] = {
                 'status': False,
-                'message': "Windows Server Container installation found."
+                'message': "Windows Server Containers should be deleted before migrating to the Istio-based serbice mesh addon."
             }    
     return
 
@@ -2722,7 +2759,7 @@ def aks_mesh_check_crd_config(cmd, client, resource_group_name, name, instance, 
             else:
                 result_dict[cr_name] = {
                     'status': False, 
-                    'message': "non-default {} custom resource found".format(cr_name)
+                    'message': "non-default {} custom resource found. Please delete the {} custom resource configuration before trying again.".format(cr_name, cr_name)
                 }
         except Exception:
             result_dict[cr_name] = {
@@ -2773,17 +2810,25 @@ def load_kube_context(name, contexts):
 
 
 def display_migrationcheck(result_dictionary):
+    test_passed = 0
+    #To check if the user has unallowed configuration in their CRDS, meshconfig and proxyconfig
+    has_unallowed_configurations = False
     for item, value in result_dictionary.items():
+        if (item in ["Meshconfig", "Proxyconfig", "Telemetry", "IstioOperator", "Wasmplugins", "WorkloadGroup", "WorkloadEntry"] and  not value['status']):
+            has_unallowed_configurations = True
         if value['status']:
             test_status = "Passed"
+            test_passed += 1
             color = 'green'
             sign = u'\u2713'
         else:
             test_status = "Failed"
             color = 'red'
             sign = "X"
-        print(colored("{}: {} test. {} {}".format(test_status, item, value['message'], sign), color))
+            can_migrate = False
+        print(colored("{}: {} test. {}".format(sign, item, value['message']), color))
         time.sleep(1)
+    return can_migrate, test_passed
         
         
 def check_istio_version(supported_versions, istio_version, result_dict):
@@ -2794,7 +2839,7 @@ def check_istio_version(supported_versions, istio_version, result_dict):
     for supported_version in supported_versions:
         if (version.parse(istio_version) < version.parse(supported_version)):
             is_greater = False
-            result_dict['Istio version']['message'] = "Unsupported Istio version found. Please upgrade istio before trying to migrate."
+            result_dict['Istio version']['message'] = "Unsupported Istio version {} found. Please upgrade istio before trying to migrate.".format(istio_version)
         else:
             is_greater = True
     if is_greater:
@@ -2830,7 +2875,7 @@ def check_config(config_set, allow_list, istio_version, config_name):
     else:
         result_dict[config_name] = {
             'status' : False,
-            'message': "Disallowed configuration found in {}: {}".format(config_name, disallowed_configs)
+            'message': "The following disallowed configs : {} were found in {}. Please modify your {} configuration removing the disallowed fields.".format(disallowed_configs, config_name, config_name)
         }
     return 
 

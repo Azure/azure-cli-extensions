@@ -899,6 +899,9 @@ def load_arguments(self, _):
     with self.argument_context('aks mesh disable-ingress-gateway') as c:
         c.argument('ingress_gateway_type',
                    arg_type=get_enum_type(ingress_gateway_types))
+        
+    with self.argument_context('aks mesh check-migration') as c:
+        c.argument('kubeconfig')
 
 
 def _get_default_install_location(exe_name):
