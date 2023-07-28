@@ -77,7 +77,7 @@ class Create(AAZCommand):
         )
         cls._build_args_local_timestamp_create(_args_schema.local_timestamp)
         _args_schema.location = AAZStrArg(
-            options=["--location"],
+            options=["-l", "--location"],
             arg_group="Parameters",
             help="The location of the resource.",
             required=True,

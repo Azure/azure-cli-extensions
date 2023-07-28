@@ -65,7 +65,7 @@ class Create(AAZCommand):
             arg_group="Parameters",
         )
         _args_schema.location = AAZStrArg(
-            options=["--location"],
+            options=["-l", "--location"],
             arg_group="Parameters",
             help="The location of the resource.",
             required=True,
