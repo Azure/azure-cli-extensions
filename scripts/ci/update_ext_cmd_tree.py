@@ -96,6 +96,8 @@ def upload_cmd_tree():
 
 if __name__ == '__main__':
     for ext in sys.argv[1:]:
-        update_cmd_tree(ext)
-        print()
+        # Exception: Key: show already exists in containerapp. 2 extensions cannot have the same command!
+        if ext != 'containerapp-preview':
+            update_cmd_tree(ext)
+            print()
     upload_cmd_tree()
