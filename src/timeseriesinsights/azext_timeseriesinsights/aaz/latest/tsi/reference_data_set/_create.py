@@ -54,7 +54,7 @@ class Create(AAZCommand):
             help="Name of the reference data set.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]",
+                pattern="^[A-Za-z0-9]+$",
                 max_length=63,
                 min_length=3,
             ),

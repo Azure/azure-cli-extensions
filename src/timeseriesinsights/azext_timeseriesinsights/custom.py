@@ -8,6 +8,8 @@
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from .aaz.latest.tsi.environment import Create as _EnvironmentCreate
+from .aaz.latest.tsi.reference_data_set import Create as _ReferenceDataSetCreate
+from .aaz.latest.tsi.reference_data_set import List as _ReferenceDataSetList
 
 
 def timeseriesinsights_environment_gen1_create(cmd, resource_group_name,
@@ -327,11 +329,14 @@ def timeseriesinsights_environment_gen1_create(cmd, resource_group_name,
 #                          event_source_update_parameters=patch_parameters)
 #
 #
-# def timeseriesinsights_reference_data_set_list(client,
-#                                                resource_group_name,
-#                                                environment_name):
-#     return client.list_by_environment(resource_group_name=resource_group_name,
-#                                       environment_name=environment_name).value
+def timeseriesinsights_reference_data_set_list(cmd,
+                                               resource_group_name,
+                                               environment_name):
+    List = _ReferenceDataSetList(cmd.loader)
+    parameters = {}
+    parameters['resource_group'] = resource_group_name
+    parameters['environment_name'] = environment_name
+    return List(parameters)["value"]
 #
 #
 # def timeseriesinsights_reference_data_set_show(client,
@@ -343,23 +348,24 @@ def timeseriesinsights_environment_gen1_create(cmd, resource_group_name,
 #                       reference_data_set_name=reference_data_set_name)
 #
 #
-# def timeseriesinsights_reference_data_set_create(client,
-#                                                  resource_group_name,
-#                                                  environment_name,
-#                                                  reference_data_set_name,
-#                                                  location,
-#                                                  key_properties,
-#                                                  tags=None,
-#                                                  data_string_comparison_behavior=None):
-#     parameters = {}
-#     parameters['location'] = location
-#     parameters['tags'] = tags
-#     parameters['key_properties'] = key_properties
-#     parameters['data_string_comparison_behavior'] = data_string_comparison_behavior
-#     return client.create_or_update(resource_group_name=resource_group_name,
-#                                    environment_name=environment_name,
-#                                    reference_data_set_name=reference_data_set_name,
-#                                    parameters=parameters)
+def timeseriesinsights_reference_data_set_create(cmd,
+                                                 resource_group_name,
+                                                 environment_name,
+                                                 reference_data_set_name,
+                                                 location,
+                                                 key_properties,
+                                                 tags=None,
+                                                 data_string_comparison_behavior=None):
+    Create = _ReferenceDataSetCreate(cmd.loader)
+    parameters = {}
+    parameters['resource_group'] = resource_group_name
+    parameters['environment_name'] = environment_name
+    parameters['reference_data_set_name'] = reference_data_set_name
+    parameters['location'] = location
+    parameters['tags'] = tags
+    parameters['key_properties'] = key_properties
+    parameters['data_string_comparison_behavior'] = data_string_comparison_behavior
+    return Create(parameters)
 #
 #
 # def timeseriesinsights_reference_data_set_update(client,

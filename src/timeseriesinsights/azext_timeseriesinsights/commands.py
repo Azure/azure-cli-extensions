@@ -12,7 +12,10 @@ from azure.cli.core.commands import CliCommandType
 def load_command_table(self, _):
     with self.command_group('tsi environment gen1') as g:
         g.custom_command('create', 'timeseriesinsights_environment_gen1_create', supports_no_wait=True)
-        # g.custom_command('update', 'timeseriesinsights_environment_gen1_update', supports_no_wait=True)
+
+    with self.command_group('tsi reference-data-set') as g:
+        g.custom_command('create', 'timeseriesinsights_reference_data_set_create')
+        g.custom_command('list', 'timeseriesinsights_reference_data_set_list')
 
     pass
     # from azext_timeseriesinsights._client_factory import cf_environment

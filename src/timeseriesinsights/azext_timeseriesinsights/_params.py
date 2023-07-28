@@ -164,25 +164,25 @@ def load_arguments(self, _):
     #     c.argument('environment_name', id_part=None)
     #     c.argument('event_source_name', id_part=None)
     #
-    # with self.argument_context('tsi reference-data-set') as c:
-    #     c.argument('resource_group_name', resource_group_name_type)
-    #     c.argument('environment_name', type=str, help='The name of the Time Series Insights environment associated '
-    #                'with the specified resource group.', id_part='name')
-    #     c.argument('reference_data_set_name', options_list=['--name', '-n', '--reference-data-set-name'], type=str,
-    #                help='The name of the Time Series Insights reference data set associated with the specified '
-    #                'environment.', id_part='child_name_1')
-    #     c.argument('location', arg_type=get_location_type(self.cli_ctx),
-    #                validator=get_default_location_from_resource_group)
-    #     c.argument('tags', tags_type)
-    #     c.argument('key_properties', action=AddKeyProperties, nargs='+', help='The list of key properties for the '
-    #                'reference data set.')
-    #     c.argument('data_string_comparison_behavior',
-    #                options_list=['--comparison-behavior', '--data-string-comparison-behavior'],
-    #                arg_type=get_enum_type(['Ordinal', 'OrdinalIgnoreCase']), help='The reference data set key '
-    #                'comparison behavior can be set using this property. By default, the '
-    #                'value is \'Ordinal\' - which means case sensitive key comparison will be performed while joining '
-    #                'reference data with events or while adding new reference data. When \'OrdinalIgnoreCase\' is set, '
-    #                'case insensitive comparison will be used.')
+    with self.argument_context('tsi reference-data-set') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('environment_name', type=str, help='The name of the Time Series Insights environment associated '
+                   'with the specified resource group.', id_part='name')
+        c.argument('reference_data_set_name', options_list=['--name', '-n', '--reference-data-set-name'], type=str,
+                   help='The name of the Time Series Insights reference data set associated with the specified '
+                   'environment.', id_part='child_name_1')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+                   validator=get_default_location_from_resource_group)
+        c.argument('tags', tags_type)
+        c.argument('key_properties', action=AddKeyProperties, nargs='+', help='The list of key properties for the '
+                   'reference data set.')
+        c.argument('data_string_comparison_behavior',
+                   options_list=['--comparison-behavior', '--data-string-comparison-behavior'],
+                   arg_type=get_enum_type(['Ordinal', 'OrdinalIgnoreCase']), help='The reference data set key '
+                   'comparison behavior can be set using this property. By default, the '
+                   'value is \'Ordinal\' - which means case sensitive key comparison will be performed while joining '
+                   'reference data with events or while adding new reference data. When \'OrdinalIgnoreCase\' is set, '
+                   'case insensitive comparison will be used.')
     #
     # with self.argument_context('tsi reference-data-set create') as c:
     #     c.argument('environment_name', id_part=None)

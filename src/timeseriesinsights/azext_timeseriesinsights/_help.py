@@ -308,26 +308,26 @@ Currently, only a single partition key property is supported."
 # "rg1"
 # """
 #
-# helps['tsi reference-data-set create'] = """
-#     type: command
-#     short-summary: "Create a reference data set in the specified environment."
-#     parameters:
-#       - name: --key-properties
-#         short-summary: "The list of key properties for the reference data set."
-#         long-summary: |
-#             Usage: --key-properties name=XX type=XX
-#
-#             name: The name of the key property.
-#             type: The type of the key property.
-#
-#             Multiple actions can be specified by using more than one --key-properties argument.
-#     examples:
-#       - name: ReferenceDataSetsCreate
-#         text: |-
-#                az tsi reference-data-set create --environment-name "env1" --location westus \
-# --key-properties name="DeviceId1" type="String" --key-properties name="DeviceFloor" type="Double" --name "rds1" \
-# --resource-group "rg1"
-# """
+helps['tsi reference-data-set create'] = """
+    type: command
+    short-summary: "Create a reference data set in the specified environment."
+    parameters:
+      - name: --key-properties
+        short-summary: "The list of key properties for the reference data set."
+        long-summary: |
+            Usage: --key-properties name=XX type=XX
+
+            name: The name of the key property.
+            type: The type of the key property.
+
+            Multiple actions can be specified by using more than one --key-properties argument.
+    examples:
+      - name: ReferenceDataSetsCreate
+        text: |-
+               az tsi reference-data-set create --environment-name "env1" --location westus \
+--key-properties name="DeviceId1" type="String" --key-properties name="DeviceFloor" type="Double" --name "rds1" \
+--resource-group "rg1"
+"""
 #
 # helps['tsi reference-data-set update'] = """
 #     type: command
