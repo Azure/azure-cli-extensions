@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a LocalRulesResource
+
+    :example: Get a LocalRulesResource
+        az palo-alto cloudngfw local-rulestack local-rule show -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --priority "1"
     """
 
     _aaz_info = {

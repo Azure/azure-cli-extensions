@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw firewall get-log-profile",
 )
 class GetLogProfile(AAZCommand):
-    """Log Profile for Firewall
+    """Get Log Profile for Firewall
+
+    :example: Get Log Profile for Firewall
+        az palo-alto cloudngfw firewall get-log-profile --resource-group MyResourceGroup -n MyCloudngfwFirewall
     """
 
     _aaz_info = {

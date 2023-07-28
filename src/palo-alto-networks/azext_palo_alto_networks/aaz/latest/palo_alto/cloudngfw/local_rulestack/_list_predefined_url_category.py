@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListPredefinedUrlCategory(AAZCommand):
     """List predefined URL categories for rulestack
+
+    :example: List predefined URL categories for rulestack
+        az palo-alto cloudngfw local-rulestack list-predefined-url-category -g MyResourceGroup -n MyLocalRulestacks
     """
 
     _aaz_info = {
@@ -52,9 +55,11 @@ class ListPredefinedUrlCategory(AAZCommand):
         )
         _args_schema.skip = AAZStrArg(
             options=["--skip"],
+            help="LocalRulestack resource skip",
         )
         _args_schema.top = AAZIntArg(
             options=["--top"],
+            help="LocalRulestack resource top",
         )
         return cls._args_schema
 

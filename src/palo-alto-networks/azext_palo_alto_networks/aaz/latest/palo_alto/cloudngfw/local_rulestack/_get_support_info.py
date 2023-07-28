@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw local-rulestack get-support-info",
 )
 class GetSupportInfo(AAZCommand):
-    """support info for rulestack.
+    """Support info for rulestack.
+
+    :example: Support info for rulestack.
+        az palo-alto cloudngfw local-rulestack get-support-info -g MyResourceGroup -n MyLocalRulestacks
     """
 
     _aaz_info = {

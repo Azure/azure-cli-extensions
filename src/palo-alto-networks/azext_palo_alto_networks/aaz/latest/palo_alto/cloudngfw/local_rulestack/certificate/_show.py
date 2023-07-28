@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a CertificateObjectLocalRulestackResource
+
+    :example: Get a CertificateObjectLocalRulestackResource
+        az palo-alto cloudngfw local-rulestack certificate show -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --name MyCertificate
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a FqdnListLocalRulestackResource
+
+    :example: Create a FqdnListLocalRulestackResource
+        az palo-alto cloudngfw local-rulestack fqdnlist create -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --name MyFqdnlist --audit-comment "string" --description "description" --fqdn-list ["string1","string2"]
     """
 
     _aaz_info = {

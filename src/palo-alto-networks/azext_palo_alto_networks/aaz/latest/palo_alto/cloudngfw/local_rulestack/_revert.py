@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Revert(AAZCommand):
     """Revert rulestack configuration
+
+    :example: Revert rulestack configuration
+        az palo-alto cloudngfw local-rulestack revert -g MyResourceGroup -n MyLocalRulestacks
     """
 
     _aaz_info = {

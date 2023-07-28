@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListAdvancedSecurityObject(AAZCommand):
     """Get the list of advanced security objects
+
+    :example: Get the list of advanced security objects
+        az palo-alto cloudngfw local-rulestack list-advanced-security-object -g MyResourceGroup -n MyLocalRulestacks --type feeds
     """
 
     _aaz_info = {
@@ -52,12 +55,15 @@ class ListAdvancedSecurityObject(AAZCommand):
         )
         _args_schema.skip = AAZStrArg(
             options=["--skip"],
+            help="LocalRulestack resource skip",
         )
         _args_schema.top = AAZIntArg(
             options=["--top"],
+            help="LocalRulestack resource top",
         )
         _args_schema.type = AAZStrArg(
             options=["--type"],
+            help="LocalRulestack resource type",
             required=True,
             enum={"feeds": "feeds", "urlCustom": "urlCustom"},
         )

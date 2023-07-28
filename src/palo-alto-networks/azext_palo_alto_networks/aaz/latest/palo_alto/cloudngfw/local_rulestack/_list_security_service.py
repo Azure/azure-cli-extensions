@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListSecurityService(AAZCommand):
     """List the security services for rulestack
+
+    :example: List the security services for rulestack
+        az palo-alto cloudngfw local-rulestack list-security-service -g MyResourceGroup -n MyLocalRulestacks --type antiSpyware
     """
 
     _aaz_info = {
@@ -52,12 +55,15 @@ class ListSecurityService(AAZCommand):
         )
         _args_schema.skip = AAZStrArg(
             options=["--skip"],
+            help="LocalRulestack resource skip",
         )
         _args_schema.top = AAZIntArg(
             options=["--top"],
+            help="LocalRulestack resource top",
         )
         _args_schema.type = AAZStrArg(
             options=["--type"],
+            help="LocalRulestack resource type",
             required=True,
             enum={"antiSpyware": "antiSpyware", "antiVirus": "antiVirus", "dnsSubscription": "dnsSubscription", "fileBlocking": "fileBlocking", "ipsVulnerability": "ipsVulnerability", "urlFiltering": "urlFiltering"},
         )

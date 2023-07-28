@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a FirewallResource
+
+    :example: Update a FirewallResource
+        az palo-alto cloudngfw firewall update --name MyCloudngfwFirewall -g MyResourceGroup --tags {"tagName":"value"}
     """
 
     _aaz_info = {

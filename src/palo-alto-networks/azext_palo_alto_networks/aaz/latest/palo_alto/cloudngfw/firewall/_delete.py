@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a FirewallResource
+
+    :example: Delete a FirewallResource
+        az palo-alto cloudngfw firewall delete --resource-group MyResourceGroup -n MyCloudngfwFirewall
     """
 
     _aaz_info = {

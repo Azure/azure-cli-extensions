@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List LocalRulestackResource resources by subscription ID
+
+    :example: List LocalRulestackResource resources by subscription ID
+        az palo-alto cloudngfw local-rulestack list -g MyResourceGroup
     """
 
     _aaz_info = {
@@ -25,6 +28,8 @@ class List(AAZCommand):
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks", "2022-08-29"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)

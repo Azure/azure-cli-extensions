@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List FirewallResource resources by subscription ID
+
+    :example: List FirewallResource resources by subscription ID
+        az palo-alto cloudngfw firewall list --resource-group MyResourceGroup
     """
 
     _aaz_info = {
@@ -25,6 +28,8 @@ class List(AAZCommand):
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/firewalls", "2022-08-29"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)

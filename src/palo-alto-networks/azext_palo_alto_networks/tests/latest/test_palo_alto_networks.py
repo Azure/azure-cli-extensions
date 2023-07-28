@@ -116,6 +116,8 @@ class PaloAltoNetworksScenario(ScenarioTest):
                  '--scope "LOCAL" '
                  '--security-services {{"vulnerability-profile":"BestPractice","anti-spyware-profile":"BestPractice","anti-virus-profile":"BestPractice","url-filtering-profile":"BestPractice","file-blocking-profile":"BestPractice","dns-subscription":"BestPractice"}}')
         self.cmd('az palo-alto cloudngfw local-rulestack update -g {rg} -n {local_rulestack_name} --tags {{"tag-name":"value"}}')
+        self.cmd('az palo-alto cloudngfw local-rulestack list -g {rg}')
+        self.cmd('az palo-alto cloudngfw local-rulestack show -g {rg} -n {local_rulestack_name}')
         self.cmd('az palo-alto cloudngfw local-rulestack get-change-log -g {rg} -n {local_rulestack_name}')
         self.cmd('az palo-alto cloudngfw local-rulestack get-support-info -g {rg} -n {local_rulestack_name}')
         self.cmd('az palo-alto cloudngfw local-rulestack list-app-id -g {rg} -n {local_rulestack_name}')

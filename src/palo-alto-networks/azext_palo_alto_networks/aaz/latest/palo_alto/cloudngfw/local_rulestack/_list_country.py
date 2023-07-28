@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListCountry(AAZCommand):
     """List of countries for Rulestack
+
+    :example: List of countries for Rulestack
+        az palo-alto cloudngfw local-rulestack list-country -g MyResourceGroup -n MyLocalRulestacks
     """
 
     _aaz_info = {
@@ -52,9 +55,11 @@ class ListCountry(AAZCommand):
         )
         _args_schema.skip = AAZStrArg(
             options=["--skip"],
+            help="LocalRulestack resource skip",
         )
         _args_schema.top = AAZIntArg(
             options=["--top"],
+            help="LocalRulestack resource top",
         )
         return cls._args_schema
 

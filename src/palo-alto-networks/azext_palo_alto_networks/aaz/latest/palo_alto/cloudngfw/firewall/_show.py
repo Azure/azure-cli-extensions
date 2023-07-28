@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a FirewallResource
+
+    :example: Get a FirewallResource
+        az palo-alto cloudngfw firewall show --name MyCloudngfwFirewall -g MyResourceGroup
     """
 
     _aaz_info = {

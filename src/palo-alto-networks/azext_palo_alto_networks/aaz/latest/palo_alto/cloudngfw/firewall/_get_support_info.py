@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw firewall get-support-info",
 )
 class GetSupportInfo(AAZCommand):
-    """support info for firewall.
+    """Support info for firewall.
+
+    :example: Get support info for firewall.
+        az palo-alto cloudngfw firewall get-support-info --resource-group MyResourceGroup -n MyCloudngfwFirewall
     """
 
     _aaz_info = {

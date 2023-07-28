@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListAppId(AAZCommand):
     """List of AppIds for LocalRulestack ApiVersion
+
+    :example: List of AppIds for LocalRulestack ApiVersion
+        az palo-alto cloudngfw local-rulestack list-app-id -g MyResourceGroup -n MyLocalRulestacks
     """
 
     _aaz_info = {
@@ -52,15 +55,19 @@ class ListAppId(AAZCommand):
         )
         _args_schema.app_id_version = AAZStrArg(
             options=["--app-id-version"],
+            help="LocalRulestack resource app-id-version",
         )
         _args_schema.app_prefix = AAZStrArg(
             options=["--app-prefix"],
+            help="LocalRulestack resource app-prefix",
         )
         _args_schema.skip = AAZStrArg(
             options=["--skip"],
+            help="LocalRulestack resource skip",
         )
         _args_schema.top = AAZIntArg(
             options=["--top"],
+            help="LocalRulestack resource top",
         )
         return cls._args_schema
 

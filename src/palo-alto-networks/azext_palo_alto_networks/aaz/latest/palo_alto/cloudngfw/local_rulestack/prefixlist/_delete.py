@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a PrefixListResource
+
+    :example: Delete a PrefixListResource
+        az palo-alto cloudngfw local-rulestack prefixlist delete -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --name MyPrefixlist
     """
 
     _aaz_info = {

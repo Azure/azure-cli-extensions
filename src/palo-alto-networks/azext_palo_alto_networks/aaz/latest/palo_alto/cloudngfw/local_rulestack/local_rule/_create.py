@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a LocalRulesResource
+
+    :example: Create a LocalRulesResource
+        az palo-alto cloudngfw local-rulestack local-rule create -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --rule-name MyLocalRule --priority "1" --action-type "Allow" --enable-logging "DISABLED" --rule-state "DISABLED"
     """
 
     _aaz_info = {
@@ -108,7 +111,7 @@ class Create(AAZCommand):
             help="etag info",
         )
         _args_schema.inbound_inspection_certificate = AAZStrArg(
-            options=["--inbound-inspection-certificate"],
+            options=["--inbound-certificate", "--inbound-inspection-certificate"],
             arg_group="Properties",
             help="inbound Inspection Certificate",
         )

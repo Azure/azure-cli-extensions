@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a PrefixListResource
+
+    :example: Get a PrefixListResource
+        az palo-alto cloudngfw local-rulestack prefixlist show -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --name MyPrefixlist
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a LocalRulestackResource
+
+    :example: Update a LocalRulestackResource
+        az palo-alto cloudngfw local-rulestack update -g MyResourceGroup -n MyLocalRulestacks --tags {"tag-name":"value"}
     """
 
     _aaz_info = {

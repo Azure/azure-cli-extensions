@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a CertificateObjectLocalRulestackResource
+
+    :example: Delete a CertificateObjectLocalRulestackResource
+        az palo-alto cloudngfw local-rulestack certificate delete -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --name MyCertificate
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a FqdnListLocalRulestackResource
+
+    :example: Get a FqdnListLocalRulestackResource
+        az palo-alto cloudngfw local-rulestack fqdnlist show  -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --name MyFqdnlist
     """
 
     _aaz_info = {

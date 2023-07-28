@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a LocalRulesResource
+
+    :example: Delete a LocalRulesResource
+        az palo-alto cloudngfw local-rulestack local-rule delete -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --priority "1"
     """
 
     _aaz_info = {

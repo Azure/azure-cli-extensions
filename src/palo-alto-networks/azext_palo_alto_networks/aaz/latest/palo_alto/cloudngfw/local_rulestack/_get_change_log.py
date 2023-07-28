@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class GetChangeLog(AAZCommand):
     """Get changelog
+
+    :example: Get changelog
+        az palo-alto cloudngfw local-rulestack get-change-log -g MyResourceGroup -n MyLocalRulestacks
     """
 
     _aaz_info = {

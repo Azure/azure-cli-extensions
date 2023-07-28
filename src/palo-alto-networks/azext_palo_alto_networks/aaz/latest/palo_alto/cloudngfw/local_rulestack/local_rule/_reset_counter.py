@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ResetCounter(AAZCommand):
     """Reset counters
+
+    :example: Reset counters
+        az palo-alto cloudngfw local-rulestack local-rule reset-counter -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --priority "1"
     """
 
     _aaz_info = {
@@ -58,6 +61,7 @@ class ResetCounter(AAZCommand):
         )
         _args_schema.firewall_name = AAZStrArg(
             options=["--firewall-name"],
+            help="Firewall resource name",
         )
         return cls._args_schema
 

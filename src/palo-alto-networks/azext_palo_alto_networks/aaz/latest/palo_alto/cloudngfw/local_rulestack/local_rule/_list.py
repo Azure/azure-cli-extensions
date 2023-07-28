@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List LocalRulesResource resources by LocalRulestacks
+
+    :example: List LocalRulesResource resources by LocalRulestacks
+        az palo-alto cloudngfw local-rulestack local-rule list -g MyResourceGroup --local-rulestack-name MyLocalRulestacks
     """
 
     _aaz_info = {

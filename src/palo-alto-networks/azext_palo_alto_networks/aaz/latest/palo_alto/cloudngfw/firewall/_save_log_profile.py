@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "palo-alto cloudngfw firewall save-log-profile",
 )
 class SaveLogProfile(AAZCommand):
-    """Log Profile for Firewall
+    """Save Log Profile for Firewall
+
+    :example: Save Log Profile for Firewall
+        az palo-alto cloudngfw firewall save-log-profile --resource-group MyResourceGroup -n MyCloudngfwFirewall --log-option "SAME_DESTINATION" --log-type "TRAFFIC"
     """
 
     _aaz_info = {
@@ -66,7 +69,7 @@ class SaveLogProfile(AAZCommand):
         )
         cls._build_args_log_destination_create(_args_schema.common_destination)
         _args_schema.decrypt_log_destination = AAZObjectArg(
-            options=["--decrypt-log-destination"],
+            options=["--decrypt-destination", "--decrypt-log-destination"],
             arg_group="LogSettings",
             help="Decrypt destination configurations",
         )
@@ -84,13 +87,13 @@ class SaveLogProfile(AAZCommand):
             enum={"AUDIT": "AUDIT", "DECRYPTION": "DECRYPTION", "DLP": "DLP", "THREAT": "THREAT", "TRAFFIC": "TRAFFIC", "WILDFIRE": "WILDFIRE"},
         )
         _args_schema.threat_log_destination = AAZObjectArg(
-            options=["--threat-log-destination"],
+            options=["--threat-destination", "--threat-log-destination"],
             arg_group="LogSettings",
             help="Threat destination configurations",
         )
         cls._build_args_log_destination_create(_args_schema.threat_log_destination)
         _args_schema.traffic_log_destination = AAZObjectArg(
-            options=["--traffic-log-destination"],
+            options=["--traffic-destination", "--traffic-log-destination"],
             arg_group="LogSettings",
             help="Traffic destination configurations",
         )

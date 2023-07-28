@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a CertificateObjectLocalRulestackResource
+
+    :example: Create a CertificateObjectLocalRulestackResource
+        az palo-alto cloudngfw local-rulestack certificate create -g MyResourceGroup --local-rulestack-name MyLocalRulestacks --name MyCertificate --audit-comment "comment" --certificate-self-signed "TRUE" --description "description"
     """
 
     _aaz_info = {
@@ -65,14 +68,14 @@ class Create(AAZCommand):
             help="comment for this object",
         )
         _args_schema.certificate_self_signed = AAZStrArg(
-            options=["--certificate-self-signed"],
+            options=["--certificate-signed", "--certificate-self-signed"],
             arg_group="Properties",
             help="use certificate self signed",
             required=True,
             enum={"FALSE": "FALSE", "TRUE": "TRUE"},
         )
-        _args_schema.certificate_signer_resource_id = AAZStrArg(
-            options=["--certificate-signer-resource-id"],
+        _args_schema.certificate_signer_id = AAZStrArg(
+            options=["--certificate-signer-id"],
             arg_group="Properties",
             help="Resource Id of certificate signer, to be populated only when certificateSelfSigned is false",
         )
@@ -204,7 +207,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("auditComment", AAZStrType, ".audit_comment")
                 properties.set_prop("certificateSelfSigned", AAZStrType, ".certificate_self_signed", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("certificateSignerResourceId", AAZStrType, ".certificate_signer_resource_id")
+                properties.set_prop("certificateSignerResourceId", AAZStrType, ".certificate_signer_id")
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("etag", AAZStrType, ".etag")
 

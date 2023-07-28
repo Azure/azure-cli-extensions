@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List CertificateObjectLocalRulestackResource resources by LocalRulestacks
+
+    :example: List CertificateObjectLocalRulestackResource resources by LocalRulestacks
+        az palo-alto cloudngfw local-rulestack certificate list -g MyResourceGroup --local-rulestack-name MyLocalRulestacks
     """
 
     _aaz_info = {
@@ -24,6 +27,8 @@ class List(AAZCommand):
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/paloaltonetworks.cloudngfw/localrulestacks/{}/certificates", "2022-08-29"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
