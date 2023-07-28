@@ -542,7 +542,7 @@ def update_containerapp_logic(cmd,
         parsed = urlparse(registry_server)
         registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
         registry_user, registry_pass, _ = _get_acr_cred(cmd.cli_ctx, registry_name)
-        new_containerapp = update_container_app_source(cmd=cmd,containerapp_def=containerapp_def, name=name, target_port=target_port, image=image, workload_profile_name=workload_profile_name, ingress=ingress, source=source, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
+        new_containerapp = update_container_app_source(cmd=cmd, containerapp_def=containerapp_def, name=name, target_port=target_port, image=image, workload_profile_name=workload_profile_name, ingress=ingress, source=source, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
         # Update image if --source was used to build the app.
         image = new_containerapp["properties"]["template"]["containers"][0]["image"]
     if from_revision:
@@ -950,6 +950,7 @@ def update_containerapp_logic(cmd,
 
 def update_container_app_source(cmd, containerapp_def, name, target_port, image, workload_profile_name, ingress, source, registry_server, registry_user, registry_pass):
         from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image, _get_registry_details, _has_dockerfile)
+
         # Parse resource group name and managed env name
         env_id = containerapp_def["properties"]['environmentId']
         parsed_managed_env = parse_resource_id(env_id)
@@ -957,8 +958,9 @@ def update_container_app_source(cmd, containerapp_def, name, target_port, image,
         env_rg = parsed_managed_env['resource_group']
 
         # Set image to None if it was previously set to the default image (case where image was not provided by the user) else reformat it
-        image = None if image is None else _reformat_image(source=source,image=image,repo=None)
+        image = None if image is None else _reformat_image(source=source, image=image, repo=None)
         location = containerapp_def["location"]
+
         # Construct ContainerApp
         resource_group = ResourceGroup(cmd, env_rg, location=location)
         env = ContainerAppEnvironment(cmd, env_name, resource_group, location=location)
@@ -975,6 +977,7 @@ def update_container_app_source(cmd, containerapp_def, name, target_port, image,
 
         # Update image
         containerapp_def["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
+
         return containerapp_def
 
 def update_containerapp(cmd,
