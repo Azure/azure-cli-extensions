@@ -31,6 +31,8 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ContinuousTier
 )
 
+from azure.cli.core.util import shell_safe_json_parse
+
 from azure.cli.core.commands.parameters import (
     tags_type, get_resource_name_completion_list, name_type, get_enum_type, get_three_state_flag, get_location_type)
 
@@ -41,7 +43,8 @@ from azure.cli.command_modules.cosmosdb.actions import (
     CreateLocation, CreateDatabaseRestoreResource, UtcDatetimeAction)
 
 from azure.cli.command_modules.cosmosdb._validators import (
-    validate_capabilities, validate_virtual_network_rules, validate_ip_range_filter)
+    validate_capabilities, validate_virtual_network_rules, validate_ip_range_filter,
+    validate_client_encryption_policy)
 
 
 MONGO_ROLE_DEFINITION_EXAMPLE = """--body "{
@@ -62,6 +65,35 @@ MONGO_USER_DEFINITION_EXAMPLE = """--body "{
 \\"Mechanisms\\": \\"SCRAM-SHA-256\\"
 \\"DatabaseName\\": \\"MyDb\\",
 \\"Roles\\": [ {\\"Role\\": \\"myReadRole\\",\\"Db\\": \\"MyDb\\"}]
+}"
+"""
+
+SQL_MATERIALIZEDVIEW_DEFINITION_EXAMPLE = """--materialized-view-definition -m '{
+    \"sourceCollectionId\": \"MySourceCollectionName\",
+    \"definition\": \"SELECT * FROM root r\"}'
+"""
+
+SQL_GREMLIN_INDEXING_POLICY_EXAMPLE = """--idx "{
+    \\"indexingMode\\": \\"consistent\\",
+    \\"automatic\\": true,
+    \\"includedPaths\\": [{\\"path\\": \\"/*\\"}],
+    \\"excludedPaths\\": [{ \\"path\\": \\"/headquarters/employees/?\\"}, { \\"path\\": \\"/\\\\"_etag\\\\"/?\\"}]
+}"
+"""
+
+SQL_UNIQUE_KEY_POLICY_EXAMPLE = """--unique-key-policy "{
+    \\"uniqueKeys\\": [{\\"paths\\": [\\"/path/to/key1\\"]}, {\\"paths\\": [\\"/path/to/key2\\"]}]
+}"
+"""
+
+SQL_CLIENT_ENCRYPTION_POLICY_EXAMPLE = """--cep "{
+    \\"includedPaths\\": [{\\"path\\": \\"/path1\\",\\"clientEncryptionKeyId\\": \\"key1\\",\\"encryptionAlgorithm\\": \\"AEAD_AES_256_CBC_HMAC_SHA256\\",\\"encryptionType\\": \\"Deterministic\\"}],
+    \\"policyFormatVersion\\": 2}"
+"""
+
+SQL_GREMLIN_CONFLICT_RESOLUTION_POLICY_EXAMPLE = """--conflict-resolution-policy "{
+    \\"mode\\": \\"lastWriterWins\\",
+    \\"conflictResolutionPath\\": \\"/path\\"
 }"
 """
 
@@ -407,6 +439,26 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('job_name', options_list=['--job-name', '-n'], help='Name of the Data Transfer Job.')
 
+    max_throughput_type = CLIArgumentType(options_list=['--max-throughput'], help='The maximum throughput resource can scale to (RU/s). Provided when the resource is autoscale enabled. The minimum value can be 4000 (RU/s)')
+
+
+# SQL container
+    with self.argument_context('cosmosdb sql container') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('database_name', database_name_type)
+        c.argument('container_name', options_list=['--name', '-n'], help="Container name")
+        c.argument('partition_key_path', options_list=['--partition-key-path', '-p'], help='Partition Key Path, e.g., \'/address/zipcode\'')
+        c.argument('partition_key_version', type=int, options_list=['--partition-key-version'], help='The version of partition key.')
+        c.argument('default_ttl', options_list=['--ttl'], type=int, help='Default TTL. If the value is missing or set to "-1", items don’t expire. If the value is set to "n", items will expire "n" seconds after last modified time.')
+        c.argument('indexing_policy', options_list=['--idx'], type=shell_safe_json_parse, completer=FilesCompleter(), help='Indexing Policy, you can enter it as a string or as a file, e.g., --idx @policy-file.json or ' + SQL_GREMLIN_INDEXING_POLICY_EXAMPLE)
+        c.argument('client_encryption_policy', options_list=['--cep'], type=shell_safe_json_parse, completer=FilesCompleter(), validator=validate_client_encryption_policy, help='Client Encryption Policy, you can enter it as a string or as a file, e.g., --cep @policy-file.json or ' + SQL_CLIENT_ENCRYPTION_POLICY_EXAMPLE)
+        c.argument('unique_key_policy', options_list=['--unique-key-policy', '-u'], type=shell_safe_json_parse, completer=FilesCompleter(), help='Unique Key Policy, you can enter it as a string or as a file, e.g., --unique-key-policy @policy-file.json or ' + SQL_UNIQUE_KEY_POLICY_EXAMPLE)
+        c.argument('conflict_resolution_policy', options_list=['--conflict-resolution-policy', '-c'], type=shell_safe_json_parse, completer=FilesCompleter(), help='Conflict Resolution Policy, you can enter it as a string or as a file, e.g., --conflict-resolution-policy @policy-file.json or ' + SQL_GREMLIN_CONFLICT_RESOLUTION_POLICY_EXAMPLE)
+        c.argument('max_throughput', max_throughput_type)
+        c.argument('throughput', help='The throughput of SQL container (RU/s). Default value is 400. Omit this parameter if the database has shared throughput unless the container should have dedicated throughput.')
+        c.argument('analytical_storage_ttl', options_list=['--analytical-storage-ttl', '-t'], type=int, help='Analytical TTL, when analytical storage is enabled.')
+        c.argument('materialized_view_definition', options_list=['--materialized-view-definition', '-m'], type=shell_safe_json_parse, help='Materialized View Definition, you can enter it as a string or as a file, e.g., --materialized-view-definition @materializedview-definition-file.json or ' + SQL_MATERIALIZEDVIEW_DEFINITION_EXAMPLE)
+
     # Sql container partition merge
     database_name_type = CLIArgumentType(options_list=['--database-name', '-d'], help='Database name.')
     with self.argument_context('cosmosdb sql container merge') as c:
@@ -419,6 +471,16 @@ def load_arguments(self, _):
         c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
         c.argument('database_name', database_name_type, required=True, help='Name of the mongoDB database')
         c.argument('container_name', options_list=['--name', '-n'], required=True, help='Name of the mongoDB collection')
+
+    # Sql database partition merge
+    with self.argument_context('cosmosdb sql database merge') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
+        c.argument('database_name', options_list=['--name', '-n'], required=True, help='Name of the CosmosDB database name')
+
+    # mongodb database partition merge
+    with self.argument_context('cosmosdb mongodb database merge') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
+        c.argument('database_name', options_list=['--name', '-n'], required=True, help='Name of the mongoDB database')
 
     # Sql container partition retrieve throughput
     with self.argument_context('cosmosdb sql container retrieve-partition-throughput') as c:

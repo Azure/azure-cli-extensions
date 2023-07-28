@@ -1,6 +1,7 @@
 interactions:
 - request:
-    body: '{"properties": {"resource": {"id": "cli000003"}, "options": {}}}'
+    body: '{"properties": {"resource": {"id": "cli000003"}, "options": {"throughput":
+      20000}}}'
     headers:
       Accept:
       - application/json
@@ -11,21 +12,21 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '64'
+      - '83'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -a -n
+      - -g -a -n --throughput
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/9.2.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003?api-version=2023-04-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003?api-version=2023-04-15
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/d5905f51-b2d9-419f-bbea-86afe0d91493?api-version=2023-04-15
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/b0e711a3-ab01-437f-b8e2-66e8c4ae458f?api-version=2023-04-15
       cache-control:
       - no-store, no-cache
       content-length:
@@ -33,9 +34,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 19:58:39 GMT
+      - Fri, 28 Jul 2023 02:37:22 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/operationResults/d5905f51-b2d9-419f-bbea-86afe0d91493?api-version=2023-04-15
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/operationResults/b0e711a3-ab01-437f-b8e2-66e8c4ae458f?api-version=2023-04-15
       pragma:
       - no-cache
       server:
@@ -47,7 +48,7 @@ interactions:
       x-ms-gatewayversion:
       - version=2.14.0
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 202
       message: Accepted
@@ -63,11 +64,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -a -n
+      - -g -a -n --throughput
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/9.2.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/d5905f51-b2d9-419f-bbea-86afe0d91493?api-version=2023-04-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/b0e711a3-ab01-437f-b8e2-66e8c4ae458f?api-version=2023-04-15
   response:
     body:
       string: '{"status":"Enqueued"}'
@@ -79,7 +80,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 19:58:40 GMT
+      - Fri, 28 Jul 2023 02:37:22 GMT
       pragma:
       - no-cache
       server:
@@ -109,11 +110,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -a -n
+      - -g -a -n --throughput
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/9.2.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/d5905f51-b2d9-419f-bbea-86afe0d91493?api-version=2023-04-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/b0e711a3-ab01-437f-b8e2-66e8c4ae458f?api-version=2023-04-15
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -125,7 +126,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 19:59:10 GMT
+      - Fri, 28 Jul 2023 02:37:52 GMT
       pragma:
       - no-cache
       server:
@@ -155,23 +156,23 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -a -n
+      - -g -a -n --throughput
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/9.2.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003?api-version=2023-04-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003?api-version=2023-04-15
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases","name":"cli000003","properties":{"resource":{"id":"cli000003"}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases","name":"cli000003","properties":{"resource":{"id":"cli000003"}}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '300'
+      - '302'
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 19:59:11 GMT
+      - Fri, 28 Jul 2023 02:37:53 GMT
       pragma:
       - no-cache
       server:
@@ -191,7 +192,7 @@ interactions:
       message: Ok
 - request:
     body: '{"properties": {"resource": {"id": "cli000002", "shardKey": {"theShardKey":
-      "Hash"}}, "options": {"throughput": 20000}}}'
+      "Hash"}}, "options": {}}}'
     headers:
       Accept:
       - application/json
@@ -202,21 +203,21 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '120'
+      - '101'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -a -d -n --shard --throughput
+      - -g -a -d -n --shard
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/9.2.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002?api-version=2023-04-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/collections/cli000002?api-version=2023-04-15
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/2091acc8-0884-406d-945f-326f460689e1?api-version=2023-04-15
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/bf48ec75-ec3f-41f7-a0a6-928851c57038?api-version=2023-04-15
       cache-control:
       - no-store, no-cache
       content-length:
@@ -224,9 +225,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 19:59:12 GMT
+      - Fri, 28 Jul 2023 02:37:55 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/operationResults/2091acc8-0884-406d-945f-326f460689e1?api-version=2023-04-15
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/collections/cli000002/operationResults/bf48ec75-ec3f-41f7-a0a6-928851c57038?api-version=2023-04-15
       pragma:
       - no-cache
       server:
@@ -254,11 +255,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -a -d -n --shard --throughput
+      - -g -a -d -n --shard
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/9.2.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/2091acc8-0884-406d-945f-326f460689e1?api-version=2023-04-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/bf48ec75-ec3f-41f7-a0a6-928851c57038?api-version=2023-04-15
   response:
     body:
       string: '{"status":"Enqueued"}'
@@ -270,7 +271,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 19:59:12 GMT
+      - Fri, 28 Jul 2023 02:37:54 GMT
       pragma:
       - no-cache
       server:
@@ -300,11 +301,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -a -d -n --shard --throughput
+      - -g -a -d -n --shard
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/9.2.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/2091acc8-0884-406d-945f-326f460689e1?api-version=2023-04-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/bf48ec75-ec3f-41f7-a0a6-928851c57038?api-version=2023-04-15
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -316,7 +317,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 19:59:43 GMT
+      - Fri, 28 Jul 2023 02:38:25 GMT
       pragma:
       - no-cache
       server:
@@ -346,23 +347,23 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -a -d -n --shard --throughput
+      - -g -a -d -n --shard
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/9.2.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002?api-version=2023-04-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/collections/cli000002?api-version=2023-04-15
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections","name":"cli000002","properties":{"resource":{"id":"cli000002","shardKey":{"theShardKey":"Hash"},"indexes":[{"key":{"keys":["_id"]}}]}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/collections/cli000002","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections","name":"cli000002","properties":{"resource":{"id":"cli000002","shardKey":{"theShardKey":"Hash"},"indexes":[{"key":{"keys":["_id"]}}]}}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '405'
+      - '407'
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 19:59:44 GMT
+      - Fri, 28 Jul 2023 02:38:27 GMT
       pragma:
       - no-cache
       server:
@@ -388,7 +389,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - cosmosdb mongodb collection throughput update
+      - cosmosdb mongodb database throughput update
       Connection:
       - keep-alive
       Content-Length:
@@ -396,17 +397,17 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -a -d -n --throughput
+      - -g -a -n --throughput
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/9.2.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default?api-version=2023-04-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/throughputSettings/default?api-version=2023-04-15
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/8e42877c-5880-42db-a55e-346badf7c0e0?api-version=2023-04-15
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/e06e151b-37d2-4234-a8a2-1e0a0cdce5fd?api-version=2023-04-15
       cache-control:
       - no-store, no-cache
       content-length:
@@ -414,9 +415,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 19:59:45 GMT
+      - Fri, 28 Jul 2023 02:38:28 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/operationResults/8e42877c-5880-42db-a55e-346badf7c0e0?api-version=2023-04-15
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/throughputSettings/default/operationResults/e06e151b-37d2-4234-a8a2-1e0a0cdce5fd?api-version=2023-04-15
       pragma:
       - no-cache
       server:
@@ -440,15 +441,15 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - cosmosdb mongodb collection throughput update
+      - cosmosdb mongodb database throughput update
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -a -d -n --throughput
+      - -g -a -n --throughput
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/9.2.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/8e42877c-5880-42db-a55e-346badf7c0e0?api-version=2023-04-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/e06e151b-37d2-4234-a8a2-1e0a0cdce5fd?api-version=2023-04-15
   response:
     body:
       string: '{"status":"Enqueued"}'
@@ -460,7 +461,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 19:59:46 GMT
+      - Fri, 28 Jul 2023 02:38:28 GMT
       pragma:
       - no-cache
       server:
@@ -486,15 +487,15 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - cosmosdb mongodb collection throughput update
+      - cosmosdb mongodb database throughput update
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -a -d -n --throughput
+      - -g -a -n --throughput
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/9.2.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/8e42877c-5880-42db-a55e-346badf7c0e0?api-version=2023-04-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/e06e151b-37d2-4234-a8a2-1e0a0cdce5fd?api-version=2023-04-15
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -506,7 +507,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 20:00:17 GMT
+      - Fri, 28 Jul 2023 02:38:58 GMT
       pragma:
       - no-cache
       server:
@@ -532,27 +533,27 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - cosmosdb mongodb collection throughput update
+      - cosmosdb mongodb database throughput update
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -a -d -n --throughput
+      - -g -a -n --throughput
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/9.2.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default?api-version=2023-04-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/throughputSettings/default?api-version=2023-04-15
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections/throughputSettings","name":"RaNM","properties":{"resource":{"throughput":1000,"minimumThroughput":"400","softAllowedMaximumThroughput":"100000"}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/throughputSettings/default","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/throughputSettings","name":"kjUv","properties":{"resource":{"throughput":1000,"minimumThroughput":"400","softAllowedMaximumThroughput":"1000000"}}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '442'
+      - '411'
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 20:00:17 GMT
+      - Fri, 28 Jul 2023 02:38:59 GMT
       pragma:
       - no-cache
       server:
@@ -578,27 +579,27 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - cosmosdb mongodb collection merge
+      - cosmosdb mongodb database merge
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -a -d -n
+      - -g -a -n
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002?api-version=2023-03-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003?api-version=2023-03-15-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections","name":"cli000002","properties":{"resource":{"id":"cli000002","shardKey":{"theShardKey":"Hash"},"indexes":[{"key":{"keys":["_id"]}}]}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases","name":"cli000003","properties":{"resource":{"id":"cli000003"}}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '405'
+      - '302'
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 20:00:18 GMT
+      - Fri, 28 Jul 2023 02:39:01 GMT
       pragma:
       - no-cache
       server:
@@ -624,7 +625,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - cosmosdb mongodb collection merge
+      - cosmosdb mongodb database merge
       Connection:
       - keep-alive
       Content-Length:
@@ -632,11 +633,11 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -a -d -n
+      - -g -a -n
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge?api-version=2023-03-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/partitionMerge?api-version=2023-03-15-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
@@ -648,9 +649,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 20:00:22 GMT
+      - Fri, 28 Jul 2023 02:39:07 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/partitionMerge/operationResults/8d0ccccc-a746-4a45-a62a-157bdfc0466f?api-version=2023-03-15-preview
       pragma:
       - no-cache
       server:
@@ -674,15 +675,15 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - cosmosdb mongodb collection merge
+      - cosmosdb mongodb database merge
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -a -d -n
+      - -g -a -n
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/partitionMerge/operationResults/8d0ccccc-a746-4a45-a62a-157bdfc0466f?api-version=2023-03-15-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
@@ -694,9 +695,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 20:00:23 GMT
+      - Fri, 28 Jul 2023 02:39:06 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/partitionMerge/operationResults/8d0ccccc-a746-4a45-a62a-157bdfc0466f?api-version=2023-03-15-preview
       pragma:
       - no-cache
       server:
@@ -718,15 +719,15 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - cosmosdb mongodb collection merge
+      - cosmosdb mongodb database merge
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -a -d -n
+      - -g -a -n
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/partitionMerge/operationResults/8d0ccccc-a746-4a45-a62a-157bdfc0466f?api-version=2023-03-15-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -738,9 +739,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 20:00:54 GMT
+      - Fri, 28 Jul 2023 02:39:37 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/partitionMerge/operationResults/8d0ccccc-a746-4a45-a62a-157bdfc0466f?api-version=2023-03-15-preview
       pragma:
       - no-cache
       server:
@@ -762,15 +763,15 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - cosmosdb mongodb collection merge
+      - cosmosdb mongodb database merge
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -a -d -n
+      - -g -a -n
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/partitionMerge/operationResults/8d0ccccc-a746-4a45-a62a-157bdfc0466f?api-version=2023-03-15-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -782,9 +783,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 20:01:24 GMT
+      - Fri, 28 Jul 2023 02:40:08 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/partitionMerge/operationResults/8d0ccccc-a746-4a45-a62a-157bdfc0466f?api-version=2023-03-15-preview
       pragma:
       - no-cache
       server:
@@ -806,15 +807,15 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - cosmosdb mongodb collection merge
+      - cosmosdb mongodb database merge
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -a -d -n
+      - -g -a -n
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/partitionMerge/operationResults/8d0ccccc-a746-4a45-a62a-157bdfc0466f?api-version=2023-03-15-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -826,9 +827,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 20:01:54 GMT
+      - Fri, 28 Jul 2023 02:40:38 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/partitionMerge/operationResults/8d0ccccc-a746-4a45-a62a-157bdfc0466f?api-version=2023-03-15-preview
       pragma:
       - no-cache
       server:
@@ -850,15 +851,15 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - cosmosdb mongodb collection merge
+      - cosmosdb mongodb database merge
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -a -d -n
+      - -g -a -n
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/partitionMerge/operationResults/8d0ccccc-a746-4a45-a62a-157bdfc0466f?api-version=2023-03-15-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -870,9 +871,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 20:02:25 GMT
+      - Fri, 28 Jul 2023 02:41:09 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/partitionMerge/operationResults/8d0ccccc-a746-4a45-a62a-157bdfc0466f?api-version=2023-03-15-preview
       pragma:
       - no-cache
       server:
@@ -894,203 +895,27 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - cosmosdb mongodb collection merge
+      - cosmosdb mongodb database merge
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -a -d -n
+      - -g -a -n
       User-Agent:
       - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/dbmergetest2/mongodbDatabases/cli000003/partitionMerge/operationResults/8d0ccccc-a746-4a45-a62a-157bdfc0466f?api-version=2023-03-15-preview
   response:
     body:
-      string: '{"status":"Dequeued"}'
+      string: '{"physicalPartitionStorageInfoCollection":[{"storageInKB":0.0,"id":"e00c149e-3a40-49d6-8071-b6049173d6b3"},{"storageInKB":0.0,"id":"d99fe499-d903-4ea0-8f5f-039678dd938c"}]}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '21'
+      - '172'
       content-type:
       - application/json
       date:
-      - Mon, 24 Jul 2023 20:02:55 GMT
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-gatewayversion:
-      - version=2.14.0
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - cosmosdb mongodb collection merge
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -a -d -n
-      User-Agent:
-      - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
-  response:
-    body:
-      string: '{"status":"Dequeued"}'
-    headers:
-      cache-control:
-      - no-store, no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json
-      date:
-      - Mon, 24 Jul 2023 20:03:26 GMT
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-gatewayversion:
-      - version=2.14.0
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - cosmosdb mongodb collection merge
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -a -d -n
-      User-Agent:
-      - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
-  response:
-    body:
-      string: '{"status":"Dequeued"}'
-    headers:
-      cache-control:
-      - no-store, no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json
-      date:
-      - Mon, 24 Jul 2023 20:03:56 GMT
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-gatewayversion:
-      - version=2.14.0
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - cosmosdb mongodb collection merge
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -a -d -n
-      User-Agent:
-      - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
-  response:
-    body:
-      string: '{"status":"Dequeued"}'
-    headers:
-      cache-control:
-      - no-store, no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json
-      date:
-      - Mon, 24 Jul 2023 20:04:26 GMT
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-gatewayversion:
-      - version=2.14.0
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - cosmosdb mongodb collection merge
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -a -d -n
-      User-Agent:
-      - AZURECLI/2.50.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.11 (Windows-10-10.0.23506-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/mergetest3/mongodbDatabases/cli000003/collections/cli000002/partitionMerge/operationResults/f4db1775-58b1-4148-983e-9569d1332754?api-version=2023-03-15-preview
-  response:
-    body:
-      string: '{"physicalPartitionStorageInfoCollection":[{"storageInKB":0.0,"id":"4"}]}'
-    headers:
-      cache-control:
-      - no-store, no-cache
-      content-length:
-      - '73'
-      content-type:
-      - application/json
-      date:
-      - Mon, 24 Jul 2023 20:04:57 GMT
+      - Fri, 28 Jul 2023 02:41:39 GMT
       pragma:
       - no-cache
       server:
