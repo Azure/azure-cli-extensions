@@ -16,12 +16,8 @@ class TimeSeriesInsightsClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_timeseriesinsights._client_factory import cf_timeseriesinsights_cl
-        timeseriesinsights_custom = CliCommandType(
-            operations_tmpl='azext_timeseriesinsights.custom#{}',
-            client_factory=cf_timeseriesinsights_cl)
-        parent = super(TimeSeriesInsightsClientCommandsLoader, self)
-        parent.__init__(cli_ctx=cli_ctx, custom_command_type=timeseriesinsights_custom)
+        custom_command_type = CliCommandType(operations_tmpl='azext_timeseriesinsights.custom#{}')
+        super(TimeSeriesInsightsClientCommandsLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=custom_command_type)
 
     def load_command_table(self, args):
         from azext_timeseriesinsights.commands import load_command_table
