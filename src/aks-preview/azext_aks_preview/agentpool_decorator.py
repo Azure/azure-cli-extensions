@@ -270,6 +270,31 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 ))
         return res
 
+    def get_node_taints(self) -> Union[List[str], None]:
+        """Obtain the value of node_taints.
+
+        :return: empty list, list of strings or None
+        """
+        # read the original value passed by the command
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.MANAGED_CLUSTER:
+            node_taints = self.raw_param.get("nodepool_taints")
+        else:
+            node_taints = self.raw_param.get("node_taints")
+        # normalize, default is an empty list
+        if node_taints is not None:
+            node_taints = [x.strip() for x in (node_taints.split(",") if node_taints else [])]
+        # keep None as None for update mode
+        if node_taints is None and self.decorator_mode == DecoratorMode.CREATE:
+            node_taints = []
+
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if self.agentpool and self.agentpool.node_taints is not None:
+                node_taints = self.agentpool.node_taints
+
+        # this parameter does not need validation
+        return node_taints
+
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -379,6 +404,15 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         return agentpool
 
+    def set_up_taints(self, agentpool: AgentPool) -> AgentPool:
+        """Set up label, tag, taint for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+        agentpool.node_taints = self.context.get_node_taints()
+        return agentpool
+
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
 
@@ -400,7 +434,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_agentpool_windows_profile(agentpool)
         # set up agentpool network profile
         agentpool = self.set_up_agentpool_network_profile(agentpool)
-
+        # set up taints
+        agentpool = self.set_up_taints(agentpool)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool

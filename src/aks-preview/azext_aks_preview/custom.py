@@ -526,6 +526,7 @@ def aks_create(
     node_count=3,
     nodepool_tags=None,
     nodepool_labels=None,
+    nodepool_taints=None,
     node_osdisk_type=None,
     node_osdisk_size=0,
     vm_set_type=None,
@@ -701,6 +702,7 @@ def aks_update(
     min_count=None,
     max_count=None,
     nodepool_labels=None,
+    nodepool_taints=None,
     # misc
     yes=False,
     no_wait=False,
@@ -773,8 +775,9 @@ def aks_update(
 
 
 # pylint: disable=unused-argument
-def aks_show(cmd, client, resource_group_name, name):
-    mc = client.get(resource_group_name, name)
+def aks_show(cmd, client, resource_group_name, name, aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    mc = client.get(resource_group_name, name, headers=headers)
     return _remove_nulls([mc])[0]
 
 
@@ -825,7 +828,9 @@ def aks_get_credentials(
     context_name=None,
     public_fqdn=False,
     credential_format=None,
+    aks_custom_headers=None,
 ):
+    headers = get_aks_custom_headers(aks_custom_headers)
     credentialResults = None
     serverType = None
     if public_fqdn:
@@ -836,14 +841,14 @@ def aks_get_credentials(
             raise InvalidArgumentValueError("--format can only be specified when requesting clusterUser credential.")
     if admin:
         credentialResults = client.list_cluster_admin_credentials(
-            resource_group_name, name, serverType)
+            resource_group_name, name, serverType, headers=headers)
     else:
         if user.lower() == 'clusteruser':
             credentialResults = client.list_cluster_user_credentials(
-                resource_group_name, name, serverType, credential_format)
+                resource_group_name, name, serverType, credential_format, headers=headers)
         elif user.lower() == 'clustermonitoringuser':
             credentialResults = client.list_cluster_monitoring_user_credentials(
-                resource_group_name, name, serverType)
+                resource_group_name, name, serverType, headers=headers)
         else:
             raise InvalidArgumentValueError("The value of option --user is invalid.")
 
@@ -876,7 +881,9 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
               name,
               node_count,
               nodepool_name="",
-              no_wait=False):
+              no_wait=False,
+              aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
     instance = client.get(resource_group_name, name)
     _fill_defaults_for_pod_identity_profile(instance.pod_identity_profile)
 
@@ -893,7 +900,7 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
             agent_profile.count = int(node_count)  # pylint: disable=no-member
             # null out the SP profile because otherwise validation complains
             instance.service_principal_profile = None
-            return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance)
+            return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance, headers=headers)
     raise CLIError('The nodepool "{}" was not found.'.format(nodepool_name))
 
 
@@ -1157,7 +1164,9 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
                         cluster_name,
                         nodepool_name,
                         node_count=3,
-                        no_wait=False):
+                        no_wait=False,
+                        aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     new_node_count = int(node_count)
     if instance.enable_auto_scaling:
@@ -1166,7 +1175,7 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
         raise CLIError(
             "The new node count is the same as the current node count.")
     instance.count = new_node_count  # pylint: disable=no-member
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance, headers=headers)
 
 
 def aks_agentpool_upgrade(cmd,
@@ -1512,7 +1521,7 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
         if (instance.ingress_profile is None) or (instance.ingress_profile.web_app_routing is None) or not instance.ingress_profile.web_app_routing.enabled:
             raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
 
-    if addon == "monitoring" and enable_msi_auth_for_monitoring is None:
+    elif addon == "monitoring" and enable_msi_auth_for_monitoring is None:
         enable_msi_auth_for_monitoring = True
 
     else:
@@ -1576,8 +1585,8 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
                       subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None, appgw_subnet_id=None,
                       appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None, no_wait=False, enable_msi_auth_for_monitoring=True,
-                      dns_zone_resource_id=None, enable_syslog=False, data_collection_settings=None):
-
+                      dns_zone_resource_id=None, enable_syslog=False, data_collection_settings=None, aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here
     msi_auth = False
@@ -1661,7 +1670,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
 
     else:
         result = sdk_no_wait(no_wait, client.begin_create_or_update,
-                             resource_group_name, name, instance)
+                             resource_group_name, name, instance, headers=headers)
     return result
 
 
@@ -1856,7 +1865,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
 
 def aks_get_versions(cmd, client, location):    # pylint: disable=unused-argument
-    return client.list_orchestrators(location, resource_type='managedClusters')
+    return client.list_kubernetes_versions(location)
 
 
 def aks_get_os_options(cmd, client, location):    # pylint: disable=unused-argument
@@ -2293,6 +2302,20 @@ def aks_nodepool_snapshot_create(cmd,    # pylint: disable=too-many-locals,too-m
 
     headers = get_aks_custom_headers(aks_custom_headers)
     return client.create_or_update(resource_group_name, snapshot_name, snapshot, headers=headers)
+
+
+def aks_nodepool_snapshot_update(cmd, client, resource_group_name, snapshot_name, tags):   # pylint: disable=unused-argument
+    TagsObject = cmd.get_models(
+        "TagsObject",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="snapshots",
+    )
+    tagsObject = TagsObject(
+        tags=tags
+    )
+
+    snapshot = client.update_tags(resource_group_name, snapshot_name, tagsObject)
+    return snapshot
 
 
 def aks_nodepool_snapshot_show(cmd, client, resource_group_name, snapshot_name):   # pylint: disable=unused-argument

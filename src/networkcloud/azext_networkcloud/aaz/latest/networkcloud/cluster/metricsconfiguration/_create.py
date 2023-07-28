@@ -13,19 +13,19 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster metricsconfiguration create",
-    is_experimental=True,
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create the metrics configuration of the provided cluster.
 
-    :example: Update metrics configuration of cluster
+    :example: Create or update metrics configuration of cluster
         az networkcloud cluster metricsconfiguration create --cluster-name "clusterName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --collection-interval 15 --enabled-metrics "metric1" "metric2" --tags key1="myvalue1" key2="myvalue2" --resource-group "resourceGroupName"
     """
 
     _aaz_info = {
-        "version": "2022-12-12-preview",
+        "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/metricsconfigurations/{}", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/metricsconfigurations/{}", "2023-07-01"],
         ]
     }
 
@@ -212,7 +212,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }

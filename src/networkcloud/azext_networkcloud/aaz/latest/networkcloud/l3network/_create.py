@@ -13,19 +13,19 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud l3network create",
-    is_experimental=True,
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new layer 3 (L3) network or update the properties of the existing network.
 
     :example: Create or update L3 network
-        az networkcloud l3network create --name "l3NetworkName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --hybrid-aks-ipam-enabled "True" --hybrid-aks-plugin-type "DPDK" --interface-name "eth0" --ip-allocation-type "DualStack" --ipv4-connected-prefix "198.51.100.0/24" --ipv6-connected-prefix "2001:db8::/64" --l3-isolation-domain-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/l3IsolationDomainName" --vlan 12 --tags key1="myvalue1" key2="myvalue2" --resource-group "resourceGroupName"
+        az networkcloud l3network create --name "l3NetworkName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location"  --interface-name "eth0" --ip-allocation-type "DualStack" --ipv4-connected-prefix "198.51.100.0/24" --ipv6-connected-prefix "2001:db8::/64" --l3-isolation-domain-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/l3IsolationDomainName" --vlan 12 --tags key1="myvalue1" key2="myvalue2" --resource-group "resourceGroupName"
     """
 
     _aaz_info = {
-        "version": "2022-12-12-preview",
+        "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/l3networks/{}", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/l3networks/{}", "2023-07-01"],
         ]
     }
 
@@ -99,20 +99,6 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.hybrid_aks_ipam_enabled = AAZStrArg(
-            options=["--hybrid-aks-ipam-enabled"],
-            arg_group="Properties",
-            help="The indicator of whether or not to disable IPAM allocation on the network attachment definition injected into the Hybrid AKS Cluster.",
-            default="True",
-            enum={"False": "False", "True": "True"},
-        )
-        _args_schema.hybrid_aks_plugin_type = AAZStrArg(
-            options=["--hybrid-aks-plugin-type"],
-            arg_group="Properties",
-            help="The network plugin type for Hybrid AKS.",
-            default="SRIOV",
-            enum={"DPDK": "DPDK", "OSDevice": "OSDevice", "SRIOV": "SRIOV"},
-        )
         _args_schema.interface_name = AAZStrArg(
             options=["--interface-name"],
             arg_group="Properties",
@@ -234,7 +220,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }
@@ -271,8 +257,6 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("hybridAksIpamEnabled", AAZStrType, ".hybrid_aks_ipam_enabled")
-                properties.set_prop("hybridAksPluginType", AAZStrType, ".hybrid_aks_plugin_type")
                 properties.set_prop("interfaceName", AAZStrType, ".interface_name")
                 properties.set_prop("ipAllocationType", AAZStrType, ".ip_allocation_type")
                 properties.set_prop("ipv4ConnectedPrefix", AAZStrType, ".ipv4_connected_prefix")
@@ -338,6 +322,10 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.associated_resource_ids = AAZListType(
+                serialized_name="associatedResourceIds",
+                flags={"read_only": True},
+            )
             properties.cluster_id = AAZStrType(
                 serialized_name="clusterId",
                 flags={"read_only": True},
@@ -387,6 +375,9 @@ class Create(AAZCommand):
             properties.vlan = AAZIntType(
                 flags={"required": True},
             )
+
+            associated_resource_ids = cls._schema_on_200_201.properties.associated_resource_ids
+            associated_resource_ids.Element = AAZStrType()
 
             hybrid_aks_clusters_associated_ids = cls._schema_on_200_201.properties.hybrid_aks_clusters_associated_ids
             hybrid_aks_clusters_associated_ids.Element = AAZStrType()

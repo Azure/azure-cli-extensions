@@ -1,5 +1,9 @@
 Release History
 ===============
+1.14.1
+---
+* Support up to 1000 app instances in Enterprise tier.
+
 1.14.0
 ---
 * Add new command `az spring application-configuration-service create --generation` to support creating Application Configuration Service with different generation

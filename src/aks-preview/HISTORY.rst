@@ -11,7 +11,34 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 ++++++
-* Vendor new SDK and bump API version to 2023-05-02-preview.
+
+0.5.149
++++++++
+* `az aks addon update`: Fix unexpected error 'Addon "web_application_routing" is not enabled in this cluster' when trying to update the web app routing addon for an managed cluster that already has it enabled.
+
+0.5.148
++++++++
+* Add support for option --nodepool-taints to some aks commands
+  * aks create
+  * aks update
+
+0.5.147
++++++++
+* Extend containerinsights --data-collection-settings with new fields "streams" and containerlogv2
+
+0.5.146
++++++++
+* Add support for new snapshot command `az aks nodepool snapshot update`
+
+0.5.145
++++++++
+* Add support for option --aks-custom-headers to some aks commands
+  * aks get-credentials
+  * aks nodepool scale
+  * aks nodepool update
+  * aks enable-addons
+  * aks show
+  * aks scale
 
 0.5.144
 +++++++
@@ -19,6 +46,7 @@ Pending
 
 0.5.143
 +++++++
+* Vendor new SDK and bump API version to 2023-05-02-preview.
 * Add `--enable-network-observability` flag to `az aks create` and `az aks update`.
 
 0.5.142

@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.2.2
+++++++
+* Migrate to atomic commands
 
 0.2.1
 ++++++

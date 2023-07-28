@@ -29,6 +29,7 @@ from azext_aks_preview._format import (
     aks_show_snapshot_table_format,
     aks_show_table_format,
     aks_upgrades_table_format,
+    aks_versions_table_format,
 )
 from knack.log import get_logger
 
@@ -138,6 +139,7 @@ def load_command_table(self, _):
         g.command('stop', 'begin_stop', supports_no_wait=True)
         g.command('start', 'begin_start', supports_no_wait=True)
         g.wait_command('wait')
+        g.custom_command('get-versions', 'aks_get_versions', table_transformer=aks_versions_table_format)
         # aks-preview only
         g.custom_command('kollect', 'aks_kollect')
         g.custom_command('kanalyze', 'aks_kanalyze')
@@ -218,6 +220,7 @@ def load_command_table(self, _):
                               table_transformer=aks_show_nodepool_snapshot_table_format)
         g.custom_command('create', 'aks_nodepool_snapshot_create',
                          supports_no_wait=True)
+        g.custom_command('update', 'aks_nodepool_snapshot_update')
         g.custom_command('delete', 'aks_nodepool_snapshot_delete',
                          supports_no_wait=True)
 

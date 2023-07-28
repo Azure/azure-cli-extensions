@@ -1,7 +1,7 @@
 interactions:
 - request:
     body: '{"location": "eastus", "properties": {"analyticsWorkspaceId": "", "fabricControllerId":
-      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ssteinbrueck-sim-rg/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/azcli3",
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ssteinbrueck-sim-rg/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/azcli2",
       "managedResourceGroupConfiguration": {"name": "cli-test-cm-mrg-000002"}}, "tags":
       {"DisableFabricIntegration": "true"}}'
     headers:
@@ -23,13 +23,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","name":"cli-test-cm-000001","type":"microsoft.networkcloud/clustermanagers","location":"eastus","tags":{"DisableFabricIntegration":"true"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-19T18:11:12.2648025Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-19T18:11:12.2648025Z"},"properties":{"analyticsWorkspaceId":"","fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ssteinbrueck-sim-rg/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/azcli3","managedResourceGroupConfiguration":{"location":"eastus","name":"cli-test-cm-mrg-000002"},"provisioningState":"Accepted"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","name":"cli-test-cm-000001","type":"microsoft.networkcloud/clustermanagers","location":"eastus","tags":{"DisableFabricIntegration":"true"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-19T17:36:01.2314725Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-19T17:36:01.2314725Z"},"properties":{"analyticsWorkspaceId":"","fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ssteinbrueck-sim-rg/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/azcli2","managedResourceGroupConfiguration":{"location":"eastus","name":"cli-test-cm-mrg-000002"},"provisioningState":"Accepted"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
       cache-control:
       - no-cache
       content-length:
@@ -37,9 +37,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:11:12 GMT
+      - Fri, 19 May 2023 17:36:02 GMT
       etag:
-      - '"21003d93-0000-0100-0000-6467bbc00000"'
+      - '"21005e38-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -51,7 +51,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 201
       message: Created
@@ -72,10 +72,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -84,9 +84,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:11:12 GMT
+      - Fri, 19 May 2023 17:36:02 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -119,10 +119,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -131,9 +131,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:11:42 GMT
+      - Fri, 19 May 2023 17:36:31 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -166,10 +166,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -178,9 +178,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:12:12 GMT
+      - Fri, 19 May 2023 17:37:01 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -213,10 +213,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -225,9 +225,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:12:42 GMT
+      - Fri, 19 May 2023 17:37:31 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -260,10 +260,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -272,9 +272,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:13:14 GMT
+      - Fri, 19 May 2023 17:38:02 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -307,10 +307,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -319,9 +319,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:13:44 GMT
+      - Fri, 19 May 2023 17:38:32 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -354,10 +354,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -366,9 +366,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:14:13 GMT
+      - Fri, 19 May 2023 17:39:02 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -401,10 +401,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -413,9 +413,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:14:43 GMT
+      - Fri, 19 May 2023 17:39:32 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -448,10 +448,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -460,9 +460,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:15:14 GMT
+      - Fri, 19 May 2023 17:40:03 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -495,10 +495,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -507,9 +507,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:15:44 GMT
+      - Fri, 19 May 2023 17:40:33 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -542,10 +542,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -554,9 +554,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:16:14 GMT
+      - Fri, 19 May 2023 17:41:02 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -589,10 +589,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -601,9 +601,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:16:44 GMT
+      - Fri, 19 May 2023 17:41:33 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -636,10 +636,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -648,9 +648,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:17:15 GMT
+      - Fri, 19 May 2023 17:42:03 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -683,10 +683,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -695,9 +695,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:17:45 GMT
+      - Fri, 19 May 2023 17:42:32 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -730,10 +730,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -742,9 +742,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:18:15 GMT
+      - Fri, 19 May 2023 17:43:03 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -777,10 +777,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -789,9 +789,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:18:45 GMT
+      - Fri, 19 May 2023 17:43:33 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -824,10 +824,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -836,9 +836,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:19:15 GMT
+      - Fri, 19 May 2023 17:44:03 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -871,10 +871,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -883,9 +883,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:19:46 GMT
+      - Fri, 19 May 2023 17:44:34 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -918,10 +918,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -930,9 +930,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:20:16 GMT
+      - Fri, 19 May 2023 17:45:03 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -965,10 +965,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -977,9 +977,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:20:46 GMT
+      - Fri, 19 May 2023 17:45:34 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -1012,10 +1012,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -1024,9 +1024,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:21:16 GMT
+      - Fri, 19 May 2023 17:46:04 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -1059,10 +1059,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -1071,9 +1071,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:21:46 GMT
+      - Fri, 19 May 2023 17:46:35 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -1106,10 +1106,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -1118,9 +1118,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:22:16 GMT
+      - Fri, 19 May 2023 17:47:04 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -1153,10 +1153,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -1165,9 +1165,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:22:46 GMT
+      - Fri, 19 May 2023 17:47:34 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -1200,10 +1200,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -1212,9 +1212,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:23:17 GMT
+      - Fri, 19 May 2023 17:48:05 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -1247,10 +1247,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -1259,9 +1259,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:23:47 GMT
+      - Fri, 19 May 2023 17:48:34 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -1294,10 +1294,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -1306,9 +1306,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:24:17 GMT
+      - Fri, 19 May 2023 17:49:05 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -1341,10 +1341,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -1353,9 +1353,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:24:48 GMT
+      - Fri, 19 May 2023 17:49:35 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -1388,10 +1388,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -1400,9 +1400,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:25:18 GMT
+      - Fri, 19 May 2023 17:50:05 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -1435,10 +1435,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -1447,9 +1447,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:25:48 GMT
+      - Fri, 19 May 2023 17:50:35 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -1482,10 +1482,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -1494,9 +1494,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:26:18 GMT
+      - Fri, 19 May 2023 17:51:06 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -1529,10 +1529,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -1541,9 +1541,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:26:49 GMT
+      - Fri, 19 May 2023 17:51:35 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -1576,10 +1576,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -1588,9 +1588,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:27:19 GMT
+      - Fri, 19 May 2023 17:52:06 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -1623,10 +1623,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -1635,9 +1635,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:27:49 GMT
+      - Fri, 19 May 2023 17:52:36 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -1670,10 +1670,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
     headers:
       cache-control:
       - no-cache
@@ -1682,9 +1682,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:28:19 GMT
+      - Fri, 19 May 2023 17:53:07 GMT
       etag:
-      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      - '"87005498-0000-0100-0000-6467b3810000"'
       expires:
       - '-1'
       pragma:
@@ -1717,10 +1717,104 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Succeeded","startTime":"2023-05-19T18:11:12.3390319Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 17:53:36 GMT
+      etag:
+      - '"87005498-0000-0100-0000-6467b3810000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T17:36:01.3557766Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 17:54:06 GMT
+      etag:
+      - '"87005498-0000-0100-0000-6467b3810000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"30045518-0d97-49c1-9197-7db022e6eea2*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Succeeded","startTime":"2023-05-19T17:36:01.3557766Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -1729,9 +1823,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:28:50 GMT
+      - Fri, 19 May 2023 17:54:37 GMT
       etag:
-      - '"04009651-0000-4d00-0000-6467bfc80000"'
+      - '"92013f7f-0000-0500-0000-6467b7c60000"'
       expires:
       - '-1'
       pragma:
@@ -1764,10 +1858,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","name":"cli-test-cm-000001","type":"microsoft.networkcloud/clustermanagers","location":"eastus","tags":{"DisableFabricIntegration":"true","nc:environment":"sandbox"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-19T18:11:12.2648025Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-19T18:11:12.2648025Z"},"properties":{"analyticsWorkspaceId":"","fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ssteinbrueck-sim-rg/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/azcli3","managedResourceGroupConfiguration":{"location":"eastus","name":"cli-test-cm-mrg-000002"},"provisioningState":"Succeeded","availabilityZones":["1","2","3"],"vmSize":"Standard_D4_v2","clusterVersions":[{"supportExpiryDate":"2023-07-31
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","name":"cli-test-cm-000001","type":"microsoft.networkcloud/clustermanagers","location":"eastus","tags":{"DisableFabricIntegration":"true","nc:environment":"sandbox"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-19T17:36:01.2314725Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-19T17:36:01.2314725Z"},"properties":{"analyticsWorkspaceId":"","fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ssteinbrueck-sim-rg/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/azcli2","managedResourceGroupConfiguration":{"location":"eastus","name":"cli-test-cm-mrg-000002"},"provisioningState":"Succeeded","availabilityZones":["1","2","3"],"vmSize":"Standard_D4_v2","clusterVersions":[{"supportExpiryDate":"2023-07-31
         00:00:00 +0000 UTC","targetClusterVersion":"3.1.0"},{"supportExpiryDate":"2023-07-31
         00:00:00 +0000 UTC","targetClusterVersion":"3.2.0"}],"managerExtendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-test-cm-mrg-000002/providers/microsoft.extendedlocation/customlocations/cli-test-cm-000001-cl","type":"CustomLocation"}}}'
     headers:
@@ -1778,9 +1872,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:28:50 GMT
+      - Fri, 19 May 2023 17:54:37 GMT
       etag:
-      - '"210044c4-0000-0100-0000-6467bfc30000"'
+      - '"2100c464-0000-0100-0000-6467b78a0000"'
       expires:
       - '-1'
       pragma:
@@ -1818,10 +1912,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","name":"cli-test-cm-000001","type":"microsoft.networkcloud/clustermanagers","location":"eastus","tags":{"DisableFabricIntegration":"true","tagUpdate":"NewTag"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-19T18:11:12.2648025Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-19T18:28:51.5647522Z"},"properties":{"analyticsWorkspaceId":"","fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ssteinbrueck-sim-rg/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/azcli3","managedResourceGroupConfiguration":{"location":"eastus","name":"cli-test-cm-mrg-000002"},"provisioningState":"Succeeded","availabilityZones":["1","2","3"],"vmSize":"Standard_D4_v2","clusterVersions":[{"supportExpiryDate":"2023-07-31
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","name":"cli-test-cm-000001","type":"microsoft.networkcloud/clustermanagers","location":"eastus","tags":{"DisableFabricIntegration":"true","tagUpdate":"NewTag"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-19T17:36:01.2314725Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-19T17:54:38.7127697Z"},"properties":{"analyticsWorkspaceId":"","fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ssteinbrueck-sim-rg/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/azcli2","managedResourceGroupConfiguration":{"location":"eastus","name":"cli-test-cm-mrg-000002"},"provisioningState":"Succeeded","availabilityZones":["1","2","3"],"vmSize":"Standard_D4_v2","clusterVersions":[{"supportExpiryDate":"2023-07-31
         00:00:00 +0000 UTC","targetClusterVersion":"3.1.0"},{"supportExpiryDate":"2023-07-31
         00:00:00 +0000 UTC","targetClusterVersion":"3.2.0"}],"managerExtendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-test-cm-mrg-000002/providers/microsoft.extendedlocation/customlocations/cli-test-cm-000001-cl","type":"CustomLocation"}}}'
     headers:
@@ -1832,9 +1926,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:28:52 GMT
+      - Fri, 19 May 2023 17:54:39 GMT
       etag:
-      - '"2100bbc5-0000-0100-0000-6467bfe30000"'
+      - '"21006468-0000-0100-0000-6467b7de0000"'
       expires:
       - '-1'
       pragma:
@@ -1870,10 +1964,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","name":"cli-test-cm-000001","type":"microsoft.networkcloud/clustermanagers","location":"eastus","tags":{"DisableFabricIntegration":"true","tagUpdate":"NewTag"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-19T18:11:12.2648025Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-19T18:28:51.5647522Z"},"properties":{"analyticsWorkspaceId":"","fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ssteinbrueck-sim-rg/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/azcli3","managedResourceGroupConfiguration":{"location":"eastus","name":"cli-test-cm-mrg-000002"},"provisioningState":"Succeeded","availabilityZones":["1","2","3"],"vmSize":"Standard_D4_v2","clusterVersions":[{"supportExpiryDate":"2023-07-31
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","name":"cli-test-cm-000001","type":"microsoft.networkcloud/clustermanagers","location":"eastus","tags":{"DisableFabricIntegration":"true","tagUpdate":"NewTag"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-19T17:36:01.2314725Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-19T17:54:38.7127697Z"},"properties":{"analyticsWorkspaceId":"","fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ssteinbrueck-sim-rg/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/azcli2","managedResourceGroupConfiguration":{"location":"eastus","name":"cli-test-cm-mrg-000002"},"provisioningState":"Succeeded","availabilityZones":["1","2","3"],"vmSize":"Standard_D4_v2","clusterVersions":[{"supportExpiryDate":"2023-07-31
         00:00:00 +0000 UTC","targetClusterVersion":"3.1.0"},{"supportExpiryDate":"2023-07-31
         00:00:00 +0000 UTC","targetClusterVersion":"3.2.0"}],"managerExtendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-test-cm-mrg-000002/providers/microsoft.extendedlocation/customlocations/cli-test-cm-000001-cl","type":"CustomLocation"}}}'
     headers:
@@ -1884,9 +1978,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:28:52 GMT
+      - Fri, 19 May 2023 17:54:40 GMT
       etag:
-      - '"2100bbc5-0000-0100-0000-6467bfe30000"'
+      - '"21006468-0000-0100-0000-6467b7de0000"'
       expires:
       - '-1'
       pragma:
@@ -1920,10 +2014,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers?api-version=2023-07-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","name":"cli-test-cm-000001","type":"microsoft.networkcloud/clustermanagers","location":"eastus","tags":{"DisableFabricIntegration":"true","tagUpdate":"NewTag"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-19T18:11:12.2648025Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-19T18:28:51.5647522Z"},"properties":{"analyticsWorkspaceId":"","fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ssteinbrueck-sim-rg/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/azcli3","managedResourceGroupConfiguration":{"location":"eastus","name":"cli-test-cm-mrg-000002"},"provisioningState":"Succeeded","availabilityZones":["1","2","3"],"vmSize":"Standard_D4_v2","clusterVersions":[{"supportExpiryDate":"2023-07-31
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","name":"cli-test-cm-000001","type":"microsoft.networkcloud/clustermanagers","location":"eastus","tags":{"DisableFabricIntegration":"true","tagUpdate":"NewTag"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-19T17:36:01.2314725Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-19T17:54:38.7127697Z"},"properties":{"analyticsWorkspaceId":"","fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ssteinbrueck-sim-rg/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/azcli2","managedResourceGroupConfiguration":{"location":"eastus","name":"cli-test-cm-mrg-000002"},"provisioningState":"Succeeded","availabilityZones":["1","2","3"],"vmSize":"Standard_D4_v2","clusterVersions":[{"supportExpiryDate":"2023-07-31
         00:00:00 +0000 UTC","targetClusterVersion":"3.1.0"},{"supportExpiryDate":"2023-07-31
         00:00:00 +0000 UTC","targetClusterVersion":"3.2.0"}],"managerExtendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-test-cm-mrg-000002/providers/microsoft.extendedlocation/customlocations/cli-test-cm-000001-cl","type":"CustomLocation"}}}]}'
     headers:
@@ -1934,7 +2028,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:28:53 GMT
+      - Fri, 19 May 2023 17:54:41 GMT
       expires:
       - '-1'
       pragma:
@@ -1946,9 +2040,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 94816504-2e14-41b0-b78a-a251db2ef181
-      - da54713d-824d-4df3-9b13-a0b93a4a6fa9
-      - 55dbd84d-bdf2-4bdb-9995-462e473c8863
+      - 574df066-fa4c-45fe-b2d6-6d498a7150b3
+      - dd7f0e57-e6aa-4329-b66c-227f6cbd6749
+      - 4a50fb47-efc1-4a70-b80e-e59748c569a4
     status:
       code: 200
       message: OK
@@ -1970,13 +2064,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001?api-version=2023-07-01
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
       cache-control:
       - no-cache
       content-length:
@@ -1984,13 +2078,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:28:54 GMT
+      - Fri, 19 May 2023 17:54:42 GMT
       etag:
-      - '"2100e9c5-0000-0100-0000-6467bfe70000"'
+      - '"21008d68-0000-0100-0000-6467b7e20000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -2020,10 +2114,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2032,9 +2126,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:28:54 GMT
+      - Fri, 19 May 2023 17:54:42 GMT
       etag:
-      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
       expires:
       - '-1'
       pragma:
@@ -2062,10 +2156,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2074,9 +2168,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:29:25 GMT
+      - Fri, 19 May 2023 17:55:12 GMT
       etag:
-      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
       expires:
       - '-1'
       pragma:
@@ -2104,10 +2198,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2116,9 +2210,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:29:55 GMT
+      - Fri, 19 May 2023 17:55:43 GMT
       etag:
-      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
       expires:
       - '-1'
       pragma:
@@ -2146,10 +2240,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2158,9 +2252,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:30:25 GMT
+      - Fri, 19 May 2023 17:56:13 GMT
       etag:
-      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
       expires:
       - '-1'
       pragma:
@@ -2188,10 +2282,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2200,9 +2294,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:30:56 GMT
+      - Fri, 19 May 2023 17:56:43 GMT
       etag:
-      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
       expires:
       - '-1'
       pragma:
@@ -2230,10 +2324,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2242,9 +2336,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:31:26 GMT
+      - Fri, 19 May 2023 17:57:13 GMT
       etag:
-      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
       expires:
       - '-1'
       pragma:
@@ -2272,10 +2366,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2284,9 +2378,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:31:55 GMT
+      - Fri, 19 May 2023 17:57:43 GMT
       etag:
-      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
       expires:
       - '-1'
       pragma:
@@ -2314,10 +2408,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2326,9 +2420,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:32:26 GMT
+      - Fri, 19 May 2023 17:58:13 GMT
       etag:
-      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
       expires:
       - '-1'
       pragma:
@@ -2356,10 +2450,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2368,9 +2462,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:32:56 GMT
+      - Fri, 19 May 2023 17:58:44 GMT
       etag:
-      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
       expires:
       - '-1'
       pragma:
@@ -2398,10 +2492,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2410,9 +2504,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:33:26 GMT
+      - Fri, 19 May 2023 17:59:13 GMT
       etag:
-      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
       expires:
       - '-1'
       pragma:
@@ -2440,10 +2534,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2452,9 +2546,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:33:57 GMT
+      - Fri, 19 May 2023 17:59:44 GMT
       etag:
-      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
       expires:
       - '-1'
       pragma:
@@ -2482,10 +2576,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2494,9 +2588,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:34:26 GMT
+      - Fri, 19 May 2023 18:00:14 GMT
       etag:
-      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
       expires:
       - '-1'
       pragma:
@@ -2524,10 +2618,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2536,9 +2630,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:34:56 GMT
+      - Fri, 19 May 2023 18:00:44 GMT
       etag:
-      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
       expires:
       - '-1'
       pragma:
@@ -2566,10 +2660,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2578,9 +2672,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:35:27 GMT
+      - Fri, 19 May 2023 18:01:14 GMT
       etag:
-      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
       expires:
       - '-1'
       pragma:
@@ -2608,10 +2702,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2620,9 +2714,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:35:57 GMT
+      - Fri, 19 May 2023 18:01:45 GMT
       etag:
-      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
       expires:
       - '-1'
       pragma:
@@ -2650,10 +2744,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2662,9 +2756,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:36:27 GMT
+      - Fri, 19 May 2023 18:02:15 GMT
       etag:
-      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
       expires:
       - '-1'
       pragma:
@@ -2692,10 +2786,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2704,9 +2798,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:36:57 GMT
+      - Fri, 19 May 2023 18:02:45 GMT
       etag:
-      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
       expires:
       - '-1'
       pragma:
@@ -2734,10 +2828,178 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Succeeded","startTime":"2023-05-19T18:28:55.0925582Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:03:15 GMT
+      etag:
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:03:46 GMT
+      etag:
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:04:16 GMT
+      etag:
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T17:54:42.5119296Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:04:46 GMT
+      etag:
+      - '"89001a3d-0000-0100-0000-6467b7e20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Succeeded","startTime":"2023-05-19T17:54:42.5119296Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -2746,9 +3008,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:37:28 GMT
+      - Fri, 19 May 2023 18:05:16 GMT
       etag:
-      - '"04004b54-0000-4d00-0000-6467c1cf0000"'
+      - '"0400c54d-0000-4d00-0000-6467ba440000"'
       expires:
       - '-1'
       pragma:
@@ -2780,10 +3042,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A?api-version=2023-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Succeeded","startTime":"2023-05-19T18:28:55.0925582Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","name":"c5543c90-f05f-494f-816c-3aef8938cbdf*A79A9CFE49622A2EA1D9D5EAD3381C4600DE588E02AA9AC316CE9C646BA7B71A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Succeeded","startTime":"2023-05-19T17:54:42.5119296Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -2792,9 +3054,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 19 May 2023 18:37:28 GMT
+      - Fri, 19 May 2023 18:05:16 GMT
       etag:
-      - '"04004b54-0000-4d00-0000-6467c1cf0000"'
+      - '"0400c54d-0000-4d00-0000-6467ba440000"'
       expires:
       - '-1'
       pragma:

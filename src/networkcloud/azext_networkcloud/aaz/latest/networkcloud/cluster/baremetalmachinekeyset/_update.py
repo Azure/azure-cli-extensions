@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster baremetalmachinekeyset update",
-    is_experimental=True,
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update properties of bare metal machine key set for the provided cluster, or update the tags associated with it. Properties and tag updates can be done independently.
@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-12-preview",
+        "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/baremetalmachinekeysets/{}", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/baremetalmachinekeysets/{}", "2023-07-01"],
         ]
     }
 
@@ -108,7 +108,7 @@ class Update(AAZCommand):
         _element = cls._args_schema.user_list.Element
         _element.azure_user_name = AAZStrArg(
             options=["azure-user-name"],
-            help="The Azure Active Directory user name (email name).",
+            help="The user name that will be used for access.",
             required=True,
         )
         _element.description = AAZStrArg(
@@ -220,7 +220,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }

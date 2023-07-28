@@ -13,19 +13,19 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine create",
-    is_experimental=True,
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new virtual machine or update the properties of the existing virtual machine.
 
     :example: Create virtual machine
-        az networkcloud virtualmachine create --resource-group "resourceGroupName" --name "virtualMachineName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --admin-username "admin" --boot-method "UEFI" --cloud-services-network-attachment attached-network-id="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/CloudServicesNetworks/cloudServicesNetworkName" --cpu-cores 2 --isolate-emulator-thread "True" --memory-size 8 --network-attachments "[{attachedNetworkId:'/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l3Networks/l3NetworkName',defaultGateway:'True',ipAllocationMethod:'Dynamic',ipv4Address:'198.51.100.1',ipv6Address:'2001:0db8:0000:0000:0000:0000:0000:0000',networkAttachmentName:'networkAttachmentName'}]" --network-data "bmV0d29ya0RhdGVTYW1wbGU=" --placement-hints "[{hintType:'Affinity',resourceId:'/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/racks/rackName',schedulingExecution:'Hard,scope:''}]" --ssh-key-values "ssh-rsa AAtsE3njSONzDYRIZv/WLjVuMfrUSByHp+jfaaOLHTIIB4fJvo6dQUZxE20w2iDHV3tEkmnTo84eba97VMueQD6OzJPEyWZMRpz8UYWOd0IXeRqiFu1lawNblZhwNT= admin@vm" --storage-profile disk-size=120 create-option="Ephemeral" delete-option="Delete" --tags key1="myvalues1" --tags key2="myvalues2" --user-data "dXNlckRhdGVTYW1wbGU=" --virtio-interface "Modern" --vm-image "myacr.azurecr.io/ubuntu-pw:20.04" --vm-image-repository-credentials password="password" registry-url="myacr.azurecr.io" username="username"
+        az networkcloud virtualmachine create --resource-group "resourceGroupName" --name "virtualMachineName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --admin-username "admin" --boot-method "UEFI" --cloud-services-network-attachment attached-network-id="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/CloudServicesNetworks/cloudServicesNetworkName" --cpu-cores 2 --memory-size 8 --network-attachments "[{attachedNetworkId:'/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/l3Networks/l3NetworkName',defaultGateway:'True',ipAllocationMethod:'Dynamic',ipv4Address:'198.51.100.1',ipv6Address:'2001:0db8:0000:0000:0000:0000:0000:0000',networkAttachmentName:'networkAttachmentName'}]" --network-data "bmV0d29ya0RhdGVTYW1wbGU=" --placement-hints "[{hintType:'Affinity',resourceId:'/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.NetworkCloud/racks/rackName',schedulingExecution:'Hard,scope:''}]" --ssh-key-values "ssh-rsa AAtsE3njSONzDYRIZv/WLjVuMfrUSByHp+jfaaOLHTIIB4fJvo6dQUZxE20w2iDHV3tEkmnTo84eba97VMueQD6OzJPEyWZMRpz8UYWOd0IXeRqiFu1lawNblZhwNT= admin@vm" --storage-profile disk-size=120 create-option="Ephemeral" delete-option="Delete" --tags key1="myvalues1" --tags key2="myvalues2" --user-data "dXNlckRhdGVTYW1wbGU=" --vm-device-model "T2" --vm-image "myacr.azurecr.io/ubuntu-pw:20.04" --vm-image-repository-credentials password="password" registry-url="myacr.azurecr.io" username="username"
     """
 
     _aaz_info = {
-        "version": "2022-12-12-preview",
+        "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2023-07-01"],
         ]
     }
 
@@ -58,12 +58,12 @@ class Create(AAZCommand):
             ),
         )
 
-        # define Arg Group "Properties"
+        # define Arg Group "Authentication"
 
         _args_schema = cls._args_schema
         _args_schema.admin_username = AAZStrArg(
             options=["--admin-username"],
-            arg_group="Properties",
+            arg_group="Authentication",
             help="The name of the administrator to which the ssh public keys will be added into the authorized keys.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -72,6 +72,10 @@ class Create(AAZCommand):
                 min_length=1,
             ),
         )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
         _args_schema.boot_method = AAZStrArg(
             options=["--boot-method"],
             arg_group="Properties",
@@ -93,13 +97,6 @@ class Create(AAZCommand):
             fmt=AAZIntArgFormat(
                 minimum=2,
             ),
-        )
-        _args_schema.isolate_emulator_thread = AAZStrArg(
-            options=["--isolate-emulator-thread"],
-            arg_group="Properties",
-            help="Field Deprecated, the value will be ignored if provided. The indicator of whether one of the specified CPU cores is isolated to run the emulator thread for this virtual machine.",
-            default="True",
-            enum={"False": "False", "True": "True"},
         )
         _args_schema.memory_size_gb = AAZIntArg(
             options=["--memory-size", "--memory-size-gb"],
@@ -140,13 +137,6 @@ class Create(AAZCommand):
             options=["--ud", "--user-data"],
             arg_group="Properties",
             help="The Base64 encoded cloud-init user data.",
-        )
-        _args_schema.virtio_interface = AAZStrArg(
-            options=["--vi", "--virtio-interface"],
-            arg_group="Properties",
-            help="Field Deprecated, use virtualizationModel instead. The type of the virtio interface.",
-            default="Modern",
-            enum={"Modern": "Modern", "Transitional": "Transitional"},
         )
         _args_schema.vm_device_model = AAZStrArg(
             options=["--vm-device-model"],
@@ -449,7 +439,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }
@@ -490,7 +480,6 @@ class Create(AAZCommand):
                 properties.set_prop("bootMethod", AAZStrType, ".boot_method")
                 properties.set_prop("cloudServicesNetworkAttachment", AAZObjectType, ".cloud_services_network_attachment", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("cpuCores", AAZIntType, ".cpu_cores", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("isolateEmulatorThread", AAZStrType, ".isolate_emulator_thread")
                 properties.set_prop("memorySizeGB", AAZIntType, ".memory_size_gb", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkAttachments", AAZListType, ".network_attachments")
                 properties.set_prop("networkData", AAZStrType, ".network_data")
@@ -498,7 +487,6 @@ class Create(AAZCommand):
                 properties.set_prop("sshPublicKeys", AAZListType, ".ssh_public_keys")
                 properties.set_prop("storageProfile", AAZObjectType, ".storage_profile", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("userData", AAZStrType, ".user_data")
-                properties.set_prop("virtioInterface", AAZStrType, ".virtio_interface")
                 properties.set_prop("vmDeviceModel", AAZStrType, ".vm_device_model")
                 properties.set_prop("vmImage", AAZStrType, ".vm_image", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("vmImageRepositoryCredentials", AAZObjectType, ".vm_image_repository_credentials")
@@ -626,6 +614,10 @@ class Create(AAZCommand):
             properties.admin_username = AAZStrType(
                 serialized_name="adminUsername",
                 flags={"required": True},
+            )
+            properties.availability_zone = AAZStrType(
+                serialized_name="availabilityZone",
+                flags={"read_only": True},
             )
             properties.bare_metal_machine_id = AAZStrType(
                 serialized_name="bareMetalMachineId",

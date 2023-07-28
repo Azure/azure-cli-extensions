@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud clustermanager create",
-    is_experimental=True,
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new cluster manager or update properties of the cluster manager if it exists.
@@ -23,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-12-preview",
+        "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clustermanagers/{}", "2023-07-01"],
         ]
     }
 
@@ -86,11 +86,6 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The resource ID of the Log Analytics workspace that is used for the logs collection.",
         )
-        _args_schema.availability_zones = AAZListArg(
-            options=["--availability-zones"],
-            arg_group="Properties",
-            help="Field deprecated, this value will no longer influence the cluster manager allocation process and will be removed in a future version. The Azure availability zones within the region that will be used to support the cluster manager resource.",
-        )
         _args_schema.fabric_controller_id = AAZStrArg(
             options=["--fabric-controller-id"],
             arg_group="Properties",
@@ -102,14 +97,6 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The configuration of the managed resource group associated with the resource.",
         )
-        _args_schema.vm_size = AAZStrArg(
-            options=["--vm-size"],
-            arg_group="Properties",
-            help="Field deprecated, this value will no longer influence the cluster manager allocation process and will be removed in a future version. The size of the Azure virtual machines to use for hosting the cluster manager resource.",
-        )
-
-        availability_zones = cls._args_schema.availability_zones
-        availability_zones.Element = AAZStrArg()
 
         managed_resource_group_configuration = cls._args_schema.managed_resource_group_configuration
         managed_resource_group_configuration.location = AAZStrArg(
@@ -206,7 +193,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }
@@ -238,14 +225,8 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("analyticsWorkspaceId", AAZStrType, ".analytics_workspace_id")
-                properties.set_prop("availabilityZones", AAZListType, ".availability_zones")
                 properties.set_prop("fabricControllerId", AAZStrType, ".fabric_controller_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("managedResourceGroupConfiguration", AAZObjectType, ".managed_resource_group_configuration")
-                properties.set_prop("vmSize", AAZStrType, ".vm_size")
-
-            availability_zones = _builder.get(".properties.availabilityZones")
-            if availability_zones is not None:
-                availability_zones.set_elements(AAZStrType, ".")
 
             managed_resource_group_configuration = _builder.get(".properties.managedResourceGroupConfiguration")
             if managed_resource_group_configuration is not None:

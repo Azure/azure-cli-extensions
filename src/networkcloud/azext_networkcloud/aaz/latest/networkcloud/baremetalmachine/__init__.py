@@ -13,6 +13,7 @@ from ._cordon import *
 from ._list import *
 from ._power_off import *
 from ._reimage import *
+from ._replace import *
 from ._restart import *
 from ._run_command import *
 from ._run_data_extract import *
