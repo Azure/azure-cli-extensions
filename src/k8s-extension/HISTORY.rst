@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.4.3
+++++++++++++++++++
+* microsoft.azuremonitor.containers: Extend ContainerInsights Extension dataCollectionSettings with streams and containerlogv2 field. Also, add a kind tag in DCR creation for the ContainerInsights extension.
+* microsoft.dapr: Use semver instead of packaging
+
 1.4.2
 ++++++++++++++++++
 * microsoft.azuremonitor.containers: ContainerInsights Extension Managed Identity Auth Enabled by default

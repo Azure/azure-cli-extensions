@@ -16,7 +16,10 @@ from azure.cli.core.aaz import *
     is_experimental=True,
 )
 class ValidateForRestore(AAZCommand):
-    """Validates if Restore can be triggered for a DataSource
+    """Validates if restore can be triggered for a datasource
+
+    :example: Validate Restore
+        az az dataprotection backup-instance validate-for-restore --name "testInstance1" --restore-request-object "restoreRequest.json" --resource-group "000pikumar" --vault-name "PratikPrivatePreviewVault1"
     """
 
     _aaz_info = {
@@ -44,7 +47,7 @@ class ValidateForRestore(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.backup_instance_name = AAZStrArg(
-            options=["--backup-instance-name"],
+            options=["-n", "--name", "--backup-instance-name"],
             help="The name of the backup instance.",
             required=True,
             id_part="child_name_1",
@@ -58,13 +61,8 @@ class ValidateForRestore(AAZCommand):
             required=True,
             id_part="name",
         )
-
-        # define Arg Group "Parameters"
-
-        _args_schema = cls._args_schema
         _args_schema.restore_request_object = AAZObjectArg(
             options=["--restore-request-object"],
-            arg_group="Parameters",
             help="Gets or sets the restore request object.",
             required=True,
         )
@@ -523,7 +521,7 @@ class ValidateForRestore(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -532,7 +530,7 @@ class ValidateForRestore(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 

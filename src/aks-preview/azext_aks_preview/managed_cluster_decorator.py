@@ -84,6 +84,7 @@ from azext_aks_preview.agentpool_decorator import (
     AKSPreviewAgentPoolAddDecorator,
     AKSPreviewAgentPoolUpdateDecorator,
 )
+from azext_aks_preview._roleassignments import add_role_assignment
 from msrestazure.tools import is_valid_resource_id
 
 from dateutil.parser import parse
@@ -160,6 +161,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             external_functions[
                 "ensure_azure_monitor_profile_prerequisites"
             ] = ensure_azure_monitor_profile_prerequisites
+            # temp workaround for the breaking change caused by default API version bump of the auth SDK
+            external_functions["add_role_assignment"] = add_role_assignment
             self.__external_functions = SimpleNamespace(**external_functions)
         return self.__external_functions
 
@@ -2277,6 +2280,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return tierStr
 
+    def get_nodepool_taints(self) -> Union[List[str], None]:
+        """Obtain the value of nodepool_labels.
+
+        :return: dictionary or None
+        """
+        return self.agentpool_context.get_node_taints()
+
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
@@ -2959,6 +2969,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             (self.context.get_cluster_autoscaler_profile(), None),
             (self.context.get_api_server_authorized_ip_ranges(), None),
             (self.context.get_nodepool_labels(), None),
+            (self.context.get_nodepool_taints(), None),
             (self.context.raw_param.get("enable_workload_identity"), None),
             (self.context.raw_param.get("upgrade_settings"), None),
         ]
@@ -3593,6 +3604,22 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_nodepool_taints_mc(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        if not mc.agent_pool_profiles:
+            raise UnknownError(
+                "Encounter an unexpected error while getting agent pool profiles from the cluster in the process of "
+                "updating agentpool profile."
+            )
+
+        # update nodepool taints for all nodepools
+        nodepool_taints = self.context.get_nodepool_taints()
+        if nodepool_taints is not None:
+            for agent_profile in mc.agent_pool_profiles:
+                agent_profile.node_taints = nodepool_taints
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -3640,6 +3667,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_guardrails_profile(mc)
         # update auto upgrade profile
         mc = self.update_upgrade_settings(mc)
+        # update nodepool taints
+        mc = self.update_nodepool_taints_mc(mc)
         # update network_observability in network_profile
         mc = self.update_enable_network_observability_in_network_profile(mc)
 

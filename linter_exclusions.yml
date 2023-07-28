@@ -1268,7 +1268,7 @@ iot hub distributed-tracing update:
     auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
-iot hub message-endpoint create cosmosdb-collection:
+iot hub message-endpoint create cosmosdb-container:
   parameters:
     endpoint_resource_group:
       rule_exclusions:
@@ -1289,6 +1289,31 @@ iot hub message-endpoint create servicebus-topic:
       rule_exclusions:
       - parameter_should_not_end_in_resource_group
 iot hub message-endpoint create storage-container:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint update cosmosdb-container:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint update eventhub:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint update servicebus-queue:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint update servicebus-topic:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint update storage-container:
   parameters:
     endpoint_resource_group:
       rule_exclusions:
@@ -2094,6 +2119,55 @@ networkcloud l3network create:
 networkcloud virtualmachine create:
   parameters:        
     isolate_emulator_thread:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud kubernetescluster create:  
+  parameters:
+    control_plane_node_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    initial_agent_pool_configurations:
+      rule_exclusions:
+      - option_length_too_long
+    managed_resource_group_configuration:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud kubernetescluster update:  
+  parameters:
+    control_plane_node_configuration:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud kubernetescluster agentpool create:  
+  parameters:
+    attached_network_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    kubernetes_cluster_name:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud kubernetescluster agentpool delete:  
+  parameters:
+    kubernetes_cluster_name:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud kubernetescluster agentpool update:  
+  parameters:
+    kubernetes_cluster_name:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud kubernetescluster agentpool list:  
+  parameters:
+    kubernetes_cluster_name:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud kubernetescluster agentpool show:  
+  parameters:
+    kubernetes_cluster_name:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud kubernetescluster agentpool wait:  
+  parameters:
+    kubernetes_cluster_name:
       rule_exclusions:
       - option_length_too_long
 networkfabric controller create:

@@ -1,0 +1,1275 @@
+interactions:
+- request:
+    body: '{"location": "eastus2euap", "properties": {"accountCreationSource": "LIFTR",
+      "orgCreationSource": "LIFTR", "planData": {"billingCycle": "MONTHLY", "effectiveDate":
+      "2022-10-25T13:14:33.000Z", "planDetails": "newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg",
+      "usageType": "PAYG"}, "userInfo": {"emailAddress": "v-taoxuzeng@microsoft.com",
+      "firstName": "vdftzcggiref", "lastName": "bcsztgqovdlmzf", "phoneNumber": "123456"}},
+      "tags": {"key6976": "oaxfhf"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '505'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --name --location --user-info --plan-data --account-creation-source
+        --org-creation-source --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor","name":"test-new-relic-monitor","type":"newrelic.observability/monitors","location":"eastus2euap","tags":{"key6976":"oaxfhf"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-06-28T08:50:50.0759688Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-28T08:50:50.0759688Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Accepted","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":null,"accountInfo":null,"organizationInfo":null},"userInfo":{"firstName":"vdftzcggiref","lastName":"bcsztgqovdlmzf","emailAddress":"v-taoxuzeng@microsoft.com","phoneNumber":"123456"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2022-10-25T13:14:33Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/NewRelic.Observability/locations/EASTUS2EUAP/operationStatuses/0ee8d897-ccd1-47bb-8955-0ece45bfa18f*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2?api-version=2022-07-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1215'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:50:58 GMT
+      etag:
+      - '"06004d4a-0000-3300-0000-649bf4710000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/NewRelic.Observability/locations/EASTUS2EUAP/operationStatuses/0ee8d897-ccd1-47bb-8955-0ece45bfa18f*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2?api-version=2022-07-01
+      mise-correlation-id:
+      - 01202be9-4e8c-4a10-a462-4c6b8c99975f
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:99558bd9-e2af-4edd-b8b9-dfc879de6669
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --user-info --plan-data --account-creation-source
+        --org-creation-source --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/NewRelic.Observability/locations/EASTUS2EUAP/operationStatuses/0ee8d897-ccd1-47bb-8955-0ece45bfa18f*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/providers/NewRelic.Observability/locations/EASTUS2EUAP/operationStatuses/0ee8d897-ccd1-47bb-8955-0ece45bfa18f*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2","name":"0ee8d897-ccd1-47bb-8955-0ece45bfa18f*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor","status":"Accepted","startTime":"2023-06-28T08:50:56.348269Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '537'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:50:59 GMT
+      etag:
+      - '"0000fe24-0000-3300-0000-649bf4700000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --user-info --plan-data --account-creation-source
+        --org-creation-source --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/NewRelic.Observability/locations/EASTUS2EUAP/operationStatuses/0ee8d897-ccd1-47bb-8955-0ece45bfa18f*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/providers/NewRelic.Observability/locations/EASTUS2EUAP/operationStatuses/0ee8d897-ccd1-47bb-8955-0ece45bfa18f*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2","name":"0ee8d897-ccd1-47bb-8955-0ece45bfa18f*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor","status":"Accepted","startTime":"2023-06-28T08:50:56.348269Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '537'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:51:30 GMT
+      etag:
+      - '"0000fe24-0000-3300-0000-649bf4700000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --user-info --plan-data --account-creation-source
+        --org-creation-source --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/NewRelic.Observability/locations/EASTUS2EUAP/operationStatuses/0ee8d897-ccd1-47bb-8955-0ece45bfa18f*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/providers/NewRelic.Observability/locations/EASTUS2EUAP/operationStatuses/0ee8d897-ccd1-47bb-8955-0ece45bfa18f*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2","name":"0ee8d897-ccd1-47bb-8955-0ece45bfa18f*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor","status":"Succeeded","startTime":"2023-06-28T08:50:56.348269Z","endTime":"2023-06-28T08:51:47.7680266Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '608'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:51:59 GMT
+      etag:
+      - '"0000ff24-0000-3300-0000-649bf4a30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --user-info --plan-data --account-creation-source
+        --org-creation-source --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor","name":"test-new-relic-monitor","type":"newrelic.observability/monitors","location":"eastus2euap","tags":{"key6976":"oaxfhf"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-06-28T08:50:50.0759688Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-28T08:50:50.0759688Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11854470"},"organizationInfo":{"organizationId":"f0511f62-1c8e-4594-81c8-89e17455f74f"}},"userInfo":{"firstName":"vdftzcggiref","lastName":"bcsztgqovdlmzf","emailAddress":"v-taoxuzeng@microsoft.com","phoneNumber":"123456"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2022-10-25T13:14:33Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:52:00 GMT
+      etag:
+      - '"0600574a-0000-3300-0000-649bf4a40000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"logRules": {"filteringTags": [], "sendAadLogs": "Enabled",
+      "sendActivityLogs": "Enabled", "sendSubscriptionLogs": "Enabled"}, "metricRules":
+      {"filteringTags": [{"action": "Include", "name": "Environment", "value": "Prod"}],
+      "userEmail": "v-taoxuzeng@microsoft.com"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor tag-rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '284'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --monitor-name --name --log-rules --metric-rules
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor/tagRules/default?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor/tagRules/default","name":"default","type":"newrelic.observability/monitors/tagrules","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-06-28T08:52:01.9305059Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-28T08:52:01.9305059Z"},"properties":{"provisioningState":"Succeeded","logRules":{"sendAadLogs":"Enabled","sendSubscriptionLogs":"Enabled","sendActivityLogs":"Enabled","filteringTags":[]},"metricRules":{"sendMetrics":"Disabled","filteringTags":[{"name":"Environment","value":"Prod","action":"Include"}],"userEmail":null}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '797'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:52:07 GMT
+      etag:
+      - '"00007b02-0000-3300-0000-649bf4b70000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 3f0b7795-e061-4127-b6f0-674cf0896b8d
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:99558bd9-e2af-4edd-b8b9-dfc879de6669
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"logRules": {"filteringTags": [], "sendAadLogs": "Enabled",
+      "sendActivityLogs": "Disabled", "sendSubscriptionLogs": "Enabled"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor tag-rule update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '144'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --monitor-name --name --log-rules
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor/tagRules/default?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor/tagRules/default","name":"default","type":"newrelic.observability/monitors/tagrules","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-06-28T08:52:01.9305059Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-28T08:52:08.6381556Z"},"properties":{"provisioningState":"Succeeded","logRules":{"sendAadLogs":"Enabled","sendSubscriptionLogs":"Enabled","sendActivityLogs":"Disabled","filteringTags":[]},"metricRules":{"sendMetrics":"Disabled","filteringTags":[{"name":"Environment","value":"Prod","action":"Include"}]}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '781'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:52:09 GMT
+      etag:
+      - '"00007c02-0000-3300-0000-649bf4b90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor tag-rule list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --monitor-name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor/tagRules?api-version=2022-07-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor/tagRules/default","name":"default","type":"newrelic.observability/monitors/tagrules","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-06-28T08:52:01.9305059Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-28T08:52:08.6381556Z"},"properties":{"provisioningState":"Succeeded","logRules":{"sendAadLogs":"Enabled","sendSubscriptionLogs":"Enabled","sendActivityLogs":"Disabled","filteringTags":[]},"metricRules":{"sendMetrics":"Disabled","filteringTags":[{"name":"Environment","value":"Prod","action":"Include"}]}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '793'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:52:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor tag-rule show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --monitor-name --name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor/tagRules/default?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor/tagRules/default","name":"default","type":"newrelic.observability/monitors/tagrules","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-06-28T08:52:01.9305059Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-28T08:52:08.6381556Z"},"properties":{"provisioningState":"Succeeded","logRules":{"sendAadLogs":"Enabled","sendSubscriptionLogs":"Enabled","sendActivityLogs":"Disabled","filteringTags":[]},"metricRules":{"sendMetrics":"Disabled","filteringTags":[{"name":"Environment","value":"Prod","action":"Include"}]}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '781'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:52:12 GMT
+      etag:
+      - '"00007c02-0000-3300-0000-649bf4b90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"userEmail": "v-taoxuzeng@microsoft.com"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor get-metric-rule
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '42'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --monitor-name --resource-group --user-email
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor/getMetricRules?api-version=2022-07-01
+  response:
+    body:
+      string: '{"sendMetrics":"Disabled","filteringTags":[],"userEmail":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '62'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:52:19 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 779b7a90-ebe4-4e84-af4f-b3403a573331
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:99558bd9-e2af-4edd-b8b9-dfc879de6669
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"azureResourceIds": ["abcdefg"], "userEmail": "v-taoxuzeng@microsoft.com"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor get-metric-statu
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '75'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --monitor-name --user-email --azure-resource-ids
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor/getMetricStatus?api-version=2022-07-01
+  response:
+    body:
+      string: '{"azureResourceIds":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '23'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:52:25 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - d676a410-eae4-4a0a-aeb5-b5c9e189b223
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:99558bd9-e2af-4edd-b8b9-dfc879de6669
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/NewRelic.Observability/monitors?api-version=2022-07-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dipesh_test/providers/NewRelic.Observability/monitors/dipesh_test_16_3_sb","name":"dipesh_test_16_3_sb","type":"newrelic.observability/monitors","location":"eastus","tags":{},"systemData":{"createdBy":"dipeshbhakat@microsoft.com","createdByType":"User","createdAt":"2023-06-16T06:26:11.4295321Z","lastModifiedBy":"f73fdc11-ed25-4c35-a93a-f525ab3fd649","lastModifiedByType":"Application","lastModifiedAt":"2023-06-16T06:47:28.4938976Z"},"identity":{"principalId":"7b257014-f3ac-471d-9f4b-282c031949f6","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"NEWRELIC","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"3821452"},"organizationInfo":{"organizationId":"fdd04e7d-c6a6-4a08-ab2c-b5095e9c1297"}},"userInfo":{"firstName":"Dipesh","lastName":"Bhakat","emailAddress":"dipeshbhakat@microsoft.com","phoneNumber":""},"planData":{"effectiveDate":"2023-06-16T06:46:52.991Z","usageType":"COMMITTED","planDetails":"nr-privateofferplan03-upfront@TID5xd5yfrmr6no@PUBIDnewrelicinc-privateoffers.nr-privateoffers1"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/saurgupta_RG/providers/NewRelic.Observability/monitors/16_06_23_01","name":"16_06_23_01","type":"newrelic.observability/monitors","location":"eastus","tags":{},"systemData":{"createdBy":"saurgupta@microsoft.com","createdByType":"User","createdAt":"2023-06-16T07:55:28.702026Z","lastModifiedBy":"saurgupta@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-16T07:55:28.702026Z"},"identity":{"principalId":"2471d8ff-16fd-4447-b91a-3d633479ec14","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"3980260"},"organizationInfo":{"organizationId":"d724ee97-7ed0-4d08-917b-0090481c72b4"}},"userInfo":{"firstName":"Saurabh","lastName":"Gupta","emailAddress":"saurgupta@microsoft.com","phoneNumber":"4257050556"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-06-16T07:55:05.642Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testrg2/providers/NewRelic.Observability/monitors/test-new-relic","name":"test-new-relic","type":"newrelic.observability/monitors","location":"eastus","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-06-19T08:44:48.5556683Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-19T08:44:48.5556683Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"3983546"},"organizationInfo":{"organizationId":"28a63237-6e4d-4033-80be-486def47933c"}},"userInfo":{"firstName":"vdftzcggiref","lastName":"bcsztgqovdlmzf","emailAddress":"dipeshbhakat@microsoft.com","phoneNumber":"123456"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2022-10-25T13:14:33Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testrg2/providers/NewRelic.Observability/monitors/test-new-relic2","name":"test-new-relic2","type":"newrelic.observability/monitors","location":"eastus","systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-06-21T09:18:43.0868156Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T09:18:43.0868156Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"3986742"},"organizationInfo":{"organizationId":"d4130b8c-57d6-417b-93aa-ae8f75746ed4"}},"userInfo":{"firstName":"vdftzcggiref","lastName":"bcsztgqovdlmzf","emailAddress":"v-taoxuzeng@microsoft.com","phoneNumber":"123456"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2022-10-25T13:14:33Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ps-test/providers/NewRelic.Observability/monitors/test-01","name":"test-01","type":"newrelic.observability/monitors","location":"eastus","systemData":{"createdBy":"v-jiaji@microsoft.com","createdByType":"User","createdAt":"2023-06-27T08:30:45.7380311Z","lastModifiedBy":"v-jiaji@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-27T08:30:45.7380311Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"3994838"},"organizationInfo":{"organizationId":"40f16846-b6e5-4394-9dcd-36c484b5d907"}},"userInfo":{"firstName":"Joyer","emailAddress":"v-jiaji@microsoft.com"},"planData":{"planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"0001-01-01T00:00:00Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ps-test/providers/NewRelic.Observability/monitors/test-02","name":"test-02","type":"newrelic.observability/monitors","location":"eastus","systemData":{"createdBy":"v-jiaji@microsoft.com","createdByType":"User","createdAt":"2023-06-27T08:44:10.596625Z","lastModifiedBy":"v-jiaji@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-27T08:44:10.596625Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"3994857"},"organizationInfo":{"organizationId":"ea6e1130-d7a1-4519-826f-e7d51b66c7a4"}},"userInfo":{"firstName":"Joyer","lastName":"Jin","emailAddress":"v-jiaji@microsoft.com"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-06-27T08:44:06.388Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SDKTestNRRG-8597/providers/NewRelic.Observability/monitors/testNR-5868","name":"testNR-5868","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"09a13a20-12be-4fda-a11e-a6895d6b321b","createdByType":"Application","createdAt":"2023-06-05T06:22:07.6920852Z","lastModifiedBy":"09a13a20-12be-4fda-a11e-a6895d6b321b","lastModifiedByType":"Application","lastModifiedAt":"2023-06-05T06:22:07.6920852Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11843582"},"organizationInfo":{"organizationId":"655abb32-8579-475f-ab87-e5981a722ee6"}},"userInfo":{"firstName":"vipray","lastName":"jain","emailAddress":"viprayjain@microsoft.com","phoneNumber":"1234567890"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2022-09-28T07:12:30Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SDKTestNRRG-2222/providers/NewRelic.Observability/monitors/testNR-6804","name":"testNR-6804","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"09a13a20-12be-4fda-a11e-a6895d6b321b","createdByType":"Application","createdAt":"2023-06-05T06:25:37.420688Z","lastModifiedBy":"09a13a20-12be-4fda-a11e-a6895d6b321b","lastModifiedByType":"Application","lastModifiedAt":"2023-06-05T06:25:37.420688Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11843587"},"organizationInfo":{"organizationId":"78652fd8-7894-4295-8f93-da36926c834a"}},"userInfo":{"firstName":"vipray","lastName":"jain","emailAddress":"viprayjain@microsoft.com","phoneNumber":"1234567890"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2022-09-28T07:12:30Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harsh-rg/providers/NewRelic.Observability/monitors/Harsh_PostMan_0706_1","name":"Harsh_PostMan_0706_1","type":"newrelic.observability/monitors","location":"Central
+        US EUAP","tags":{"Environment":"Canary","CustomTag":"Harsh"},"systemData":{"createdBy":"harshkumar@microsoft.com","createdByType":"User","createdAt":"2023-06-09T11:24:46.443444Z","lastModifiedBy":"harshkumar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-09T11:24:46.443444Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":null,"accountInfo":null,"organizationInfo":null},"userInfo":{"firstName":"Harsh","lastName":"Kumar","emailAddress":"harshkumar@microsoft.com","phoneNumber":"1234567890"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-05-09T13:14:33Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harsh-rg/providers/NewRelic.Observability/monitors/FromPortal0906","name":"FromPortal0906","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"harshkumar@microsoft.com","createdByType":"User","createdAt":"2023-06-09T12:44:44.6025114Z","lastModifiedBy":"harshkumar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-09T12:44:44.6025114Z"},"identity":{"principalId":"f33ebe4c-1833-467f-a590-819322ad7b54","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":null,"accountInfo":null,"organizationInfo":null},"userInfo":{"firstName":"Harsh","lastName":"Kumar","emailAddress":"harshkumar@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-06-09T12:44:20.914Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harsh-rg/providers/NewRelic.Observability/monitors/Harsh_PostMan_0906_7pm","name":"Harsh_PostMan_0906_7pm","type":"newrelic.observability/monitors","location":"Central
+        US EUAP","tags":{"Environment":"Canary","CustomTag":"Harsh"},"systemData":{"createdBy":"harshkumar@microsoft.com","createdByType":"User","createdAt":"2023-06-09T13:26:54.3110889Z","lastModifiedBy":"harshkumar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-09T13:26:54.3110889Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":null,"accountInfo":null,"organizationInfo":null},"userInfo":{"firstName":"Harsh","lastName":"Kumar","emailAddress":"harshkumar@microsoft.com","phoneNumber":"1234567890"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-05-09T13:14:33Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harsh-rg/providers/NewRelic.Observability/monitors/0906_7pm_CUSEUAP","name":"0906_7pm_CUSEUAP","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"harshkumar@microsoft.com","createdByType":"User","createdAt":"2023-06-09T13:29:55.2113598Z","lastModifiedBy":"harshkumar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-09T13:29:55.2113598Z"},"identity":{"principalId":"4f38cee9-9aa2-4049-99b4-3ee1f08d194c","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":null,"accountInfo":null,"organizationInfo":null},"userInfo":{"firstName":"Harsh","lastName":"Kumar","emailAddress":"harshkumar@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-06-09T13:29:29.513Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harsh-rg/providers/NewRelic.Observability/monitors/CertificateDoesntHaveCNPrefix_CUSEUAP_0906_10pm","name":"CertificateDoesntHaveCNPrefix_CUSEUAP_0906_10pm","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"harshkumar@microsoft.com","createdByType":"User","createdAt":"2023-06-09T16:51:53.6820618Z","lastModifiedBy":"harshkumar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-09T16:51:53.6820618Z"},"identity":{"principalId":"c43a1d4d-7310-4aae-a7c7-7fb216512d5a","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":null,"accountInfo":null,"organizationInfo":null},"userInfo":{"firstName":"Harsh","lastName":"Kumar","emailAddress":"harshkumar@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-06-09T16:51:32.155Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harsh-rg/providers/NewRelic.Observability/monitors/1006_CUS_2am","name":"1006_CUS_2am","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"harshkumar@microsoft.com","createdByType":"User","createdAt":"2023-06-09T20:25:23.0223306Z","lastModifiedBy":"harshkumar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-09T20:25:23.0223306Z"},"identity":{"principalId":"9a4201b3-0739-4379-aecc-898a09633f0b","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":null,"accountInfo":null,"organizationInfo":null},"userInfo":{"firstName":"Harsh","lastName":"Kumar","emailAddress":"harshkumar@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-06-09T20:24:59.876Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harsh-rg/providers/NewRelic.Observability/monitors/CUS_1106","name":"CUS_1106","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"harshkumar@microsoft.com","createdByType":"User","createdAt":"2023-06-11T12:29:58.4810597Z","lastModifiedBy":"harshkumar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-11T12:29:58.4810597Z"},"identity":{"principalId":"de9e2b8f-d78d-4dfb-b7b5-375e41f17d4a","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":null,"accountInfo":null,"organizationInfo":null},"userInfo":{"firstName":"Harsh","lastName":"Kumar","emailAddress":"harshkumar@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-06-11T12:29:36.785Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harsh-rg/providers/NewRelic.Observability/monitors/Harsh_PostMan_1206","name":"Harsh_PostMan_1206","type":"newrelic.observability/monitors","location":"Central
+        US EUAP","tags":{"Environment":"Canary","CustomTag":"Harsh"},"systemData":{"createdBy":"harshkumar@microsoft.com","createdByType":"User","createdAt":"2023-06-12T11:53:46.7444095Z","lastModifiedBy":"harshkumar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-12T11:53:46.7444095Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11849090"},"organizationInfo":{"organizationId":"b7fdee17-24e9-4e9b-a818-785975a1a06a"}},"userInfo":{"firstName":"Harsh","lastName":"Kumar","emailAddress":"harshkumar@microsoft.com","phoneNumber":"1234567890"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-05-09T13:14:33Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harsh-rg/providers/NewRelic.Observability/monitors/CUS_1206_2","name":"CUS_1206_2","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"harshkumar@microsoft.com","createdByType":"User","createdAt":"2023-06-12T11:58:07.2993474Z","lastModifiedBy":"harshkumar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-12T11:58:07.2993474Z"},"identity":{"principalId":"733c9088-d3ac-414d-b986-35eeac850fe6","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11849091"},"organizationInfo":{"organizationId":"7f1336d0-a830-46bf-a811-dcea7bae23b4"}},"userInfo":{"firstName":"Harsh","lastName":"Kumar","emailAddress":"harshkumar@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-06-12T11:57:41.756Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harsh-rg/providers/NewRelic.Observability/monitors/1406_Develop_CUS","name":"1406_Develop_CUS","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"harshkumar@microsoft.com","createdByType":"User","createdAt":"2023-06-14T08:57:58.3517504Z","lastModifiedBy":"harshkumar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-14T08:57:58.3517504Z"},"identity":{"principalId":"64fcb375-aa48-4868-bf05-a6b09ae41fe5","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11850474"},"organizationInfo":{"organizationId":"f8b1b903-c778-4632-9349-65b7cee008a4"}},"userInfo":{"firstName":"Harsh","lastName":"Kumar","emailAddress":"harshkumar@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-06-14T08:57:34.366Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/saurgupta_RG/providers/NewRelic.Observability/monitors/saurgupta_27_06_23_02","name":"saurgupta_27_06_23_02","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"saurgupta@microsoft.com","createdByType":"User","createdAt":"2023-06-27T05:14:26.0831752Z","lastModifiedBy":"saurgupta@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-27T05:14:26.0831752Z"},"identity":{"principalId":"5058cba5-74b7-409d-a79c-933d89d343b8","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11854213"},"organizationInfo":{"organizationId":"064e58a4-5215-4e8b-be02-dd88e3143e7e"}},"userInfo":{"firstName":"Saurabh","lastName":"Gupta","emailAddress":"saurgupta@microsoft.com","phoneNumber":"4257050556"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-06-27T05:13:59.809Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gaurav-test/providers/NewRelic.Observability/monitors/gaurav-testing-8-3-1","name":"gaurav-testing-8-3-1","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"gauravbang@microsoft.com","createdByType":"User","createdAt":"2023-03-08T09:41:40.0331875Z","lastModifiedBy":"gauravbang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-08T09:41:40.0331875Z"},"identity":{"principalId":"59a57071-f81b-4ed3-8a4f-91a925f9c182","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":"","accountInfo":{"accountId":"11823108"},"organizationInfo":{"organizationId":"1ee672c1-7cec-4d2d-8fbf-a13e3f28ba3d"}},"userInfo":{"firstName":"Gaurav","lastName":"Bang","emailAddress":"gauravbang@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-03-08T09:41:13.088Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dipesh_test/providers/NewRelic.Observability/monitors/test_13_3_1","name":"test_13_3_1","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"dipeshbhakat@microsoft.com","createdByType":"User","createdAt":"2023-03-13T04:30:35.2584238Z","lastModifiedBy":"dipeshbhakat@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-13T04:30:35.2584238Z"},"identity":{"principalId":"5f63772c-3bdf-44b4-86ed-fdfde1974703","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":"","accountInfo":{"accountId":"11823900"},"organizationInfo":{"organizationId":"f97588f3-2353-43b2-a4f5-dd8b4b8bd5eb"}},"userInfo":{"firstName":"Dipesh","lastName":"Bhakat","emailAddress":"dipeshbhakat@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-03-13T04:29:52.569Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gaurav-test/providers/NewRelic.Observability/monitors/gaurav-linkNRorg","name":"gaurav-linkNRorg","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"gauravbang@microsoft.com","createdByType":"User","createdAt":"2023-03-14T18:08:10.3253686Z","lastModifiedBy":"gauravbang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-14T18:08:10.3253686Z"},"identity":{"principalId":"00c2da54-a2ce-4f76-9260-dfa69be2fb75","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"NEWRELIC","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11824478"},"organizationInfo":{"organizationId":"b05c5b7f-f214-48da-9b62-7642f50f20eb"}},"userInfo":{"firstName":"Gaurav","lastName":"Bang","emailAddress":"gauravbang@microsoft.com","phoneNumber":""},"planData":{"effectiveDate":"0001-01-01T00:00:00Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/saurgupta_RG/providers/NewRelic.Observability/monitors/saurgupta_15_03_23_01","name":"saurgupta_15_03_23_01","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"saurgupta@microsoft.com","createdByType":"User","createdAt":"2023-03-15T04:57:49.1688805Z","lastModifiedBy":"saurgupta@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-15T04:57:49.1688805Z"},"identity":{"principalId":"e3d6ca1b-cd67-4790-ac1e-566d3db98ca5","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":"","accountInfo":{"accountId":"11824616"},"organizationInfo":{"organizationId":"e4dde9c4-1020-4127-bc4c-f7637a5bb4f7"}},"userInfo":{"firstName":"Saurabh","lastName":"Gupta","emailAddress":"saurgupta@microsoft.com","phoneNumber":"4257050556"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-03-15T04:57:20.623Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gaurav-test/providers/NewRelic.Observability/monitors/gaurav-testing-15-3-Pro_org","name":"gaurav-testing-15-3-Pro_org","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"gauravbang@microsoft.com","createdByType":"User","createdAt":"2023-03-15T10:20:47.220948Z","lastModifiedBy":"gauravbang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-15T10:20:47.220948Z"},"identity":{"principalId":"28862184-112d-4701-bc98-ba357dd48da7","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":"","accountInfo":{"accountId":"11824630"},"organizationInfo":{"organizationId":"7e958091-9552-4f8c-8b98-afe2d45d37b8"}},"userInfo":{"firstName":"Gaurav","lastName":"Bang","emailAddress":"gauravbang@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-03-15T10:20:28.933Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gaurav-test/providers/NewRelic.Observability/monitors/gaurav-testing-auto-role-3","name":"gaurav-testing-auto-role-3","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"gauravbang@microsoft.com","createdByType":"User","createdAt":"2023-03-15T16:56:01.1054503Z","lastModifiedBy":"gauravbang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-15T16:56:01.1054503Z"},"identity":{"principalId":"616b8733-aab5-478a-b07a-8c1823b46a47","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"NEWRELIC","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11824684"},"organizationInfo":{"organizationId":"b05c5b7f-f214-48da-9b62-7642f50f20eb"}},"userInfo":{"firstName":"Gaurav","lastName":"Bang","emailAddress":"gauravbang@microsoft.com","phoneNumber":""},"planData":{"effectiveDate":"0001-01-01T00:00:00Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/saurgupta_RG/providers/NewRelic.Observability/monitors/saurgupta_27_03_23_01","name":"saurgupta_27_03_23_01","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"lastModifiedBy":"saurgupta@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-27T09:14:20.3022742Z"},"identity":{"principalId":"8035763f-50d7-43dc-9506-0a13aa2c562c","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":null,"accountInfo":null,"organizationInfo":{"organizationId":"fe5759fb-092a-4353-906b-74df3b17f3d4"}},"userInfo":{"firstName":"Saurabh","lastName":"Gupta","emailAddress":"saurgupta@microsoft.com","phoneNumber":"4257050556"},"planData":{"usageType":null,"billingCycle":null,"planDetails":null,"effectiveDate":"0001-01-01T00:00:00Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/saurgupta_RG/providers/NewRelic.Observability/monitors/saurgupta_27_03_23_02","name":"saurgupta_27_03_23_02","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"saurgupta@microsoft.com","createdByType":"User","createdAt":"2023-03-27T09:21:34.9721531Z","lastModifiedBy":"saurgupta@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-27T09:21:34.9721531Z"},"identity":{"principalId":"5d3eceb2-b8cc-45f6-899f-d0e25e7db505","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":null,"accountInfo":null,"organizationInfo":{"organizationId":"fe5759fb-092a-4353-906b-74df3b17f3d4"}},"userInfo":{"firstName":"Saurabh","lastName":"Gupta","emailAddress":"saurgupta@microsoft.com","phoneNumber":"4257050556"},"planData":{"usageType":null,"billingCycle":null,"planDetails":null,"effectiveDate":"0001-01-01T00:00:00Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/saurgupta_RG/providers/NewRelic.Observability/monitors/saurgupta_27_03_23_03","name":"saurgupta_27_03_23_03","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"saurgupta@microsoft.com","createdByType":"User","createdAt":"2023-03-27T10:55:52.0921309Z","lastModifiedBy":"saurgupta@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-27T10:55:52.0921309Z"},"identity":{"principalId":"faba6b5e-59a3-4e20-bf52-f0a8aca2ef07","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"NEWRELIC","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11826589"},"organizationInfo":{"organizationId":"fe5759fb-092a-4353-906b-74df3b17f3d4"}},"userInfo":{"firstName":"Saurabh","lastName":"Gupta","emailAddress":"saurgupta@microsoft.com","phoneNumber":"4257050556"},"planData":{"effectiveDate":"0001-01-01T00:00:00Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/saurgupta_RG/providers/NewRelic.Observability/monitors/saurgupta_28_03_23_01","name":"saurgupta_28_03_23_01","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"saurgupta@microsoft.com","createdByType":"User","createdAt":"2023-03-28T08:09:47.2965032Z","lastModifiedBy":"f73fdc11-ed25-4c35-a93a-f525ab3fd649","lastModifiedByType":"Application","lastModifiedAt":"2023-05-26T07:15:21.3677826Z"},"identity":{"principalId":"6f616062-2081-4c85-b090-bad52e121f56","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11826838"},"organizationInfo":{"organizationId":"fe5759fb-092a-4353-906b-74df3b17f3d4"}},"userInfo":{"firstName":"Saurabh","lastName":"Gupta","emailAddress":"saurgupta@microsoft.com","phoneNumber":"4257050556"},"planData":{"usageType":"COMMITTED","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-05-26T07:14:51.312Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/saurgupta_RG/providers/NewRelic.Observability/monitors/saurgupta_28_03_23_02","name":"saurgupta_28_03_23_02","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"saurgupta@microsoft.com","createdByType":"User","createdAt":"2023-03-28T12:04:18.7332277Z","lastModifiedBy":"f73fdc11-ed25-4c35-a93a-f525ab3fd649","lastModifiedByType":"Application","lastModifiedAt":"2023-05-26T07:15:21.7115366Z"},"identity":{"principalId":"2075e7df-6260-4329-8d32-c031f854be21","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11826851"},"organizationInfo":{"organizationId":"fe5759fb-092a-4353-906b-74df3b17f3d4"}},"userInfo":{"firstName":"Saurabh","lastName":"Gupta","emailAddress":"saurgupta@microsoft.com","phoneNumber":"4257050556"},"planData":{"effectiveDate":"2023-05-26T07:14:51.312Z","usageType":"COMMITTED","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dipesh_test/providers/NewRelic.Observability/monitors/dipesh_test_3_30_1","name":"dipesh_test_3_30_1","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"dipeshbhakat@microsoft.com","createdByType":"User","createdAt":"2023-03-30T07:05:10.426026Z","lastModifiedBy":"dipeshbhakat@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-30T07:05:10.426026Z"},"identity":{"principalId":"12d001d2-7be0-48ad-97fa-6caca31b40d0","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11827357"},"organizationInfo":{"organizationId":"b4950cae-9384-40c3-8849-ff30354e4764"}},"userInfo":{"firstName":"Dipesh","lastName":"Bhakat","emailAddress":"dipeshbhakat@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-03-30T07:04:40.4Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dipesh_test/providers/NewRelic.Observability/monitors/dipesh_test_automonitoring_3_31","name":"dipesh_test_automonitoring_3_31","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"dipeshbhakat@microsoft.com","createdByType":"User","createdAt":"2023-03-31T09:40:40.3833976Z","lastModifiedBy":"dipeshbhakat@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-31T09:40:40.3833976Z"},"identity":{"principalId":"7b24fed8-66b1-4d7d-89e1-990d8e6ea3e6","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11827596"},"organizationInfo":{"organizationId":"217c8ebc-cfbf-44c8-8aa7-329199bb88b6"}},"userInfo":{"firstName":"Dipesh","lastName":"Bhakat","emailAddress":"dipeshbhakat@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-03-31T09:40:03.079Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gaurav-test/providers/NewRelic.Observability/monitors/gaurav-test-canary-auto-2","name":"gaurav-test-canary-auto-2","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"gauravbang@microsoft.com","createdByType":"User","createdAt":"2023-03-31T11:51:42.313165Z","lastModifiedBy":"gauravbang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-31T11:51:42.313165Z"},"identity":{"principalId":"eaab4f37-c5db-4db1-8ef5-70e37ff3cd5f","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11827602"},"organizationInfo":{"organizationId":"4a4a71ca-a850-4449-8c6a-e6ba65e9c7ec"}},"userInfo":{"firstName":"Gaurav","lastName":"Bang","emailAddress":"gauravbang@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-03-31T11:51:18.995Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dipesh_test/providers/NewRelic.Observability/monitors/test_automonitoring_2_dipesh","name":"test_automonitoring_2_dipesh","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"dipeshbhakat@microsoft.com","createdByType":"User","createdAt":"2023-03-31T12:01:35.9357989Z","lastModifiedBy":"dipeshbhakat@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-31T12:01:35.9357989Z"},"identity":{"principalId":"25c3c518-316e-4da4-a6f4-79630717a5da","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11827623"},"organizationInfo":{"organizationId":"7b7a4854-743e-44ad-9acb-cc9ce73d8680"}},"userInfo":{"firstName":"Dipesh","lastName":"Bhakat","emailAddress":"dipeshbhakat@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-03-31T12:00:59.046Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/saurgupta_RG/providers/NewRelic.Observability/monitors/saurgupta_05_04_23_01","name":"saurgupta_05_04_23_01","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"saurgupta@microsoft.com","createdByType":"User","createdAt":"2023-04-05T08:33:53.7023903Z","lastModifiedBy":"f73fdc11-ed25-4c35-a93a-f525ab3fd649","lastModifiedByType":"Application","lastModifiedAt":"2023-05-26T07:15:22.5084139Z"},"identity":{"principalId":"5fba8e2d-c4fc-42a0-8c68-1b178d0e3693","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11828436"},"organizationInfo":{"organizationId":"fe5759fb-092a-4353-906b-74df3b17f3d4"}},"userInfo":{"firstName":"Saurabh","lastName":"Gupta","emailAddress":"saurgupta@microsoft.com","phoneNumber":"4257050556"},"planData":{"effectiveDate":"2023-05-26T07:14:51.312Z","usageType":"COMMITTED","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/saurgupta_RG/providers/NewRelic.Observability/monitors/saurgupta_21_04_23_03","name":"saurgupta_21_04_23_03","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"saurgupta@microsoft.com","createdByType":"User","createdAt":"2023-04-21T11:29:46.1598733Z","lastModifiedBy":"saurgupta@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-21T11:29:46.1598733Z"},"identity":{"principalId":"0b7c8541-4c24-44a1-9566-5d850172db50","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11833107"},"organizationInfo":{"organizationId":"7e8a045c-620d-43ad-955a-16dbc48b0796"}},"userInfo":{"firstName":"Saurabh","lastName":"Gupta","emailAddress":"saurgupta@microsoft.com","phoneNumber":"4257050556"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-04-21T11:29:24.332Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/saurgupta_RG/providers/NewRelic.Observability/monitors/saurgupta_21_04_23_04","name":"saurgupta_21_04_23_04","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"saurgupta@microsoft.com","createdByType":"User","createdAt":"2023-04-21T11:35:23.5801822Z","lastModifiedBy":"f73fdc11-ed25-4c35-a93a-f525ab3fd649","lastModifiedByType":"Application","lastModifiedAt":"2023-05-26T07:15:23.2271416Z"},"identity":{"principalId":"0a123d99-6836-4e83-84e8-679a9d69ec7f","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11833108"},"organizationInfo":{"organizationId":"fe5759fb-092a-4353-906b-74df3b17f3d4"}},"userInfo":{"firstName":"Saurabh","lastName":"Gupta","emailAddress":"saurgupta@microsoft.com","phoneNumber":"4257050556"},"planData":{"effectiveDate":"2023-05-26T07:14:51.312Z","usageType":"COMMITTED","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/saurgupta_RG/providers/NewRelic.Observability/monitors/saurgupta_24_04_23_01","name":"saurgupta_24_04_23_01","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"saurgupta@microsoft.com","createdByType":"User","createdAt":"2023-04-24T03:33:40.6315557Z","lastModifiedBy":"f73fdc11-ed25-4c35-a93a-f525ab3fd649","lastModifiedByType":"Application","lastModifiedAt":"2023-05-26T07:15:23.5240557Z"},"identity":{"principalId":"ecc769f1-0815-424c-bc4a-cf3f4cb0f0de","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11833430"},"organizationInfo":{"organizationId":"fe5759fb-092a-4353-906b-74df3b17f3d4"}},"userInfo":{"firstName":"Saurabh","lastName":"Gupta","emailAddress":"saurgupta@microsoft.com","phoneNumber":"4257050556"},"planData":{"effectiveDate":"2023-05-26T07:14:51.312Z","usageType":"COMMITTED","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Contoso_Trial_RG/providers/NewRelic.Observability/monitors/Contoso_Trial_NewRelic","name":"Contoso_Trial_NewRelic","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"visinghv@microsoft.com","createdByType":"User","createdAt":"2023-04-27T09:40:49.4490184Z","lastModifiedBy":"visinghv@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-27T09:40:49.4490184Z"},"identity":{"principalId":"6e758e6e-eeb5-4d1e-8f48-9123bafcc213","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11834121"},"organizationInfo":{"organizationId":"baf5ad21-0180-4201-a7fb-2cc0b1a45062"}},"userInfo":{"firstName":"Vikas","lastName":"Singhvi","emailAddress":"visinghv@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-04-27T09:40:16.459Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dipesh_test/providers/NewRelic.Observability/monitors/dipesh_test_accessibility","name":"dipesh_test_accessibility","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"dipeshbhakat@microsoft.com","createdByType":"User","createdAt":"2023-04-28T15:25:56.6263226Z","lastModifiedBy":"dipeshbhakat@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-28T15:25:56.6263226Z"},"identity":{"principalId":"a6031395-056d-4e0b-8e5e-aaa8b74b7e71","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11834507"},"organizationInfo":{"organizationId":"931ba244-498a-4c90-a330-9c6efc89d8ca"}},"userInfo":{"firstName":"Dipesh","lastName":"Bhakat","emailAddress":"dipeshbhakat@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-04-28T15:24:55.21Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest9482/providers/NewRelic.Observability/monitors/acctest2985","name":"acctest2985","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{"key6976":"oaxfhf"},"systemData":{"createdBy":"dipeshbhakat@microsoft.com","createdByType":"User","createdAt":"2023-05-02T11:33:12.1997957Z","lastModifiedBy":"dipeshbhakat@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-02T11:33:12.1997957Z"},"identity":{"principalId":"7bc5a722-008c-4793-b00d-050cb2aa54af","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":"vcscxlncofcuduadesd","accountInfo":{"accountId":"xhqmg"},"organizationInfo":{"organizationId":"k"}},"userInfo":{"firstName":"Alice","lastName":"Bob","emailAddress":"dipeshbhakat@microsoft.com","phoneNumber":"123456"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-04-20T14:32:58.091Z"},"liftrResourceCategory":"Unknown","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/acctest9482/providers/NewRelic.Observability/monitors/acctestterraform1","name":"acctestterraform1","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{"Env":"Dev"},"systemData":{"createdBy":"dipeshbhakat@microsoft.com","createdByType":"User","createdAt":"2023-05-02T11:50:50.371331Z","lastModifiedBy":"dipeshbhakat@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-02T11:50:50.371331Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11835067"},"organizationInfo":{"organizationId":"d14d6171-51e7-4983-8835-9d028c34e038"}},"userInfo":{"firstName":"Alice","lastName":"Bob","emailAddress":"dipeshbhakat@microsoft.com","phoneNumber":"123456"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-04-20T14:32:58.091Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harsh-rg/providers/NewRelic.Observability/monitors/Harsh_PostMan_0905_1","name":"Harsh_PostMan_0905_1","type":"newrelic.observability/monitors","location":"Central
+        US EUAP","tags":{"Environment":"Canary","CustomTag":"Harsh"},"systemData":{"createdBy":"harshkumar@microsoft.com","createdByType":"User","createdAt":"2023-05-09T05:13:23.7186022Z","lastModifiedBy":"harshkumar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-09T05:13:23.7186022Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11836432"},"organizationInfo":{"organizationId":"72b3349f-7734-4d26-b15f-c5558e034d88"}},"userInfo":{"firstName":"Harsh","lastName":"Kumar","emailAddress":"harshkumar@microsoft.com","phoneNumber":"1234567890"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-05-09T13:14:33Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harsh-rg/providers/NewRelic.Observability/monitors/Uxuxuxuxuuxux","name":"Uxuxuxuxuuxux","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"harshkumar@microsoft.com","createdByType":"User","createdAt":"2023-05-09T07:53:15.7591101Z","lastModifiedBy":"harshkumar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-09T07:53:15.7591101Z"},"identity":{"principalId":"df61d5f3-c082-46c6-b1c9-3ce15b6c1bc2","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11836445"},"organizationInfo":{"organizationId":"4ac7da6c-ad33-4b03-b979-e06c5a53c1bf"}},"userInfo":{"firstName":"Harsh","lastName":"Kumar","emailAddress":"harshkumar@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-05-09T07:52:50.809Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vip-rg/providers/NewRelic.Observability/monitors/vip-test-09May23-CEUAP-LinkOrg-1","name":"vip-test-09May23-CEUAP-LinkOrg-1","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"viprayjain@microsoft.com","createdByType":"User","createdAt":"2023-05-09T09:58:49.8786547Z","lastModifiedBy":"f73fdc11-ed25-4c35-a93a-f525ab3fd649","lastModifiedByType":"Application","lastModifiedAt":"2023-05-26T07:15:24.4771307Z"},"identity":{"principalId":"a03ef895-af2e-4c18-abec-cf24fd4dbc3e","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11836452"},"organizationInfo":{"organizationId":"fe5759fb-092a-4353-906b-74df3b17f3d4"}},"userInfo":{"firstName":"Vipray","lastName":"Jain","emailAddress":"viprayjain@microsoft.com","phoneNumber":""},"planData":{"usageType":"COMMITTED","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-05-26T07:14:51.312Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dipesh_test/providers/NewRelic.Observability/monitors/dipesh_test_canary1","name":"dipesh_test_canary1","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"dipeshbhakat@microsoft.com","createdByType":"User","createdAt":"2023-05-19T04:19:33.6429203Z","lastModifiedBy":"dipeshbhakat@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-19T04:19:33.6429203Z"},"identity":{"principalId":"38d7e66e-15ba-490f-89ee-2106aec6b23f","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11838837"},"organizationInfo":{"organizationId":"bbbd8a08-6158-4811-9192-dd5888b9bc4c"}},"userInfo":{"firstName":"Dipesh","lastName":"Bhakat","emailAddress":"dipeshbhakat@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-05-19T04:18:52.037Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dipeshterraformcreateRG1/providers/NewRelic.Observability/monitors/dipeshterraformcreate5","name":"dipeshterraformcreate5","type":"newrelic.observability/monitors","location":"centraluseuap","systemData":{"createdBy":"dipeshbhakat@microsoft.com","createdByType":"User","createdAt":"2023-05-23T11:44:18.7175972Z","lastModifiedBy":"dipeshbhakat@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-23T11:44:18.7175972Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11840116"},"organizationInfo":{"organizationId":"8e3f65ea-3d45-42ee-b041-b19835e4b4d5"}},"userInfo":{"firstName":"Dipesh","lastName":"Bhakat","emailAddress":"dipeshbhakat@microsoft.com","phoneNumber":"123456"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-05-19T08:28:48.752Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vip-rg/providers/NewRelic.Observability/monitors/java-sdk-8849","name":"java-sdk-8849","type":"newrelic.observability/monitors","location":"centraluseuap","systemData":{"createdBy":"09a13a20-12be-4fda-a11e-a6895d6b321b","createdByType":"Application","createdAt":"2023-05-26T04:55:57.8804271Z","lastModifiedBy":"09a13a20-12be-4fda-a11e-a6895d6b321b","lastModifiedByType":"Application","lastModifiedAt":"2023-05-26T04:55:57.8804271Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11841067"},"organizationInfo":{"organizationId":"6cf3087a-5659-4035-b911-0eb5ab212e24"}},"userInfo":{"firstName":"Vipray","lastName":"Jain","emailAddress":"viprayjain@microsoft.com","phoneNumber":"9876543210"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-05-26T04:55:51.687Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/saurgupta_RG/providers/NewRelic.Observability/monitors/saurgupta_31_05_23_01","name":"saurgupta_31_05_23_01","type":"newrelic.observability/monitors","location":"centraluseuap","tags":{},"systemData":{"createdBy":"saurgupta@microsoft.com","createdByType":"User","createdAt":"2023-05-31T09:58:47.4531709Z","lastModifiedBy":"saurgupta@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-31T09:58:47.4531709Z"},"identity":{"principalId":"dcf4324e-d9ba-4de3-9c76-a8631cce3d5b","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11842169"},"organizationInfo":{"organizationId":"3ed363ff-0f89-41ce-b6a1-cd268cf2e44f"}},"userInfo":{"firstName":"Saurabh","lastName":"Gupta","emailAddress":"saurgupta@microsoft.com","phoneNumber":"4257050556"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-05-31T09:58:21.516Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harsh-rg/providers/NewRelic.Observability/monitors/Harsh_PostMan_0706","name":"Harsh_PostMan_0706","type":"newrelic.observability/monitors","location":"Central
+        US EUAP","tags":{"Environment":"Canary","CustomTag":"Harsh"},"systemData":{"lastModifiedBy":"harshkumar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-07T06:39:55.6019208Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11847605"},"organizationInfo":{"organizationId":"19f656d6-181b-4f61-a403-8e0592cba345"}},"userInfo":{"firstName":"Harsh","lastName":"Kumar","emailAddress":"harshkumar@microsoft.com","phoneNumber":"1234567890"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-06-05T13:14:33Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/saurgupta_RG/providers/NewRelic.Observability/monitors/saurgupta_21_06_23_01","name":"saurgupta_21_06_23_01","type":"newrelic.observability/monitors","location":"eastus2euap","tags":{},"systemData":{"createdBy":"saurgupta@microsoft.com","createdByType":"User","createdAt":"2023-06-21T09:06:41.1274412Z","lastModifiedBy":"saurgupta@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T09:06:41.1274412Z"},"identity":{"principalId":"005a57db-e47d-4004-9737-bdd8021539cc","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11852521"},"organizationInfo":{"organizationId":"a2e245d8-a96f-47a0-a84d-e5be9acb099f"}},"userInfo":{"firstName":"Saurabh","lastName":"Gupta","emailAddress":"saurgupta@microsoft.com","phoneNumber":"4257050556"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-06-21T09:06:13.366Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vip-rg/providers/NewRelic.Observability/monitors/vip-test-EastUs2EUAP-28Jun23","name":"vip-test-EastUs2EUAP-28Jun23","type":"newrelic.observability/monitors","location":"eastus2euap","tags":{},"systemData":{"createdBy":"viprayjain@microsoft.com","createdByType":"User","createdAt":"2023-06-28T07:29:51.9286225Z","lastModifiedBy":"viprayjain@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-28T07:29:51.9286225Z"},"identity":{"principalId":"084a17f2-79c5-43a9-8d1c-3722896f7fb8","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11854461"},"organizationInfo":{"organizationId":"02e2626b-ea02-4cc6-af67-630a97bde699"}},"userInfo":{"firstName":"Vipray","lastName":"Jain","emailAddress":"viprayjain@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-06-28T07:29:18.857Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor","name":"test-new-relic-monitor","type":"newrelic.observability/monitors","location":"eastus2euap","tags":{"key6976":"oaxfhf"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-06-28T08:50:50.0759688Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-28T08:50:50.0759688Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11854470"},"organizationInfo":{"organizationId":"f0511f62-1c8e-4594-81c8-89e17455f74f"}},"userInfo":{"firstName":"vdftzcggiref","lastName":"bcsztgqovdlmzf","emailAddress":"v-taoxuzeng@microsoft.com","phoneNumber":"123456"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2022-10-25T13:14:33Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vip-rg/providers/NewRelic.Observability/monitors/vip-test-fail20-EEUAP","name":"vip-test-fail20-EEUAP","type":"newrelic.observability/monitors","location":"eastus2euap","tags":{},"systemData":{"createdBy":"viprayjain@microsoft.com","createdByType":"User","createdAt":"2023-05-04T11:07:08.9420097Z","lastModifiedBy":"viprayjain@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-04T11:07:08.9420097Z"},"identity":{"principalId":"5e2bf171-e338-427c-8e06-9d0892167d01","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":null,"accountInfo":null,"organizationInfo":null},"userInfo":{"firstName":"Vipray","lastName":"Jain","emailAddress":"viprayjain@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2023-05-04T11:06:35.524Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/saurgupta_RG/providers/NewRelic.Observability/monitors/saurgupta_19_05_23_02","name":"saurgupta_19_05_23_02","type":"newrelic.observability/monitors","location":"eastus2euap","tags":{},"systemData":{"createdBy":"saurgupta@microsoft.com","createdByType":"User","createdAt":"2023-05-19T08:29:14.4984643Z","lastModifiedBy":"saurgupta@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-19T08:29:14.4984643Z"},"identity":{"principalId":"932433af-a169-4ed8-bb7a-6ad21df60960","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11838868"},"organizationInfo":{"organizationId":"f6f06d86-727a-4073-b05d-843fe5bdc910"}},"userInfo":{"firstName":"Saurabh","lastName":"Gupta","emailAddress":"saurgupta@microsoft.com","phoneNumber":"4257050556"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-05-19T08:28:48.752Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harsh-rg/providers/NewRelic.Observability/monitors/1905_EastUS2Euap","name":"1905_EastUS2Euap","type":"newrelic.observability/monitors","location":"eastus2euap","tags":{},"systemData":{"createdBy":"harshkumar@microsoft.com","createdByType":"User","createdAt":"2023-05-19T11:10:38.111492Z","lastModifiedBy":"harshkumar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-19T11:10:38.111492Z"},"identity":{"principalId":"b6e0dca1-b7e1-4fa8-92a7-198983f5261c","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11838882"},"organizationInfo":{"organizationId":"46511e30-0877-4cf3-ab80-90cfed910c49"}},"userInfo":{"firstName":"Harsh","lastName":"Kumar","emailAddress":"harshkumar@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-05-19T11:10:15.46Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harsh-rg/providers/NewRelic.Observability/monitors/2205_EastUS2_WithProdAAD","name":"2205_EastUS2_WithProdAAD","type":"newrelic.observability/monitors","location":"eastus2euap","tags":{},"systemData":{"createdBy":"harshkumar@microsoft.com","createdByType":"User","createdAt":"2023-05-22T06:08:38.054975Z","lastModifiedBy":"harshkumar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-22T06:08:38.054975Z"},"identity":{"principalId":"82c2cc83-669b-4c71-bab4-2be485b954f9","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":null,"accountInfo":null,"organizationInfo":null},"userInfo":{"firstName":"Harsh","lastName":"Kumar","emailAddress":"harshkumar@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-05-22T06:08:11.822Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harsh-rg/providers/NewRelic.Observability/monitors/2205_EastUS2_WithProd","name":"2205_EastUS2_WithProd","type":"newrelic.observability/monitors","location":"eastus2euap","tags":{},"systemData":{"createdBy":"harshkumar@microsoft.com","createdByType":"User","createdAt":"2023-05-22T09:06:43.9138043Z","lastModifiedBy":"harshkumar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-22T09:06:43.9138043Z"},"identity":{"principalId":"0093070f-25b8-4830-9178-d0c82ae74184","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":null,"accountInfo":null,"organizationInfo":null},"userInfo":{"firstName":"Harsh","lastName":"Kumar","emailAddress":"harshkumar@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-05-22T09:06:16.281Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harsh-rg/providers/NewRelic.Observability/monitors/2205_EastUS2","name":"2205_EastUS2","type":"newrelic.observability/monitors","location":"eastus2euap","tags":{},"systemData":{"createdBy":"harshkumar@microsoft.com","createdByType":"User","createdAt":"2023-05-22T10:37:04.6379696Z","lastModifiedBy":"harshkumar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-22T10:37:04.6379696Z"},"identity":{"principalId":"6517ee22-e768-4d6b-9053-24665a38bc29","tenantId":"888d76fa-54b2-4ced-8ee5-aac1585adee7","type":"SystemAssigned"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":null,"accountInfo":null,"organizationInfo":null},"userInfo":{"firstName":"Harsh","lastName":"Kumar","emailAddress":"harshkumar@microsoft.com","phoneNumber":""},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-05-22T10:36:39.099Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dipeshterraformcreateRG1/providers/NewRelic.Observability/monitors/dipeshterraformcreate4","name":"dipeshterraformcreate4","type":"newrelic.observability/monitors","location":"eastus2euap","tags":{"tagKey1":"tagValue1"},"systemData":{"createdBy":"dipeshbhakat@microsoft.com","createdByType":"User","createdAt":"2023-05-23T11:25:32.0201882Z","lastModifiedBy":"dipeshbhakat@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-23T11:25:32.0201882Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Failed","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"userId":null,"accountInfo":null,"organizationInfo":null},"userInfo":{"firstName":"Dipesh","lastName":"Bhakat","emailAddress":"dipeshbhakat@microsoft.com","phoneNumber":"123456"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py","effectiveDate":"2023-05-19T08:28:48.752Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '76775'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:52:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - adf535bc-5956-421a-ba3b-469a461a6a83
+      - e4b52b9d-9aec-4a91-ba12-1aeba324ef96
+      - 9f5a6351-5bb8-4a16-9b91-97ff482d654d
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"azureResourceIds": ["abcdefg"], "userEmail": "v-taoxuzeng@microsoft.com"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor list-app-service
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '75'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --monitor-name --user-email --azure-resource-ids
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor/listAppServices?api-version=2022-07-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:52:33 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - edbfa56c-849d-44ff-8257-4f10abc35228
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:99558bd9-e2af-4edd-b8b9-dfc879de6669
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"userEmail": "v-taoxuzeng@microsoft.com", "vmIds": ["test-vm"]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor list-host
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '64'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --monitor-name --user-email --vm-ids
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor/listHosts?api-version=2022-07-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:52:39 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 2a7f66b3-f6af-4b8e-a3e9-5731fb8d0947
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:99558bd9-e2af-4edd-b8b9-dfc879de6669
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor monitored-resource
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --monitor-name --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor/monitoredResources?api-version=2022-07-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:52:41 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 1d2c5ba4-6c1c-4f22-b8d8-091c410d5a8f
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:99558bd9-e2af-4edd-b8b9-dfc879de6669
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --monitor-name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor","name":"test-new-relic-monitor","type":"newrelic.observability/monitors","location":"eastus2euap","tags":{"key6976":"oaxfhf"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2023-06-28T08:50:50.0759688Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-28T08:50:50.0759688Z"},"properties":{"orgCreationSource":"LIFTR","accountCreationSource":"LIFTR","provisioningState":"Succeeded","monitoringStatus":"Enabled","marketplaceSubscriptionStatus":"Active","newRelicAccountProperties":{"accountInfo":{"accountId":"11854470"},"organizationInfo":{"organizationId":"f0511f62-1c8e-4594-81c8-89e17455f74f"}},"userInfo":{"firstName":"vdftzcggiref","lastName":"bcsztgqovdlmzf","emailAddress":"v-taoxuzeng@microsoft.com","phoneNumber":"123456"},"planData":{"usageType":"PAYG","billingCycle":"MONTHLY","planDetails":"newrelic-pay-as-you-go-free-live@TIDgmz7xq9ge3py@PUBIDnewrelicinc1635200720692.newrelic_liftr_payg","effectiveDate":"2022-10-25T13:14:33Z"},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1275'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:52:42 GMT
+      etag:
+      - '"0600574a-0000-3300-0000-649bf4a40000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor vm-host-payload
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --monitor-name --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor/vmHostPayloads?api-version=2022-07-01
+  response:
+    body:
+      string: '{"ingestionKey":"8ab90654998f848cb7d62b7857d34ff64059NRAL"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '59'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:52:47 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 5303d706-921c-4302-a8bc-e79a54a56a31
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:99558bd9-e2af-4edd-b8b9-dfc879de6669
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic account list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --user-email
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/NewRelic.Observability/accounts?location=eastus2euap&userEmail=v-taoxuzeng%40microsoft.com&api-version=2022-07-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/NewRelic.Observability/accounts/11854470","properties":{"accountId":"11854470","accountName":"11854470","organizationId":"f0511f62-1c8e-4594-81c8-89e17455f74f","region":"eastus"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/NewRelic.Observability/accounts/11854456","properties":{"accountId":"11854456","accountName":"11854456","organizationId":"47fbe836-5e24-46e8-9986-d7005ee1936a","region":"eastus"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/NewRelic.Observability/accounts/11854460","properties":{"accountId":"11854460","accountName":"11854460","organizationId":"f74da658-9b0e-42ac-9e87-ad1ba9d83bda","region":"eastus"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/NewRelic.Observability/accounts/11854450","properties":{"accountId":"11854450","accountName":"11854450","organizationId":"7731d99d-4fbb-4b1b-a7c6-25d2141723b6","region":"eastus"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/NewRelic.Observability/accounts/11854451","properties":{"accountId":"11854451","accountName":"11854451","organizationId":"06a37842-40e5-43d1-b88b-a4931f4757b7","region":"eastus"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/NewRelic.Observability/accounts/11854452","properties":{"accountId":"11854452","accountName":"11854452","organizationId":"4debb5cf-b25d-459a-bed3-51c47a7a771a","region":"eastus"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/NewRelic.Observability/accounts/11854453","properties":{"accountId":"11854453","accountName":"11854453","organizationId":"89ebe03f-afa5-4547-a3ed-296476057a63","region":"eastus"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/NewRelic.Observability/accounts/11854462","properties":{"accountId":"11854462","accountName":"11854462","organizationId":"05f8a00d-b45c-469e-99be-8debd3dfb55e","region":"eastus"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/NewRelic.Observability/accounts/11854454","properties":{"accountId":"11854454","accountName":"11854454","organizationId":"472f3dbe-ad90-4f65-9f00-f341e1a5d722","region":"eastus"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/NewRelic.Observability/accounts/11854455","properties":{"accountId":"11854455","accountName":"11854455","organizationId":"31433fd0-4ebd-4fdf-9493-44686658b94d","region":"eastus"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/NewRelic.Observability/accounts/11854457","properties":{"accountId":"11854457","accountName":"11854457","organizationId":"1a20abdc-8f52-4d31-9e36-9786fe5d8d19","region":"eastus"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/NewRelic.Observability/accounts/11854463","properties":{"accountId":"11854463","accountName":"11854463","organizationId":"20b999d3-8252-4e3d-8708-2acdadfdf538","region":"eastus"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2999'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:52:55 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 8cd5b49e-fbc4-4236-9074-87ef536b1599
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:99558bd9-e2af-4edd-b8b9-dfc879de6669
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic organization list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --user-email
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/NewRelic.Observability/organizations?location=eastus2euap&userEmail=v-taoxuzeng%40microsoft.com&api-version=2022-07-01
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:53:04 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - a5b48c41-09ed-4739-af7d-863c5b043193
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:99558bd9-e2af-4edd-b8b9-dfc879de6669
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic plan list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --account-id --organization-id
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/NewRelic.Observability/plans?accountId=test-account&organizationId=test-organization&api-version=2022-07-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/NewRelic.Observability/plans/","properties":{"orgCreationSource":"NEWRELIC"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '158'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:53:06 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 62fa1ef4-caf7-417e-a48d-6019ce1a2cbc
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:99558bd9-e2af-4edd-b8b9-dfc879de6669
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor tag-rule delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --monitor-name --name
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor/tagRules/default?api-version=2022-07-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 28 Jun 2023 08:53:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --monitor-name --user-email
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor?userEmail=v-taoxuzeng%40microsoft.com&api-version=2022-07-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/NewRelic.Observability/locations/EASTUS2EUAP/operationStatuses/e4db3c20-132a-4c0d-86f1-4b8c0bd339d5*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2?api-version=2022-07-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:53:11 GMT
+      etag:
+      - '"0600694a-0000-3300-0000-649bf4f70000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/NewRelic.Observability/locations/EASTUS2EUAP/operationStatuses/e4db3c20-132a-4c0d-86f1-4b8c0bd339d5*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2?api-version=2022-07-01
+      mise-correlation-id:
+      - 34e7dc99-da49-4547-a825-e6d73408fe43
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:99558bd9-e2af-4edd-b8b9-dfc879de6669
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --monitor-name --user-email
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/NewRelic.Observability/locations/EASTUS2EUAP/operationStatuses/e4db3c20-132a-4c0d-86f1-4b8c0bd339d5*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/providers/NewRelic.Observability/locations/EASTUS2EUAP/operationStatuses/e4db3c20-132a-4c0d-86f1-4b8c0bd339d5*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2","name":"e4db3c20-132a-4c0d-86f1-4b8c0bd339d5*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor","status":"Deleting","startTime":"2023-06-28T08:53:11.4589298Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '538'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:53:12 GMT
+      etag:
+      - '"00000c25-0000-3300-0000-649bf4f70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --monitor-name --user-email
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/NewRelic.Observability/locations/EASTUS2EUAP/operationStatuses/e4db3c20-132a-4c0d-86f1-4b8c0bd339d5*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/providers/NewRelic.Observability/locations/EASTUS2EUAP/operationStatuses/e4db3c20-132a-4c0d-86f1-4b8c0bd339d5*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2","name":"e4db3c20-132a-4c0d-86f1-4b8c0bd339d5*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor","status":"Deleting","startTime":"2023-06-28T08:53:11.4589298Z","error":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '549'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:53:42 GMT
+      etag:
+      - '"00000d25-0000-3300-0000-649bf4f80000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - new-relic monitor delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --monitor-name --user-email
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/NewRelic.Observability/locations/EASTUS2EUAP/operationStatuses/e4db3c20-132a-4c0d-86f1-4b8c0bd339d5*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2?api-version=2022-07-01
+  response:
+    body:
+      string: '{"id":"/providers/NewRelic.Observability/locations/EASTUS2EUAP/operationStatuses/e4db3c20-132a-4c0d-86f1-4b8c0bd339d5*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2","name":"e4db3c20-132a-4c0d-86f1-4b8c0bd339d5*831D1738070A7AC0C717E6ACBCED7F31F0ABD8E70C311F495AAA99A51316D4C2","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_new_relic_monitor000001/providers/NewRelic.Observability/monitors/test-new-relic-monitor","status":"Succeeded","startTime":"2023-06-28T08:53:11.4589298Z","endTime":"2023-06-28T08:54:10.764668Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '608'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 28 Jun 2023 08:54:12 GMT
+      etag:
+      - '"00000e25-0000-3300-0000-649bf5320000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
