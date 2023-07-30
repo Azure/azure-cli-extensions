@@ -27,6 +27,8 @@ Below is a high-level overview of managednetworkfabric commands.
 | az networkfabric fabric | Manage Network Fabric Resource. |
 | az networkfabric interface | Manage Network Interface Resource. |
 | az networkfabric internalnetwork | Manage Internal Network Resource. |
+| az networkfabric internetgateway | Manage Internet Gateway Resource. |
+| az networkfabric internetgatewayrule | Manage Internet Gateway Rule Resource. |
 | az networkfabric ipcommunity | Manage Ip Community Resource. |
 | az networkfabric ipextendedcommunity | Manage Ip Extended Community Resource. |
 | az networkfabric ipprefix | Manage Ip Prefix Resource. |
