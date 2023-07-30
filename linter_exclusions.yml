@@ -2269,6 +2269,11 @@ networkfabric internalnetwork update:
       - option_length_too_long
   rule_exclusions:
   - missing_command_test_coverage
+networkfabric internetgateway update:
+  parameters:
+    internet_gateway_rule_id:
+      rule_exclusions:
+      - option_length_too_long
 networkfabric internetgatewayrule create:
   rule_exclusions:
   - missing_command_test_coverage
