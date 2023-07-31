@@ -1,0 +1,444 @@
+interactions:
+- request:
+    body: '{"location": "centraluseuap", "properties": {"purpose": "prod"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dnc controller create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '64'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/controller/clitestcontroller?api-version=2023-05-18-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/controller/clitestcontroller","location":"centraluseuap","name":"clitestcontroller","type":"Microsoft.DelegatedNetwork/controller","properties":{"dncAppId":"a91b1853-4403-4f54-b5cb-d1ea19d90c37","dncEndpoint":"https://openai-centraluseuap.dnc.azure.com","controllerProperties":{"dncAppId":"a91b1853-4403-4f54-b5cb-d1ea19d90c37","dncEndpoint":"https://openai-centraluseuap.dnc.azure.com","dncTenantId":null},"resourceGuid":"5c7e26be-7ff9-4aaf-9e16-0bc759605aea","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '624'
+      content-type:
+      - application/json
+      date:
+      - Fri, 28 Jul 2023 20:49:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:82487bea-6925-46b8-a5c9-0bcae97f8f27
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "kind": "Kubernetes", "location":
+      "centraluseuap", "properties": {"apiServerEndpoint": "https://testk8s.cloudapp.net",
+      "clusterRootCA": "ddsadsad344mfdsfdl", "controllerDetails": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/controller/clitestcontroller"},
+      "orchestratorAppId": "546192d7-503f-477a-9cfe-4efc3ee2b6e1", "orchestratorTenantId":
+      "72f988bf-86f1-41af-91ab-2d7cd011db47", "privateLinkResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.Network/privateLinkServices/plresource1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dnc orchestrator-instance-service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '682'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --location --api-server-endpoint --cluster-root-ca --id --orchestrator-app-id
+        --orchestrator-tenant-id --priv-link-resource-id --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/orchestrators/testk8s1?api-version=2023-05-18-preview
+  response:
+    body:
+      string: '{"ErrorResponse":{"error":{"code":"500","message":"Error in API: PutOrchestratorPrivate
+        endpoint creation failed: System.Exception: ResponseMessage: System.Net.Http.HttpConnectionResponseContent,
+        status code BadRequest, Reason: Bad Request, internal exception: System.Net.Http.HttpRequestException:
+        Response status code does not indicate success: 400 (Bad Request).\n   at
+        System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.SendRequestAndGetJsonAsync[T](HttpRequestMessage
+        requestMessage, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        66\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.CallServerAndGetAsync[TRequest,TResponse](String
+        tenantId, HttpMethod httpMethod, Uri requestUri, TRequest requestBody) in
+        /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        239\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.PutResourceAsync[T](String
+        tenantId, String resourceId, String apiVersion, T requestBody) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        134\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreatePrivateEndpoint(String
+        privateLinkResourceId, String privateEndpointName) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        333\n   at Microsoft.Azure.ContainerNetworking.DncRP.OrchestratorController.ExecutePutOrchestratorAsync(String
+        subscriptionId, String resourceGroupName, String resourceName) in /usr/local/Networking-Aquarius/src/DncRP/Server/Controllers/OrchestratorController.cs:line
+        154InternalErrorCode: PrivateEndpointCreateFailed. Private endpoint creation
+        failed: System.Exception: ResponseMessage: System.Net.Http.HttpConnectionResponseContent,
+        status code BadRequest, Reason: Bad Request, internal exception: System.Net.Http.HttpRequestException:
+        Response status code does not indicate success: 400 (Bad Request).\n   at
+        System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.SendRequestAndGetJsonAsync[T](HttpRequestMessage
+        requestMessage, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        66\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.CallServerAndGetAsync[TRequest,TResponse](String
+        tenantId, HttpMethod httpMethod, Uri requestUri, TRequest requestBody) in
+        /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        239\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.PutResourceAsync[T](String
+        tenantId, String resourceId, String apiVersion, T requestBody) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        134\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreatePrivateEndpoint(String
+        privateLinkResourceId, String privateEndpointName) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        333\n   at Microsoft.Azure.ContainerNetworking.DncRP.OrchestratorController.ExecutePutOrchestratorAsync(String
+        subscriptionId, String resourceGroupName, String resourceName) in /usr/local/Networking-Aquarius/src/DncRP/Server/Controllers/OrchestratorController.cs:line
+        154","details":null}}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '4395'
+      content-type:
+      - application/json
+      date:
+      - Fri, 28 Jul 2023 20:49:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:82487bea-6925-46b8-a5c9-0bcae97f8f27
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 500
+      message: Internal Server Error
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "kind": "Kubernetes", "location":
+      "centraluseuap", "properties": {"apiServerEndpoint": "https://testk8s.cloudapp.net",
+      "clusterRootCA": "ddsadsad344mfdsfdl", "controllerDetails": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/controller/clitestcontroller"},
+      "orchestratorAppId": "546192d7-503f-477a-9cfe-4efc3ee2b6e1", "orchestratorTenantId":
+      "72f988bf-86f1-41af-91ab-2d7cd011db47", "privateLinkResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.Network/privateLinkServices/plresource1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dnc orchestrator-instance-service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '682'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --location --api-server-endpoint --cluster-root-ca --id --orchestrator-app-id
+        --orchestrator-tenant-id --priv-link-resource-id --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/orchestrators/testk8s1?api-version=2023-05-18-preview
+  response:
+    body:
+      string: '{"ErrorResponse":{"error":{"code":"500","message":"Error in API: PutOrchestratorPrivate
+        endpoint creation failed: System.Exception: ResponseMessage: System.Net.Http.HttpConnectionResponseContent,
+        status code BadRequest, Reason: Bad Request, internal exception: System.Net.Http.HttpRequestException:
+        Response status code does not indicate success: 400 (Bad Request).\n   at
+        System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.SendRequestAndGetJsonAsync[T](HttpRequestMessage
+        requestMessage, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        66\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.CallServerAndGetAsync[TRequest,TResponse](String
+        tenantId, HttpMethod httpMethod, Uri requestUri, TRequest requestBody) in
+        /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        239\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.PutResourceAsync[T](String
+        tenantId, String resourceId, String apiVersion, T requestBody) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        134\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreatePrivateEndpoint(String
+        privateLinkResourceId, String privateEndpointName) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        333\n   at Microsoft.Azure.ContainerNetworking.DncRP.OrchestratorController.ExecutePutOrchestratorAsync(String
+        subscriptionId, String resourceGroupName, String resourceName) in /usr/local/Networking-Aquarius/src/DncRP/Server/Controllers/OrchestratorController.cs:line
+        207InternalErrorCode: PrivateEndpointCreateFailed. Private endpoint creation
+        failed: System.Exception: ResponseMessage: System.Net.Http.HttpConnectionResponseContent,
+        status code BadRequest, Reason: Bad Request, internal exception: System.Net.Http.HttpRequestException:
+        Response status code does not indicate success: 400 (Bad Request).\n   at
+        System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.SendRequestAndGetJsonAsync[T](HttpRequestMessage
+        requestMessage, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        66\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.CallServerAndGetAsync[TRequest,TResponse](String
+        tenantId, HttpMethod httpMethod, Uri requestUri, TRequest requestBody) in
+        /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        239\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.PutResourceAsync[T](String
+        tenantId, String resourceId, String apiVersion, T requestBody) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        134\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreatePrivateEndpoint(String
+        privateLinkResourceId, String privateEndpointName) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        333\n   at Microsoft.Azure.ContainerNetworking.DncRP.OrchestratorController.ExecutePutOrchestratorAsync(String
+        subscriptionId, String resourceGroupName, String resourceName) in /usr/local/Networking-Aquarius/src/DncRP/Server/Controllers/OrchestratorController.cs:line
+        207","details":null}}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '4395'
+      content-type:
+      - application/json
+      date:
+      - Fri, 28 Jul 2023 20:49:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:82487bea-6925-46b8-a5c9-0bcae97f8f27
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 500
+      message: Internal Server Error
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "kind": "Kubernetes", "location":
+      "centraluseuap", "properties": {"apiServerEndpoint": "https://testk8s.cloudapp.net",
+      "clusterRootCA": "ddsadsad344mfdsfdl", "controllerDetails": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/controller/clitestcontroller"},
+      "orchestratorAppId": "546192d7-503f-477a-9cfe-4efc3ee2b6e1", "orchestratorTenantId":
+      "72f988bf-86f1-41af-91ab-2d7cd011db47", "privateLinkResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.Network/privateLinkServices/plresource1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dnc orchestrator-instance-service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '682'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --location --api-server-endpoint --cluster-root-ca --id --orchestrator-app-id
+        --orchestrator-tenant-id --priv-link-resource-id --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/orchestrators/testk8s1?api-version=2023-05-18-preview
+  response:
+    body:
+      string: '{"ErrorResponse":{"error":{"code":"500","message":"Error in API: PutOrchestratorPrivate
+        endpoint creation failed: System.Exception: ResponseMessage: System.Net.Http.HttpConnectionResponseContent,
+        status code BadRequest, Reason: Bad Request, internal exception: System.Net.Http.HttpRequestException:
+        Response status code does not indicate success: 400 (Bad Request).\n   at
+        System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.SendRequestAndGetJsonAsync[T](HttpRequestMessage
+        requestMessage, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        66\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.CallServerAndGetAsync[TRequest,TResponse](String
+        tenantId, HttpMethod httpMethod, Uri requestUri, TRequest requestBody) in
+        /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        239\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.PutResourceAsync[T](String
+        tenantId, String resourceId, String apiVersion, T requestBody) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        134\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreatePrivateEndpoint(String
+        privateLinkResourceId, String privateEndpointName) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        346\n   at Microsoft.Azure.ContainerNetworking.DncRP.OrchestratorController.ExecutePutOrchestratorAsync(String
+        subscriptionId, String resourceGroupName, String resourceName) in /usr/local/Networking-Aquarius/src/DncRP/Server/Controllers/OrchestratorController.cs:line
+        207InternalErrorCode: PrivateEndpointCreateFailed. Private endpoint creation
+        failed: System.Exception: ResponseMessage: System.Net.Http.HttpConnectionResponseContent,
+        status code BadRequest, Reason: Bad Request, internal exception: System.Net.Http.HttpRequestException:
+        Response status code does not indicate success: 400 (Bad Request).\n   at
+        System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.SendRequestAndGetJsonAsync[T](HttpRequestMessage
+        requestMessage, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        66\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.CallServerAndGetAsync[TRequest,TResponse](String
+        tenantId, HttpMethod httpMethod, Uri requestUri, TRequest requestBody) in
+        /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        239\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.PutResourceAsync[T](String
+        tenantId, String resourceId, String apiVersion, T requestBody) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        134\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreatePrivateEndpoint(String
+        privateLinkResourceId, String privateEndpointName) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        346\n   at Microsoft.Azure.ContainerNetworking.DncRP.OrchestratorController.ExecutePutOrchestratorAsync(String
+        subscriptionId, String resourceGroupName, String resourceName) in /usr/local/Networking-Aquarius/src/DncRP/Server/Controllers/OrchestratorController.cs:line
+        207","details":null}}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '4395'
+      content-type:
+      - application/json
+      date:
+      - Fri, 28 Jul 2023 20:49:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:82487bea-6925-46b8-a5c9-0bcae97f8f27
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 500
+      message: Internal Server Error
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "kind": "Kubernetes", "location":
+      "centraluseuap", "properties": {"apiServerEndpoint": "https://testk8s.cloudapp.net",
+      "clusterRootCA": "ddsadsad344mfdsfdl", "controllerDetails": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/controller/clitestcontroller"},
+      "orchestratorAppId": "546192d7-503f-477a-9cfe-4efc3ee2b6e1", "orchestratorTenantId":
+      "72f988bf-86f1-41af-91ab-2d7cd011db47", "privateLinkResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.Network/privateLinkServices/plresource1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dnc orchestrator-instance-service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '682'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --type --location --api-server-endpoint --cluster-root-ca --id --orchestrator-app-id
+        --orchestrator-tenant-id --priv-link-resource-id --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/orchestrators/testk8s1?api-version=2023-05-18-preview
+  response:
+    body:
+      string: '{"ErrorResponse":{"error":{"code":"500","message":"Error in API: PutOrchestratorPrivate
+        endpoint creation failed: System.Exception: ResponseMessage: System.Net.Http.HttpConnectionResponseContent,
+        status code BadRequest, Reason: Bad Request, internal exception: System.Net.Http.HttpRequestException:
+        Response status code does not indicate success: 400 (Bad Request).\n   at
+        System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.SendRequestAndGetJsonAsync[T](HttpRequestMessage
+        requestMessage, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        66\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.CallServerAndGetAsync[TRequest,TResponse](String
+        tenantId, HttpMethod httpMethod, Uri requestUri, TRequest requestBody) in
+        /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        239\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.PutResourceAsync[T](String
+        tenantId, String resourceId, String apiVersion, T requestBody) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        134\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreatePrivateEndpoint(String
+        privateLinkResourceId, String privateEndpointName) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        346\n   at Microsoft.Azure.ContainerNetworking.DncRP.OrchestratorController.ExecutePutOrchestratorAsync(String
+        subscriptionId, String resourceGroupName, String resourceName) in /usr/local/Networking-Aquarius/src/DncRP/Server/Controllers/OrchestratorController.cs:line
+        207InternalErrorCode: PrivateEndpointCreateFailed. Private endpoint creation
+        failed: System.Exception: ResponseMessage: System.Net.Http.HttpConnectionResponseContent,
+        status code BadRequest, Reason: Bad Request, internal exception: System.Net.Http.HttpRequestException:
+        Response status code does not indicate success: 400 (Bad Request).\n   at
+        System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.SendRequestAndGetJsonAsync[T](HttpRequestMessage
+        requestMessage, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        66\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.CallServerAndGetAsync[TRequest,TResponse](String
+        tenantId, HttpMethod httpMethod, Uri requestUri, TRequest requestBody) in
+        /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        239\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.PutResourceAsync[T](String
+        tenantId, String resourceId, String apiVersion, T requestBody) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        134\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreatePrivateEndpoint(String
+        privateLinkResourceId, String privateEndpointName) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        346\n   at Microsoft.Azure.ContainerNetworking.DncRP.OrchestratorController.ExecutePutOrchestratorAsync(String
+        subscriptionId, String resourceGroupName, String resourceName) in /usr/local/Networking-Aquarius/src/DncRP/Server/Controllers/OrchestratorController.cs:line
+        207","details":null}}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '4395'
+      content-type:
+      - application/json
+      date:
+      - Fri, 28 Jul 2023 20:49:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:82487bea-6925-46b8-a5c9-0bcae97f8f27
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 500
+      message: Internal Server Error
+version: 1
