@@ -8,7 +8,7 @@ Release History
 No new commands added.
 
 Existing commands updated:
-* perimeter profile access-rule: create, update (remove existing paramter from request. Now access rule doesn't support creation/updation of perimeter based rules.
+* perimeter profile access-rule: create, update (remove existing "--nsp" paramter from request. Now access rule doesn't support creation/updation of perimeter based rules.
 
 ##### 0.2.0
 ++++++
