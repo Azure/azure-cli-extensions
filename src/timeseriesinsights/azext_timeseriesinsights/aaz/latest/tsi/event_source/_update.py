@@ -75,7 +75,6 @@ class Update(AAZCommand):
             help="An object that represents the local timestamp property. It contains the format of local timestamp that needs to be used and the corresponding timezone offset information. If a value isn't specified for localTimestamp, or if null, then the local timestamp will not be ingressed with the events.",
             nullable=True,
         )
-        cls._build_args_local_timestamp_update(_args_schema.local_timestamp)
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Parameters",
@@ -89,7 +88,6 @@ class Update(AAZCommand):
             help="An object that represents the local timestamp property. It contains the format of local timestamp that needs to be used and the corresponding timezone offset information. If a value isn't specified for localTimestamp, or if null, then the local timestamp will not be ingressed with the events.",
             nullable=True,
         )
-        cls._build_args_local_timestamp_update(eventhub.local_timestamp)
         eventhub.shared_access_key = AAZStrArg(
             options=["shared-access-key"],
             help="The value of the shared access key that grants the Time Series Insights service read access to the event hub. This property is not shown in event source responses.",
@@ -100,13 +98,29 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        local_timestamp = cls._args_schema.eventhub.local_timestamp
+        local_timestamp.format = AAZStrArg(
+            options=["format"],
+            nullable=True,
+            enum={"Embedded": "Embedded"},
+        )
+        local_timestamp.time_zone_offset = AAZObjectArg(
+            options=["time-zone-offset"],
+            nullable=True,
+        )
+
+        time_zone_offset = cls._args_schema.eventhub.local_timestamp.time_zone_offset
+        time_zone_offset.property_name = AAZStrArg(
+            options=["property-name"],
+            nullable=True,
+        )
+
         iothub = cls._args_schema.iothub
         iothub.local_timestamp = AAZObjectArg(
             options=["local-timestamp"],
             help="An object that represents the local timestamp property. It contains the format of local timestamp that needs to be used and the corresponding timezone offset information. If a value isn't specified for localTimestamp, or if null, then the local timestamp will not be ingressed with the events.",
             nullable=True,
         )
-        cls._build_args_local_timestamp_update(iothub.local_timestamp)
         iothub.shared_access_key = AAZStrArg(
             options=["shared-access-key"],
             help="The value of the Shared Access Policy key that grants the Time Series Insights service read access to the iot hub. This property is not shown in event source responses.",
@@ -114,6 +128,40 @@ class Update(AAZCommand):
         iothub.timestamp_property_name = AAZStrArg(
             options=["ts-property-name", "timestamp-property-name"],
             help="The event property that will be used as the event source's timestamp. If a value isn't specified for timestampPropertyName, or if null or empty-string is specified, the event creation time will be used.",
+            nullable=True,
+        )
+
+        local_timestamp = cls._args_schema.iothub.local_timestamp
+        local_timestamp.format = AAZStrArg(
+            options=["format"],
+            nullable=True,
+            enum={"Embedded": "Embedded"},
+        )
+        local_timestamp.time_zone_offset = AAZObjectArg(
+            options=["time-zone-offset"],
+            nullable=True,
+        )
+
+        time_zone_offset = cls._args_schema.iothub.local_timestamp.time_zone_offset
+        time_zone_offset.property_name = AAZStrArg(
+            options=["property-name"],
+            nullable=True,
+        )
+
+        local_timestamp = cls._args_schema.local_timestamp
+        local_timestamp.format = AAZStrArg(
+            options=["format"],
+            nullable=True,
+            enum={"Embedded": "Embedded"},
+        )
+        local_timestamp.time_zone_offset = AAZObjectArg(
+            options=["time-zone-offset"],
+            nullable=True,
+        )
+
+        time_zone_offset = cls._args_schema.local_timestamp.time_zone_offset
+        time_zone_offset.property_name = AAZStrArg(
+            options=["property-name"],
             nullable=True,
         )
 
@@ -151,42 +199,6 @@ class Update(AAZCommand):
 
         _schema.time = cls._args_ingress_start_at_properties_update.time
         _schema.type = cls._args_ingress_start_at_properties_update.type
-
-    _args_local_timestamp_update = None
-
-    @classmethod
-    def _build_args_local_timestamp_update(cls, _schema):
-        if cls._args_local_timestamp_update is not None:
-            _schema.format = cls._args_local_timestamp_update.format
-            _schema.time_zone_offset = cls._args_local_timestamp_update.time_zone_offset
-            return
-
-        cls._args_local_timestamp_update = AAZObjectArg(
-            nullable=True,
-        )
-
-        local_timestamp_update = cls._args_local_timestamp_update
-        local_timestamp_update.format = AAZStrArg(
-            options=["format"],
-            help="An enum that represents the format of the local timestamp property that needs to be set.",
-            nullable=True,
-            enum={"Embedded": "Embedded"},
-        )
-        local_timestamp_update.time_zone_offset = AAZObjectArg(
-            options=["time-zone-offset"],
-            help="An object that represents the offset information for the local timestamp format specified. Should not be specified for LocalTimestampFormat - Embedded.",
-            nullable=True,
-        )
-
-        time_zone_offset = cls._args_local_timestamp_update.time_zone_offset
-        time_zone_offset.property_name = AAZStrArg(
-            options=["property-name"],
-            help="The event property that will be contain the offset information to calculate the local timestamp. When the LocalTimestampFormat is Iana, the property name will contain the name of the column which contains IANA Timezone Name (eg: Americas/Los Angeles). When LocalTimestampFormat is Timespan, it contains the name of property which contains values representing the offset (eg: P1D or 1.00:00:00)",
-            nullable=True,
-        )
-
-        _schema.format = cls._args_local_timestamp_update.format
-        _schema.time_zone_offset = cls._args_local_timestamp_update.time_zone_offset
 
     def _execute_operations(self):
         self.pre_operations()
@@ -417,10 +429,19 @@ class Update(AAZCommand):
             )
             _builder.set_const("kind", "Microsoft.EventHub", AAZStrType, ".eventhub", typ_kwargs={"flags": {"required": True}})
             _builder.set_const("kind", "Microsoft.IoTHub", AAZStrType, ".iothub", typ_kwargs={"flags": {"required": True}})
-            _UpdateHelper._build_schema_local_timestamp_update(_builder.set_prop("localTimestamp", AAZObjectType, ".local_timestamp"))
+            _builder.set_prop("localTimestamp", AAZObjectType, ".local_timestamp")
             _builder.set_prop("tags", AAZDictType, ".tags")
             _builder.discriminate_by("kind", "Microsoft.EventHub")
             _builder.discriminate_by("kind", "Microsoft.IoTHub")
+
+            local_timestamp = _builder.get(".localTimestamp")
+            if local_timestamp is not None:
+                local_timestamp.set_prop("format", AAZStrType, ".format")
+                local_timestamp.set_prop("timeZoneOffset", AAZObjectType, ".time_zone_offset")
+
+            time_zone_offset = _builder.get(".localTimestamp.timeZoneOffset")
+            if time_zone_offset is not None:
+                time_zone_offset.set_prop("propertyName", AAZStrType, ".property_name")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -432,9 +453,18 @@ class Update(AAZCommand):
 
             properties = _builder.get("{kind:Microsoft.EventHub}.properties")
             if properties is not None:
-                _UpdateHelper._build_schema_local_timestamp_update(properties.set_prop("localTimestamp", AAZObjectType, ".eventhub.local_timestamp"))
+                properties.set_prop("localTimestamp", AAZObjectType, ".eventhub.local_timestamp")
                 properties.set_prop("sharedAccessKey", AAZStrType, ".eventhub.shared_access_key", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("timestampPropertyName", AAZStrType, ".eventhub.timestamp_property_name")
+
+            local_timestamp = _builder.get("{kind:Microsoft.EventHub}.properties.localTimestamp")
+            if local_timestamp is not None:
+                local_timestamp.set_prop("format", AAZStrType, ".format")
+                local_timestamp.set_prop("timeZoneOffset", AAZObjectType, ".time_zone_offset")
+
+            time_zone_offset = _builder.get("{kind:Microsoft.EventHub}.properties.localTimestamp.timeZoneOffset")
+            if time_zone_offset is not None:
+                time_zone_offset.set_prop("propertyName", AAZStrType, ".property_name")
 
             disc_microsoft._io_t_hub = _builder.get("{kind:Microsoft.IoTHub}")
             if disc_microsoft._io_t_hub is not None:
@@ -442,9 +472,18 @@ class Update(AAZCommand):
 
             properties = _builder.get("{kind:Microsoft.IoTHub}.properties")
             if properties is not None:
-                _UpdateHelper._build_schema_local_timestamp_update(properties.set_prop("localTimestamp", AAZObjectType, ".iothub.local_timestamp"))
+                properties.set_prop("localTimestamp", AAZObjectType, ".iothub.local_timestamp")
                 properties.set_prop("sharedAccessKey", AAZStrType, ".iothub.shared_access_key", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("timestampPropertyName", AAZStrType, ".iothub.timestamp_property_name")
+
+            local_timestamp = _builder.get("{kind:Microsoft.IoTHub}.properties.localTimestamp")
+            if local_timestamp is not None:
+                local_timestamp.set_prop("format", AAZStrType, ".format")
+                local_timestamp.set_prop("timeZoneOffset", AAZObjectType, ".time_zone_offset")
+
+            time_zone_offset = _builder.get("{kind:Microsoft.IoTHub}.properties.localTimestamp.timeZoneOffset")
+            if time_zone_offset is not None:
+                time_zone_offset.set_prop("propertyName", AAZStrType, ".property_name")
 
             return _instance_value
 
@@ -466,17 +505,6 @@ class _UpdateHelper:
             return
         _builder.set_prop("time", AAZStrType, ".time")
         _builder.set_prop("type", AAZStrType, ".type")
-
-    @classmethod
-    def _build_schema_local_timestamp_update(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("format", AAZStrType, ".format")
-        _builder.set_prop("timeZoneOffset", AAZObjectType, ".time_zone_offset")
-
-        time_zone_offset = _builder.get(".timeZoneOffset")
-        if time_zone_offset is not None:
-            time_zone_offset.set_prop("propertyName", AAZStrType, ".property_name")
 
     _schema_event_source_resource_read = None
 
