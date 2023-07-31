@@ -126,7 +126,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
         self.cmd('az tsi environment gen2 update --resource-group {rg} --name {env} '
                  '--warm-store-configuration data-retention=P30D '
                  '--storage-configuration account-name={sa} management-key=' + key,
-                 checks=[self.check('warmStoreConfiguration.dataRetention', "30 days, 0:00:00")])
+                 checks=[self.check('warmStoreConfiguration.dataRetention', "P30D")])
 
     @ResourceGroupPreparer(name_prefix='clitsi.rg')
     def test_timeseriesinsights_event_source_eventhub(self, resource_group):

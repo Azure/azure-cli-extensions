@@ -76,78 +76,69 @@ def timeseriesinsights_environment_gen1_update(cmd,
     parameters['resource_group'] = resource_group_name
     parameters['environment_name'] = environment_name
     parameters['gen1'] = {}
-    parameters['sku'] = sku
-    parameters['gen1']['data_retention_time'] = data_retention_time
-    parameters['gen1']['storage_limit_exceeded_behavior'] = storage_limit_exceeded_behavior
-    parameters['tags'] = tags
+    if sku is not None:
+        parameters['sku'] = sku
+    if data_retention_time is not None:
+        parameters['gen1']['data_retention_time'] = data_retention_time
+    if storage_limit_exceeded_behavior is not None:
+        parameters['gen1']['storage_limit_exceeded_behavior'] = storage_limit_exceeded_behavior
+    if tags is not None:
+        parameters['tags'] = tags
     parameters['no_wait'] = no_wait
 
     return Patch(parameters)
-#
-# def timeseriesinsights_environment_gen2_create(client,
-#                                                resource_group_name,
-#                                                environment_name,
-#                                                location,
-#                                                sku,
-#                                                time_series_id_properties,
-#                                                storage_configuration,
-#                                                tags=None,
-#                                                warm_store_configuration=None,
-#                                                no_wait=False):
-#     parameters = {}
-#     parameters['location'] = location
-#     parameters['tags'] = tags
-#     parameters['kind'] = 'Gen2'
-#     parameters['sku'] = sku
-#     parameters['time_series_id_properties'] = time_series_id_properties
-#     parameters['storage_configuration'] = storage_configuration
-#     parameters['warm_store_configuration'] = warm_store_configuration
-#     return sdk_no_wait(no_wait,
-#                        client.begin_create_or_update,
-#                        resource_group_name=resource_group_name,
-#                        environment_name=environment_name,
-#                        parameters=parameters)
-#
-#
-# def timeseriesinsights_environment_gen2_update(client,
-#                                                resource_group_name,
-#                                                environment_name,
-#                                                storage_configuration=None,
-#                                                tags=None,
-#                                                warm_store_configuration=None,
-#                                                no_wait=False):
-#     instance = timeseriesinsights_environment_show(client, resource_group_name, environment_name)
-#     body = instance.as_dict(keep_readonly=False)
-#     if body['kind'] != 'Gen2':
-#         raise InvalidArgumentValueError('Instance kind value is "{}", not match "{}"'.format(body['kind'], 'Gen2'))
-#
-#     patch_parameters = {
-#         'kind': 'Gen2'
-#     }
-#     if storage_configuration is not None:
-#         patch_parameters['storage_configuration'] = storage_configuration
-#     if warm_store_configuration is not None:
-#         patch_parameters['warm_store_configuration'] = warm_store_configuration
-#
-#     if tags is not None:
-#         patch_parameters['tags'] = tags
-#
-#     if len(patch_parameters) > 2:  # Only a single event source property can be updated per PATCH request
-#         if 'storage_configuration' not in patch_parameters:
-#             raise InvalidArgumentValueError('--storage-configuration is required for multi properties update')
-#         body.update(patch_parameters)
-#         return sdk_no_wait(no_wait,
-#                            client.begin_create_or_update,
-#                            resource_group_name=resource_group_name,
-#                            environment_name=environment_name,
-#                            parameters=body)
-#     return sdk_no_wait(no_wait,
-#                        client.begin_update,
-#                        resource_group_name=resource_group_name,
-#                        environment_name=environment_name,
-#                        environment_update_parameters=patch_parameters)
-#
-#
+
+
+def timeseriesinsights_environment_gen2_create(cmd,
+                                               resource_group_name,
+                                               environment_name,
+                                               location,
+                                               sku,
+                                               time_series_id_properties,
+                                               storage_configuration,
+                                               tags=None,
+                                               warm_store_configuration=None,
+                                               no_wait=False):
+    Create = _EnvironmentCreate(cmd.loader)
+    parameters = {}
+    parameters['resource_group'] = resource_group_name
+    parameters['environment_name'] = environment_name
+    parameters['location'] = location
+    parameters['tags'] = tags
+    parameters['sku'] = sku
+    parameters['gen2'] = {}
+    parameters['gen2']['time_series_id_properties'] = time_series_id_properties
+    parameters['gen2']['storage_configuration'] = storage_configuration
+    if warm_store_configuration is not None:
+        parameters['gen2']['warm_store_configuration'] = warm_store_configuration
+    parameters['no_wait'] = no_wait
+
+    return Create(parameters)
+
+
+def timeseriesinsights_environment_gen2_update(cmd,
+                                               resource_group_name,
+                                               environment_name,
+                                               storage_configuration=None,
+                                               tags=None,
+                                               warm_store_configuration=None,
+                                               no_wait=False):
+    Patch = _EnvironmentUpdate(cmd.loader)
+    parameters = {}
+    parameters['resource_group'] = resource_group_name
+    parameters['environment_name'] = environment_name
+    parameters['gen2'] = {}
+    if storage_configuration is not None:
+        parameters['gen2']['storage_configuration'] = storage_configuration
+    if warm_store_configuration is not None:
+        parameters['gen2']['warm_store_configuration'] = warm_store_configuration
+    if tags is not None:
+        parameters['tags'] = tags
+    parameters['no_wait'] = no_wait
+
+    return Patch(parameters)
+
+
 # def timeseriesinsights_event_source_list(client,
 #                                          resource_group_name,
 #                                          environment_name):

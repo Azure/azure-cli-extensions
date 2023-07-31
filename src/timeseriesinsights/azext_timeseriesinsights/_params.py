@@ -62,34 +62,34 @@ def load_arguments(self, _):
                    action=AddPartitionKeyProperties, nargs='+', help='The list of event '
                    'properties which will be used to partition data in the environment. Currently, only a single '
                    'partition key property is supported.')
-    #
-    # with self.argument_context('tsi environment gen1 create') as c:
-    #     c.argument('environment_name', id_part=None)
-    #
-    # with self.argument_context('tsi environment gen2') as c:
-    #     c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='Name of the'
-    #                ' environment', id_part='name')
-    #     c.argument('location', arg_type=get_location_type(self.cli_ctx),
-    #                validator=get_default_location_from_resource_group)
-    #     c.argument('tags', tags_type)
-    #     c.argument('sku', action=AddSku, nargs='+', help='The sku determines the type of environment, either Gen1 (S1 '
-    #                'or S2) or Gen2 (L1). For Gen1 environments the sku determines the capacity of the environment, the '
-    #                'ingress rate, and the billing rate.')
-    #     c.argument('time_series_id_properties', options_list=['--id-properties', '--time-series-id-properties'],
-    #                action=AddTimeSeriesIdProperties, nargs='+', help='The list of event properties which will be used'
-    #                ' to define the environment\'s time series id.')
-    #     c.argument('storage_configuration', options_list=['--storage-config', '--storage-configuration'],
-    #                action=AddStorageConfiguration, nargs='+', help='The storage configuration '
-    #                'provides the connection details that allows the Time Series Insights service to connect to the '
-    #                'customer storage account that is used to store the environment\'s data.')
-    #     c.argument('warm_store_configuration', options_list=['--warm-store-config', '--warm-store-configuration'],
-    #                action=AddWarmStoreConfiguration, nargs='+', help='The warm store '
-    #                'configuration provides the details to create a warm store cache that will retain a copy of the '
-    #                'environment\'s data available for faster query.')
-    #
-    # with self.argument_context('tsi environment gen2 create') as c:
-    #     c.argument('environment_name', id_part=None)
-    #
+
+    with self.argument_context('tsi environment gen1 create') as c:
+        c.argument('environment_name', id_part=None)
+
+    with self.argument_context('tsi environment gen2') as c:
+        c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='Name of the'
+                   ' environment', id_part='name')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+                   validator=get_default_location_from_resource_group)
+        c.argument('tags', tags_type)
+        c.argument('sku', action=AddSku, nargs='+', help='The sku determines the type of environment, either Gen1 (S1 '
+                   'or S2) or Gen2 (L1). For Gen1 environments the sku determines the capacity of the environment, the '
+                   'ingress rate, and the billing rate.')
+        c.argument('time_series_id_properties', options_list=['--id-properties', '--time-series-id-properties'],
+                   action=AddTimeSeriesIdProperties, nargs='+', help='The list of event properties which will be used'
+                   ' to define the environment\'s time series id.')
+        c.argument('storage_configuration', options_list=['--storage-config', '--storage-configuration'],
+                   action=AddStorageConfiguration, nargs='+', help='The storage configuration '
+                   'provides the connection details that allows the Time Series Insights service to connect to the '
+                   'customer storage account that is used to store the environment\'s data.')
+        c.argument('warm_store_configuration', options_list=['--warm-store-config', '--warm-store-configuration'],
+                   action=AddWarmStoreConfiguration, nargs='+', help='The warm store '
+                   'configuration provides the details to create a warm store cache that will retain a copy of the '
+                   'environment\'s data available for faster query.')
+
+    with self.argument_context('tsi environment gen2 create') as c:
+        c.argument('environment_name', id_part=None)
+
     # with self.argument_context('tsi event-source') as c:
     #     c.argument('resource_group_name', resource_group_name_type,
     #                help="Name of resource group of environment. "

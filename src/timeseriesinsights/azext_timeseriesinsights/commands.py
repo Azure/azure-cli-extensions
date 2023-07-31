@@ -17,6 +17,10 @@ def load_command_table(self, _):
         g.custom_command('create', 'timeseriesinsights_environment_gen1_create', supports_no_wait=True)
         g.custom_command('update', 'timeseriesinsights_environment_gen1_update', supports_no_wait=True)
 
+    with self.command_group('tsi environment gen2') as g:
+        g.custom_command('create', 'timeseriesinsights_environment_gen2_create', supports_no_wait=True)
+        g.custom_command('update', 'timeseriesinsights_environment_gen2_update', supports_no_wait=True)
+
     with self.command_group('tsi reference-data-set') as g:
         g.custom_command('create', 'timeseriesinsights_reference_data_set_create')
         g.custom_command('list', 'timeseriesinsights_reference_data_set_list')

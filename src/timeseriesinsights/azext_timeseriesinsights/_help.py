@@ -17,18 +17,17 @@ from knack.help_files import helps
 #     short-summary: Manage environment with Azure Time Series Insights.
 # """
 #
-# helps['tsi environment list'] = """
-#     type: command
-#     short-summary: "List all the available environments associated with the subscription and within the specified \
-#     resource group."
-#     examples:
-#       - name: EnvironmentsByResourceGroup
-#         text: |-
-#                az tsi environment list --resource-group "rg1"
-#       - name: EnvironmentsBySubscription
-#         text: |-
-#                az tsi environment list
-# """
+helps['tsi environment list'] = """
+    type: command
+    short-summary: "List all the available environments associated with the subscription and within the specified resource group."
+    examples:
+      - name: EnvironmentsByResourceGroup
+        text: |-
+               az tsi environment list --resource-group "rg1"
+      - name: EnvironmentsBySubscription
+        text: |-
+               az tsi environment list
+"""
 #
 # helps['tsi environment show'] = """
 #     type: command
@@ -93,85 +92,85 @@ environments the sku determines the capacity of the environment, the ingress rat
                az tsi environment gen1 update --name "env1" --sku name="S1" capacity=2 \
                --resource-group "rg1" --data-retention-time "P30D" --storage-limit-exceeded-behavior PurgeOldData
 """
-#
-# helps['tsi environment gen2'] = """
-#     type: group
-#     short-summary: Manage a gen2 environment in the specified subscription and resource group.
-# """
-#
-# helps['tsi environment gen2 create'] = """
-#     type: command
-#     short-summary: "Create a gen2 environment in the specified subscription and resource group."
-#     parameters:
-#       - name: --sku
-#         short-summary: "The sku determines the type of environment, L1."
-#         long-summary: |
-#             Usage: --sku name=XX capacity=XX
-#
-#             name: Required. The name of this SKU.
-#             capacity: Required. The capacity of the sku.
-#       - name: --id-properties --time-series-id-properties
-#         short-summary: "The list of event properties which will be used to define the environment's time series id."
-#         long-summary: |
-#             Usage: --time-series-id-properties name=XX type=String
-#
-#             name: The name of the property.
-#             type: The type of the property.
-#
-#             Multiple actions can be specified by using more than one --time-series-id-properties argument.
-#       - name: --storage-config --storage-configuration
-#         short-summary: "The storage configuration provides the connection details that allows the Time Series Insights \
-# service to connect to the customer storage account that is used to store the environment's data."
-#         long-summary: |
-#             Usage: --storage-configuration account-name=XX management-key=XX
-#
-#             account-name: Required. The name of the storage account that will hold the environment's Gen2 data.
-#             management-key: Required. The value of the management key that grants the Time Series Insights service \
-# write access to the storage account. This property is not shown in environment responses.
-#       - name: --warm-store-config --warm-store-configuration
-#         short-summary: "The warm store configuration provides the details to create a warm store cache that will \
-# retain a copy of the environment's data available for faster query."
-#         long-summary: |
-#             Usage: --warm-store-configuration data-retention=XX
-#
-#             data-retention: Required. ISO8601 timespan specifying the number of days the environment's events will be \
-# available for query from the warm store.
-#     examples:
-#       - name: EnvironmentsGen2Create
-#         text: |-
-#                az tsi environment gen2 create --name "env2" --location westus --resource-group "rg1" \
-#                --sku name="L1" capacity=1 --time-series-id-properties name=idName type=String \
-#                --storage-configuration account-name=your-account-name management-key=your-account-key
-# """
-#
-# helps['tsi environment gen2 update'] = """
-#     type: command
-#     short-summary: "Update a gen2 environment in the specified subscription and resource group."
-#     parameters:
-#       - name: --storage-config --storage-configuration
-#         short-summary: "The storage configuration provides the connection details that allows the Time Series Insights \
-# service to connect to the customer storage account that is used to store the environment's data."
-#         long-summary: |
-#             Usage: --storage-configuration account-name=XX management-key=XX
-#
-#             account-name: Required. The name of the storage account that will hold the environment's Gen2 data.
-#             management-key: Required. The value of the management key that grants the Time Series Insights service \
-# write access to the storage account. This property is not shown in environment responses.
-#       - name: --warm-store-config --warm-store-configuration
-#         short-summary: "The warm store configuration provides the details to create a warm store cache that will \
-# retain a copy of the environment's data available for faster query."
-#         long-summary: |
-#             Usage: --warm-store-configuration data-retention=XX
-#
-#             data-retention: Required. ISO8601 timespan specifying the number of days the environment's events will be \
-# available for query from the warm store.
-#     examples:
-#       - name: EnvironmentsGen2Update
-#         text: |-
-#                az tsi environment gen2 update --name "env2" --resource-group "rg1" \
-#                --warm-store-configuration data-retention=P30D \
-#                --storage-configuration account-name=your-account-name management-key=your-account-key
-# """
+
+helps['tsi environment gen2'] = """
+    type: group
+    short-summary: Manage a gen2 environment in the specified subscription and resource group.
+"""
+
+helps['tsi environment gen2 create'] = """
+    type: command
+    short-summary: "Create a gen2 environment in the specified subscription and resource group."
+    parameters:
+      - name: --sku
+        short-summary: "The sku determines the type of environment, L1."
+        long-summary: |
+            Usage: --sku name=XX capacity=XX
+
+            name: Required. The name of this SKU.
+            capacity: Required. The capacity of the sku.
+      - name: --id-properties --time-series-id-properties
+        short-summary: "The list of event properties which will be used to define the environment's time series id."
+        long-summary: |
+            Usage: --time-series-id-properties name=XX type=String
+
+            name: The name of the property.
+            type: The type of the property.
+
+            Multiple actions can be specified by using more than one --time-series-id-properties argument.
+      - name: --storage-config --storage-configuration
+        short-summary: "The storage configuration provides the connection details that allows the Time Series Insights \
+service to connect to the customer storage account that is used to store the environment's data."
+        long-summary: |
+            Usage: --storage-configuration account-name=XX management-key=XX
+
+            account-name: Required. The name of the storage account that will hold the environment's Gen2 data.
+            management-key: Required. The value of the management key that grants the Time Series Insights service \
+write access to the storage account. This property is not shown in environment responses.
+      - name: --warm-store-config --warm-store-configuration
+        short-summary: "The warm store configuration provides the details to create a warm store cache that will \
+retain a copy of the environment's data available for faster query."
+        long-summary: |
+            Usage: --warm-store-configuration data-retention=XX
+
+            data-retention: Required. ISO8601 timespan specifying the number of days the environment's events will be \
+available for query from the warm store.
+    examples:
+      - name: EnvironmentsGen2Create
+        text: |-
+               az tsi environment gen2 create --name "env2" --location westus --resource-group "rg1" \
+               --sku name="L1" capacity=1 --time-series-id-properties name=idName type=String \
+               --storage-configuration account-name=your-account-name management-key=your-account-key
+"""
+
+helps['tsi environment gen2 update'] = """
+    type: command
+    short-summary: "Update a gen2 environment in the specified subscription and resource group."
+    parameters:
+      - name: --storage-config --storage-configuration
+        short-summary: "The storage configuration provides the connection details that allows the Time Series Insights \
+service to connect to the customer storage account that is used to store the environment's data."
+        long-summary: |
+            Usage: --storage-configuration account-name=XX management-key=XX
+
+            account-name: Required. The name of the storage account that will hold the environment's Gen2 data.
+            management-key: Required. The value of the management key that grants the Time Series Insights service \
+write access to the storage account. This property is not shown in environment responses.
+      - name: --warm-store-config --warm-store-configuration
+        short-summary: "The warm store configuration provides the details to create a warm store cache that will \
+retain a copy of the environment's data available for faster query."
+        long-summary: |
+            Usage: --warm-store-configuration data-retention=XX
+
+            data-retention: Required. ISO8601 timespan specifying the number of days the environment's events will be \
+available for query from the warm store.
+    examples:
+      - name: EnvironmentsGen2Update
+        text: |-
+               az tsi environment gen2 update --name "env2" --resource-group "rg1" \
+               --warm-store-configuration data-retention=P30D \
+               --storage-configuration account-name=your-account-name management-key=your-account-key
+"""
 #
 # helps['tsi environment delete'] = """
 #     type: command
