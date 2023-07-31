@@ -14,6 +14,7 @@ from azext_aks_preview._client_factory import (
     cf_trustedaccess_role,
     cf_trustedaccess_role_binding,
 )
+from azure.cli.command_modules.vm._client_factory import cf_vmss_run_commands
 from azext_aks_preview._format import (
     aks_addon_list_available_table_format,
     aks_addon_list_table_format,
@@ -116,6 +117,12 @@ def load_command_table(self, _):
         operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
                         'operations._trusted_access_role_bindings_operations#TrustedAccessRoleBindingsOperations.{}',
         client_factory=cf_trustedaccess_role_binding
+    )
+
+    vmss_run_sdk = CliCommandType(
+        operations_tmpl='azure.mgmt.compute.operations#VirtualMachineScaleSetVmRunCommandsOperations.{}',
+        operation_group='virtual_machine_scale_sets',
+        client_factory=cf_vmss_run_commands
     )
 
     # AKS managed cluster commands
@@ -267,3 +274,7 @@ def load_command_table(self, _):
             'aks_mesh_disable_ingress_gateway',
             supports_no_wait=True,
             confirmation=True)
+        
+    with self.command_group('aks check-network', vmss_run_sdk, client_factory=cf_vmss_run_commands) as g:
+        g.custom_command('vmss', 'aks_check_network_vmss')
+
