@@ -147,6 +147,7 @@ def connect_vcenter(
             creds_ok = True
         elif res != 'n':
             print('Please type y/n or leave empty.')
+    assert fqdn
 
     username_creds = VICredential(username=username, password=password)
 
@@ -920,7 +921,7 @@ def create_vm(
             )
 
     return sdk_no_wait(
-        no_wait, client.begin_create, resource_group_name, resource_name, vm
+        no_wait, client.begin_create_or_update, resource_group_name, resource_name, vm
     )
 
 
@@ -992,8 +993,8 @@ def show_vm(client: VirtualMachinesOperations, resource_group_name, resource_nam
 def list_vm(client: VirtualMachinesOperations, resource_group_name=None):
 
     if resource_group_name:
-        return client.list_by_resource_group(resource_group_name)
-    return client.list()
+        return client.list(resource_group_name)
+    return client.list_all()
 
 
 def start_vm(
@@ -1236,7 +1237,7 @@ def update_nic(
                     raise CLIError(
                         "Incorrect nic-name and device-key combination, Expected " +
                         "nic-name: " +
-                        nic.name +
+                        str(nic.name) +
                         ", device-key: " +
                         str(nic.device_key) +
                         "."
@@ -1444,7 +1445,7 @@ def update_disk(
                     raise CLIError(
                         "Incorrect disk-name and device-key combination, Expected "
                         "disk-name: " +
-                        disk.name +
+                        str(disk.name) +
                         ", device-key: " +
                         str(disk.device_key) +
                         "."
@@ -1525,7 +1526,7 @@ def delete_disks(
                 disks_to_delete[disk.name] = False
                 continue
             disk_update = VirtualDiskUpdate(
-                name=disk.disk_name,
+                name=disk.name,
                 disk_size_gb=disk.disk_size_gb,
                 disk_mode=disk.disk_mode,
                 controller_key=disk.controller_key,
@@ -1669,7 +1670,7 @@ def connectedvmware_extension_list(
     """
 
     return client.list(resource_group_name=resource_group_name,
-                       name=vm_name,
+                       virtual_machine_name=vm_name,
                        expand=expand)
 
 
@@ -1684,7 +1685,7 @@ def connectedvmware_extension_show(
     """
 
     return client.get(resource_group_name=resource_group_name,
-                      name=vm_name,
+                      virtual_machine_name=vm_name,
                       extension_name=name)
 
 
