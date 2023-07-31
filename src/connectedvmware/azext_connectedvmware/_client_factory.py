@@ -74,13 +74,6 @@ def cf_virtual_machine(cli_ctx: AzCli, *_):
     return cf_connectedvmware(cli_ctx).virtual_machines
 
 
-def cf_machine(cli_ctx: AzCli, *_):
-    """
-    Client factory for machines.
-    """
-    return cf_hybridcompute(cli_ctx).machines
-
-
 def cf_virtual_machine_instance(cli_ctx: AzCli, *_):
     """
     Client factory for virtual machine instances.
@@ -95,12 +88,22 @@ def cf_inventory_item(cli_ctx: AzCli, *_):
     return cf_connectedvmware(cli_ctx).inventory_items
 
 
-def cf_guest_agent(cli_ctx: AzCli, *_):
+def cf_vminstance_guest_agent(cli_ctx: AzCli, *_):
     """
     Client factory for guest agent.
     """
-    return cf_connectedvmware(cli_ctx).guest_agents
+    return cf_connectedvmware(cli_ctx).vm_instance_guest_agents
+
+
+def cf_machine(cli_ctx: AzCli, *_):
+    """
+    Client factory for machines.
+    """
+    return cf_hybridcompute(cli_ctx).machines
 
 
 def cf_machine_extension(cli_ctx: AzCli, *_):
-    return cf_connectedvmware(cli_ctx).machine_extensions
+    """
+    Client factory for machines.
+    """
+    return cf_hybridcompute(cli_ctx).machine_extensions

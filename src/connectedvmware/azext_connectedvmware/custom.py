@@ -11,6 +11,8 @@ from azext_connectedvmware.pwinput import pwinput
 from azure.core.exceptions import ResourceNotFoundError #type: ignore
 from azext_connectedvmware.vmware_utils import get_resource_id
 from .vmware_constants import (
+    MACHINES_KIND_VMWARE,
+    MACHINES_RESOURCE_TYPE,
     VMWARE_NAMESPACE,
     VCENTER_RESOURCE_TYPE,
     RESOURCEPOOL_RESOURCE_TYPE,
@@ -37,16 +39,16 @@ from .vmware_constants import (
     DISK_MODE,
     CONTROLLER_KEY,
     UNIT_NUMBER,
-    VIRTUALMACHINE_RESOURCE_TYPE,
     VM_SYSTEM_ASSIGNED_INDENTITY_TYPE,
-    DEFAULT_GUEST_AGENT_NAME,
     GUEST_AGENT_PROVISIONING_ACTION_INSTALL,
-    MACHINE_RESOURCE_TYPE,
+    EXTENSIONS_RESOURCE_TYPE,
+    HCRP_NAMESPACE,
 )
 
 from .vendored_sdks.connectedvmware.models import (
     DiskMode,
     HardwareProfile,
+    InfrastructureProfile,
     IPAddressAllocationMethod,
     NetworkInterface,
     NetworkInterfaceUpdate,
@@ -54,7 +56,7 @@ from .vendored_sdks.connectedvmware.models import (
     NetworkProfileUpdate,
     NicIPSettings,
     NICType,
-    OsProfile,
+    OsProfileForVMInstance,
     PowerOnBootOption,
     ResourcePool,
     Cluster,
@@ -66,22 +68,24 @@ from .vendored_sdks.connectedvmware.models import (
     VICredential,
     VirtualDisk,
     VirtualDiskUpdate,
-    VirtualMachine,
+    VirtualMachineInstance,
+    VirtualMachineInstanceUpdate,
     VirtualMachineTemplate,
-    VirtualMachineUpdate,
     VirtualNetwork,
     ExtendedLocation,
     StopVirtualMachineOptions,
-    Identity,
     GuestAgent,
     GuestCredential,
     PlacementProfile,
     HttpProxyConfiguration,
-    MachineExtension,
 )
 
 from .vendored_sdks.hybridcompute.models import (
+    Identity,
     Machine,
+    MachineExtension,
+    MachineExtensionUpdate,
+    MachineUpdate,
 )
 
 from .vendored_sdks.connectedvmware.operations import (
@@ -92,20 +96,20 @@ from .vendored_sdks.connectedvmware.operations import (
     HostsOperations,
     VirtualNetworksOperations,
     VirtualMachineTemplatesOperations,
-    VirtualMachinesOperations,
     VirtualMachineInstancesOperations,
+    VMInstanceGuestAgentsOperations,
     InventoryItemsOperations,
-    GuestAgentsOperations,
     MachineExtensionsOperations,
 )
 
 from .vendored_sdks.hybridcompute.operations import (
     MachinesOperations,
+    MachineExtensionsOperations,
 )
 
 from ._client_factory import (
-    cf_virtual_machine,
     cf_machine,
+    cf_virtual_machine_instance,
 )
 
 # region VCenters
@@ -721,22 +725,18 @@ def list_vm_template(
 
 # region VirtualMachines
 
-
-def _create_hcrp_machine_if_required(
-        client: MachinesOperations,
+def get_hcrp_machine_id(
+    cmd,
+    resource_group_name,
+    resource_name,
+):
+    return get_resource_id(
+        cmd,
         resource_group_name,
+        HCRP_NAMESPACE,
+        MACHINES_RESOURCE_TYPE,
         resource_name,
-        location,
-    ):
-
-    try:
-        vm = client.get(resource_group_name, resource_name)
-    except ResourceNotFoundError as e:
-        vm = Machine(
-            location=location,
-            # TODO more props
-        )
-        # TODO: Create it
+    )
 
 
 def create_vm(
@@ -745,7 +745,7 @@ def create_vm(
     resource_group_name,
     resource_name,
     custom_location,
-    location,
+    location=None,
     vcenter=None,
     vm_template=None,
     resource_pool=None,
@@ -763,9 +763,6 @@ def create_vm(
     tags=None,
     no_wait=False,
 ):
-    # Check if the hybridcompute resource exists, if not create one
-
-
     if not any([vm_template, inventory_item, datastore]):
         raise CLIError(
             "either vm_template, inventory_item id or datastore must be provided."
@@ -806,7 +803,7 @@ def create_vm(
         )
 
     if admin_password is not None:
-        os_profile = OsProfile(
+        os_profile = OsProfileForVMInstance(
             admin_username=admin_username, admin_password=admin_password
         )
 
@@ -834,15 +831,20 @@ def create_vm(
         type=EXTENDED_LOCATION_TYPE, name=custom_location_id
     )
 
+    vm = None
+
+    # infrastructure profile parametes
+    infrastructure_profile = None
     inventory_item_id = None
     vcenter_id = None
-    vm = None
     vm_template_id = None
+
+    # placement profile parameters
+    placement_profile = None
     resource_pool_id = None
     cluster_id = None
     host_id = None
     datastore_id = None
-    placement_profile = None
 
     if inventory_item is not None:
         inventory_item_id = get_resource_id(
@@ -855,13 +857,7 @@ def create_vm(
             inventory_item,
         )
 
-        vm = VirtualMachine(
-            location=location,
-            extended_location=extended_location,
-            hardware_profile=hardware_profile,
-            os_profile=os_profile,
-            network_profile=network_profile,
-            storage_profile=storage_profile,
+        infrastructure_profile = InfrastructureProfile(
             inventory_item_id=inventory_item_id,
         )
     else:
@@ -924,39 +920,59 @@ def create_vm(
             datastore_id=datastore_id,
         )
 
-        if vm_template is not None:
-            vm = VirtualMachine(
-                location=location,
-                extended_location=extended_location,
-                v_center_id=vcenter_id,
-                template_id=vm_template_id,
-                placement_profile=placement_profile,
-                hardware_profile=hardware_profile,
-                os_profile=os_profile,
-                network_profile=network_profile,
-                storage_profile=storage_profile,
-                tags=tags
-            )
-        else:
-            vm = VirtualMachine(
-                location=location,
-                extended_location=extended_location,
-                v_center_id=vcenter_id,
-                placement_profile=placement_profile,
-                hardware_profile=hardware_profile,
-                os_profile=os_profile,
-                network_profile=network_profile,
-                storage_profile=storage_profile,
-                tags=tags
-            )
+        infrastructure_profile = InfrastructureProfile(
+            v_center_id=vcenter_id,
+            template_id=vm_template_id,
+        )
+    
+    vm = VirtualMachineInstance(
+        extended_location=extended_location,
+        placement_profile=placement_profile,
+        hardware_profile=hardware_profile,
+        os_profile=os_profile,
+        network_profile=network_profile,
+        storage_profile=storage_profile,
+        infrastructure_profile=infrastructure_profile,
+    )
 
+    machine_client = cf_machine(cmd.cli_ctx)
+    machine = None
+    try:
+        machine = machine_client.get(resource_group_name, resource_name)
+        if location is not None and machine.location != location:
+            raise CLIError(
+                "The location of the existing Machine cannot be updated. "+
+                "Either specify the existing location or keep the location unspecified. "+
+                f"Existing location: {machine.location}, "+
+                f"Provided location: {location}"
+            )
+        if tags is not None:
+            m = MachineUpdate(
+                tags=tags,
+            )
+            machine = machine_client.update(resource_group_name, resource_name, m)
+    except ResourceNotFoundError as e:
+        if location is None:
+            raise CLIError(
+                "The parent Machine resource does not exist, "+
+                "location is required while creating a new machine."
+            )
+        m = Machine(
+            location=location,
+            kind=MACHINES_KIND_VMWARE,
+            tags=tags,
+        )
+        machine = machine_client.create_or_update(resource_group_name, resource_name, m)
+
+    assert machine.id is not None
     return sdk_no_wait(
-        no_wait, client.begin_create_or_update, resource_group_name, resource_name, vm
+        no_wait, client.begin_create_or_update, machine.id, vm
     )
 
 
 def update_vm(
-    client: VirtualMachinesOperations,
+    cmd,
+    client: VirtualMachineInstancesOperations,
     resource_group_name,
     resource_name,
     num_CPUs=None,
@@ -965,6 +981,19 @@ def update_vm(
     tags=None,
     no_wait=False,
 ):
+
+    machine_client = cf_machine(cmd.cli_ctx)
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        resource_name,
+    )
+
+    if tags is not None:
+        m = MachineUpdate(
+            tags=tags,
+        )
+        machine_client.update(resource_group_name, resource_name, m)
 
     hardware_profile = None
 
@@ -987,83 +1016,133 @@ def update_vm(
             num_cores_per_socket=num_cores_per_socket,
         )
 
-    vm_update = VirtualMachineUpdate(
+    vm_update = VirtualMachineInstanceUpdate(
         hardware_profile=hardware_profile,
-        tags=tags
     )
 
     return sdk_no_wait(
         no_wait,
         client.begin_update,
-        resource_group_name,
-        resource_name,
+        machine_id,
         vm_update
     )
 
 
 def delete_vm(
-    client: VirtualMachinesOperations,
+    cmd,
+    client: VirtualMachineInstancesOperations,
     resource_group_name,
     resource_name,
     force=False,
-    retain=None,
+    delete_from_host=None,
     no_wait=False,
 ):
 
-    return sdk_no_wait(
-        no_wait, client.begin_delete, resource_group_name, resource_name, force, retain,
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        resource_name,
     )
 
+    try:
+        return sdk_no_wait(
+            no_wait, client.begin_delete, machine_id, delete_from_host, force,
+        )
+    except ResourceNotFoundError:
+        # Nothing to delete if the parent machine does not exist.
+        return
+    finally:
+        if no_wait:
+            return
 
-def show_vm(client: VirtualMachinesOperations, resource_group_name, resource_name):
+        # TODO (snaskar): we can add a flag to delete the parent machine as well.
+        if delete_from_host:
+            machine_client = cf_machine(cmd.cli_ctx)
+            machine_client.delete(resource_group_name, resource_name)
 
-    return client.get(resource_group_name, resource_name)
+
+def show_vm(
+    cmd,
+    client: VirtualMachineInstancesOperations,
+    resource_group_name,
+    resource_name,
+):
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        resource_name,
+    )
+    return client.get(machine_id)
 
 
-def list_vm(client: VirtualMachinesOperations, resource_group_name=None):
-
-    if resource_group_name:
-        return client.list(resource_group_name)
-    return client.list_all()
+def list_vm(
+    cmd,
+    client: VirtualMachineInstancesOperations,
+    resource_group_name,
+    resource_name,
+):
+    # TODO (snaskar): list_vm under a machine returns an array with a single resource,
+    # How to list all the VMInstances in a subscription or resource group?
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        resource_name,
+    )
+    return client.list(machine_id)
 
 
 def start_vm(
-    client: VirtualMachinesOperations,
+    cmd,
+    client: VirtualMachineInstancesOperations,
     resource_group_name,
     resource_name,
     no_wait=False,
 ):
-
-    return sdk_no_wait(no_wait, client.begin_start, resource_group_name, resource_name)
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        resource_name,
+    )
+    return sdk_no_wait(no_wait, client.begin_start, machine_id)
 
 
 def stop_vm(
-    client: VirtualMachinesOperations,
+    cmd,
+    client: VirtualMachineInstancesOperations,
     resource_group_name,
     resource_name,
     skip_shutdown=False,
     no_wait=False,
 ):
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        resource_name,
+    )
     body = StopVirtualMachineOptions(skip_shutdown=skip_shutdown)
 
     return sdk_no_wait(
         no_wait,
         client.begin_stop,
-        resource_group_name,
-        resource_name,
+        machine_id,
         body
     )
 
 
 def restart_vm(
-    client: VirtualMachinesOperations,
+    cmd,
+    client: VirtualMachineInstancesOperations,
     resource_group_name,
     resource_name,
     no_wait=False,
 ):
-
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        resource_name,
+    )
     return sdk_no_wait(
-        no_wait, client.begin_restart, resource_group_name, resource_name
+        no_wait, client.begin_restart, machine_id,
     )
 
 
@@ -1154,7 +1233,7 @@ def get_disks(input_disks):
 
 def add_nic(
     cmd,
-    client: VirtualMachinesOperations,
+    client: VirtualMachineInstancesOperations,
     resource_group_name,
     vm_name,
     nic_name,
@@ -1182,8 +1261,14 @@ def add_nic(
         nic_type=nic_type,
     )
 
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        vm_name,
+    )
+
     nics_update = []
-    vm = client.get(resource_group_name, vm_name)
+    vm = client.get(machine_id)
     if (
         vm.network_profile is not None and
         vm.network_profile.network_interfaces is not None
@@ -1200,16 +1285,16 @@ def add_nic(
 
     nics_update.append(nic_to_add)
     network_profile = NetworkProfileUpdate(network_interfaces=nics_update)
-    vm_update = VirtualMachineUpdate(network_profile=network_profile)
+    vm_update = VirtualMachineInstanceUpdate(network_profile=network_profile)
 
     return sdk_no_wait(
-        no_wait, client.begin_update, resource_group_name, vm_name, vm_update
+        no_wait, client.begin_update, machine_id, vm_update
     )
 
 
 def update_nic(
     cmd,
-    client: VirtualMachinesOperations,
+    client: VirtualMachineInstancesOperations,
     resource_group_name,
     vm_name,
     nic_name=None,
@@ -1237,9 +1322,15 @@ def update_nic(
             network,
         )
 
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        vm_name,
+    )
+
     nics_update = []
     nic_found = False
-    vm = client.get(resource_group_name, vm_name)
+    vm = client.get(machine_id)
     if (
         vm.network_profile is not None and
         vm.network_profile.network_interfaces is not None
@@ -1287,30 +1378,53 @@ def update_nic(
         raise CLIError("Given nic is not present in the virtual machine.")
 
     network_profile = NetworkProfileUpdate(network_interfaces=nics_update)
-    vm_update = VirtualMachineUpdate(network_profile=network_profile)
+    vm_update = VirtualMachineInstanceUpdate(network_profile=network_profile)
 
     return sdk_no_wait(
-        no_wait, client.begin_update, resource_group_name, vm_name, vm_update
+        no_wait, client.begin_update, machine_id, vm_update
     )
 
 
-def list_nics(client: VirtualMachinesOperations, resource_group_name, vm_name):
+def list_nics(
+    cmd,
+    client: VirtualMachineInstancesOperations,
+    resource_group_name,
+    vm_name,
+):
     """
     List details of a virtual machine nics.
     """
 
-    vm = client.get(resource_group_name, vm_name)
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        vm_name,
+    )
+
+    vm = client.get(machine_id)
     if vm.network_profile is not None:
         return vm.network_profile.network_interfaces
     return None
 
 
-def show_nic(client: VirtualMachinesOperations, resource_group_name, vm_name, nic_name):
+def show_nic(
+    cmd,
+    client: VirtualMachineInstancesOperations,
+    resource_group_name,
+    vm_name,
+    nic_name,
+):
     """
     Get the details of a virtual machine nic.
     """
 
-    vm = client.get(resource_group_name, vm_name)
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        vm_name,
+    )
+
+    vm = client.get(machine_id)
     if (
         vm.network_profile is not None and
         vm.network_profile.network_interfaces is not None
@@ -1322,7 +1436,8 @@ def show_nic(client: VirtualMachinesOperations, resource_group_name, vm_name, ni
 
 
 def delete_nics(
-    client: VirtualMachinesOperations,
+    cmd,
+    client: VirtualMachineInstancesOperations,
     resource_group_name,
     vm_name,
     nic_names,
@@ -1332,13 +1447,19 @@ def delete_nics(
     Delete virtual network interfaces from virtual machine.
     """
 
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        vm_name,
+    )
+
     # Dictionary to maintain the nics to delete.
     nics_to_delete = {}
     for nic_name in nic_names:
         nics_to_delete[nic_name] = True
 
     nics_update = []
-    vm = client.get(resource_group_name, vm_name)
+    vm = client.get(machine_id)
     if (
         vm.network_profile is not None and
         vm.network_profile.network_interfaces is not None
@@ -1368,10 +1489,10 @@ def delete_nics(
         )
 
     network_profile = NetworkProfileUpdate(network_interfaces=nics_update)
-    vm_update = VirtualMachineUpdate(network_profile=network_profile)
+    vm_update = VirtualMachineInstanceUpdate(network_profile=network_profile)
 
     return sdk_no_wait(
-        no_wait, client.begin_update, resource_group_name, vm_name, vm_update
+        no_wait, client.begin_update, machine_id, vm_update
     )
 
 
@@ -1381,7 +1502,8 @@ def delete_nics(
 
 
 def add_disk(
-    client: VirtualMachinesOperations,
+    cmd,
+    client: VirtualMachineInstancesOperations,
     resource_group_name,
     vm_name,
     disk_name,
@@ -1403,8 +1525,14 @@ def add_disk(
         unit_number=unit_number,
     )
 
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        vm_name,
+    )
+
     disks_update = []
-    vm = client.get(resource_group_name, vm_name)
+    vm = client.get(machine_id)
     if vm.storage_profile is not None and vm.storage_profile.disks is not None:
         for disk in vm.storage_profile.disks:
             disk_update = VirtualDiskUpdate(
@@ -1419,15 +1547,16 @@ def add_disk(
 
     disks_update.append(disk_to_add)
     storage_profile = StorageProfileUpdate(disks=disks_update)
-    vm_update = VirtualMachineUpdate(storage_profile=storage_profile)
+    vm_update = VirtualMachineInstanceUpdate(storage_profile=storage_profile)
 
     return sdk_no_wait(
-        no_wait, client.begin_update, resource_group_name, vm_name, vm_update
+        no_wait, client.begin_update, machine_id, vm_update
     )
 
 
 def update_disk(
-    client: VirtualMachinesOperations,
+    cmd,
+    client: VirtualMachineInstancesOperations,
     resource_group_name,
     vm_name,
     disk_name=None,
@@ -1446,10 +1575,16 @@ def update_disk(
         raise CLIError(
             "Either disk name or device key must be specified to update the disk."
         )
+    
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        vm_name,
+    )
 
     disks_update = []
     disk_found = False
-    vm = client.get(resource_group_name, vm_name)
+    vm = client.get(machine_id)
     if vm.storage_profile is not None and vm.storage_profile.disks is not None:
         for disk in vm.storage_profile.disks:
             disk_update = VirtualDiskUpdate(
@@ -1496,35 +1631,56 @@ def update_disk(
             disks_update.append(disk_update)
 
     if not disk_found:
-        raise CLIError("Given disk is not present in the virtual machine.")
+        raise CLIError("The provided disk is not present in the virtual machine.")
 
     storage_profile = StorageProfileUpdate(disks=disks_update)
-    vm_update = VirtualMachineUpdate(storage_profile=storage_profile)
+    vm_update = VirtualMachineInstanceUpdate(storage_profile=storage_profile)
 
     return sdk_no_wait(
-        no_wait, client.begin_update, resource_group_name, vm_name, vm_update
+        no_wait, client.begin_update, machine_id, vm_update
     )
 
 
-def list_disks(client: VirtualMachinesOperations, resource_group_name, vm_name):
+def list_disks(
+    cmd,
+    client: VirtualMachineInstancesOperations,
+    resource_group_name,
+    vm_name,
+):
     """
     List details of a virtual machine disks.
     """
 
-    vm = client.get(resource_group_name, vm_name)
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        vm_name,
+    )
+
+    vm = client.get(machine_id)
     if vm.storage_profile is not None:
         return vm.storage_profile.disks
     return None
 
 
 def show_disk(
-    client: VirtualMachinesOperations, resource_group_name, vm_name, disk_name
+    cmd,
+    client: VirtualMachineInstancesOperations,
+    resource_group_name,
+    vm_name,
+    disk_name,
 ):
     """
     Get the details of a virtual machine disk.
     """
 
-    vm = client.get(resource_group_name, vm_name)
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        vm_name,
+    )
+
+    vm = client.get(machine_id)
     if vm.storage_profile is not None and vm.storage_profile.disks is not None:
         for disk in vm.storage_profile.disks:
             if disk.name == disk_name:
@@ -1533,7 +1689,8 @@ def show_disk(
 
 
 def delete_disks(
-    client: VirtualMachinesOperations,
+    cmd,
+    client: VirtualMachineInstancesOperations,
     resource_group_name,
     vm_name,
     disk_names,
@@ -1548,8 +1705,14 @@ def delete_disks(
     for disk_name in disk_names:
         disks_to_delete[disk_name] = True
 
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        vm_name,
+    )
+
     disks_update = []
-    vm = client.get(resource_group_name, vm_name)
+    vm = client.get(machine_id)
     if vm.storage_profile is not None and vm.storage_profile.disks is not None:
         for disk in vm.storage_profile.disks:
             if disk.name in disks_to_delete:
@@ -1577,10 +1740,10 @@ def delete_disks(
         )
 
     storage_profile = StorageProfileUpdate(disks=disks_update)
-    vm_update = VirtualMachineUpdate(storage_profile=storage_profile)
+    vm_update = VirtualMachineInstanceUpdate(storage_profile=storage_profile)
 
     return sdk_no_wait(
-        no_wait, client.begin_update, resource_group_name, vm_name, vm_update
+        no_wait, client.begin_update, machine_id, vm_update
     )
 
 
@@ -1589,48 +1752,34 @@ def delete_disks(
 # region GuestAgent
 
 
-def is_system_identity_enabled(
-    client: VirtualMachinesOperations,
-    resource_group_name,
-    vm_name,
-):
+def is_system_identity_enabled(machine: Machine):
     """
     Check whether system identity is enable or not on this vm.
     """
 
-
-    #fhjsdijfhifjf
-
-    vm = client.get(resource_group_name, vm_name)
-
-    if vm.identity is not None and vm.identity.type == VM_SYSTEM_ASSIGNED_INDENTITY_TYPE:
+    if machine.identity is not None and machine.identity.type == VM_SYSTEM_ASSIGNED_INDENTITY_TYPE:
         return True
 
     return False
 
 
 def enable_system_identity(
-    client: VirtualMachinesOperations,
+    client: MachinesOperations,
     resource_group_name,
     vm_name,
-    no_wait=False,
 ):
     """
     Enable system assigned identity on this vm.
     """
 
     system_identity = Identity(type=VM_SYSTEM_ASSIGNED_INDENTITY_TYPE)
-
-    vm_update = VirtualMachineUpdate(identity=system_identity)
-
-    return sdk_no_wait(
-        no_wait, client.begin_update, resource_group_name, vm_name, vm_update
-    )
+    vm_update = MachineUpdate(identity=system_identity)
+    return client.update(resource_group_name, vm_name, vm_update)
 
 
 def enable_guest_agent(
     cmd,
-    client: GuestAgentsOperations,
+    client: VMInstanceGuestAgentsOperations,
     resource_group_name,
     vm_name,
     username,
@@ -1642,41 +1791,41 @@ def enable_guest_agent(
     Enable guest agent on the given virtual machine.
     """
 
-    vm_client = cf_virtual_machine(cmd.cli_ctx)
+    machine_client = cf_machine(cmd.cli_ctx)
+    machine = machine_client.get(resource_group_name, vm_name)
+    assert machine.id is not None
 
-    if is_system_identity_enabled(vm_client, resource_group_name, vm_name) is False:
-        enable_system_identity(vm_client, resource_group_name, vm_name, False).result()
+    # To ensure that the VirtualMachineInstance resource is present
+    # before patching identity to SystemAssigned.
+    vm_client = cf_virtual_machine_instance(cmd.cli_ctx)
+    vm_client.get(machine.id)
+
+    if not is_system_identity_enabled(machine):
+        machine = enable_system_identity(machine_client, resource_group_name, vm_name)
 
     vm_creds = GuestCredential(username=username, password=password)
 
-    resource_id = get_resource_id(cmd, resource_group_name, VMWARE_NAMESPACE, VIRTUALMACHINE_RESOURCE_TYPE, vm_name)
-
     https_proxy_config = None
-
     if https_proxy:
         https_proxy_config = HttpProxyConfiguration(https_proxy=https_proxy)
 
     guest_agent = GuestAgent(
-        id=resource_id,
-        type=VIRTUALMACHINE_RESOURCE_TYPE,
-        name=DEFAULT_GUEST_AGENT_NAME,
         credentials=vm_creds,
-        provisioning_action=GUEST_AGENT_PROVISIONING_ACTION_INSTALL,
         http_proxy_config=https_proxy_config,
+        provisioning_action=GUEST_AGENT_PROVISIONING_ACTION_INSTALL,
     )
 
     return sdk_no_wait(
         no_wait,
         client.begin_create,
-        resource_group_name,
-        vm_name,
-        DEFAULT_GUEST_AGENT_NAME,
+        machine.id,
         guest_agent
     )
 
 
 def show_guest_agent(
-    client: GuestAgentsOperations,
+    cmd,
+    client: VMInstanceGuestAgentsOperations,
     resource_group_name,
     vm_name,
 ):
@@ -1684,7 +1833,13 @@ def show_guest_agent(
     Show the guest agent of the given vm and guest agent.
     """
 
-    return client.get(resource_group_name, vm_name, DEFAULT_GUEST_AGENT_NAME)
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        vm_name,
+    )
+
+    return client.get(machine_id)
 
 
 # endregion
@@ -1703,7 +1858,7 @@ def connectedvmware_extension_list(
     """
 
     return client.list(resource_group_name=resource_group_name,
-                       virtual_machine_name=vm_name,
+                       machine_name=vm_name,
                        expand=expand)
 
 
@@ -1718,7 +1873,7 @@ def connectedvmware_extension_show(
     """
 
     return client.get(resource_group_name=resource_group_name,
-                      virtual_machine_name=vm_name,
+                      machine_name=vm_name,
                       extension_name=name)
 
 
@@ -1747,10 +1902,10 @@ def connectedvmware_extension_create(
     resource_id = get_resource_id(
         cmd,
         resource_group_name,
-        VMWARE_NAMESPACE,
-        VIRTUALMACHINE_RESOURCE_TYPE,
+        HCRP_NAMESPACE,
+        MACHINES_RESOURCE_TYPE,
         vm_name,
-        MACHINE_RESOURCE_TYPE,
+        EXTENSIONS_RESOURCE_TYPE,
         name
     )
 
@@ -1772,7 +1927,7 @@ def connectedvmware_extension_create(
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
-                       name=vm_name,
+                       machine_name=vm_name,
                        extension_name=name,
                        extension_parameters=machine_extension)
 
@@ -1797,7 +1952,7 @@ def connectedvmware_extension_update(
     Update the vm extension of a given vm.
     """
 
-    machine_extension = MachineExtension(
+    machine_extension = MachineExtensionUpdate(
         tags=tags,
         force_update_tag=force_update_tag,
         publisher=publisher,
@@ -1812,7 +1967,7 @@ def connectedvmware_extension_update(
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_group_name=resource_group_name,
-                       name=vm_name,
+                       machine_name=vm_name,
                        extension_name=name,
                        extension_parameters=machine_extension)
 
@@ -1831,7 +1986,7 @@ def connectedvmware_extension_delete(
     return sdk_no_wait(no_wait,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
-                       name=vm_name,
+                       machine_name=vm_name,
                        extension_name=name)
 
 

@@ -11,7 +11,7 @@ from ._client_factory import (
     cf_virtual_machine_template,
     cf_virtual_machine_instance,
     cf_inventory_item,
-    cf_guest_agent,
+    cf_vminstance_guest_agent,
     cf_cluster,
     cf_datastore,
     cf_host,
@@ -112,7 +112,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_disks')
 
     with self.command_group(
-        'connectedvmware vm guest-agent', client_factory=cf_guest_agent
+        'connectedvmware vm guest-agent', client_factory=cf_vminstance_guest_agent
     ) as g:
         g.custom_command('enable', 'enable_guest_agent', supports_no_wait=True)
         g.custom_show_command('show', 'show_guest_agent')
