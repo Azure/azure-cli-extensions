@@ -568,8 +568,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
                 set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.containerapp_def, user_assigned=[self.get_argument_registry_identity()])
 
         if self.get_argument_source():
-            app = self.set_up_create_containerapp_if_source_or_repo()
-            self.set_up_create_containerapp_source(app=app)
+            self.set_up_create_containerapp_if_source_or_repo()
 
     def create_containerapp(self):
         try:
@@ -631,8 +630,11 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         return r
 
     def set_up_create_containerapp_if_source_or_repo(self):
-        from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image)
-
+        from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image, get_token, _has_dockerfile, _get_dockerfile_content, _get_ingress_and_target_port, _get_registry_details)
+        ingress = self.get_argument_ingress()
+        target_port = self.get_argument_target_port()
+        dockerfile = "Dockerfile"
+        token = get_token(self.cmd, self.get_argument_repo(), self.get_argument_token())
         # Parse resource group name and managed env name
         env_id = self.containerapp_def["properties"]['environmentId']
         parsed_managed_env = parse_resource_id(env_id)
@@ -646,30 +648,25 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         # Set image to None if it was previously set to the default image (case where image was not provided by the user) else reformat it
         image = None if self.get_argument_image().__eq__(HELLO_WORLD_IMAGE) else _reformat_image(self.get_argument_source(), self.get_argument_repo(), self.get_argument_image())
 
-        # Construct ContainerApp
-        resource_group = ResourceGroup(self.cmd, env_rg, location=location)
-        env = ContainerAppEnvironment(self.cmd, env_name, resource_group, location=location)
-        app = ContainerApp(self.cmd, self.get_argument_name(), resource_group, None, image, env, self.get_argument_target_port(), self.get_argument_registry_server(), self.get_argument_registry_user(), self.get_argument_registry_pass(), self.get_argument_env_vars(), self.get_argument_workload_profile_name(), self.get_argument_ingress())
-
-        return app
-
-    def set_up_create_containerapp_source(self, app):
-        from ._up_utils import (_get_registry_details, get_token, _has_dockerfile, _get_dockerfile_content, _get_ingress_and_target_port)
-        dockerfile = "Dockerfile"
-        token = get_token(self.cmd, self.get_argument_repo(), self.get_argument_token())
-        _get_registry_details(self.cmd, app, self.get_argument_source())  # fetch ACR creds from arguments registry arguments
-
         if self.get_argument_source() and not _has_dockerfile(self.get_argument_source(), dockerfile):
             pass
         else:
             dockerfile_content = _get_dockerfile_content(self.get_argument_repo(), self.get_argument_branch(), token, self.get_argument_source(), self.get_argument_context_path(), dockerfile)
             ingress, target_port = _get_ingress_and_target_port(self.get_argument_ingress(), self.get_argument_target_port(), dockerfile_content)
+        # Construct ContainerApp
+        resource_group = ResourceGroup(self.cmd, env_rg, location=location)
+        env = ContainerAppEnvironment(self.cmd, env_name, resource_group, location=location)
+        app = ContainerApp(self.cmd, self.get_argument_name(), resource_group, None, image, env, target_port, self.get_argument_registry_server(), self.get_argument_registry_user(), self.get_argument_registry_pass(), self.get_argument_env_vars(), self.get_argument_workload_profile_name(), ingress)
 
-        # Uses buildpacks to generate image if Dockerfile was not provided by the user
-        app.run_acr_build(dockerfile, self.get_argument_source(), quiet=False, build_from_source=not _has_dockerfile(self.get_argument_source(), dockerfile))
+        # Fetch registry credentials
+        _get_registry_details(self.cmd, app, self.get_argument_source())  # fetch ACR creds from arguments registry arguments
 
-        # Update image
-        self.containerapp_def["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
+        if self.get_argument_source():
+            # Uses buildpacks to generate image if Dockerfile was not provided by the user
+            app.run_acr_build(dockerfile, self.get_argument_source(), quiet=False, build_from_source=not _has_dockerfile(self.get_argument_source(), dockerfile))
+            # Update image
+            self.containerapp_def["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
+        return app
 
     def set_up_create_containerapp_repo(self, app, r, env, env_rg):
         from ._up_utils import (_create_github_action, get_token)

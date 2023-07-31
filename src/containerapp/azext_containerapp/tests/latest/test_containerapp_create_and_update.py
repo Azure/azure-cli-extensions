@@ -14,7 +14,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ContainerAppCreateTest(ScenarioTest):
     @live_only()
-    @ResourceGroupPreparer(location="eastus2")
+    @ResourceGroupPreparer(location="eastus")
     def test_containerapp_create_source_with_Dockerfile_e2e(self, resource_group):
         source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_dockerfile"))
         ingress = 'external'
@@ -22,7 +22,7 @@ class ContainerAppCreateTest(ScenarioTest):
         create_and_verify_containerapp_create_and_update(self, resource_group=resource_group, source_path=source_path, ingress=ingress, target_port=target_port)
 
     @live_only()
-    @ResourceGroupPreparer(location="eastus2")
+    @ResourceGroupPreparer(location="eastus")
     def test_containerapp_create_source_with_buildpack_e2e(self, resource_group):
         source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_buildpack"))
         ingress = 'external'
@@ -30,14 +30,14 @@ class ContainerAppCreateTest(ScenarioTest):
         create_and_verify_containerapp_create_and_update(self, resource_group=resource_group, source_path=source_path, ingress=ingress, target_port=target_port)
 
     @live_only()
-    @ResourceGroupPreparer(location="eastus2")
+    @ResourceGroupPreparer(location="eastus")
     def test_containerapp_create_source_and_image_e2e(self, resource_group):
        image = "mcr.microsoft.com/dotnet/runtime:7.0"
        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_dockerfile"))
        create_and_verify_containerapp_create_and_update(self,resource_group=resource_group, image=image, source_path=source_path)
 
     @live_only()
-    @ResourceGroupPreparer(location="eastus2")
+    @ResourceGroupPreparer(location="eastus")
     def test_containerapp_create_source_with_acr_task_e2e(self, resource_group):
         source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_acr_task"))
         ingress = 'external'

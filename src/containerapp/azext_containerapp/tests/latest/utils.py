@@ -89,7 +89,7 @@ def create_and_verify_containerapp_create_and_update(
         # Ensure that the Container App environment is created
         if env_name is None:
            env_name = test_cls.create_random_name(prefix='env', length=24)
-           test_cls.cmd(f'containerapp env create -g {resource_group} -n {env_name} -l "westeurope"')
+           test_cls.cmd(f'containerapp env create -g {resource_group} -n {env_name} -l "eastus"')
 
         if app_name is None:
             # Generate a name for the Container App
