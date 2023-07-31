@@ -9,7 +9,7 @@ from ._client_factory import (
     cf_resource_pool,
     cf_virtual_network,
     cf_virtual_machine_template,
-    cf_virtual_machine,
+    cf_virtual_machine_instance,
     cf_inventory_item,
     cf_guest_agent,
     cf_cluster,
@@ -82,7 +82,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_vm_template')
 
     with self.command_group(
-        'connectedvmware vm', client_factory=cf_virtual_machine
+        'connectedvmware vm', client_factory=cf_virtual_machine_instance
     ) as g:
         g.custom_command('create', 'create_vm', supports_no_wait=True)
         g.custom_command('delete', 'delete_vm', supports_no_wait=True, confirmation=True)
@@ -94,7 +94,7 @@ def load_command_table(self, _):
         g.custom_command('restart', 'restart_vm', supports_no_wait=True)
 
     with self.command_group(
-        'connectedvmware vm nic', client_factory=cf_virtual_machine
+        'connectedvmware vm nic', client_factory=cf_virtual_machine_instance
     ) as g:
         g.custom_command('add', 'add_nic', supports_no_wait=True)
         g.custom_command('update', 'update_nic', supports_no_wait=True)
@@ -103,7 +103,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_nics')
 
     with self.command_group(
-        'connectedvmware vm disk', client_factory=cf_virtual_machine
+        'connectedvmware vm disk', client_factory=cf_virtual_machine_instance
     ) as g:
         g.custom_command('add', 'add_disk', supports_no_wait=True)
         g.custom_command('update', 'update_disk', supports_no_wait=True)

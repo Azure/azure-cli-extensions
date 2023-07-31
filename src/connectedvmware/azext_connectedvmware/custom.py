@@ -8,6 +8,7 @@
 from knack.util import CLIError
 from azure.cli.core.util import sdk_no_wait
 from azext_connectedvmware.pwinput import pwinput
+from azure.core.exceptions import ResourceNotFoundError #type: ignore
 from azext_connectedvmware.vmware_utils import get_resource_id
 from .vmware_constants import (
     VMWARE_NAMESPACE,
@@ -79,6 +80,10 @@ from .vendored_sdks.connectedvmware.models import (
     MachineExtension,
 )
 
+from .vendored_sdks.hybridcompute.models import (
+    Machine,
+)
+
 from .vendored_sdks.connectedvmware.operations import (
     VCentersOperations,
     ResourcePoolsOperations,
@@ -88,13 +93,19 @@ from .vendored_sdks.connectedvmware.operations import (
     VirtualNetworksOperations,
     VirtualMachineTemplatesOperations,
     VirtualMachinesOperations,
+    VirtualMachineInstancesOperations,
     InventoryItemsOperations,
     GuestAgentsOperations,
     MachineExtensionsOperations,
 )
 
+from .vendored_sdks.hybridcompute.operations import (
+    MachinesOperations,
+)
+
 from ._client_factory import (
     cf_virtual_machine,
+    cf_machine,
 )
 
 # region VCenters
@@ -711,9 +722,26 @@ def list_vm_template(
 # region VirtualMachines
 
 
+def _create_hcrp_machine_if_required(
+        client: MachinesOperations,
+        resource_group_name,
+        resource_name,
+        location,
+    ):
+
+    try:
+        vm = client.get(resource_group_name, resource_name)
+    except ResourceNotFoundError as e:
+        vm = Machine(
+            location=location,
+            # TODO more props
+        )
+        # TODO: Create it
+
+
 def create_vm(
     cmd,
-    client: VirtualMachinesOperations,
+    client: VirtualMachineInstancesOperations,
     resource_group_name,
     resource_name,
     custom_location,
@@ -735,6 +763,8 @@ def create_vm(
     tags=None,
     no_wait=False,
 ):
+    # Check if the hybridcompute resource exists, if not create one
+
 
     if not any([vm_template, inventory_item, datastore]):
         raise CLIError(
@@ -1567,6 +1597,9 @@ def is_system_identity_enabled(
     """
     Check whether system identity is enable or not on this vm.
     """
+
+
+    #fhjsdijfhifjf
 
     vm = client.get(resource_group_name, vm_name)
 
