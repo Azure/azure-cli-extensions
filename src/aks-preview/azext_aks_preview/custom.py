@@ -2583,25 +2583,17 @@ def aks_mesh_migration_check(cmd, client, resource_group_name, name, kubeconfig 
     kubernetes.config.load_kube_config(context = cur_context, config_file = kubeconfig)
     v1 = kubernetes.client.CoreV1Api()
     aks_mesh_check_base_requirements(cmd, client, resource_group_name, name, v1)
-
     if aks_mesh_check_istio_existence(v1):
         istio_version, compatible_version = aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1)
         instance = kubernetes.client.CustomObjectsApi()
         if compatible_version:
             aks_mesh_check_crd_config(cmd, client, resource_group_name, name, instance, istio_version)
     can_migrate, total_passed = display_migrationcheck(result_dict)
-
     if can_migrate:
         print(f"{Fore.GREEN}\n13/13 checks passed. Your cluster is ready for migration to the AKS service mesh add-on! For more information on enabling the add-on, please read: https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon{Style.RESET_ALL}")
-        # 10/10 checks passed. Your cluster is ready for migration to the AKS service mesh add-on! For more information on enabling the add-on, please read: <ASM installation link>
     else:
         print(f"{Fore.RED}\nOnly {total_passed}/13 migration checks passed. Please follow suggestions inline to fix these before attempting to migrate to the AKS service mesh add-on.{Style.RESET_ALL}")
-        # if has_unallowed_config: 
-        #     print(f"{Fore.RED}\nFailed: Migration check. You have misconfigured configurations on your cluster. Try removing those configuration and and try again!{Style.RESET_ALL}")
-        # # "3/10 migration checks failed. Please follow suggestions inline to fix these before attempting to migrate to the AKS service mesh add-on."
-        # else:
-        #     print(f"{Fore.RED}\nFailed: Migration check. Your cluster is not ready to migrate to ASM(Azure Service Mesh). Make necessary changes to your installation and please try again.{Style.RESET_ALL}")
-    return
+    return result_dict
 
  
 
@@ -2622,7 +2614,7 @@ def aks_mesh_check_istio_existence(v1):
         'message' : 'Istio installation found.'
     }
     return True
-# ['metadata']['labels']['app']
+
 
 def aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1):
     from pprint import pprint
