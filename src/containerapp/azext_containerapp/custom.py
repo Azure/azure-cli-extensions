@@ -970,7 +970,7 @@ def update_container_app_source(cmd, containerapp_def, name, target_port, image,
             dockerfile_content = _get_dockerfile_content(repo=None, branch=None, token=None, source=source, context_path=None, dockerfile=dockerfile)
             ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
 
-         # Construct ContainerApp
+        # Construct ContainerApp
         resource_group = ResourceGroup(cmd, env_rg, location=location)
         env = ContainerAppEnvironment(cmd, env_name, resource_group, location=location)
         app = ContainerApp(cmd=cmd, name=name, resource_group=resource_group, image=image, env=env, target_port=target_port, workload_profile_name=workload_profile_name, ingress=ingress, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
