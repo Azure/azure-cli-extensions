@@ -195,56 +195,56 @@ available for query from the warm store.
 #                az tsi environment wait --name "env1" --resource-group "rg1" --updated
 # """
 #
-# helps['tsi event-source'] = """
-#     type: group
-#     short-summary: Manage event source with timeseriesinsights
-# """
-#
-# helps['tsi event-source list'] = """
-#     type: command
-#     short-summary: "List all the available event sources associated with the subscription and within the specified \
-# resource group and environment."
-#     examples:
-#       - name: ListEventSourcesByEnvironment
-#         text: |-
-#                az tsi event-source list --environment-name "env1" --resource-group "rg1"
-# """
-#
-# helps['tsi event-source show'] = """
-#     type: command
-#     short-summary: "Show the event source with the specified name in the specified environment."
-#     examples:
-#       - name: GetEventHubEventSource
-#         text: |-
-#                az tsi event-source show --environment-name "env1" --name "es1" --resource-group "rg1"
-# """
-#
-# helps['tsi event-source eventhub'] = """
-#     type: group
-#     short-summary: Manage event source with timeseriesinsights sub group event-hub
-# """
-#
-# helps['tsi event-source eventhub create'] = """
-#     type: command
-#     short-summary: "Create an event source under the specified environment."
-#     examples:
-#       - name: CreateEventHubEventSource
-#         text: |-
-#                az tsi event-source eventhub create --environment-name "env1" --name "es1" \
-# --location westus --consumer-group-name "cgn" --event-hub-name "ehn" --event-source-resource-id "somePathInArm" \
-# --key-name "managementKey" --service-bus-namespace "sbn" --shared-access-key "someSecretvalue" \
-# --timestamp-property-name "someTimestampProperty" --resource-group "rg1"
-# """
-#
-# helps['tsi event-source eventhub update'] = """
-#     type: command
-#     short-summary: "Update an event source under the specified environment."
-#     examples:
-#       - name: UpdateEventHubEventSource
-#         text: |-
-#                az tsi event-source eventhub update --environment-name "env1" --name "es1" \
-# --shared-access-key "someSecretvalue" --timestamp-property-name "someTimestampProperty" --resource-group "rg1"
-# """
+helps['tsi event-source'] = """
+    type: group
+    short-summary: Manage event source with timeseriesinsights
+"""
+
+helps['tsi event-source list'] = """
+    type: command
+    short-summary: "List all the available event sources associated with the subscription and within the specified \
+resource group and environment."
+    examples:
+      - name: ListEventSourcesByEnvironment
+        text: |-
+               az tsi event-source list --environment-name "env1" --resource-group "rg1"
+"""
+
+helps['tsi event-source show'] = """
+    type: command
+    short-summary: "Show the event source with the specified name in the specified environment."
+    examples:
+      - name: GetEventHubEventSource
+        text: |-
+               az tsi event-source show --environment-name "env1" --name "es1" --resource-group "rg1"
+"""
+
+helps['tsi event-source eventhub'] = """
+    type: group
+    short-summary: Manage event source with timeseriesinsights sub group event-hub
+"""
+
+helps['tsi event-source eventhub create'] = """
+    type: command
+    short-summary: "Create an event source under the specified environment."
+    examples:
+      - name: CreateEventHubEventSource
+        text: |-
+               az tsi event-source eventhub create --environment-name "env1" --name "es1" \
+--location westus --consumer-group-name "cgn" --event-hub-name "ehn" --event-source-resource-id "somePathInArm" \
+--key-name "managementKey" --service-bus-namespace "sbn" --shared-access-key "someSecretvalue" \
+--timestamp-property-name "someTimestampProperty" --resource-group "rg1"
+"""
+
+helps['tsi event-source eventhub update'] = """
+    type: command
+    short-summary: "Update an event source under the specified environment."
+    examples:
+      - name: UpdateEventHubEventSource
+        text: |-
+               az tsi event-source eventhub update --environment-name "env1" --name "es1" \
+--shared-access-key "someSecretvalue" --timestamp-property-name "someTimestampProperty" --resource-group "rg1"
+"""
 #
 # helps['tsi event-source iothub'] = """
 #     type: group
@@ -272,15 +272,15 @@ available for query from the warm store.
 #  --timestamp-property-name timestampProp --shared-access-key "someSecretvalue" --tags test=tag
 # """
 #
-# helps['tsi event-source delete'] = """
-#     type: command
-#     short-summary: "Delete the event source with the specified name in the specified subscription, resource group, \
-# and environment."
-#     examples:
-#       - name: DeleteEventSource
-#         text: |-
-#                az tsi event-source delete --environment-name "env1" --name "es1" --resource-group "rg1"
-# """
+helps['tsi event-source delete'] = """
+    type: command
+    short-summary: "Delete the event source with the specified name in the specified subscription, resource group, \
+and environment."
+    examples:
+      - name: DeleteEventSource
+        text: |-
+               az tsi event-source delete --environment-name "env1" --name "es1" --resource-group "rg1"
+"""
 #
 # helps['tsi reference-data-set'] = """
 #     type: group

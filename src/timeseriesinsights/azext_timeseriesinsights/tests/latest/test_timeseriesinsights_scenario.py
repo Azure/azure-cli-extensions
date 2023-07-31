@@ -147,7 +147,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
         self.kwargs["es_resource_id"] = result["id"]
         result = self.cmd(
             'az eventhubs namespace authorization-rule keys list -g {rg} --namespace-name {ehns} '
-            '-n RootManageSharedAccessKey').get_output_in_json()
+            '--name RootManageSharedAccessKey').get_output_in_json()
         self.kwargs["shared_access_key"] = result["primaryKey"]
 
         self.cmd('az tsi event-source eventhub create -g {rg} --environment-name {env} --name {es} '
@@ -167,7 +167,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
         # Renew a key
         self.kwargs["shared_access_key"] = self.cmd(
             'az eventhubs namespace authorization-rule keys renew -g {rg} --namespace-name {ehns} '
-            '-n RootManageSharedAccessKey --key PrimaryKey --query primaryKey --output tsv').output
+            '--name RootManageSharedAccessKey --key PrimaryKey --query primaryKey --output tsv').output
 
         self.cmd('az tsi event-source eventhub update -g {rg} --environment-name {env} --name {es} '
                  '--shared-access-key {shared_access_key} '
