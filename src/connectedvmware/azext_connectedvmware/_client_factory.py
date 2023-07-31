@@ -5,7 +5,7 @@
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 # Client factory for vmware clients.
-from .vendored_sdks import AzureArcVMwareManagementServiceAPI
+from .vendored_sdks.connectedvmware import AzureArcVMwareManagementServiceAPI
 
 
 def cf_connectedvmware(cli_ctx, *_):

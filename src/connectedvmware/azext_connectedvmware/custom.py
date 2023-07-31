@@ -43,7 +43,7 @@ from .vmware_constants import (
     MACHINE_RESOURCE_TYPE,
 )
 
-from .vendored_sdks.models import (
+from .vendored_sdks.connectedvmware.models import (
     DiskMode,
     HardwareProfile,
     IPAddressAllocationMethod,
@@ -79,7 +79,7 @@ from .vendored_sdks.models import (
     MachineExtension,
 )
 
-from .vendored_sdks.operations import (
+from .vendored_sdks.connectedvmware.operations import (
     VCentersOperations,
     ResourcePoolsOperations,
     ClustersOperations,
