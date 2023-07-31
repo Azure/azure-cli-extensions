@@ -66,6 +66,8 @@ def cf_trustedaccess_role_binding(cli_ctx, *_):
 def get_compute_client(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_COMPUTE)
 
+def cf_vmss_run_commands(cli_ctx, *_):
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_COMPUTE).virtual_machine_scale_set_vm_run_commands
 
 def get_resource_groups_client(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
