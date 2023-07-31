@@ -20,7 +20,15 @@ export AZURE_EXTENSION_INDEX_URL=https://raw.githubusercontent.com/Azure/azure-c
 output=$(az extension list-available --query [].name -otsv)
 # azure-cli-ml is replaced by ml
 # disable alias which relies on Jinja2 2.10
-blocklist=("azure-cli-ml" "alias")
+# -----------------------------------------------
+# When two extensions have the same command, the following error will be reported:
+# `Exception: Key: show already exists in containerapp. 2 extensions cannot have the same command!`
+# Temporarily skip the containerapp-preview extension,
+# Which will cause the containerapp-preview extension to be unable to use the dynamic load function.
+# That is, when using the unique command of containerapp-preview, the extension cannot be automatically prompted to install.
+# TODO: remove this after support for building dependencies in command index between extensions
+# -----------------------------------------------
+blocklist=("azure-cli-ml" "alias" "containerapp-preview")
 
 rm -f ~/.azure/extCmdTreeToUpload.json
 

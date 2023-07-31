@@ -1268,7 +1268,7 @@ iot hub distributed-tracing update:
     auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
-iot hub message-endpoint create cosmosdb-collection:
+iot hub message-endpoint create cosmosdb-container:
   parameters:
     endpoint_resource_group:
       rule_exclusions:
@@ -1289,6 +1289,31 @@ iot hub message-endpoint create servicebus-topic:
       rule_exclusions:
       - parameter_should_not_end_in_resource_group
 iot hub message-endpoint create storage-container:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint update cosmosdb-container:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint update eventhub:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint update servicebus-queue:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint update servicebus-topic:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint update storage-container:
   parameters:
     endpoint_resource_group:
       rule_exclusions:
@@ -2150,16 +2175,56 @@ networkfabric controller create:
     workload_er_connections:
       rule_exclusions:
       - option_length_too_long
+    is_workload_management_network_enabled:
+      rule_exclusions:
+      - option_length_too_long
+networkfabric controller update:
+  parameters:
+    workload_er_connections:
+      rule_exclusions:
+      - option_length_too_long
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric fabric update:
+  rule_exclusions:
+  - missing_command_test_coverage
 networkfabric rack create:
   rule_exclusions:
   - missing_command_test_coverage
 networkfabric rack delete:
   rule_exclusions:
   - missing_command_test_coverage
+networkfabric device create:
+  rule_exclusions:
+  - missing_command_test_coverage
 networkfabric device delete:
   rule_exclusions:
   - missing_command_test_coverage
+networkfabric interface create:
+  rule_exclusions:
+  - missing_command_test_coverage
 networkfabric interface delete:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric nni create:
+  parameters:
+    npb_static_route_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    option_b_layer3_configuration:
+      rule_exclusions:
+      - option_length_too_long
+networkfabric nni update:
+  parameters:
+    npb_static_route_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    option_b_layer3_configuration:
+      rule_exclusions:
+      - option_length_too_long
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric l2domain update:
   rule_exclusions:
   - missing_command_test_coverage
 networkfabric l3domain create:
@@ -2176,11 +2241,65 @@ networkfabric l3domain create:
     redistribute_static_routes:
       rule_exclusions:
       - option_length_too_long
+networkfabric l3domain update:
+  parameters:
+    aggregate_route_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    connected_subnet_route_policy:
+      rule_exclusions:
+      - option_length_too_long
+    redistribute_connected_subnets:
+      rule_exclusions:
+      - option_length_too_long
+    redistribute_static_routes:
+      rule_exclusions:
+      - option_length_too_long
+  rule_exclusions:
+  - missing_command_test_coverage
 networkfabric internalnetwork create:
   parameters:
     static_route_configuration:
       rule_exclusions:
       - option_length_too_long
+networkfabric internalnetwork update:
+  parameters:
+    static_route_configuration:
+      rule_exclusions:
+      - option_length_too_long
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric internetgateway update:
+  parameters:
+    internet_gateway_rule_id:
+      rule_exclusions:
+      - option_length_too_long
+networkfabric internetgatewayrule create:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric internetgatewayrule delete:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric internetgatewayrule list:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric internetgatewayrule show:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric internetgatewayrule update:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric externalnetwork update:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric ipextendedcommunity create:
+  parameters:
+    ip_extended_community_rules:
+      rule_exclusions:
+      - option_length_too_long
+networkfabric npb show:
+  rule_exclusions:
+  - missing_command_test_coverage
 notification-hub authorization-rule create:
   parameters:
     notification_hub_name:

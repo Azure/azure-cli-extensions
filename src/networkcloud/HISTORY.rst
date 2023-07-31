@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b1
+++++++++
+* This the first beta version of the CLI extension that supports NetworkCloud 2023-07-01 stable APIs.
+
 0.4.1
 ++++++
 * This version updates the kubernetescluster resource to not send an empty array `sshPubKeys` for control plane configuration and agent pool configuration if the input contains no ssh keys provided for these parameters.

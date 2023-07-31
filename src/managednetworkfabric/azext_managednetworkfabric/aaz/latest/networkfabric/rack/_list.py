@@ -15,17 +15,20 @@ from azure.cli.core.aaz import *
     "networkfabric rack list",
 )
 class List(AAZCommand):
-    """List all Network Racks in the provided resource group or subscription.
+    """List all Network Racks in the provided resource group or subscription
 
     :example: List the Network Racks for Resource Group.
         az networkfabric rack list --resource-group "example-rg"
+
+    :example: List the Network Racks for Subscription
+        az networkfabric rack list --subscription "<subscriptionId>"
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkracks", "2023-02-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkracks", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkracks", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkracks", "2023-06-15"],
         ]
     }
 
@@ -116,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -189,9 +192,8 @@ class List(AAZCommand):
                 serialized_name="networkFabricId",
                 flags={"required": True},
             )
-            properties.network_rack_sku = AAZStrType(
-                serialized_name="networkRackSku",
-                flags={"required": True},
+            properties.network_rack_type = AAZStrType(
+                serialized_name="networkRackType",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -266,7 +268,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -339,9 +341,8 @@ class List(AAZCommand):
                 serialized_name="networkFabricId",
                 flags={"required": True},
             )
-            properties.network_rack_sku = AAZStrType(
-                serialized_name="networkRackSku",
-                flags={"required": True},
+            properties.network_rack_type = AAZStrType(
+                serialized_name="networkRackType",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",

@@ -569,6 +569,7 @@ class AzInteractiveShell(object):
             initial_document=Document(scenario.get('reason') or scenario.get('scenario') or 'Running a E2E Scenario. ')
         )
         quit_scenario = False
+        all_skipped = True
         # give notice to users that they can skip a command or quit the scenario
         print_styled_text([(Style.WARNING, '\nYou can use CTRL C to skip a command of the scenario, '
                                            'and CTRL D to exit the scenario.')])
@@ -587,6 +588,7 @@ class AzInteractiveShell(object):
                     document = example_cli.run()
                 except (KeyboardInterrupt, ValueError):
                     # CTRL C
+                    print_styled_text([(Style.WARNING, 'Skipped')])
                     break
                 if not document:
                     # CTRL D
@@ -606,12 +608,20 @@ class AzInteractiveShell(object):
                     telemetry.set_failure()
                 else:
                     retry = False
+                    all_skipped = False
                     telemetry.set_success()
                 # Update execution result of previous command, fetch recommendation if command failed
                 self.recommender.update_exec_result(self.last_exit_code, telemetry.get_error_info()['result_summary'])
                 telemetry.flush()
             if quit_scenario:
                 break
+        if not quit_scenario:
+            if all_skipped:
+                print_styled_text([(Style.SUCCESS, '\n(✓)Done: '),
+                                   (Style.WARNING, 'All commands Skipped! \n')])
+            else:
+                print_styled_text([(Style.SUCCESS, '\n(✓)Done: '),
+                                   (Style.PRIMARY, 'All commands in this scenario have been executed! \n')])
         self.completer.enable_scenario_recommender(True)
         example_cli.exit()
         del example_cli

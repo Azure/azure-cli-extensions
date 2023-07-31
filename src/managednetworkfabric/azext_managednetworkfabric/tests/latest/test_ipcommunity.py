@@ -25,7 +25,6 @@ def call_scenario1(test):
     setup_scenario1(test)
     step_create(test, checks=[])
     step_show(test, checks=[])
-    step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
     cleanup_scenario1(test)
@@ -34,8 +33,8 @@ def step_create(test, checks=None):
     '''ipcommunity create operation'''
     if checks is None:
         checks = []
-    test.cmd('az networkfabric ipcommunity create --resource-group {rg} --location {location} --resource-name {name} '
-             ' --action {action} --well-known-communities {well_known_communities} --community-members {community_members}', checks=checks)
+    test.cmd('az networkfabric ipcommunity create --resource-group {rg} --location {location} --resource-name {name}'
+             ' --ip-community-rules {ipCommunityRules}', checks=checks)
 
 def step_show(test, checks=None):
     '''ipcommunity show operation'''
@@ -43,13 +42,6 @@ def step_show(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric ipcommunity show --resource-name {name} --resource-group {rg}')
-    
-def step_delete(test, checks=None):
-    '''ipcommunity delete operation'''
-    if checks is None:
-        checks = []
-    test.cmd(
-        'az networkfabric ipcommunity delete --resource-name {name} --resource-group {rg}')
 
 def step_list_resource_group(test, checks=None):
     '''ipcommunity list by resource group operation'''
@@ -57,13 +49,14 @@ def step_list_resource_group(test, checks=None):
         checks = []
     test.cmd('az networkfabric ipcommunity list --resource-group {rg}')
 
-def step_list_subscription(test, checks=None):
-    '''ipcommunity list by subscription operation'''
+def step_delete(test, checks=None):
+    '''ipcommunity delete operation'''
     if checks is None:
         checks = []
-    test.cmd('az networkfabric ipcommunity list')
+    test.cmd(
+        'az networkfabric ipcommunity delete --resource-name {name} --resource-group {rg}')
 
-class IpCommunityScenarioTest1(ScenarioTest):
+class GA_IpCommunityScenarioTest1(ScenarioTest):
     ''' Ip Community Scenario test'''
 
     def __init__(self, *args, **kwargs):
@@ -72,11 +65,9 @@ class IpCommunityScenarioTest1(ScenarioTest):
             'name': CONFIG.get('IP_COMMUNITY', 'name'),
             'rg': CONFIG.get('IP_COMMUNITY', 'resource_group'),
             'location': CONFIG.get('IP_COMMUNITY', 'location'),
-            'action': CONFIG.get('IP_COMMUNITY', 'action'),
-            'well_known_communities': CONFIG.get('IP_COMMUNITY', 'well_known_communities'),
-            'community_members': CONFIG.get('IP_COMMUNITY', 'community_members')
+            'ipCommunityRules': CONFIG.get('IP_COMMUNITY', 'ip_community_rules')
         })
 
-    def test_ipcommunity_scenario1(self):
+    def test_GA_ipcommunity_scenario1(self):
         ''' test scenario for IpCommunity CRUD operations'''
         call_scenario1(self)

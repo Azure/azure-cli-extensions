@@ -526,6 +526,7 @@ def aks_create(
     node_count=3,
     nodepool_tags=None,
     nodepool_labels=None,
+    nodepool_taints=None,
     node_osdisk_type=None,
     node_osdisk_size=0,
     vm_set_type=None,
@@ -701,6 +702,7 @@ def aks_update(
     min_count=None,
     max_count=None,
     nodepool_labels=None,
+    nodepool_taints=None,
     # misc
     yes=False,
     no_wait=False,
@@ -1519,7 +1521,7 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
         if (instance.ingress_profile is None) or (instance.ingress_profile.web_app_routing is None) or not instance.ingress_profile.web_app_routing.enabled:
             raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
 
-    if addon == "monitoring" and enable_msi_auth_for_monitoring is None:
+    elif addon == "monitoring" and enable_msi_auth_for_monitoring is None:
         enable_msi_auth_for_monitoring = True
 
     else:

@@ -63,12 +63,11 @@ class ElasticSanScenario(ScenarioTest):
                              '--subnet-name {subnet_name} '
                              '--subnet-prefix 10.0.0.0/24').get_output_in_json()["newVNet"]["subnets"][0]["id"]
         self.kwargs.update({"subnet_id": subnet_id})
-        self.cmd('az elastic-san volume-group create -e {san_name} -n {vg_name} -g {rg} --tags {{key1910:bbbb}} '
+        self.cmd('az elastic-san volume-group create -e {san_name} -n {vg_name} -g {rg} '
                  '--encryption EncryptionAtRestWithPlatformKey --protocol-type Iscsi '
                  '--network-acls {{virtual-network-rules:[{{id:{subnet_id},action:Allow}}]}}')
         self.cmd('az elastic-san volume-group show -g {rg} -e {san_name} -n {vg_name}',
                  checks=[JMESPathCheck('name', self.kwargs.get('vg_name', '')),
-                         JMESPathCheck('tags', {"key1910": "bbbb"}),
                          JMESPathCheck('encryption', "EncryptionAtRestWithPlatformKey"),
                          JMESPathCheck('protocolType', "iSCSI"),
                          JMESPathCheck('networkAcls', {"virtualNetworkRules":[{
@@ -82,11 +81,10 @@ class ElasticSanScenario(ScenarioTest):
                                '--address-prefixes 10.0.1.0/24 '
                                '--service-endpoints Microsoft.Storage').get_output_in_json()["id"]
         self.kwargs.update({"subnet_id_2": subnet_id_2})
-        self.cmd('az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} --tags {{key2011:cccc}} '
+        self.cmd('az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} '
                  '--protocol-type None '
                  '--network-acls {{virtual-network-rules:[{{id:{subnet_id_2},action:Allow}}]}}',
-                 checks=[JMESPathCheck('tags', {"key2011": "cccc"}),
-                         JMESPathCheck('protocolType', "None"),
+                 checks=[JMESPathCheck('protocolType', "None"),
                          JMESPathCheck('networkAcls.virtualNetworkRules[0].id', subnet_id_2)])
 
         self.cmd('az elastic-san volume create -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 2')

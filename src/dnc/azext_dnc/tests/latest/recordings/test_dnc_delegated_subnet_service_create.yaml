@@ -1,0 +1,524 @@
+interactions:
+- request:
+    body: '{"location": "centraluseuap", "properties": {"purpose": "prod"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dnc controller create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '64'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/controller/clitestcontroller?api-version=2023-05-18-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/controller/clitestcontroller","location":"centraluseuap","name":"clitestcontroller","type":"Microsoft.DelegatedNetwork/controller","properties":{"dncAppId":"a91b1853-4403-4f54-b5cb-d1ea19d90c37","dncEndpoint":"https://openai-centraluseuap.dnc.azure.com","controllerProperties":{"dncAppId":"a91b1853-4403-4f54-b5cb-d1ea19d90c37","dncEndpoint":"https://openai-centraluseuap.dnc.azure.com","dncTenantId":null},"resourceGuid":"5c7e26be-7ff9-4aaf-9e16-0bc759605aea","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '624'
+      content-type:
+      - application/json
+      date:
+      - Fri, 28 Jul 2023 20:49:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:82487bea-6925-46b8-a5c9-0bcae97f8f27
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "centraluseuap", "properties": {"controllerDetails": {"id":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/controller/clitestcontroller"},
+      "subnetDetails": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.Network/virtualNetworks/cli_test_dnc000002/subnets/default"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dnc delegated-subnet-service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '422'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --id --subnet-details-id --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/delegatedSubnets/delegated1?api-version=2023-05-18-preview
+  response:
+    body:
+      string: '{"ErrorResponse":{"error":{"code":"500","message":"Error in API: PutDelegateSubnetSAL
+        creation failed:Microsoft.Azure.ContainerNetworking.DncRP.ErrorResponseMessageException:
+        Failed to create SAL token, salRequest: ServiceAssociationLink: Id: , Name:   Properties:
+        ServiceAssociationLinkProperties: ProvisioningState:  LinkedResourceType:
+        Microsoft.DelegatedNetwork/controller ParentResourceGuid: 7290cf68-2875-486a-a2c4-153fa6d445e6
+        Locations: centraluseuap Details: ServiceAssociationLinkDetail: Id: , Name:
+        ManagedDNCDetail,  Properties: ServiceAssociationLinkDetailProperties: ProvisioningState:
+        , PrimaryContextRequestId: a1650b48-deae-4795-9377-b66553b1d94b, SecondaryContextRequestId:
+        6cf1d661-6e94-4afa-878d-cd2f53f54098,PrimaryContextId:  SecondaryContextId:
+        , subnetResourceId:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.Network/virtualNetworks/cli_test_dnc000002/subnets/default
+        internal ex: System.Exception: ResponseMessage: System.Net.Http.HttpConnectionResponseContent,
+        status code BadRequest, Reason: Bad Request, internal exception: System.Net.Http.HttpRequestException:
+        Response status code does not indicate success: 400 (Bad Request).\n   at
+        System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.SendRequestAndGetJsonAsync[T](HttpRequestMessage
+        requestMessage, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        66\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.CallServerAndGetAsync[TRequest,TResponse](String
+        tenantId, HttpMethod httpMethod, Uri requestUri, TRequest requestBody) in
+        /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        239\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.PutResourceAsync[T](String
+        tenantId, String resourceId, String apiVersion, T requestBody) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        134\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreateServiceAssociationLinkAsync(String
+        tenantId, String vnetResourceId, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        188.\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreateServiceAssociationLinkAsync(String
+        tenantId, String vnetResourceId, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        208\n   at Microsoft.Azure.ContainerNetworking.DncRP.DelegateSubnetController.CreateSubnetTokenAsync(String
+        tenantId, String vnetName, String subnetName, String delegatedSubnetGuid,
+        String vnetResourceGuid, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/Controllers/DelegateSubnetController.cs:line
+        392InternalErrorCode: ServiceAssociationLinkFailed. SAL creation failed:Microsoft.Azure.ContainerNetworking.DncRP.ErrorResponseMessageException:
+        Failed to create SAL token, salRequest: ServiceAssociationLink: Id: , Name:   Properties:
+        ServiceAssociationLinkProperties: ProvisioningState:  LinkedResourceType:
+        Microsoft.DelegatedNetwork/controller ParentResourceGuid: 7290cf68-2875-486a-a2c4-153fa6d445e6
+        Locations: centraluseuap Details: ServiceAssociationLinkDetail: Id: , Name:
+        ManagedDNCDetail,  Properties: ServiceAssociationLinkDetailProperties: ProvisioningState:
+        , PrimaryContextRequestId: a1650b48-deae-4795-9377-b66553b1d94b, SecondaryContextRequestId:
+        6cf1d661-6e94-4afa-878d-cd2f53f54098,PrimaryContextId:  SecondaryContextId:
+        , subnetResourceId:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.Network/virtualNetworks/cli_test_dnc000002/subnets/default
+        internal ex: System.Exception: ResponseMessage: System.Net.Http.HttpConnectionResponseContent,
+        status code BadRequest, Reason: Bad Request, internal exception: System.Net.Http.HttpRequestException:
+        Response status code does not indicate success: 400 (Bad Request).\n   at
+        System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.SendRequestAndGetJsonAsync[T](HttpRequestMessage
+        requestMessage, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        66\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.CallServerAndGetAsync[TRequest,TResponse](String
+        tenantId, HttpMethod httpMethod, Uri requestUri, TRequest requestBody) in
+        /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        239\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.PutResourceAsync[T](String
+        tenantId, String resourceId, String apiVersion, T requestBody) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        134\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreateServiceAssociationLinkAsync(String
+        tenantId, String vnetResourceId, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        188.\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreateServiceAssociationLinkAsync(String
+        tenantId, String vnetResourceId, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        208\n   at Microsoft.Azure.ContainerNetworking.DncRP.DelegateSubnetController.CreateSubnetTokenAsync(String
+        tenantId, String vnetName, String subnetName, String delegatedSubnetGuid,
+        String vnetResourceGuid, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/Controllers/DelegateSubnetController.cs:line
+        392","details":null}}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '6774'
+      content-type:
+      - application/json
+      date:
+      - Fri, 28 Jul 2023 20:49:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:82487bea-6925-46b8-a5c9-0bcae97f8f27
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 500
+      message: Internal Server Error
+- request:
+    body: '{"location": "centraluseuap", "properties": {"controllerDetails": {"id":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/controller/clitestcontroller"},
+      "subnetDetails": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.Network/virtualNetworks/cli_test_dnc000002/subnets/default"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dnc delegated-subnet-service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '422'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --id --subnet-details-id --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/delegatedSubnets/delegated1?api-version=2023-05-18-preview
+  response:
+    body:
+      string: '{"ErrorResponse":{"error":{"code":"500","message":"Error in API: PutDelegateSubnetSAL
+        creation failed:Microsoft.Azure.ContainerNetworking.DncRP.ErrorResponseMessageException:
+        Failed to create SAL token, salRequest: ServiceAssociationLink: Id: , Name:   Properties:
+        ServiceAssociationLinkProperties: ProvisioningState:  LinkedResourceType:
+        Microsoft.DelegatedNetwork/controller ParentResourceGuid: 7290cf68-2875-486a-a2c4-153fa6d445e6
+        Locations: centraluseuap Details: ServiceAssociationLinkDetail: Id: , Name:
+        ManagedDNCDetail,  Properties: ServiceAssociationLinkDetailProperties: ProvisioningState:
+        , PrimaryContextRequestId: fd748dad-b21c-4a4b-bc01-940f0b3c93c5, SecondaryContextRequestId:
+        fc549b33-e48b-4536-b3c5-334f6ecfb9e6,PrimaryContextId:  SecondaryContextId:
+        , subnetResourceId:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.Network/virtualNetworks/cli_test_dnc000002/subnets/default
+        internal ex: System.Exception: ResponseMessage: System.Net.Http.HttpConnectionResponseContent,
+        status code BadRequest, Reason: Bad Request, internal exception: System.Net.Http.HttpRequestException:
+        Response status code does not indicate success: 400 (Bad Request).\n   at
+        System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.SendRequestAndGetJsonAsync[T](HttpRequestMessage
+        requestMessage, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        66\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.CallServerAndGetAsync[TRequest,TResponse](String
+        tenantId, HttpMethod httpMethod, Uri requestUri, TRequest requestBody) in
+        /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        239\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.PutResourceAsync[T](String
+        tenantId, String resourceId, String apiVersion, T requestBody) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        134\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreateServiceAssociationLinkAsync(String
+        tenantId, String vnetResourceId, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        188.\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreateServiceAssociationLinkAsync(String
+        tenantId, String vnetResourceId, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        208\n   at Microsoft.Azure.ContainerNetworking.DncRP.DelegateSubnetController.CreateSubnetTokenAsync(String
+        tenantId, String vnetName, String subnetName, String delegatedSubnetGuid,
+        String vnetResourceGuid, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/Controllers/DelegateSubnetController.cs:line
+        392InternalErrorCode: ServiceAssociationLinkFailed. SAL creation failed:Microsoft.Azure.ContainerNetworking.DncRP.ErrorResponseMessageException:
+        Failed to create SAL token, salRequest: ServiceAssociationLink: Id: , Name:   Properties:
+        ServiceAssociationLinkProperties: ProvisioningState:  LinkedResourceType:
+        Microsoft.DelegatedNetwork/controller ParentResourceGuid: 7290cf68-2875-486a-a2c4-153fa6d445e6
+        Locations: centraluseuap Details: ServiceAssociationLinkDetail: Id: , Name:
+        ManagedDNCDetail,  Properties: ServiceAssociationLinkDetailProperties: ProvisioningState:
+        , PrimaryContextRequestId: fd748dad-b21c-4a4b-bc01-940f0b3c93c5, SecondaryContextRequestId:
+        fc549b33-e48b-4536-b3c5-334f6ecfb9e6,PrimaryContextId:  SecondaryContextId:
+        , subnetResourceId:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.Network/virtualNetworks/cli_test_dnc000002/subnets/default
+        internal ex: System.Exception: ResponseMessage: System.Net.Http.HttpConnectionResponseContent,
+        status code BadRequest, Reason: Bad Request, internal exception: System.Net.Http.HttpRequestException:
+        Response status code does not indicate success: 400 (Bad Request).\n   at
+        System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.SendRequestAndGetJsonAsync[T](HttpRequestMessage
+        requestMessage, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        66\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.CallServerAndGetAsync[TRequest,TResponse](String
+        tenantId, HttpMethod httpMethod, Uri requestUri, TRequest requestBody) in
+        /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        239\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.PutResourceAsync[T](String
+        tenantId, String resourceId, String apiVersion, T requestBody) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        134\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreateServiceAssociationLinkAsync(String
+        tenantId, String vnetResourceId, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        188.\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreateServiceAssociationLinkAsync(String
+        tenantId, String vnetResourceId, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        208\n   at Microsoft.Azure.ContainerNetworking.DncRP.DelegateSubnetController.CreateSubnetTokenAsync(String
+        tenantId, String vnetName, String subnetName, String delegatedSubnetGuid,
+        String vnetResourceGuid, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/Controllers/DelegateSubnetController.cs:line
+        392","details":null}}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '6774'
+      content-type:
+      - application/json
+      date:
+      - Fri, 28 Jul 2023 20:49:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:82487bea-6925-46b8-a5c9-0bcae97f8f27
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 500
+      message: Internal Server Error
+- request:
+    body: '{"location": "centraluseuap", "properties": {"controllerDetails": {"id":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/controller/clitestcontroller"},
+      "subnetDetails": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.Network/virtualNetworks/cli_test_dnc000002/subnets/default"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dnc delegated-subnet-service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '422'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --id --subnet-details-id --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/delegatedSubnets/delegated1?api-version=2023-05-18-preview
+  response:
+    body:
+      string: '{"ErrorResponse":{"error":{"code":"500","message":"Error in API: PutDelegateSubnetSAL
+        creation failed:Microsoft.Azure.ContainerNetworking.DncRP.ErrorResponseMessageException:
+        Failed to create SAL token, salRequest: ServiceAssociationLink: Id: , Name:   Properties:
+        ServiceAssociationLinkProperties: ProvisioningState:  LinkedResourceType:
+        Microsoft.DelegatedNetwork/controller ParentResourceGuid: 7290cf68-2875-486a-a2c4-153fa6d445e6
+        Locations: centraluseuap Details: ServiceAssociationLinkDetail: Id: , Name:
+        ManagedDNCDetail,  Properties: ServiceAssociationLinkDetailProperties: ProvisioningState:
+        , PrimaryContextRequestId: b758037b-84c7-444d-bba1-f384e0f3b805, SecondaryContextRequestId:
+        84efa3d0-14ed-4cd1-bf2e-faf561e44671,PrimaryContextId:  SecondaryContextId:
+        , subnetResourceId:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.Network/virtualNetworks/cli_test_dnc000002/subnets/default
+        internal ex: System.Exception: ResponseMessage: System.Net.Http.HttpConnectionResponseContent,
+        status code BadRequest, Reason: Bad Request, internal exception: System.Net.Http.HttpRequestException:
+        Response status code does not indicate success: 400 (Bad Request).\n   at
+        System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.SendRequestAndGetJsonAsync[T](HttpRequestMessage
+        requestMessage, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        66\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.CallServerAndGetAsync[TRequest,TResponse](String
+        tenantId, HttpMethod httpMethod, Uri requestUri, TRequest requestBody) in
+        /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        239\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.PutResourceAsync[T](String
+        tenantId, String resourceId, String apiVersion, T requestBody) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        134\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreateServiceAssociationLinkAsync(String
+        tenantId, String vnetResourceId, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        188.\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreateServiceAssociationLinkAsync(String
+        tenantId, String vnetResourceId, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        208\n   at Microsoft.Azure.ContainerNetworking.DncRP.DelegateSubnetController.CreateSubnetTokenAsync(String
+        tenantId, String vnetName, String subnetName, String delegatedSubnetGuid,
+        String vnetResourceGuid, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/Controllers/DelegateSubnetController.cs:line
+        410InternalErrorCode: ServiceAssociationLinkFailed. SAL creation failed:Microsoft.Azure.ContainerNetworking.DncRP.ErrorResponseMessageException:
+        Failed to create SAL token, salRequest: ServiceAssociationLink: Id: , Name:   Properties:
+        ServiceAssociationLinkProperties: ProvisioningState:  LinkedResourceType:
+        Microsoft.DelegatedNetwork/controller ParentResourceGuid: 7290cf68-2875-486a-a2c4-153fa6d445e6
+        Locations: centraluseuap Details: ServiceAssociationLinkDetail: Id: , Name:
+        ManagedDNCDetail,  Properties: ServiceAssociationLinkDetailProperties: ProvisioningState:
+        , PrimaryContextRequestId: b758037b-84c7-444d-bba1-f384e0f3b805, SecondaryContextRequestId:
+        84efa3d0-14ed-4cd1-bf2e-faf561e44671,PrimaryContextId:  SecondaryContextId:
+        , subnetResourceId:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.Network/virtualNetworks/cli_test_dnc000002/subnets/default
+        internal ex: System.Exception: ResponseMessage: System.Net.Http.HttpConnectionResponseContent,
+        status code BadRequest, Reason: Bad Request, internal exception: System.Net.Http.HttpRequestException:
+        Response status code does not indicate success: 400 (Bad Request).\n   at
+        System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.SendRequestAndGetJsonAsync[T](HttpRequestMessage
+        requestMessage, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        66\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.CallServerAndGetAsync[TRequest,TResponse](String
+        tenantId, HttpMethod httpMethod, Uri requestUri, TRequest requestBody) in
+        /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        239\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.PutResourceAsync[T](String
+        tenantId, String resourceId, String apiVersion, T requestBody) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        134\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreateServiceAssociationLinkAsync(String
+        tenantId, String vnetResourceId, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        188.\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreateServiceAssociationLinkAsync(String
+        tenantId, String vnetResourceId, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        208\n   at Microsoft.Azure.ContainerNetworking.DncRP.DelegateSubnetController.CreateSubnetTokenAsync(String
+        tenantId, String vnetName, String subnetName, String delegatedSubnetGuid,
+        String vnetResourceGuid, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/Controllers/DelegateSubnetController.cs:line
+        410","details":null}}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '6774'
+      content-type:
+      - application/json
+      date:
+      - Fri, 28 Jul 2023 20:49:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:82487bea-6925-46b8-a5c9-0bcae97f8f27
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 500
+      message: Internal Server Error
+- request:
+    body: '{"location": "centraluseuap", "properties": {"controllerDetails": {"id":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/controller/clitestcontroller"},
+      "subnetDetails": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.Network/virtualNetworks/cli_test_dnc000002/subnets/default"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dnc delegated-subnet-service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '422'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --id --subnet-details-id --resource-group --resource-name
+      User-Agent:
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.DelegatedNetwork/delegatedSubnets/delegated1?api-version=2023-05-18-preview
+  response:
+    body:
+      string: '{"ErrorResponse":{"error":{"code":"500","message":"Error in API: PutDelegateSubnetSAL
+        creation failed:Microsoft.Azure.ContainerNetworking.DncRP.ErrorResponseMessageException:
+        Failed to create SAL token, salRequest: ServiceAssociationLink: Id: , Name:   Properties:
+        ServiceAssociationLinkProperties: ProvisioningState:  LinkedResourceType:
+        Microsoft.DelegatedNetwork/controller ParentResourceGuid: 7290cf68-2875-486a-a2c4-153fa6d445e6
+        Locations: centraluseuap Details: ServiceAssociationLinkDetail: Id: , Name:
+        ManagedDNCDetail,  Properties: ServiceAssociationLinkDetailProperties: ProvisioningState:
+        , PrimaryContextRequestId: 074e360e-20d4-42d3-b151-f614ca62957d, SecondaryContextRequestId:
+        25eba8b0-1ecd-4646-9700-11522036dcfb,PrimaryContextId:  SecondaryContextId:
+        , subnetResourceId:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.Network/virtualNetworks/cli_test_dnc000002/subnets/default
+        internal ex: System.Exception: ResponseMessage: System.Net.Http.HttpConnectionResponseContent,
+        status code BadRequest, Reason: Bad Request, internal exception: System.Net.Http.HttpRequestException:
+        Response status code does not indicate success: 400 (Bad Request).\n   at
+        System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.SendRequestAndGetJsonAsync[T](HttpRequestMessage
+        requestMessage, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        66\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.CallServerAndGetAsync[TRequest,TResponse](String
+        tenantId, HttpMethod httpMethod, Uri requestUri, TRequest requestBody) in
+        /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        239\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.PutResourceAsync[T](String
+        tenantId, String resourceId, String apiVersion, T requestBody) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        134\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreateServiceAssociationLinkAsync(String
+        tenantId, String vnetResourceId, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        214.\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreateServiceAssociationLinkAsync(String
+        tenantId, String vnetResourceId, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        214\n   at Microsoft.Azure.ContainerNetworking.DncRP.DelegateSubnetController.CreateSubnetTokenAsync(String
+        tenantId, String vnetName, String subnetName, String delegatedSubnetGuid,
+        String vnetResourceGuid, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/Controllers/DelegateSubnetController.cs:line
+        410InternalErrorCode: ServiceAssociationLinkFailed. SAL creation failed:Microsoft.Azure.ContainerNetworking.DncRP.ErrorResponseMessageException:
+        Failed to create SAL token, salRequest: ServiceAssociationLink: Id: , Name:   Properties:
+        ServiceAssociationLinkProperties: ProvisioningState:  LinkedResourceType:
+        Microsoft.DelegatedNetwork/controller ParentResourceGuid: 7290cf68-2875-486a-a2c4-153fa6d445e6
+        Locations: centraluseuap Details: ServiceAssociationLinkDetail: Id: , Name:
+        ManagedDNCDetail,  Properties: ServiceAssociationLinkDetailProperties: ProvisioningState:
+        , PrimaryContextRequestId: 074e360e-20d4-42d3-b151-f614ca62957d, SecondaryContextRequestId:
+        25eba8b0-1ecd-4646-9700-11522036dcfb,PrimaryContextId:  SecondaryContextId:
+        , subnetResourceId:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dnc000001/providers/Microsoft.Network/virtualNetworks/cli_test_dnc000002/subnets/default
+        internal ex: System.Exception: ResponseMessage: System.Net.Http.HttpConnectionResponseContent,
+        status code BadRequest, Reason: Bad Request, internal exception: System.Net.Http.HttpRequestException:
+        Response status code does not indicate success: 400 (Bad Request).\n   at
+        System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.ParseHttpResponse[T](HttpResponseMessage
+        httpResponse, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        142\n   at Microsoft.Azure.ContainerNetworking.CoreLib.HttpUtility.SendRequestAndGetJsonAsync[T](HttpRequestMessage
+        requestMessage, JsonSerializerSettings deserializeSettings) in /usr/local/Networking-Aquarius/src/Common/CoreLib/HttpUtility.cs:line
+        66\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.CallServerAndGetAsync[TRequest,TResponse](String
+        tenantId, HttpMethod httpMethod, Uri requestUri, TRequest requestBody) in
+        /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        239\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzResourceBroker.PutResourceAsync[T](String
+        tenantId, String resourceId, String apiVersion, T requestBody) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzResourceBroker.cs:line
+        134\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreateServiceAssociationLinkAsync(String
+        tenantId, String vnetResourceId, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        214.\n   at Microsoft.Azure.ContainerNetworking.DncRP.AzVNetBroker.GetOrCreateServiceAssociationLinkAsync(String
+        tenantId, String vnetResourceId, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/AzResourceBroker/AzVNetBroker.cs:line
+        214\n   at Microsoft.Azure.ContainerNetworking.DncRP.DelegateSubnetController.CreateSubnetTokenAsync(String
+        tenantId, String vnetName, String subnetName, String delegatedSubnetGuid,
+        String vnetResourceGuid, String subnetResourceId) in /usr/local/Networking-Aquarius/src/DncRP/Server/Controllers/DelegateSubnetController.cs:line
+        410","details":null}}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '6774'
+      content-type:
+      - application/json
+      date:
+      - Fri, 28 Jul 2023 20:49:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:82487bea-6925-46b8-a5c9-0bcae97f8f27
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 500
+      message: Internal Server Error
+version: 1
