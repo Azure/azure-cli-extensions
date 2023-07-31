@@ -61,12 +61,12 @@ def load_command_table(self, _):
                             client_factory=cf_event_source) as g:
         g.custom_command('create', 'timeseriesinsights_event_source_event_hub_create')
         g.custom_command('update', 'timeseriesinsights_event_source_event_hub_update')
-    #
-    # with self.command_group('tsi event-source iothub', timeseriesinsights_event_source,
-    #                         client_factory=cf_event_source) as g:
-    #     g.custom_command('create', 'timeseriesinsights_event_source_iot_hub_create')
-    #     g.custom_command('update', 'timeseriesinsights_event_source_iot_hub_update')
-    #
+
+    with self.command_group('tsi event-source iothub', timeseriesinsights_event_source,
+                            client_factory=cf_event_source) as g:
+        g.custom_command('create', 'timeseriesinsights_event_source_iot_hub_create')
+        g.custom_command('update', 'timeseriesinsights_event_source_iot_hub_update')
+
     # from azext_timeseriesinsights._client_factory import cf_reference_data_set
     # timeseriesinsights_reference_data_set = CliCommandType(
     #     operations_tmpl='azext_timeseriesinsights.vendored_sdks.timeseriesinsights.operations._reference_data_sets_oper'

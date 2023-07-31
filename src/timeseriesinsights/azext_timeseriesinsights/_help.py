@@ -245,33 +245,33 @@ helps['tsi event-source eventhub update'] = """
                az tsi event-source eventhub update --environment-name "env1" --name "es1" \
 --shared-access-key "someSecretvalue" --timestamp-property-name "someTimestampProperty" --resource-group "rg1"
 """
-#
-# helps['tsi event-source iothub'] = """
-#     type: group
-#     short-summary: Manage event source with timeseriesinsights sub group iot-hub
-# """
-#
-# helps['tsi event-source iothub create'] = """
-#     type: command
-#     short-summary: "Create an event source under the specified environment."
-#     examples:
-#       - name: CreateIotHubEventSource
-#         text: |-
-#                az tsi event-source iothub create -g "rg" --environment-name "env1" --name "eventsource" \
-# --consumer-group-name "consumer-group" --iot-hub-name "iothub" --location westus \
-# --key-name "key-name" --shared-access-key "someSecretvalue" --event-source-resource-id "resource-id"
-# """
-#
-# helps['tsi event-source iothub update'] = """
-#     type: command
-#     short-summary: "Update an event source under the specified environment."
-#     examples:
-#       - name: UpdateIotHubEventSource
-#         text: |-
-#                az tsi event-source iothub update -g "rg" --environment-name "env1" --name "eventsource" \
-#  --timestamp-property-name timestampProp --shared-access-key "someSecretvalue" --tags test=tag
-# """
-#
+
+helps['tsi event-source iothub'] = """
+    type: group
+    short-summary: Manage event source with timeseriesinsights sub group iot-hub
+"""
+
+helps['tsi event-source iothub create'] = """
+    type: command
+    short-summary: "Create an event source under the specified environment."
+    examples:
+      - name: CreateIotHubEventSource
+        text: |-
+               az tsi event-source iothub create -g "rg" --environment-name "env1" --name "eventsource" \
+--consumer-group-name "consumer-group" --iot-hub-name "iothub" --location westus \
+--key-name "key-name" --shared-access-key "someSecretvalue" --event-source-resource-id "resource-id"
+"""
+
+helps['tsi event-source iothub update'] = """
+    type: command
+    short-summary: "Update an event source under the specified environment."
+    examples:
+      - name: UpdateIotHubEventSource
+        text: |-
+               az tsi event-source iothub update -g "rg" --environment-name "env1" --name "eventsource" \
+ --timestamp-property-name timestampProp --shared-access-key "someSecretvalue" --tags test=tag
+"""
+
 helps['tsi event-source delete'] = """
     type: command
     short-summary: "Delete the event source with the specified name in the specified subscription, resource group, \

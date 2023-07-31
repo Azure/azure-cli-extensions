@@ -134,36 +134,36 @@ def load_arguments(self, _):
         c.argument('environment_name', id_part=None)
         c.argument('event_source_name', id_part=None)
 
-    # with self.argument_context('tsi event-source iothub') as c:
-    #     c.argument('location', arg_type=get_location_type(self.cli_ctx),
-    #                validator=get_default_location_from_resource_group)
-    #     c.argument('tags', tags_type)
-    #     c.argument('local_timestamp', type=validate_file_or_dict, help='An object that represents the local timestamp '
-    #                'property. It contains the format of local timestamp that needs to be used and the corresponding '
-    #                'timezone offset information. If a value isn\'t specified for localTimestamp, or if null, then the '
-    #                'local timestamp will not be ingressed with the events. Expected value: json-string/@json-file.')
-    #     c.argument('timestamp_property_name', options_list=['--ts-property-name', '--timestamp-property-name'],
-    #                type=str, help='The event property that will be used as the event '
-    #                'source\'s timestamp. If a value isn\'t specified for timestampPropertyName, or if null or '
-    #                'empty-string is specified, the event creation time will be used.')
-    #     c.argument('event_source_resource_id', options_list=['--resource-id', '--event-source-resource-id'],
-    #                type=str, help='The resource id of the event source in Azure Resource '
-    #                'Manager.')
-    #     c.argument('iot_hub_name', type=str, help='The name of the iot hub.')
-    #     c.argument('consumer_group_name', type=str, help='The name of the iot hub\'s consumer group that holds the '
-    #                'partitions from which events will be read.')
-    #     c.argument('key_name', options_list=['--key-name', '--shared-access-policy-name'], type=str,
-    #                help='The name of the Shared Access Policy key that grants the Time Series '
-    #                'Insights service access to the iot hub. This shared access policy key must grant \'service '
-    #                'connect\' permissions to the iot hub.')
-    #     c.argument('shared_access_key', type=str, help='The value of the Shared Access Policy key that grants the Time '
-    #                'Series Insights service read access to the iot hub. This property is not shown in event source '
-    #                'responses.')
-    #
-    # with self.argument_context('tsi event-source iothub create') as c:
-    #     c.argument('environment_name', id_part=None)
-    #     c.argument('event_source_name', id_part=None)
-    #
+    with self.argument_context('tsi event-source iothub') as c:
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+                   validator=get_default_location_from_resource_group)
+        c.argument('tags', tags_type)
+        c.argument('local_timestamp', type=validate_file_or_dict, help='An object that represents the local timestamp '
+                   'property. It contains the format of local timestamp that needs to be used and the corresponding '
+                   'timezone offset information. If a value isn\'t specified for localTimestamp, or if null, then the '
+                   'local timestamp will not be ingressed with the events. Expected value: json-string/@json-file.')
+        c.argument('timestamp_property_name', options_list=['--ts-property-name', '--timestamp-property-name'],
+                   type=str, help='The event property that will be used as the event '
+                   'source\'s timestamp. If a value isn\'t specified for timestampPropertyName, or if null or '
+                   'empty-string is specified, the event creation time will be used.')
+        c.argument('event_source_resource_id', options_list=['--resource-id', '--event-source-resource-id'],
+                   type=str, help='The resource id of the event source in Azure Resource '
+                   'Manager.')
+        c.argument('iot_hub_name', type=str, help='The name of the iot hub.')
+        c.argument('consumer_group_name', type=str, help='The name of the iot hub\'s consumer group that holds the '
+                   'partitions from which events will be read.')
+        c.argument('key_name', options_list=['--key-name', '--shared-access-policy-name'], type=str,
+                   help='The name of the Shared Access Policy key that grants the Time Series '
+                   'Insights service access to the iot hub. This shared access policy key must grant \'service '
+                   'connect\' permissions to the iot hub.')
+        c.argument('shared_access_key', type=str, help='The value of the Shared Access Policy key that grants the Time '
+                   'Series Insights service read access to the iot hub. This property is not shown in event source '
+                   'responses.')
+
+    with self.argument_context('tsi event-source iothub create') as c:
+        c.argument('environment_name', id_part=None)
+        c.argument('event_source_name', id_part=None)
+
     with self.argument_context('tsi reference-data-set') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('environment_name', type=str, help='The name of the Time Series Insights environment associated '
