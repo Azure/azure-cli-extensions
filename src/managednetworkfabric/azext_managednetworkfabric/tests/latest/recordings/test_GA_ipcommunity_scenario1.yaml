@@ -1,0 +1,485 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"ipCommunityRules": [{"action": "Permit",
+      "communityMembers": ["1:1"], "sequenceNumber": 1234, "wellKnownCommunities":
+      ["Internet", "GShut"]}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric ipcommunity create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '182'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --location --resource-name --ip-community-rules
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-GA-ipCommunity072623?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-GA-ipCommunity072623","name":"nfa-tool-ts-cli-GA-ipCommunity072623","type":"microsoft.managednetworkfabric/ipcommunities","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-07-26T06:45:35.3312547Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-26T06:45:35.3312547Z"},"properties":{"ipCommunityRules":[{"sequenceNumber":1234,"action":"Permit","wellKnownCommunities":["Internet","GShut"],"communityMembers":["1:1"]}],"configurationState":"Succeeded","provisioningState":"Accepted","administrativeState":"Disabled"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/b118f4ea-b909-4973-b6fc-56a4e35367d0*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '806'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 06:45:36 GMT
+      etag:
+      - '"010019ba-0000-0100-0000-64c0c1100000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 904a764b-f433-43a0-aa01-6e34d9cbfec9
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric ipcommunity create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --ip-community-rules
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/b118f4ea-b909-4973-b6fc-56a4e35367d0*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/b118f4ea-b909-4973-b6fc-56a4e35367d0*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95","name":"b118f4ea-b909-4973-b6fc-56a4e35367d0*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-GA-ipCommunity072623","status":"Accepted","startTime":"2023-07-26T06:45:36.4267592Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '615'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 06:45:37 GMT
+      etag:
+      - '"00000ff0-0000-0100-0000-64c0c1100000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric ipcommunity create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --ip-community-rules
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/b118f4ea-b909-4973-b6fc-56a4e35367d0*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/b118f4ea-b909-4973-b6fc-56a4e35367d0*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95","name":"b118f4ea-b909-4973-b6fc-56a4e35367d0*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-GA-ipCommunity072623","status":"Succeeded","startTime":"2023-07-26T06:45:36.4267592Z","endTime":"2023-07-26T06:45:41.8524621Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '675'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 06:46:08 GMT
+      etag:
+      - '"000028f0-0000-0100-0000-64c0c1150000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric ipcommunity create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --location --resource-name --ip-community-rules
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-GA-ipCommunity072623?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-GA-ipCommunity072623","name":"nfa-tool-ts-cli-GA-ipCommunity072623","type":"microsoft.managednetworkfabric/ipcommunities","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-07-26T06:45:35.3312547Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-26T06:45:35.3312547Z"},"properties":{"ipCommunityRules":[{"sequenceNumber":1234,"action":"Permit","wellKnownCommunities":["Internet","GShut"],"communityMembers":["1:1"]}],"configurationState":"Succeeded","provisioningState":"Succeeded","administrativeState":"Disabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '807'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 06:46:08 GMT
+      etag:
+      - '"01001cba-0000-0100-0000-64c0c1150000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric ipcommunity show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-GA-ipCommunity072623?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-GA-ipCommunity072623","name":"nfa-tool-ts-cli-GA-ipCommunity072623","type":"microsoft.managednetworkfabric/ipcommunities","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-07-26T06:45:35.3312547Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-26T06:45:35.3312547Z"},"properties":{"ipCommunityRules":[{"sequenceNumber":1234,"action":"Permit","wellKnownCommunities":["Internet","GShut"],"communityMembers":["1:1"]}],"configurationState":"Succeeded","provisioningState":"Succeeded","administrativeState":"Disabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '807'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 06:46:09 GMT
+      etag:
+      - '"01001cba-0000-0100-0000-64c0c1150000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric ipcommunity list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/ipCommunities?api-version=2023-06-15
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-GA-ipCommunity072623","name":"nfa-tool-ts-cli-GA-ipCommunity072623","type":"microsoft.managednetworkfabric/ipcommunities","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-07-26T06:45:35.3312547Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-26T06:45:35.3312547Z"},"properties":{"ipCommunityRules":[{"sequenceNumber":1234,"action":"Permit","wellKnownCommunities":["Internet","GShut"],"communityMembers":["1:1"]}],"configurationState":"Succeeded","provisioningState":"Succeeded","administrativeState":"Disabled"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '819'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 06:46:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ef5027d3-1780-4a72-8c3c-a09aeeefed6f
+      - 50c04eb4-e73e-4f45-84ee-e181beaaa1b5
+      - c9ddc329-4cc8-428f-b58b-08e667127690
+      - f4e23902-f217-4c49-a47c-c2b7099b085d
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric ipcommunity delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-GA-ipCommunity072623?api-version=2023-06-15
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/3032c929-7b86-4df8-b2cf-d3620f3e7579*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 06:46:13 GMT
+      etag:
+      - '"010025ba-0000-0100-0000-64c0c1350000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/3032c929-7b86-4df8-b2cf-d3620f3e7579*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95?api-version=2023-06-15
+      mise-correlation-id:
+      - 2d7ecf6c-d8da-4e2d-bd71-ae0083ca172a
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric ipcommunity delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/3032c929-7b86-4df8-b2cf-d3620f3e7579*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/3032c929-7b86-4df8-b2cf-d3620f3e7579*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95","name":"3032c929-7b86-4df8-b2cf-d3620f3e7579*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-GA-ipCommunity072623","status":"Deleting","startTime":"2023-07-26T06:46:13.2779763Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/3032c929-7b86-4df8-b2cf-d3620f3e7579*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '615'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 06:46:14 GMT
+      etag:
+      - '"0000c1f0-0000-0100-0000-64c0c1350000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/3032c929-7b86-4df8-b2cf-d3620f3e7579*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95?api-version=2023-06-15
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric ipcommunity delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/3032c929-7b86-4df8-b2cf-d3620f3e7579*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/3032c929-7b86-4df8-b2cf-d3620f3e7579*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95","name":"3032c929-7b86-4df8-b2cf-d3620f3e7579*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-GA-ipCommunity072623","status":"Succeeded","startTime":"2023-07-26T06:46:13.2779763Z","endTime":"2023-07-26T06:46:15.6412981Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '675'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 06:46:44 GMT
+      etag:
+      - '"0000caf0-0000-0100-0000-64c0c1370000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric ipcommunity delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/3032c929-7b86-4df8-b2cf-d3620f3e7579*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/3032c929-7b86-4df8-b2cf-d3620f3e7579*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95","name":"3032c929-7b86-4df8-b2cf-d3620f3e7579*D3B5B348221B7936496733E843A03376D1BE3EFD33476483C4C96512C806AE95","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-GA-ipCommunity072623","status":"Succeeded","startTime":"2023-07-26T06:46:13.2779763Z","endTime":"2023-07-26T06:46:15.6412981Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '675'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 06:46:44 GMT
+      etag:
+      - '"0000caf0-0000-0100-0000-64c0c1370000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
