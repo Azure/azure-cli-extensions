@@ -1,0 +1,94 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric npb list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/networkPacketBrokers?api-version=2023-06-15
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 13:11:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 9d090396-2f35-4ea1-a50d-c1c8b229980a
+      - 06017d3b-fa5b-4efc-983d-0f0e28b6bbf8
+      - 9f4aae5f-0e94-425f-84b1-736f8b18b179
+      - 791e62fc-c9dd-40cb-ba0a-7012507559e2
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric npb list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkPacketBrokers?api-version=2023-06-15
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 13:11:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - b8a8ab14-7e1f-4b7c-b1ed-1417756ff291
+      - 858c4224-396d-4d3e-98ef-41d3935ec487
+      - 23f5c042-e58a-44c1-b523-eabf4c71c30f
+      - d2e1650d-52a8-4529-888e-654adb94c252
+    status:
+      code: 200
+      message: OK
+version: 1

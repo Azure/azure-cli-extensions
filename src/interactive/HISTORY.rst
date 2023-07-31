@@ -3,6 +3,10 @@
 Release History
 ===============
 
+upcoming
++++++
+* Add command skipped message in Scenario Execution Mode
+
 0.5.1
 +++++
 * Fix bugs to prevent users from exiting the entire az interactive by using Ctrl+C during command execution
