@@ -5,7 +5,6 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 
-from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from .aaz.latest.tsi.environment import Create as _EnvironmentCreate
 from .aaz.latest.tsi.environment import Update as _EnvironmentUpdate
@@ -38,6 +37,7 @@ def timeseriesinsights_environment_gen1_create(cmd, resource_group_name,
 
     return Create(parameters)
 
+
 def timeseriesinsights_environment_list(cmd,
                                         resource_group_name=None):
     List = _EnvironmentList(cmd.loader)
@@ -45,24 +45,8 @@ def timeseriesinsights_environment_list(cmd,
     parameters['resource_group'] = resource_group_name
 
     return List(parameters)["value"]
-#
-#
-# def timeseriesinsights_environment_show(client,
-#                                         resource_group_name,
-#                                         environment_name,
-#                                         expand=None):
-#     return client.get(resource_group_name=resource_group_name,
-#                       environment_name=environment_name,
-#                       expand=expand)
-#
-#
-# def timeseriesinsights_environment_delete(client,
-#                                           resource_group_name,
-#                                           environment_name):
-#     return client.delete(resource_group_name=resource_group_name,
-#                          environment_name=environment_name)
-#
-#
+
+
 def timeseriesinsights_environment_gen1_update(cmd,
                                                resource_group_name,
                                                environment_name,
@@ -314,17 +298,8 @@ def timeseriesinsights_reference_data_set_list(cmd,
     parameters['resource_group'] = resource_group_name
     parameters['environment_name'] = environment_name
     return List(parameters)["value"]
-#
-#
-# def timeseriesinsights_reference_data_set_show(client,
-#                                                resource_group_name,
-#                                                environment_name,
-#                                                reference_data_set_name):
-#     return client.get(resource_group_name=resource_group_name,
-#                       environment_name=environment_name,
-#                       reference_data_set_name=reference_data_set_name)
-#
-#
+
+
 def timeseriesinsights_reference_data_set_create(cmd,
                                                  resource_group_name,
                                                  environment_name,
@@ -343,88 +318,3 @@ def timeseriesinsights_reference_data_set_create(cmd,
     parameters['key_properties'] = key_properties
     parameters['data_string_comparison_behavior'] = data_string_comparison_behavior
     return Create(parameters)
-#
-#
-# def timeseriesinsights_reference_data_set_update(client,
-#                                                  resource_group_name,
-#                                                  environment_name,
-#                                                  reference_data_set_name,
-#                                                  tags=None):
-#     patch_parameters = {}
-#     if tags is not None:
-#         patch_parameters['tags'] = tags
-#
-#     return client.update(resource_group_name=resource_group_name,
-#                          environment_name=environment_name,
-#                          reference_data_set_name=reference_data_set_name,
-#                          reference_data_set_update_parameters=patch_parameters)
-#
-#
-# def timeseriesinsights_reference_data_set_delete(client,
-#                                                  resource_group_name,
-#                                                  environment_name,
-#                                                  reference_data_set_name):
-#     return client.delete(resource_group_name=resource_group_name,
-#                          environment_name=environment_name,
-#                          reference_data_set_name=reference_data_set_name)
-#
-#
-# def timeseriesinsights_access_policy_list(client,
-#                                           resource_group_name,
-#                                           environment_name):
-#     return client.list_by_environment(resource_group_name=resource_group_name,
-#                                       environment_name=environment_name).value
-#
-#
-# def timeseriesinsights_access_policy_show(client,
-#                                           resource_group_name,
-#                                           environment_name,
-#                                           access_policy_name):
-#     return client.get(resource_group_name=resource_group_name,
-#                       environment_name=environment_name,
-#                       access_policy_name=access_policy_name)
-#
-#
-# def timeseriesinsights_access_policy_create(client,
-#                                             resource_group_name,
-#                                             environment_name,
-#                                             access_policy_name,
-#                                             principal_object_id=None,
-#                                             description=None,
-#                                             roles=None):
-#     parameters = {}
-#     parameters['principal_object_id'] = principal_object_id
-#     parameters['description'] = description
-#     parameters['roles'] = roles
-#     return client.create_or_update(resource_group_name=resource_group_name,
-#                                    environment_name=environment_name,
-#                                    access_policy_name=access_policy_name,
-#                                    parameters=parameters)
-#
-#
-# def timeseriesinsights_access_policy_update(client,
-#                                             resource_group_name,
-#                                             environment_name,
-#                                             access_policy_name,
-#                                             description=None,
-#                                             roles=None):
-#     patch_parameters = {}
-#     if description is not None:
-#         patch_parameters['description'] = description
-#
-#     if roles is not None:
-#         patch_parameters['roles'] = roles
-#
-#     return client.update(resource_group_name=resource_group_name,
-#                          environment_name=environment_name,
-#                          access_policy_name=access_policy_name,
-#                          access_policy_update_parameters=patch_parameters)
-#
-#
-# def timeseriesinsights_access_policy_delete(client,
-#                                             resource_group_name,
-#                                             environment_name,
-#                                             access_policy_name):
-#     return client.delete(resource_group_name=resource_group_name,
-#                          environment_name=environment_name,
-#                          access_policy_name=access_policy_name)
