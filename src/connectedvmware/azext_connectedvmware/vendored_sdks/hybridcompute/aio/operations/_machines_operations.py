@@ -21,7 +21,7 @@ from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
 from ..._vendor import _convert_request
-from ...operations._machines_operations import build_assess_patches_request_initial, build_delete_request, build_get_request, build_install_patches_request_initial, build_list_by_resource_group_request, build_list_by_subscription_request
+from ...operations._machines_operations import build_assess_patches_request_initial, build_create_or_update_request, build_delete_request, build_get_request, build_install_patches_request_initial, build_list_by_resource_group_request, build_list_by_subscription_request, build_update_request
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
@@ -46,6 +46,139 @@ class MachinesOperations:
         self._serialize = serializer
         self._deserialize = deserializer
         self._config = config
+
+    @distributed_trace_async
+    async def create_or_update(
+        self,
+        resource_group_name: str,
+        machine_name: str,
+        parameters: "_models.Machine",
+        **kwargs: Any
+    ) -> "_models.Machine":
+        """The operation to create or update a hybrid machine. Please note some properties can be set only
+        during machine creation.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+        :type resource_group_name: str
+        :param machine_name: The name of the hybrid machine.
+        :type machine_name: str
+        :param parameters: Parameters supplied to the Create hybrid machine operation.
+        :type parameters: ~azure.mgmt.hybridcompute.models.Machine
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: Machine, or the result of cls(response)
+        :rtype: ~azure.mgmt.hybridcompute.models.Machine
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Machine"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+
+        api_version = kwargs.pop('api_version', "2023-04-25-preview")  # type: str
+        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
+
+        _json = self._serialize.body(parameters, 'Machine')
+
+        request = build_create_or_update_request(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=resource_group_name,
+            machine_name=machine_name,
+            api_version=api_version,
+            content_type=content_type,
+            json=_json,
+            template_url=self.create_or_update.metadata['url'],
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
+
+        pipeline_response = await self._client._pipeline.run(  # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('Machine', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+
+    create_or_update.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}"}  # type: ignore
+
+
+    @distributed_trace_async
+    async def update(
+        self,
+        resource_group_name: str,
+        machine_name: str,
+        parameters: "_models.MachineUpdate",
+        **kwargs: Any
+    ) -> "_models.Machine":
+        """The operation to update a hybrid machine.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+        :type resource_group_name: str
+        :param machine_name: The name of the hybrid machine.
+        :type machine_name: str
+        :param parameters: Parameters supplied to the Update hybrid machine operation.
+        :type parameters: ~azure.mgmt.hybridcompute.models.MachineUpdate
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: Machine, or the result of cls(response)
+        :rtype: ~azure.mgmt.hybridcompute.models.Machine
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Machine"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+
+        api_version = kwargs.pop('api_version', "2023-04-25-preview")  # type: str
+        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
+
+        _json = self._serialize.body(parameters, 'MachineUpdate')
+
+        request = build_update_request(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=resource_group_name,
+            machine_name=machine_name,
+            api_version=api_version,
+            content_type=content_type,
+            json=_json,
+            template_url=self.update.metadata['url'],
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
+
+        pipeline_response = await self._client._pipeline.run(  # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('Machine', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+
+    update.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}"}  # type: ignore
+
 
     @distributed_trace_async
     async def delete(  # pylint: disable=inconsistent-return-statements
