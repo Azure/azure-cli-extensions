@@ -5,11 +5,12 @@
 # pylint: disable= too-many-lines, too-many-locals, unused-argument, too-many-branches, too-many-statements
 # pylint: disable= consider-using-dict-items, consider-using-f-string
 
-from knack.util import CLIError
 from azure.cli.core.util import sdk_no_wait
-from azext_connectedvmware.pwinput import pwinput
-from azure.core.exceptions import ResourceNotFoundError #type: ignore
-from azext_connectedvmware.vmware_utils import get_resource_id
+from azure.core.exceptions import ResourceNotFoundError  # type: ignore
+from knack.util import CLIError
+
+from .pwinput import pwinput
+from .vmware_utils import get_resource_id
 from .vmware_constants import (
     MACHINES_KIND_VMWARE,
     MACHINES_RESOURCE_TYPE,
@@ -99,7 +100,6 @@ from .vendored_sdks.connectedvmware.operations import (
     VirtualMachineInstancesOperations,
     VMInstanceGuestAgentsOperations,
     InventoryItemsOperations,
-    MachineExtensionsOperations,
 )
 
 from .vendored_sdks.hybridcompute.operations import (
@@ -924,7 +924,7 @@ def create_vm(
             v_center_id=vcenter_id,
             template_id=vm_template_id,
         )
-    
+
     vm = VirtualMachineInstance(
         extended_location=extended_location,
         placement_profile=placement_profile,
@@ -941,9 +941,9 @@ def create_vm(
         machine = machine_client.get(resource_group_name, resource_name)
         if location is not None and machine.location != location:
             raise CLIError(
-                "The location of the existing Machine cannot be updated. "+
-                "Either specify the existing location or keep the location unspecified. "+
-                f"Existing location: {machine.location}, "+
+                "The location of the existing Machine cannot be updated. " +
+                "Either specify the existing location or keep the location unspecified. " +
+                f"Existing location: {machine.location}, " +
                 f"Provided location: {location}"
             )
         if tags is not None:
@@ -954,9 +954,9 @@ def create_vm(
     except ResourceNotFoundError as e:
         if location is None:
             raise CLIError(
-                "The parent Machine resource does not exist, "+
+                "The parent Machine resource does not exist, " +
                 "location is required while creating a new machine."
-            )
+            ) from e
         m = Machine(
             location=location,
             kind=MACHINES_KIND_VMWARE,
@@ -1045,20 +1045,20 @@ def delete_vm(
     )
 
     try:
-        return sdk_no_wait(
+        sdk_no_wait(
             no_wait, client.begin_delete, machine_id, delete_from_host, force,
         )
     except ResourceNotFoundError:
         # Nothing to delete if the parent machine does not exist.
         return
-    finally:
-        if no_wait:
-            return
 
-        # TODO (snaskar): we can add a flag to delete the parent machine as well.
-        if delete_from_host:
-            machine_client = cf_machine(cmd.cli_ctx)
-            machine_client.delete(resource_group_name, resource_name)
+    if no_wait:
+        return
+
+    # TODO (snaskar): we can add a flag to delete the parent machine as well.
+    if delete_from_host:
+        machine_client = cf_machine(cmd.cli_ctx)
+        machine_client.delete(resource_group_name, resource_name)
 
 
 def show_vm(
@@ -1575,7 +1575,7 @@ def update_disk(
         raise CLIError(
             "Either disk name or device key must be specified to update the disk."
         )
-    
+
     machine_id = get_hcrp_machine_id(
         cmd,
         resource_group_name,
