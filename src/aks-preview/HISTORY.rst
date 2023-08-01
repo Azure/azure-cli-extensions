@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 ++++++
+* Vendor new SDK and bump API version to 2023-06-02-preview.
 
 * Add `--network-dataplane` to the `az aks update` command.
 
