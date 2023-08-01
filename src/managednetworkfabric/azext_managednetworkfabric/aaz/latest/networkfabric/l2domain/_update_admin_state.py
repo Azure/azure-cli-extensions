@@ -22,9 +22,9 @@ class UpdateAdminState(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l2isolationdomains/{}/updateadministrativestate", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l2isolationdomains/{}/updateadministrativestate", "2023-06-15"],
         ]
     }
 
@@ -32,7 +32,7 @@ class UpdateAdminState(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -47,7 +47,7 @@ class UpdateAdminState(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the L2IsolationDomain.",
+            help="Name of the L2 Isolation Domain.",
             required=True,
             id_part="name",
         )
@@ -87,6 +87,10 @@ class UpdateAdminState(AAZCommand):
     @register_callback
     def post_operations(self):
         pass
+
+    def _output(self, *args, **kwargs):
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
     class L2IsolationDomainsUpdateAdministrativeState(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -152,7 +156,7 @@ class UpdateAdminState(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -163,6 +167,9 @@ class UpdateAdminState(AAZCommand):
             parameters = {
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
+                    "Accept", "application/json",
                 ),
             }
             return parameters
@@ -184,11 +191,116 @@ class UpdateAdminState(AAZCommand):
             return self.serialize_content(_content_value)
 
         def on_200(self, session):
-            pass
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+            _UpdateAdminStateHelper._build_schema_common_post_action_response_for_device_update_read(cls._schema_on_200)
+
+            return cls._schema_on_200
 
 
 class _UpdateAdminStateHelper:
     """Helper class for UpdateAdminState"""
+
+    _schema_common_post_action_response_for_device_update_read = None
+
+    @classmethod
+    def _build_schema_common_post_action_response_for_device_update_read(cls, _schema):
+        if cls._schema_common_post_action_response_for_device_update_read is not None:
+            _schema.configuration_state = cls._schema_common_post_action_response_for_device_update_read.configuration_state
+            _schema.error = cls._schema_common_post_action_response_for_device_update_read.error
+            _schema.failed_devices = cls._schema_common_post_action_response_for_device_update_read.failed_devices
+            _schema.successful_devices = cls._schema_common_post_action_response_for_device_update_read.successful_devices
+            return
+
+        cls._schema_common_post_action_response_for_device_update_read = _schema_common_post_action_response_for_device_update_read = AAZObjectType()
+
+        common_post_action_response_for_device_update_read = _schema_common_post_action_response_for_device_update_read
+        common_post_action_response_for_device_update_read.configuration_state = AAZStrType(
+            serialized_name="configurationState",
+            flags={"read_only": True},
+        )
+        common_post_action_response_for_device_update_read.error = AAZObjectType()
+        cls._build_schema_error_detail_read(common_post_action_response_for_device_update_read.error)
+        common_post_action_response_for_device_update_read.failed_devices = AAZListType(
+            serialized_name="failedDevices",
+        )
+        common_post_action_response_for_device_update_read.successful_devices = AAZListType(
+            serialized_name="successfulDevices",
+        )
+
+        failed_devices = _schema_common_post_action_response_for_device_update_read.failed_devices
+        failed_devices.Element = AAZStrType()
+
+        successful_devices = _schema_common_post_action_response_for_device_update_read.successful_devices
+        successful_devices.Element = AAZStrType()
+
+        _schema.configuration_state = cls._schema_common_post_action_response_for_device_update_read.configuration_state
+        _schema.error = cls._schema_common_post_action_response_for_device_update_read.error
+        _schema.failed_devices = cls._schema_common_post_action_response_for_device_update_read.failed_devices
+        _schema.successful_devices = cls._schema_common_post_action_response_for_device_update_read.successful_devices
+
+    _schema_error_detail_read = None
+
+    @classmethod
+    def _build_schema_error_detail_read(cls, _schema):
+        if cls._schema_error_detail_read is not None:
+            _schema.additional_info = cls._schema_error_detail_read.additional_info
+            _schema.code = cls._schema_error_detail_read.code
+            _schema.details = cls._schema_error_detail_read.details
+            _schema.message = cls._schema_error_detail_read.message
+            _schema.target = cls._schema_error_detail_read.target
+            return
+
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType()
+
+        error_detail_read = _schema_error_detail_read
+        error_detail_read.additional_info = AAZListType(
+            serialized_name="additionalInfo",
+            flags={"read_only": True},
+        )
+        error_detail_read.code = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.details = AAZListType(
+            flags={"read_only": True},
+        )
+        error_detail_read.message = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.target = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        additional_info = _schema_error_detail_read.additional_info
+        additional_info.Element = AAZObjectType()
+
+        _element = _schema_error_detail_read.additional_info.Element
+        _element.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        details = _schema_error_detail_read.details
+        details.Element = AAZObjectType()
+        cls._build_schema_error_detail_read(details.Element)
+
+        _schema.additional_info = cls._schema_error_detail_read.additional_info
+        _schema.code = cls._schema_error_detail_read.code
+        _schema.details = cls._schema_error_detail_read.details
+        _schema.message = cls._schema_error_detail_read.message
+        _schema.target = cls._schema_error_detail_read.target
 
 
 __all__ = ["UpdateAdminState"]

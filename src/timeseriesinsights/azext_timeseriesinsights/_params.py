@@ -28,18 +28,6 @@ from azext_timeseriesinsights.action import (
 
 
 def load_arguments(self, _):
-
-    with self.argument_context('tsi environment') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='The name '
-                   'of the Time Series Insights environment associated with the specified resource group.', id_part=''
-                   'name')
-        c.argument('expand', type=str, help='Setting $expand=status will include the status of the internal services '
-                   'of the environment in the Time Series Insights service.')
-
-    with self.argument_context('tsi environment list') as c:
-        c.argument('environment_name', id_part=None)
-
     with self.argument_context('tsi environment gen1') as c:
         c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='Name of the'
                    ' environment', id_part='name')
@@ -185,27 +173,5 @@ def load_arguments(self, _):
                    'reference data with events or while adding new reference data. When \'OrdinalIgnoreCase\' is set, '
                    'case insensitive comparison will be used.')
 
-    with self.argument_context('tsi reference-data-set create') as c:
-        c.argument('environment_name', id_part=None)
-        c.argument('reference_data_set_name', id_part=None)
-
     with self.argument_context('tsi reference-data-set list') as c:
-        c.argument('environment_name', id_part=None)
-
-    with self.argument_context('tsi access-policy') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('environment_name', type=str, help='The name of the Time Series Insights environment associated '
-                   'with the specified resource group.', id_part='name')
-        c.argument('access_policy_name', options_list=['--name', '-n', '--access-policy-name'], type=str, help='The '
-                   'name of the Time Series Insights access policy associated with the specified environment.',
-                   id_part='child_name_1')
-        c.argument('principal_object_id', type=str, help="The objectId of the principal in Azure Active Directory.")
-        c.argument('description', type=str, help='An description of the access policy.')
-        c.argument('roles', nargs='+', help='The list of roles the principal is assigned on the environment.')
-
-    with self.argument_context('tsi access-policy create') as c:
-        c.argument('environment_name', id_part=None)
-        c.argument('access_policy_name', id_part=None)
-
-    with self.argument_context('tsi access-policy list') as c:
         c.argument('environment_name', id_part=None)

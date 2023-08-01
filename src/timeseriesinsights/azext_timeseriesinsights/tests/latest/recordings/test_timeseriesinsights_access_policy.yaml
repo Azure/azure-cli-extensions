@@ -1,8 +1,8 @@
 interactions:
 - request:
-    body: '{"location": "westus", "kind": "Gen1", "sku": {"name": "S1", "capacity":
-      1}, "properties": {"dataRetentionTime": "P31D", "storageLimitExceededBehavior":
-      "PauseIngress", "partitionKeyProperties": [{"name": "DeviceId1", "type": "String"}]}}'
+    body: '{"kind": "Gen1", "location": "westus", "sku": {"capacity": 1, "name": "S1"},
+      "properties": {"dataRetentionTime": "P31D", "partitionKeyProperties": [{"name":
+      "DeviceId1", "type": "String"}], "storageLimitExceededBehavior": "PauseIngress"}}'
     headers:
       Accept:
       - application/json
@@ -20,22 +20,21 @@ interactions:
       - --resource-group --location --name --sku --data-retention-time --partition-key-properties
         --storage-limit-exceeded-behavior
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002?api-version=2020-05-15
   response:
     body:
-      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2021-01-27T05:42:47.2211274+00:00","provisioningState":"Accepted","dataAccessId":"149eaebd-73fd-4549-9447-b0fb23e2fbcd","dataAccessFqdn":"149eaebd-73fd-4549-9447-b0fb23e2fbcd.env.timeseries.azure.com","requestApiVersion":"2020-05-15"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002","name":"cli-test-tsi-env000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":{"CreatedOnDate":"2023-08-01T03:27:00.1325150Z"},"properties":{"dataRetentionTime":"P31D","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"storageLimitExceededBehavior":"PauseIngress","creationTime":"2023-08-01T03:27:01.2098313Z","provisioningState":"Succeeded","dataAccessId":"e1e37c22-e694-47a9-8b71-282c7816b494","dataAccessFqdn":"e1e37c22-e694-47a9-8b71-282c7816b494.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002","name":"cli-test-tsi-env000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '794'
+      - '737'
       content-type:
       - application/json
       date:
-      - Wed, 27 Jan 2021 05:42:48 GMT
+      - Tue, 01 Aug 2023 03:27:01 GMT
       expires:
       - '-1'
       pragma:
@@ -46,110 +45,16 @@ interactions:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=48f8229a-efaa-4c48-b7c8-08c675d698ec/eastus2euap/11f1333b-9b85-41e3-a897-869c232bdacb
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1194'
     status:
       code: 201
       message: Created
 - request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - tsi environment gen1 create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --location --name --sku --data-retention-time --partition-key-properties
-        --storage-limit-exceeded-behavior
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002?api-version=2020-05-15
-  response:
-    body:
-      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2021-01-27T05:42:47.2211274Z","provisioningState":"Creating","requestApiVersion":"2020-05-15","dataAccessId":"149eaebd-73fd-4549-9447-b0fb23e2fbcd","dataAccessFqdn":"149eaebd-73fd-4549-9447-b0fb23e2fbcd.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002","name":"cli-test-tsi-env000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '789'
-      content-type:
-      - application/json
-      date:
-      - Wed, 27 Jan 2021 05:43:20 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - tsi environment gen1 create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --location --name --sku --data-retention-time --partition-key-properties
-        --storage-limit-exceeded-behavior
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002?api-version=2020-05-15
-  response:
-    body:
-      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2021-01-27T05:42:47.2211274Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"149eaebd-73fd-4549-9447-b0fb23e2fbcd","dataAccessFqdn":"149eaebd-73fd-4549-9447-b0fb23e2fbcd.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002","name":"cli-test-tsi-env000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '790'
-      content-type:
-      - application/json
-      date:
-      - Wed, 27 Jan 2021 05:43:50 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"principalObjectId": "001", "description": "some description",
-      "roles": ["Contributor", "Reader"]}}'
+    body: '{"properties": {"description": "some description", "principalObjectId":
+      "001", "roles": ["Contributor", "Reader"]}}'
     headers:
       Accept:
       - application/json
@@ -166,22 +71,21 @@ interactions:
       ParameterSetName:
       - -g --environment-name --name --principal-object-id --description --roles
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accessPolicies/ap1?api-version=2020-05-15
   response:
     body:
-      string: '{"properties":{"principalObjectId":"001","description":"some description","roles":["Contributor","Reader"]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accesspolicies/ap1","name":"ap1","type":"Microsoft.TimeSeriesInsights/Environments/AccessPolicies"}'
+      string: '{"properties":{"description":"some description","principalObjectId":"001","roles":["Contributor","Reader"]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accesspolicies/ap1","name":"ap1","type":"Microsoft.TimeSeriesInsights/Environments/AccessPolicies"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '433'
+      - '371'
       content-type:
       - application/json
       date:
-      - Wed, 27 Jan 2021 05:43:51 GMT
+      - Tue, 01 Aug 2023 03:27:04 GMT
       expires:
       - '-1'
       pragma:
@@ -197,7 +101,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1197'
     status:
       code: 200
       message: OK
@@ -219,23 +123,21 @@ interactions:
       ParameterSetName:
       - -g --environment-name --name --description --roles
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accessPolicies/ap1?api-version=2020-05-15
   response:
     body:
-      string: '{"properties":{"principalObjectId":"001","description":"some description
-        updated","roles":["Contributor"]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accesspolicies/ap1","name":"ap1","type":"Microsoft.TimeSeriesInsights/Environments/AccessPolicies"}'
+      string: '{"properties":{"description":"some description updated","principalObjectId":"001","roles":["Contributor"]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accesspolicies/ap1","name":"ap1","type":"Microsoft.TimeSeriesInsights/Environments/AccessPolicies"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '432'
+      - '370'
       content-type:
       - application/json
       date:
-      - Wed, 27 Jan 2021 05:43:54 GMT
+      - Tue, 01 Aug 2023 03:27:06 GMT
       expires:
       - '-1'
       pragma:
@@ -251,7 +153,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1195'
     status:
       code: 200
       message: OK
@@ -269,23 +171,21 @@ interactions:
       ParameterSetName:
       - -g --environment-name --name
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accessPolicies/ap1?api-version=2020-05-15
   response:
     body:
-      string: '{"properties":{"principalObjectId":"001","description":"some description
-        updated","roles":["Contributor"]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accesspolicies/ap1","name":"ap1","type":"Microsoft.TimeSeriesInsights/Environments/AccessPolicies"}'
+      string: '{"properties":{"description":"some description updated","principalObjectId":"001","roles":["Contributor"]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accesspolicies/ap1","name":"ap1","type":"Microsoft.TimeSeriesInsights/Environments/AccessPolicies"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '432'
+      - '370'
       content-type:
       - application/json
       date:
-      - Wed, 27 Jan 2021 05:43:55 GMT
+      - Tue, 01 Aug 2023 03:27:08 GMT
       expires:
       - '-1'
       pragma:
@@ -317,23 +217,21 @@ interactions:
       ParameterSetName:
       - -g --environment-name
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accessPolicies?api-version=2020-05-15
   response:
     body:
-      string: '{"value":[{"properties":{"principalObjectId":"001","description":"some
-        description updated","roles":["Contributor"]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accesspolicies/ap1","name":"ap1","type":"Microsoft.TimeSeriesInsights/Environments/AccessPolicies"}]}'
+      string: '{"value":[{"properties":{"description":"some description updated","principalObjectId":"001","roles":["Contributor"]},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accesspolicies/ap1","name":"ap1","type":"Microsoft.TimeSeriesInsights/Environments/AccessPolicies"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '444'
+      - '382'
       content-type:
       - application/json
       date:
-      - Wed, 27 Jan 2021 05:43:56 GMT
+      - Tue, 01 Aug 2023 03:27:10 GMT
       expires:
       - '-1'
       pragma:
@@ -355,7 +253,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -367,8 +265,7 @@ interactions:
       ParameterSetName:
       - -g --environment-name --name --yes
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000002/accessPolicies/ap1?api-version=2020-05-15
   response:
@@ -380,7 +277,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 05:43:58 GMT
+      - Tue, 01 Aug 2023 03:27:11 GMT
       expires:
       - '-1'
       pragma:
@@ -392,7 +289,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '14998'
     status:
       code: 200
       message: OK

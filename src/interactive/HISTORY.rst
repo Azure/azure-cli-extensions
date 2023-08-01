@@ -3,6 +3,11 @@
 Release History
 ===============
 
+upcoming
++++++
+* Fix Scenario Idx out of bound when selecting recommended scenario
+* Add command skipped message in Scenario Execution Mode
+
 0.5.1
 +++++
 * Fix bugs to prevent users from exiting the entire az interactive by using Ctrl+C during command execution
