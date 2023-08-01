@@ -6,10 +6,7 @@
 # pylint: disable=too-many-lines
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from .aaz.latest.tsi.environment import Create as _EnvironmentCreate
-from .aaz.latest.tsi.environment import Update as _EnvironmentUpdate
 from .aaz.latest.tsi.environment import List as _EnvironmentList
-from .aaz.latest.tsi.reference_data_set import Create as _ReferenceDataSetCreate
 from .aaz.latest.tsi.reference_data_set import List as _ReferenceDataSetList
 
 
@@ -22,6 +19,7 @@ def timeseriesinsights_environment_gen1_create(cmd, resource_group_name,
                                                storage_limit_exceeded_behavior=None,
                                                partition_key_properties=None,
                                                no_wait=False):
+    from .aaz.latest.tsi.environment import Create as _EnvironmentCreate
     Create = _EnvironmentCreate(cmd.loader)
     parameters = {}
     parameters['resource_group'] = resource_group_name
@@ -38,15 +36,6 @@ def timeseriesinsights_environment_gen1_create(cmd, resource_group_name,
     return Create(parameters)
 
 
-def timeseriesinsights_environment_list(cmd,
-                                        resource_group_name=None):
-    List = _EnvironmentList(cmd.loader)
-    parameters = {}
-    parameters['resource_group'] = resource_group_name
-
-    return List(parameters)["value"]
-
-
 def timeseriesinsights_environment_gen1_update(cmd,
                                                resource_group_name,
                                                environment_name,
@@ -55,6 +44,7 @@ def timeseriesinsights_environment_gen1_update(cmd,
                                                tags=None,
                                                storage_limit_exceeded_behavior=None,
                                                no_wait=False):
+    from .aaz.latest.tsi.environment import Update as _EnvironmentUpdate
     Update = _EnvironmentUpdate(cmd.loader)
     parameters = {}
     parameters['resource_group'] = resource_group_name
@@ -83,6 +73,7 @@ def timeseriesinsights_environment_gen2_create(cmd,
                                                tags=None,
                                                warm_store_configuration=None,
                                                no_wait=False):
+    from .aaz.latest.tsi.environment import Create as _EnvironmentCreate
     Create = _EnvironmentCreate(cmd.loader)
     parameters = {}
     parameters['resource_group'] = resource_group_name
@@ -107,6 +98,7 @@ def timeseriesinsights_environment_gen2_update(cmd,
                                                tags=None,
                                                warm_store_configuration=None,
                                                no_wait=False):
+    from .aaz.latest.tsi.environment import Update as _EnvironmentUpdate
     Update = _EnvironmentUpdate(cmd.loader)
     parameters = {}
     parameters['resource_group'] = resource_group_name
@@ -290,16 +282,6 @@ def timeseriesinsights_event_source_iot_hub_update(client,
                          event_source_update_parameters=patch_parameters)
 
 
-def timeseriesinsights_reference_data_set_list(cmd,
-                                               resource_group_name,
-                                               environment_name):
-    List = _ReferenceDataSetList(cmd.loader)
-    parameters = {}
-    parameters['resource_group'] = resource_group_name
-    parameters['environment_name'] = environment_name
-    return List(parameters)["value"]
-
-
 def timeseriesinsights_reference_data_set_create(cmd,
                                                  resource_group_name,
                                                  environment_name,
@@ -308,6 +290,7 @@ def timeseriesinsights_reference_data_set_create(cmd,
                                                  key_properties,
                                                  tags=None,
                                                  data_string_comparison_behavior=None):
+    from .aaz.latest.tsi.reference_data_set import Create as _ReferenceDataSetCreate
     Create = _ReferenceDataSetCreate(cmd.loader)
     parameters = {}
     parameters['resource_group'] = resource_group_name
@@ -318,3 +301,15 @@ def timeseriesinsights_reference_data_set_create(cmd,
     parameters['key_properties'] = key_properties
     parameters['data_string_comparison_behavior'] = data_string_comparison_behavior
     return Create(parameters)
+
+
+class EnvironmentList(_EnvironmentList):
+    def _output(self):
+        result = super()._output(self)
+        return result["value"]
+
+
+class ReferenceDataSetList(_ReferenceDataSetList):
+    def _output(self):
+        result = super()._output(self)
+        return result["value"]

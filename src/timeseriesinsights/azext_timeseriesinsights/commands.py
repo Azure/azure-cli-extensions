@@ -11,7 +11,8 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
     with self.command_group('tsi environment') as g:
-        g.custom_command('list', 'timeseriesinsights_environment_list')
+        from .custom import EnvironmentList
+        self.command_table['tsi environment list'] = EnvironmentList(loader=self)
 
     with self.command_group('tsi environment gen1') as g:
         g.custom_command('create', 'timeseriesinsights_environment_gen1_create', supports_no_wait=True)
@@ -23,7 +24,8 @@ def load_command_table(self, _):
 
     with self.command_group('tsi reference-data-set') as g:
         g.custom_command('create', 'timeseriesinsights_reference_data_set_create')
-        g.custom_command('list', 'timeseriesinsights_reference_data_set_list')
+        from .custom import ReferenceDataSetList
+        self.command_table['tsi reference-data-set list'] = ReferenceDataSetList(loader=self)
 
     from azext_timeseriesinsights._client_factory import cf_event_source
     timeseriesinsights_event_source = CliCommandType(
