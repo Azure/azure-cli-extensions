@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.2.8 (2023-08-01)
+++++++++++++++++++
+* Pin `pymssql` to `2.2.7`
+
 0.2.7 (2022-04-02)
 ++++++++++++++++++
 * Upgrade `pymssql` to support Python 3.10

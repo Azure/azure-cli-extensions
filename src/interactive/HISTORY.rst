@@ -5,6 +5,8 @@ Release History
 
 upcoming
 +++++
+* Add command skipped message in Scenario Execution Mode
+* Fix Scenario Idx out of bound when selecting recommended scenario
 * Fix `KeyError` when entering param not in sample in scenario mode
 
 0.5.1

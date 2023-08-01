@@ -26,6 +26,7 @@ from ._models_py3 import Capacity
 from ._models_py3 import CassandraClusterDataCenterNodeItem
 from ._models_py3 import CassandraClusterPublicStatus
 from ._models_py3 import CassandraClusterPublicStatusDataCentersItem
+from ._models_py3 import CassandraError
 from ._models_py3 import CassandraKeyspaceCreateUpdateParameters
 from ._models_py3 import CassandraKeyspaceGetPropertiesOptions
 from ._models_py3 import CassandraKeyspaceGetPropertiesResource
@@ -149,6 +150,7 @@ from ._models_py3 import ManagedCassandraManagedServiceIdentity
 from ._models_py3 import ManagedCassandraReaperStatus
 from ._models_py3 import ManagedServiceIdentity
 from ._models_py3 import ManagedServiceIdentityUserAssignedIdentity
+from ._models_py3 import MaterializedViewDefinition
 from ._models_py3 import MaterializedViewsBuilderRegionalServiceResource
 from ._models_py3 import MaterializedViewsBuilderServiceResource
 from ._models_py3 import MaterializedViewsBuilderServiceResourceProperties
@@ -351,6 +353,7 @@ from ._cosmos_db_management_client_enums import EnableFullTextQuery
 from ._cosmos_db_management_client_enums import IndexKind
 from ._cosmos_db_management_client_enums import IndexingMode
 from ._cosmos_db_management_client_enums import KeyKind
+from ._cosmos_db_management_client_enums import Kind
 from ._cosmos_db_management_client_enums import ManagedCassandraProvisioningState
 from ._cosmos_db_management_client_enums import ManagedCassandraResourceIdentityType
 from ._cosmos_db_management_client_enums import MinimalTlsVersion
@@ -374,9 +377,11 @@ from ._cosmos_db_management_client_enums import ServiceSize
 from ._cosmos_db_management_client_enums import ServiceStatus
 from ._cosmos_db_management_client_enums import ServiceType
 from ._cosmos_db_management_client_enums import SpatialType
+from ._cosmos_db_management_client_enums import Status
 from ._cosmos_db_management_client_enums import ThroughputPolicyType
 from ._cosmos_db_management_client_enums import TriggerOperation
 from ._cosmos_db_management_client_enums import TriggerType
+from ._cosmos_db_management_client_enums import Type
 from ._cosmos_db_management_client_enums import UnitType
 from ._patch import __all__ as _patch_all
 from ._patch import *  # pylint: disable=unused-wildcard-import
@@ -403,6 +408,7 @@ __all__ = [
     "CassandraClusterDataCenterNodeItem",
     "CassandraClusterPublicStatus",
     "CassandraClusterPublicStatusDataCentersItem",
+    "CassandraError",
     "CassandraKeyspaceCreateUpdateParameters",
     "CassandraKeyspaceGetPropertiesOptions",
     "CassandraKeyspaceGetPropertiesResource",
@@ -526,6 +532,7 @@ __all__ = [
     "ManagedCassandraReaperStatus",
     "ManagedServiceIdentity",
     "ManagedServiceIdentityUserAssignedIdentity",
+    "MaterializedViewDefinition",
     "MaterializedViewsBuilderRegionalServiceResource",
     "MaterializedViewsBuilderServiceResource",
     "MaterializedViewsBuilderServiceResourceProperties",
@@ -727,6 +734,7 @@ __all__ = [
     "IndexKind",
     "IndexingMode",
     "KeyKind",
+    "Kind",
     "ManagedCassandraProvisioningState",
     "ManagedCassandraResourceIdentityType",
     "MinimalTlsVersion",
@@ -750,9 +758,11 @@ __all__ = [
     "ServiceStatus",
     "ServiceType",
     "SpatialType",
+    "Status",
     "ThroughputPolicyType",
     "TriggerOperation",
     "TriggerType",
+    "Type",
     "UnitType",
 ]
 __all__.extend([p for p in _patch_all if p not in __all__])

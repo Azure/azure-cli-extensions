@@ -12,6 +12,7 @@ from azext_networkcloud.aaz.latest.networkcloud.virtualmachine.console._show imp
     Show as _Show,
 )
 from azure.cli.core.aaz import register_callback
+
 from .common import VirtualMachineConsole
 
 

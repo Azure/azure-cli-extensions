@@ -20,6 +20,7 @@ from knack.util import CLIError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
+from .base_resource import BaseResource
 from ._clients import ManagedEnvironmentClient
 from ._client_factory import handle_raw_exception, handle_non_404_exception
 
@@ -49,14 +50,14 @@ from ._utils import (_ensure_location_allowed,
                      _remove_readonly_attributes,
                      _infer_acr_credentials,
                      _ensure_identity_resource_id,
-                     validate_container_app_name, register_provider_if_needed,
+                     validate_container_app_name,
                      set_managed_identity,
                      create_acrpull_role_assignment, is_registry_msi_system,
                      safe_set, parse_metadata_flags, parse_auth_flags,
                      get_default_workload_profile_name_from_env,
                      ensure_workload_profile_supported, _generate_secret_volume_name,
                      parse_service_bindings, check_unique_bindings, AppType, get_linker_client,
-                     _validate_subscription_registered, safe_get)
+                     safe_get)
 from ._validators import validate_create, validate_revision_suffix
 
 from ._constants import (CONTAINER_APPS_RP,
@@ -65,23 +66,36 @@ from ._constants import (CONTAINER_APPS_RP,
 logger = get_logger(__name__)
 
 
-class BaseContainerAppDecorator:
-    def __init__(
-        self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
-    ):
-        self.raw_param = raw_parameters
-        self.cmd = cmd
-        self.client = client
-        self.models = models
+class BaseContainerAppDecorator(BaseResource):
+    def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
+        super().__init__(cmd, client, raw_parameters, models)
 
-    def register_provider(self, *rp_name_list):
-        for rp in rp_name_list:
-            register_provider_if_needed(self.cmd, rp)
+    def list(self):
+        containerapps = super().list()
+        managed_env = self.get_argument_managed_env()
+        if managed_env:
+            env_name = parse_resource_id(managed_env)["name"].lower()
+            if "resource_group" in parse_resource_id(managed_env):
+                self.get_environment_client().show(self.cmd, parse_resource_id(managed_env)["resource_group"],
+                                                   parse_resource_id(managed_env)["name"])
+                containerapps = [c for c in containerapps if
+                                 c["properties"]["environmentId"].lower() == managed_env.lower()]
+            else:
+                containerapps = [c for c in containerapps if
+                                 parse_resource_id(c["properties"]["environmentId"])["name"].lower() == env_name]
 
-    def validate_subscription_registered(self, *rp_name_list):
-        for rp in rp_name_list:
-            _validate_subscription_registered(self.cmd, rp)
+        return containerapps
 
+    def show(self):
+        try:
+            r = super().show()
+            if self.get_param("show_secrets"):
+                self.set_up_get_existing_secrets(r)
+            return r
+        except CLIError as e:
+            handle_raw_exception(e)
+
+    # deprecate, will be removed in the future
     def list_containerapp(self):
         try:
             resource_group_name = self.get_argument_resource_group_name()
@@ -103,6 +117,7 @@ class BaseContainerAppDecorator:
         except CLIError as e:
             handle_raw_exception(e)
 
+    # deprecate, will be removed in the future
     def show_containerapp(self):
         try:
             r = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
@@ -112,6 +127,7 @@ class BaseContainerAppDecorator:
         except CLIError as e:
             handle_raw_exception(e)
 
+    # deprecate, will be removed in the future
     def delete_containerapp(self):
         try:
             return self.client.delete(cmd=self.cmd, name=self.get_argument_name(), resource_group_name=self.get_argument_resource_group_name(), no_wait=self.get_argument_no_wait())

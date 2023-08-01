@@ -14,6 +14,7 @@ from azext_networkcloud.aaz.latest.networkcloud.virtualmachine.console._update i
     Update as _Update,
 )
 from azure.cli.core.aaz import register_callback
+
 from .common import VirtualMachineConsole
 
 

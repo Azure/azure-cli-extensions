@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "networkcloud cluster metricsconfiguration",
-    is_experimental=True,
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage cluster's metrics configuration

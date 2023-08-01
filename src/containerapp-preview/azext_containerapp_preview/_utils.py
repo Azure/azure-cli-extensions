@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from azure.cli.core.azclierror import NoTTYError, ValidationError
+from azure.cli.core.azclierror import ValidationError
 from knack.util import CLIError
 from knack.log import get_logger
 
@@ -38,6 +38,28 @@ def _get_azext_containerapp_module(module_name):
         # Import the extension module
         from importlib import import_module
         azext_custom = import_module(module_name)
+
+        # need to reload preview's _help, because the containerapp's _help will overwrite the preview's _help after importing the containerapp module.
+        from azext_containerapp_preview import _help
+        from importlib import reload
+        reload(_help)
+
         return azext_custom
     except ImportError as ie:
         raise CLIError(ie) from ie
+
+
+def auto_install_containerapp_extension_if_not_exist(cmd):
+    from azure.cli.core.extension import extension_exists
+
+    if not extension_exists(GA_CONTAINERAPP_EXTENSION_NAME):
+        _install_containerapp_extension(cmd, GA_CONTAINERAPP_EXTENSION_NAME)
+
+
+def _install_containerapp_extension(cmd, extension_name, upgrade=False):
+    try:
+        from azure.cli.core.extension import operations
+        operations.add_extension(cmd=cmd, extension_name=extension_name, upgrade=upgrade)
+    except Exception:  # nopa pylint: disable=broad-except
+        return False
+    return True
