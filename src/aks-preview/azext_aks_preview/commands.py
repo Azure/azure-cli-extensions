@@ -145,6 +145,7 @@ def load_command_table(self, _):
         g.custom_command('kanalyze', 'aks_kanalyze')
         g.custom_command('get-os-options', 'aks_get_os_options')
         g.custom_command('operation-abort', 'aks_operation_abort', supports_no_wait=True)
+        g.custom_command('check-network', 'aks_check_network')
 
     # AKS maintenance configuration commands
     with self.command_group('aks maintenanceconfiguration', maintenance_configuration_sdk, client_factory=cf_maintenance_configurations) as g:
@@ -268,6 +269,3 @@ def load_command_table(self, _):
             supports_no_wait=True,
             confirmation=True)
         
-    with self.command_group('aks check-network', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
-        g.custom_command('vmss', 'aks_check_network_vmss')
-
