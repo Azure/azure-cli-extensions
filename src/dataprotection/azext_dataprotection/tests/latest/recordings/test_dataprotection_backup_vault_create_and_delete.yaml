@@ -20,23 +20,23 @@ interactions:
       ParameterSetName:
       - -g --vault-name -l --storage-settings --type --soft-delete-state --immutability-state
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault?api-version=2023-05-01
   response:
     body:
-      string: '{"location":"centraluseuap","identity":{"type":"SystemAssigned","principalId":"1efbe1fa-6fdb-4283-8c06-5e24e6a9af36","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"properties":{"provisioningState":"Provisioning","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":0.0},"immutabilitySettings":{"state":"Locked"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault","name":"cli-test-backup-vault","type":"Microsoft.DataProtection/backupVaults"}'
+      string: '{"location":"centraluseuap","identity":{"type":"SystemAssigned","principalId":"e37d99ee-1536-4389-9d5e-7f5bca0c430c","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"properties":{"provisioningState":"Provisioning","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":0.0},"immutabilitySettings":{"state":"Locked"}},"secureScore":"Adequate"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault","name":"cli-test-backup-vault","type":"Microsoft.DataProtection/backupVaults"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault/operationStatus/ODM3YjkwYTEtZTQwMS00ZjVjLWFhNDUtNDAyYWYwOWI2MTZiO2FkODJlOGRlLTJiNzUtNGI0Yi04MWY2LTNlYzk0MjQyNzkzZg==?api-version=2023-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault/operationStatus/ZGY4YmJkZWQtOTIxMC00ODZjLThkYTUtMDM5ZGY0NzNkODc3OzQxMDg4MTBjLTlkMzYtNDk0MC1hYjY1LTkwZWFkMTdkNTFkYQ==?api-version=2023-05-01
       cache-control:
       - no-cache
       content-length:
-      - '718'
+      - '743'
       content-type:
       - application/json
       date:
-      - Fri, 30 Jun 2023 11:25:58 GMT
+      - Tue, 01 Aug 2023 05:35:03 GMT
       expires:
       - '-1'
       pragma:
@@ -48,9 +48,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-resource-system-data:
-      - '{"createdBy":"t-vpatel@microsoft.com","createdByType":"User","createdAt":"2023-06-30T11:25:54.1646931Z","lastModifiedBy":"t-vpatel@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-30T11:25:54.1646931Z"}'
+      - '{"createdBy":"zubairabid@microsoft.com","createdByType":"User","createdAt":"2023-08-01T05:35:03.4623854Z","lastModifiedBy":"zubairabid@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-01T05:35:03.4623854Z"}'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/4de84a5d-3754-4e76-9827-87c3e11ffca2
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '99'
+      - '98'
       x-powered-by:
       - ASP.NET
     status:
@@ -70,21 +72,21 @@ interactions:
       ParameterSetName:
       - -g --vault-name -l --storage-settings --type --soft-delete-state --immutability-state
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault/operationStatus/ODM3YjkwYTEtZTQwMS00ZjVjLWFhNDUtNDAyYWYwOWI2MTZiO2FkODJlOGRlLTJiNzUtNGI0Yi04MWY2LTNlYzk0MjQyNzkzZg==?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault/operationStatus/ZGY4YmJkZWQtOTIxMC00ODZjLThkYTUtMDM5ZGY0NzNkODc3OzQxMDg4MTBjLTlkMzYtNDk0MC1hYjY1LTkwZWFkMTdkNTFkYQ==?api-version=2023-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault/operationStatus/ODM3YjkwYTEtZTQwMS00ZjVjLWFhNDUtNDAyYWYwOWI2MTZiO2FkODJlOGRlLTJiNzUtNGI0Yi04MWY2LTNlYzk0MjQyNzkzZg==","name":"ODM3YjkwYTEtZTQwMS00ZjVjLWFhNDUtNDAyYWYwOWI2MTZiO2FkODJlOGRlLTJiNzUtNGI0Yi04MWY2LTNlYzk0MjQyNzkzZg==","status":"Succeeded","startTime":"2023-06-30T11:25:56.6138935Z","endTime":"2023-06-30T11:25:57Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault/operationStatus/ZGY4YmJkZWQtOTIxMC00ODZjLThkYTUtMDM5ZGY0NzNkODc3OzQxMDg4MTBjLTlkMzYtNDk0MC1hYjY1LTkwZWFkMTdkNTFkYQ==","name":"ZGY4YmJkZWQtOTIxMC00ODZjLThkYTUtMDM5ZGY0NzNkODc3OzQxMDg4MTBjLTlkMzYtNDk0MC1hYjY1LTkwZWFkMTdkNTFkYQ==","status":"Inprogress","startTime":"2023-08-01T05:35:04.2044737Z","endTime":"0001-01-01T00:00:00Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '500'
+      - '501'
       content-type:
       - application/json
       date:
-      - Fri, 30 Jun 2023 11:25:58 GMT
+      - Tue, 01 Aug 2023 05:35:03 GMT
       expires:
       - '-1'
       pragma:
@@ -100,7 +102,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '997'
+      - '983'
       x-powered-by:
       - ASP.NET
     status:
@@ -120,21 +122,21 @@ interactions:
       ParameterSetName:
       - -g --vault-name -l --storage-settings --type --soft-delete-state --immutability-state
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault/operationStatus/ZGY4YmJkZWQtOTIxMC00ODZjLThkYTUtMDM5ZGY0NzNkODc3OzQxMDg4MTBjLTlkMzYtNDk0MC1hYjY1LTkwZWFkMTdkNTFkYQ==?api-version=2023-05-01
   response:
     body:
-      string: '{"location":"centraluseuap","identity":{"type":"SystemAssigned","principalId":"1efbe1fa-6fdb-4283-8c06-5e24e6a9af36","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"properties":{"provisioningState":"Succeeded","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":0.0},"immutabilitySettings":{"state":"Locked"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault","name":"cli-test-backup-vault","type":"Microsoft.DataProtection/backupVaults"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault/operationStatus/ZGY4YmJkZWQtOTIxMC00ODZjLThkYTUtMDM5ZGY0NzNkODc3OzQxMDg4MTBjLTlkMzYtNDk0MC1hYjY1LTkwZWFkMTdkNTFkYQ==","name":"ZGY4YmJkZWQtOTIxMC00ODZjLThkYTUtMDM5ZGY0NzNkODc3OzQxMDg4MTBjLTlkMzYtNDk0MC1hYjY1LTkwZWFkMTdkNTFkYQ==","status":"Succeeded","startTime":"2023-08-01T05:35:04.2044737Z","endTime":"2023-08-01T05:35:05Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '715'
+      - '500'
       content-type:
       - application/json
       date:
-      - Fri, 30 Jun 2023 11:25:59 GMT
+      - Tue, 01 Aug 2023 05:35:34 GMT
       expires:
       - '-1'
       pragma:
@@ -150,7 +152,57 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '499'
+      - '982'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-vault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -l --storage-settings --type --soft-delete-state --immutability-state
+      User-Agent:
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault?api-version=2023-05-01
+  response:
+    body:
+      string: '{"location":"centraluseuap","identity":{"type":"SystemAssigned","principalId":"e37d99ee-1536-4389-9d5e-7f5bca0c430c","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"properties":{"provisioningState":"Succeeded","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":0.0},"immutabilitySettings":{"state":"Locked"}},"secureScore":"Adequate"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault","name":"cli-test-backup-vault","type":"Microsoft.DataProtection/backupVaults"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '740'
+      content-type:
+      - application/json
+      date:
+      - Tue, 01 Aug 2023 05:35:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '498'
       x-powered-by:
       - ASP.NET
     status:
@@ -170,21 +222,21 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults?api-version=2023-05-01
   response:
     body:
-      string: '{"value":[{"location":"centraluseuap","identity":{"type":"SystemAssigned","principalId":"1efbe1fa-6fdb-4283-8c06-5e24e6a9af36","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"properties":{"provisioningState":"Succeeded","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":0.0},"immutabilitySettings":{"state":"Locked"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault","name":"cli-test-backup-vault","type":"Microsoft.DataProtection/backupVaults"}]}'
+      string: '{"value":[{"location":"centraluseuap","identity":{"type":"SystemAssigned","principalId":"e37d99ee-1536-4389-9d5e-7f5bca0c430c","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"properties":{"provisioningState":"Succeeded","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":0.0},"immutabilitySettings":{"state":"Locked"}},"secureScore":"Adequate"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault","name":"cli-test-backup-vault","type":"Microsoft.DataProtection/backupVaults"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '727'
+      - '752'
       content-type:
       - application/json
       date:
-      - Fri, 30 Jun 2023 11:26:00 GMT
+      - Tue, 01 Aug 2023 05:35:36 GMT
       expires:
       - '-1'
       pragma:
@@ -220,21 +272,21 @@ interactions:
       ParameterSetName:
       - -g --vault-name
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault?api-version=2023-05-01
   response:
     body:
-      string: '{"location":"centraluseuap","identity":{"type":"SystemAssigned","principalId":"1efbe1fa-6fdb-4283-8c06-5e24e6a9af36","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"properties":{"provisioningState":"Succeeded","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":0.0},"immutabilitySettings":{"state":"Locked"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault","name":"cli-test-backup-vault","type":"Microsoft.DataProtection/backupVaults"}'
+      string: '{"location":"centraluseuap","identity":{"type":"SystemAssigned","principalId":"e37d99ee-1536-4389-9d5e-7f5bca0c430c","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"properties":{"provisioningState":"Succeeded","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":0.0},"immutabilitySettings":{"state":"Locked"}},"secureScore":"Adequate"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault","name":"cli-test-backup-vault","type":"Microsoft.DataProtection/backupVaults"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '715'
+      - '740'
       content-type:
       - application/json
       date:
-      - Fri, 30 Jun 2023 11:26:01 GMT
+      - Tue, 01 Aug 2023 05:35:38 GMT
       expires:
       - '-1'
       pragma:
@@ -272,25 +324,25 @@ interactions:
       ParameterSetName:
       - -g --vault-name -y
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault?api-version=2023-05-01
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/ODM3YjkwYTEtZTQwMS00ZjVjLWFhNDUtNDAyYWYwOWI2MTZiOzQ5OTNiNzkxLWE3NDUtNDE3MS1iODdlLTc3MzI0NmQ0OTVmYQ==?api-version=2023-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/ZGY4YmJkZWQtOTIxMC00ODZjLThkYTUtMDM5ZGY0NzNkODc3O2I5ZWYzMTAyLTY1ZTQtNDdkZi1hNDQ0LWU3MzdlMzg3NTFiZQ==?api-version=2023-05-01
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Fri, 30 Jun 2023 11:26:03 GMT
+      - Tue, 01 Aug 2023 05:35:39 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/ODM3YjkwYTEtZTQwMS00ZjVjLWFhNDUtNDAyYWYwOWI2MTZiOzQ5OTNiNzkxLWE3NDUtNDE3MS1iODdlLTc3MzI0NmQ0OTVmYQ==?api-version=2023-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DataProtection/locations/centraluseuap/operationResults/ZGY4YmJkZWQtOTIxMC00ODZjLThkYTUtMDM5ZGY0NzNkODc3O2I5ZWYzMTAyLTY1ZTQtNDdkZi1hNDQ0LWU3MzdlMzg3NTFiZQ==?api-version=2023-05-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -318,21 +370,21 @@ interactions:
       ParameterSetName:
       - -g --vault-name -y
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/ODM3YjkwYTEtZTQwMS00ZjVjLWFhNDUtNDAyYWYwOWI2MTZiOzQ5OTNiNzkxLWE3NDUtNDE3MS1iODdlLTc3MzI0NmQ0OTVmYQ==?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/ZGY4YmJkZWQtOTIxMC00ODZjLThkYTUtMDM5ZGY0NzNkODc3O2I5ZWYzMTAyLTY1ZTQtNDdkZi1hNDQ0LWU3MzdlMzg3NTFiZQ==?api-version=2023-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/ODM3YjkwYTEtZTQwMS00ZjVjLWFhNDUtNDAyYWYwOWI2MTZiOzQ5OTNiNzkxLWE3NDUtNDE3MS1iODdlLTc3MzI0NmQ0OTVmYQ==","name":"ODM3YjkwYTEtZTQwMS00ZjVjLWFhNDUtNDAyYWYwOWI2MTZiOzQ5OTNiNzkxLWE3NDUtNDE3MS1iODdlLTc3MzI0NmQ0OTVmYQ==","status":"Inprogress","startTime":"2023-06-30T11:26:03.2731615Z","endTime":"0001-01-01T00:00:00Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/ZGY4YmJkZWQtOTIxMC00ODZjLThkYTUtMDM5ZGY0NzNkODc3O2I5ZWYzMTAyLTY1ZTQtNDdkZi1hNDQ0LWU3MzdlMzg3NTFiZQ==","name":"ZGY4YmJkZWQtOTIxMC00ODZjLThkYTUtMDM5ZGY0NzNkODc3O2I5ZWYzMTAyLTY1ZTQtNDdkZi1hNDQ0LWU3MzdlMzg3NTFiZQ==","status":"Inprogress","startTime":"2023-08-01T05:35:39.579338Z","endTime":"0001-01-01T00:00:00Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '490'
+      - '489'
       content-type:
       - application/json
       date:
-      - Fri, 30 Jun 2023 11:26:03 GMT
+      - Tue, 01 Aug 2023 05:35:39 GMT
       expires:
       - '-1'
       pragma:
@@ -368,21 +420,21 @@ interactions:
       ParameterSetName:
       - -g --vault-name -y
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/ODM3YjkwYTEtZTQwMS00ZjVjLWFhNDUtNDAyYWYwOWI2MTZiOzQ5OTNiNzkxLWE3NDUtNDE3MS1iODdlLTc3MzI0NmQ0OTVmYQ==?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/ZGY4YmJkZWQtOTIxMC00ODZjLThkYTUtMDM5ZGY0NzNkODc3O2I5ZWYzMTAyLTY1ZTQtNDdkZi1hNDQ0LWU3MzdlMzg3NTFiZQ==?api-version=2023-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/ODM3YjkwYTEtZTQwMS00ZjVjLWFhNDUtNDAyYWYwOWI2MTZiOzQ5OTNiNzkxLWE3NDUtNDE3MS1iODdlLTc3MzI0NmQ0OTVmYQ==","name":"ODM3YjkwYTEtZTQwMS00ZjVjLWFhNDUtNDAyYWYwOWI2MTZiOzQ5OTNiNzkxLWE3NDUtNDE3MS1iODdlLTc3MzI0NmQ0OTVmYQ==","status":"Succeeded","startTime":"2023-06-30T11:26:03.2731615Z","endTime":"2023-06-30T11:26:03Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-backupvault-000001/providers/Microsoft.DataProtection/locations/centraluseuap/operationStatus/ZGY4YmJkZWQtOTIxMC00ODZjLThkYTUtMDM5ZGY0NzNkODc3O2I5ZWYzMTAyLTY1ZTQtNDdkZi1hNDQ0LWU3MzdlMzg3NTFiZQ==","name":"ZGY4YmJkZWQtOTIxMC00ODZjLThkYTUtMDM5ZGY0NzNkODc3O2I5ZWYzMTAyLTY1ZTQtNDdkZi1hNDQ0LWU3MzdlMzg3NTFiZQ==","status":"Succeeded","startTime":"2023-08-01T05:35:39.579338Z","endTime":"2023-08-01T05:35:40Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '489'
+      - '488'
       content-type:
       - application/json
       date:
-      - Fri, 30 Jun 2023 11:26:34 GMT
+      - Tue, 01 Aug 2023 05:36:09 GMT
       expires:
       - '-1'
       pragma:
