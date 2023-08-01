@@ -54,6 +54,8 @@ from azext_aks_preview._helpers import (
     get_cluster_snapshot_by_snapshot_id,
     get_nodepool_snapshot_by_snapshot_id,
     print_or_merge_credentials,
+    which,
+    process_message,
 )
 from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
@@ -2484,26 +2486,6 @@ def _aks_mesh_update(
 
     return aks_update_decorator.update_mc(mc)
 
-def _which(binary):
-    path_var = os.getenv('PATH')
-    if platform.system() == 'Windows':
-        binary = binary + '.exe'
-        parts = path_var.split(';')
-    else:
-        parts = path_var.split(':')
-
-    for part in parts:
-        bin_path = os.path.join(part, binary)
-        if os.path.exists(bin_path) and os.path.isfile(bin_path) and os.access(bin_path, os.X_OK):
-            return bin_path
-
-    return None
-
-def _process_message(message):
-    result = message.split("\n")
-    for line in result:
-        print(line)
-
 def aks_check_network(cmd, 
                       client, 
                       resource_group, 
@@ -2511,22 +2493,23 @@ def aks_check_network(cmd,
                       node_name=None):
     # Get a random node if node_name is not specified
     if not node_name:
-        if not _which("kubectl"):
+        if not which("kubectl"):
             raise ValidationError("Can not find kubectl executable in PATH")
         
         _, browse_path = tempfile.mkstemp()
         try:
             aks_get_credentials(cmd, client, resource_group, cluster_name, admin=False, path=browse_path)
 
-            cmd = f"kubectl --kubeconfig {browse_path} get nodes"
-            output = subprocess.check_output(cmd, universal_newlines=True, stderr=subprocess.STDOUT)
+            output = subprocess.check_output(["kubectl", "--kubeconfig", browse_path, "get", "nodes", "-o", "json"], universal_newlines=True, stderr=subprocess.STDOUT)
+            if output:
+                cluster_info = json.loads(output)
+                node_name = str(cluster_info["items"][0]["metadata"]["name"])
+            else:
+                raise ValidationError("Failed to get node name from cluster")
         except subprocess.CalledProcessError as ex:
             raise ValidationError("Can not get node name from cluster: {}".format(ex))
-        if output:
-            cluster_info = json.loads(output)
-            node_name = str(cluster_info["items"][0]["metadata"]["name"])
-        else:
-            raise ValidationError("Failed to get node name from cluster")
+        finally:
+            os.remove(browse_path)
     
     vmss_name = node_name
     instance_id = None
@@ -2557,7 +2540,7 @@ def aks_check_network(cmd,
         display_status = command_result.value[0].display_status
         message = command_result.value[0].message
         if display_status == "Provisioning succeeded":
-            return _process_message(message)
+            return process_message(message)
         else:
             raise InvalidArgumentValueError("Can not run command on node {0} with returned code {1} and message {2}".
                                             format(vmss_name, display_status, message))
