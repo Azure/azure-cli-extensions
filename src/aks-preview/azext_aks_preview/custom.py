@@ -2494,7 +2494,7 @@ def aks_check_network(cmd,
         if not which("kubectl"):
             raise ValidationError("Can not find kubectl executable in PATH")
         
-        _, browse_path = tempfile.mkstemp()
+        fd, browse_path = tempfile.mkstemp()
         try:
             aks_get_credentials(cmd, client, resource_group, cluster_name, admin=False, path=browse_path)
 
@@ -2507,6 +2507,7 @@ def aks_check_network(cmd,
         except subprocess.CalledProcessError as ex:
             raise ValidationError("Can not get node name from cluster: {}".format(ex))
         finally:
+            os.close(fd)
             os.remove(browse_path)
     
     vmss_name = node_name
