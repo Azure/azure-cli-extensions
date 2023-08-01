@@ -311,7 +311,8 @@ def setup_common_guardrails_profile(level, version, excludedNamespaces, mc: Mana
 
     return mc
 
+
 def process_message(message):
     result = message.split("\n")
-    for line in result[2:len(result)-2]:
+    for line in result[2:len(result) - 2]:
         print(line)
