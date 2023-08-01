@@ -59,18 +59,14 @@ for src_d in os.listdir(SRC_PATH):
     if pkg_name:
         MODIFIED_EXTS.append(src_d)
 
-logger.warning(f'ado_branch_last_commit: {ado_branch_last_commit}, '
-               f'ado_target_branch: {ado_target_branch}, '
-               f'MODIFIED_EXTS: {MODIFIED_EXTS}.')
-
 CLI_VERSION = get_distribution('azure-cli').version
 
 for extension_name, exts in get_index_data()['extensions'].items():
     parsed_cli_version = parse_version(CLI_VERSION)
     filtered_exts = []
     for ext in exts:
-        if parsed_cli_version <= parse_version(ext['metadata'].get('azext.maxCliCoreVersion', CLI_VERSION)) and ext in MODIFIED_EXTS:
-            filtered_exts.append(ext)
+        if parsed_cli_version <= parse_version(ext['metadata'].get('azext.maxCliCoreVersion', CLI_VERSION)):
+            filtered_exts.append(ext) if ext in MODIFIED_EXTS else None
     if not filtered_exts:
         continue
 
@@ -78,6 +74,10 @@ for extension_name, exts in get_index_data()['extensions'].items():
     chosen = candidates_sorted[0]
     ALL_TESTS.append((extension_name, chosen['downloadUrl'], chosen['filename']))
 
+logger.warning(f'ado_branch_last_commit: {ado_branch_last_commit}, '
+               f'ado_target_branch: {ado_target_branch}, '
+               f'MODIFIED_EXTS: {MODIFIED_EXTS}, '
+               f'ALL_TESTS: {ALL_TESTS}')
 
 class TestIndexRefDocsMeta(type):
     def __new__(mcs, name, bases, _dict):
