@@ -4,7 +4,7 @@ Release History
 ===============
 0.2.9 (2023-08-01)
 ++++++++++++++++++
-* Upgrade `psycopg2-binary` to support Python 3.11
+* Bump `psycopg2-binary` to 2.9.6 to support Python 3.11
 
 0.2.8 (2023-08-01)
 ++++++++++++++++++
