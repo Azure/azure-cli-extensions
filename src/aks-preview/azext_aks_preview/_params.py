@@ -899,12 +899,12 @@ def load_arguments(self, _):
     with self.argument_context('aks mesh disable-ingress-gateway') as c:
         c.argument('ingress_gateway_type',
                    arg_type=get_enum_type(ingress_gateway_types))
-        
+
     with self.argument_context('aks check-network') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], required=True, help='Name of the managed cluster.')
         c.argument('resource_group', options_list=['--resource-group', '-g'], required=True, help='Name of the resource group.')
-        c.argument('node_name', options_list=[
-                       '--node-name'], required=False, help='Name of a specific node to check the connectivity. If not specified, a random node will be checked.')
+        c.argument('node_name', options_list=['--node-name'], required=False, help='Name of the node to perform the connectivity check.')
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()
