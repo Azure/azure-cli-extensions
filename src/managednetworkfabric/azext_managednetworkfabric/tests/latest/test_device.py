@@ -26,17 +26,10 @@ def call_scenario1(test):
     ''' # Testcase: scenario1'''
     setup_scenario1(test)
     step_show(test, checks=[])
-    step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
+    step_list_subscription(test, checks=[])
     step_update(test, checks=[])
     cleanup_scenario1(test)
-
-def step_update(test, checks=None):
-    '''Device create operation'''
-    if checks is None:
-        checks = []
-    test.cmd('az networkfabric device update --resource-group {rg} --resource-name {name} '
-    ' --serial-number {serial_number}', checks=checks)
 
 def step_show(test, checks=None):
     '''Device show operation'''
@@ -57,7 +50,14 @@ def step_list_subscription(test, checks=None):
         checks = []
     test.cmd('az networkfabric device list')
 
-class DeviceScenarioTest1(ScenarioTest):
+def step_update(test, checks=None):
+    '''Device create operation'''
+    if checks is None:
+        checks = []
+    test.cmd('az networkfabric device update --resource-group {rg} --resource-name {name} '
+    ' --serial-number {serial_number}', checks=checks)
+
+class GA_DeviceScenarioTest1(ScenarioTest):
     ''' DeviceScenario test'''
 
     def __init__(self, *args, **kwargs):
@@ -70,6 +70,6 @@ class DeviceScenarioTest1(ScenarioTest):
         })
 
     @AllowLargeResponse()
-    def test_Device_scenario1(self):
+    def test_GA_Device_scenario1(self):
         ''' test scenario for Device CRUD operations'''
         call_scenario1(self)

@@ -15,16 +15,19 @@ from azure.cli.core.aaz import *
     "networkfabric ipextendedcommunity create",
 )
 class Create(AAZCommand):
-    """Create a Ip Extended Community resource.
+    """Create a Ip Extended Community resource
 
     :example: Create a Ip Extended Community
-        az networkfabric ipextendedcommunity create --resource-group "example-rg" --location "westus3" --resource-name "example-ipextendedcommunity" --action "Deny" --route-targets "1024:219" "1001:200"
+        az networkfabric ipextendedcommunity create --resource-group "example-rg" --location "westus3" --resource-name "example-ipextendedcommunity" --ip-extended-community-rules "[{action:Permit,sequenceNumber:1234,routeTargets:['1024:219','1001:200']}]"
+
+    :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
+        az networkfabric ipextendedcommunity create --ip-extended-community-rules ??
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities/{}", "2023-06-15"],
         ]
     }
 
@@ -47,7 +50,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the IP Extended Community",
+            help="Name of the IP Extended Community.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -78,25 +81,49 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.action = AAZStrArg(
-            options=["--action"],
-            arg_group="Properties",
-            help="Action to be taken on the configuration. Example: Permit | Deny.",
-            enum={"Deny": "Deny", "Permit": "Permit"},
-        )
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
-            help="Switch configuration description.",
+            help="Description for underlying resource.",
         )
-        _args_schema.route_targets = AAZListArg(
-            options=["--route-targets"],
+        _args_schema.ip_extended_community_rules = AAZListArg(
+            options=["--ip-extended-community-rules"],
             arg_group="Properties",
-            help="Route Target List.The expected formats are ASN(plain):NN >> example 4294967294:50, ASN.ASN:NN >> example 65533.65333:40, IP-address:NN >> example 10.10.10.10:65535. The possible values of ASN,NN are in range of 0-65535, ASN(plain) is in range of 0-4294967295.",
+            help="List of IP Extended Community Rules.",
+            required=True,
         )
 
-        route_targets = cls._args_schema.route_targets
-        route_targets.Element = AAZStrArg()
+        ip_extended_community_rules = cls._args_schema.ip_extended_community_rules
+        ip_extended_community_rules.Element = AAZObjectArg()
+
+        _element = cls._args_schema.ip_extended_community_rules.Element
+        _element.action = AAZStrArg(
+            options=["action"],
+            help="Action to be taken on the configuration. Example: Permit.",
+            required=True,
+            enum={"Deny": "Deny", "Permit": "Permit"},
+        )
+        _element.route_targets = AAZListArg(
+            options=["route-targets"],
+            help="Route Target List.The expected formats are ASN(plain):NN >> example 4294967294:50, ASN.ASN:NN >> example 65533.65333:40, IP-address:NN >> example 10.10.10.10:65535. The possible values of ASN,NN are in range of 0-65535, ASN(plain) is in range of 0-4294967295.",
+            required=True,
+        )
+        _element.sequence_number = AAZIntArg(
+            options=["sequence-number"],
+            help="Sequence to insert to/delete from existing route. Prefix lists are evaluated starting with the lowest sequence number and continue down the list until a match is made. Once a match is made, the permit or deny statement is applied to that network and the rest of the list is ignored.",
+            required=True,
+            fmt=AAZIntArgFormat(
+                maximum=4294967295,
+                minimum=1,
+            ),
+        )
+
+        route_targets = cls._args_schema.ip_extended_community_rules.Element.route_targets
+        route_targets.Element = AAZStrArg(
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -180,7 +207,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -206,16 +233,25 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("action", AAZStrType, ".action", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("annotation", AAZStrType, ".annotation")
-                properties.set_prop("routeTargets", AAZListType, ".route_targets", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("ipExtendedCommunityRules", AAZListType, ".ip_extended_community_rules", typ_kwargs={"flags": {"required": True}})
 
-            route_targets = _builder.get(".properties.routeTargets")
+            ip_extended_community_rules = _builder.get(".properties.ipExtendedCommunityRules")
+            if ip_extended_community_rules is not None:
+                ip_extended_community_rules.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.ipExtendedCommunityRules[]")
+            if _elements is not None:
+                _elements.set_prop("action", AAZStrType, ".action", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("routeTargets", AAZListType, ".route_targets", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("sequenceNumber", AAZIntType, ".sequence_number", typ_kwargs={"flags": {"required": True}})
+
+            route_targets = _builder.get(".properties.ipExtendedCommunityRules[].routeTargets")
             if route_targets is not None:
                 route_targets.set_elements(AAZStrType, ".")
 
@@ -253,7 +289,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -265,20 +301,41 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.action = AAZStrType(
-                flags={"required": True},
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
             )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            properties.ip_extended_community_rules = AAZListType(
+                serialized_name="ipExtendedCommunityRules",
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.route_targets = AAZListType(
+
+            ip_extended_community_rules = cls._schema_on_200_201.properties.ip_extended_community_rules
+            ip_extended_community_rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.ip_extended_community_rules.Element
+            _element.action = AAZStrType(
+                flags={"required": True},
+            )
+            _element.route_targets = AAZListType(
                 serialized_name="routeTargets",
                 flags={"required": True},
             )
+            _element.sequence_number = AAZIntType(
+                serialized_name="sequenceNumber",
+                flags={"required": True},
+            )
 
-            route_targets = cls._schema_on_200_201.properties.route_targets
+            route_targets = cls._schema_on_200_201.properties.ip_extended_community_rules.Element.route_targets
             route_targets.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data

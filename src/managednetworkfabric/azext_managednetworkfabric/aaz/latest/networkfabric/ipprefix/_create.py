@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "networkfabric ipprefix create",
 )
 class Create(AAZCommand):
-    """Create a Ip Prefix resource.
+    """Create a Ip Prefix resource
 
     :example: Create a Ip Prefix
         az networkfabric ipprefix create --resource-group "example-rg" --location "westus3" --resource-name "example-ipprefix" --ip-prefix-rules "[{action:Permit,sequenceNumber:1234,networkPrefix:'1.1.1.0/24',condition:EqualTo,subnetMaskLength:24}]"
@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipprefixes/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipprefixes/{}", "2023-06-15"],
         ]
     }
 
@@ -50,7 +50,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the IP Prefix",
+            help="Name of the IP Prefix.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -84,12 +84,12 @@ class Create(AAZCommand):
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
-            help="Switch configuration description.",
+            help="Description for underlying resource.",
         )
         _args_schema.ip_prefix_rules = AAZListArg(
             options=["--ip-prefix-rules"],
             arg_group="Properties",
-            help="IpPrefix contains the list of IP PrefixRules objects.",
+            help="The list of IP Prefix Rules.",
             required=True,
         )
 
@@ -99,36 +99,32 @@ class Create(AAZCommand):
         _element = cls._args_schema.ip_prefix_rules.Element
         _element.action = AAZStrArg(
             options=["action"],
-            help="Action to be taken on the configuration. Example: Permit | Deny.",
+            help="Action to be taken on the configuration. Example: Permit.",
             required=True,
             enum={"Deny": "Deny", "Permit": "Permit"},
         )
         _element.condition = AAZStrArg(
             options=["condition"],
             help="Specify prefix-list bounds.",
-            enum={"EqualTo": "EqualTo", "GreaterThanOrEqualTo": "GreaterThanOrEqualTo", "LesserThanOrEqualTo": "LesserThanOrEqualTo"},
+            enum={"EqualTo": "EqualTo", "GreaterThanOrEqualTo": "GreaterThanOrEqualTo", "LesserThanOrEqualTo": "LesserThanOrEqualTo", "Range": "Range"},
         )
         _element.network_prefix = AAZStrArg(
             options=["network-prefix"],
-            help="Network Prefix specifying IPv4/IPv6 packets to be permitted or denied. Example: 1.1.1.0/24 | 3FFE:FFFF:0:CD30::/126 ",
+            help="Network Prefix specifying IPv4/IPv6 packets to be permitted or denied. Example: 1.1.1.0/24.",
             required=True,
         )
         _element.sequence_number = AAZIntArg(
             options=["sequence-number"],
-            help="Sequence to insert to/delete from existing route. Prefix lists are evaluated starting with the lowest sequence number and continue down the list until a match is made. Once a match is made, the permit or deny statement is applied to that network and the rest of the list is ignored. The value should be between 1 to 4294967295.",
+            help="Sequence to insert to/delete from existing route. Prefix lists are evaluated starting with the lowest sequence number and continue down the list until a match is made. Once a match is made, the permit or deny statement is applied to that network and the rest of the list is ignored.",
             required=True,
             fmt=AAZIntArgFormat(
                 maximum=4294967295,
                 minimum=1,
             ),
         )
-        _element.subnet_mask_length = AAZIntArg(
+        _element.subnet_mask_length = AAZStrArg(
             options=["subnet-mask-length"],
-            help="SubnetMaskLength gives the minimum NetworkPrefix length to be matched.Possible values for IPv4 are 1 - 32. Possible values of IPv6 are 1 - 128.",
-            fmt=AAZIntArgFormat(
-                maximum=128,
-                minimum=1,
-            ),
+            help="SubnetMaskLength gives the minimum NetworkPrefix length to be matched. Possible values for IPv4 are 1 - 32 . Possible values of IPv6 are 1 - 128.",
         )
         return cls._args_schema
 
@@ -213,7 +209,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -257,7 +253,7 @@ class Create(AAZCommand):
                 _elements.set_prop("condition", AAZStrType, ".condition")
                 _elements.set_prop("networkPrefix", AAZStrType, ".network_prefix", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("sequenceNumber", AAZIntType, ".sequence_number", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("subnetMaskLength", AAZIntType, ".subnet_mask_length")
+                _elements.set_prop("subnetMaskLength", AAZStrType, ".subnet_mask_length")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -305,7 +301,15 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
             properties.ip_prefix_rules = AAZListType(
                 serialized_name="ipPrefixRules",
                 flags={"required": True},
@@ -331,7 +335,7 @@ class Create(AAZCommand):
                 serialized_name="sequenceNumber",
                 flags={"required": True},
             )
-            _element.subnet_mask_length = AAZIntType(
+            _element.subnet_mask_length = AAZStrType(
                 serialized_name="subnetMaskLength",
             )
 

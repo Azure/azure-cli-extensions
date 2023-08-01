@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities/{}", "2023-06-15"],
         ]
     }
 
@@ -42,7 +42,7 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the IP Extended Community",
+            help="Name of the IP Extended Community.",
             required=True,
             id_part="name",
         )
@@ -117,7 +117,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -160,7 +160,7 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -172,20 +172,41 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.action = AAZStrType(
-                flags={"required": True},
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
             )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            properties.ip_extended_community_rules = AAZListType(
+                serialized_name="ipExtendedCommunityRules",
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.route_targets = AAZListType(
+
+            ip_extended_community_rules = cls._schema_on_200.properties.ip_extended_community_rules
+            ip_extended_community_rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.ip_extended_community_rules.Element
+            _element.action = AAZStrType(
+                flags={"required": True},
+            )
+            _element.route_targets = AAZListType(
                 serialized_name="routeTargets",
                 flags={"required": True},
             )
+            _element.sequence_number = AAZIntType(
+                serialized_name="sequenceNumber",
+                flags={"required": True},
+            )
 
-            route_targets = cls._schema_on_200.properties.route_targets
+            route_targets = cls._schema_on_200.properties.ip_extended_community_rules.Element.route_targets
             route_targets.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data

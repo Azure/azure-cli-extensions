@@ -1,0 +1,940 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group --device
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1","name":"Ethernet1","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:53.6080984Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:53.6080984Z"},"properties":{"physicalIdentifier":"Ethernet1","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '742'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:41:45 GMT
+      etag:
+      - '"00001805-0000-0100-0000-64c103390000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --device
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces?api-version=2023-06-15
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1","name":"Ethernet1","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:53.6080984Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:53.6080984Z"},"properties":{"physicalIdentifier":"Ethernet1","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet2","name":"Ethernet2","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:53.68622Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:53.68622Z"},"properties":{"physicalIdentifier":"Ethernet2","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet3","name":"Ethernet3","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:53.7643468Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:53.7643468Z"},"properties":{"physicalIdentifier":"Ethernet3","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet4","name":"Ethernet4","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:53.8737365Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:53.8737365Z"},"properties":{"physicalIdentifier":"Ethernet4","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet5","name":"Ethernet5","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:53.9518645Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:53.9518645Z"},"properties":{"physicalIdentifier":"Ethernet5","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet6","name":"Ethernet6","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:54.0299975Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:54.0299975Z"},"properties":{"physicalIdentifier":"Ethernet6","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet7","name":"Ethernet7","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:54.1081333Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:54.1081333Z"},"properties":{"physicalIdentifier":"Ethernet7","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet8","name":"Ethernet8","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:54.1862557Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:54.1862557Z"},"properties":{"physicalIdentifier":"Ethernet8","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet9","name":"Ethernet9","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:54.2643919Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:54.2643919Z"},"properties":{"physicalIdentifier":"Ethernet9","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet10","name":"Ethernet10","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:54.3581476Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:54.3581476Z"},"properties":{"physicalIdentifier":"Ethernet10","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet11","name":"Ethernet11","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:54.4362798Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:54.4362798Z"},"properties":{"physicalIdentifier":"Ethernet11","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet12","name":"Ethernet12","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:54.530088Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:54.530088Z"},"properties":{"physicalIdentifier":"Ethernet12","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet13","name":"Ethernet13","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:54.6081683Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:54.6081683Z"},"properties":{"physicalIdentifier":"Ethernet13","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet14","name":"Ethernet14","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:54.6862961Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:54.6862961Z"},"properties":{"physicalIdentifier":"Ethernet14","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet15","name":"Ethernet15","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:54.7644307Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:54.7644307Z"},"properties":{"physicalIdentifier":"Ethernet15","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet16","name":"Ethernet16","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:54.8581861Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:54.8581861Z"},"properties":{"physicalIdentifier":"Ethernet16","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet17","name":"Ethernet17","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:55.0144485Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:55.0144485Z"},"properties":{"physicalIdentifier":"Ethernet17","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet18","name":"Ethernet18","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:55.0925812Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:55.0925812Z"},"properties":{"physicalIdentifier":"Ethernet18","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet19","name":"Ethernet19","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:55.1863419Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:55.1863419Z"},"properties":{"physicalIdentifier":"Ethernet19","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet20","name":"Ethernet20","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:55.2644689Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:55.2644689Z"},"properties":{"physicalIdentifier":"Ethernet20","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet21","name":"Ethernet21","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:55.3426008Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:55.3426008Z"},"properties":{"physicalIdentifier":"Ethernet21","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet22","name":"Ethernet22","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:55.4363552Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:55.4363552Z"},"properties":{"physicalIdentifier":"Ethernet22","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet23","name":"Ethernet23","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:55.5457393Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:55.5457393Z"},"properties":{"physicalIdentifier":"Ethernet23","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet24","name":"Ethernet24","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:55.6239414Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:55.6239414Z"},"properties":{"physicalIdentifier":"Ethernet24","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet25","name":"Ethernet25","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:55.7176512Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:55.7176512Z"},"properties":{"physicalIdentifier":"Ethernet25","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet26","name":"Ethernet26","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:55.7957586Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:55.7957586Z"},"properties":{"physicalIdentifier":"Ethernet26","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet27","name":"Ethernet27","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:55.9214772Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:55.9214772Z"},"properties":{"physicalIdentifier":"Ethernet27","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet28","name":"Ethernet28","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:55.9989663Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:55.9989663Z"},"properties":{"physicalIdentifier":"Ethernet28","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet29","name":"Ethernet29","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:56.1551625Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:56.1551625Z"},"properties":{"physicalIdentifier":"Ethernet29","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet30","name":"Ethernet30","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:56.2646088Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:56.2646088Z"},"properties":{"physicalIdentifier":"Ethernet30","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet31","name":"Ethernet31","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:56.3583789Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:56.3583789Z"},"properties":{"physicalIdentifier":"Ethernet31","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet32","name":"Ethernet32","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:56.4364315Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:56.4364315Z"},"properties":{"physicalIdentifier":"Ethernet32","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet33","name":"Ethernet33","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:56.5146336Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:56.5146336Z"},"properties":{"physicalIdentifier":"Ethernet33","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet34","name":"Ethernet34","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:56.6083255Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:56.6083255Z"},"properties":{"physicalIdentifier":"Ethernet34","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet35","name":"Ethernet35","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:56.6864514Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:56.6864514Z"},"properties":{"physicalIdentifier":"Ethernet35","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet36","name":"Ethernet36","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:56.7645912Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:56.7645912Z"},"properties":{"physicalIdentifier":"Ethernet36","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet37","name":"Ethernet37","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:56.8583432Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:56.8583432Z"},"properties":{"physicalIdentifier":"Ethernet37","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet38","name":"Ethernet38","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:56.9520996Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:56.9520996Z"},"properties":{"physicalIdentifier":"Ethernet38","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet39","name":"Ethernet39","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:57.0302308Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:57.0302308Z"},"properties":{"physicalIdentifier":"Ethernet39","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet40","name":"Ethernet40","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:57.1083614Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:57.1083614Z"},"properties":{"physicalIdentifier":"Ethernet40","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet47","name":"Ethernet47","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:57.2021212Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:57.2021212Z"},"properties":{"physicalIdentifier":"Ethernet47","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet48","name":"Ethernet48","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:57.2802514Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:57.2802514Z"},"properties":{"physicalIdentifier":"Ethernet48","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet49","name":"Ethernet49","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:57.3740055Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:57.3740055Z"},"properties":{"physicalIdentifier":"Ethernet49","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet50","name":"Ethernet50","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:57.4678182Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:57.4678182Z"},"properties":{"physicalIdentifier":"Ethernet50","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Data"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Management1","name":"Management1","type":"microsoft.managednetworkfabric/networkdevices/networkinterfaces","systemData":{"createdBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","createdByType":"Application","createdAt":"2023-07-26T11:27:57.5458988Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T11:27:57.5458988Z"},"properties":{"physicalIdentifier":"Management","administrativeState":"Enabled","provisioningState":"Succeeded","interfaceType":"Management","ipv4Address":"10.1.2.41","ipv6Address":"2fff:0:0:2::29"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '33613'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:41:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"state": "Disable"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update-admin-state
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '20'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --device --resource-name --state
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1/updateAdministrativeState?api-version=2023-06-15
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:41:52 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      mise-correlation-id:
+      - 95598697-b9ec-49d2-a905-4635ac16e5aa
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --device --resource-name --state
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","name":"daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1","status":"Updating","startTime":"2023-07-26T11:41:51.835542Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '655'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:41:53 GMT
+      etag:
+      - '"010072dd-0000-0100-0000-64c106800000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --device --resource-name --state
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","name":"daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1","status":"Updating","startTime":"2023-07-26T11:41:51.835542Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '655'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:42:24 GMT
+      etag:
+      - '"010072dd-0000-0100-0000-64c106800000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --device --resource-name --state
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","name":"daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1","status":"Updating","startTime":"2023-07-26T11:41:51.835542Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '655'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:42:55 GMT
+      etag:
+      - '"010072dd-0000-0100-0000-64c106800000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --device --resource-name --state
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","name":"daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1","status":"Updating","startTime":"2023-07-26T11:41:51.835542Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '655'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:43:27 GMT
+      etag:
+      - '"010072dd-0000-0100-0000-64c106800000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --device --resource-name --state
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","name":"daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1","status":"Updating","startTime":"2023-07-26T11:41:51.835542Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '655'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:43:59 GMT
+      etag:
+      - '"010072dd-0000-0100-0000-64c106800000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --device --resource-name --state
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","name":"daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1","status":"Updating","startTime":"2023-07-26T11:41:51.835542Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '655'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:44:30 GMT
+      etag:
+      - '"010072dd-0000-0100-0000-64c106800000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --device --resource-name --state
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","name":"daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1","status":"Updating","startTime":"2023-07-26T11:41:51.835542Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '655'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:45:01 GMT
+      etag:
+      - '"010072dd-0000-0100-0000-64c106800000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --device --resource-name --state
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","name":"daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1","status":"Updating","startTime":"2023-07-26T11:41:51.835542Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '655'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:45:32 GMT
+      etag:
+      - '"010072dd-0000-0100-0000-64c106800000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --device --resource-name --state
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","name":"daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1","status":"Updating","startTime":"2023-07-26T11:41:51.835542Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '655'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:46:03 GMT
+      etag:
+      - '"010072dd-0000-0100-0000-64c106800000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --device --resource-name --state
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","name":"daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1","status":"Updating","startTime":"2023-07-26T11:41:51.835542Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '655'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:46:35 GMT
+      etag:
+      - '"010072dd-0000-0100-0000-64c106800000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --device --resource-name --state
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","name":"daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1","status":"Succeeded","startTime":"2023-07-26T11:41:51.835542Z","endTime":"2023-07-26T11:46:49.1093954Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '715'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:47:07 GMT
+      etag:
+      - '"010093e0-0000-0100-0000-64c107a90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --device --resource-name --state
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","name":"daad5307-c885-4ad6-9e06-b99cf7ebf7ce*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1","status":"Succeeded","startTime":"2023-07-26T11:41:51.835542Z","endTime":"2023-07-26T11:46:49.1093954Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '715'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:47:07 GMT
+      etag:
+      - '"010093e0-0000-0100-0000-64c107a90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"state": "Enable"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update-admin-state
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '19'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --device --resource-name --state
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1/updateAdministrativeState?api-version=2023-06-15
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/fc7b8860-0579-4856-9add-9017a4a1b24e*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:47:10 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/fc7b8860-0579-4856-9add-9017a4a1b24e*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      mise-correlation-id:
+      - 80130cc3-c277-4822-86fc-8c99f70784ea
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --device --resource-name --state
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/fc7b8860-0579-4856-9add-9017a4a1b24e*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/fc7b8860-0579-4856-9add-9017a4a1b24e*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","name":"fc7b8860-0579-4856-9add-9017a4a1b24e*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1","status":"Updating","startTime":"2023-07-26T11:47:09.923202Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/fc7b8860-0579-4856-9add-9017a4a1b24e*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '655'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:47:12 GMT
+      etag:
+      - '"0100d3e0-0000-0100-0000-64c107be0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/fc7b8860-0579-4856-9add-9017a4a1b24e*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --device --resource-name --state
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/fc7b8860-0579-4856-9add-9017a4a1b24e*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/fc7b8860-0579-4856-9add-9017a4a1b24e*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","name":"fc7b8860-0579-4856-9add-9017a4a1b24e*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1","status":"Updating","startTime":"2023-07-26T11:47:09.923202Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/fc7b8860-0579-4856-9add-9017a4a1b24e*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '655'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:47:44 GMT
+      etag:
+      - '"0100d3e0-0000-0100-0000-64c107be0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/eastus/operationStatuses/fc7b8860-0579-4856-9add-9017a4a1b24e*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --device --resource-name --state
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/fc7b8860-0579-4856-9add-9017a4a1b24e*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/fc7b8860-0579-4856-9add-9017a4a1b24e*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","name":"fc7b8860-0579-4856-9add-9017a4a1b24e*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1","status":"Succeeded","startTime":"2023-07-26T11:47:09.923202Z","endTime":"2023-07-26T11:48:09.7584231Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '715'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:48:15 GMT
+      etag:
+      - '"0100c0e1-0000-0100-0000-64c107f90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric interface update-admin-state
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --device --resource-name --state
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/fc7b8860-0579-4856-9add-9017a4a1b24e*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/fc7b8860-0579-4856-9add-9017a4a1b24e*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","name":"fc7b8860-0579-4856-9add-9017a4a1b24e*EEB63597D5CDA5F453EE64B0BF9AAA03E97883CA9CAA24664FD0CEDDE4B6EFE6","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkDevices/nfa-tool-ts-GA-cli-nf072623-CompRack1-MgmtSwitch/networkInterfaces/Ethernet1","status":"Succeeded","startTime":"2023-07-26T11:47:09.923202Z","endTime":"2023-07-26T11:48:09.7584231Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '715'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Jul 2023 11:48:16 GMT
+      etag:
+      - '"0100c0e1-0000-0100-0000-64c107f90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

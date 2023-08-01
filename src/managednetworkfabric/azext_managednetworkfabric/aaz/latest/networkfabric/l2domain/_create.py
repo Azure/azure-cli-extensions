@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "networkfabric l2domain create",
 )
 class Create(AAZCommand):
-    """Create a L2 Isolation Domain resource.
+    """Create a L2 Isolation Domain resource
 
     :example: Create a L2 Isolation Domain
         az networkfabric l2domain create --resource-group "example-rg" --resource-name "example-l2domain" --location "westus3" --nf-id "/subscriptions/xxxxxx-xxxxxx-xxxx-xxxx-xxxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/NetworkFabrics/example-fabricName" --vlan-id  501 --mtu 1500
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l2isolationdomains/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l2isolationdomains/{}", "2023-06-15"],
         ]
     }
 
@@ -47,7 +47,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the L2 Isolation Domain",
+            help="Name of the L2 Isolation Domain.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -81,22 +81,32 @@ class Create(AAZCommand):
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
-            help="Switch configuration description.",
+            help="Description for underlying resource.",
         )
         _args_schema.mtu = AAZIntArg(
             options=["--mtu"],
             arg_group="Properties",
-            help="Maximum transmission unit: The value should be between 1500-9000. Default value is 1500",
+            help="Maximum transmission unit. The value should be between 64 to 9200. Default value is 1500. Example: 1500.",
+            fmt=AAZIntArgFormat(
+                maximum=9200,
+                minimum=64,
+            ),
         )
-        _args_schema.nf_id = AAZStrArg(
+        _args_schema.nf_id = AAZResourceIdArg(
             options=["--nf-id"],
             arg_group="Properties",
-            help="Resource ID of the Network Fabric resource",
+            help="ARM Resource ID of the Network Fabric.",
+            required=True,
         )
         _args_schema.vlan_id = AAZIntArg(
             options=["--vlan-id"],
             arg_group="Properties",
-            help="Vlan identifier value. The value should be between 501-4095. Example: 501.",
+            help="Vlan Identifier of the Network Fabric. The value should be between 100 to 4094. Example: 501.",
+            required=True,
+            fmt=AAZIntArgFormat(
+                maximum=4094,
+                minimum=100,
+            ),
         )
         return cls._args_schema
 
@@ -181,7 +191,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -207,7 +217,7 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -251,7 +261,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -268,8 +278,8 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             properties.annotation = AAZStrType()
-            properties.disabled_on_resources = AAZListType(
-                serialized_name="disabledOnResources",
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
                 flags={"read_only": True},
             )
             properties.mtu = AAZIntType()
@@ -285,9 +295,6 @@ class Create(AAZCommand):
                 serialized_name="vlanId",
                 flags={"required": True},
             )
-
-            disabled_on_resources = cls._schema_on_200_201.properties.disabled_on_resources
-            disabled_on_resources.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
