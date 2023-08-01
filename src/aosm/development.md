@@ -29,6 +29,9 @@ git checkout add-aosm-extension
 # Install all the python dependencies you need
 azdev setup --cli /home/developer/code/azure-cli --repo .
 
+# Install pyYAML types
+python3 -m pip install types-PyYAML
+
 # Add the extension to your local CLI
 azdev extension add aosm
 ```
@@ -165,4 +168,3 @@ To trigger a pipeline you need to create a PR against main.
 Until we do the initial merge to main we don't want to have a PR to main for every code review.
 Instead we have a single PR for the `add-aosm-extension` branch: https://github.com/Azure/azure-cli-extensions/pull/6426
 Once you have merged your changes to `add-aosm-extension` then look at the Azure Pipelines under https://github.com/Azure/azure-cli-extensions/pull/6426/checks, click on the link that says `<X> errors / <Y> warnings`.
-
