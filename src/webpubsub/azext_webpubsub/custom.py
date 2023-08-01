@@ -14,7 +14,7 @@ from .vendored_sdks.azure_mgmt_webpubsub.operations import (
 )
 
 
-def webpubsub_create(client:WebPubSubOperations, resource_group_name, webpubsub_name, sku, unit_count=1, location=None, tags=None, kind=None):
+def webpubsub_create(client: WebPubSubOperations, resource_group_name, webpubsub_name, sku, unit_count=1, location=None, tags=None, kind=None):
     sku = ResourceSku(name=sku, capacity=unit_count)
     parameter = WebPubSubResource(
         sku=sku,

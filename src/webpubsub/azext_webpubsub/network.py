@@ -12,6 +12,7 @@ from .vendored_sdks.azure_mgmt_webpubsub.operations import (
     WebPubSubOperations
 )
 
+
 # pylint: disable=dangerous-default-value
 def update_network_rules(client: WebPubSubOperations, webpubsub_name, resource_group_name, public_network, connection_name=[], allow=[], deny=[]):
     resource = client.get(resource_group_name, webpubsub_name)
