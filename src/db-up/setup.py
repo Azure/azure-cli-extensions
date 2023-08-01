@@ -9,7 +9,7 @@ import sys
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.2.8"
+VERSION = "0.2.9"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -26,7 +26,7 @@ CLASSIFIERS = [
 DEPENDENCIES = [
     'Cython==0.29.17',
     'mysql-connector-python==8.0.14',
-    'psycopg2-binary==2.9.1'
+    'psycopg2-binary~=2.9.6'
 ]
 
 if sys.platform != 'darwin':
