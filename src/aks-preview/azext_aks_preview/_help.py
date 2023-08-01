@@ -2588,10 +2588,10 @@ helps['aks mesh disable-ingress-gateway'] = """
         text: az aks mesh disable-ingress-gateway --resource-group MyResourceGroup --name MyManagedCluster --ingress-gateway-type Internal
 """
 
-helps['aks check-network vmss'] = """
+helps['aks check-network'] = """
     type: command
     short-summary: Perform outbound network connectivity check for a node in a managed Kubernetes cluster.
-    long-summary: This command checks outbound network connectivity from a node to required AKS endpints.
+    long-summary: This command checks outbound network connectivity from a node to required AKS endpoints.
     parameters:
       - name: --name -n
         type: string

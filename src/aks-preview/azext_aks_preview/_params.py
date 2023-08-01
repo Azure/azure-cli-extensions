@@ -900,7 +900,7 @@ def load_arguments(self, _):
         c.argument('ingress_gateway_type',
                    arg_type=get_enum_type(ingress_gateway_types))
         
-    with self.argument_context('aks check-network vmss') as c:
+    with self.argument_context('aks check-network') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], required=True, help='Name of the managed cluster.')
         c.argument('resource_group', options_list=['--resource-group', '-g'], required=True, help='Name of the resource group.')
         c.argument('node_name', options_list=[

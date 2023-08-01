@@ -2502,7 +2502,7 @@ def _process_message(message):
     for line in result:
         print(line)
 
-def aks_check_network_vmss(cmd, 
+def aks_check_network(cmd, 
                       client, 
                       resource_group, 
                       cluster_name, 
@@ -2525,22 +2525,32 @@ def aks_check_network_vmss(cmd,
             node_name = str(cluster_info["items"][0]["metadata"]["name"])
         else:
             raise ValidationError("Failed to get node name from cluster")
+    
+    vmss_name = node_name
+    instance_id = None
     index = node_name.find("vmss")
-    vmss_name = node_name[0:index+4]
-    instance_id = node_name[index+4:]
+    if index != -1:
+        vmss_name = node_name[0:index+4]
+        instance_id = node_name[index+4:]
     location = get_rg_location(cmd.cli_ctx, resource_group)
     node_resource_group = "MC_{0}_{1}_{2}".format(resource_group, cluster_name, location)
-    print("Start checking network for vmss_name: {0}, instance_id: {1}, node_resource_group: {2}".format(vmss_name, instance_id, node_resource_group))
+    print("Start checking network for node: {0}, instance_id: {1}, node_resource_group: {2}".format(vmss_name, instance_id, node_resource_group))
 
     try:
         from azure.cli.core.profiles import ResourceType
         from azure.cli.command_modules.vm._client_factory import _compute_client_factory
 
-        RunCommandInput = cmd.get_models('RunCommandInput', resource_type=ResourceType.MGMT_COMPUTE, operation_group="virtual_machine_scale_sets")
         client = _compute_client_factory(cmd.cli_ctx)
-        command_result_poller = client.virtual_machine_scale_set_vms.begin_run_command(
-            node_resource_group, vmss_name, instance_id,
-            RunCommandInput(command_id="RunShellScript", script=["bash /usr/local/bin/check-outbound-network.sh"]))
+        if instance_id:
+            RunCommandInput = cmd.get_models('RunCommandInput', resource_type=ResourceType.MGMT_COMPUTE, operation_group="virtual_machine_scale_sets")
+            command_result_poller = client.virtual_machine_scale_set_vms.begin_run_command(
+                node_resource_group, vmss_name, instance_id,
+                RunCommandInput(command_id="RunShellScript", script=["bash /usr/local/bin/check-outbound-network.sh"]))
+        else:
+            RunCommandInput = cmd.get_models('RunCommandInput', resource_type=ResourceType.MGMT_COMPUTE, operation_group="virtual_machine_run_commands")
+            command_result_poller = client.virtual_machines.begin_run_command(
+                node_resource_group, vmss_name,
+                RunCommandInput(command_id="RunShellScript", script=["bash /usr/local/bin/check-outbound-network.sh"]))
         command_result = command_result_poller.result()
         display_status = command_result.value[0].display_status
         message = command_result.value[0].message
