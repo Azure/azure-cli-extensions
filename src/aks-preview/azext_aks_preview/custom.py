@@ -2588,12 +2588,13 @@ def aks_mesh_migration_check(cmd, client, resource_group_name, name, kubeconfig 
         instance = kubernetes.client.CustomObjectsApi()
         if compatible_version:
             aks_mesh_check_crd_config(cmd, client, resource_group_name, name, instance, istio_version)
+            
     can_migrate, total_passed = display_migrationcheck(result_dict)
     if can_migrate:
         print(f"{Fore.GREEN}\n13/13 checks passed. Your cluster is ready for migration to the AKS service mesh add-on! For more information on enabling the add-on, please read: https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon{Style.RESET_ALL}")
     else:
-        print(f"{Fore.RED}\nOnly {total_passed}/13 migration checks passed. Please follow suggestions inline to fix these before attempting to migrate to the AKS service mesh add-on.{Style.RESET_ALL}")
-    return result_dict
+        print(f"{Fore.RED}\n{13-total_passed} problems detected. Please follow suggestions inline to fix these before attempting to migrate to the AKS service mesh add-on.{Style.RESET_ALL}")
+    return
 
  
 
@@ -2601,11 +2602,11 @@ def aks_mesh_check_istio_existence(v1):
     pod_info = v1.list_pod_for_all_namespaces(label_selector="app=istiod")
     asm_test = v1.list_namespaced_pod("aks-istio-system", label_selector="app=istiod")
     if len(asm_test.items) != 0:
-        raise CLIError("ASM installation found. Check aborted")
+        raise CLIError("AKS based Istio addon installation found. Check aborted")
     if len(pod_info.items) == 0:
         result_dict['Istio existence'] = {
             'status' : False,
-            'message' : 'OSS Istio installation not found. If all the other test pass, directly install Azure Service Mesh(ASM). For more info, https://learn.microsoft.com/en-us/azure/aks/istio-about'
+            'message' : 'Open Source Istio installation not found. If all the other test pass, directly install AKS based Istio addon. For more info, https://learn.microsoft.com/en-us/azure/aks/istio-about'
         }
         return False
 
@@ -2617,13 +2618,29 @@ def aks_mesh_check_istio_existence(v1):
 
 
 def aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1):
-    from pprint import pprint
     cm = v1.list_config_map_for_all_namespaces()
     mesh_config = {}
     root_name_space = ''
     istio_version = ''
     proxy_config = {}
+    istio_cert = ''
     
+    
+    # for item in cm.items:
+    #     if item.metadata.name == "istio-ca-root-cert":
+    #         istio_cert = item.data['root-cert.pem']
+        
+    # from cryptography import x509
+    # from cryptography.hazmat.backends import default_backend
+    # certDecoded = x509.load_pem_x509_certificate(str.encode(istio_cert), 
+    # default_backend())
+    # if (str(certDecoded.issuer) != "<Name(O=cluster.local)>"):
+    #     print("Different root CA cert found")
+    # print(certDecoded.issuer)
+    # print(certDecoded.subject)
+    # print(certDecoded.not_valid_after)
+    # print(certDecoded.not_valid_before)
+            
     for item in cm.items:
         if (item.data and 'mesh' in item.data):
             mesh_config = yaml.safe_load(item.data['mesh'])
@@ -2633,6 +2650,7 @@ def aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1)
             except Exception:
                 istio_version = ""
     #Istio version is stored under global values tag in case of helm installation
+    
     if istio_version == "":
         for item in cm.items:
             try:
@@ -2663,20 +2681,6 @@ def aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1)
     
 
 def aks_mesh_check_base_requirements(cmd, client, resource_group_name, name, v1):
-    from pprint import pprint
-    # KUBERNETES_VERSION = aks_show(cmd, client, resource_group_name, name).kubernetes_version
-    # # KUBERNETES_VERSION = show_result.kubernetes_version
-    
-    # if (version.parse(KUBERNETES_VERSION) < version.parse('1.24.9')):
-    #     result_dict['AKS version'] = {
-    #         'status': False,
-    #         'message': "Unsupported kubernetes version found."
-    #     }
-    # else:
-    #     result_dict['AKS version'] = {
-    #         'status': True,
-    #         'message': "Supported Kubernetes version found."
-    #     }
 
     try:
         mc = client.get(resource_group_name, name)
@@ -2685,12 +2689,10 @@ def aks_mesh_check_base_requirements(cmd, client, resource_group_name, name, v1)
     
     try: 
         if mc.service_mesh_profile.mode == "Istio":
-            raise CLIError("ASM installation found. Aborting checks.")
+            raise CLIError("AKS based Istio addon installation found. Aborting checks.")
     except Exception:
         pass
     
-    # if (mc.service_mesh_profile and mc.service_mesh_profile.mode == "Istio"):
-    #     raise CLIError("ASM installation already found. Aborting checks.")
 
 
     if (mc.addon_profiles and CONST_OPEN_SERVICE_MESH_ADDON_NAME in mc.addon_profiles and
@@ -2771,10 +2773,11 @@ def aks_mesh_check_crds(cr_name, cr_values_map, instance, istio_version):
     
     #EnvoyFilter and IstioOperator CR are expected to exist by default on instioctl installation
     if cr_name == 'IstioOperator':
-        for item in crd_response['items']:
-            if item['metadata']['name'] != "installed-state":
-                return False
-        return True
+        # for item in crd_response['items']:
+        #     if item['metadata']['name'] != "installed-state":
+        #         return False
+        # return True
+        return len(crd_response['items']) == 0
     
     #Istioctl installation of istio can install some EnvoyFilter configuration which is always labeled like label_selector
     elif cr_name == 'EnvoyFilter':
