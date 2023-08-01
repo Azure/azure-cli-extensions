@@ -536,11 +536,11 @@ class AzInteractiveShell(object):
         # e.g. :: 1  => `selected_option='1'`
         selected_option = text.partition(SELECT_SYMBOL['example'])[2].strip()
         try:
-            selected_option = int(selected_option)
+            selected_option = int(selected_option) - 1
         except ValueError:
             print("An Integer should follow the colon", file=self.output)
             return
-        if 0 <= selected_option <= len(self.recommender.get_scenarios() or []):
+        if 0 <= selected_option < len(self.recommender.get_scenarios() or []):
             scenario = self.recommender.get_scenarios()[selected_option]
             self.recommender.feedback_scenario(selected_option, scenario)
         else:
