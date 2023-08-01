@@ -66,13 +66,14 @@ for extension_name, exts in get_index_data()['extensions'].items():
     filtered_exts = []
     for ext in exts:
         if parsed_cli_version <= parse_version(ext['metadata'].get('azext.maxCliCoreVersion', CLI_VERSION)):
-            filtered_exts.append(ext) if ext in MODIFIED_EXTS else None
+            filtered_exts.append(ext)
     if not filtered_exts:
         continue
 
     candidates_sorted = sorted(filtered_exts, key=lambda c: parse_version(c['metadata']['version']), reverse=True)
     chosen = candidates_sorted[0]
-    ALL_TESTS.append((extension_name, chosen['downloadUrl'], chosen['filename']))
+    if extension_name in MODIFIED_EXTS:
+        ALL_TESTS.append((extension_name, chosen['downloadUrl'], chosen['filename']))
 
 logger.warning(f'ado_branch_last_commit: {ado_branch_last_commit}, '
                f'ado_target_branch: {ado_target_branch}, '
