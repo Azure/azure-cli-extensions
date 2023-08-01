@@ -9,7 +9,7 @@ import datetime
 import json
 import re
 
-from ..utils import get_cluster_rp_api_version
+from ..utils import get_cluster_rp_api_version, is_skip_prerequisites_specified
 from .. import consts
 
 from knack.log import get_logger
@@ -60,8 +60,11 @@ class ContainerInsights(DefaultExtension):
                        'only supports cluster scope and single instance of this extension.', extension_type)
         logger.warning("Defaulting to extension name '%s' and release-namespace '%s'", name, release_namespace)
 
-        _get_container_insights_settings(cmd, resource_group_name, cluster_rp, cluster_type, cluster_name, configuration_settings,
-                                         configuration_protected_settings, is_ci_extension_type)
+        if not is_skip_prerequisites_specified(configuration_settings):
+            _get_container_insights_settings(cmd, resource_group_name, cluster_rp, cluster_type, cluster_name, configuration_settings,
+                                             configuration_protected_settings, is_ci_extension_type)
+        else:
+            logger.info("Provisioning of prerequisites is skipped")
 
         # NOTE-2: Return a valid Extension object, Instance name and flag for Identity
         create_identity = True
@@ -85,6 +88,11 @@ class ContainerInsights(DefaultExtension):
             extension = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
         except Exception:
             pass  # its OK to ignore the exception since MSI auth in preview
+
+        if (extension is not None) and (extension.configuration_settings is not None):
+            if is_skip_prerequisites_specified(extension.configuration_settings):
+                logger.info("Deprovisioning of prerequisites is skipped")
+                return
 
         subscription_id = get_subscription_id(cmd.cli_ctx)
         # handle cluster type here
