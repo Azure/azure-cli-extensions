@@ -35,10 +35,10 @@ class Artifact:
 
         :param artifact_config: configuration for the artifact being uploaded
         """
-        if type(self.artifact_client) == OrasClient:
-            if type(artifact_config) == HelmPackageConfig:
+        if isinstance(self.artifact_client, OrasClient):
+            if isinstance(artifact_config, HelmPackageConfig):
                 self._upload_helm_to_acr(artifact_config)
-            elif type(artifact_config) == ArtifactConfig:
+            elif isinstance(artifact_config, ArtifactConfig):
                 self._upload_arm_to_acr(artifact_config)
             else:
                 raise ValueError(f"Unsupported artifact type: {type(artifact_config)}.")
@@ -52,7 +52,7 @@ class Artifact:
 
         :param artifact_config: configuration for the artifact being uploaded
         """
-        assert type(self.artifact_client) == OrasClient
+        assert isinstance(self.artifact_client, OrasClient)
 
         if artifact_config.file_path:
             if not self.artifact_client.remote.hostname:
@@ -110,8 +110,8 @@ class Artifact:
 
         :param artifact_config: configuration for the artifact being uploaded
         """
-        assert type(self.artifact_client) == BlobClient
-        assert type(artifact_config) == ArtifactConfig
+        assert isinstance(self.artifact_client, BlobClient)
+        assert isinstance(artifact_config, ArtifactConfig)
 
         # If the file path is given, upload the artifact, else, copy it from an existing blob.
         if artifact_config.file_path:
