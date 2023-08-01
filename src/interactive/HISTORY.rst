@@ -3,7 +3,7 @@
 Release History
 ===============
 
-upcoming
+0.5.2
 +++++
 * Add command skipped message in Scenario Execution Mode
 * Fix Scenario Idx out of bound when selecting recommended scenario
