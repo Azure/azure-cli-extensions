@@ -2484,11 +2484,7 @@ def _aks_mesh_update(
 
     return aks_update_decorator.update_mc(mc)
 
-def aks_check_network(cmd, 
-                      client, 
-                      resource_group, 
-                      cluster_name, 
-                      node_name=None):
+def aks_check_network(cmd, client, resource_group, cluster_name, node_name=None):
     # Get a random node if node_name is not specified
     if not node_name:
         if not which("kubectl"):
