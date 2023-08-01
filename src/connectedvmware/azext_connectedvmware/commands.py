@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, disable=too-many-statements
 
+from azure.cli.core import AzCommandsLoader
 from ._client_factory import (
     cf_vcenter,
     cf_resource_pool,
@@ -19,7 +20,7 @@ from ._client_factory import (
 )
 
 
-def load_command_table(self, _):
+def load_command_table(self: AzCommandsLoader, _):
 
     with self.command_group('connectedvmware vcenter', client_factory=cf_vcenter) as g:
         g.custom_command('connect', 'connect_vcenter', supports_no_wait=True)
@@ -88,7 +89,6 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_vm', supports_no_wait=True, confirmation=True)
         g.custom_command('update', 'update_vm', supports_no_wait=True)
         g.custom_show_command('show', 'show_vm')
-        g.custom_command('list', 'list_vm')
         g.custom_command('start', 'start_vm', supports_no_wait=True)
         g.custom_command('stop', 'stop_vm', supports_no_wait=True)
         g.custom_command('restart', 'restart_vm', supports_no_wait=True)

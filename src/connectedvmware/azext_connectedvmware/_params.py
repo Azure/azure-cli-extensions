@@ -205,6 +205,11 @@ def load_arguments(self, _):
             action='store_true',
             help='Delete the VM from the VMware host.',
         )
+        c.argument(
+            'delete_machine',
+            action='store_true',
+            help='Delete the parent Microsoft.HybridCompute Machine resource',
+        )
 
     with self.argument_context('connectedvmware vm stop') as c:
         c.argument(

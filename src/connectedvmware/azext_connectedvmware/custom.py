@@ -1033,8 +1033,9 @@ def delete_vm(
     client: VirtualMachineInstancesOperations,
     resource_group_name,
     resource_name,
-    force=False,
+    force=None,
     delete_from_host=None,
+    delete_machine=None,
     no_wait=False,
 ):
 
@@ -1045,7 +1046,7 @@ def delete_vm(
     )
 
     try:
-        sdk_no_wait(
+        op = sdk_no_wait(
             no_wait, client.begin_delete, machine_id, delete_from_host, force,
         )
     except ResourceNotFoundError:
@@ -1055,8 +1056,9 @@ def delete_vm(
     if no_wait:
         return
 
-    # TODO (snaskar): we can add a flag to delete the parent machine as well.
-    if delete_from_host:
+    op.result()
+    if delete_machine:
+        # Wait for the VM to be deleted from the host.
         machine_client = cf_machine(cmd.cli_ctx)
         machine_client.delete(resource_group_name, resource_name)
 
@@ -1073,22 +1075,6 @@ def show_vm(
         resource_name,
     )
     return client.get(machine_id)
-
-
-def list_vm(
-    cmd,
-    client: VirtualMachineInstancesOperations,
-    resource_group_name,
-    resource_name,
-):
-    # TODO (snaskar): list_vm under a machine returns an array with a single resource,
-    # How to list all the VMInstances in a subscription or resource group?
-    machine_id = get_hcrp_machine_id(
-        cmd,
-        resource_group_name,
-        resource_name,
-    )
-    return client.list(machine_id)
 
 
 def start_vm(
