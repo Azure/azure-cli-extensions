@@ -7,19 +7,22 @@
 
 from __future__ import print_function
 
+import logging
 import os
 import sys
 import tempfile
 import traceback
 import unittest
 import shutil
-from subprocess import check_call, CalledProcessError
+import shlex
+from subprocess import check_call, check_output, CalledProcessError
 from pkg_resources import parse_version, get_distribution
 
 from six import with_metaclass
 
-from util import get_index_data, get_whl_from_url, get_repo_root
+from util import get_index_data, get_whl_from_url, get_repo_root, SRC_PATH
 
+logger = logging.getLogger(__name__)
 
 REF_GEN_SCRIPT = os.path.join(get_repo_root(), 'scripts', 'refdoc', 'generate.py')
 
@@ -30,6 +33,35 @@ if not os.path.isdir(REF_DOC_OUT_DIR):
     sys.exit(1)
 
 ALL_TESTS = []
+MODIFIED_EXTS = []
+
+for src_d in os.listdir(SRC_PATH):
+    src_d_full = os.path.join(SRC_PATH, src_d)
+    if not os.path.isdir(src_d_full):
+        continue
+    pkg_name = next((d for d in os.listdir(src_d_full) if d.startswith('azext_')), None)
+
+    cmd_tpl = 'git --no-pager diff --name-only origin/{commit_start} {commit_end} -- {code_dir}'
+    ado_branch_last_commit = os.environ.get('ADO_PULL_REQUEST_LATEST_COMMIT')
+    ado_target_branch = os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
+    if ado_branch_last_commit and ado_target_branch:
+        if ado_branch_last_commit == '$(System.PullRequest.SourceCommitId)':
+            # default value if ADO_PULL_REQUEST_LATEST_COMMIT not set in ADO
+            continue
+        elif ado_target_branch == '$(System.PullRequest.TargetBranch)':
+            # default value if ADO_PULL_REQUEST_TARGET_BRANCH not set in ADO
+            continue
+        else:
+            cmd = cmd_tpl.format(commit_start=ado_target_branch, commit_end=ado_branch_last_commit, code_dir=src_d_full)
+            if not check_output(shlex.split(cmd)):
+                continue
+
+    if pkg_name:
+        MODIFIED_EXTS.append(src_d)
+
+logger.warning(f'ado_branch_last_commit: {ado_branch_last_commit}, '
+               f'ado_target_branch: {ado_target_branch}, '
+               f'MODIFIED_EXTS: {MODIFIED_EXTS}.')
 
 CLI_VERSION = get_distribution('azure-cli').version
 
@@ -37,7 +69,7 @@ for extension_name, exts in get_index_data()['extensions'].items():
     parsed_cli_version = parse_version(CLI_VERSION)
     filtered_exts = []
     for ext in exts:
-        if parsed_cli_version <= parse_version(ext['metadata'].get('azext.maxCliCoreVersion', CLI_VERSION)):
+        if parsed_cli_version <= parse_version(ext['metadata'].get('azext.maxCliCoreVersion', CLI_VERSION)) and ext in MODIFIED_EXTS:
             filtered_exts.append(ext)
     if not filtered_exts:
         continue

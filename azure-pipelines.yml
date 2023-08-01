@@ -169,6 +169,9 @@ jobs:
     inputs:
       targetType: 'filePath'
       filePath: scripts/ci/test_index_ref_doc.sh
+    env:
+      ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
+      ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
 - job: CheckInit
   displayName: "Check Init Files"
