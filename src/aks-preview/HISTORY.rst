@@ -12,6 +12,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 ++++++
 
+* Add `--network-dataplane` to the `az aks update` command.
+
 0.5.149
 +++++++
 * `az aks addon update`: Fix unexpected error 'Addon "web_application_routing" is not enabled in this cluster' when trying to update the web app routing addon for an managed cluster that already has it enabled.
