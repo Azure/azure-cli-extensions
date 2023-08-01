@@ -905,7 +905,6 @@ def load_arguments(self, _):
     with self.argument_context('aks check-network vmss') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], required=True, help='Name of the managed cluster.')
         c.argument('resource_group', options_list=['--resource-group', '-g'], required=True, help='Name of the resource group.')
-        c.argument('location', options_list=['--location', '-l'], required=True, help='Location of the managed cluster.')
         c.argument('node_name', options_list=[
                        '--node-name'], required=False, help='Name of a specific node to check the connectivity. If not specified, a random node will be checked.')
 
