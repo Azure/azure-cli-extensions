@@ -52,7 +52,7 @@ class ContainerAppEnvDecorator(BaseResource):
         return self.get_param("logs_key")
 
     def set_argument_logs_key(self, logs_key):
-        self.set_param("logs_customer_id", logs_key)
+        self.set_param("logs_key", logs_key)
 
     def get_argument_location(self):
         return self.get_param("location")
