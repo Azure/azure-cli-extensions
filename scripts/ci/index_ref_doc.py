@@ -80,6 +80,7 @@ logger.warning(f'ado_branch_last_commit: {ado_branch_last_commit}, '
                f'MODIFIED_EXTS: {MODIFIED_EXTS}, '
                f'ALL_TESTS: {ALL_TESTS}')
 
+
 class TestIndexRefDocsMeta(type):
     def __new__(mcs, name, bases, _dict):
 
