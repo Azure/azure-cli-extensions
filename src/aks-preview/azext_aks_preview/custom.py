@@ -2508,40 +2508,43 @@ def aks_check_network_vmss(cmd,
                       client, 
                       resource_group, 
                       cluster_name, 
-                      location,
-                      node_name, 
-                      no_wait=False, 
-                      aks_custom_headers=None):
+                      node_name=None):
     # Get a random node if node_name is not specified
     if not node_name:
         if not _which("kubectl"):
             raise ValidationError("Can not find kubectl executable in PATH")
         
-        fd, browse_path = tempfile.mkstemp()
+        _, browse_path = tempfile.mkstemp()
         try:
             aks_get_credentials(cmd, client, resource_group, cluster_name, admin=False, path=browse_path)
 
             cmd = f"kubectl --kubeconfig {browse_path} get nodes"
-            output = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
+            output = subprocess.check_output(cmd, universal_newlines=True, stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as ex:
             raise ValidationError("Can not get node name from cluster: {}".format(ex))
         if output:
-            result, _ = output.communicate()
-            cluster_info = json.loads(result)
+            cluster_info = json.loads(output)
             node_name = str(cluster_info["items"][0]["metadata"]["name"])
         else:
             raise ValidationError("Failed to get node name from cluster")
     index = node_name.find("vmss")
     vmss_name = node_name[0:index+4]
-    instance_id = int(node_name[index+4:])
+    instance_id = node_name[index+4:]
+    location = get_rg_location(cmd.cli_ctx, resource_group)
     node_resource_group = "MC_{0}_{1}_{2}".format(resource_group, cluster_name, location)
-    print("Check parameters vmss_name: {0}, instance_id: {1}, node_resource_group: {2}".format(vmss_name, instance_id, node_resource_group))
+    print("Start checking network for vmss_name: {0}, instance_id: {1}, node_resource_group: {2}".format(vmss_name, instance_id, node_resource_group))
 
-    from azure.cli.command_modules.vm.custom import vmss_run_command_invoke
     try:
-        command_result_poller = vmss_run_command_invoke(cmd, node_resource_group, vmss_name, command_id="RunShellScript", scripts="bash /usr/local/bin/check-outbound-network.sh", instance_id=instance_id)
+        from azure.cli.core.profiles import ResourceType
+        from azure.cli.command_modules.vm._client_factory import _compute_client_factory
+
+        RunCommandInput = cmd.get_models('RunCommandInput', resource_type=ResourceType.MGMT_COMPUTE, operation_group="virtual_machine_scale_sets")
+        client = _compute_client_factory(cmd.cli_ctx)
+        command_result_poller = client.virtual_machine_scale_set_vms.begin_run_command(
+            node_resource_group, vmss_name, instance_id,
+            RunCommandInput(command_id="RunShellScript", script=["bash /usr/local/bin/check-outbound-network.sh"]))
         command_result = command_result_poller.result()
-        display_status = command_result.value[0].displayStatus
+        display_status = command_result.value[0].display_status
         message = command_result.value[0].message
         if display_status == "Provisioning succeeded":
             return _process_message(message)
@@ -2549,4 +2552,4 @@ def aks_check_network_vmss(cmd,
             raise InvalidArgumentValueError("Can not run command on node {0} with returned code {1} and message {2}".
                                             format(vmss_name, display_status, message))
     except Exception as ex:
-        raise HttpResponseError("Can not run command on node: {}".format(ex))
+        raise HttpResponseError("Can not run command on node {0}: {1}".format(vmss_name, ex))
