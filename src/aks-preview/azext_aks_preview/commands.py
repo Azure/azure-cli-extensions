@@ -268,4 +268,3 @@ def load_command_table(self, _):
             'aks_mesh_disable_ingress_gateway',
             supports_no_wait=True,
             confirmation=True)
-        
