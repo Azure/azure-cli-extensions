@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container protectable-item list",
+    "site-recovery protectable-item list",
 )
 class List(AAZCommand):
     """List the protectable items in a protection container.

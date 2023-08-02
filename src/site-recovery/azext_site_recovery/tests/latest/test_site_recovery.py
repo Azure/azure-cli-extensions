@@ -799,7 +799,7 @@ class SiteRecoveryScenario(ScenarioTest):
         #          '--vault-name {vault_name} --policy-id {policy_id} --target-container \"Microsoft Azure\" '
         #          '--provider-input {{hyper-v-replica-azure:{{}}}}')
 
-        protectable_item_id = self.cmd('az site-recovery fabric protection-container protectable-item show -n {protectable_item_name} '
+        protectable_item_id = self.cmd('az site-recovery protectable-item show -n {protectable_item_name} '
                                        '-g {rg} --fabric-name {fabric1_name} --protection-container {container1_name} '
                                        '--vault-name {vault_name}').get_output_in_json()["id"]
         self.kwargs.update({"protectable_item_id": protectable_item_id})
@@ -923,7 +923,7 @@ class SiteRecoveryScenario(ScenarioTest):
                  '--fabric-details {{vmm-to-azure:{{}}}}')
 
         # get protectable_item name
-        protectable_item_list = self.cmd('az site-recovery fabric protection-container protectable-item list -g {rg} '
+        protectable_item_list = self.cmd('az site-recovery protectable-item list -g {rg} '
                  '--fabric-name {fabric_source_name} --protection-container {container_source_name} '
                  '--vault-name {vault_name}').get_output_in_json()
 
@@ -932,7 +932,7 @@ class SiteRecoveryScenario(ScenarioTest):
                 self.kwargs.update({"protectable_item_name": protectable_item["name"]})
                 break
 
-        protectable_item_id = self.cmd('az site-recovery fabric protection-container protectable-item show '
+        protectable_item_id = self.cmd('az site-recovery protectable-item show '
                                        '-n {protectable_item_name} -g {rg} --fabric-name {fabric_source_name} '
                                        '--protection-container {container_source_name} '
                                        '--vault-name {vault_name}').get_output_in_json()["id"]

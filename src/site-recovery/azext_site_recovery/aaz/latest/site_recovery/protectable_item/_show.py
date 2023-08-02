@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container protectable-item show",
+    "site-recovery protectable-item show",
 )
 class Show(AAZCommand):
     """Get operation to get the details of a protectable item.
