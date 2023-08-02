@@ -16,32 +16,32 @@ This is an extension to Azure CLI to manage SiteRecovery resources.
 --custom-details '{azure:{location:recovery_loc}}'`
 
 ### Create a policy
-`az site-recovery vault policy create -g rg --vault-name vault_name -n policy_name 
+`az site-recovery policy create -g rg --vault-name vault_name -n policy_name 
 --provider-specific-input '{a2a:{multi-vm-sync-status:Enable}}'`
 
 ### Create protection containers
-`az site-recovery fabric protection-container create -g rg --fabric-name fabric_source_name 
+`az site-recovery protection-container create -g rg --fabric-name fabric_source_name 
 -n container_source_name --vault-name vault_name --provider-input '[{instance-type:A2A}]'`  
 
-`az site-recovery fabric protection-container create -g rg --fabric-name fabric_recovery_name 
+`az site-recovery protection-container create -g rg --fabric-name fabric_recovery_name 
 -n container_recovery_name --vault-name vault_name --provider-input '[{instance-type:A2A}]'`
 
 ### Create container mappings
-`az site-recovery fabric protection-container mapping create -g rg --fabric-name fabric_source_name 
+`az site-recovery protection-container mapping create -g rg --fabric-name fabric_source_name 
 -n container_mapping_source_name --protection-container container_source_name --vault-name vault_name 
 --policy-id policy_id --provider-input '{a2a:{agent-auto-update-status:Disabled}}' --target-container container_recovery_id`  
 
-`az site-recovery fabric protection-container mapping create -g rg --fabric-name fabric_recovery_name 
+`az site-recovery protection-container mapping create -g rg --fabric-name fabric_recovery_name 
 -n container_mapping_recovery_name --protection-container container_recovery_name --vault-name vault_name 
 --policy-id policy_id --provider-input '{a2a:{agent-auto-update-status:Disabled}}' --target-container container_source_id`
 
 ### Create network mappings
-`az site-recovery fabric network-mapping create -g rg --fabric-name fabric_source_name 
+`az site-recovery network-mapping create -g rg --fabric-name fabric_source_name 
 -n network_mapping_src_to_recovery_name --network-name azureNetwork --vault-name vault_name 
 --recovery-network-id vnet_recovery_id --fabric-details '{azure-to-azure:{primary-network-id:vnetvm_id}}' 
 --recovery-fabric-name fabric_recovery_name`  
 
-`az site-recovery fabric network-mapping create -g rg --fabric-name fabric_recovery_name 
+`az site-recovery network-mapping create -g rg --fabric-name fabric_recovery_name 
 -n network_mapping_recovery_to_src_name --network-name azureNetwork --vault-name vault_name 
 --recovery-network-id vnetvm_id --fabric-details '{azure-to-azure:{primary-network-id:vnet_recovery_id}}' 
 --recovery-fabric-name fabric_source_name`
