@@ -11,6 +11,7 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
 def setup(test):
@@ -69,7 +70,7 @@ def step__maintenanceconfigurations_get_maintenanceconfigurations_getforresource
              '--resource-name "configuration1"',
              checks=[])
 
-
+@AllowLargeResponse(size_kb=9999)
 def step__maintenanceconfigurations_get_maintenanceconfigurations_list(test):
     test.cmd('az maintenance configuration list',
              checks=[])
@@ -175,30 +176,104 @@ def step__maintenanceconfigurations_put_publicmaintenanceconfigurations_createor
              '--extension-properties publicMaintenanceConfigurationId=sqlcli isAvailable=true',
              checks=[])
 
-def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchdefault(test):
+def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchadvanced(test):
     test.cmd('az maintenance configuration create --maintenance-scope InGuestPatch '
-        '--maintenance-window-duration "01:00" '
+        '--maintenance-window-duration "02:00" '
         '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
         '--maintenance-window-recur-every "Day" '
-        '--maintenance-window-start-date-time "2022-04-30 08:00" '
+        '--maintenance-window-start-date-time "2024-04-30 08:00" '
+        '--maintenance-window-time-zone "Pacific Standard Time" '
+        '--resource-group  {rg} '
+        '--resource-name  clitestmrpconfinguestadvanced '
+        '--install-patches-linux-parameters package-name-masks-to-exclude=pkg1 '
+        ' package-name-masks-to-exclude=pkg2  classifications-to-include=Other  '
+        '--reboot-setting IfRequired '
+        '--extension-properties InGuestPatchMode=User '
+        , checks=[])
+
+def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchdefault(test):
+    test.cmd('az maintenance configuration create --maintenance-scope InGuestPatch '
+        '--maintenance-window-duration "02:00" '
+        '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
+        '--maintenance-window-recur-every "Day" '
+        '--maintenance-window-start-date-time "2024-04-30 08:00" '
         '--maintenance-window-time-zone "Pacific Standard Time" '
         '--resource-group  {rg} '
         '--resource-name clitestmrpconfinguestdefault '
-        '--install-patches-linux-parameters package-name-masks-to-exclude=pkg1 '
-        ' package-name-masks-to-exclude=pkg2  classifications-to-include=Other  '
-        '--reboot-setting IfRequired'
+        '--extension-properties InGuestPatchMode=Platform '
         , checks=[])
 
-def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchadvanced(test):
-    test.cmd('az maintenance configuration create --maintenance-scope InGuestPatch '
-        '--maintenance-window-duration "01:00" '
-        '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
-        '--maintenance-window-recur-every "Day" '
-        '--maintenance-window-start-date-time "2022-04-30 08:00" '
-        '--maintenance-window-time-zone "Pacific Standard Time" '
-        '--resource-group  {rg} '
-        '--resource-name clitestmrpconfinguestadvanced '
-        , checks=[])
+# Dynamic scope tests subscription level
+def step__configurationassignments_put_configurationassignments_createorupdate_subscription(test):
+    test.cmd('az maintenance assignment create-or-update-subscription '
+             '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
+             'Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced" '
+             '--name cli_dynamicscope_recording01 '
+             '--filter-locations eastus2euap centraluseuap '
+             '--filter-os-types windows linux '
+             '--filter-tags {{tagKey1:[tagKey1Val1,tagKey1Val2],tagKey2:[tagKey2Val1,tagKey2Val2]}} '
+             '--filter-resource-group rg1, rg2 '
+             '--filter-tags-operator All '
+             '-l global',
+             checks=[])
+    
+def step__configurationassignments_put_configurationassignments_update_subscription(test):
+    test.cmd('az maintenance assignment update-subscription '
+             '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
+             'Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced" '
+             '--name cli_dynamicscope_recording01 '
+             '--filter-locations eastus2euap centraluseuap '
+             '--filter-os-types windows linux '
+             '--filter-tags {{tagKey1:[tagKey1Val1,tagKey1Val2],tagKey2:[tagKey2Val1,tagKey2Val2]}} '
+             '--filter-resource-group rg1, rg2 '
+             '--filter-tags-operator All '
+             ' -l global',
+             checks=[])
+    
+def step__configurationassignments_put_configurationassignments_show_subscription(test):
+    test.cmd('az maintenance assignment show-subscription '
+             '--name cli_dynamicscope_recording01 ',
+             checks=[])
+    
+def step__configurationassignments_put_configurationassignments_delete_subscription(test):
+    test.cmd('az maintenance assignment delete-subscription '
+             '--name cli_dynamicscope_recording01 --yes ',
+             checks=[])
+
+# Dynamic scope tests resource group level
+def step__configurationassignments_put_configurationassignments_createorupdate_resourcegroup(test):
+    test.cmd('az maintenance assignment create-or-update-resource-group '
+             '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
+             'Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced" '
+             '--name cli_dynamicscope_recording01 '
+             '--filter-locations eastus2euap centraluseuap '
+             '--filter-os-types windows linux '
+             '--filter-tags {{tagKey1:[tagKey1Val1,tagKey1Val2],tagKey2:[tagKey2Val1,tagKey2Val2]}} '
+             '--filter-tags-operator All '
+             '--resource-group "{rg}"',
+             checks=[])
+    
+def step__configurationassignments_put_configurationassignments_update_resourcegroup(test):
+    test.cmd('az maintenance assignment update-resource-group '
+             '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
+             'Maintenance/maintenanceConfigurations/clitestmrpconfinguestadvanced" '
+             '--name cli_dynamicscope_recording01 '
+             '--filter-locations eastus2euap centraluseuap '
+             '--filter-os-types windows linux '
+             '--filter-tags {{tagKey1:[tagKey1Val1,tagKey1Val2],tagKey2:[tagKey2Val1,tagKey2Val2]}} '
+             '--filter-tags-operator All '
+             '--resource-group "{rg}" ',
+             checks=[])
+    
+def step__configurationassignments_put_configurationassignments_show_resourcegroup(test):
+    test.cmd('az maintenance assignment show-resource-group '
+             '--name cli_dynamicscope_recording01 --resource-group "{rg}" ',
+             checks=[])
+    
+def step__configurationassignments_put_configurationassignments_delete_resourcegroup(test):
+    test.cmd('az maintenance assignment delete-resource-group '
+             '--name cli_dynamicscope_recording01  --resource-group "{rg}" --yes ',
+             checks=[])
 
 def cleanup(test):
     test.cmd('az vmss delete -n "clitestvmss" -g "{rg}"', checks=[])
@@ -224,4 +299,11 @@ def call_scenario(test):
     step__maintenanceconfigurations_delete_publicmaintenanceconfigurations_delete(test)
     step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchdefault(test)
     step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchadvanced(test)
+    step__configurationassignments_put_configurationassignments_createorupdate_subscription(test)
+    step__configurationassignments_put_configurationassignments_update_subscription(test)
+    step__configurationassignments_put_configurationassignments_show_subscription(test)
+    step__configurationassignments_put_configurationassignments_delete_subscription(test)
+    step__configurationassignments_put_configurationassignments_createorupdate_resourcegroup(test)
+    step__configurationassignments_put_configurationassignments_update_resourcegroup(test)
+    step__configurationassignments_put_configurationassignments_show_resourcegroup(test)
     cleanup(test)
