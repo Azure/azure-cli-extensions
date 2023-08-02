@@ -86,20 +86,20 @@ class SiteRecoveryScenario(ScenarioTest):
 
         # policy
         # in-mage-rcm
-        self.cmd('az site-recovery vault policy create -g {rg} --vault-name {vault_name} -n {policy_name_rcm} '
+        self.cmd('az site-recovery policy create -g {rg} --vault-name {vault_name} -n {policy_name_rcm} '
                  '--provider-specific-input {{in-mage-rcm:{{'
                  'app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:5,'
                  'enable-multi-vm-sync:true,recovery-point-history-in-minutes:2880}}}}')
-        self.cmd('az site-recovery vault policy show -g {rg} --vault-name {vault_name} -n {policy_name_rcm}',
+        self.cmd('az site-recovery policy show -g {rg} --vault-name {vault_name} -n {policy_name_rcm}',
                  checks=[self.check('properties.providerSpecificDetails.instanceType', 'InMageRcm'),
                          self.check('properties.providerSpecificDetails.appConsistentFrequencyInMinutes', 0),
                          self.check('properties.providerSpecificDetails.crashConsistentFrequencyInMinutes', 5),
                          self.check('properties.providerSpecificDetails.enableMultiVmSync', 'true'),
                          self.check('properties.providerSpecificDetails.recoveryPointHistoryInMinutes', 2880)
                          ])
-        self.cmd('az site-recovery vault policy list -g {rg} --vault-name {vault_name}',
+        self.cmd('az site-recovery policy list -g {rg} --vault-name {vault_name}',
                  checks=[self.check('length(@)', 1)])
-        self.cmd('az site-recovery vault policy update --debug -g {rg} --vault-name {vault_name} '
+        self.cmd('az site-recovery policy update --debug -g {rg} --vault-name {vault_name} '
                  '-n {policy_name_rcm} '
                  '--provider-specific-input {{in-mage-rcm:{{'
                  'app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:5,'
@@ -108,32 +108,32 @@ class SiteRecoveryScenario(ScenarioTest):
                          self.check('properties.providerSpecificDetails.crashConsistentFrequencyInMinutes', 5),
                          self.check('properties.providerSpecificDetails.enableMultiVmSync', 'true'),
                          self.check('properties.providerSpecificDetails.recoveryPointHistoryInMinutes', 1440)])
-        self.cmd('az site-recovery vault policy delete -g {rg} --vault-name {vault_name} '
+        self.cmd('az site-recovery policy delete -g {rg} --vault-name {vault_name} '
                  '-n {policy_name_rcm} -y')
-        self.cmd('az site-recovery vault policy list -g {rg} --vault-name {vault_name}',
+        self.cmd('az site-recovery policy list -g {rg} --vault-name {vault_name}',
                  checks=[self.check('length(@)', 0)])
 
         # in-mage-rcm-failback
-        self.cmd('az site-recovery vault policy create -g {rg} --vault-name {vault_name} '
+        self.cmd('az site-recovery policy create -g {rg} --vault-name {vault_name} '
                  '-n {policy_name_rcm_failback} '
                  '--provider-specific-input {{in-mage-rcm-failback:{{'
                  'app-consistent-frequency-in-minutes:60,crash-consistent-frequency-in-minutes:5}}}}')
-        self.cmd('az site-recovery vault policy show -g {rg} --vault-name {vault_name} '
+        self.cmd('az site-recovery policy show -g {rg} --vault-name {vault_name} '
                  '-n {policy_name_rcm_failback}',
                  checks=[self.check('properties.providerSpecificDetails.instanceType', 'InMageRcmFailback'),
                          self.check('properties.providerSpecificDetails.appConsistentFrequencyInMinutes', 60),
                          self.check('properties.providerSpecificDetails.crashConsistentFrequencyInMinutes', 5)])
-        self.cmd('az site-recovery vault policy list -g {rg} --vault-name {vault_name}',
+        self.cmd('az site-recovery policy list -g {rg} --vault-name {vault_name}',
                  checks=[self.check('length(@)', 1)])
-        self.cmd('az site-recovery vault policy update -g {rg} --vault-name {vault_name} '
+        self.cmd('az site-recovery policy update -g {rg} --vault-name {vault_name} '
                  '-n {policy_name_rcm_failback} '
                  '--provider-specific-input {{in-mage-rcm-failback:{{'
                  'app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:10}}}}',
                  checks=[self.check('properties.providerSpecificDetails.appConsistentFrequencyInMinutes', 0),
                          self.check('properties.providerSpecificDetails.crashConsistentFrequencyInMinutes', 10)])
-        self.cmd('az site-recovery vault policy delete -g {rg} --vault-name {vault_name} '
+        self.cmd('az site-recovery policy delete -g {rg} --vault-name {vault_name} '
                  '-n {policy_name_rcm_failback} -y')
-        self.cmd('az site-recovery vault policy list -g {rg} --vault-name {vault_name}',
+        self.cmd('az site-recovery policy list -g {rg} --vault-name {vault_name}',
                  checks=[self.check('length(@)', 0)])
 
     # pylint: disable=line-too-long
@@ -185,11 +185,11 @@ class SiteRecoveryScenario(ScenarioTest):
         self.cmd('az site-recovery fabric create -n {fabric_source_name} -g {rg} '
                  '--vault-name {vault_name} --custom-details {{azure:{{location:{source_loc}}}}}')
 
-        self.cmd('az site-recovery vault policy create -g {rg} '
+        self.cmd('az site-recovery policy create -g {rg} '
                  '--vault-name {vault_name} -n {policy_name} '
                  '--provider-specific-input {{a2a:{{multi-vm-sync-status:Enable}}}}')
 
-        policy_id = self.cmd('az site-recovery vault policy show -g {rg} '
+        policy_id = self.cmd('az site-recovery policy show -g {rg} '
                              '--vault-name {vault_name} -n {policy_name}').get_output_in_json()["id"]
         self.kwargs.update({"policy_id": policy_id})
 
@@ -430,7 +430,7 @@ class SiteRecoveryScenario(ScenarioTest):
                  '--fabric-name {fabric_recovery_name} -n {container_recovery_name} --vault-name {vault_name}')
 
         # delete policy
-        self.cmd('az site-recovery vault policy delete -g {rg} '
+        self.cmd('az site-recovery policy delete -g {rg} '
                  '--vault-name {vault_name} -n {policy_name} -y')
 
         # delete fabrics
@@ -473,10 +473,10 @@ class SiteRecoveryScenario(ScenarioTest):
                  '--vault-name {vault_name} --custom-details {{azure:{{location:eastus}}}}')
         self.cmd('az site-recovery fabric create -n {fabric2_name} -g {rg} '
                  '--vault-name {vault_name} --custom-details {{azure:{{location:eastus2}}}}')
-        self.cmd('az site-recovery vault policy create -g {rg} '
+        self.cmd('az site-recovery policy create -g {rg} '
                  '--vault-name {vault_name} -n {policy_name} '
                  '--provider-specific-input {{a2a:{{multi-vm-sync-status:Enable}}}}')
-        policy_id = self.cmd('az site-recovery vault policy show -g {rg} '
+        policy_id = self.cmd('az site-recovery policy show -g {rg} '
                              '--vault-name {vault_name} -n {policy_name}').get_output_in_json()["id"]
         self.kwargs.update({"policy_id": policy_id})
 
@@ -652,7 +652,7 @@ class SiteRecoveryScenario(ScenarioTest):
                  '--fabric-name {fabric2_name} -n {container2_name} --vault-name {vault_name}')
 
         # delete policy
-        self.cmd('az site-recovery vault policy delete -g {rg} '
+        self.cmd('az site-recovery policy delete -g {rg} '
                  '--vault-name {vault_name} -n {policy_name} -y')
 
         # delete fabrics
@@ -687,14 +687,14 @@ class SiteRecoveryScenario(ScenarioTest):
         })
         # set subscription and create a policy
         self.cmd('az account set -n {subscription}')
-        self.cmd('az site-recovery vault policy create -g {rg} '
+        self.cmd('az site-recovery policy create -g {rg} '
                  '--vault-name {vault_name} -n {policy_name} '
                  '--provider-specific-input {{in-mage-azure-v2:{{'
                  'multi-vm-sync-status:Enable,'
                  'app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:5,'
                  'recovery-point-history:2880,recovery-point-threshold-in-minutes:10}}}}')
 
-        policy_id = self.cmd('az site-recovery vault policy show -g {rg} '
+        policy_id = self.cmd('az site-recovery policy show -g {rg} '
                              '--vault-name {vault_name} -n {policy_name}').get_output_in_json()["id"]
         self.kwargs.update({"policy_id": policy_id})
 
@@ -722,13 +722,13 @@ class SiteRecoveryScenario(ScenarioTest):
         })
         # set subscription and create a policy
         self.cmd('az account set -n {subscription}')
-        # self.cmd('az site-recovery vault policy create -g {rg} '
+        # self.cmd('az site-recovery policy create -g {rg} '
         #          '--vault-name {vault_name} -n {policy_name} '
         #          '--provider-specific-input {{in-mage-rcm:{{'
         #          'app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:5,'
         #          'enable-multi-vm-sync:true,recovery-point-history-in-minutes:2880}}}}')
 
-        policy_id = self.cmd('az site-recovery vault policy show -g {rg} '
+        policy_id = self.cmd('az site-recovery policy show -g {rg} '
                              '--vault-name {vault_name} -n {policy_name}').get_output_in_json()["id"]
         self.kwargs.update({"policy_id": policy_id})
 
@@ -782,12 +782,12 @@ class SiteRecoveryScenario(ScenarioTest):
         #          '--vault-name {vault_name} --custom-details {{hyper-v-site:{{}}}}')
 
         # create a policy
-        # self.cmd('az site-recovery vault policy create -g {rg} '
+        # self.cmd('az site-recovery policy create -g {rg} '
         #          '--vault-name {vault_name} -n {policy_name} '
         #          '--provider-specific-input {{hyper-v-replica-azure:{{'
         #          'application-consistent-snapshot-frequency-in-hours:1,'
         #          'recovery-point-history-duration:2,replication-interval:300}}}}')
-        policy_id = self.cmd('az site-recovery vault policy show -g {rg} '
+        policy_id = self.cmd('az site-recovery policy show -g {rg} '
                              '--vault-name {vault_name} -n {policy_name}').get_output_in_json()["id"]
         self.kwargs.update({"policy_id": policy_id})
         #
@@ -896,12 +896,12 @@ class SiteRecoveryScenario(ScenarioTest):
                 break
 
         # # create a policy
-        # self.cmd('az site-recovery vault policy create -g {rg} '
+        # self.cmd('az site-recovery policy create -g {rg} '
         #          '--vault-name {vault_name} -n {policy_name} '
         #          '--provider-specific-input {{hyper-v-replica-azure:{{'
         #          'application-consistent-snapshot-frequency-in-hours:0,'
         #          'recovery-point-history-duration:1,replication-interval:24}}}}')
-        policy_id = self.cmd('az site-recovery vault policy show -g {rg} '
+        policy_id = self.cmd('az site-recovery policy show -g {rg} '
                              '--vault-name {vault_name} -n {policy_name}').get_output_in_json()["id"]
         self.kwargs.update({"policy_id": policy_id})
 

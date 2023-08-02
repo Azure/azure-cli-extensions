@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery vault policy update",
+    "site-recovery policy update",
 )
 class Update(AAZCommand):
     """Update operation to update a replication policy.
 
     :example: policy update for type in-mage-rcm
-        az site-recovery vault policy update -g rg --vault-name vault_name -n policy_name_rcm --provider-specific-input '{in-mage-rcm:{app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:5,enable-multi-vm-sync:true,recovery-point-history-in-minutes:1440}}'
+        az site-recovery policy update -g rg --vault-name vault_name -n policy_name_rcm --provider-specific-input '{in-mage-rcm:{app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:5,enable-multi-vm-sync:true,recovery-point-history-in-minutes:1440}}'
 
     :example: policy update for type in-mage-rcm-failback
-        az site-recovery vault policy update -g rg --vault-name vault_name -n policy_name_rcm_failback --provider-specific-input '{in-mage-rcm-failback:{app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:10}}'
+        az site-recovery policy update -g rg --vault-name vault_name -n policy_name_rcm_failback --provider-specific-input '{in-mage-rcm-failback:{app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:10}}'
     """
 
     _aaz_info = {

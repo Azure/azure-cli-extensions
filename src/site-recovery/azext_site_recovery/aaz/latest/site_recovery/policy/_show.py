@@ -12,27 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery vault policy list",
+    "site-recovery policy show",
 )
-class List(AAZCommand):
-    """List the replication policies for a vault.
+class Show(AAZCommand):
+    """Get the details of a replication policy.
 
-    :example: policy list
-        az site-recovery vault policy list -g rg --vault-name vault_name
+    :example: policy show
+        az site-recovery policy show -g rg --vault-name vault_name -n policy_name_rcm
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationpolicies", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationpolicies/{}", "2022-08-01"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -45,6 +44,12 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.policy_name = AAZStrArg(
+            options=["-n", "--name", "--policy-name"],
+            help="Replication policy name.",
+            required=True,
+            id_part="child_name_1",
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -52,12 +57,13 @@ class List(AAZCommand):
             options=["--vault-name"],
             help="The name of the recovery services vault.",
             required=True,
+            id_part="name",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ReplicationPoliciesList(ctx=self.ctx)()
+        self.ReplicationPoliciesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -69,11 +75,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class ReplicationPoliciesList(AAZHttpOperation):
+    class ReplicationPoliciesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -87,7 +92,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationPolicies",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationPolicies/{policyName}",
                 **self.url_parameters
             )
 
@@ -102,6 +107,10 @@ class List(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "policyName", self.ctx.args.policy_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
@@ -154,28 +163,19 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType()
-            _element.name = AAZStrType(
+            _schema_on_200.location = AAZStrType()
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
-            _element.type = AAZStrType(
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
+            properties = cls._schema_on_200.properties
             properties.friendly_name = AAZStrType(
                 serialized_name="friendlyName",
             )
@@ -183,13 +183,13 @@ class List(AAZCommand):
                 serialized_name="providerSpecificDetails",
             )
 
-            provider_specific_details = cls._schema_on_200.value.Element.properties.provider_specific_details
+            provider_specific_details = cls._schema_on_200.properties.provider_specific_details
             provider_specific_details.instance_type = AAZStrType(
                 serialized_name="instanceType",
                 flags={"required": True},
             )
 
-            disc_a2_a = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "A2A")
+            disc_a2_a = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "A2A")
             disc_a2_a.app_consistent_frequency_in_minutes = AAZIntType(
                 serialized_name="appConsistentFrequencyInMinutes",
             )
@@ -206,7 +206,7 @@ class List(AAZCommand):
                 serialized_name="recoveryPointThresholdInMinutes",
             )
 
-            disc_hyper_v_replica2012 = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012")
+            disc_hyper_v_replica2012 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012")
             disc_hyper_v_replica2012.allowed_authentication_type = AAZIntType(
                 serialized_name="allowedAuthenticationType",
             )
@@ -236,7 +236,7 @@ class List(AAZCommand):
                 serialized_name="replicationPort",
             )
 
-            disc_hyper_v_replica2012_r2 = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2")
+            disc_hyper_v_replica2012_r2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplica2012R2")
             disc_hyper_v_replica2012_r2.allowed_authentication_type = AAZIntType(
                 serialized_name="allowedAuthenticationType",
             )
@@ -269,7 +269,7 @@ class List(AAZCommand):
                 serialized_name="replicationPort",
             )
 
-            disc_hyper_v_replica_azure = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure")
+            disc_hyper_v_replica_azure = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaAzure")
             disc_hyper_v_replica_azure.active_storage_account_id = AAZStrType(
                 serialized_name="activeStorageAccountId",
             )
@@ -287,7 +287,7 @@ class List(AAZCommand):
                 serialized_name="replicationInterval",
             )
 
-            disc_hyper_v_replica_base_policy_details = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBasePolicyDetails")
+            disc_hyper_v_replica_base_policy_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "HyperVReplicaBasePolicyDetails")
             disc_hyper_v_replica_base_policy_details.allowed_authentication_type = AAZIntType(
                 serialized_name="allowedAuthenticationType",
             )
@@ -317,7 +317,7 @@ class List(AAZCommand):
                 serialized_name="replicationPort",
             )
 
-            disc_in_mage = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMage")
+            disc_in_mage = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMage")
             disc_in_mage.app_consistent_frequency_in_minutes = AAZIntType(
                 serialized_name="appConsistentFrequencyInMinutes",
             )
@@ -331,7 +331,7 @@ class List(AAZCommand):
                 serialized_name="recoveryPointThresholdInMinutes",
             )
 
-            disc_in_mage_azure_v2 = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2")
+            disc_in_mage_azure_v2 = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageAzureV2")
             disc_in_mage_azure_v2.app_consistent_frequency_in_minutes = AAZIntType(
                 serialized_name="appConsistentFrequencyInMinutes",
             )
@@ -348,7 +348,7 @@ class List(AAZCommand):
                 serialized_name="recoveryPointThresholdInMinutes",
             )
 
-            disc_in_mage_base_policy_details = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageBasePolicyDetails")
+            disc_in_mage_base_policy_details = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageBasePolicyDetails")
             disc_in_mage_base_policy_details.app_consistent_frequency_in_minutes = AAZIntType(
                 serialized_name="appConsistentFrequencyInMinutes",
             )
@@ -362,7 +362,7 @@ class List(AAZCommand):
                 serialized_name="recoveryPointThresholdInMinutes",
             )
 
-            disc_in_mage_rcm = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm")
+            disc_in_mage_rcm = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcm")
             disc_in_mage_rcm.app_consistent_frequency_in_minutes = AAZIntType(
                 serialized_name="appConsistentFrequencyInMinutes",
             )
@@ -376,7 +376,7 @@ class List(AAZCommand):
                 serialized_name="recoveryPointHistoryInMinutes",
             )
 
-            disc_in_mage_rcm_failback = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcmFailback")
+            disc_in_mage_rcm_failback = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "InMageRcmFailback")
             disc_in_mage_rcm_failback.app_consistent_frequency_in_minutes = AAZIntType(
                 serialized_name="appConsistentFrequencyInMinutes",
             )
@@ -384,7 +384,7 @@ class List(AAZCommand):
                 serialized_name="crashConsistentFrequencyInMinutes",
             )
 
-            disc_v_mware_cbt = cls._schema_on_200.value.Element.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt")
+            disc_v_mware_cbt = cls._schema_on_200.properties.provider_specific_details.discriminate_by("instance_type", "VMwareCbt")
             disc_v_mware_cbt.app_consistent_frequency_in_minutes = AAZIntType(
                 serialized_name="appConsistentFrequencyInMinutes",
             )
@@ -398,8 +398,8 @@ class List(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["List"]
+__all__ = ["Show"]

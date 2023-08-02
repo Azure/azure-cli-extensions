@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery vault policy delete",
+    "site-recovery policy delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete operation to delete a replication policy.
 
     :example: policy delete
-        az site-recovery vault policy delete -g rg --vault-name vault_name -n policy_name_rcm
+        az site-recovery policy delete -g rg --vault-name vault_name -n policy_name_rcm
     """
 
     _aaz_info = {

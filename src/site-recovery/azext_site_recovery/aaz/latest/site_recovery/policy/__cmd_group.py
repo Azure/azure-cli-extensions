@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "site-recovery vault policy",
+    "site-recovery policy",
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage the replication policies for a vault.
