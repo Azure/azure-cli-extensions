@@ -34,7 +34,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
                 'vnet_name': 'azcli-test-virtual-network',
                 'vmtpl_inventory_item': 'vmtpl-vm-1184288',
                 'vmtpl_name': 'azcli-test-vm-template',
-                'vm_name': 'azcli-test-vm-2',
+                'vm_name': 'azcli-test-vm-6',
                 'guest_username': 'azcli-user',
                 'guest_password': 'azcli-password',
                 'nic_name': 'nic_1',
@@ -185,7 +185,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         # At this point there should be 1 vm-template resource.
         assert len(resource_list) >= 1
 
-        # Validate the show command output with inventory-item name.
+        # Validate the inventory-item show command output with resourcepool moRefID.
         self.cmd(
             'az connectedvmware vcenter inventory-item show -g {rg} --vcenter {vc_name} --i {rp_inventory_item}',
             checks=[
@@ -294,7 +294,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         self.cmd('az connectedvmware vm start -g {rg} --name {vm_name}')
 
         # Disable the VM from azure; delete the ARM resource, retain the VM in vCenter.
-        self.cmd('az connectedvmware vm delete -g {rg} --name {vm_name} --delete-machine -y')
+        self.cmd('az connectedvmware vm delete -g {rg} --name {vm_name} -y')
 
         # Enable the VM to azure again.
         self.cmd(
