@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "site-recovery vault job",
+    "site-recovery job",
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Azure Site Recovery Jobs for the vault.

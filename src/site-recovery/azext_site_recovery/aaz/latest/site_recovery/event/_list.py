@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery vault event list",
+    "site-recovery event list",
 )
 class List(AAZCommand):
     """List the list of Azure Site Recovery events for the vault.
 
     :example: event list
-        az site-recovery vault event list -g rg --vault-name vault_name
+        az site-recovery event list -g rg --vault-name vault_name
     """
 
     _aaz_info = {

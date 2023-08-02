@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery vault job export",
+    "site-recovery job export",
 )
 class Export(AAZCommand):
     """The operation to export the details of the Azure Site Recovery jobs of the vault.
 
     :example: job export
-        az site-recovery vault job export -g rg --vault-name vault_name
+        az site-recovery job export -g rg --vault-name vault_name
     """
 
     _aaz_info = {
@@ -74,7 +74,7 @@ class Export(AAZCommand):
             help="The Id of the fabric to search jobs under.",
         )
         _args_schema.job_name = AAZStrArg(
-            options=["--job-name"],
+            options=["-n", "--name", "--job-name"],
             arg_group="JobQueryParameter",
             help="The job Name.",
         )

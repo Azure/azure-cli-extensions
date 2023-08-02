@@ -12,27 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery vault recovery-plan list",
+    "site-recovery recovery-plan show",
 )
-class List(AAZCommand):
-    """List the recovery plans in the vault.
+class Show(AAZCommand):
+    """Get the details of the recovery plan.
 
-    :example: recovery-plan list
-        az site-recovery vault recovery-plan list -g rg --vault-name vault_name
+    :example: recovery-plan show
+        az site-recovery recovery-plan show -n recovery_plan_name -g rg --vault-name vault_name
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationrecoveryplans", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationrecoveryplans/{}", "2022-08-01"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -45,6 +44,12 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.recovery_plan_name = AAZStrArg(
+            options=["-n", "--name", "--recovery-plan-name"],
+            help="Name of the recovery plan.",
+            required=True,
+            id_part="child_name_1",
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -52,12 +57,13 @@ class List(AAZCommand):
             options=["--vault-name"],
             help="The name of the recovery services vault.",
             required=True,
+            id_part="name",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ReplicationRecoveryPlansList(ctx=self.ctx)()
+        self.ReplicationRecoveryPlansGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -69,11 +75,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class ReplicationRecoveryPlansList(AAZHttpOperation):
+    class ReplicationRecoveryPlansGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -87,7 +92,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationRecoveryPlans",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationRecoveryPlans/{recoveryPlanName}",
                 **self.url_parameters
             )
 
@@ -102,6 +107,10 @@ class List(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "recoveryPlanName", self.ctx.args.recovery_plan_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
@@ -154,28 +163,19 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType()
-            _element.name = AAZStrType(
+            _schema_on_200.location = AAZStrType()
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
-            _element.type = AAZStrType(
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
+            properties = cls._schema_on_200.properties
             properties.allowed_operations = AAZListType(
                 serialized_name="allowedOperations",
             )
@@ -223,10 +223,10 @@ class List(AAZCommand):
                 serialized_name="replicationProviders",
             )
 
-            allowed_operations = cls._schema_on_200.value.Element.properties.allowed_operations
+            allowed_operations = cls._schema_on_200.properties.allowed_operations
             allowed_operations.Element = AAZStrType()
 
-            current_scenario = cls._schema_on_200.value.Element.properties.current_scenario
+            current_scenario = cls._schema_on_200.properties.current_scenario
             current_scenario.job_id = AAZStrType(
                 serialized_name="jobId",
             )
@@ -237,10 +237,10 @@ class List(AAZCommand):
                 serialized_name="startTime",
             )
 
-            groups = cls._schema_on_200.value.Element.properties.groups
+            groups = cls._schema_on_200.properties.groups
             groups.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.groups.Element
+            _element = cls._schema_on_200.properties.groups.Element
             _element.end_group_actions = AAZListType(
                 serialized_name="endGroupActions",
             )
@@ -255,33 +255,33 @@ class List(AAZCommand):
                 serialized_name="startGroupActions",
             )
 
-            end_group_actions = cls._schema_on_200.value.Element.properties.groups.Element.end_group_actions
+            end_group_actions = cls._schema_on_200.properties.groups.Element.end_group_actions
             end_group_actions.Element = AAZObjectType()
-            _ListHelper._build_schema_recovery_plan_action_read(end_group_actions.Element)
+            _ShowHelper._build_schema_recovery_plan_action_read(end_group_actions.Element)
 
-            replication_protected_items = cls._schema_on_200.value.Element.properties.groups.Element.replication_protected_items
+            replication_protected_items = cls._schema_on_200.properties.groups.Element.replication_protected_items
             replication_protected_items.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.groups.Element.replication_protected_items.Element
+            _element = cls._schema_on_200.properties.groups.Element.replication_protected_items.Element
             _element.id = AAZStrType()
             _element.virtual_machine_id = AAZStrType(
                 serialized_name="virtualMachineId",
             )
 
-            start_group_actions = cls._schema_on_200.value.Element.properties.groups.Element.start_group_actions
+            start_group_actions = cls._schema_on_200.properties.groups.Element.start_group_actions
             start_group_actions.Element = AAZObjectType()
-            _ListHelper._build_schema_recovery_plan_action_read(start_group_actions.Element)
+            _ShowHelper._build_schema_recovery_plan_action_read(start_group_actions.Element)
 
-            provider_specific_details = cls._schema_on_200.value.Element.properties.provider_specific_details
+            provider_specific_details = cls._schema_on_200.properties.provider_specific_details
             provider_specific_details.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.provider_specific_details.Element
+            _element = cls._schema_on_200.properties.provider_specific_details.Element
             _element.instance_type = AAZStrType(
                 serialized_name="instanceType",
                 flags={"required": True},
             )
 
-            disc_a2_a = cls._schema_on_200.value.Element.properties.provider_specific_details.Element.discriminate_by("instance_type", "A2A")
+            disc_a2_a = cls._schema_on_200.properties.provider_specific_details.Element.discriminate_by("instance_type", "A2A")
             disc_a2_a.primary_zone = AAZStrType(
                 serialized_name="primaryZone",
             )
@@ -289,14 +289,14 @@ class List(AAZCommand):
                 serialized_name="recoveryZone",
             )
 
-            replication_providers = cls._schema_on_200.value.Element.properties.replication_providers
+            replication_providers = cls._schema_on_200.properties.replication_providers
             replication_providers.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ShowHelper:
+    """Helper class for Show"""
 
     _schema_recovery_plan_action_read = None
 
@@ -370,4 +370,4 @@ class _ListHelper:
         _schema.failover_types = cls._schema_recovery_plan_action_read.failover_types
 
 
-__all__ = ["List"]
+__all__ = ["Show"]

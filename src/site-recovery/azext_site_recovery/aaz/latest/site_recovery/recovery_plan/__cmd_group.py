@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "site-recovery vault event",
+    "site-recovery recovery-plan",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Vault Event
+    """Manage the recovery plans in the vault.
     """
     pass
 

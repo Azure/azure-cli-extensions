@@ -12,27 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery vault job cancel",
+    "site-recovery job show",
 )
-class Cancel(AAZCommand):
-    """The operation to cancel an Azure Site Recovery job.
+class Show(AAZCommand):
+    """Get the details of an Azure Site Recovery job.
 
-    :example: job cancel
-        az site-recovery vault job cancel --job-name job_id -g rg --vault-name vault_name
+    :example: job show
+        az site-recovery job show -g rg --vault-name vault_name --job-name job_id
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationjobs/{}/cancel", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationjobs/{}", "2022-08-01"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -46,7 +45,7 @@ class Cancel(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.job_name = AAZStrArg(
-            options=["--job-name"],
+            options=["-n", "--name", "--job-name"],
             help="Job identifier.",
             required=True,
             id_part="child_name_1",
@@ -64,7 +63,7 @@ class Cancel(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ReplicationJobsCancel(ctx=self.ctx)()
+        self.ReplicationJobsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -79,43 +78,27 @@ class Cancel(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ReplicationJobsCancel(AAZHttpOperation):
+    class ReplicationJobsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationJobs/{jobName}/cancel",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationJobs/{jobName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "GET"
 
         @property
         def error_format(self):
@@ -260,7 +243,7 @@ class Cancel(AAZCommand):
 
             protected_item_details = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "FailoverJobDetails").protected_item_details
             protected_item_details.Element = AAZObjectType()
-            _CancelHelper._build_schema_failover_replication_protected_item_details_read(protected_item_details.Element)
+            _ShowHelper._build_schema_failover_replication_protected_item_details_read(protected_item_details.Element)
 
             disc_switch_protection_job_details = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "SwitchProtectionJobDetails")
             disc_switch_protection_job_details.new_replication_protected_item_id = AAZStrType(
@@ -287,21 +270,21 @@ class Cancel(AAZCommand):
 
             protected_item_details = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "TestFailoverJobDetails").protected_item_details
             protected_item_details.Element = AAZObjectType()
-            _CancelHelper._build_schema_failover_replication_protected_item_details_read(protected_item_details.Element)
+            _ShowHelper._build_schema_failover_replication_protected_item_details_read(protected_item_details.Element)
 
             errors = cls._schema_on_200.properties.errors
             errors.Element = AAZObjectType()
-            _CancelHelper._build_schema_job_error_details_read(errors.Element)
+            _ShowHelper._build_schema_job_error_details_read(errors.Element)
 
             tasks = cls._schema_on_200.properties.tasks
             tasks.Element = AAZObjectType()
-            _CancelHelper._build_schema_asr_task_read(tasks.Element)
+            _ShowHelper._build_schema_asr_task_read(tasks.Element)
 
             return cls._schema_on_200
 
 
-class _CancelHelper:
-    """Helper class for Cancel"""
+class _ShowHelper:
+    """Helper class for Show"""
 
     _schema_asr_task_read = None
 
@@ -689,4 +672,4 @@ class _CancelHelper:
         _schema.task_id = cls._schema_job_error_details_read.task_id
 
 
-__all__ = ["Cancel"]
+__all__ = ["Show"]

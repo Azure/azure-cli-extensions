@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery vault recovery-plan delete",
+    "site-recovery recovery-plan delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete a recovery plan.
 
     :example: recovery-plan delete
-        az site-recovery vault recovery-plan delete -n recovery_plan_name -g rg --vault-name vault_name
+        az site-recovery recovery-plan delete -n recovery_plan_name -g rg --vault-name vault_name
     """
 
     _aaz_info = {

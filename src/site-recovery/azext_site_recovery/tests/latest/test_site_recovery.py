@@ -6,9 +6,11 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import *
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 import time
 
 class SiteRecoveryScenario(ScenarioTest):
+    @AllowLargeResponse()
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.siterecovery.')
     def test_siterecovery_scenarios(self):
         self.kwargs.update({'vm_name': self.create_random_name(prefix='vm', length=16)})
@@ -65,24 +67,24 @@ class SiteRecoveryScenario(ScenarioTest):
                  checks=[self.check('length(@)', 1)])
 
         # event
-        events = self.cmd('az site-recovery vault event list -g {rg} --vault-name {vault_name}').\
+        events = self.cmd('az site-recovery event list -g {rg} --vault-name {vault_name}').\
             get_output_in_json()
         if events is not None and len(events) > 0:
-            self.cmd('az site-recovery vault event show -g {rg} --vault-name {vault_name} -n '+events[0]["name"])
+            self.cmd('az site-recovery event show -g {rg} --vault-name {vault_name} -n '+events[0]["name"])
 
         # health
         self.cmd('az site-recovery vault health refresh-default -g {rg} --vault-name {vault_name}')
         self.cmd('az site-recovery vault health show -g {rg} --vault-name {vault_name}')
 
         # job
-        jobs = self.cmd('az site-recovery vault job list -g {rg} --vault-name {vault_name}').get_output_in_json()
+        jobs = self.cmd('az site-recovery job list -g {rg} --vault-name {vault_name}').get_output_in_json()
         if jobs is not None and len(jobs) > 0:
-            self.cmd('az site-recovery vault job show -g {rg} --vault-name {vault_name} --job-name '+jobs[0]["name"])
+            self.cmd('az site-recovery job show -g {rg} --vault-name {vault_name} --job-name '+jobs[0]["name"])
             # TODO need to test with actual jobs
-            # self.cmd('az site-recovery vault job restart -g {rg} --vault-name {vault_name} --job-name ' + jobs[0]["name"])
-            # self.cmd('az site-recovery vault job cancel -g {rg} --vault-name {vault_name} --job-name ' + jobs[0]["name"])
-            # self.cmd('az site-recovery vault job resume -g {rg} --vault-name {vault_name} --job-name ' + jobs[0]["name"])
-        self.cmd('az site-recovery vault job export -g {rg} --vault-name {vault_name}')
+            # self.cmd('az site-recovery job restart -g {rg} --vault-name {vault_name} --job-name ' + jobs[0]["name"])
+            # self.cmd('az site-recovery job cancel -g {rg} --vault-name {vault_name} --job-name ' + jobs[0]["name"])
+            # self.cmd('az site-recovery job resume -g {rg} --vault-name {vault_name} --job-name ' + jobs[0]["name"])
+        self.cmd('az site-recovery job export -g {rg} --vault-name {vault_name}')
 
         # policy
         # in-mage-rcm
@@ -346,21 +348,21 @@ class SiteRecoveryScenario(ScenarioTest):
         fabric2_id = self.cmd('az site-recovery fabric show -n {fabric_recovery_name} -g {rg} '
                               '--vault-name {vault_name}').get_output_in_json()["id"]
         self.kwargs.update({"fabric1_id": fabric1_id, "fabric2_id": fabric2_id})
-        self.cmd('az site-recovery vault recovery-plan create -n {recovery_plan_name} -g {rg} '
+        self.cmd('az site-recovery recovery-plan create -n {recovery_plan_name} -g {rg} '
                  '--vault-name {vault_name} --groups [{{group-type:Boot,'
                  'replication-protected-items:[{{id:{protected_item_id},virtual-machine-id:{vm_id}}}]}}] '
                  '--primary-fabric-id {fabric1_id} '
                  '--recovery-fabric-id {fabric2_id} '
                  '--failover-deployment-model ResourceManager')
-        self.cmd('az site-recovery vault recovery-plan show -n {recovery_plan_name} -g {rg} --vault-name {vault_name}',
+        self.cmd('az site-recovery recovery-plan show -n {recovery_plan_name} -g {rg} --vault-name {vault_name}',
                  checks=[self.check('properties.failoverDeploymentModel', 'ResourceManager'),
                          self.check('properties.primaryFabricId', fabric1_id),
                          self.check('properties.recoveryFabricId', fabric2_id)])
-        self.cmd('az site-recovery vault recovery-plan list -g {rg} --vault-name {vault_name}',
+        self.cmd('az site-recovery recovery-plan list -g {rg} --vault-name {vault_name}',
                  checks=[self.check('length(@)', 1)])
-        self.cmd('az site-recovery vault recovery-plan delete -n {recovery_plan_name} -g {rg} '
+        self.cmd('az site-recovery recovery-plan delete -n {recovery_plan_name} -g {rg} '
                  '--vault-name {vault_name} -y')
-        self.cmd('az site-recovery vault recovery-plan list -g {rg} --vault-name {vault_name}',
+        self.cmd('az site-recovery recovery-plan list -g {rg} --vault-name {vault_name}',
                  checks=[self.check('length(@)', 0)])
 
         # failover
@@ -575,21 +577,21 @@ class SiteRecoveryScenario(ScenarioTest):
                               '--vault-name {vault_name}').get_output_in_json()["id"]
         self.kwargs.update({"fabric1_id": fabric1_id, "fabric2_id": fabric2_id})
 
-        self.cmd('az site-recovery vault recovery-plan create -n {recovery_plan_name} -g {rg} '
+        self.cmd('az site-recovery recovery-plan create -n {recovery_plan_name} -g {rg} '
                  '--vault-name {vault_name} --groups [{{group-type:Boot,'
                  'replication-protected-items:[{{id:{protected_item_id},virtual-machine-id:{vm_id}}}]}}] '
                  '--primary-fabric-id {fabric1_id} '
                  '--recovery-fabric-id {fabric2_id} '
                  '--failover-deployment-model ResourceManager')
-        self.cmd('az site-recovery vault recovery-plan show -n {recovery_plan_name} -g {rg} --vault-name {vault_name}',
+        self.cmd('az site-recovery recovery-plan show -n {recovery_plan_name} -g {rg} --vault-name {vault_name}',
                  checks=[self.check('properties.failoverDeploymentModel', 'ResourceManager'),
                          self.check('properties.primaryFabricId', fabric1_id),
                          self.check('properties.recoveryFabricId', fabric2_id)])
-        self.cmd('az site-recovery vault recovery-plan list -g {rg} --vault-name {vault_name}',
+        self.cmd('az site-recovery recovery-plan list -g {rg} --vault-name {vault_name}',
                  checks=[self.check('length(@)', 1)])
-        self.cmd('az site-recovery vault recovery-plan delete -n {recovery_plan_name} -g {rg} '
+        self.cmd('az site-recovery recovery-plan delete -n {recovery_plan_name} -g {rg} '
                  '--vault-name {vault_name} -y')
-        self.cmd('az site-recovery vault recovery-plan list -g {rg} --vault-name {vault_name}',
+        self.cmd('az site-recovery recovery-plan list -g {rg} --vault-name {vault_name}',
                  checks=[self.check('length(@)', 0)])
 
         # failover
@@ -852,7 +854,7 @@ class SiteRecoveryScenario(ScenarioTest):
         self.cmd('az account set -n {cli_subscription}')
 
 
-    # @record_only()
+    @record_only()
     def test_siterecovery_H2A_E2A_scenarios(self):
         self.kwargs.update({
             'rg': 'CliTeraformVaultRG',

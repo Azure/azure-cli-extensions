@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery vault job restart",
+    "site-recovery job resume",
 )
-class Restart(AAZCommand):
-    """The operation to restart an Azure Site Recovery job.
+class Resume(AAZCommand):
+    """The operation to resume an Azure Site Recovery job.
 
-    :example: job restart
-        az site-recovery vault job restart --job-name job_id -g rg --vault-name vault_name
+    :example: job resume
+        az site-recovery job resume --job-name job_id -g rg --vault-name vault_name
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationjobs/{}/restart", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationjobs/{}/resume", "2022-08-01"],
         ]
     }
 
@@ -46,7 +46,7 @@ class Restart(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.job_name = AAZStrArg(
-            options=["--job-name"],
+            options=["-n", "--name", "--job-name"],
             help="Job identifier.",
             required=True,
             id_part="child_name_1",
@@ -60,11 +60,20 @@ class Restart(AAZCommand):
             required=True,
             id_part="name",
         )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.comments = AAZStrArg(
+            options=["--comments"],
+            arg_group="Properties",
+            help="Resume job comments.",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ReplicationJobsRestart(ctx=self.ctx)()
+        yield self.ReplicationJobsResume(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -79,7 +88,7 @@ class Restart(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ReplicationJobsRestart(AAZHttpOperation):
+    class ReplicationJobsResume(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -109,7 +118,7 @@ class Restart(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationJobs/{jobName}/restart",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationJobs/{jobName}/resume",
                 **self.url_parameters
             )
 
@@ -157,10 +166,28 @@ class Restart(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("properties", AAZObjectType)
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("comments", AAZStrType, ".comments")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -260,7 +287,7 @@ class Restart(AAZCommand):
 
             protected_item_details = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "FailoverJobDetails").protected_item_details
             protected_item_details.Element = AAZObjectType()
-            _RestartHelper._build_schema_failover_replication_protected_item_details_read(protected_item_details.Element)
+            _ResumeHelper._build_schema_failover_replication_protected_item_details_read(protected_item_details.Element)
 
             disc_switch_protection_job_details = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "SwitchProtectionJobDetails")
             disc_switch_protection_job_details.new_replication_protected_item_id = AAZStrType(
@@ -287,21 +314,21 @@ class Restart(AAZCommand):
 
             protected_item_details = cls._schema_on_200.properties.custom_details.discriminate_by("instance_type", "TestFailoverJobDetails").protected_item_details
             protected_item_details.Element = AAZObjectType()
-            _RestartHelper._build_schema_failover_replication_protected_item_details_read(protected_item_details.Element)
+            _ResumeHelper._build_schema_failover_replication_protected_item_details_read(protected_item_details.Element)
 
             errors = cls._schema_on_200.properties.errors
             errors.Element = AAZObjectType()
-            _RestartHelper._build_schema_job_error_details_read(errors.Element)
+            _ResumeHelper._build_schema_job_error_details_read(errors.Element)
 
             tasks = cls._schema_on_200.properties.tasks
             tasks.Element = AAZObjectType()
-            _RestartHelper._build_schema_asr_task_read(tasks.Element)
+            _ResumeHelper._build_schema_asr_task_read(tasks.Element)
 
             return cls._schema_on_200
 
 
-class _RestartHelper:
-    """Helper class for Restart"""
+class _ResumeHelper:
+    """Helper class for Resume"""
 
     _schema_asr_task_read = None
 
@@ -689,4 +716,4 @@ class _RestartHelper:
         _schema.task_id = cls._schema_job_error_details_read.task_id
 
 
-__all__ = ["Restart"]
+__all__ = ["Resume"]
