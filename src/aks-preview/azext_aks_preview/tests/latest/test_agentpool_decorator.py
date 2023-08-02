@@ -368,6 +368,26 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
             capacity_reservation_group_id="test_crg_id"
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+    
+    def common_set_up_agentpool_type(self):
+        dec_1 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"vm_set_type": "VirtualMachines"},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_1.set_up_agentpool_type(None)
+        agentpool_1 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.set_up_agentpool_type(agentpool_1)
+        dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
+            vm_set_type="VirtualMachines"
+        )
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
     def common_set_up_motd(self):
         dec_1 = AKSPreviewAgentPoolAddDecorator(

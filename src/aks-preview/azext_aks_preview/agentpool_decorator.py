@@ -8,7 +8,13 @@ import os
 from types import SimpleNamespace
 from typing import Dict, TypeVar, Union, List
 
-from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode, DecoratorMode
+from azure.cli.command_modules.acs._consts import (
+    AgentPoolDecoratorMode,
+    DecoratorMode,
+    CONST_VIRTUAL_MACHINE_SCALE_SETS,
+    CONST_AVAILABILITY_SET
+)
+
 from azure.cli.command_modules.acs.agentpool_decorator import (
     AKSAgentPoolAddDecorator,
     AKSAgentPoolContext,
@@ -37,6 +43,8 @@ AgentPoolsOperations = TypeVar("AgentPoolsOperations")
 PortRange = TypeVar("PortRange")
 IPTag = TypeVar("IPTag")
 
+# constants
+CONST_VIRTUAL_MACHINES = "VirtualMachines"
 
 # pylint: disable=too-few-public-methods
 class AKSPreviewAgentPoolModels(AKSAgentPoolModels):
@@ -295,6 +303,32 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return node_taints
 
+    def get_vm_set_type_preview(self) -> str:
+        """Obtain the value of vm_set_type, default value is CONST_VIRTUAL_MACHINE_SCALE_SETS.
+
+        :return: string
+        """
+        # read the original value passed by the command
+        vm_set_type = self.raw_param.get("vm_set_type", CONST_VIRTUAL_MACHINE_SCALE_SETS)
+        # try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.MANAGED_CLUSTER:
+            if self.agentpool and self.agentpool.type is not None:
+                vm_set_type = self.agentpool.type
+        else:
+            if self.agentpool and self.agentpool.type_properties_type is not None:
+                vm_set_type = self.agentpool.type_properties_type
+
+        # normalize
+        if vm_set_type.lower() == CONST_VIRTUAL_MACHINE_SCALE_SETS.lower():
+            vm_set_type = CONST_VIRTUAL_MACHINE_SCALE_SETS
+        elif vm_set_type.lower() == CONST_AVAILABILITY_SET.lower():
+            vm_set_type = CONST_AVAILABILITY_SET
+        elif vm_set_type.lower() == CONST_VIRTUAL_MACHINES.lower():
+            vm_set_type = CONST_VIRTUAL_MACHINES
+        else:
+            raise InvalidArgumentValueError("--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only)")
+        # this parameter does not need validation
+        return vm_set_type
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -337,6 +371,19 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         self._ensure_agentpool(agentpool)
 
         agentpool.capacity_reservation_group_id = self.context.get_crg_id()
+        return agentpool
+
+    def set_up_agentpool_type(self, agentpool: AgentPool) -> AgentPool:
+        """Set up agentpool type for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.MANAGED_CLUSTER:
+            agentpool.type = self.context.get_vm_set_type_preview()
+        else:
+            agentpool.type_properties_type = self.context.get_vm_set_type_preview()
         return agentpool
 
     def set_up_motd(self, agentpool: AgentPool) -> AgentPool:
@@ -426,6 +473,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
 
         # set up preview vm properties
         agentpool = self.set_up_preview_vm_properties(agentpool)
+        # set up agentpool type
+        agentpool = self.set_up_agentpool_type(agentpool)
         # set up message of the day
         agentpool = self.set_up_motd(agentpool)
         # set up custom ca trust
