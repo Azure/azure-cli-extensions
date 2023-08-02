@@ -44,24 +44,24 @@ class SiteRecoveryScenario(ScenarioTest):
         self.cmd('az site-recovery vault show-supported-operating-system -g {rg} --vault-name {vault_name}')
 
         # alert setting
-        self.cmd('az site-recovery vault alert-setting create -n defaultAlertSetting -g {rg} '
+        self.cmd('az site-recovery alert-setting create -n defaultAlertSetting -g {rg} '
                  '--vault-name {vault_name} --custom-email-addresses email@address.com --locale en_US '
                  '--send-to-owners Send')
-        self.cmd('az site-recovery vault alert-setting show -n defaultAlertSetting -g {rg} '
+        self.cmd('az site-recovery alert-setting show -n defaultAlertSetting -g {rg} '
                  '--vault-name {vault_name}',
                  checks=[
                      self.check('name', 'defaultAlertSetting'),
                      self.check('properties.locale', 'en_US'),
                      self.check('properties.customEmailAddresses', ['email@address.com']),
                      self.check('properties.sendToOwners', 'Send')])
-        self.cmd('az site-recovery vault alert-setting update -n defaultAlertSetting -g {rg} '
+        self.cmd('az site-recovery alert-setting update -n defaultAlertSetting -g {rg} '
                  '--vault-name {vault_name} --custom-email-addresses email2@address.com --locale fr_FR '
                  '--send-to-owners DoNotSend',
                  checks=[
                      self.check('properties.locale', 'fr_FR'),
                      self.check('properties.customEmailAddresses', ['email2@address.com']),
                      self.check('properties.sendToOwners', 'DoNotSend')])
-        self.cmd('az site-recovery vault alert-setting list -g {rg} --vault-name {vault_name}',
+        self.cmd('az site-recovery alert-setting list -g {rg} --vault-name {vault_name}',
                  checks=[self.check('length(@)', 1)])
 
         # event

@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery vault alert-setting show",
+    "site-recovery alert-setting create",
 )
-class Show(AAZCommand):
-    """Get the details of the specified email notification(alert) configuration.
+class Create(AAZCommand):
+    """Create an email notification(alert) configuration.
 
-    :example: alert-setting show
-        az site-recovery vault alert-setting show -n defaultAlertSetting -g rg --vault-name vault_name
+    :example: alert-setting create
+        az site-recovery alert-setting create -n defaultAlertSetting -g rg --vault-name vault_name --custom-email-addresses email@address.com --locale en_US --send-to-owners Send
     """
 
     _aaz_info = {
@@ -46,9 +46,8 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.alert_setting_name = AAZStrArg(
             options=["-n", "--name", "--alert-setting-name"],
-            help="The name of the email notification configuration.",
+            help="The name of the email notification(alert) configuration.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -57,13 +56,34 @@ class Show(AAZCommand):
             options=["--vault-name"],
             help="The name of the recovery services vault.",
             required=True,
-            id_part="name",
         )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.custom_email_addresses = AAZListArg(
+            options=["--custom-email-addresses"],
+            arg_group="Properties",
+            help="The custom email address for sending emails.",
+        )
+        _args_schema.locale = AAZStrArg(
+            options=["--locale"],
+            arg_group="Properties",
+            help="The locale for the email notification.",
+        )
+        _args_schema.send_to_owners = AAZStrArg(
+            options=["--send-to-owners"],
+            arg_group="Properties",
+            help="A value indicating whether to send email to subscription administrator. Allowed values: \"Send\", \"DoNotSend\"",
+        )
+
+        custom_email_addresses = cls._args_schema.custom_email_addresses
+        custom_email_addresses.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ReplicationAlertSettingsGet(ctx=self.ctx)()
+        self.ReplicationAlertSettingsCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -78,7 +98,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ReplicationAlertSettingsGet(AAZHttpOperation):
+    class ReplicationAlertSettingsCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -98,7 +118,7 @@ class Show(AAZCommand):
 
         @property
         def method(self):
-            return "GET"
+            return "PUT"
 
         @property
         def error_format(self):
@@ -140,10 +160,34 @@ class Show(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("properties", AAZObjectType)
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("customEmailAddresses", AAZListType, ".custom_email_addresses")
+                properties.set_prop("locale", AAZStrType, ".locale")
+                properties.set_prop("sendToOwners", AAZStrType, ".send_to_owners")
+
+            custom_email_addresses = _builder.get(".properties.customEmailAddresses")
+            if custom_email_addresses is not None:
+                custom_email_addresses.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -190,8 +234,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _CreateHelper:
+    """Helper class for Create"""
 
 
-__all__ = ["Show"]
+__all__ = ["Create"]

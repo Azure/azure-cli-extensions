@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "site-recovery vault alert-setting",
+    "site-recovery alert-setting",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Vault Alert Setting
+    """Manage Alert Setting
     """
     pass
 

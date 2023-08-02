@@ -12,27 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery vault alert-setting list",
+    "site-recovery alert-setting show",
 )
-class List(AAZCommand):
-    """List the list of email notification(alert) configurations for the vault.
+class Show(AAZCommand):
+    """Get the details of the specified email notification(alert) configuration.
 
-    :example: alert-setting list
-        az site-recovery vault alert-setting list -g rg --vault-name vault_name
+    :example: alert-setting show
+        az site-recovery alert-setting show -n defaultAlertSetting -g rg --vault-name vault_name
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationalertsettings", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationalertsettings/{}", "2022-08-01"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -45,6 +44,12 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.alert_setting_name = AAZStrArg(
+            options=["-n", "--name", "--alert-setting-name"],
+            help="The name of the email notification configuration.",
+            required=True,
+            id_part="child_name_1",
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -52,12 +57,13 @@ class List(AAZCommand):
             options=["--vault-name"],
             help="The name of the recovery services vault.",
             required=True,
+            id_part="name",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ReplicationAlertSettingsList(ctx=self.ctx)()
+        self.ReplicationAlertSettingsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -69,11 +75,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class ReplicationAlertSettingsList(AAZHttpOperation):
+    class ReplicationAlertSettingsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -87,7 +92,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationAlertSettings",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationAlertSettings/{alertSettingName}",
                 **self.url_parameters
             )
 
@@ -102,6 +107,10 @@ class List(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "alertSettingName", self.ctx.args.alert_setting_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
@@ -154,28 +163,19 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType()
-            _element.name = AAZStrType(
+            _schema_on_200.location = AAZStrType()
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
-            _element.type = AAZStrType(
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
+            properties = cls._schema_on_200.properties
             properties.custom_email_addresses = AAZListType(
                 serialized_name="customEmailAddresses",
             )
@@ -184,14 +184,14 @@ class List(AAZCommand):
                 serialized_name="sendToOwners",
             )
 
-            custom_email_addresses = cls._schema_on_200.value.Element.properties.custom_email_addresses
+            custom_email_addresses = cls._schema_on_200.properties.custom_email_addresses
             custom_email_addresses.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["List"]
+__all__ = ["Show"]
