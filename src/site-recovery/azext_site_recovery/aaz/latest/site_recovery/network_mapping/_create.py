@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric network-mapping show",
+    "site-recovery network-mapping create",
 )
-class Show(AAZCommand):
-    """Get the details of an ASR network mapping.
+class Create(AAZCommand):
+    """Create operation to create an ASR network mapping.
 
-    :example: network-mapping show
-        az site-recovery fabric network-mapping show -g rg --fabric-name fabric_source_name -n network_mapping_src_to_recovery_name --network-name azureNetwork --vault-name vault_name
+    :example: network-mapping create for A2A fabric
+        az site-recovery network-mapping create -g rg --fabric-name fabric1_name -n network_mapping1_name --network-name azureNetwork --vault-name vault_name --recovery-network-id vnet2_id --fabric-details '{azure-to-azure:{primary-network-id:vnetvm_id}}' --recovery-fabric-name fabric2_name
     """
 
     _aaz_info = {
@@ -28,10 +28,11 @@ class Show(AAZCommand):
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -48,19 +49,16 @@ class Show(AAZCommand):
             options=["--fabric-name"],
             help="Primary fabric name.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.network_mapping_name = AAZStrArg(
             options=["-n", "--name", "--network-mapping-name"],
             help="Network mapping name.",
             required=True,
-            id_part="child_name_3",
         )
         _args_schema.network_name = AAZStrArg(
             options=["--network-name"],
             help="Primary network name.",
             required=True,
-            id_part="child_name_2",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -69,13 +67,53 @@ class Show(AAZCommand):
             options=["--vault-name"],
             help="The name of the recovery services vault.",
             required=True,
-            id_part="name",
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.fabric_specific_details = AAZObjectArg(
+            options=["--fabric-details", "--fabric-specific-details"],
+            arg_group="Properties",
+            help="Fabric specific input properties.",
+        )
+        _args_schema.recovery_fabric_name = AAZStrArg(
+            options=["--recovery-fabric-name"],
+            arg_group="Properties",
+            help="Recovery fabric Name.",
+        )
+        _args_schema.recovery_network_id = AAZStrArg(
+            options=["--recovery-network-id"],
+            arg_group="Properties",
+            help="Recovery network Id.",
+            required=True,
+        )
+
+        fabric_specific_details = cls._args_schema.fabric_specific_details
+        fabric_specific_details.azure_to_azure = AAZObjectArg(
+            options=["azure-to-azure"],
+        )
+        fabric_specific_details.vmm_to_azure = AAZObjectArg(
+            options=["vmm-to-azure"],
+        )
+
+        azure_to_azure = cls._args_schema.fabric_specific_details.azure_to_azure
+        azure_to_azure.primary_network_id = AAZStrArg(
+            options=["primary-network-id"],
+            help="The primary azure vnet Id.",
+            required=True,
+        )
+
+        vmm_to_azure = cls._args_schema.fabric_specific_details.vmm_to_azure
+        vmm_to_azure.location = AAZStrArg(
+            options=["location"],
+            help="The Location.",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ReplicationNetworkMappingsGet(ctx=self.ctx)()
+        yield self.ReplicationNetworkMappingsCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -90,14 +128,30 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ReplicationNetworkMappingsGet(AAZHttpOperation):
+    class ReplicationNetworkMappingsCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
@@ -110,7 +164,7 @@ class Show(AAZCommand):
 
         @property
         def method(self):
-            return "GET"
+            return "PUT"
 
         @property
         def error_format(self):
@@ -160,10 +214,45 @@ class Show(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("fabricSpecificDetails", AAZObjectType, ".fabric_specific_details")
+                properties.set_prop("recoveryFabricName", AAZStrType, ".recovery_fabric_name")
+                properties.set_prop("recoveryNetworkId", AAZStrType, ".recovery_network_id", typ_kwargs={"flags": {"required": True}})
+
+            fabric_specific_details = _builder.get(".properties.fabricSpecificDetails")
+            if fabric_specific_details is not None:
+                fabric_specific_details.set_const("instanceType", "AzureToAzure", AAZStrType, ".azure_to_azure", typ_kwargs={"flags": {"required": True}})
+                fabric_specific_details.set_const("instanceType", "VmmToAzure", AAZStrType, ".vmm_to_azure", typ_kwargs={"flags": {"required": True}})
+                fabric_specific_details.discriminate_by("instanceType", "AzureToAzure")
+                fabric_specific_details.discriminate_by("instanceType", "VmmToAzure")
+
+            disc_azure_to_azure = _builder.get(".properties.fabricSpecificDetails{instanceType:AzureToAzure}")
+            if disc_azure_to_azure is not None:
+                disc_azure_to_azure.set_prop("primaryNetworkId", AAZStrType, ".azure_to_azure.primary_network_id", typ_kwargs={"flags": {"required": True}})
+
+            disc_vmm_to_azure = _builder.get(".properties.fabricSpecificDetails{instanceType:VmmToAzure}")
+            if disc_vmm_to_azure is not None:
+                disc_vmm_to_azure.set_prop("location", AAZStrType, ".vmm_to_azure.location")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -242,8 +331,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _CreateHelper:
+    """Helper class for Create"""
 
 
-__all__ = ["Show"]
+__all__ = ["Create"]

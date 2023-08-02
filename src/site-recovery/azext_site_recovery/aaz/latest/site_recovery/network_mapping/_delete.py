@@ -12,14 +12,14 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric network-mapping delete",
+    "site-recovery network-mapping delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete operation to delete a network mapping.
 
     :example: network-mapping delete
-        az site-recovery fabric network-mapping delete -g rg --fabric-name fabric_source_name -n network_mapping_src_to_recovery_name --network-name azureNetwork --vault-name vault_name'
+        az site-recovery network-mapping delete -g rg --fabric-name fabric_source_name -n network_mapping_src_to_recovery_name --network-name azureNetwork --vault-name vault_name'
     """
 
     _aaz_info = {
