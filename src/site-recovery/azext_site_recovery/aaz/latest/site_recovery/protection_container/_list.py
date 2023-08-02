@@ -12,27 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container create",
+    "site-recovery protection-container list",
 )
-class Create(AAZCommand):
-    """Create to create a protection container.
+class List(AAZCommand):
+    """List the protection containers in the specified fabric.
 
-    :example: protection-container create for A2A
-        az site-recovery fabric protection-container create -g rg --fabric-name fabric1_name -n container1_name --vault-name vault_name --provider-input '[{instance-type:A2A}]'
+    :example: protection-container list
+        az site-recovery protection-container list -g rg --fabric-name fabric_source_name --vault-name vault_name
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers", "2022-08-01"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -47,12 +47,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="Unique fabric ARM name.",
-            required=True,
-        )
-        _args_schema.protection_container_name = AAZStrArg(
-            options=["-n", "--name", "--protection-container-name"],
-            help="Unique protection container ARM name.",
+            help="Fabric name.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -63,31 +58,11 @@ class Create(AAZCommand):
             help="The name of the recovery services vault.",
             required=True,
         )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.provider_specific_input = AAZListArg(
-            options=["--provider-input", "--provider-specific-input"],
-            arg_group="Properties",
-            help="Provider specific inputs for container creation.",
-        )
-
-        provider_specific_input = cls._args_schema.provider_specific_input
-        provider_specific_input.Element = AAZObjectArg()
-
-        _element = cls._args_schema.provider_specific_input.Element
-        _element.instance_type = AAZStrArg(
-            options=["instance-type"],
-            help="The class type.",
-            required=True,
-            enum={"A2A": "A2A", "A2ACrossClusterMigration": "A2ACrossClusterMigration", "VMwareCbt": "VMwareCbt"},
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ReplicationProtectionContainersCreate(ctx=self.ctx)()
+        self.ReplicationProtectionContainersListByReplicationFabrics(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -99,46 +74,31 @@ class Create(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class ReplicationProtectionContainersCreate(AAZHttpOperation):
+    class ReplicationProtectionContainersListByReplicationFabrics(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "PUT"
+            return "GET"
 
         @property
         def error_format(self):
@@ -149,10 +109,6 @@ class Create(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "fabricName", self.ctx.args.fabric_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "protectionContainerName", self.ctx.args.protection_container_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -184,36 +140,10 @@ class Create(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("properties", AAZObjectType)
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("providerSpecificInput", AAZListType, ".provider_specific_input")
-
-            provider_specific_input = _builder.get(".properties.providerSpecificInput")
-            if provider_specific_input is not None:
-                provider_specific_input.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.providerSpecificInput[]")
-            if _elements is not None:
-                _elements.set_prop("instanceType", AAZStrType, ".instance_type", typ_kwargs={"flags": {"required": True}})
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -233,19 +163,28 @@ class Create(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.location = AAZStrType()
-            _schema_on_200.name = AAZStrType(
+            _element.location = AAZStrType()
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.type = AAZStrType(
+            _element.properties = AAZObjectType()
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200.value.Element.properties
             properties.fabric_friendly_name = AAZStrType(
                 serialized_name="fabricFriendlyName",
             )
@@ -266,7 +205,7 @@ class Create(AAZCommand):
             )
             properties.role = AAZStrType()
 
-            fabric_specific_details = cls._schema_on_200.properties.fabric_specific_details
+            fabric_specific_details = cls._schema_on_200.value.Element.properties.fabric_specific_details
             fabric_specific_details.instance_type = AAZStrType(
                 serialized_name="instanceType",
                 flags={"read_only": True},
@@ -275,8 +214,8 @@ class Create(AAZCommand):
             return cls._schema_on_200
 
 
-class _CreateHelper:
-    """Helper class for Create"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Create"]
+__all__ = ["List"]

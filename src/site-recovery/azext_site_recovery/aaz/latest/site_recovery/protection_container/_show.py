@@ -12,27 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container list",
+    "site-recovery protection-container show",
 )
-class List(AAZCommand):
-    """List the protection containers in the specified fabric.
+class Show(AAZCommand):
+    """Get the details of a protection container.
 
-    :example: protection-container list
-        az site-recovery fabric protection-container list -g rg --fabric-name fabric_source_name --vault-name vault_name
+    :example: protection-container show
+        az site-recovery protection-container show -g rg --fabric-name fabric1_name -n container1_name --vault-name vault_name
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}", "2022-08-01"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -49,6 +48,13 @@ class List(AAZCommand):
             options=["--fabric-name"],
             help="Fabric name.",
             required=True,
+            id_part="child_name_1",
+        )
+        _args_schema.protection_container_name = AAZStrArg(
+            options=["-n", "--name", "--protection-container-name"],
+            help="Protection container name.",
+            required=True,
+            id_part="child_name_2",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -57,12 +63,13 @@ class List(AAZCommand):
             options=["--vault-name"],
             help="The name of the recovery services vault.",
             required=True,
+            id_part="name",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ReplicationProtectionContainersListByReplicationFabrics(ctx=self.ctx)()
+        self.ReplicationProtectionContainersGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,11 +81,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class ReplicationProtectionContainersListByReplicationFabrics(AAZHttpOperation):
+    class ReplicationProtectionContainersGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -92,7 +98,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}",
                 **self.url_parameters
             )
 
@@ -109,6 +115,10 @@ class List(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "fabricName", self.ctx.args.fabric_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "protectionContainerName", self.ctx.args.protection_container_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -163,28 +173,19 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType()
-            _element.name = AAZStrType(
+            _schema_on_200.location = AAZStrType()
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
-            _element.type = AAZStrType(
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
+            properties = cls._schema_on_200.properties
             properties.fabric_friendly_name = AAZStrType(
                 serialized_name="fabricFriendlyName",
             )
@@ -205,7 +206,7 @@ class List(AAZCommand):
             )
             properties.role = AAZStrType()
 
-            fabric_specific_details = cls._schema_on_200.value.Element.properties.fabric_specific_details
+            fabric_specific_details = cls._schema_on_200.properties.fabric_specific_details
             fabric_specific_details.instance_type = AAZStrType(
                 serialized_name="instanceType",
                 flags={"read_only": True},
@@ -214,8 +215,8 @@ class List(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["List"]
+__all__ = ["Show"]

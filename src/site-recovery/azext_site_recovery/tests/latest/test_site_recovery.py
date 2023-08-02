@@ -193,64 +193,64 @@ class SiteRecoveryScenario(ScenarioTest):
                              '--vault-name {vault_name} -n {policy_name}').get_output_in_json()["id"]
         self.kwargs.update({"policy_id": policy_id})
 
-        self.cmd('az site-recovery fabric protection-container create -g {rg} '
+        self.cmd('az site-recovery protection-container create -g {rg} '
                  '--fabric-name {fabric_source_name} -n {container_source_name} --vault-name {vault_name} '
                  '--provider-input [{{instance-type:A2A}}]')
-        self.cmd('az site-recovery fabric protection-container create -g {rg} '
+        self.cmd('az site-recovery protection-container create -g {rg} '
                  '--fabric-name {fabric_recovery_name} -n {container_recovery_name} --vault-name {vault_name} '
                  '--provider-input [{{instance-type:A2A}}]')
 
         # crud for protection-container
-        self.cmd('az site-recovery fabric protection-container list -g {rg} '
+        self.cmd('az site-recovery protection-container list -g {rg} '
                  '--fabric-name {fabric_source_name} --vault-name {vault_name}',
                  checks=[self.check('length(@)', 1)])
-        self.cmd('az site-recovery fabric protection-container update -g {rg} '
+        self.cmd('az site-recovery protection-container update -g {rg} '
                  '--fabric-name {fabric_source_name} -n {container_source_name} --vault-name {vault_name} '
                  '--provider-input [{{instance-type:A2ACrossClusterMigration}}]')
-        self.cmd('az site-recovery fabric protection-container update -g {rg} '
+        self.cmd('az site-recovery protection-container update -g {rg} '
                  '--fabric-name {fabric_source_name} -n {container_source_name} --vault-name {vault_name} '
                  '--provider-input [{{instance-type:A2A}}]')
 
 
-        container_source_id = self.cmd('az site-recovery fabric protection-container show -g {rg} '
+        container_source_id = self.cmd('az site-recovery protection-container show -g {rg} '
                                        '--fabric-name {fabric_source_name} -n {container_source_name} '
                                        '--vault-name {vault_name}',
                                        checks=[self.check('properties.fabricType', 'Azure')]).get_output_in_json()["id"]
-        container_recovery_id = self.cmd('az site-recovery fabric protection-container show '
+        container_recovery_id = self.cmd('az site-recovery protection-container show '
                                          '-g {rg} --fabric-name {fabric_recovery_name} -n {container_recovery_name} '
                                          '--vault-name {vault_name}').get_output_in_json()["id"]
         self.kwargs.update({"container_source_id": container_source_id, "container_recovery_id": container_recovery_id})
 
         #  create container mappings
-        self.cmd('az site-recovery fabric protection-container mapping create -g {rg} '
+        self.cmd('az site-recovery protection-container mapping create -g {rg} '
                  '--fabric-name {fabric_source_name} -n {container_mapping_source_name} '
                  '--protection-container {container_source_name} --vault-name {vault_name} '
                  '--policy-id {policy_id} --provider-input {{a2a:{{agent-auto-update-status:Disabled}}}} '
                  '--target-container {container_recovery_id}')
-        self.cmd('az site-recovery fabric protection-container mapping create -g {rg} '
+        self.cmd('az site-recovery protection-container mapping create -g {rg} '
                  '--fabric-name {fabric_recovery_name} -n {container_mapping_recovery_name} '
                  '--protection-container {container_recovery_name} --vault-name {vault_name} '
                  '--policy-id {policy_id} --provider-input {{a2a:{{agent-auto-update-status:Disabled}}}} '
                  '--target-container {container_source_id}')
 
         # crud for container mappings
-        self.cmd('az site-recovery fabric protection-container mapping list -g {rg} '
+        self.cmd('az site-recovery protection-container mapping list -g {rg} '
                  '--fabric-name {fabric_source_name} '
                  '--protection-container {container_source_name} --vault-name {vault_name}',
                  checks=[self.check('length(@)', 2)])
-        self.cmd('az site-recovery fabric protection-container mapping update -g {rg} '
+        self.cmd('az site-recovery protection-container mapping update -g {rg} '
                  '--fabric-name {fabric_source_name} -n {container_mapping_source_name} '
                  '--protection-container {container_source_name} --vault-name {vault_name} '
                  '--policy-id {policy_id} --provider-input {{a2a:{{agent-auto-update-status:Disabled}}}} '
                  '--target-container {container_recovery_id}')
-        self.cmd('az site-recovery fabric protection-container mapping show -g {rg} '
+        self.cmd('az site-recovery protection-container mapping show -g {rg} '
                  '--fabric-name {fabric_source_name} -n {container_mapping_source_name} '
                  '--protection-container {container_source_name} --vault-name {vault_name}',
                  checks=[self.check('properties.providerSpecificDetails.agentAutoUpdateStatus', 'Disabled')])
-        self.cmd('az site-recovery fabric protection-container mapping remove -g {rg} '
+        self.cmd('az site-recovery protection-container mapping remove -g {rg} '
                  '--fabric-name {fabric_source_name} -n {container_mapping_source_name} '
                  '--protection-container {container_source_name} --vault-name {vault_name}')
-        self.cmd('az site-recovery fabric protection-container mapping create -g {rg} '
+        self.cmd('az site-recovery protection-container mapping create -g {rg} '
                  '--fabric-name {fabric_source_name} -n {container_mapping_source_name} '
                  '--protection-container {container_source_name} --vault-name {vault_name} '
                  '--policy-id {policy_id} --provider-input {{a2a:{{agent-auto-update-status:Disabled}}}} '
@@ -378,7 +378,7 @@ class SiteRecoveryScenario(ScenarioTest):
                             "recovery_os_disk": recovery_vm["storageProfile"]["osDisk"]["managedDisk"]["id"]})
 
         # # switch protection
-        self.cmd('az site-recovery fabric protection-container switch-protection --fabric-name {fabric_source_name} '
+        self.cmd('az site-recovery protection-container switch-protection --fabric-name {fabric_source_name} '
                  '-n {container_source_name} --protected-item {protected_item_name} -g {rg} '
                  '--vault-name {vault_name} --provider-details {{a2a:{{policy-id:{policy_id},'
                  'recovery-container-id:{container_source_id},'
@@ -416,17 +416,17 @@ class SiteRecoveryScenario(ScenarioTest):
                  '-n {network_mapping_src_to_recovery_name} --network-name azureNetwork --vault-name {vault_name} -y')
 
         # delete container mappings
-        self.cmd('az site-recovery fabric protection-container mapping delete -g {rg} '
+        self.cmd('az site-recovery protection-container mapping delete -g {rg} '
                  '--fabric-name {fabric_source_name} -n {container_mapping_source_name} --protection-container {container_source_name} '
                  '--vault-name {vault_name} -y')
-        self.cmd('az site-recovery fabric protection-container mapping delete -g {rg} '
+        self.cmd('az site-recovery protection-container mapping delete -g {rg} '
                  '--fabric-name {fabric_recovery_name} -n {container_mapping_recovery_name} --protection-container {container_recovery_name} '
                  '--vault-name {vault_name} -y')
 
         # delete containers
-        self.cmd('az site-recovery fabric protection-container remove -g {rg} '
+        self.cmd('az site-recovery protection-container remove -g {rg} '
                  '--fabric-name {fabric_source_name} -n {container_source_name} --vault-name {vault_name}')
-        self.cmd('az site-recovery fabric protection-container remove -g {rg} '
+        self.cmd('az site-recovery protection-container remove -g {rg} '
                  '--fabric-name {fabric_recovery_name} -n {container_recovery_name} --vault-name {vault_name}')
 
         # delete policy
@@ -480,28 +480,28 @@ class SiteRecoveryScenario(ScenarioTest):
                              '--vault-name {vault_name} -n {policy_name}').get_output_in_json()["id"]
         self.kwargs.update({"policy_id": policy_id})
 
-        self.cmd('az site-recovery fabric protection-container create -g {rg} '
+        self.cmd('az site-recovery protection-container create -g {rg} '
                  '--fabric-name {fabric1_name} -n {container1_name} --vault-name {vault_name} '
                  '--provider-input [{{instance-type:A2A}}]')
-        self.cmd('az site-recovery fabric protection-container create -g {rg} '
+        self.cmd('az site-recovery protection-container create -g {rg} '
                  '--fabric-name {fabric2_name} -n {container2_name} --vault-name {vault_name} '
                  '--provider-input [{{instance-type:A2A}}]')
 
-        container1_id = self.cmd('az site-recovery fabric protection-container show '
+        container1_id = self.cmd('az site-recovery protection-container show '
                                  '-g {rg} --fabric-name {fabric1_name} -n {container1_name} '
                                  '--vault-name {vault_name}').get_output_in_json()["id"]
-        container2_id = self.cmd('az site-recovery fabric protection-container show '
+        container2_id = self.cmd('az site-recovery protection-container show '
                                  '-g {rg} --fabric-name {fabric2_name} -n {container2_name} '
                                  '--vault-name {vault_name}').get_output_in_json()["id"]
         self.kwargs.update({"container1_id": container1_id, "container2_id": container2_id})
 
         # create container mappings
-        self.cmd('az site-recovery fabric protection-container mapping create -g {rg} '
+        self.cmd('az site-recovery protection-container mapping create -g {rg} '
                  '--fabric-name {fabric1_name} -n {container_mapping1_name} --protection-container {container1_name} '
                  '--vault-name {vault_name} '
                  '--policy-id {policy_id} --provider-input {{a2a:{{agent-auto-update-status:Disabled}}}} '
                  '--target-container {container2_id}')
-        self.cmd('az site-recovery fabric protection-container mapping create -g {rg} '
+        self.cmd('az site-recovery protection-container mapping create -g {rg} '
                  '--fabric-name {fabric2_name} -n {container_mapping2_name} --protection-container {container2_name} '
                  '--vault-name {vault_name} '
                  '--policy-id {policy_id} --provider-input {{a2a:{{agent-auto-update-status:Disabled}}}} '
@@ -607,7 +607,7 @@ class SiteRecoveryScenario(ScenarioTest):
                             "recovery_os_disk": recovery_vm["storageProfile"]["osDisk"]["managedDisk"]["id"]})
 
         # switch protection
-        self.cmd('az site-recovery fabric protection-container switch-protection --fabric-name {fabric1_name} '
+        self.cmd('az site-recovery protection-container switch-protection --fabric-name {fabric1_name} '
                  '-n {container1_name} --protected-item {protected_item_name} -g {rg} '
                  '--vault-name {vault_name} --provider-details {{a2a:{{policy-id:{policy_id},'
                  'recovery-container-id:{container1_id},'
@@ -638,17 +638,17 @@ class SiteRecoveryScenario(ScenarioTest):
                  '--vault-name {vault_name} -y')
 
         # delete container mappings
-        self.cmd('az site-recovery fabric protection-container mapping delete -g {rg} '
+        self.cmd('az site-recovery protection-container mapping delete -g {rg} '
                  '--fabric-name {fabric1_name} -n {container_mapping1_name} --protection-container {container1_name} '
                  '--vault-name {vault_name} -y')
-        self.cmd('az site-recovery fabric protection-container mapping delete -g {rg} '
+        self.cmd('az site-recovery protection-container mapping delete -g {rg} '
                  '--fabric-name {fabric2_name} -n {container_mapping2_name} --protection-container {container2_name} '
                  '--vault-name {vault_name} -y')
 
         # delete containers
-        self.cmd('az site-recovery fabric protection-container remove -g {rg} '
+        self.cmd('az site-recovery protection-container remove -g {rg} '
                  '--fabric-name {fabric1_name} -n {container1_name} --vault-name {vault_name}')
-        self.cmd('az site-recovery fabric protection-container remove -g {rg} '
+        self.cmd('az site-recovery protection-container remove -g {rg} '
                  '--fabric-name {fabric2_name} -n {container2_name} --vault-name {vault_name}')
 
         # delete policy
@@ -794,7 +794,7 @@ class SiteRecoveryScenario(ScenarioTest):
         # # container is automatically created by server
         #
         # # container mapping
-        # self.cmd('az site-recovery fabric protection-container mapping create -g {rg} '
+        # self.cmd('az site-recovery protection-container mapping create -g {rg} '
         #          '--fabric-name {fabric1_name} -n {container_mapping1_name} --protection-container {container1_name} '
         #          '--vault-name {vault_name} --policy-id {policy_id} --target-container \"Microsoft Azure\" '
         #          '--provider-input {{hyper-v-replica-azure:{{}}}}')
@@ -908,7 +908,7 @@ class SiteRecoveryScenario(ScenarioTest):
         # container is automatically created by server
 
         # create container mapping
-        # self.cmd('az site-recovery fabric protection-container mapping create -g {rg} '
+        # self.cmd('az site-recovery protection-container mapping create -g {rg} '
         #          '--fabric-name {fabric_source_name} -n {container_mapping_source_name} '
         #          '--protection-container {container_source_name} '
         #          '--vault-name {vault_name} --policy-id {policy_id} --target-container \"Microsoft Azure\" '

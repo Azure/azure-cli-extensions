@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container mapping remove",
+    "site-recovery protection-container mapping remove",
 )
 class Remove(AAZCommand):
     """The operation to delete or remove a protection container mapping.
 
     :example: protection-container mapping remove
-        az site-recovery fabric protection-container mapping remove -g rg --fabric-name fabric_source_name -n container_mapping_source_name --protection-container container_source_name --vault-name vault_name
+        az site-recovery protection-container mapping remove -g rg --fabric-name fabric_source_name -n container_mapping_source_name --protection-container container_source_name --vault-name vault_name
     """
 
     _aaz_info = {

@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "site-recovery fabric protection-container",
+    "site-recovery protection-container",
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Protection Container

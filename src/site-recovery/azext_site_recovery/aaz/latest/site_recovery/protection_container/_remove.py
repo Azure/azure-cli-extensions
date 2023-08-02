@@ -12,26 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery fabric protection-container show",
+    "site-recovery protection-container remove",
 )
-class Show(AAZCommand):
-    """Get the details of a protection container.
+class Remove(AAZCommand):
+    """Operation to remove a protection container.
 
-    :example: protection-container show
-        az site-recovery fabric protection-container show -g rg --fabric-name fabric1_name -n container1_name --vault-name vault_name
+    :example: protection-container remove
+        az site-recovery protection-container remove -g rg --fabric-name fabric1_name -n container1_name --vault-name vault_name
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/remove", "2022-08-01"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -46,13 +47,13 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="Fabric name.",
+            help="Unique fabric ARM name.",
             required=True,
             id_part="child_name_1",
         )
         _args_schema.protection_container_name = AAZStrArg(
-            options=["-n", "--name", "--protection-container-name"],
-            help="Protection container name.",
+            options=["-n", "--protection-container-name"],
+            help="The name of the protection container.",
             required=True,
             id_part="child_name_2",
         )
@@ -69,7 +70,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ReplicationProtectionContainersGet(ctx=self.ctx)()
+        yield self.ReplicationProtectionContainersDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -80,31 +81,52 @@ class Show(AAZCommand):
     def post_operations(self):
         pass
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
-
-    class ReplicationProtectionContainersGet(AAZHttpOperation):
+    class ReplicationProtectionContainersDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [204]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_204,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/remove",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -146,77 +168,15 @@ class Show(AAZCommand):
             }
             return parameters
 
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
         def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
+            pass
 
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType()
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.fabric_friendly_name = AAZStrType(
-                serialized_name="fabricFriendlyName",
-            )
-            properties.fabric_specific_details = AAZObjectType(
-                serialized_name="fabricSpecificDetails",
-            )
-            properties.fabric_type = AAZStrType(
-                serialized_name="fabricType",
-            )
-            properties.friendly_name = AAZStrType(
-                serialized_name="friendlyName",
-            )
-            properties.pairing_status = AAZStrType(
-                serialized_name="pairingStatus",
-            )
-            properties.protected_item_count = AAZIntType(
-                serialized_name="protectedItemCount",
-            )
-            properties.role = AAZStrType()
-
-            fabric_specific_details = cls._schema_on_200.properties.fabric_specific_details
-            fabric_specific_details.instance_type = AAZStrType(
-                serialized_name="instanceType",
-                flags={"read_only": True},
-            )
-
-            return cls._schema_on_200
+        def on_204(self, session):
+            pass
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _RemoveHelper:
+    """Helper class for Remove"""
 
 
-__all__ = ["Show"]
+__all__ = ["Remove"]
