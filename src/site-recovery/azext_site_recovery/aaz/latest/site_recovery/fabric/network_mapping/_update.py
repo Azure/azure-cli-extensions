@@ -100,11 +100,21 @@ class Update(AAZCommand):
         fabric_specific_details.azure_to_azure = AAZObjectArg(
             options=["azure-to-azure"],
         )
+        fabric_specific_details.vmm_to_azure = AAZObjectArg(
+            options=["vmm-to-azure"],
+        )
 
         azure_to_azure = cls._args_schema.fabric_specific_details.azure_to_azure
         azure_to_azure.primary_network_id = AAZStrArg(
             options=["primary-network-id"],
             help="The primary azure vnet Id.",
+        )
+
+        vmm_to_azure = cls._args_schema.fabric_specific_details.vmm_to_azure
+        vmm_to_azure.location = AAZStrArg(
+            options=["location"],
+            help="The Location.",
+            nullable=True,
         )
         return cls._args_schema
 
@@ -378,11 +388,17 @@ class Update(AAZCommand):
             fabric_specific_details = _builder.get(".properties.fabricSpecificDetails")
             if fabric_specific_details is not None:
                 fabric_specific_details.set_const("instanceType", "AzureToAzure", AAZStrType, ".azure_to_azure", typ_kwargs={"flags": {"required": True}})
+                fabric_specific_details.set_const("instanceType", "VmmToAzure", AAZStrType, ".vmm_to_azure", typ_kwargs={"flags": {"required": True}})
                 fabric_specific_details.discriminate_by("instanceType", "AzureToAzure")
+                fabric_specific_details.discriminate_by("instanceType", "VmmToAzure")
 
             disc_azure_to_azure = _builder.get(".properties.fabricSpecificDetails{instanceType:AzureToAzure}")
             if disc_azure_to_azure is not None:
                 disc_azure_to_azure.set_prop("primaryNetworkId", AAZStrType, ".azure_to_azure.primary_network_id", typ_kwargs={"flags": {"required": True}})
+
+            disc_vmm_to_azure = _builder.get(".properties.fabricSpecificDetails{instanceType:VmmToAzure}")
+            if disc_vmm_to_azure is not None:
+                disc_vmm_to_azure.set_prop("location", AAZStrType, ".vmm_to_azure.location")
 
             return _instance_value
 
@@ -465,6 +481,9 @@ class _UpdateHelper:
         disc_azure_to_azure.recovery_fabric_location = AAZStrType(
             serialized_name="recoveryFabricLocation",
         )
+
+        disc_vmm_to_azure = _schema_network_mapping_read.properties.fabric_specific_settings.discriminate_by("instance_type", "VmmToAzure")
+        disc_vmm_to_azure.location = AAZStrType()
 
         _schema.id = cls._schema_network_mapping_read.id
         _schema.location = cls._schema_network_mapping_read.location

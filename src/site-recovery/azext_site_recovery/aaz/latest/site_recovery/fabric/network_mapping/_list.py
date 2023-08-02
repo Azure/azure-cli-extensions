@@ -234,6 +234,9 @@ class List(AAZCommand):
                 serialized_name="recoveryFabricLocation",
             )
 
+            disc_vmm_to_azure = cls._schema_on_200.value.Element.properties.fabric_specific_settings.discriminate_by("instance_type", "VmmToAzure")
+            disc_vmm_to_azure.location = AAZStrType()
+
             return cls._schema_on_200
 
 
