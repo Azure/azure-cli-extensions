@@ -34,7 +34,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
                 'vnet_name': 'azcli-test-virtual-network',
                 'vmtpl_inventory_item': 'vmtpl-vm-1184288',
                 'vmtpl_name': 'azcli-test-vm-template',
-                'vm_name': 'azcli-test-vm-6',
+                'vm_name': 'azcli-test-vm-7',
                 'guest_username': 'azcli-user',
                 'guest_password': 'azcli-password',
                 'nic_name': 'nic_1',
