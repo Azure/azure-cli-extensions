@@ -61,22 +61,11 @@ class Create(AAZCommand):
         # define Arg Group "FeatureSettings"
 
         _args_schema = cls._args_schema
-        _args_schema.cross_region_restore_settings = AAZObjectArg(
-            options=["--cross-region-restore-settings"],
-            arg_group="FeatureSettings",
-        )
         _args_schema.cross_subscription_restore_state = AAZStrArg(
             options=["--csr-state", "--cross-subscription-restore-state"],
             arg_group="FeatureSettings",
             help="CrossSubscriptionRestore state",
             enum={"Disabled": "Disabled", "Enabled": "Enabled", "PermanentlyDisabled": "PermanentlyDisabled"},
-        )
-
-        cross_region_restore_settings = cls._args_schema.cross_region_restore_settings
-        cross_region_restore_settings.state = AAZStrArg(
-            options=["state"],
-            help="CrossRegionRestore state",
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
         # define Arg Group "Identity"
@@ -86,16 +75,6 @@ class Create(AAZCommand):
             options=["--type"],
             arg_group="Identity",
             help="The identityType which can be either SystemAssigned or None",
-        )
-        _args_schema.user_assigned_identities = AAZDictArg(
-            options=["--user-assigned-identities"],
-            arg_group="Identity",
-            help="Gets or sets the user assigned identities.",
-        )
-
-        user_assigned_identities = cls._args_schema.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectArg(
-            blank={},
         )
 
         # define Arg Group "Monitoring Settings Azure Monitor Alert Settings"
@@ -300,11 +279,6 @@ class Create(AAZCommand):
             identity = _builder.get(".identity")
             if identity is not None:
                 identity.set_prop("type", AAZStrType, ".type")
-                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
-
-            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
-            if user_assigned_identities is not None:
-                user_assigned_identities.set_elements(AAZObjectType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -315,12 +289,7 @@ class Create(AAZCommand):
 
             feature_settings = _builder.get(".properties.featureSettings")
             if feature_settings is not None:
-                feature_settings.set_prop("crossRegionRestoreSettings", AAZObjectType, ".cross_region_restore_settings")
                 feature_settings.set_prop("crossSubscriptionRestoreSettings", AAZObjectType)
-
-            cross_region_restore_settings = _builder.get(".properties.featureSettings.crossRegionRestoreSettings")
-            if cross_region_restore_settings is not None:
-                cross_region_restore_settings.set_prop("state", AAZStrType, ".state")
 
             cross_subscription_restore_settings = _builder.get(".properties.featureSettings.crossSubscriptionRestoreSettings")
             if cross_subscription_restore_settings is not None:

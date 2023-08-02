@@ -44,6 +44,7 @@ from azext_dataprotection.manual.enums import (
     get_conflict_policy_values
 )
 
+
 def load_arguments(self, _):
 
     with self.argument_context('dataprotection backup-instance validate-for-backup') as c:

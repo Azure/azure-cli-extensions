@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class ValidateForBackup(AAZCommand):
     """Validate whether adhoc backup will be successful or not
+
+    :example: Validate Backup
+        az dataprotection backup-instance validate-for-backup -g sample_rg --vault-name sample_backupvault --backup-instance backup_instance.json
     """
 
     _aaz_info = {

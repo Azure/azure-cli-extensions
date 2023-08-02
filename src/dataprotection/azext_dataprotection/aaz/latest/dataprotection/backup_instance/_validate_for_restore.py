@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class ValidateForRestore(AAZCommand):
     """Validates if Restore can be triggered for a DataSource
+
+    :example: Validate Restore
+        az dataprotection backup-instance validate-for-restore-g sample_rg --vault-name sample_backupvault --backup-instance-name sample_biname-fd53a211-3f3e-4c7e-ba45-81050e27c0be --restore-request-object restorerequestobject.json
     """
 
     _aaz_info = {
@@ -44,7 +47,7 @@ class ValidateForRestore(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.backup_instance_name = AAZStrArg(
-            options=["--backup-instance-name"],
+            options=["-n", "--name", "--backup-instance-name"],
             help="The name of the backup instance.",
             required=True,
             id_part="child_name_1",

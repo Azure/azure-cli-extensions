@@ -18,7 +18,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints?$filter=&api-version=2023-05-01
   response:
     body:
-      string: '{"value":[{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"8ca2dc78a79046a4953aa5482e7951be","recoveryPointTime":"2023-07-25T12:02:31.3564908Z","recoveryPointType":"Incremental","friendlyName":"8ca2dc78a79046a4953aa5482e7951be","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2023-07-25T12:01:09.4188960Z","expiryTime":"2023-08-01T12:01:09.4188960Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2023-08-01T12:01:09.4188960Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/8ca2dc78a79046a4953aa5482e7951be","name":"8ca2dc78a79046a4953aa5482e7951be","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}]}'
+      string: '{"value":[{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"f4967c2e5139424ba8beeefdbff9f9f7","recoveryPointTime":"2023-08-01T12:02:33.2800497Z","recoveryPointType":"Incremental","friendlyName":"f4967c2e5139424ba8beeefdbff9f9f7","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2023-08-01T12:01:22.8731473Z","expiryTime":"2023-08-08T12:01:22.8731473Z","metaData":null,"visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2023-08-08T12:01:22.8731473Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/f4967c2e5139424ba8beeefdbff9f9f7","name":"f4967c2e5139424ba8beeefdbff9f9f7","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}]}'
     headers:
       cache-control:
       - no-cache
@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 01 Aug 2023 05:37:18 GMT
+      - Wed, 02 Aug 2023 10:30:19 GMT
       expires:
       - '-1'
       pragma:
@@ -43,7 +43,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '99'
+      - '97'
       x-powered-by:
       - ASP.NET
     status:
@@ -65,10 +65,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/8ca2dc78a79046a4953aa5482e7951be?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/f4967c2e5139424ba8beeefdbff9f9f7?api-version=2023-05-01
   response:
     body:
-      string: '{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"8ca2dc78a79046a4953aa5482e7951be","recoveryPointTime":"2023-07-25T12:02:31.3564908Z","recoveryPointType":"Incremental","friendlyName":"8ca2dc78a79046a4953aa5482e7951be","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2023-07-25T12:01:09.4188960Z","expiryTime":"2023-08-01T12:01:09.4188960Z","metaData":"[{\"diskName\":\"clitest-disk-persistent-bi-donotdelete\",\"sizeBytes\":4294967296,\"diskSnapshotConsistency\":\"CrashConsistent\",\"subscriptionId\":\"38304e13-357e-405e-9e9a-220351dcce8c\",\"location\":\"centraluseuap\",\"resourceGroupName\":\"clitest-dpp-rg\",\"skuName\":\"StandardSSD_LRS\",\"osType\":\"\",\"managedBy\":null,\"snapshotSubscriptionId\":\"38304e13-357e-405e-9e9a-220351dcce8c\",\"snapshotRGName\":\"clitest-dpp-rg\",\"snapshotName\":\"AzureBackup_ef578737-4e98-44e1-a002-bc1c8bf0c953_2023-07-25T12-00-49.9945444\"}]","visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2023-08-01T12:01:09.4188960Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/8ca2dc78a79046a4953aa5482e7951be","name":"8ca2dc78a79046a4953aa5482e7951be","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}'
+      string: '{"properties":{"objectType":"AzureBackupDiscreteRecoveryPoint","recoveryPointId":"f4967c2e5139424ba8beeefdbff9f9f7","recoveryPointTime":"2023-08-01T12:02:33.2800497Z","recoveryPointType":"Incremental","friendlyName":"f4967c2e5139424ba8beeefdbff9f9f7","recoveryPointDataStoresDetails":[{"id":"38a3787d-2bf9-4bf1-91fd-7322e17163ce","type":"OperationalStore","creationTime":"2023-08-01T12:01:22.8731473Z","expiryTime":"2023-08-08T12:01:22.8731473Z","metaData":"[{\"diskName\":\"clitest-disk-persistent-bi-donotdelete\",\"sizeBytes\":4294967296,\"diskSnapshotConsistency\":\"CrashConsistent\",\"subscriptionId\":\"38304e13-357e-405e-9e9a-220351dcce8c\",\"location\":\"centraluseuap\",\"resourceGroupName\":\"clitest-dpp-rg\",\"skuName\":\"StandardSSD_LRS\",\"osType\":\"\",\"managedBy\":null,\"snapshotSubscriptionId\":\"38304e13-357e-405e-9e9a-220351dcce8c\",\"snapshotRGName\":\"clitest-dpp-rg\",\"snapshotName\":\"AzureBackup_ef578737-4e98-44e1-a002-bc1c8bf0c953_2023-08-01T12-00-46.3525743\"}]","visible":true,"state":"COMMITTED","rehydrationExpiryTime":null,"rehydrationStatus":null}],"retentionTagName":"Default","retentionTagVersion":"638224851417049008","policyName":"diskpolicy","policyVersion":null,"expiryTime":"2023-08-08T12:01:22.8731473Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupInstances/clitest-disk-persistent-bi-donotdelete-clitest-disk-persistent-bi-donotdelete-e33c80ba-0bf8-11ee-aaa6-002b670b472e/recoveryPoints/f4967c2e5139424ba8beeefdbff9f9f7","name":"f4967c2e5139424ba8beeefdbff9f9f7","type":"Microsoft.DataProtection/backupVaults/backupInstances/recoveryPoints"}'
     headers:
       cache-control:
       - no-cache
@@ -77,7 +77,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 01 Aug 2023 05:37:20 GMT
+      - Wed, 02 Aug 2023 10:30:20 GMT
       expires:
       - '-1'
       pragma:
@@ -93,7 +93,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '97'
+      - '98'
       x-powered-by:
       - ASP.NET
     status:

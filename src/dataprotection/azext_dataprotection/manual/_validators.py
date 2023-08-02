@@ -8,6 +8,7 @@ from azure.cli.core.commands.validators import (
 )
 from dateutil import parser
 
+
 def datetime_type(string):
     """ Validate UTC datettime in accepted format. Examples: 31-12-2017, 31-12-2017-05:30:00 """
     # accepted_date_formats = ['%Y-%m-%dT%H:%M:%S']
@@ -38,4 +39,3 @@ def namespaced_name_resource_type(list_of_dict):
     except ValueError:
         pass
     raise ValueError(f"Input {list_of_dict} is not valid.")
-
