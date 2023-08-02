@@ -222,6 +222,7 @@ class AzInteractiveShell(object):
         cli.buffers['default_values'].reset(
             initial_document=Document(
                 u'{}'.format(self.config_default if self.config_default else 'No Default Values')))
+        self._update_help_text()
         self._update_toolbar()
         cli.request_redraw()
 
@@ -276,6 +277,24 @@ class AzInteractiveShell(object):
             page_number = '\n' + str(section_value) + "/" + str(int(math.ceil(num_newline / len_of_excerpt)))
 
         return example + page_number + ' CTRL+Y (^) CTRL+N (v)'
+
+    def _update_help_text(self):
+        _, cols = get_window_dim()
+        cols = int(cols) - 1
+
+        from .configuration import GESTURE_INFO, GESTURE_LENGTH
+        info_width = cols - GESTURE_LENGTH - 2
+
+        def add_ellip(info):
+            if info_width <= 0:
+                return ''
+            elif len(info) <= info_width:
+                return info
+            else:
+                return info[:info_width-3]+'...'
+
+        lines = ['{}: {}'.format(key.ljust(GESTURE_LENGTH), add_ellip(GESTURE_INFO[key])) for key in GESTURE_INFO]
+        self.cli.buffers['symbols'].reset(initial_document=Document(u'{}'.format('\n'.join(lines))))
 
     def _update_toolbar(self):
         cli = self.cli
@@ -956,9 +975,6 @@ class AzInteractiveShell(object):
         self.cli_ctx.get_progress_controller().init_progress(ShellProgressView())
         self.cli_ctx.get_progress_controller = self.progress_patch
 
-        from .configuration import SHELL_HELP
-        self.cli.buffers['symbols'].reset(
-            initial_document=Document(u'{}'.format(SHELL_HELP)))
         # flush telemetry for new commands and send successful interactive mode entry event
         telemetry.set_success()
         telemetry.flush()
