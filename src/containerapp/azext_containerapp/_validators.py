@@ -220,6 +220,7 @@ def validate_cors_max_age(cmd, namespace):
             raise InvalidArgumentValueError("max-age must be an integer.")
 
 
+# validate for preview
 def validate_env_name_or_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
     from msrestazure.tools import is_valid_resource_id, resource_id, parse_resource_id

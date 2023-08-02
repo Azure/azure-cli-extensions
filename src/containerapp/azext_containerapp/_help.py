@@ -1753,3 +1753,19 @@ helps['containerapp create'] = """
               --image my-app:v1.0 --environment MyContainerappConnectedEnv \\
               --environment-type connected
 """
+
+# containerapp list for preview
+helps['containerapp list'] = """
+    type: command
+    short-summary: List container apps.
+    examples:
+    - name: List container apps in the current subscription.
+      text: |
+          az containerapp list
+    - name: List container apps by resource group.
+      text: |
+          az containerapp list -g MyResourceGroup
+    - name: List container apps by environment type.
+      text: |
+          az containerapp list --environment-type connected
+"""
