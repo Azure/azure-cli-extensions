@@ -304,7 +304,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         # Delete the created resource-pool.
         self.cmd('az connectedvmware resource-pool delete -g {rg} --name {rp_name} -y')
 
-        # # Delete the created cluster.
+        # Delete the created cluster.
         self.cmd('az connectedvmware cluster delete -g {rg} --name {cluster_name} -y')
 
         # Delete the created datastore.
@@ -312,7 +312,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
             'az connectedvmware datastore delete -g {rg} --name {datastore_name} -y'
         )
 
-        # # Delete the created host.
+        # Delete the created host.
         self.cmd('az connectedvmware host delete -g {rg} --name {host_name} -y')
 
         # Delete the created virtual-network.
