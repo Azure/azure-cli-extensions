@@ -415,17 +415,6 @@ helps[
 """
 
 helps[
-    'connectedvmware vm list'
-] = """
-    type: command
-    short-summary: "Retrieve a list of vm of given resource group"
-    examples:
-      - name: Retrieve a list of vm resource
-        text: |-
-               az connectedvmware vm list --resource-group "resource group name"
-"""
-
-helps[
     'connectedvmware vm restart'
 ] = """
     type: command

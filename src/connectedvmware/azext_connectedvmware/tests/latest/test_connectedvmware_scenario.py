@@ -82,25 +82,25 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         # At this point there should be 1 resource-pool resource.
         assert len(resource_list) >= 1
 
-        # # Create cluster resource.
-        # self.cmd(
-        #     'az connectedvmware cluster create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} -i {cluster_inventory_item} --name {cluster_name}'
-        # )
+        # Create cluster resource.
+        self.cmd(
+            'az connectedvmware cluster create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} -i {cluster_inventory_item} --name {cluster_name}'
+        )
 
-        # # Validate the show command output with cluster name.
-        # self.cmd(
-        #     'az connectedvmware cluster show -g {rg} --name {cluster_name}',
-        #     checks=[
-        #         self.check('name', '{cluster_name}'),
-        #     ],
-        # )
+        # Validate the show command output with cluster name.
+        self.cmd(
+            'az connectedvmware cluster show -g {rg} --name {cluster_name}',
+            checks=[
+                self.check('name', '{cluster_name}'),
+            ],
+        )
 
-        # # List the cluster resources in this resource group.
-        # resource_list = self.cmd(
-        #     'az connectedvmware cluster list -g {rg}'
-        # ).get_output_in_json()
-        # # At this point there should be 1 cluster resource.
-        # assert len(resource_list) >= 1
+        # List the cluster resources in this resource group.
+        resource_list = self.cmd(
+            'az connectedvmware cluster list -g {rg}'
+        ).get_output_in_json()
+        # At this point there should be 1 cluster resource.
+        assert len(resource_list) >= 1
 
         # Create datastore resource.
         self.cmd(
@@ -122,28 +122,25 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         # At this point there should be 1 datastore resource.
         assert len(resource_list) >= 1
 
-        # TODO (snaskar): Uncomment host and cluster create and delete tests after the swagger issue is fixed.
-        # https://github.com/Azure/azure-rest-api-specs-pr/pull/14000
+        # Create host resource.
+        self.cmd(
+            'az connectedvmware host create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} -i {host_inventory_item} --name {host_name}'
+        )
 
-        # # Create host resource.
-        # self.cmd(
-        #     'az connectedvmware host create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} -i {host_inventory_item} --name {host_name}'
-        # )
+        # Validate the show command output with host name.
+        self.cmd(
+            'az connectedvmware host show -g {rg} --name {host_name}',
+            checks=[
+                self.check('name', '{host_name}'),
+            ],
+        )
 
-        # # Validate the show command output with host name.
-        # self.cmd(
-        #     'az connectedvmware host show -g {rg} --name {host_name}',
-        #     checks=[
-        #         self.check('name', '{host_name}'),
-        #     ],
-        # )
-
-        # # List the host resources in this resource group.
-        # resource_list = self.cmd(
-        #     'az connectedvmware host list -g {rg}'
-        # ).get_output_in_json()
-        # # At this point there should be 1 host resource.
-        # assert len(resource_list) >= 1
+        # List the host resources in this resource group.
+        resource_list = self.cmd(
+            'az connectedvmware host list -g {rg}'
+        ).get_output_in_json()
+        # At this point there should be 1 host resource.
+        assert len(resource_list) >= 1
 
         # Create virtual-network resource.
         self.cmd(
@@ -308,7 +305,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         self.cmd('az connectedvmware resource-pool delete -g {rg} --name {rp_name} -y')
 
         # # Delete the created cluster.
-        # self.cmd('az connectedvmware cluster delete -g {rg} --name {cluster_name} -y')
+        self.cmd('az connectedvmware cluster delete -g {rg} --name {cluster_name} -y')
 
         # Delete the created datastore.
         self.cmd(
@@ -316,7 +313,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         )
 
         # # Delete the created host.
-        # self.cmd('az connectedvmware host delete -g {rg} --name {host_name} -y')
+        self.cmd('az connectedvmware host delete -g {rg} --name {host_name} -y')
 
         # Delete the created virtual-network.
         self.cmd(
