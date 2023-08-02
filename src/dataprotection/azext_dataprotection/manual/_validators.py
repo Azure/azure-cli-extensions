@@ -13,7 +13,7 @@ def datetime_type(string):
     """ Validate UTC datettime in accepted format. Examples: 31-12-2017, 31-12-2017-05:30:00 """
     # accepted_date_formats = ['%Y-%m-%dT%H:%M:%S']
     try:
-        newtime = parser.isoparse(string).strftime("%Y-%m-%dT%H:%M:%S.%f")+"0Z"
+        newtime = parser.isoparse(string).strftime("%Y-%m-%dT%H:%M:%S.%f") + "0Z"
         return newtime
     except ValueError:  # checks next format
         pass
