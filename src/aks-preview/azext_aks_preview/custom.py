@@ -2490,7 +2490,7 @@ MESH_CONFIG_ALLOW_LIST = {
     '1.17.2': {
         'defaultConfig',
         'outboundTrafficPolicy',
-        'extensionProviders'
+        'extensionProviders',
         'configSources',
         'defaultProviders',
         'enableTracing',
@@ -2532,7 +2532,8 @@ PROXY_CONFIG_ALLOW_LIST = {
         'concurrency',
         'envoyMetricsService',
         'terminationDrainDuration',
-        'caCertificatesPem'
+        'caCertificatesPem', 
+        'discoveryAddress'
     },
     '1.18.0': {
         'tracingServiceName',
@@ -2557,6 +2558,8 @@ def aks_mesh_migration_check(cmd, client, resource_group_name, name, kubeconfig 
     from colorama import init as colorama_init
     from colorama import Fore
     from colorama import Style
+    import base64
+    import sys
 
     colorama_init()
 
@@ -2582,6 +2585,8 @@ def aks_mesh_migration_check(cmd, client, resource_group_name, name, kubeconfig 
 
     kubernetes.config.load_kube_config(context = cur_context, config_file = kubeconfig)
     v1 = kubernetes.client.CoreV1Api()
+
+    
     aks_mesh_check_base_requirements(cmd, client, resource_group_name, name, v1)
     if aks_mesh_check_istio_existence(v1):
         istio_version, compatible_version = aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1)
@@ -2593,7 +2598,7 @@ def aks_mesh_migration_check(cmd, client, resource_group_name, name, kubeconfig 
     if can_migrate:
         print(f"{Fore.GREEN}\n13/13 checks passed. Your cluster is ready for migration to the AKS service mesh add-on! For more information on enabling the add-on, please read: https://learn.microsoft.com/en-us/azure/aks/istio-deploy-addon{Style.RESET_ALL}")
     else:
-        print(f"{Fore.RED}\n{13-total_passed} problems detected. Please follow suggestions inline to fix these before attempting to migrate to the AKS service mesh add-on.{Style.RESET_ALL}")
+        print(f"{Fore.RED}\n{len(result_dict)-total_passed} problems detected. Please follow suggestions inline to fix these before attempting to migrate to the AKS based Istio add-on.{Style.RESET_ALL}")
     return
 
  
@@ -2624,22 +2629,7 @@ def aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1)
     istio_version = ''
     proxy_config = {}
     istio_cert = ''
-    
-    
-    # for item in cm.items:
-    #     if item.metadata.name == "istio-ca-root-cert":
-    #         istio_cert = item.data['root-cert.pem']
-        
-    # from cryptography import x509
-    # from cryptography.hazmat.backends import default_backend
-    # certDecoded = x509.load_pem_x509_certificate(str.encode(istio_cert), 
-    # default_backend())
-    # if (str(certDecoded.issuer) != "<Name(O=cluster.local)>"):
-    #     print("Different root CA cert found")
-    # print(certDecoded.issuer)
-    # print(certDecoded.subject)
-    # print(certDecoded.not_valid_after)
-    # print(certDecoded.not_valid_before)
+
             
     for item in cm.items:
         if (item.data and 'mesh' in item.data):

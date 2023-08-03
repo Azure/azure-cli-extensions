@@ -2590,15 +2590,15 @@ helps['aks mesh disable-ingress-gateway'] = """
 
 helps['aks mesh check-migration'] = """
     type: command
-    short-summary: Check whether the cluster is ready to migrate from OSS Istio to Azure Service Mesh(ASM)
-    long-summary: This command checks user's cluster to see if it is ready to migrate from OSS Istio to ASM 
+    short-summary: Check whether the cluster is ready to migrate from Open Source Istio to AKS based Istio Add-on
+    long-summary: This command runs a series of checks on to verify whether a user is able to migrate from Open-source Istio to the AKS based Istio add-on. It also provides suggestions to remove unsupported configurations to prepare for migration. 
     parameters:
       - name: --kubeconfig
         type: string
         short-summary: Specify the kubeconfig file
-        long-summary: Allowed values are "External" which is backed by a load balancer with an external IP address, "Internal" which is backed by a load balancer with an internal IP address.
+        long-summary: Specify the kubeconfig file. Please use the full path to your file.
     examples:
-      - name: Check if the cluster is ready to migrate from OSS Istio to Azure Service Mesh(ASM)
+      - name: Check whethere the cluster is ready to migrate from Open Source Istio to AKS based Istio add-on.
         text: az aks mesh check-migration --resource-group MyResourceGroup --name MyManagedCluster --kubeconfig=path/to/kubeconfig
 """
 
