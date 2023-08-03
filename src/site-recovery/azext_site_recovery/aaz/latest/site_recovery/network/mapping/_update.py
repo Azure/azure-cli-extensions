@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery network-mapping create",
+    "site-recovery network mapping update",
 )
-class Create(AAZCommand):
-    """Create operation to create an ASR network mapping.
+class Update(AAZCommand):
+    """Update operation to create an ASR network mapping.
 
-    :example: network-mapping create for A2A fabric
-        az site-recovery network-mapping create -g rg --fabric-name fabric1_name -n network_mapping1_name --network-name azureNetwork --vault-name vault_name --recovery-network-id vnet2_id --fabric-details '{azure-to-azure:{primary-network-id:vnetvm_id}}' --recovery-fabric-name fabric2_name
+    :example: network mapping update
+        az site-recovery network mapping update -g rg --fabric-name fabric_recovery_name -n network_mapping_src_to_recovery_name --network-name azureNetwork --vault-name vault_name --recovery-network-id vnetvm_id --fabric-details '{azure-to-azure:{primary-network-id:vnet_recovery_id}}' --recovery-fabric-name fabric_source_name
     """
 
     _aaz_info = {
@@ -29,6 +29,8 @@ class Create(AAZCommand):
     }
 
     AZ_SUPPORT_NO_WAIT = True
+
+    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -49,16 +51,19 @@ class Create(AAZCommand):
             options=["--fabric-name"],
             help="Primary fabric name.",
             required=True,
+            id_part="child_name_1",
         )
         _args_schema.network_mapping_name = AAZStrArg(
             options=["-n", "--name", "--network-mapping-name"],
             help="Network mapping name.",
             required=True,
+            id_part="child_name_3",
         )
         _args_schema.network_name = AAZStrArg(
             options=["--network-name"],
             help="Primary network name.",
             required=True,
+            id_part="child_name_2",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -67,6 +72,7 @@ class Create(AAZCommand):
             options=["--vault-name"],
             help="The name of the recovery services vault.",
             required=True,
+            id_part="name",
         )
 
         # define Arg Group "Properties"
@@ -76,17 +82,18 @@ class Create(AAZCommand):
             options=["--fabric-details", "--fabric-specific-details"],
             arg_group="Properties",
             help="Fabric specific input properties.",
+            nullable=True,
         )
         _args_schema.recovery_fabric_name = AAZStrArg(
             options=["--recovery-fabric-name"],
             arg_group="Properties",
             help="Recovery fabric Name.",
+            nullable=True,
         )
         _args_schema.recovery_network_id = AAZStrArg(
             options=["--recovery-network-id"],
             arg_group="Properties",
             help="Recovery network Id.",
-            required=True,
         )
 
         fabric_specific_details = cls._args_schema.fabric_specific_details
@@ -101,18 +108,23 @@ class Create(AAZCommand):
         azure_to_azure.primary_network_id = AAZStrArg(
             options=["primary-network-id"],
             help="The primary azure vnet Id.",
-            required=True,
         )
 
         vmm_to_azure = cls._args_schema.fabric_specific_details.vmm_to_azure
         vmm_to_azure.location = AAZStrArg(
             options=["location"],
             help="The Location.",
+            nullable=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
+        self.ReplicationNetworkMappingsGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
+        self.InstanceUpdateByJson(ctx=self.ctx)()
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
         yield self.ReplicationNetworkMappingsCreate(ctx=self.ctx)()
         self.post_operations()
 
@@ -124,9 +136,112 @@ class Create(AAZCommand):
     def post_operations(self):
         pass
 
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
+
+    class ReplicationNetworkMappingsGet(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationNetworks/{networkName}/replicationNetworkMappings/{networkMappingName}",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "ODataV4Format"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "fabricName", self.ctx.args.fabric_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "networkMappingName", self.ctx.args.network_mapping_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "networkName", self.ctx.args.network_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceName", self.ctx.args.vault_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2022-08-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+            _UpdateHelper._build_schema_network_mapping_read(cls._schema_on_200)
+
+            return cls._schema_on_200
 
     class ReplicationNetworkMappingsCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -226,8 +341,41 @@ class Create(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+                value=self.ctx.vars.instance,
+            )
+
+            return self.serialize_content(_content_value)
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+            _UpdateHelper._build_schema_network_mapping_read(cls._schema_on_200)
+
+            return cls._schema_on_200
+
+    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance(self.ctx.vars.instance)
+
+        def _update_instance(self, instance):
+            _instance_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                value=instance,
+                typ=AAZObjectType
             )
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
@@ -252,87 +400,96 @@ class Create(AAZCommand):
             if disc_vmm_to_azure is not None:
                 disc_vmm_to_azure.set_prop("location", AAZStrType, ".vmm_to_azure.location")
 
-            return self.serialize_content(_content_value)
+            return _instance_value
 
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
+    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
 
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType()
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
+        def __call__(self, *args, **kwargs):
+            self._update_instance_by_generic(
+                self.ctx.vars.instance,
+                self.ctx.generic_update_args
             )
 
-            properties = cls._schema_on_200.properties
-            properties.fabric_specific_settings = AAZObjectType(
-                serialized_name="fabricSpecificSettings",
-            )
-            properties.primary_fabric_friendly_name = AAZStrType(
-                serialized_name="primaryFabricFriendlyName",
-            )
-            properties.primary_network_friendly_name = AAZStrType(
-                serialized_name="primaryNetworkFriendlyName",
-            )
-            properties.primary_network_id = AAZStrType(
-                serialized_name="primaryNetworkId",
-            )
-            properties.recovery_fabric_arm_id = AAZStrType(
-                serialized_name="recoveryFabricArmId",
-            )
-            properties.recovery_fabric_friendly_name = AAZStrType(
-                serialized_name="recoveryFabricFriendlyName",
-            )
-            properties.recovery_network_friendly_name = AAZStrType(
-                serialized_name="recoveryNetworkFriendlyName",
-            )
-            properties.recovery_network_id = AAZStrType(
-                serialized_name="recoveryNetworkId",
-            )
-            properties.state = AAZStrType()
 
-            fabric_specific_settings = cls._schema_on_200.properties.fabric_specific_settings
-            fabric_specific_settings.instance_type = AAZStrType(
-                serialized_name="instanceType",
-                flags={"required": True},
-            )
+class _UpdateHelper:
+    """Helper class for Update"""
 
-            disc_azure_to_azure = cls._schema_on_200.properties.fabric_specific_settings.discriminate_by("instance_type", "AzureToAzure")
-            disc_azure_to_azure.primary_fabric_location = AAZStrType(
-                serialized_name="primaryFabricLocation",
-            )
-            disc_azure_to_azure.recovery_fabric_location = AAZStrType(
-                serialized_name="recoveryFabricLocation",
-            )
+    _schema_network_mapping_read = None
 
-            disc_vmm_to_azure = cls._schema_on_200.properties.fabric_specific_settings.discriminate_by("instance_type", "VmmToAzure")
-            disc_vmm_to_azure.location = AAZStrType()
+    @classmethod
+    def _build_schema_network_mapping_read(cls, _schema):
+        if cls._schema_network_mapping_read is not None:
+            _schema.id = cls._schema_network_mapping_read.id
+            _schema.location = cls._schema_network_mapping_read.location
+            _schema.name = cls._schema_network_mapping_read.name
+            _schema.properties = cls._schema_network_mapping_read.properties
+            _schema.type = cls._schema_network_mapping_read.type
+            return
 
-            return cls._schema_on_200
+        cls._schema_network_mapping_read = _schema_network_mapping_read = AAZObjectType()
+
+        network_mapping_read = _schema_network_mapping_read
+        network_mapping_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        network_mapping_read.location = AAZStrType()
+        network_mapping_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        network_mapping_read.properties = AAZObjectType()
+        network_mapping_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_network_mapping_read.properties
+        properties.fabric_specific_settings = AAZObjectType(
+            serialized_name="fabricSpecificSettings",
+        )
+        properties.primary_fabric_friendly_name = AAZStrType(
+            serialized_name="primaryFabricFriendlyName",
+        )
+        properties.primary_network_friendly_name = AAZStrType(
+            serialized_name="primaryNetworkFriendlyName",
+        )
+        properties.primary_network_id = AAZStrType(
+            serialized_name="primaryNetworkId",
+        )
+        properties.recovery_fabric_arm_id = AAZStrType(
+            serialized_name="recoveryFabricArmId",
+        )
+        properties.recovery_fabric_friendly_name = AAZStrType(
+            serialized_name="recoveryFabricFriendlyName",
+        )
+        properties.recovery_network_friendly_name = AAZStrType(
+            serialized_name="recoveryNetworkFriendlyName",
+        )
+        properties.recovery_network_id = AAZStrType(
+            serialized_name="recoveryNetworkId",
+        )
+        properties.state = AAZStrType()
+
+        fabric_specific_settings = _schema_network_mapping_read.properties.fabric_specific_settings
+        fabric_specific_settings.instance_type = AAZStrType(
+            serialized_name="instanceType",
+            flags={"required": True},
+        )
+
+        disc_azure_to_azure = _schema_network_mapping_read.properties.fabric_specific_settings.discriminate_by("instance_type", "AzureToAzure")
+        disc_azure_to_azure.primary_fabric_location = AAZStrType(
+            serialized_name="primaryFabricLocation",
+        )
+        disc_azure_to_azure.recovery_fabric_location = AAZStrType(
+            serialized_name="recoveryFabricLocation",
+        )
+
+        disc_vmm_to_azure = _schema_network_mapping_read.properties.fabric_specific_settings.discriminate_by("instance_type", "VmmToAzure")
+        disc_vmm_to_azure.location = AAZStrType()
+
+        _schema.id = cls._schema_network_mapping_read.id
+        _schema.location = cls._schema_network_mapping_read.location
+        _schema.name = cls._schema_network_mapping_read.name
+        _schema.properties = cls._schema_network_mapping_read.properties
+        _schema.type = cls._schema_network_mapping_read.type
 
 
-class _CreateHelper:
-    """Helper class for Create"""
-
-
-__all__ = ["Create"]
+__all__ = ["Update"]

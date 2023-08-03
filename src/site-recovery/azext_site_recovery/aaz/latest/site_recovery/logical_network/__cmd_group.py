@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "site-recovery network-mapping",
+    "site-recovery logical-network",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Network Mapping
+    """Manage logical-network
     """
     pass
 

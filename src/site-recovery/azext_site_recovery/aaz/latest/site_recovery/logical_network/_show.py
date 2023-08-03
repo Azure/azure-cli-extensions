@@ -12,19 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery network-mapping show",
+    "site-recovery logical-network show",
 )
 class Show(AAZCommand):
-    """Get the details of an ASR network mapping.
-
-    :example: network-mapping show
-        az site-recovery network-mapping show -g rg --fabric-name fabric_source_name -n network_mapping_src_to_recovery_name --network-name azureNetwork --vault-name vault_name
+    """Get the details of a logical network.
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationnetworks/{}/replicationnetworkmappings/{}", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationlogicalnetworks/{}", "2022-08-01"],
         ]
     }
 
@@ -46,19 +43,13 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.fabric_name = AAZStrArg(
             options=["--fabric-name"],
-            help="Primary fabric name.",
+            help="Server Id.",
             required=True,
             id_part="child_name_1",
         )
-        _args_schema.network_mapping_name = AAZStrArg(
-            options=["-n", "--name", "--network-mapping-name"],
-            help="Network mapping name.",
-            required=True,
-            id_part="child_name_3",
-        )
-        _args_schema.network_name = AAZStrArg(
-            options=["--network-name"],
-            help="Primary network name.",
+        _args_schema.logical_network_name = AAZStrArg(
+            options=["-n", "--name", "--logical-network-name"],
+            help="Logical network name.",
             required=True,
             id_part="child_name_2",
         )
@@ -75,7 +66,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ReplicationNetworkMappingsGet(ctx=self.ctx)()
+        self.ReplicationLogicalNetworksGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -90,7 +81,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ReplicationNetworkMappingsGet(AAZHttpOperation):
+    class ReplicationLogicalNetworksGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -104,7 +95,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationNetworks/{networkName}/replicationNetworkMappings/{networkMappingName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationLogicalNetworks/{logicalNetworkName}",
                 **self.url_parameters
             )
 
@@ -124,11 +115,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "networkMappingName", self.ctx.args.network_mapping_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "networkName", self.ctx.args.network_name,
+                    "logicalNetworkName", self.ctx.args.logical_network_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -196,48 +183,18 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.fabric_specific_settings = AAZObjectType(
-                serialized_name="fabricSpecificSettings",
+            properties.friendly_name = AAZStrType(
+                serialized_name="friendlyName",
             )
-            properties.primary_fabric_friendly_name = AAZStrType(
-                serialized_name="primaryFabricFriendlyName",
+            properties.logical_network_definitions_status = AAZStrType(
+                serialized_name="logicalNetworkDefinitionsStatus",
             )
-            properties.primary_network_friendly_name = AAZStrType(
-                serialized_name="primaryNetworkFriendlyName",
+            properties.logical_network_usage = AAZStrType(
+                serialized_name="logicalNetworkUsage",
             )
-            properties.primary_network_id = AAZStrType(
-                serialized_name="primaryNetworkId",
+            properties.network_virtualization_status = AAZStrType(
+                serialized_name="networkVirtualizationStatus",
             )
-            properties.recovery_fabric_arm_id = AAZStrType(
-                serialized_name="recoveryFabricArmId",
-            )
-            properties.recovery_fabric_friendly_name = AAZStrType(
-                serialized_name="recoveryFabricFriendlyName",
-            )
-            properties.recovery_network_friendly_name = AAZStrType(
-                serialized_name="recoveryNetworkFriendlyName",
-            )
-            properties.recovery_network_id = AAZStrType(
-                serialized_name="recoveryNetworkId",
-            )
-            properties.state = AAZStrType()
-
-            fabric_specific_settings = cls._schema_on_200.properties.fabric_specific_settings
-            fabric_specific_settings.instance_type = AAZStrType(
-                serialized_name="instanceType",
-                flags={"required": True},
-            )
-
-            disc_azure_to_azure = cls._schema_on_200.properties.fabric_specific_settings.discriminate_by("instance_type", "AzureToAzure")
-            disc_azure_to_azure.primary_fabric_location = AAZStrType(
-                serialized_name="primaryFabricLocation",
-            )
-            disc_azure_to_azure.recovery_fabric_location = AAZStrType(
-                serialized_name="recoveryFabricLocation",
-            )
-
-            disc_vmm_to_azure = cls._schema_on_200.properties.fabric_specific_settings.discriminate_by("instance_type", "VmmToAzure")
-            disc_vmm_to_azure.location = AAZStrType()
 
             return cls._schema_on_200
 

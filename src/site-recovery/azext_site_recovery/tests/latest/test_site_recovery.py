@@ -274,24 +274,24 @@ class SiteRecoveryScenario(ScenarioTest):
         self.kwargs.update({"vnet_recovery_id": vnet_recovery["id"],
                             "vnet_recovery_subnet": vnet_recovery["subnets"][0]["id"],
                             "vnetvm_id": vnetvm_id})
-        self.cmd('az site-recovery network-mapping create -g {rg} --fabric-name {fabric_source_name} '
+        self.cmd('az site-recovery network mapping create -g {rg} --fabric-name {fabric_source_name} '
                  '-n {network_mapping_src_to_recovery_name} --network-name azureNetwork --vault-name {vault_name} '
                  '--recovery-network-id {vnet_recovery_id} '
                  '--fabric-details {{azure-to-azure:{{primary-network-id:{vnetvm_id}}}}} '
                  '--recovery-fabric-name {fabric_recovery_name}')
-        self.cmd('az site-recovery network-mapping create -g {rg} --fabric-name {fabric_recovery_name} '
+        self.cmd('az site-recovery network mapping create -g {rg} --fabric-name {fabric_recovery_name} '
                  '-n {network_mapping_recovery_to_src_name} --network-name azureNetwork --vault-name {vault_name} '
                  '--recovery-network-id {vnetvm_id} '
                  '--fabric-details {{azure-to-azure:{{primary-network-id:{vnet_recovery_id}}}}} '
                  '--recovery-fabric-name {fabric_source_name}')
 
-        # crud for network-mapping
-        self.cmd('az site-recovery network-mapping list -g {rg} --fabric-name {fabric_source_name} '
+        # crud for network mapping
+        self.cmd('az site-recovery network mapping list -g {rg} --fabric-name {fabric_source_name} '
                  '--network-name azureNetwork --vault-name {vault_name}', checks=[self.check('length(@)', 1)])
-        self.cmd('az site-recovery network-mapping show -g {rg} --fabric-name {fabric_source_name} '
+        self.cmd('az site-recovery network mapping show -g {rg} --fabric-name {fabric_source_name} '
                  '-n {network_mapping_src_to_recovery_name} --network-name azureNetwork --vault-name {vault_name}',
                  checks=[self.check('properties.recoveryNetworkId', vnet_recovery["id"].lower())])
-        self.cmd('az site-recovery network-mapping update -g {rg} --fabric-name {fabric_source_name} '
+        self.cmd('az site-recovery network mapping update -g {rg} --fabric-name {fabric_source_name} '
                  '-n {network_mapping_src_to_recovery_name} --network-name azureNetwork --vault-name {vault_name} '
                  '--recovery-network-id {vnet_recovery_id} '
                  '--fabric-details {{azure-to-azure:{{primary-network-id:{vnetvm_id}}}}} '
@@ -414,7 +414,7 @@ class SiteRecoveryScenario(ScenarioTest):
                  '--fabric-name {fabric_recovery_name} -n {protected_item_name} --protection-container {container_recovery_name} '
                  '--vault-name {vault_name} -y')
 
-        self.cmd('az site-recovery network-mapping delete -g {rg} --fabric-name {fabric_source_name} '
+        self.cmd('az site-recovery network mapping delete -g {rg} --fabric-name {fabric_source_name} '
                  '-n {network_mapping_src_to_recovery_name} --network-name azureNetwork --vault-name {vault_name} -y')
 
         # delete container mappings
@@ -522,12 +522,12 @@ class SiteRecoveryScenario(ScenarioTest):
                                          'CliTerraformVMRG/providers/Microsoft.Network/virtualNetworks/'
                                          'CliTerraformVMRG-vnet'})
 
-        self.cmd('az site-recovery network-mapping create -g {rg} --fabric-name {fabric1_name} '
+        self.cmd('az site-recovery network mapping create -g {rg} --fabric-name {fabric1_name} '
                  '-n {network_mapping1_name} --network-name azureNetwork --vault-name {vault_name} '
                  '--recovery-network-id {vnet2_id} '
                  '--fabric-details {{azure-to-azure:{{primary-network-id:{vnetvm_id}}}}} '
                  '--recovery-fabric-name {fabric2_name}')
-        self.cmd('az site-recovery network-mapping create -g {rg} --fabric-name {fabric2_name} '
+        self.cmd('az site-recovery network mapping create -g {rg} --fabric-name {fabric2_name} '
                  '-n {network_mapping2_name} --network-name azureNetwork --vault-name {vault_name} '
                  '--recovery-network-id {vnetvm_id} '
                  '--fabric-details {{azure-to-azure:{{primary-network-id:{vnet2_id}}}}} '
@@ -854,7 +854,7 @@ class SiteRecoveryScenario(ScenarioTest):
         self.cmd('az account set -n {cli_subscription}')
 
 
-    @record_only()
+    # @record_only()
     def test_siterecovery_H2A_E2A_scenarios(self):
         self.kwargs.update({
             'rg': 'CliTeraformVaultRG',
@@ -881,7 +881,7 @@ class SiteRecoveryScenario(ScenarioTest):
             # 'recovery_plan_name': 'cli-test-recovery-plan-H2A-E2A-1'
         })
         # set subscription
-        # self.cmd('az account set -n {subscription}')
+        self.cmd('az account set -n {subscription}')
 
         # prepare vnet and storage account
 
@@ -919,9 +919,9 @@ class SiteRecoveryScenario(ScenarioTest):
         # create network mapping
         vnet_recovery = self.cmd('az network vnet show -g {rg} -n {vnet_recovery_name}').get_output_in_json()
         self.kwargs.update({"vnet_recovery_id": vnet_recovery["id"]})
-        self.cmd('az site-recovery network-mapping create -g {rg} --fabric-name {fabric_source_name} '
+        self.cmd('az site-recovery network mapping create -g {rg} --fabric-name {fabric_source_name} '
                  '-n {network_mapping_src_to_recovery_name} --network-name corp --vault-name {vault_name} '
-                 '--recovery-network-id {vnet_recovery_id} '
+                 '--recovery-network-id "{vnet_recovery_id}" '
                  '--fabric-details {{vmm-to-azure:{{}}}}')
 
         # get protectable_item name
