@@ -48,19 +48,14 @@ def __get_extension_type_table_row(result):
         clusterTypes = ', '.join(result['properties']['supportedClusterTypes'])
 
     name = result['name']
-    defaultScope, allowMultipleInstances, defaultReleaseNamespace = '', '', ''
+    defaultScope = ''
     if result['properties']['supportedScopes']:
         defaultScope = result['properties']['supportedScopes']['defaultScope']
-        if result['properties']['supportedScopes']['clusterScopeSettings'] is not None:
-            allowMultipleInstances = result['properties']['supportedScopes']['clusterScopeSettings']['allowMultipleInstances']
-            defaultReleaseNamespace = result['properties']['supportedScopes']['clusterScopeSettings']['defaultReleaseNamespace']
 
     retVal = OrderedDict([
         ('name', name),
         ('defaultScope', defaultScope),
-        ('clusterTypes', clusterTypes),
-        ('allowMultipleInstances', allowMultipleInstances),
-        ('defaultReleaseNamespace', defaultReleaseNamespace)
+        ('clusterTypes', clusterTypes)
     ])
 
     return retVal
