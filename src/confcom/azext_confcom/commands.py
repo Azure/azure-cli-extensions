@@ -9,5 +9,5 @@ def load_command_table(self, _):
     with self.command_group("confcom") as g:
         g.custom_command("acipolicygen", "acipolicygen_confcom")
 
-    with self.command_group("confcom", is_preview=True):
+    with self.command_group("confcom"):
         pass
