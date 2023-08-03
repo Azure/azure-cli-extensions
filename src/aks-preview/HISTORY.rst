@@ -11,9 +11,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 ++++++
-* Vendor new SDK and bump API version to 2023-06-02-preview.
 
+0.5.150
++++++++
+* Vendor new SDK and bump API version to 2023-06-02-preview.
 * Add `--network-dataplane` to the `az aks update` command.
+* Support "VirtualMachines" agent pool type to `az aks create --vm-set-type` and `az aks nodepool add --vm-set-type`. This is internal use only, not for public preview.
 
 0.5.149
 +++++++

@@ -77,6 +77,32 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             self.__external_functions = SimpleNamespace(**external_functions)
         return self.__external_functions
 
+    def get_vm_set_type(self) -> str:
+        """Obtain the value of vm_set_type, default value is CONST_VIRTUAL_MACHINE_SCALE_SETS.
+        :return: string
+        """
+        # read the original value passed by the command
+        vm_set_type = self.raw_param.get("vm_set_type", CONST_VIRTUAL_MACHINE_SCALE_SETS)
+        # try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.MANAGED_CLUSTER:
+            if self.agentpool and self.agentpool.type is not None:
+                vm_set_type = self.agentpool.type
+        else:
+            if self.agentpool and self.agentpool.type_properties_type is not None:
+                vm_set_type = self.agentpool.type_properties_type
+
+        # normalize
+        if vm_set_type.lower() == CONST_VIRTUAL_MACHINE_SCALE_SETS.lower():
+            vm_set_type = CONST_VIRTUAL_MACHINE_SCALE_SETS
+        elif vm_set_type.lower() == CONST_AVAILABILITY_SET.lower():
+            vm_set_type = CONST_AVAILABILITY_SET
+        elif vm_set_type.lower() == CONST_VIRTUAL_MACHINES.lower():
+            vm_set_type = CONST_VIRTUAL_MACHINES
+        else:
+            raise InvalidArgumentValueError("--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only)")
+        # this parameter does not need validation
+        return vm_set_type
+
     def get_crg_id(self) -> Union[str, None]:
         """Obtain the value of crg_id.
 
@@ -338,31 +364,6 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             self.agentpool_decorator_mode,
         )
 
-    def get_vm_set_type(self) -> str:
-        """Obtain the value of vm_set_type, default value is CONST_VIRTUAL_MACHINE_SCALE_SETS.
-        :return: string
-        """
-        # read the original value passed by the command
-        vm_set_type = self.raw_param.get("vm_set_type", CONST_VIRTUAL_MACHINE_SCALE_SETS)
-        # try to read the property value corresponding to the parameter from the `agentpool` object
-        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.MANAGED_CLUSTER:
-            if self.agentpool and self.agentpool.type is not None:
-                vm_set_type = self.agentpool.type
-        else:
-            if self.agentpool and self.agentpool.type_properties_type is not None:
-                vm_set_type = self.agentpool.type_properties_type
-
-        # normalize
-        if vm_set_type.lower() == CONST_VIRTUAL_MACHINE_SCALE_SETS.lower():
-            vm_set_type = CONST_VIRTUAL_MACHINE_SCALE_SETS
-        elif vm_set_type.lower() == CONST_AVAILABILITY_SET.lower():
-            vm_set_type = CONST_AVAILABILITY_SET
-        elif vm_set_type.lower() == CONST_VIRTUAL_MACHINES.lower():
-            vm_set_type = CONST_VIRTUAL_MACHINES
-        else:
-            raise InvalidArgumentValueError("--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only)")
-        # this parameter does not need validation
-        return vm_set_type
 
     def set_up_preview_vm_properties(self, agentpool: AgentPool) -> AgentPool:
         """Set up preview vm related properties for the AgentPool object.
