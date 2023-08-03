@@ -138,6 +138,7 @@ def validate_ingress(namespace):
             if not namespace.target_port:
                 raise ValidationError("Usage error: must specify --target-port with --ingress")
 
+
 def validate_allow_insecure(namespace):
     if "create" in namespace.command.lower():
         if namespace.allow_insecure:
@@ -145,6 +146,7 @@ def validate_allow_insecure(namespace):
                 raise ValidationError("Usage error: must specify --ingress and --target-port with --allow-insecure")
             if namespace.transport == "tcp":
                 raise ValidationError("Usage error: --allow-insecure is not supported for TCP ingress")
+
 
 def _set_ssh_defaults(cmd, namespace):
     app = ContainerAppClient.show(cmd, namespace.resource_group_name, namespace.name)
