@@ -146,7 +146,7 @@ class PolicyGeneratingArm(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
             "properties": {
                 "containers": [
@@ -341,7 +341,7 @@ class PolicyGeneratingArmIncorrect(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
 
             "properties": {
@@ -579,7 +579,7 @@ class PolicyGeneratingArmIncorrect(unittest.TestCase):
                 {
                 "name": "[parameters('containergroupname')]",
                 "type": "Microsoft.ContainerInstance/containerGroups",
-                "apiVersion": "2022-04-01-preview",
+                "apiVersion": "2023-05-01",
                 "location": "[parameters('location')]",
                 "properties": {
                     "containers": [
@@ -673,7 +673,7 @@ class PolicyGeneratingArmParametersIncorrect(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
 
             "properties": {
@@ -826,7 +826,7 @@ class PolicyGeneratingArmParameters(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
 
             "properties": {
@@ -994,7 +994,7 @@ class PolicyGeneratingArmParameters2(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
 
             "properties": {
@@ -1164,7 +1164,7 @@ class PolicyGeneratingArmContainerConfig(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
 
             "properties": {
@@ -1332,7 +1332,7 @@ class PolicyGeneratingArmParametersCleanRoom(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
 
             "properties": {
@@ -1455,7 +1455,7 @@ class PolicyDiff(unittest.TestCase):
     "resources": [
         {
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "name": "secret-volume-demo",
             "location": "[resourceGroup().location]",
             "properties": {
@@ -1534,7 +1534,7 @@ class PolicyDiff(unittest.TestCase):
     "resources": [
         {
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "name": "secret-volume-demo",
             "location": "[resourceGroup().location]",
             "properties": {
@@ -1715,7 +1715,7 @@ class PolicyGeneratingArmInfrastructureSvn(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
             "properties": {
                 "containers": [
@@ -1838,7 +1838,7 @@ class MultiplePolicyTemplate(unittest.TestCase):
     "resources": [
         {
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "name": "secret-volume-demo",
             "location": "[resourceGroup().location]",
             "properties": {
@@ -1904,7 +1904,7 @@ class MultiplePolicyTemplate(unittest.TestCase):
         },
         {
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "name": "secret-volume-demo",
             "location": "[resourceGroup().location]",
             "properties": {
@@ -2067,7 +2067,7 @@ class PolicyGeneratingArmInitContainer(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
 
             "properties": {
@@ -2253,7 +2253,7 @@ class PolicyGeneratingDisableStdioAccess(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
 
             "properties": {
@@ -2400,7 +2400,7 @@ class PolicyGeneratingAllowElevated(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
 
             "properties": {
@@ -2548,7 +2548,7 @@ class PrintExistingPolicy(unittest.TestCase):
                 {
                 "name": "[parameters('containergroupname')]",
                 "type": "Microsoft.ContainerInstance/containerGroups",
-                "apiVersion": "2022-04-01-preview",
+                "apiVersion": "2023-05-01",
                 "location": "[parameters('location')]",
                 "properties": {
                     "containers": [
@@ -2685,7 +2685,7 @@ class PrintExistingPolicy(unittest.TestCase):
     {
       "name": "[parameters('containergroupname')]",
       "type": "Microsoft.ContainerInstance/containerGroups",
-      "apiVersion": "2022-04-01-preview",
+      "apiVersion": "2023-05-01",
       "location": "[parameters('location')]",
       "properties": {
         "containers": [
@@ -2903,7 +2903,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
             "properties": {
                 "containers": [
@@ -3021,7 +3021,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
             "properties": {
                 "containers": [
@@ -3152,7 +3152,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
             "properties": {
                 "containers": [
@@ -3293,7 +3293,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
             "properties": {
                 "containers": [
@@ -3515,7 +3515,7 @@ class PolicyGeneratingEdgeCases(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
 
             "properties": {
@@ -3658,7 +3658,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
             "properties": {
                 "containers": [
@@ -3799,7 +3799,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
             "properties": {
                 "containers": [
@@ -3951,7 +3951,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
             "properties": {
                 "containers": [
@@ -4098,7 +4098,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
             "properties": {
                 "containers": [
@@ -4388,7 +4388,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
             "properties": {
                 "containers": [
@@ -4538,7 +4538,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
             "properties": {
                 "containers": [
@@ -4688,7 +4688,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
             "properties": {
                 "containers": [
@@ -5147,7 +5147,7 @@ class PolicyGeneratingSecurityContextSeccompProfileEdgeCases(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
             "properties": {
                 "containers": [

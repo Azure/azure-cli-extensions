@@ -1,6 +1,7 @@
-This file is a reference page for the [README](README.md) file. 
+This file is a reference page for the [README](README.md) file.
 
-arm-template.json 
+arm-template.json
+
 ```
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
@@ -39,7 +40,7 @@ arm-template.json
     {
       "name": "[variables('containergroupname')]",
       "type": "Microsoft.ContainerInstance/containerGroups",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2023-05-01",
       "location": "[resourceGroup().location]",
       "properties": {
         "confidentialComputeProperties": {
