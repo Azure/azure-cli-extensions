@@ -43,6 +43,7 @@ AgentPoolsOperations = TypeVar("AgentPoolsOperations")
 PortRange = TypeVar("PortRange")
 IPTag = TypeVar("IPTag")
 
+
 # pylint: disable=too-few-public-methods
 class AKSPreviewAgentPoolModels(AKSAgentPoolModels):
     """Store the models used in aks agentpool series of commands.
