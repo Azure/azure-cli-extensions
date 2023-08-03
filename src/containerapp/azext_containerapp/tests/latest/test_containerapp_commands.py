@@ -160,11 +160,12 @@ class ContainerappIngressTests(ScenarioTest):
 
         create_containerapp_env(self, env_name, resource_group)
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --allow-insecure'.format(resource_group, ca_name, env_name))
 
         self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
             JMESPathCheck('external', True),
             JMESPathCheck('targetPort', 80),
+            JMESPathCheck('allowInsecure', True),
         ])
 
         self.cmd('containerapp ingress disable -g {} -n {}'.format(resource_group, ca_name, env_name))
