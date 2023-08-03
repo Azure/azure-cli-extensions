@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "networkfabric nni list",
 )
 class List(AAZCommand):
-    """List all Network To Network Interconnects in the provided resource group.
+    """List all Network To Network Interconnects in the provided resource group
 
     :example: List the Network To Network Interconnects for Resource Group
         az networkfabric nni list --resource-group "example-rg" --fabric "example-fabric"
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/networktonetworkinterconnects", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/networktonetworkinterconnects", "2023-06-15"],
         ]
     }
 
@@ -56,7 +56,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.NetworkToNetworkInterconnectsList(ctx=self.ctx)()
+        self.NetworkToNetworkInterconnectsListByNetworkFabric(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,7 +72,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class NetworkToNetworkInterconnectsList(AAZHttpOperation):
+    class NetworkToNetworkInterconnectsListByNetworkFabric(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -120,7 +120,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -169,7 +169,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -184,18 +184,36 @@ class List(AAZCommand):
                 serialized_name="administrativeState",
                 flags={"read_only": True},
             )
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            properties.egress_acl_id = AAZStrType(
+                serialized_name="egressAclId",
+            )
+            properties.export_route_policy = AAZObjectType(
+                serialized_name="exportRoutePolicy",
+            )
+            properties.import_route_policy = AAZObjectType(
+                serialized_name="importRoutePolicy",
+            )
+            properties.ingress_acl_id = AAZStrType(
+                serialized_name="ingressAclId",
+            )
             properties.is_management_type = AAZStrType(
                 serialized_name="isManagementType",
-                flags={"required": True},
             )
             properties.layer2_configuration = AAZObjectType(
                 serialized_name="layer2Configuration",
             )
-            properties.layer3_configuration = AAZObjectType(
-                serialized_name="layer3Configuration",
-            )
             properties.nni_type = AAZStrType(
                 serialized_name="nniType",
+            )
+            properties.npb_static_route_configuration = AAZObjectType(
+                serialized_name="npbStaticRouteConfiguration",
+            )
+            properties.option_b_layer3_configuration = AAZObjectType(
+                serialized_name="optionBLayer3Configuration",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -206,48 +224,82 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
+            export_route_policy = cls._schema_on_200.value.Element.properties.export_route_policy
+            export_route_policy.export_ipv4_route_policy_id = AAZStrType(
+                serialized_name="exportIpv4RoutePolicyId",
+            )
+            export_route_policy.export_ipv6_route_policy_id = AAZStrType(
+                serialized_name="exportIpv6RoutePolicyId",
+            )
+
+            import_route_policy = cls._schema_on_200.value.Element.properties.import_route_policy
+            import_route_policy.import_ipv4_route_policy_id = AAZStrType(
+                serialized_name="importIpv4RoutePolicyId",
+            )
+            import_route_policy.import_ipv6_route_policy_id = AAZStrType(
+                serialized_name="importIpv6RoutePolicyId",
+            )
+
             layer2_configuration = cls._schema_on_200.value.Element.properties.layer2_configuration
-            layer2_configuration.interfaces = AAZListType(
-                flags={"read_only": True},
-            )
-            layer2_configuration.mtu = AAZIntType(
-                flags={"required": True},
-            )
-            layer2_configuration.port_count = AAZIntType(
-                serialized_name="portCount",
-            )
+            layer2_configuration.interfaces = AAZListType()
+            layer2_configuration.mtu = AAZIntType()
 
             interfaces = cls._schema_on_200.value.Element.properties.layer2_configuration.interfaces
             interfaces.Element = AAZStrType()
 
-            layer3_configuration = cls._schema_on_200.value.Element.properties.layer3_configuration
-            layer3_configuration.export_route_policy_id = AAZStrType(
-                serialized_name="exportRoutePolicyId",
+            npb_static_route_configuration = cls._schema_on_200.value.Element.properties.npb_static_route_configuration
+            npb_static_route_configuration.bfd_configuration = AAZObjectType(
+                serialized_name="bfdConfiguration",
             )
-            layer3_configuration.fabric_asn = AAZIntType(
+            npb_static_route_configuration.ipv4_routes = AAZListType(
+                serialized_name="ipv4Routes",
+            )
+            npb_static_route_configuration.ipv6_routes = AAZListType(
+                serialized_name="ipv6Routes",
+            )
+
+            bfd_configuration = cls._schema_on_200.value.Element.properties.npb_static_route_configuration.bfd_configuration
+            bfd_configuration.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
+            bfd_configuration.interval_in_milli_seconds = AAZIntType(
+                serialized_name="intervalInMilliSeconds",
+            )
+            bfd_configuration.multiplier = AAZIntType()
+
+            ipv4_routes = cls._schema_on_200.value.Element.properties.npb_static_route_configuration.ipv4_routes
+            ipv4_routes.Element = AAZObjectType()
+            _ListHelper._build_schema_static_route_properties_read(ipv4_routes.Element)
+
+            ipv6_routes = cls._schema_on_200.value.Element.properties.npb_static_route_configuration.ipv6_routes
+            ipv6_routes.Element = AAZObjectType()
+            _ListHelper._build_schema_static_route_properties_read(ipv6_routes.Element)
+
+            option_b_layer3_configuration = cls._schema_on_200.value.Element.properties.option_b_layer3_configuration
+            option_b_layer3_configuration.fabric_asn = AAZIntType(
                 serialized_name="fabricASN",
                 flags={"read_only": True},
             )
-            layer3_configuration.import_route_policy_id = AAZStrType(
-                serialized_name="importRoutePolicyId",
-            )
-            layer3_configuration.peer_asn = AAZIntType(
+            option_b_layer3_configuration.peer_asn = AAZIntType(
                 serialized_name="peerASN",
+                flags={"required": True},
             )
-            layer3_configuration.primary_ipv4_prefix = AAZStrType(
+            option_b_layer3_configuration.primary_ipv4_prefix = AAZStrType(
                 serialized_name="primaryIpv4Prefix",
             )
-            layer3_configuration.primary_ipv6_prefix = AAZStrType(
+            option_b_layer3_configuration.primary_ipv6_prefix = AAZStrType(
                 serialized_name="primaryIpv6Prefix",
             )
-            layer3_configuration.secondary_ipv4_prefix = AAZStrType(
+            option_b_layer3_configuration.secondary_ipv4_prefix = AAZStrType(
                 serialized_name="secondaryIpv4Prefix",
             )
-            layer3_configuration.secondary_ipv6_prefix = AAZStrType(
+            option_b_layer3_configuration.secondary_ipv6_prefix = AAZStrType(
                 serialized_name="secondaryIpv6Prefix",
             )
-            layer3_configuration.vlan_id = AAZIntType(
+            option_b_layer3_configuration.vlan_id = AAZIntType(
                 serialized_name="vlanId",
+                flags={"required": True},
             )
 
             system_data = cls._schema_on_200.value.Element.system_data
@@ -275,6 +327,32 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
+
+    _schema_static_route_properties_read = None
+
+    @classmethod
+    def _build_schema_static_route_properties_read(cls, _schema):
+        if cls._schema_static_route_properties_read is not None:
+            _schema.next_hop = cls._schema_static_route_properties_read.next_hop
+            _schema.prefix = cls._schema_static_route_properties_read.prefix
+            return
+
+        cls._schema_static_route_properties_read = _schema_static_route_properties_read = AAZObjectType()
+
+        static_route_properties_read = _schema_static_route_properties_read
+        static_route_properties_read.next_hop = AAZListType(
+            serialized_name="nextHop",
+            flags={"required": True},
+        )
+        static_route_properties_read.prefix = AAZStrType(
+            flags={"required": True},
+        )
+
+        next_hop = _schema_static_route_properties_read.next_hop
+        next_hop.Element = AAZStrType()
+
+        _schema.next_hop = cls._schema_static_route_properties_read.next_hop
+        _schema.prefix = cls._schema_static_route_properties_read.prefix
 
 
 __all__ = ["List"]

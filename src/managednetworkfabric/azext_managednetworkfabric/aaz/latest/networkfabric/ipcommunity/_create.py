@@ -15,16 +15,19 @@ from azure.cli.core.aaz import *
     "networkfabric ipcommunity create",
 )
 class Create(AAZCommand):
-    """Create a Ip Community resource.
+    """Create a Ip Community resource
 
     :example: Create a Ip Community
-        az networkfabric ipcommunity create --resource-group "example-rg" --location "westus3" --resource-name "example-ipcommunity" --action "Deny" --well-known-communities "LocalAS" "GShut" --community-members "100:200" "101:201"
+        az networkfabric ipcommunity create --resource-group "example-rg" --location "westus3" --resource-name "example-ipcommunity" --ip-community-rules "[{action:Permit,communityMembers:['1:1'],sequenceNumber:1234,wellKnownCommunities:[Internet,GShut]}]"
+
+    :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
+        az networkfabric ipcommunity create --ip-community-rules ??
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipcommunities/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipcommunities/{}", "2023-06-15"],
         ]
     }
 
@@ -47,7 +50,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the IP Community",
+            help="Name of the IP Community.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -78,37 +81,63 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.action = AAZStrArg(
-            options=["--action"],
-            arg_group="Properties",
-            help="Action to be taken on the configuration. Example: Permit | Deny.",
-            enum={"Deny": "Deny", "Permit": "Permit"},
-        )
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
-            help="Switch configuration description.",
+            help="Description for underlying resource.",
         )
-        _args_schema.community_members = AAZListArg(
-            options=["--community-members"],
+        _args_schema.ip_community_rules = AAZListArg(
+            options=["--ip-community-rules"],
             arg_group="Properties",
-            help="List the communityMembers of IP Community.",
+            help="List of IP Community Rules.",
+            required=True,
         )
-        _args_schema.well_known_communities = AAZListArg(
-            options=["--well-known-communities"],
-            arg_group="Properties",
+
+        ip_community_rules = cls._args_schema.ip_community_rules
+        ip_community_rules.Element = AAZObjectArg()
+
+        _element = cls._args_schema.ip_community_rules.Element
+        _element.action = AAZStrArg(
+            options=["action"],
+            help="Action to be taken on the configuration. Example: Permit.",
+            required=True,
+            enum={"Deny": "Deny", "Permit": "Permit"},
+        )
+        _element.community_members = AAZListArg(
+            options=["community-members"],
+            help="List the community members of IP Community.",
+            required=True,
+        )
+        _element.sequence_number = AAZIntArg(
+            options=["sequence-number"],
+            help="Sequence to insert to/delete from existing route. Prefix lists are evaluated starting with the lowest sequence number and continue down the list until a match is made. Once a match is made, the permit or deny statement is applied to that network and the rest of the list is ignored.",
+            required=True,
+            fmt=AAZIntArgFormat(
+                maximum=4294967295,
+                minimum=1,
+            ),
+        )
+        _element.well_known_communities = AAZListArg(
+            options=["well-known-communities"],
             help="Supported well known Community List.",
             fmt=AAZListArgFormat(
                 unique=True,
             ),
         )
 
-        community_members = cls._args_schema.community_members
-        community_members.Element = AAZStrArg()
+        community_members = cls._args_schema.ip_community_rules.Element.community_members
+        community_members.Element = AAZStrArg(
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
 
-        well_known_communities = cls._args_schema.well_known_communities
+        well_known_communities = cls._args_schema.ip_community_rules.Element.well_known_communities
         well_known_communities.Element = AAZStrArg(
             enum={"GShut": "GShut", "Internet": "Internet", "LocalAS": "LocalAS", "NoAdvertise": "NoAdvertise", "NoExport": "NoExport"},
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
         return cls._args_schema
 
@@ -193,7 +222,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -219,21 +248,30 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("action", AAZStrType, ".action", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("annotation", AAZStrType, ".annotation")
-                properties.set_prop("communityMembers", AAZListType, ".community_members", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("wellKnownCommunities", AAZListType, ".well_known_communities")
+                properties.set_prop("ipCommunityRules", AAZListType, ".ip_community_rules", typ_kwargs={"flags": {"required": True}})
 
-            community_members = _builder.get(".properties.communityMembers")
+            ip_community_rules = _builder.get(".properties.ipCommunityRules")
+            if ip_community_rules is not None:
+                ip_community_rules.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.ipCommunityRules[]")
+            if _elements is not None:
+                _elements.set_prop("action", AAZStrType, ".action", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("communityMembers", AAZListType, ".community_members", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("sequenceNumber", AAZIntType, ".sequence_number", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("wellKnownCommunities", AAZListType, ".well_known_communities")
+
+            community_members = _builder.get(".properties.ipCommunityRules[].communityMembers")
             if community_members is not None:
                 community_members.set_elements(AAZStrType, ".")
 
-            well_known_communities = _builder.get(".properties.wellKnownCommunities")
+            well_known_communities = _builder.get(".properties.ipCommunityRules[].wellKnownCommunities")
             if well_known_communities is not None:
                 well_known_communities.set_elements(AAZStrType, ".")
 
@@ -271,7 +309,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -283,26 +321,47 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.action = AAZStrType(
-                flags={"required": True},
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
             )
             properties.annotation = AAZStrType()
-            properties.community_members = AAZListType(
-                serialized_name="communityMembers",
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            properties.ip_community_rules = AAZListType(
+                serialized_name="ipCommunityRules",
                 flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.well_known_communities = AAZListType(
+
+            ip_community_rules = cls._schema_on_200_201.properties.ip_community_rules
+            ip_community_rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.ip_community_rules.Element
+            _element.action = AAZStrType(
+                flags={"required": True},
+            )
+            _element.community_members = AAZListType(
+                serialized_name="communityMembers",
+                flags={"required": True},
+            )
+            _element.sequence_number = AAZIntType(
+                serialized_name="sequenceNumber",
+                flags={"required": True},
+            )
+            _element.well_known_communities = AAZListType(
                 serialized_name="wellKnownCommunities",
             )
 
-            community_members = cls._schema_on_200_201.properties.community_members
+            community_members = cls._schema_on_200_201.properties.ip_community_rules.Element.community_members
             community_members.Element = AAZStrType()
 
-            well_known_communities = cls._schema_on_200_201.properties.well_known_communities
+            well_known_communities = cls._schema_on_200_201.properties.ip_community_rules.Element.well_known_communities
             well_known_communities.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data

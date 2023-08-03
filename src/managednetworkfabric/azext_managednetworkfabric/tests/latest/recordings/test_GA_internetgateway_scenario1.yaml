@@ -1,0 +1,198 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric internetgateway show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/internetGateways/nfa-tool-ts-GA-cli-nfc072623-infra?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/internetGateways/nfa-tool-ts-GA-cli-nfc072623-infra","name":"nfa-tool-ts-GA-cli-nfc072623-infra","type":"microsoft.managednetworkfabric/internetgateways","location":"eastus","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-07-26T09:25:41.5663855Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-27T13:58:39.122232Z"},"properties":{"port":3128,"networkFabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/nfa-tool-ts-GA-cli-nfc072623","type":"Infrastructure","ipv4Address":"http://20.0.3.254:3128","internetGatewayRuleId":"/subscriptions//resourcegroups/example-rg/providers/Microsoft.ManagedNetworkFabric/internetGatewayRules/example-internetGatewayRule","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1079'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Jul 2023 14:20:41 GMT
+      etag:
+      - '"0200c0dd-0000-0100-0000-64c278100000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric internetgateway list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/internetGateways?api-version=2023-06-15
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/internetGateways/nfa-tool-ts-GA-cli-nfc072623-infra","name":"nfa-tool-ts-GA-cli-nfc072623-infra","type":"microsoft.managednetworkfabric/internetgateways","location":"eastus","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-07-26T09:25:41.5663855Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-27T13:58:39.122232Z"},"properties":{"port":3128,"networkFabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/nfa-tool-ts-GA-cli-nfc072623","type":"Infrastructure","ipv4Address":"http://20.0.3.254:3128","internetGatewayRuleId":"/subscriptions//resourcegroups/example-rg/providers/Microsoft.ManagedNetworkFabric/internetGatewayRules/example-internetGatewayRule","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/internetGateways/nfa-tool-ts-GA-cli-nfc072623-workload","name":"nfa-tool-ts-GA-cli-nfc072623-workload","type":"microsoft.managednetworkfabric/internetgateways","location":"eastus","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-07-26T09:29:17.8590628Z","lastModifiedBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T09:29:17.8590628Z"},"properties":{"port":3128,"networkFabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/nfa-tool-ts-GA-cli-nfc072623","type":"Workload","provisioningState":"Succeeded","ipv4Address":"http://20.0.29.254:3128"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Jul 2023 14:20:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 6903f4bd-abb3-432d-aeaf-f9874012cc99
+      - c6b78f4f-556f-4b08-be01-c63ab8aaa03b
+      - 2db49c99-7d42-4e90-b015-123a1d87a120
+      - 62d4f3e0-60d4-4e28-9dca-2233e7b2b161
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric internetgateway list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/internetGateways?api-version=2023-06-15
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/internetGateways/nfa-tool-ts-GA-cli-nfc072623-infra","name":"nfa-tool-ts-GA-cli-nfc072623-infra","type":"microsoft.managednetworkfabric/internetgateways","location":"eastus","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-07-26T09:25:41.5663855Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-27T13:58:39.122232Z"},"properties":{"port":3128,"networkFabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/nfa-tool-ts-GA-cli-nfc072623","type":"Infrastructure","ipv4Address":"http://20.0.3.254:3128","internetGatewayRuleId":"/subscriptions//resourcegroups/example-rg/providers/Microsoft.ManagedNetworkFabric/internetGatewayRules/example-internetGatewayRule","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/internetGateways/nfa-tool-ts-GA-cli-nfc072623-workload","name":"nfa-tool-ts-GA-cli-nfc072623-workload","type":"microsoft.managednetworkfabric/internetgateways","location":"eastus","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-07-26T09:29:17.8590628Z","lastModifiedBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","lastModifiedByType":"Application","lastModifiedAt":"2023-07-26T09:29:17.8590628Z"},"properties":{"port":3128,"networkFabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/nfa-tool-ts-GA-cli-nfc072623","type":"Workload","provisioningState":"Succeeded","ipv4Address":"http://20.0.29.254:3128"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2032'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Jul 2023 14:20:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 9d582f69-4222-4faa-8f5c-f4eede91beaf
+      - 210a34e9-9785-4dba-b1e9-73779519c27f
+      - 45293ad2-fb93-44bb-84ce-1a388c07dca8
+      - 962277ec-cf72-40cb-a0d2-da3439259d76
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"internetGatewayRuleId": "/subscriptions//resourcegroups/example-rg/providers/Microsoft.ManagedNetworkFabric/internetGatewayRules/example-internetGatewayRule"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric internetgateway update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '176'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --internet-gateway-rule-id
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/internetGateways/nfa-tool-ts-GA-cli-nfc072623-infra?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/internetGateways/nfa-tool-ts-GA-cli-nfc072623-infra","name":"nfa-tool-ts-GA-cli-nfc072623-infra","type":"microsoft.managednetworkfabric/internetgateways","location":"eastus","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-07-26T09:25:41.5663855Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-27T14:20:46.1579877Z"},"properties":{"port":3128,"networkFabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clitestrg-072623/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/nfa-tool-ts-GA-cli-nfc072623","type":"Infrastructure","ipv4Address":"http://20.0.3.254:3128","internetGatewayRuleId":"/subscriptions//resourcegroups/example-rg/providers/Microsoft.ManagedNetworkFabric/internetGatewayRules/example-internetGatewayRule","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1080'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 27 Jul 2023 14:20:47 GMT
+      etag:
+      - '"020075df-0000-0100-0000-64c27d3f0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 39c90e5f-8c7f-44a5-ba13-615ee2bd440b
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+version: 1
