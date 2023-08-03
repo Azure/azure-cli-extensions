@@ -2,6 +2,11 @@
 
 Release History
 
+1.3.21
+++++++
+
+* Setting default authnMode to 'arc' when RBAC is enabled
+
 1.3.20
 ++++++
 
@@ -71,7 +76,7 @@ Release History
 ++++++
 
 * Added CLI heuristics change
-* Added AKS IOT infra support 
+* Added AKS IOT infra support
 * Bug Fix in precheckutils
 
 1.3.9

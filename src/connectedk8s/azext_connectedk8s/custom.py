@@ -1465,7 +1465,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         cmd_helm_upgrade.extend(["--kube-context", kube_context])
     if enable_azure_rbac:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.enabled=true"])
-        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.authnMode=arc"]) # new mode for latest OBO changes
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.authnMode=arc"])  # new mode for latest OBO changes
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.skipAuthzCheck={}".format(azrbac_skip_authz_check)])
     if enable_cluster_connect:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=true"])
