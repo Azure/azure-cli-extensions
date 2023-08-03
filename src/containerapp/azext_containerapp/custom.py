@@ -37,9 +37,20 @@ from msrest.exceptions import DeserializationError
 from .containerapp_job_decorator import ContainerAppJobDecorator, ContainerAppJobCreateDecorator
 from .containerapp_env_decorator import ContainerAppEnvDecorator, ContainerAppEnvCreateDecorator, ContainerAppEnvUpdateDecorator
 from .containerapp_auth_decorator import ContainerAppAuthDecorator
-from .containerapp_decorator import ContainerAppCreateDecorator, BaseContainerAppDecorator
+from .containerapp_decorator import ContainerAppCreateDecorator, BaseContainerAppDecorator, \
+    ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_exception
-from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient, WorkloadProfileClient, ContainerAppsJobClient
+from ._clients import (
+    ManagedEnvironmentClient,
+    ContainerAppClient,
+    GitHubActionClient,
+    DaprComponentClient,
+    StorageClient,
+    AuthClient,
+    WorkloadProfileClient,
+    ContainerAppsJobClient,
+    ContainerAppPreviewClient
+)
 from ._dev_service_utils import DevServiceUtils
 from ._github_oauth import get_github_access_token
 from ._models import (
@@ -463,12 +474,13 @@ def create_containerapp(cmd,
                         registry_identity=None,
                         workload_profile_name=None,
                         termination_grace_period=None,
-                        secret_volume_mount=None):
+                        secret_volume_mount=None,
+                        environment_type="managed"):
     raw_parameters = locals()
 
-    containerapp_create_decorator = ContainerAppCreateDecorator(
+    containerapp_create_decorator = ContainerAppPreviewCreateDecorator(
         cmd=cmd,
-        client=ContainerAppClient,
+        client=ContainerAppPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
@@ -1013,7 +1025,7 @@ def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
     raw_parameters = locals()
     containerapp_base_decorator = BaseContainerAppDecorator(
         cmd=cmd,
-        client=ContainerAppClient,
+        client=ContainerAppPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
@@ -1022,24 +1034,24 @@ def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
     return containerapp_base_decorator.show()
 
 
-def list_containerapp(cmd, resource_group_name=None, managed_env=None):
+def list_containerapp(cmd, resource_group_name=None, managed_env=None, environment_type="all"):
     raw_parameters = locals()
-    containerapp_base_decorator = BaseContainerAppDecorator(
+    containerapp_list_decorator = ContainerAppPreviewListDecorator(
         cmd=cmd,
-        client=ContainerAppClient,
+        client=ContainerAppPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_list_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    return containerapp_base_decorator.list()
+    return containerapp_list_decorator.list()
 
 
 def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
     raw_parameters = locals()
     containerapp_base_decorator = BaseContainerAppDecorator(
         cmd=cmd,
-        client=ContainerAppClient,
+        client=ContainerAppPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
