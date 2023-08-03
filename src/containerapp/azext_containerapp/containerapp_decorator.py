@@ -727,6 +727,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         return scale_def
 
 
+# decorator for preview create
 class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def __init__(
         self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
@@ -783,6 +784,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         self.set_param("environment_type", environment_type)
 
 
+# decorator for preview list
 class ContainerAppPreviewListDecorator(BaseContainerAppDecorator):
     def __init__(
         self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
