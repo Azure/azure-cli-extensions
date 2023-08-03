@@ -8,12 +8,7 @@ import os
 from types import SimpleNamespace
 from typing import Dict, TypeVar, Union, List
 
-from azure.cli.command_modules.acs._consts import (
-    AgentPoolDecoratorMode,
-    DecoratorMode,
-    CONST_VIRTUAL_MACHINE_SCALE_SETS,
-    CONST_AVAILABILITY_SET
-)
+from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode, DecoratorMode
 
 from azure.cli.command_modules.acs.agentpool_decorator import (
     AKSAgentPoolAddDecorator,
@@ -32,7 +27,12 @@ from azure.cli.core.util import read_file_content
 from knack.log import get_logger
 
 from azext_aks_preview._client_factory import cf_agent_pools
-from azext_aks_preview._consts import CONST_WORKLOAD_RUNTIME_OCI_CONTAINER
+from azext_aks_preview._consts import (
+    CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
+    CONST_VIRTUAL_MACHINE_SCALE_SETS,
+    CONST_AVAILABILITY_SET,
+    CONST_VIRTUAL_MACHINES
+)
 from azext_aks_preview._helpers import get_nodepool_snapshot_by_snapshot_id
 
 logger = get_logger(__name__)
@@ -42,10 +42,6 @@ AgentPool = TypeVar("AgentPool")
 AgentPoolsOperations = TypeVar("AgentPoolsOperations")
 PortRange = TypeVar("PortRange")
 IPTag = TypeVar("IPTag")
-
-# constants
-CONST_VIRTUAL_MACHINES = "VirtualMachines"
-
 
 # pylint: disable=too-few-public-methods
 class AKSPreviewAgentPoolModels(AKSAgentPoolModels):
@@ -363,7 +359,6 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             DecoratorMode.CREATE,
             self.agentpool_decorator_mode,
         )
-
 
     def set_up_preview_vm_properties(self, agentpool: AgentPool) -> AgentPool:
         """Set up preview vm related properties for the AgentPool object.

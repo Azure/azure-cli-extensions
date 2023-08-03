@@ -7032,7 +7032,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--nodepool-name={node_pool_name} '
             '--node-count=1 '
             '--node-vm-size={node_vm_size} '
-            '--vm-set-type="VirtualMachines"',
+            '--vm-set-type="VirtualMachines" '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview',
             checks=[
                 self.check('provisioningState', 'Succeeded'),
                 self.check('agentPoolProfiles[0].type', "VirtualMachines"),
@@ -7049,7 +7050,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--cluster-name={name} '
             '--name={node_pool_name} '
             '--node-vm-size={node_vm_size} '
-            '--vm-set-type=VirtualMachines',
+            '--vm-set-type=VirtualMachines ' 
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview',
             checks=[
                 self.check('provisioningState', 'Succeeded'),
                 self.check('typePropertiesType', "VirtualMachines"),
