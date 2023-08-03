@@ -5,11 +5,30 @@ Release History
 
 Upcoming
 ++++++
+* 'az containerapp job start': update start execution payload format to exlude template property from API version 2023-05-01 onwards
+
+0.3.36
+++++++
+* 'az containerapp hostname bind': fix exception when not bringing --validation-method inputs
+
+0.3.35
+++++++
+* 'az containerapp create/update': --termination-grace-period support custom termination grace period
+* 'az containerapp env logs show': fix issue of constructing connection url
+* 'az containerapp create/update': --revision-suffix allow revision suffix to start with numbers
+* 'az containerapp create/show/list/delete': refactor with containerapp decorator
+
+0.3.34
+++++++
 * 'az containerapp job execution show/list': improve table output format
 * 'az containerapp create/update': --yaml support properties for api-version 2023-04-01-preview (e.g. subPath, mountOptions)
 * 'az containerapp service': add support for creation and deletion of kafka
 * 'az containerapp create': --registry-server support registry with custom port
+* 'az containerapp create': fix containerapp create not waiting for ready environment
 * Add regex to fix validation for containerapp name
+* Add 'az containerapp ingress cors' for CORS support
+* 'az container app env create/update': support --enable-mtls parameter
+* 'az containerapp up': fix issue where --repo throws KeyError
 
 0.3.33
 ++++++

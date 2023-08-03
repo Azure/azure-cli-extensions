@@ -9,7 +9,7 @@ import datetime
 import json
 import re
 
-from ..utils import get_cluster_rp_api_version
+from ..utils import get_cluster_rp_api_version, is_skip_prerequisites_specified
 from .. import consts
 
 from knack.log import get_logger
@@ -60,8 +60,11 @@ class ContainerInsights(DefaultExtension):
                        'only supports cluster scope and single instance of this extension.', extension_type)
         logger.warning("Defaulting to extension name '%s' and release-namespace '%s'", name, release_namespace)
 
-        _get_container_insights_settings(cmd, resource_group_name, cluster_rp, cluster_type, cluster_name, configuration_settings,
-                                         configuration_protected_settings, is_ci_extension_type)
+        if not is_skip_prerequisites_specified(configuration_settings):
+            _get_container_insights_settings(cmd, resource_group_name, cluster_rp, cluster_type, cluster_name, configuration_settings,
+                                             configuration_protected_settings, is_ci_extension_type)
+        else:
+            logger.info("Provisioning of prerequisites is skipped")
 
         # NOTE-2: Return a valid Extension object, Instance name and flag for Identity
         create_identity = True
@@ -85,6 +88,11 @@ class ContainerInsights(DefaultExtension):
             extension = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
         except Exception:
             pass  # its OK to ignore the exception since MSI auth in preview
+
+        if (extension is not None) and (extension.configuration_settings is not None):
+            if is_skip_prerequisites_specified(extension.configuration_settings):
+                logger.info("Deprovisioning of prerequisites is skipped")
+                return
 
         subscription_id = get_subscription_id(cmd.cli_ctx)
         # handle cluster type here
@@ -456,6 +464,8 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
     subscription_id = get_subscription_id(cmd.cli_ctx)
     workspace_resource_id = ''
     useAADAuth = True
+    if 'amalogs.useAADAuth' not in configuration_settings:
+        configuration_settings['amalogs.useAADAuth'] = "true"
     extensionSettings = {}
 
     if configuration_settings is not None:
@@ -472,11 +482,15 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
             logger.info("provided useAADAuth flag is : %s", useAADAuthSetting)
             if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
                 useAADAuth = True
+            else:
+                useAADAuth = False
         elif 'amalogs.useAADAuth' in configuration_settings:
             useAADAuthSetting = configuration_settings['amalogs.useAADAuth']
             logger.info("provided useAADAuth flag is : %s", useAADAuthSetting)
             if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
                 useAADAuth = True
+            else:
+                useAADAuth = False
         if useAADAuth and ('dataCollectionSettings' in configuration_settings):
             dataCollectionSettingsString = configuration_settings["dataCollectionSettings"]
             logger.info("provided dataCollectionSettings  is : %s", dataCollectionSettingsString)
@@ -496,6 +510,10 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
                 namspaces = dataCollectionSettings["namespaces"]
                 if isinstance(namspaces, list) is False:
                     raise InvalidArgumentValueError('namespaces must be an array type')
+            if 'enableContainerLogV2' in dataCollectionSettings.keys():
+                enableContainerLogV2Value = dataCollectionSettings["enableContainerLogV2"]
+                if not isinstance(enableContainerLogV2Value, bool):
+                    raise InvalidArgumentValueError('enableContainerLogV2Value value MUST be either true or false')
             if 'streams' in dataCollectionSettings.keys():
                 streams = dataCollectionSettings["streams"]
                 if isinstance(streams, list) is False:
@@ -692,6 +710,7 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
         {
             "location": workspace_region,
             "tags": existing_tags,
+            "kind": "Linux",
             "properties": {
                 "dataSources": {
                     "extensions": [

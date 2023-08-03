@@ -64,15 +64,21 @@ def get_enable_mi_for_db_linker_func(yes=False):
         if target_handler is None:
             return None
 
-        user_object_id = auth_info.get('principal_id') if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserAccount] else None
+        user_object_id = auth_info.get(
+            'principal_id') if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserAccount] else auth_info.get("user_object_id")
         if user_object_id is None:
-            user_object_id = get_object_id_of_current_user()
-
-        if user_object_id is None:
-            e = Exception(
-                "No object id for current user {}".format(target_handler.login_username))
-            telemetry.set_exception(e, "No-User-Oid")
-            raise e
+            try:
+                user_object_id = get_object_id_of_current_user()
+            except CLIInternalError as e:
+                telemetry.set_exception(e, "No-User-Oid")
+                if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserAccount]:
+                    raise e
+                error_msg = "Unable to get current login user object id. "
+                if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserIdentity]:
+                    error_msg += "You can provide it via --user-identity user-object-id=xx"
+                if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.SystemIdentity]:
+                    error_msg += "You can provide it via --system-identity user-object-id=xx"
+                logger.warning(error_msg)
 
         target_handler.user_object_id = user_object_id
         if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.SystemIdentity]:
@@ -80,12 +86,15 @@ def get_enable_mi_for_db_linker_func(yes=False):
             source_object_id = source_handler.get_identity_pid()
             target_handler.identity_object_id = source_object_id
             try:
-                identity_info = run_cli_cmd(
-                    'az ad sp show --id {}'.format(source_object_id), 15, 10)
-                target_handler.identity_client_id = identity_info.get(
-                    'appId')
-                target_handler.identity_name = identity_info.get(
-                    'displayName')
+                if target_type in [RESOURCE.Sql]:
+                    target_handler.identity_name = source_handler.get_identity_name()
+                elif target_type in [RESOURCE.Postgres, RESOURCE.MysqlFlexible]:
+                    identity_info = run_cli_cmd(
+                        'az ad sp show --id {}'.format(source_object_id), 15, 10)
+                    target_handler.identity_client_id = identity_info.get(
+                        'appId')
+                    target_handler.identity_name = identity_info.get(
+                        'displayName')
             except CLIInternalError as e:
                 if 'AADSTS530003' in e.error_msg:
                     logger.warning(
@@ -271,6 +280,16 @@ class MysqlFlexibleHandler(TargetHandler):
             'az mysql flexible-server ad-admin list -g {} -s {} --subscription {}'.format(
                 self.resource_group, self.server, self.subscription)
         )
+        if not user_object_id:
+            if not admins:
+                e = ValidationError(
+                    'No AAD admin found. Please set current user as AAD admin and try again.')
+                telemetry.set_exception(e, "Missing-Aad-Admin")
+                raise e
+            else:
+                logger.warning(
+                    'Unable to check if current user is AAD admin. Please confirm current user as AAD admin manually.')
+                return
         is_admin = any(ad.get('sid') == user_object_id for ad in admins)
         if is_admin:
             return
@@ -335,7 +354,7 @@ class MysqlFlexibleHandler(TargetHandler):
                 'az mysql flexible-server show --ids {}'.format(self.target_id))
             if target.get('network').get('publicNetworkAccess') == "Disabled":
                 ex = AzureConnectionError(
-                    "The target resource doesn't allow public access. Connection can't be created.")
+                    "The target resource doesn't allow public access. Please enable it manually and try again.")
                 telemetry.set_exception(ex, "Public-Access-Disabled")
                 raise ex
             logger.warning("Add firewall rule %s %s - %s...%s", ip_name, start_ip, end_ip,
@@ -444,6 +463,16 @@ class SqlHandler(TargetHandler):
         # pylint: disable=not-an-iterable
         admins = run_cli_cmd(
             'az sql server ad-admin list --ids {}'.format(self.target_id))
+        if not user_object_id:
+            if not admins:
+                e = ValidationError(
+                    'No AAD admin found. Please set current user as AAD admin and try again.')
+                telemetry.set_exception(e, "Missing-Aad-Admin")
+                raise e
+            else:
+                logger.warning(
+                    'Unable to check if current user is AAD admin. Please confirm current user as AAD admin manually.')
+                return
         is_admin = any(ad.get('sid') == user_object_id for ad in admins)
         if not is_admin:
             logger.warning('Setting current user as database server AAD admin:'
@@ -610,13 +639,23 @@ class PostgresFlexHandler(TargetHandler):
             'az postgres flexible-server show --ids {}'.format(self.target_id))
         if target.get('authConfig').get('activeDirectoryAuth') == "Enabled":
             return
-        run_cli_cmd('az postgres flexible-server update -g {} -n {} --subscription {} --active-directory-auth Enabled'.format(
-            self.resource_group, self.db_server, self.subscription))
+        run_cli_cmd('az postgres flexible-server update --ids {} --active-directory-auth Enabled'.format(
+            self.target_id))
 
     def set_user_admin(self, user_object_id, **kwargs):
         admins = run_cli_cmd('az postgres flexible-server ad-admin list -g {} -s {} --subscription {}'.format(
             self.resource_group, self.db_server, self.subscription))
 
+        if not user_object_id:
+            if not admins:
+                e = ValidationError(
+                    'No AAD admin found. Please set current user as AAD admin and try again.')
+                telemetry.set_exception(e, "Missing-Aad-Admin")
+                raise e
+            else:
+                logger.warning(
+                    'Unable to check if current user is AAD admin. Please confirm current user as AAD admin manually.')
+                return
         is_admin = any(user_object_id in u.get("objectId", "") for u in admins)
         if is_admin:
             return
@@ -669,7 +708,7 @@ class PostgresFlexHandler(TargetHandler):
                 'az postgres flexible-server show --ids {}'.format(self.target_id))
             if target.get('network').get('publicNetworkAccess') == "Disabled":
                 ex = AzureConnectionError(
-                    "The target resource doesn't allow public access. Connection can't be created.")
+                    "The target resource doesn't allow public access. Please enable it manually and try again.")
                 telemetry.set_exception(ex, "Public-Access-Disabled")
                 raise ex
             logger.warning("Add firewall rule %s %s - %s...%s", ip_name, start_ip, end_ip,
@@ -776,6 +815,17 @@ class PostgresSingleHandler(PostgresFlexHandler):
         # pylint: disable=not-an-iterable
         admins = run_cli_cmd(
             'az postgres server ad-admin list --ids {}'.format(self.target_id))
+
+        if not user_object_id:
+            if not admins:
+                e = ValidationError(
+                    'No AAD admin found. Please set current user as AAD admin and try again.')
+                telemetry.set_exception(e, "Missing-Aad-Admin")
+                raise e
+            else:
+                logger.warning(
+                    'Unable to check if current user is AAD admin. Please confirm current user as AAD admin manually.')
+                return
         is_admin = any(ad.get('sid') == user_object_id for ad in admins)
         if not is_admin:
             logger.warning('Setting current user as database server AAD admin:'
@@ -867,6 +917,9 @@ class SourceHandler:
     def get_identity_pid(self):
         return
 
+    def get_identity_name(self):
+        return
+
 
 def output_is_none(output):
     return not output.stdout
@@ -878,6 +931,12 @@ class LocalHandler(SourceHandler):
 
 
 class SpringHandler(SourceHandler):
+    def get_identity_name(self):
+        segments = parse_resource_id(self.source_id)
+        spring = segments.get('name')
+        app = segments.get('child_name_1')
+        return '{}/apps/{}'.format(spring, app)
+
     def get_identity_pid(self):
         segments = parse_resource_id(self.source_id)
         sub = segments.get('subscription')
@@ -907,6 +966,11 @@ class SpringHandler(SourceHandler):
 
 
 class WebappHandler(SourceHandler):
+    def get_identity_name(self):
+        segments = parse_resource_id(self.source_id)
+        app_name = segments.get('name')
+        return app_name
+
     def get_identity_pid(self):
         logger.warning('Checking if WebApp enables System Identity...')
         identity = run_cli_cmd(
@@ -929,6 +993,11 @@ class WebappHandler(SourceHandler):
 
 
 class ContainerappHandler(SourceHandler):
+    def get_identity_name(self):
+        segments = parse_resource_id(self.source_id)
+        app_name = segments.get('name')
+        return app_name
+
     def get_identity_pid(self):
         logger.warning('Checking if Container App enables System Identity...')
         identity = run_cli_cmd(
