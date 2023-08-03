@@ -15,7 +15,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer,
                                JMESPathCheck, JMESPathCheckExists,
                                NoneCheck)
 
-TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..')).replace("\\", "/")
 
 
 class BlueprintScenarioTest(ScenarioTest):
@@ -27,7 +27,10 @@ class BlueprintScenarioTest(ScenarioTest):
             'subscription': self.get_subscription_id(),
             'assignmentName': self.create_random_name(prefix='Assignment-test-bp', length=24),
             'identityName': self.create_random_name(prefix='testid_', length=24),
-            'rgName': self.create_random_name(prefix='blueprint-rg-', length=24)
+            'rgName': self.create_random_name(prefix='blueprint-rg-', length=24),
+            'policy_filename': TEST_DIR+'/input/create/policy_params.json',
+            'blueprint_filename': TEST_DIR+'/input/create/blueprint_params.json',
+            'assignment_filename': TEST_DIR+'/input/create/assignment_params.json.json',
         })
 
         test_identity = self.cmd('az identity create '
@@ -94,7 +97,7 @@ class BlueprintScenarioTest(ScenarioTest):
             '--display-name "Audit Windows VMs in which the Administrators group does not contain only the specified members" '
             '--policy-definition-id "/providers/Microsoft.Authorization/policySetDefinitions/06122b01-688c-42a8-af2e-fa97dd39aa3b" '
             '--resource-group-art "myRgArt" '
-            '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/policy_params.json',
+            '--parameters {policy_filename}',
             checks=[JMESPathCheck('name', 'policy-audit-win-vm-art')])
 
         self.cmd(
@@ -111,7 +114,7 @@ class BlueprintScenarioTest(ScenarioTest):
         self.cmd(
             'az blueprint update '
             '--name "{blueprintName}" '
-            '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/blueprint_params.json',
+            '--parameters {blueprint_filename}',
             checks=[JMESPathCheckExists('parameters')])
 
         self.cmd(
@@ -131,7 +134,7 @@ class BlueprintScenarioTest(ScenarioTest):
                 '--blueprint-version "/subscriptions/{subscription}/providers/Microsoft.Blueprint/blueprints/{blueprintName}/versions/1.0" '
                 '--locks-mode "None" '
                 '--resource-group-value artifact_name=myRgArt name={rgName} location=westus2 '
-                '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/assignment_params.json',
+                '--parameters {assignment_filename}',
                 checks=[JMESPathCheckExists('identity.principalId')]).get_output_in_json()
 
         principal_id = assignment['identity']['principalId']
