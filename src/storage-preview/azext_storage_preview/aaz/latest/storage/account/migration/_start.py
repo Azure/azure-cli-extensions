@@ -76,7 +76,7 @@ class Start(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.target_sku_name = AAZStrArg(
-            options=["--target-sku-name"],
+            options=["--sku", "--target-sku-name"],
             arg_group="Properties",
             help="Target sku name for the account",
             required=True,
