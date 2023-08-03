@@ -1067,6 +1067,7 @@ def aks_agentpool_add(
     max_pods=0,
     zones=None,
     ppg=None,
+    vm_set_type=None,
     enable_encryption_at_host=False,
     enable_ultra_ssd=False,
     enable_fips_image=False,
