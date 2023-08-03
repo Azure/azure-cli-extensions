@@ -136,6 +136,9 @@ class Configuration(object):
         with open(os.path.join(self.config_dir, CONFIG_FILE_NAME), 'w') as config_file:
             self.config.write(config_file)
 
+    def get_boolean(self, section, option):
+        return self.BOOLEAN_STATES[self.config.get(section, option)]
+
 
 def ask_user_for_telemetry():
     """ asks the user for if we can collect telemetry """

@@ -214,9 +214,9 @@ class AzInteractiveShell(object):
         self._update_default_info()
 
         cli.buffers['description'].reset(
-            initial_document=Document(self.description_docs, cursor_position=0))
+            initial_document=Document(self._wrap_desc_param(self.description_docs, 3), cursor_position=0))
         cli.buffers['parameter'].reset(
-            initial_document=Document(self.param_docs))
+            initial_document=Document(self._wrap_desc_param(self.param_docs, 3)))
         cli.buffers['examples'].reset(
             initial_document=Document(self.example_docs))
         cli.buffers['default_values'].reset(
@@ -246,6 +246,44 @@ class AzInteractiveShell(object):
         self.cli.buffers['scenarios'].reset(
             initial_document=Document(u'{}'.format(scenarios_rec_info)))
         self.cli.request_redraw()
+
+    def _desc_param_buffer_width(self):
+        _, cols = get_window_dim()
+        # The rightmost column in window doesn't seem to be used
+        cols = int(cols) - 1
+        if self.config.get_boolean('Layout', 'command_description') \
+                and self.config.get_boolean('Layout', 'param_description'):
+            return (cols - 1) // 2
+        else:
+            return cols
+
+    def _wrap_desc_param(self, content, max_lines):
+        lines = []
+        width = self._desc_param_buffer_width()
+        for raw_line in content.split('\n'):
+            remains = raw_line
+            while len(lines) < max_lines:
+                if len(remains) <= width:
+                    lines.append(remains)
+                    break
+                elif len(remains) == width + 1:
+                    lines.append(remains[:width])
+                    lines.append(remains[width:])
+                    break
+                line = remains[:width+1]
+                if line[-1] == ' ':
+                    lines.append(line.strip())
+                    remains = remains[width+1:]
+                elif line[-2] == ' ':
+                    lines.append(line[:-2])
+                    remains = remains[width:]
+                elif line[-3] == ' ':
+                    lines.append(line[:-3])
+                    remains = remains[width-1:]
+                else:
+                    lines.append(line[:-2]+'-')
+                    remains = remains[width-1:]
+        return '\n'.join(lines[:max_lines])
 
     def _space_examples(self, list_examples, rows, section_value):
         """ makes the example text """
