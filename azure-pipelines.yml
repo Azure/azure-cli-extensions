@@ -81,6 +81,22 @@ jobs:
     - bash: python scripts/ci/source_code_static_analysis.py
       displayName: "Static Analysis"
 
+- job: StaticAnalysis v2
+  displayName: "Static Analysis v2"
+  pool:
+    name: 'pool-ubuntu-2004'
+  steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.10'
+      inputs:
+        versionSpec: 3.10
+    - template: .azure-pipelines/templates/azdev_setup.yml
+    - bash: |
+        set -ev
+        . env/bin/activate
+        azdev style
+      displayName: "Static Analysis"
+
 - job: IndexVerify
   displayName: "Verify Extensions Index"
   pool:
