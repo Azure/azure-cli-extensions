@@ -92,8 +92,9 @@ jobs:
         versionSpec: 3.10
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
+        #!/usr/bin/env bash
         set -ev
-        . env/bin/activate
+        source ./env/bin/activate
         azdev style
       displayName: "Static Analysis"
 
