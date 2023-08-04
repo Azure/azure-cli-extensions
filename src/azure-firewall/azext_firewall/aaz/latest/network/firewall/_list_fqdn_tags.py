@@ -1,3 +1,4 @@
+
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -24,6 +25,8 @@ class ListFqdnTags(AAZCommand):
             ["mgmt-plane", "/subscriptions/{}/providers/microsoft.network/azurefirewallfqdntags", "2022-01-01"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
