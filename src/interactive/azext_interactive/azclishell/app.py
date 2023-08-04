@@ -214,9 +214,9 @@ class AzInteractiveShell(object):
         self._update_default_info()
 
         cli.buffers['description'].reset(
-            initial_document=Document(self._wrap_desc_param(self.description_docs, 3), cursor_position=0))
+            initial_document=Document(self._wrap_desc_param(self.description_docs), cursor_position=0))
         cli.buffers['parameter'].reset(
-            initial_document=Document(self._wrap_desc_param(self.param_docs, 3)))
+            initial_document=Document(self._wrap_desc_param(self.param_docs)))
         cli.buffers['examples'].reset(
             initial_document=Document(self.example_docs))
         cli.buffers['default_values'].reset(
@@ -257,18 +257,16 @@ class AzInteractiveShell(object):
         else:
             return cols
 
-    def _wrap_desc_param(self, content, max_lines):
+    def _wrap_desc_param(self, content, max_lines=4):
         lines = []
         width = self._desc_param_buffer_width()
         for raw_line in content.split('\n'):
             remains = raw_line
             while len(lines) < max_lines:
+                if len(remains) <= 0:
+                    break
                 if len(remains) <= width:
                     lines.append(remains)
-                    break
-                elif len(remains) == width + 1:
-                    lines.append(remains[:width])
-                    lines.append(remains[width:])
                     break
                 line = remains[:width+1]
                 if line[-1] == ' ':
