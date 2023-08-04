@@ -888,7 +888,12 @@ class SiteRecoveryScenario(ScenarioTest):
         # create recovery vnet and network mappings
         # self.cmd('az network vnet create -g {rg} -n {vnet_recovery_name} -l {recovery_loc} --subnet-name MySubnet '
         #          '--subnet-prefix 10.0.0.0/24')
-        # self.cmd('az storage account create -g {rg} -n {storage_recovery_name} -l {recovery_loc} ')
+        # self.cmd('az storage account create -g {rg} -n {storage_recovery_name} -l {recovery_loc}')
+        storage_recovery_id = self.cmd('az storage account show -g {rg} '
+                                       '-n {storage_recovery_name}').get_output_in_json()["id"]
+        rg_id = self.cmd('az group show -n {rg}').get_output_in_json()["id"]
+        self.kwargs.update({"storage_recovery_id": storage_recovery_id, "rg_id": rg_id})
+
 
         # # list fabrics
         fabrics = self.cmd('az site-recovery fabric list -g {rg} --vault-name {vault_name}').get_output_in_json()
@@ -917,12 +922,15 @@ class SiteRecoveryScenario(ScenarioTest):
         #          '--provider-input {{hyper-v-replica-azure:{{}}}}')
 
         # create network mapping
+        vnet_source = self.cmd('az site-recovery network list -g {rg} --vault-name {vault_name} '
+                               '--fabric-name {fabric_source_name}').get_output_in_json()
         vnet_recovery = self.cmd('az network vnet show -g {rg} -n {vnet_recovery_name}').get_output_in_json()
-        self.kwargs.update({"vnet_recovery_id": vnet_recovery["id"]})
-        self.cmd('az site-recovery network mapping create -g {rg} --fabric-name {fabric_source_name} '
-                 '-n {network_mapping_src_to_recovery_name} --network-name corp --vault-name {vault_name} '
-                 '--recovery-network-id "{vnet_recovery_id}" '
-                 '--fabric-details {{vmm-to-azure:{{}}}}')
+        self.kwargs.update({"vnet_source_name": vnet_source[0]["name"],
+                            "vnet_recovery_id": vnet_recovery["id"]})
+        # self.cmd('az site-recovery network mapping create -g {rg} --fabric-name {fabric_source_name} '
+        #          '-n {network_mapping_src_to_recovery_name} --network-name {vnet_source_name} --vault-name {vault_name} '
+        #          '--recovery-network-id "{vnet_recovery_id}" '
+        #          '--fabric-details {{vmm-to-azure:{{}}}}')
 
         # get protectable_item name
         protectable_item_list = self.cmd('az site-recovery protectable-item list -g {rg} '
@@ -939,6 +947,28 @@ class SiteRecoveryScenario(ScenarioTest):
                                        '--protection-container {container_source_name} '
                                        '--vault-name {vault_name}').get_output_in_json()["id"]
         self.kwargs.update({"protectable_item_id": protectable_item_id})
+
+        # # enable protection
+        self.cmd('az site-recovery protected-item create -g {rg} '
+                 '--fabric-name {fabric_source_name} -n {protected_item_name} '
+                 '--protection-container {container_source_name} '
+                 '--vault-name {vault_name} --policy-id {policy_id} '
+                 '--protectable-item-id {protectable_item_id} '
+                 '--provider-details {{hyper-v-replica-azure:{{'
+                 'target-storage-account-id:{storage_recovery_id},'
+                 'target-azure-v2-resource-group-id:{rg_id},'
+                 'vm-name:{protectable_item_friendly_name}}}}}')
+
+        # wait for protection to fully enabled
+        # while True:
+        #     protected_item = self.cmd('az site-recovery protected-item show -g {rg} '
+        #                               '--fabric-name {fabric1_name} -n {protected_item_name} '
+        #                               '--protection-container {container1_name} '
+        #                               '--vault-name {vault_name}').get_output_in_json()
+        #     if protected_item["properties"]["protectionState"] == "Protected":
+        #         self.kwargs.update({"protected_item_id": protected_item["id"]})
+        #         break
+        #     time.sleep(300)
 
         # # reset subscription
         # self.cmd('az account set -n {cli_subscription}')
