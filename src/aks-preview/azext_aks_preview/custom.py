@@ -2586,7 +2586,7 @@ def aks_mesh_migration_check(cmd, client, resource_group_name, name, kubeconfig 
     kubernetes.config.load_kube_config(context = cur_context, config_file = kubeconfig)
     v1 = kubernetes.client.CoreV1Api()
 
-    
+
     aks_mesh_check_base_requirements(cmd, client, resource_group_name, name, v1)
     if aks_mesh_check_istio_existence(v1):
         istio_version, compatible_version = aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1)
@@ -2623,6 +2623,8 @@ def aks_mesh_check_istio_existence(v1):
 
 
 def aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1):
+    
+    from pprint import pprint
     cm = v1.list_config_map_for_all_namespaces()
     mesh_config = {}
     root_name_space = ''
@@ -2634,6 +2636,7 @@ def aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1)
     for item in cm.items:
         if (item.data and 'mesh' in item.data):
             mesh_config = yaml.safe_load(item.data['mesh'])
+            root_name_space = mesh_config['rootNamespace']
             try:
                 #NOTE: This label contains version info only on non-helm installation of OSS Istio
                 istio_version = item.metadata.labels['operator.istio.io/version']
@@ -2661,9 +2664,24 @@ def aks_mesh_check_mesh_proxy_config(cmd, client, resource_group_name, name, v1)
             'status': True,
             'message': "Supported Istio version found."
         }
+        
+        
+    try: 
+        secret = v1.read_namespaced_secret("cacerts", root_name_space)
+        result_dict['Certificate check'] = {
+            'status': False,
+            'message': "Bringing your own certificate is not supported."
+        }
+    except Exception:
+        result_dict['Certificate check'] = {
+            'status': True,
+            'message': "No custom certificates detected"
+        }
     
     if len(mesh_config) != 0:
         proxy_config = mesh_config['defaultConfig']
+        
+    
     if compatible_version:
         check_config(mesh_config, MESH_CONFIG_ALLOW_LIST, istio_version, "Meshconfig")
         check_config(proxy_config, PROXY_CONFIG_ALLOW_LIST, istio_version, "Proxyconfig")
@@ -2763,6 +2781,7 @@ def aks_mesh_check_crds(cr_name, cr_values_map, instance, istio_version):
     
     #EnvoyFilter and IstioOperator CR are expected to exist by default on instioctl installation
     if cr_name == 'IstioOperator':
+        # TODO: Differentiate between user installed istiooperator configurations and those at installation
         # for item in crd_response['items']:
         #     if item['metadata']['name'] != "installed-state":
         #         return False
