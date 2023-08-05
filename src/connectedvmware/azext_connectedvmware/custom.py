@@ -111,7 +111,6 @@ from .vendored_sdks.hybridcompute.operations import (
 
 from ._client_factory import (
     cf_machine,
-    cf_vcenter,
     cf_virtual_machine_instance,
 )
 
@@ -792,7 +791,7 @@ def create_vm(
             raise CLIError(
                 "Placement input cannot be provided together with inventory_item."
             )
-        
+
         if not is_valid_resource_id(inventory_item) and not vcenter:
             raise CLIError(
                 "Cannot determine inventory item ID. " +
