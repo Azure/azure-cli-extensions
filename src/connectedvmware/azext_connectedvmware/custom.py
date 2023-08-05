@@ -5,14 +5,16 @@
 # pylint: disable= too-many-lines, too-many-locals, unused-argument, too-many-branches, too-many-statements
 # pylint: disable= consider-using-dict-items, consider-using-f-string
 
+from azure.cli.command_modules.acs._client_factory import get_resources_client
 from azure.cli.core.util import sdk_no_wait
 from azure.core.exceptions import ResourceNotFoundError  # type: ignore
 from knack.util import CLIError
+from msrestazure.tools import is_valid_resource_id
 
 from .pwinput import pwinput
 from .vmware_utils import get_resource_id
 from .vmware_constants import (
-    MACHINES_KIND_VMWARE,
+    VCENTER_KIND_GET_API_VERSION,
     MACHINES_RESOURCE_TYPE,
     VMWARE_NAMESPACE,
     VCENTER_RESOURCE_TYPE,
@@ -109,6 +111,7 @@ from .vendored_sdks.hybridcompute.operations import (
 
 from ._client_factory import (
     cf_machine,
+    cf_vcenter,
     cf_virtual_machine_instance,
 )
 
@@ -789,6 +792,12 @@ def create_vm(
             raise CLIError(
                 "Placement input cannot be provided together with inventory_item."
             )
+        
+        if not is_valid_resource_id(inventory_item) and not vcenter:
+            raise CLIError(
+                "Cannot determine inventory item ID. " +
+                "vCenter name or ID is required when inventory item name is specified."
+            )
 
     hardware_profile = None
     os_profile = None
@@ -856,6 +865,8 @@ def create_vm(
             INVENTORY_ITEM_TYPE,
             inventory_item,
         )
+
+        vcenter_id = "/".join(inventory_item_id.rstrip("/").split("/")[:-2])
 
         infrastructure_profile = InfrastructureProfile(
             inventory_item_id=inventory_item_id,
@@ -935,16 +946,27 @@ def create_vm(
         infrastructure_profile=infrastructure_profile,
     )
 
+    # The subscription of the vCenter can be different from the machine resource.
+    # There was no straightforward way to change the subscription for vcenter client factory.
+    # Hence using the generic get client.
+    vcenter_sub = vcenter_id.split("/")[2]
+    resources_client = get_resources_client(cmd.cli_ctx, vcenter_sub)
+    vcenter = resources_client.get_by_id(vcenter_id, VCENTER_KIND_GET_API_VERSION)
+
     machine_client = cf_machine(cmd.cli_ctx)
     machine = None
     try:
         machine = machine_client.get(resource_group_name, resource_name)
+        if machine.kind != vcenter.kind:
+            raise CLIError(
+                "The existing Machine resource is not of the same kind as the vCenter. " +
+                f"Machine kind: {machine.kind}, vCenter kind: {vcenter.kind}"
+            )
         if location is not None and machine.location != location:
             raise CLIError(
                 "The location of the existing Machine cannot be updated. " +
                 "Either specify the existing location or keep the location unspecified. " +
-                f"Existing location: {machine.location}, " +
-                f"Provided location: {location}"
+                f"Existing location: {machine.location}, Provided location: {location}"
             )
         if tags is not None:
             m = MachineUpdate(
@@ -959,7 +981,7 @@ def create_vm(
             ) from e
         m = Machine(
             location=location,
-            kind=MACHINES_KIND_VMWARE,
+            kind=vcenter.kind,
             tags=tags,
         )
         machine = machine_client.create_or_update(resource_group_name, resource_name, m)
