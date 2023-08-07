@@ -258,30 +258,9 @@ class AzInteractiveShell(object):
             return cols
 
     def _wrap_desc_param(self, content, max_lines=4):
-        lines = []
         width = self._desc_param_buffer_width()
-        for raw_line in content.split('\n'):
-            remains = raw_line
-            while len(lines) < max_lines:
-                if len(remains) <= 0:
-                    break
-                if len(remains) <= width:
-                    lines.append(remains)
-                    break
-                line = remains[:width+1]
-                if line[-1] == ' ':
-                    lines.append(line.strip())
-                    remains = remains[width+1:]
-                elif line[-2] == ' ':
-                    lines.append(line[:-2])
-                    remains = remains[width:]
-                elif line[-3] == ' ':
-                    lines.append(line[:-3])
-                    remains = remains[width-1:]
-                else:
-                    lines.append(line[:-2]+'-')
-                    remains = remains[width-1:]
-        return '\n'.join(lines[:max_lines])
+        from textwrap import fill
+        return fill(content, width=width, max_lines=max_lines, placeholder='...')
 
     def _space_examples(self, list_examples, rows, section_value):
         """ makes the example text """
@@ -319,17 +298,13 @@ class AzInteractiveShell(object):
         cols = int(cols) - 1
 
         from .configuration import GESTURE_INFO, GESTURE_LENGTH
-        info_width = cols - GESTURE_LENGTH - 2
+        from textwrap import fill
+        lines = []
+        for key in GESTURE_INFO:
+            lines.append(fill(GESTURE_INFO[key], initial_indent=key.ljust(GESTURE_LENGTH) + ': ',
+                              subsequent_indent=' ' * (GESTURE_LENGTH + 2), width=cols, max_lines=2,
+                              placeholder='...'))
 
-        def add_ellip(info):
-            if info_width <= 0:
-                return ''
-            elif len(info) <= info_width:
-                return info
-            else:
-                return info[:info_width-3]+'...'
-
-        lines = ['{}: {}'.format(key.ljust(GESTURE_LENGTH), add_ellip(GESTURE_INFO[key])) for key in GESTURE_INFO]
         self.cli.buffers['symbols'].reset(initial_document=Document(u'{}'.format('\n'.join(lines))))
 
     def _update_toolbar(self):
