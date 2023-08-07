@@ -8,7 +8,7 @@ import re
 from datetime import datetime
 from azure.cli.testsdk.preparers import (
     NoTrafficRecordingPreparer,
-    ResourceGroupPreparer
+    ResourceGroupPreparer,
 )
 from azure.cli.testsdk.scenario_tests import (
     SingleValueReplacer,

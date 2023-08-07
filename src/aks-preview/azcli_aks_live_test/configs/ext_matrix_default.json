@@ -23,16 +23,8 @@
         "gpu, no quota": [
             "test_aks_nodepool_add_with_gpu_instance_profile"
         ],
-        "monitoring addon, missing namespace registration": [
-            "test_aks_update_with_azuremonitormetrics"
-        ],
         "overlay migration, missing toggle": [
             "test_aks_azure_cni_overlay_migration"
-        ],
-        "pod identity, missing feature registration": [
-            "test_aks_create_with_pod_identity_enabled",
-            "test_aks_create_using_azurecni_with_pod_identity_enabled",
-            "test_aks_pod_identity_usage"
         ],
         "service mesh, missing feature registration": [
             "test_aks_azure_service_mesh_enable_disable",
@@ -44,6 +36,10 @@
         "trusted access role, waiting GA": [
             "test_get_trustedaccess_roles",
             "test_aks_trustedaccess_rolebinding"
+        ],
+        "v2 monitoring addon, missing namespace registration": [
+            "test_aks_create_with_azuremonitormetrics",
+            "test_aks_update_with_azuremonitormetrics"
         ],
         "workload runtime, missing feature registration": [
             "test_aks_nodepool_add_with_workload_runtime"

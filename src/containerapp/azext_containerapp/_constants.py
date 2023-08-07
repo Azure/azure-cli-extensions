@@ -2,6 +2,10 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+MANAGED_ENVIRONMENT_TYPE = "managed"
+CONNECTED_ENVIRONMENT_TYPE = "connected"
+MANAGED_ENVIRONMENT_RESOURCE_TYPE = "managedEnvironments"
+CONNECTED_ENVIRONMENT_RESOURCE_TYPE = "connectedEnvironments"
 
 MAXIMUM_SECRET_LENGTH = 20
 MAXIMUM_CONTAINER_APP_NAME_LENGTH = 32
@@ -11,11 +15,32 @@ LONG_POLLING_INTERVAL_SECS = 10
 
 ACR_IMAGE_SUFFIX = ".azurecr.io"
 
+CONTAINER_APPS_SDK_MODELS = "azext_containerapp._sdk_models"
+
 LOG_ANALYTICS_RP = "Microsoft.OperationalInsights"
 CONTAINER_APPS_RP = "Microsoft.App"
+SERVICE_LINKER_RP = "Microsoft.ServiceLinker"
 
 MANAGED_CERTIFICATE_RT = "managedCertificates"
 PRIVATE_CERTIFICATE_RT = "certificates"
+
+DEV_SERVICE_LIST = ["kafka", "postgres", "redis", "mariadb"]
+
+DEV_KAFKA_IMAGE = 'kafka'
+DEV_KAFKA_SERVICE_TYPE = 'kafka'
+DEV_KAFKA_CONTAINER_NAME = 'kafka'
+
+DEV_POSTGRES_IMAGE = 'postgres'
+DEV_POSTGRES_SERVICE_TYPE = 'postgres'
+DEV_POSTGRES_CONTAINER_NAME = 'postgres'
+
+DEV_REDIS_IMAGE = 'redis'
+DEV_REDIS_SERVICE_TYPE = 'redis'
+DEV_REDIS_CONTAINER_NAME = 'redis'
+
+DEV_MARIADB_IMAGE = 'mariadb'
+DEV_MARIADB_SERVICE_TYPE = 'mariadb'
+DEV_MARIADB_CONTAINER_NAME = 'mariadb'
 
 PENDING_STATUS = "Pending"
 SUCCEEDED_STATUS = "Succeeded"
@@ -49,6 +74,6 @@ steps:
 """
 DEFAULT_PORT = 8080  # used for no dockerfile scenario; not the hello world image
 
-HELLO_WORLD_IMAGE = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+HELLO_WORLD_IMAGE = "mcr.microsoft.com/k8se/quickstart:latest"
 
 LOGS_STRING = '[{"category":"ContainerAppConsoleLogs","categoryGroup":null,"enabled":true,"retentionPolicy":{"days":0,"enabled":false}},{"category":"ContainerAppSystemLogs","categoryGroup":null,"enabled":true,"retentionPolicy":{"days":0,"enabled":false}}]'  # pylint: disable=line-too-long

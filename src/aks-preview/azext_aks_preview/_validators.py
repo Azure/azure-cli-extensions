@@ -12,6 +12,17 @@ from ipaddress import ip_network
 from math import isclose, isnan
 
 import azure.cli.core.keys as keys
+from azext_aks_preview._consts import (
+    ADDONS,
+    CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
+    CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
+    CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
+    CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
+    CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_CBLMARINER,
+    CONST_OS_SKU_MARINER,
+)
+from azext_aks_preview._helpers import _fuzzy_match
 from azure.cli.core.azclierror import (
     ArgumentUsageError,
     InvalidArgumentValueError,
@@ -21,17 +32,6 @@ from azure.cli.core.azclierror import (
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 from knack.log import get_logger
-
-from azext_aks_preview._consts import (
-    ADDONS,
-    CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
-    CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
-    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
-    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
-    CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
-    CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
-)
-from azext_aks_preview._helpers import _fuzzy_match
 
 logger = get_logger(__name__)
 
@@ -186,9 +186,10 @@ def validate_vm_set_type(namespace):
         if namespace.vm_set_type == '':
             return
         if namespace.vm_set_type.lower() != "availabilityset" and \
+            namespace.vm_set_type.lower() != "virtualmachines" and \
                 namespace.vm_set_type.lower() != "virtualmachinescalesets":
             raise CLIError(
-                "--vm-set-type can only be VirtualMachineScaleSets or AvailabilitySet")
+                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only)")
 
 
 def validate_load_balancer_sku(namespace):
@@ -229,19 +230,32 @@ def validate_load_balancer_outbound_ip_prefixes(namespace):
                 "--load-balancer-outbound-ip-prefixes cannot contain whitespace")
 
 
-def validate_taints(namespace):
+def validate_nodepool_taints(namespace):
+    """Validates that provided node taints is a valid format"""
+
+    if hasattr(namespace, 'nodepool_taints'):
+        taintsStr = namespace.nodepool_taints
+    else:
+        taintsStr = namespace.node_taints
+
+    if taintsStr is None or taintsStr == '':
+        return
+
+    for taint in taintsStr.split(','):
+        validate_taint(taint)
+
+
+def validate_taint(taint):
     """Validates that provided taint is a valid format"""
 
     regex = re.compile(
         r"^[a-zA-Z\d][\w\-\.\/]{0,252}=[a-zA-Z\d][\w\-\.]{0,62}:(NoSchedule|PreferNoSchedule|NoExecute)$")  # pylint: disable=line-too-long
 
-    if namespace.node_taints is not None and namespace.node_taints != '':
-        for taint in namespace.node_taints.split(','):
-            if taint == "":
-                continue
-            found = regex.findall(taint)
-            if not found:
-                raise CLIError('Invalid node taint: %s' % taint)
+    if taint == "":
+        return
+    found = regex.findall(taint)
+    if not found:
+        raise ArgumentUsageError('Invalid node taint: %s' % taint)
 
 
 def validate_priority(namespace):
@@ -729,63 +743,6 @@ def validate_grafanaresourceid(namespace):
         raise ArgumentUsageError("--grafana-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.dashboard/grafana/<resourceName>`")
 
 
-def validate_ksm_parameter(ksmparam):
-    labelValueMap = {}
-    ksmStrLength = len(ksmparam)
-    EOF = -1
-    next = ""
-    name = ""
-    firstWordPos = 0
-    for i, v in enumerate(ksmparam):
-        if i + 1 == ksmStrLength:
-            next = EOF
-        else:
-            next = ord(ksmparam[i + 1])
-        if i - 1 >= 0:
-            previous = ord(ksmparam[i - 1])
-        else:
-            previous = v
-        if v == "=":
-            if previous == ord(",") or next != ord("["):
-                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-            name = ksmparam[firstWordPos:i]
-            labelValueMap[name] = []
-            firstWordPos = i + 1
-        elif v == "[":
-            if previous != ord("="):
-                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-            firstWordPos = i + 1
-        elif v == "]":
-            # if after metric group, has char not comma or end.
-            if next != EOF and next != ord(","):
-                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-            if previous != ord("["):
-                labelValueMap[name].append(ksmparam[firstWordPos:i])
-            firstWordPos = i + 1
-        elif v == ",":
-            # if starts or ends with comma
-            if previous == v or next == EOF or next == ord("]"):
-                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-            if previous != ord("]"):
-                labelValueMap[name].append(ksmparam[firstWordPos:i])
-            firstWordPos = i + 1
-    for label in labelValueMap:
-        if (bool(re.match(r'^[a-zA-Z_][A-Za-z0-9_]+$', label))) is False:
-            raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-
-
-def validate_ksm_labels(namespace):
-    if namespace.ksm_metric_labels_allow_list is None:
-        return
-    validate_ksm_parameter(namespace.ksm_metric_labels_allow_list)
-
-
-def validate_ksm_annotations(namespace):
-    if namespace.ksm_metric_annotations_allow_list is None:
-        return
-    validate_ksm_parameter(namespace.ksm_metric_annotations_allow_list)
-
-
 def validate_allowed_host_ports(namespace):
     if hasattr(namespace, "nodepool_allowed_host_ports"):
         host_ports = namespace.nodepool_allowed_host_ports
@@ -846,3 +803,17 @@ def validate_start_time(namespace):
     found = start_time_regex.findall(namespace.start_time)
     if not found:
         raise InvalidArgumentValueError('--start-time must be in format "HH:mm". For example, "09:30" and "17:00".')
+
+
+def validate_os_sku(namespace):
+    os_sku = namespace.os_sku
+    if os_sku in [CONST_OS_SKU_MARINER, CONST_OS_SKU_CBLMARINER]:
+        logger.warning(
+            'The osSKU "%s" should be used going forward instead of "%s" or "%s". '
+            'The osSKUs "%s" and "%s" will eventually be deprecated.',
+            CONST_OS_SKU_AZURELINUX,
+            CONST_OS_SKU_CBLMARINER,
+            CONST_OS_SKU_MARINER,
+            CONST_OS_SKU_CBLMARINER,
+            CONST_OS_SKU_MARINER,
+        )

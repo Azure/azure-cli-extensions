@@ -31,6 +31,8 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ContinuousTier
 )
 
+from azure.cli.core.util import shell_safe_json_parse
+
 from azure.cli.core.commands.parameters import (
     tags_type, get_resource_name_completion_list, name_type, get_enum_type, get_three_state_flag, get_location_type)
 
@@ -41,7 +43,8 @@ from azure.cli.command_modules.cosmosdb.actions import (
     CreateLocation, CreateDatabaseRestoreResource, UtcDatetimeAction)
 
 from azure.cli.command_modules.cosmosdb._validators import (
-    validate_capabilities, validate_virtual_network_rules, validate_ip_range_filter)
+    validate_capabilities, validate_virtual_network_rules, validate_ip_range_filter,
+    validate_client_encryption_policy)
 
 
 MONGO_ROLE_DEFINITION_EXAMPLE = """--body "{
@@ -62,6 +65,35 @@ MONGO_USER_DEFINITION_EXAMPLE = """--body "{
 \\"Mechanisms\\": \\"SCRAM-SHA-256\\"
 \\"DatabaseName\\": \\"MyDb\\",
 \\"Roles\\": [ {\\"Role\\": \\"myReadRole\\",\\"Db\\": \\"MyDb\\"}]
+}"
+"""
+
+SQL_MATERIALIZEDVIEW_DEFINITION_EXAMPLE = """--materialized-view-definition -m '{
+    \"sourceCollectionId\": \"MySourceCollectionName\",
+    \"definition\": \"SELECT * FROM root r\"}'
+"""
+
+SQL_GREMLIN_INDEXING_POLICY_EXAMPLE = """--idx "{
+    \\"indexingMode\\": \\"consistent\\",
+    \\"automatic\\": true,
+    \\"includedPaths\\": [{\\"path\\": \\"/*\\"}],
+    \\"excludedPaths\\": [{ \\"path\\": \\"/headquarters/employees/?\\"}, { \\"path\\": \\"/\\\\"_etag\\\\"/?\\"}]
+}"
+"""
+
+SQL_UNIQUE_KEY_POLICY_EXAMPLE = """--unique-key-policy "{
+    \\"uniqueKeys\\": [{\\"paths\\": [\\"/path/to/key1\\"]}, {\\"paths\\": [\\"/path/to/key2\\"]}]
+}"
+"""
+
+SQL_CLIENT_ENCRYPTION_POLICY_EXAMPLE = """--cep "{
+    \\"includedPaths\\": [{\\"path\\": \\"/path1\\",\\"clientEncryptionKeyId\\": \\"key1\\",\\"encryptionAlgorithm\\": \\"AEAD_AES_256_CBC_HMAC_SHA256\\",\\"encryptionType\\": \\"Deterministic\\"}],
+    \\"policyFormatVersion\\": 2}"
+"""
+
+SQL_GREMLIN_CONFLICT_RESOLUTION_POLICY_EXAMPLE = """--conflict-resolution-policy "{
+    \\"mode\\": \\"lastWriterWins\\",
+    \\"conflictResolutionPath\\": \\"/path\\"
 }"
 """
 
@@ -153,6 +185,80 @@ def load_arguments(self, _):
     with self.argument_context('managed-cassandra datacenter list') as c:
         c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
 
+    # Mongo Cluster
+    with self.argument_context('cosmosdb mongocluster') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
+        c.argument('location', options_list=['--location', '-l'], help="Azure Location of the Cluster", required=True)
+
+    with self.argument_context('cosmosdb mongocluster create') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
+        c.argument('location', options_list=['--location', '-l'], help="Azure Location of the Cluster", required=True)
+        c.argument('tags', arg_type=tags_type)
+        c.argument('administrator_login', options_list=['--administrator-login', '-a'], help="The initial administrator user to be configured when a cluster is created", required=True)
+        c.argument('administrator_login_password', options_list=['--administrator-login-password', '-p'], help="The initial administrator password to be configured when a cluster is created", required=True)
+        c.argument('server_version', options_list=['--server-version'], help="The server version of the mongo cluster", required=True)
+        c.argument('shard_node_tier', options_list=['--shard-node-tier'], help="The node tier for mongo cluster.", required=True, arg_group='Shard')
+        c.argument('shard_node_ha', arg_type=get_three_state_flag(), options_list=['--shard-node-ha'], help="If enabled the cluster has HA.", required=True, arg_group='Shard')
+        c.argument('shard_node_disk_size_gb', options_list=['--shard-node-disk-size-gb', '-d'], help="The node disk size for mongo cluster.", required=True, arg_group='Shard')
+        c.argument('shard_node_count', options_list=['--shard-node-count'], help="The node count for mongo cluster.", required=True, arg_group='Shard')
+
+    with self.argument_context('cosmosdb mongocluster update') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
+        c.argument('tags', arg_type=tags_type)
+        c.argument('location', options_list=['--location', '-l'], help="Azure Location of the Cluster", required=True)
+        c.argument('administrator_login', options_list=['--administrator-login', '-a'], help="The initial administrator user to be configured when a cluster is created")
+        c.argument('administrator_login_password', options_list=['--administrator-login-password', '-p'], help="The initial administrator password to be configured when a cluster is created")
+        c.argument('server_version', options_list=['--server-version'], help="The server version of the mongo cluster")
+        c.argument('shard_node_tier', options_list=['--shard-node-tier'], help="The node tier for mongo cluster.", arg_group='Shard')
+        c.argument('shard_node_ha', arg_type=get_three_state_flag(), options_list=['--shard-node-ha'], help="If enabled the cluster has HA.", arg_group='Shard')
+        c.argument('shard_node_disk_size_gb', options_list=['--shard-node-disk-size-gb', '-d'], help="The node disk size for mongo cluster.", arg_group='Shard')
+
+    with self.argument_context('cosmosdb mongocluster list') as c:
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.')
+
+    with self.argument_context('cosmosdb mongocluster show') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', required=True)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', required=True)
+
+    with self.argument_context('cosmosdb mongocluster delete') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
+
+    with self.argument_context('cosmosdb mongocluster firewall rule') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
+
+    with self.argument_context('cosmosdb mongocluster firewall rule create') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
+        c.argument('rule_name', options_list=['--rule-name'], help="Name of the firewall rule.", required=True)
+        c.argument('start_ip_address', options_list=['--start-ip-address'], help="Start IP address of the firewall rule", required=True)
+        c.argument('end_ip_address', options_list=['--end-ip-address'], help="End IP address of the firewall rule", required=True)
+
+    with self.argument_context('cosmosdb mongocluster firewall rule update') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
+        c.argument('rule_name', options_list=['--rule-name'], help="Name of the firewall rule.", required=True)
+        c.argument('start_ip_address', options_list=['--start-ip-address'], help="Start IP address of the firewall rule")
+        c.argument('end_ip_address', options_list=['--end-ip-address'], help="End IP address of the firewall rule")
+
+    with self.argument_context('cosmosdb mongocluster firewall rule list') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', required=True)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', required=True)
+
+    with self.argument_context('cosmosdb mongocluster firewall rule show') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', required=True)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', required=True)
+        c.argument('rule_name', options_list=['--rule-name'], help="Name of the firewall rule.", required=True)
+
+    with self.argument_context('cosmosdb mongocluster firewall rule delete') as c:
+        c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
+        c.argument('resource_group', completer=None, options_list=['--resource-group', '-g'], help='Name of the resource group of mongo cluster.', id_part=None)
+        c.argument('rule_name', options_list=['--rule-name'], help="Name of the firewall rule.", required=True)
+
     # Services
     with self.argument_context('cosmosdb service') as c:
         c.argument('account_name', completer=None, options_list=['--account-name', '-a'], help='Name of the Cosmos DB database account.', id_part=None)
@@ -223,17 +329,20 @@ def load_arguments(self, _):
             c.argument('backup_policy_type', arg_type=get_enum_type(BackupPolicyType), help="The type of backup policy of the account to create", arg_group='Backup Policy')
             c.argument('continuous_tier', arg_type=get_enum_type(ContinuousTier), help="The tier of Continuous backup", arg_group='Backup Policy')
             c.argument('enable_materialized_views', options_list=['--enable-materialized-views', '--enable-mv'], arg_type=get_three_state_flag(), help="Flag to enable MaterializedViews on the account.", is_preview=True)
+            c.argument('enable_burst_capacity', arg_type=get_three_state_flag(), help="Flag to enable burst capacity on the account.", is_preview=True)
 
     with self.argument_context('cosmosdb restore') as c:
         c.argument('target_database_account_name', options_list=['--target-database-account-name', '-n'], help='Name of the new target Cosmos DB database account after the restore')
         c.argument('account_name', completer=None, options_list=['--account-name', '-a'], help='Name of the source Cosmos DB database account for the restore', id_part=None)
         c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the account has to be restored to.")
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), help="The location of the source account from which restore is triggered. This will also be the write region of the restored account")
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), help="This is the write region of the restored account. This is also the location of the source account where its backups are located if source_backup_location is not provided.")
         c.argument('databases_to_restore', nargs='+', action=CreateDatabaseRestoreResource)
         c.argument('gremlin_databases_to_restore', nargs='+', action=CreateGremlinDatabaseRestoreResource, is_preview=True)
         c.argument('tables_to_restore', nargs='+', action=CreateTableRestoreResource, is_preview=True)
         c.argument('assign_identity', nargs='*', help="Assign system or user assigned identities separated by spaces. Use '[system]' to refer system assigned identity.", is_preview=True)
         c.argument('default_identity', help="The primary identity to access key vault in CMK related features. e.g. 'FirstPartyIdentity', 'SystemAssignedIdentity' and more.", is_preview=True)
+        c.argument('enable_public_network', options_list=['--enable-public-network', '-e'], arg_type=get_three_state_flag(), help="Enable or disable public network access to server.", is_preview=True)
+        c.argument('source_backup_location', help="This is the location of the source account where backups are located. Provide this value if the source and target are in different locations.", is_preview=True)
 
     # Restorable Database Accounts
     with self.argument_context('cosmosdb restorable-database-account show') as c:
@@ -330,6 +439,26 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('job_name', options_list=['--job-name', '-n'], help='Name of the Data Transfer Job.')
 
+    max_throughput_type = CLIArgumentType(options_list=['--max-throughput'], help='The maximum throughput resource can scale to (RU/s). Provided when the resource is autoscale enabled. The minimum value can be 4000 (RU/s)')
+
+
+# SQL container
+    with self.argument_context('cosmosdb sql container') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('database_name', database_name_type)
+        c.argument('container_name', options_list=['--name', '-n'], help="Container name")
+        c.argument('partition_key_path', options_list=['--partition-key-path', '-p'], help='Partition Key Path, e.g., \'/address/zipcode\'')
+        c.argument('partition_key_version', type=int, options_list=['--partition-key-version'], help='The version of partition key.')
+        c.argument('default_ttl', options_list=['--ttl'], type=int, help='Default TTL. If the value is missing or set to "-1", items don’t expire. If the value is set to "n", items will expire "n" seconds after last modified time.')
+        c.argument('indexing_policy', options_list=['--idx'], type=shell_safe_json_parse, completer=FilesCompleter(), help='Indexing Policy, you can enter it as a string or as a file, e.g., --idx @policy-file.json or ' + SQL_GREMLIN_INDEXING_POLICY_EXAMPLE)
+        c.argument('client_encryption_policy', options_list=['--cep'], type=shell_safe_json_parse, completer=FilesCompleter(), validator=validate_client_encryption_policy, help='Client Encryption Policy, you can enter it as a string or as a file, e.g., --cep @policy-file.json or ' + SQL_CLIENT_ENCRYPTION_POLICY_EXAMPLE)
+        c.argument('unique_key_policy', options_list=['--unique-key-policy', '-u'], type=shell_safe_json_parse, completer=FilesCompleter(), help='Unique Key Policy, you can enter it as a string or as a file, e.g., --unique-key-policy @policy-file.json or ' + SQL_UNIQUE_KEY_POLICY_EXAMPLE)
+        c.argument('conflict_resolution_policy', options_list=['--conflict-resolution-policy', '-c'], type=shell_safe_json_parse, completer=FilesCompleter(), help='Conflict Resolution Policy, you can enter it as a string or as a file, e.g., --conflict-resolution-policy @policy-file.json or ' + SQL_GREMLIN_CONFLICT_RESOLUTION_POLICY_EXAMPLE)
+        c.argument('max_throughput', max_throughput_type)
+        c.argument('throughput', help='The throughput of SQL container (RU/s). Default value is 400. Omit this parameter if the database has shared throughput unless the container should have dedicated throughput.')
+        c.argument('analytical_storage_ttl', options_list=['--analytical-storage-ttl', '-t'], type=int, help='Analytical TTL, when analytical storage is enabled.')
+        c.argument('materialized_view_definition', options_list=['--materialized-view-definition', '-m'], type=shell_safe_json_parse, help='Materialized View Definition, you can enter it as a string or as a file, e.g., --materialized-view-definition @materializedview-definition-file.json or ' + SQL_MATERIALIZEDVIEW_DEFINITION_EXAMPLE)
+
     # Sql container partition merge
     database_name_type = CLIArgumentType(options_list=['--database-name', '-d'], help='Database name.')
     with self.argument_context('cosmosdb sql container merge') as c:
@@ -342,6 +471,16 @@ def load_arguments(self, _):
         c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
         c.argument('database_name', database_name_type, required=True, help='Name of the mongoDB database')
         c.argument('container_name', options_list=['--name', '-n'], required=True, help='Name of the mongoDB collection')
+
+    # Sql database partition merge
+    with self.argument_context('cosmosdb sql database merge') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
+        c.argument('database_name', options_list=['--name', '-n'], required=True, help='Name of the CosmosDB database name')
+
+    # mongodb database partition merge
+    with self.argument_context('cosmosdb mongodb database merge') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True, help='Name of the CosmosDB database account')
+        c.argument('database_name', options_list=['--name', '-n'], required=True, help='Name of the mongoDB database')
 
     # Sql container partition retrieve throughput
     with self.argument_context('cosmosdb sql container retrieve-partition-throughput') as c:
@@ -402,3 +541,22 @@ def load_arguments(self, _):
         c.argument('database_name', database_name_type, required=True)
         c.argument('collection_name', options_list=['--name', '-n'], help="Collection name", required=True)
         c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the collection needs to be restored to.", required=True)
+
+    # Gremlin database restore
+    with self.argument_context('cosmosdb gremlin database restore') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True)
+        c.argument('database_name', options_list=['--name', '-n'], help="Name of the CosmosDB Gremlin database name", required=True)
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the database needs to be restored to.", required=True)
+
+    # Gremlin Graph restore
+    with self.argument_context('cosmosdb gremlin graph restore') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True)
+        c.argument('database_name', database_name_type, required=True, help='Name of the CosmosDB Gremlin database name')
+        c.argument('graph_name', options_list=['--name', '-n'], help="Name of the CosmosDB Gremlin graph name", required=True)
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the graph needs to be restored to.", required=True)
+
+    # Table restore
+    with self.argument_context('cosmosdb table restore') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True)
+        c.argument('table_name', options_list=['--table-name', '-n'], required=True, help='Name of the CosmosDB Table name')
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the Table needs to be restored to.", required=True)

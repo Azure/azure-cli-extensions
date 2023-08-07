@@ -48,13 +48,11 @@ class Create(AAZCommand):
             options=["--perimeter-name"],
             help="The name of the network security perimeter.",
             required=True,
-            id_part="name",
         )
         _args_schema.profile_name = AAZStrArg(
             options=["-n", "--name", "--profile-name"],
             help="The name of the NSP profile.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -81,7 +79,17 @@ class Create(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.NspProfilesCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -208,11 +216,19 @@ class Create(AAZCommand):
                 serialized_name="accessRulesVersion",
                 flags={"read_only": True},
             )
+            properties.diagnostic_settings_version = AAZStrType(
+                serialized_name="diagnosticSettingsVersion",
+                flags={"read_only": True},
+            )
 
             tags = cls._schema_on_200_201.tags
             tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

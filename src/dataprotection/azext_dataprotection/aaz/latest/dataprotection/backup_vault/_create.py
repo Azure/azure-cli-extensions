@@ -26,9 +26,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-01",
+        "version": "2023-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2022-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2023-01-01"],
         ]
     }
 
@@ -56,6 +56,16 @@ class Create(AAZCommand):
             options=["--vault-name"],
             help="The name of the backup vault.",
             required=True,
+        )
+
+        # define Arg Group "FeatureSettings"
+
+        _args_schema = cls._args_schema
+        _args_schema.cross_subscription_restore_state = AAZStrArg(
+            options=["--csr-state", "--cross-subscription-restore-state"],
+            arg_group="FeatureSettings",
+            help="CrossSubscriptionRestore state",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled", "PermanentlyDisabled": "PermanentlyDisabled"},
         )
 
         # define Arg Group "Identity"
@@ -235,7 +245,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01",
+                    "api-version", "2023-01-01",
                     required=True,
                 ),
             }
@@ -272,9 +282,18 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("featureSettings", AAZObjectType)
                 properties.set_prop("monitoringSettings", AAZObjectType)
                 properties.set_prop("securitySettings", AAZObjectType)
                 properties.set_prop("storageSettings", AAZListType, ".storage_setting", typ_kwargs={"flags": {"required": True}})
+
+            feature_settings = _builder.get(".properties.featureSettings")
+            if feature_settings is not None:
+                feature_settings.set_prop("crossSubscriptionRestoreSettings", AAZObjectType)
+
+            cross_subscription_restore_settings = _builder.get(".properties.featureSettings.crossSubscriptionRestoreSettings")
+            if cross_subscription_restore_settings is not None:
+                cross_subscription_restore_settings.set_prop("state", AAZStrType, ".cross_subscription_restore_state")
 
             monitoring_settings = _builder.get(".properties.monitoringSettings")
             if monitoring_settings is not None:

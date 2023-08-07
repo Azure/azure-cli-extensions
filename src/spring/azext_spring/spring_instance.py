@@ -6,10 +6,11 @@
 # pylint: disable=wrong-import-order
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 from ._utils import (wait_till_end, _get_rg_location)
-from .vendored_sdks.appplatform.v2023_03_01_preview import models
+from .vendored_sdks.appplatform.v2023_05_01_preview import models
 from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create)
 from ._build_service import _update_default_build_agent_pool, create_build_service
 from .buildpack_binding import create_default_buildpack_binding_for_application_insights
+from .apm import create_default_apm_for_application_insights
 from ._tanzu_component import (create_application_configuration_service,
                                create_application_live_view,
                                create_dev_tool_portal,
@@ -62,6 +63,7 @@ class DefaultSpringCloud:
                        app_network_resource_group=None,
                        outbound_type=None,
                        enable_log_stream_public_endpoint=None,
+                       enable_dataplane_public_endpoint=None,
                        zone_redundant=False,
                        sku=None,
                        tags=None,
@@ -74,9 +76,12 @@ class DefaultSpringCloud:
             zone_redundant=zone_redundant
         )
 
-        if enable_log_stream_public_endpoint is not None:
+        if enable_log_stream_public_endpoint is not None or enable_dataplane_public_endpoint is not None:
+            val = enable_log_stream_public_endpoint if enable_log_stream_public_endpoint is not None else \
+                enable_dataplane_public_endpoint
             properties.vnet_addons = models.ServiceVNetAddons(
-                log_stream_public_endpoint=enable_log_stream_public_endpoint
+                data_plane_public_endpoint=val,
+                log_stream_public_endpoint=val
             )
         else:
             properties.vnet_addons = None
@@ -176,6 +181,7 @@ def spring_create(cmd, client, resource_group, name,
                   registry_username=None,
                   registry_password=None,
                   enable_application_configuration_service=False,
+                  application_configuration_service_generation=None,
                   enable_application_live_view=False,
                   enable_service_registry=False,
                   enable_gateway=False,
@@ -184,6 +190,7 @@ def spring_create(cmd, client, resource_group, name,
                   api_portal_instance_count=None,
                   enable_application_accelerator=False,
                   enable_log_stream_public_endpoint=None,
+                  enable_dataplane_public_endpoint=None,
                   ingress_read_timeout=None,
                   marketplace_plan_id=None,
                   managed_environment=None,
@@ -216,6 +223,7 @@ def spring_create(cmd, client, resource_group, name,
         'registry_username': registry_username,
         'registry_password': registry_password,
         'enable_application_configuration_service': enable_application_configuration_service,
+        'application_configuration_service_generation': application_configuration_service_generation,
         'enable_application_live_view': enable_application_live_view,
         'enable_service_registry': enable_service_registry,
         'enable_gateway': enable_gateway,
@@ -224,6 +232,7 @@ def spring_create(cmd, client, resource_group, name,
         'api_portal_instance_count': api_portal_instance_count,
         'enable_application_accelerator': enable_application_accelerator,
         'enable_log_stream_public_endpoint': enable_log_stream_public_endpoint,
+        'enable_dataplane_public_endpoint': enable_dataplane_public_endpoint,
         'marketplace_plan_id': marketplace_plan_id,
         'managed_environment': managed_environment,
         'infra_resource_group': infra_resource_group,
@@ -235,13 +244,18 @@ def spring_create(cmd, client, resource_group, name,
 
 
 def _enable_app_insights(cmd, client, resource_group, name, location, app_insights_key, app_insights,
-                         sampling_rate, disable_app_insights, **_):
+                         sampling_rate, disable_app_insights, **kwargs):
     if disable_app_insights:
         return
 
-    return create_default_buildpack_binding_for_application_insights(cmd, client, resource_group, name,
-                                                                     location, app_insights_key, app_insights,
-                                                                     sampling_rate)
+    if kwargs['disable_build_service'] or kwargs['registry_server']:
+        return create_default_apm_for_application_insights(cmd, client, resource_group, name,
+                                                           location, app_insights_key, app_insights,
+                                                           sampling_rate)
+    else:
+        return create_default_buildpack_binding_for_application_insights(cmd, client, resource_group, name,
+                                                                         location, app_insights_key, app_insights,
+                                                                         sampling_rate)
 
 
 def spring_list_marketplace_plan(cmd, client):

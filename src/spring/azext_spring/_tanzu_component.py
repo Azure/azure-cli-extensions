@@ -10,8 +10,8 @@ from knack.log import get_logger
 from msrestazure.tools import resource_id
 from .application_live_view import create as application_live_view_create
 from .dev_tool_portal import create_or_update as dev_tool_portal_create
-
-from .vendored_sdks.appplatform.v2023_03_01_preview import models
+from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import ConfigurationServiceGeneration
+from .vendored_sdks.appplatform.v2023_05_01_preview import models
 
 GATEWAY_RESOURCE_TYPE = "gateways"
 DEFAULT_NAME = "default"
@@ -32,10 +32,18 @@ def create_application_live_view(cmd, client, resource_group, service, enable_ap
         return application_live_view_create(cmd, client, service, resource_group)
 
 
-def create_application_configuration_service(cmd, client, resource_group, service, enable_application_configuration_service, **_):
+def create_application_configuration_service(cmd, client, resource_group, service, enable_application_configuration_service, application_configuration_service_generation, **_):
     if enable_application_configuration_service:
         logger.warning(" - Creating Application Configuration Service ..")
         acs_resource = models.ConfigurationServiceResource()
+        acs_resource.properties = models.ConfigurationServiceProperties()
+        if application_configuration_service_generation:
+            acs_resource.properties.generation = application_configuration_service_generation
+            logger.warning("Create with generation {}".format(application_configuration_service_generation))
+        else:
+            acs_resource.properties.generation = ConfigurationServiceGeneration.GEN1
+            logger.warning("Default generation will be Gen1")
+
         return client.configuration_services.begin_create_or_update(resource_group, service, DEFAULT_NAME, acs_resource)
 
 

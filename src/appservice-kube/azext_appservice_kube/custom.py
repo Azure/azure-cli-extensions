@@ -297,7 +297,7 @@ class WebAppClient:
 
 
 def _get_kube_client(cmd):
-    client = web_client_factory(cmd.cli_ctx, api_version="2021-01-01")
+    client = web_client_factory(cmd.cli_ctx)
     return client.kube_environments
 
 

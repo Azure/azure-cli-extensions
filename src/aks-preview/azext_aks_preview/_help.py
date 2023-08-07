@@ -186,7 +186,7 @@ helps['aks create'] = """
                                                   If monitoring addon is enabled --no-wait argument will have no effect
                 virtual-node                    - enable AKS Virtual Node. Requires --aci-subnet-name to provide the name of an existing subnet for the Virtual Node to use.
                                                   aci-subnet-name must be in the same vnet which is specified by --vnet-subnet-id (required as well).
-                azure-policy                    - enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner.
+                azure-policy                    - enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner. Required if enabling Guardrails
                                                   Learn more at aka.ms/aks/policy.
                 ingress-appgw                   - enable Application Gateway Ingress Controller addon (PREVIEW).
                 confcom                         - enable confcom addon, this will enable SGX device plugin by default(PREVIEW).
@@ -231,6 +231,9 @@ helps['aks create'] = """
               Used together with the "azure" network plugin.
               Requires either --pod-subnet-id or --network-plugin-mode=overlay.
               This flag is deprecated in favor of --network-dataplane=cilium.
+        - name: --enable-network-observability
+          type: bool
+          short-summary: Enable network observability on a cluster.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -294,7 +297,7 @@ helps['aks create'] = """
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000].
         - name: --vm-set-type
           type: string
-          short-summary: Agent pool vm set type. VirtualMachineScaleSets or AvailabilitySet.
+          short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only).
         - name: --enable-pod-security-policy
           type: bool
           short-summary: Enable pod security policy.
@@ -525,9 +528,45 @@ helps['aks create'] = """
         - name: --node-public-ip-tags
           type: string
           short-summary: The ipTags of the node public IPs.
+        - name: --guardrails-level
+          type: string
+          short-summary: The Guardrails Level. Accepted Values are [Off, Warning]. Requires azure policy addon to be enabled
+        - name: --guardrails-version
+          type: string
+          short-summary: The version of Guardrails to use. Default "v1.0.0" Use the ListGuardrailsVersions API to discover available versions
+        - name: --guardrails-excluded-ns
+          type: string
+          short-summary: Comma-separated list of Kubernetes namespaces to exclude from Guardrails
         - name: --enable-asm --enable-azure-service-mesh
           type: bool
           short-summary: Enable Azure Service Mesh.
+        - name: --enable-azuremonitormetrics
+          type: bool
+          short-summary: Enable Azure Monitor Metrics Profile
+        - name: --enable-azure-monitor-metrics
+          type: bool
+          short-summary: Enable Azure Monitor Metrics Profile
+        - name: --azure-monitor-workspace-resource-id
+          type: string
+          short-summary: Resource ID of the Azure Monitor Workspace
+        - name: --ksm-metric-labels-allow-list
+          type: string
+          short-summary: Comma-separated list of additional Kubernetes label keys that will be used in the resource' labels metric. By default the metric contains only name and namespace labels. To include additional labels provide a list of resource names in their plural form and Kubernetes label keys you would like to allow for them (e.g. '=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)'. A single '*' can be provided per resource instead to allow any labels, but that has severe performance implications (e.g. '=pods=[*]').
+        - name: --ksm-metric-annotations-allow-list
+          type: string
+          short-summary: Comma-separated list of additional Kubernetes label keys that will be used in the resource' labels metric. By default the metric contains only name and namespace labels. To include additional labels provide a list of resource names in their plural form and Kubernetes label keys you would like to allow for them (e.g.'=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)'. A single '*' can be provided per resource instead to allow any labels, but that has severe performance implications (e.g. '=pods=[*]').
+        - name: --grafana-resource-id
+          type: string
+          short-summary: Resource ID of the Azure Managed Grafana Workspace
+        - name: --enable-windows-recording-rules
+          type: bool
+          short-summary: Enable Windows Recording Rules when enabling the Azure Monitor Metrics addon
+        - name: --nodepool-labels
+          type: string
+          short-summary: The node labels for all node pools in this cluster. See https://aka.ms/node-labels for syntax of labels.
+        - name: --nodepool-taints
+          type: string
+          short-summary: The node taints for all node pools in this cluster.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -593,8 +632,14 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --network-plugin none
         - name: Create a kubernetes cluster with Custom CA Trust enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-custom-ca-trust
+        - name: Create a kubernetes cluster with guardrails set to "Warning"
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --enable-addons azure-policy
+        - name: Create a kubernetes cluster with guardrails set to "Warning" and some namespaces excluded
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --guardrails-excluded-ns ns1,ns2 --enable-addons azure-policy
         - name: Create a kubernetes cluster with Azure Service Mesh enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-service-mesh
+        - name: Create a kubernetes cluster with Azure Monitor Metrics enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azuremonitormetrics
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -605,6 +650,9 @@ helps['aks scale'] = """
         - name: --node-count -c
           type: int
           short-summary: Number of nodes in the Kubernetes node pool.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 """
 
 helps['aks upgrade'] = """
@@ -798,6 +846,12 @@ helps['aks update'] = """
           long-summary: |
               Used to control the mode the network plugin should operate in. For example, "overlay" used with
               --network-plugin=azure will use an overlay network (non-VNET IPs) for pods in the cluster.
+        - name: --network-dataplane
+          type: string
+          short-summary: The network dataplane to use.
+          long-summary: |
+              Network dataplane used in the Kubernetes cluster.
+              Specify "azure" to use the Azure dataplane (default) or "cilium" to enable Cilium dataplane.
         - name: --disk-driver-version
           type: string
           short-summary: Specify AzureDisk CSI Driver version.
@@ -930,6 +984,9 @@ helps['aks update'] = """
         - name: --enable-azuremonitormetrics
           type: bool
           short-summary: Enable Azure Monitor Metrics Profile
+        - name: --enable-azure-monitor-metrics
+          type: bool
+          short-summary: Enable Azure Monitor Metrics Profile
         - name: --azure-monitor-workspace-resource-id
           type: string
           short-summary: Resource ID of the Azure Monitor Workspace
@@ -947,7 +1004,10 @@ helps['aks update'] = """
           short-summary: Enable Windows Recording Rules when enabling the Azure Monitor Metrics addon
         - name: --disable-azuremonitormetrics
           type: bool
-          short-summary: Disable Azure Monitor Metrics Profile
+          short-summary: Disable Azure Monitor Metrics Profile. This will delete all DCRA's associated with the cluster, any linked DCRs with the data stream = prometheus-stream and the recording rule groups created by the addon for this AKS cluster.
+        - name: --disable-azure-monitor-metrics
+          type: bool
+          short-summary: Disable Azure Monitor Metrics Profile. This will delete all DCRA's associated with the cluster, any linked DCRs with the data stream = prometheus-stream and the recording rule groups created by the addon for this AKS cluster.
         - name: --enable-node-restriction
           type: bool
           short-summary: Enable node restriction option on cluster.
@@ -980,6 +1040,24 @@ helps['aks update'] = """
           type: string
           short-summary: Path to a file containing up to 10 blank line separated certificates. Only valid for linux nodes.
           long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes. Requires Custom CA Trust to be enabled on the node.
+        - name: --guardrails-level
+          type: string
+          short-summary: The Guardrails Level. Accepted Values are [Off, Warning]. Requires azure policy addon to be enabled
+        - name: --guardrails-version
+          type: string
+          short-summary: The version of Guardrails to use. Default "v1.0.0" Use the ListGuardrailsVersions API to discover available versions
+        - name: --guardrails-excluded-ns
+          type: string
+          short-summary: Comma-separated list of Kubernetes namespaces to exclude from Guardrails. Use "" to clear a previously non-empty list
+        - name: --nodepool-taints
+          type: string
+          short-summary: The node taints for all node pool.
+        - name: --nodepool-labels
+          type: string
+          short-summary: The node labels for all node pool. See https://aka.ms/node-labels for syntax of labels.
+        - name: --enable-network-observability
+          type: bool
+          short-summary: Enable network observability on a cluster.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1039,6 +1117,12 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-windows-gmsa --gmsa-dns-server "10.240.0.4" --gmsa-root-domain-name "contoso.com"
       - name: Update a existing managed cluster to a managed cluster snapshot.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --cluster-snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedclustersnapshots/mysnapshot1"
+      - name: Update a kubernetes cluster with guardrails set to "Warning". Assumes azure policy addon is already enabled
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning
+      - name: Update a kubernetes cluster with guardrails set to "Warning" and some namespaces excluded. Assumes azure policy addon is already enabled
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --guardrails-excluded-ns ns1,ns2
+      - name: Update a kubernetes cluster to clear any namespaces excluded from guardrails. Assumes azure policy addon is already enabled
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-excluded-ns ""
 """
 
 helps['aks kollect'] = """
@@ -1482,6 +1566,9 @@ helps['aks nodepool add'] = """
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
+        - name: --vm-set-type
+          type: string
+          short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only).
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
@@ -1557,6 +1644,9 @@ helps['aks nodepool scale'] = """
         - name: --node-count -c
           type: int
           short-summary: Number of nodes in the Kubernetes node pool.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 """
 
 helps['aks nodepool upgrade'] = """
@@ -1960,6 +2050,9 @@ parameters:
   - name: --dns-zone-resource-id
     type: string
     short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+  - name: --aks-custom-headers
+    type: string
+    short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 examples:
   - name: Enable Kubernetes addons. (autogenerated)
     text: az aks enable-addons --addons virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
@@ -1969,6 +2062,19 @@ examples:
     crafted: true
   - name: Enable open-service-mesh addon.
     text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons open-service-mesh
+    crafted: true
+"""
+
+helps['aks show'] = """
+type: command
+short-summary: Show the details for a managed Kubernetes cluster.
+parameters:
+  - name: --aks-custom-headers
+    type: string
+    short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+examples:
+  - name: Show the details for a managed Kubernetes cluster
+    text: az aks show -g MyResourceGroup -n MyManagedCluster
     crafted: true
 """
 
@@ -2016,6 +2122,9 @@ parameters:
     type: string
     short-summary: Specify the format of the returned credential. Available values are ["exec", "azure"].
                   Only take effect when requesting clusterUser credential of AAD clusters.
+  - name: --aks-custom-headers
+    type: string
+    short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 examples:
   - name: Get access credentials for a managed Kubernetes cluster. (autogenerated)
     text: az aks get-credentials --name MyManagedCluster --resource-group MyResourceGroup
@@ -2140,6 +2249,17 @@ helps['aks nodepool snapshot show'] = """
 helps['aks nodepool snapshot list'] = """
     type: command
     short-summary: List nodepool snapshots.
+"""
+
+helps['aks nodepool snapshot update'] = """
+    type: command
+    short-summary: Update tags on a snapshot of a nodepool.
+
+    examples:
+        - name: Update tags on a nodepool snapshot.
+          text: az aks nodepool snapshot update -g MyResourceGroup -n snapshot1 --tags "foo=bar" "key1=val1"
+        - name: Clear tags on a nodepool snapshot.
+          text: az aks nodepool snapshot update -g MyResourceGroup -n snapshot1 --tags ""
 """
 
 helps['aks nodepool snapshot create'] = """
