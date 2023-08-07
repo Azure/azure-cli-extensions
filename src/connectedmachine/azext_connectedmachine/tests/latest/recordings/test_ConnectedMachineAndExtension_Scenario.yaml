@@ -1,0 +1,790 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine?api-version=2022-03-10&$expand=instanceView
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine","name":"testMachine","location":"eastus2euap","tags":{},"identity":{"type":"SystemAssigned","principalId":"fc9a4766-a5d2-41d3-8fdd-3a32ddb4343a","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.18.01965.249","status":"Connected","lastStatusChange":"2022-05-23T22:55:52.7801454Z","errorDetails":[],"displayName":"DorothysSurface","machineFqdn":"DorothysSurface","osName":"windows","osVersion":"10.0.19044.1645","osType":"windows","osProfile":{"computerName":"DorothysSurface"},"vmId":"194cde1e-8ee6-425e-b231-a9ec7ecec8d8","vmUuid":"2883CCA3-7EE6-60E9-A204-97718B655D1D","clientPublicKey":"MIIBCgKCAQEAzLWw7rpNN42u19EbdGGfI0+aqdQKwbQA+Dh6iBsIgJM4R2uyuMiZxB+ek6pq3XhM9aQ7Kuooo7vNzIEGLI/RHMS+rMNrFQcQpqmKTKV8NDb2KB/1siovUL2vNXl2X8D8a0/y2MDk/ID1KCXF0bQlmaP5Rji8E9bb+owJNKvfgp2S+0N9Vu9VfBlewzztpwJJKqnBkzAR76ehfTYpmHpoYlvYxtWFGrpri2sEOSsRLf6QgzFy6vPxnYgDfMw/hC3X7x1BmFVBcY8QrGhJ/Nu6ZHsfwrH6PiK8XB58R0OyIRWcKK1FtEt3j2lTdkd7bsl8NBeQDm8L7deSRSIiPAc4pwIDAQAB","osSku":"Windows
+        10 Enterprise","domainName":"WORKGROUP","adFqdn":"DorothysSurface","dnsFqdn":"DorothysSurface","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"cloudprovider":"N/A","manufacturer":"Microsoft
+        Corporation","model":"Surface Book 2","mssqldiscovered":"false"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}}},"resources":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1882'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 May 2022 23:00:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines?api-version=2022-03-10
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine","name":"testMachine","location":"eastus2euap","tags":{},"identity":{"type":"SystemAssigned","principalId":"fc9a4766-a5d2-41d3-8fdd-3a32ddb4343a","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.18.01965.249","status":"Connected","lastStatusChange":"2022-05-23T22:55:52.7801454Z","errorDetails":[],"displayName":"DorothysSurface","machineFqdn":"DorothysSurface","osName":"windows","osVersion":"10.0.19044.1645","osType":"windows","osProfile":{"computerName":"DorothysSurface"},"vmId":"194cde1e-8ee6-425e-b231-a9ec7ecec8d8","vmUuid":"2883CCA3-7EE6-60E9-A204-97718B655D1D","clientPublicKey":"MIIBCgKCAQEAzLWw7rpNN42u19EbdGGfI0+aqdQKwbQA+Dh6iBsIgJM4R2uyuMiZxB+ek6pq3XhM9aQ7Kuooo7vNzIEGLI/RHMS+rMNrFQcQpqmKTKV8NDb2KB/1siovUL2vNXl2X8D8a0/y2MDk/ID1KCXF0bQlmaP5Rji8E9bb+owJNKvfgp2S+0N9Vu9VfBlewzztpwJJKqnBkzAR76ehfTYpmHpoYlvYxtWFGrpri2sEOSsRLf6QgzFy6vPxnYgDfMw/hC3X7x1BmFVBcY8QrGhJ/Nu6ZHsfwrH6PiK8XB58R0OyIRWcKK1FtEt3j2lTdkd7bsl8NBeQDm8L7deSRSIiPAc4pwIDAQAB","osSku":"Windows
+        10 Enterprise","domainName":"WORKGROUP","adFqdn":"DorothysSurface","dnsFqdn":"DorothysSurface","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"cloudprovider":"N/A","manufacturer":"Microsoft
+        Corporation","model":"Surface Book 2","mssqldiscovered":"false"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/dorothylinux2-Virtual-Machine","name":"dorothylinux2-Virtual-Machine","location":"eastus2euap","tags":{},"identity":{"type":"SystemAssigned","principalId":"5ce02094-bd55-44ba-b1e4-2d56b6a6ba69","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.7.21162.005","status":"Expired","lastStatusChange":"2021-09-30T06:14:01.8555779Z","errorDetails":[],"displayName":"dorothylinux2-Virtual-Machine","machineFqdn":"dorothylinux2-Virtual-Machine","osName":"linux","osVersion":"5.8.0-59-generic","osType":"linux","osProfile":{"computerName":"dorothylinux2-Virtual-Machine","linuxConfiguration":{"patchSettings":{"assessmentMode":"null"}}},"vmId":"8948ef10-f369-471d-b363-8e2ff44614ca","vmUuid":"80f26cf0-d9a7-4637-a2ff-587bd51626fc","clientPublicKey":"MIIBCgKCAQEAukhdoNaMfaHRGP6MvgdWdyefHdET/mV0J3NdpMU+LFRE5IWwZxG+mGOb2lK3dsgX6HenWyRiumC2BMDX6RuLfRuscZw+HT/W4W/9ScDxbD18o4vECD7DmiFmIs4iPaF8GLTjO2fJzjAl59k7nblfr38SexA8EKo5WqG2LFhbT6CAXtBMPtWebWeZCQ3uXCri8838nDtqhQtqY6Efg4A2sEV9s4Mk7LjINpzcVuPYdvxcFngM22hixUawE9GH8UKIV5XF+/c8xk1b1fvUGizf+sNbgSMZFyJ3Vgg5ne5ibepxyR3WBtmvd3L/mF1negSh/5h9QQKTt7djeUYCb+ztjwIDAQAB","osSku":"Ubuntu
+        20.04 LTS","domainName":"unknown","adFqdn":"unknown","dnsFqdn":"dorothylinux2-Virtual-Machine","mssqlDiscovered":"false","detectedProperties":{"cloudprovider":"N/A","manufacturer":"Microsoft
+        Corporation","model":"Virtual Machine","mssqldiscovered":"false"},"agentConfiguration":{}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3516'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 May 2022 23:00:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"publisher": "Microsoft.Compute",
+      "type": "CustomScriptExtension", "typeHandlerVersion": "1.10.10", "enableAutomaticUpgrade":
+      true, "settings": {"commandToExecute": "hostname"}, "instanceView": {"name":
+      "custom-000001"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine extension create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '264'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --location --enable-auto-upgrade --type --publisher --type-handler-version
+        --machine-name --resource-group --settings
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001?api-version=2022-03-10
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/d3c75246-97de-491a-a4eb-01bee20c7d0b?api-version=2022-03-10
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - application/json
+      date:
+      - Mon, 23 May 2022 23:00:49 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/d3c75246-97de-491a-a4eb-01bee20c7d0b?api-version=2022-03-10
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '319'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine extension create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --enable-auto-upgrade --type --publisher --type-handler-version
+        --machine-name --resource-group --settings
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/d3c75246-97de-491a-a4eb-01bee20c7d0b?api-version=2022-03-10
+  response:
+    body:
+      string: '{"name":"d3c75246-97de-491a-a4eb-01bee20c7d0b","status":"Succeeded","startTime":"2022-05-23T23:00:49.6799697Z","properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001","name":"custom-000001","location":"eastus2euap","type":"Microsoft.HybridCompute/machines/extensions","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","status":{"code":"success","level":"Information","message":"Extension
+        Message: Command execution finished, StdOut: DorothysSurface\r\n"}}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '878'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 May 2022 23:02:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine extension create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --enable-auto-upgrade --type --publisher --type-handler-version
+        --machine-name --resource-group --settings
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001?api-version=2022-03-10
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001","name":"custom-000001","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","status":{"code":"success","level":"Information","message":"Extension
+        Message: Command execution finished, StdOut: DorothysSurface\r\n"}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '753'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 May 2022 23:02:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine extension list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --machine-name -g
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions?api-version=2022-03-10
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001","name":"custom-000001","location":"eastus2euap","type":"Microsoft.HybridCompute/machines/extensions","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","status":{"code":"success","level":"Information","message":"Extension
+        Message: Command execution finished, StdOut: DorothysSurface\r\n"}}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '765'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 May 2022 23:02:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine extension show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --machine-name --resource-group
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001?api-version=2022-03-10
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001","name":"custom-000001","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","status":{"code":"success","level":"Information","message":"Extension
+        Message: Command execution finished, StdOut: DorothysSurface\r\n"}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '753'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 May 2022 23:02:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"extensionTargets": {"Microsoft.Compute.CustomScriptExtension": {"targetVersion":
+      "1.10.12"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine upgrade-extension
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '95'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --extension-targets --machine-name --resource-group
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/upgradeExtensions?api-version=2022-03-10
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/ea8afb78-b38f-4179-b7da-f2a94486f3a1?api-version=2022-03-10
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - application/json
+      date:
+      - Mon, 23 May 2022 23:02:53 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/ea8afb78-b38f-4179-b7da-f2a94486f3a1?api-version=2022-03-10
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine upgrade-extension
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --extension-targets --machine-name --resource-group
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/ea8afb78-b38f-4179-b7da-f2a94486f3a1?api-version=2022-03-10
+  response:
+    body:
+      string: '{"name":"ea8afb78-b38f-4179-b7da-f2a94486f3a1","status":"Succeeded","startTime":"2022-05-23T23:02:53.8776167Z","properties":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001","name":"custom-000001","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","status":{"code":"success","level":"Information","message":"Extension
+        Message: Command execution finished, StdOut: DorothysSurface\r\n"}}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '881'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 May 2022 23:07:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine upgrade-extension
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --extension-targets --machine-name --resource-group
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/ea8afb78-b38f-4179-b7da-f2a94486f3a1?api-version=2022-03-10
+  response:
+    body:
+      string: '[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001","name":"custom-000001","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","status":{"code":"success","level":"Information","message":"Extension
+        Message: Command execution finished, StdOut: DorothysSurface\r\n"}}}}]'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '756'
+      content-type:
+      - application/json
+      date:
+      - Mon, 23 May 2022 23:07:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"enableAutomaticUpgrade": false, "settings": {"commandToExecute":
+      "dir"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine extension update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '90'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --enable-auto-upgrade --settings --machine-name --resource-group
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001?api-version=2022-03-10
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/44ade452-9ccb-4611-9e84-fdad48bffc87?api-version=2022-03-10
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - application/json
+      date:
+      - Mon, 23 May 2022 23:07:56 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/44ade452-9ccb-4611-9e84-fdad48bffc87?api-version=2022-03-10
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '319'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine extension update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --enable-auto-upgrade --settings --machine-name --resource-group
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/44ade452-9ccb-4611-9e84-fdad48bffc87?api-version=2022-03-10
+  response:
+    body:
+      string: '{"name":"44ade452-9ccb-4611-9e84-fdad48bffc87","status":"Succeeded","startTime":"2022-05-23T23:07:56.9038639Z","properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001","name":"custom-000001","location":"eastus2euap","type":"Microsoft.HybridCompute/machines/extensions","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"dir"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","status":{"code":"success","level":"Information","message":"Extension
+        Message: Command execution finished, StdOut:  Volume in drive C has no label.\r\n
+        Volume Serial Number is 867D-A9DE\r\n\r\n Directory of C:\\Packages\\Plugins\\Microsoft.Compute.CustomScriptExtension\\1.10.12\\Downloads\\1\r\n\r\n05/23/2022  04:08
+        PM    <DIR>          .\r\n05/23/2022  04:08 PM    <DIR>          ..\r\n               0
+        File(s)              0 bytes\r\n               2 Dir(s)  270,794,014,720 bytes
+        free\r\n"}}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1233'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 May 2022 23:09:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine extension update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --enable-auto-upgrade --settings --machine-name --resource-group
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001?api-version=2022-03-10
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001","name":"custom-000001","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"dir"},"provisioningState":"Succeeded","instanceView":{"name":"custom-000001","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","status":{"code":"success","level":"Information","message":"Extension
+        Message: Command execution finished, StdOut:  Volume in drive C has no label.\r\n
+        Volume Serial Number is 867D-A9DE\r\n\r\n Directory of C:\\Packages\\Plugins\\Microsoft.Compute.CustomScriptExtension\\1.10.12\\Downloads\\1\r\n\r\n05/23/2022  04:08
+        PM    <DIR>          .\r\n05/23/2022  04:08 PM    <DIR>          ..\r\n               0
+        File(s)              0 bytes\r\n               2 Dir(s)  270,794,014,720 bytes
+        free\r\n"}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1108'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 May 2022 23:09:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine extension delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --name --machine-name --resource-group
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine/extensions/custom-000001?api-version=2022-03-10
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/5140375a-e5a8-4698-9823-b9e9a38b00cd?api-version=2022-03-10
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - application/json
+      date:
+      - Mon, 23 May 2022 23:10:01 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/5140375a-e5a8-4698-9823-b9e9a38b00cd?api-version=2022-03-10
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine extension delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -y --name --machine-name --resource-group
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/5140375a-e5a8-4698-9823-b9e9a38b00cd?api-version=2022-03-10
+  response:
+    body:
+      string: '{"name":"5140375a-e5a8-4698-9823-b9e9a38b00cd","status":"Succeeded","startTime":"2022-05-23T23:10:01.0608346Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '111'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 23 May 2022 23:12:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --name --resource-group
+      User-Agent:
+      - AZURECLI/2.32.0 azsdk-python-mgmt-hybridcompute/1.0.0b1 Python/3.10.2 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testMachine?api-version=2022-03-10
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - application/json
+      date:
+      - Mon, 23 May 2022 23:12:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+version: 1

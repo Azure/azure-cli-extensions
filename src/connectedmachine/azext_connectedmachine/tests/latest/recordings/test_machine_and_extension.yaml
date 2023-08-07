@@ -18,21 +18,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine?api-version=2022-12-27
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine","name":"testmachine","location":"eastus2euap","tags":{},"identity":{"type":"SystemAssigned","principalId":"bd65afe6-311a-47ba-9b70-a83004e881e9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.33.02399.1173","status":"Connected","lastStatusChange":"2023-08-07T19:52:23.6561736Z","errorDetails":[],"displayName":"LAPTOP-S0HSJ7FB","machineFqdn":"LAPTOP-S0HSJ7FB","osName":"windows","osVersion":"6.2.9200.3208","osType":"windows","osProfile":{"computerName":"LAPTOP-S0HSJ7FB"},"vmId":"ba6e88e7-a4a0-43a5-ba68-44baadb8b783","vmUuid":"1A9E1B42-3894-11EC-80F0-84A9388B55FE","clientPublicKey":"MIIBCgKCAQEAvlNwZVlZX9KbLLoUw1uOTbfmUW1MDxsF8sSo9BM9Bih43rXDcG9cq82b4GKJq6dgJwLsBpsQ6+J4Al3qZwyI1sS8P+Wc0d33ATu0hFXA0aIVD0jUJmuQm1hL+KqDBtVyvcGvfGXXQx74K15c8JoAipPKM+CBXkhvLtMIfGlMNzfYDLW8oMOz5Ggz0ir43o5tffmkZy6r68g5Lm/4ScsPBri2rmICpBX1t8ea9mGmdr/LRVlw4sjDvG0Bw8LhuU4wYd4twm8keLczemkjIdppPhUu6xfynRkrRgMVuX9dFQ4bU3H3TyD0qUagnQqW0/B3Szj+2FsH/g1DsKKb6CIQRwIDAQAB","osSku":"Windows
-        10 Enterprise","domainName":"WORKGROUP","adFqdn":"LAPTOP-S0HSJ7FB","dnsFqdn":"LAPTOP-S0HSJ7FB","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"cloudprovider":"N/A","coreCount":"4","logicalCoreCount":"8","manufacturer":"LENOVO","model":"20Y0S2PE00","mssqldiscovered":"false","processorCount":"1","productType":"4"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}},"agentUpgrade":{"enableAutomaticUpgrade":false},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"172.31.32.1","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"172.31.32.0/20"}}]},{"ipAddresses":[{"address":"10.144.1.251","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.144.1.0/24"}}]}]}},"resources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine/extensions/WindowsOsUpdateExtension","name":"WindowsOsUpdateExtension","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.SoftwareUpdateManagement","type":"WindowsOsUpdateExtension","typeHandlerVersion":"1.0.15.0","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"updateConfiguration":{"activityId":"eedb882a-e129-49dd-a3b8-10ba38555fe1","startTime":"2023-08-07T06:28:59.5102838Z","action":"Assessment"}},"provisioningState":"Succeeded","instanceView":{"name":"WindowsOsUpdateExtension","type":"WindowsOsUpdateExtension","typeHandlerVersion":"1.0.15.0","status":{"code":"0","level":"Information","message":"Extension
-        Message: Assessment operation with activity id eedb882a-e129-49dd-a3b8-10ba38555fe1
-        completed successfully. 7 patches were found. , OperationResult: {\"activityId\":\"eedb882a-e129-49dd-a3b8-10ba38555fe1\",\"inputStartTime\":\"2023-08-07T06:28:59Z\",\"lastModifiedTime\":\"2023-08-07T06:29:19Z\",\"extensionTriggerTime\":\"2023-08-07T06:29:08Z\",\"action\":\"Assessment\",\"actionStatus\":\"success\",\"patchServiceUsed\":\"WU\",\"assessmentDetails\":{\"rebootPending\":false,\"countByCategory\":{\"critical\":0,\"security\":0,\"updateRollup\":0,\"featurePack\":0,\"servicePack\":0,\"definition\":1,\"tools\":0,\"updates\":0,\"other\":6},\"totalCount\":7,\"patches\":\"zdVLb9NAEADgv2L5BFLH2fejtz6EqGg50AISVQ/7bFckdrGdVBXivzNOEYG2gCIukXywN+PZ3c+zk8uv9fI2ujGdxHq/TslSxzMHnVwGYbMBK6IHk7VUTPIsvan36tYtEkafp7Dsy3hfnbRjms/LdWpDqt6v01W566uzEvpu6PJYHaec2pj66qAdy6r0y6GC6s0hY0orwqoXH1I/lK6taMMtb5gwqiEvcabPfr2uH3E4EOZuGEouwY0YP9T7lzXmLm2ZHusrDMDJr7u+pOk3fO6T77rxMN24Vel6zPU2rVL/bj06YMLbpZ+X4SbFY3zxoqw3xgjjQAwQfUH0PiF4fcLQxdCH8+lt3HO93y7n8297v/E5XKcl3COf0CAST2CMpJgqEUqt18rkDd9aDRnO74cxLfBGzCibMUJ1RdnDrNXBGY5T0TDTCN0oTn6aTNM/x/GYoE4+B5qDBE2dAJG1B+uCA+6tk4RTIhypn4M6cu279GWZhvFB649YFKU4MLEdVpRaJ0kcZE88CBEMGCYjeOd1lolS48IGa1NKUL0+OT6a9j3RkBnTk5l8ZGYb21Bimp0Fs0DplmAuGOaohWy9AyFtBMcnP6mi8Jyp7NxfqsvOqH22umijG4JYZGetJLAtrbLi2ZCYsZoyA+FxhV4pCYprxX0kTBu+sTpNbbfqqtMxNgjyqvSLO9enyaZRBG12EmZqUQqY3Q5GZRk0UQpoYAREwBblNSUgA8kxsWhiZhuYj6WN3d2ANbLpxZIwQ83zvfgJA1fG+ohH2zP8isJlASYKB05xy0SQyUb5/wx667OkvcnKRYtfRhj8o/MUXBBYKTlg27ZMCiae1Mcvh4k1tKFydwsDD80/Ra6+Aw==\",\"action\":\"Assessment\"},\"topLevelStatusMessage\":\"Assessment
-        operation with activity id eedb882a-e129-49dd-a3b8-10ba38555fe1 completed
-        successfully. 7 patches were found. \",\"internalErrorMessage\":\"\",\"topLevelStatus\":0,\"logs\":\"i44FAA==\",\"errorCount\":0,\"failureRetryCount\":0,\"retriggerCount\":0,\"sequenceNumber\":1,\"errors\":null}"}}}}]}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine","name":"testmachine","location":"eastus2euap","tags":{},"identity":{"type":"SystemAssigned","principalId":"99b856fa-df27-4054-afc3-279403ed0559","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"type":"Microsoft.HybridCompute/machines","properties":{"provisioningState":"Succeeded","agentVersion":"1.32.02371.1114","status":"Connected","lastStatusChange":"2023-07-25T22:24:58.7011849Z","errorDetails":[],"displayName":"LAPTOP-S0HSJ7FB","machineFqdn":"LAPTOP-S0HSJ7FB","osName":"windows","osVersion":"10.0.19045.3208","osType":"windows","osProfile":{"computerName":"LAPTOP-S0HSJ7FB"},"vmId":"f9231c24-259b-4fb8-8090-0441ed4469fb","vmUuid":"1A9E1B42-3894-11EC-80F0-84A9388B55FE","clientPublicKey":"MIIBCgKCAQEApeTb5Om2RJWGI+Xkmqe7yOab4rxR60IWbH8c5EutgpdEo5TNi3/nchlB7avSgq2E1Ou3QtWp6pC/O7atfVblXVniLOo6j9UE8ZnPFa/Zd03Py+tD0e52BayzAi80QkX4QkLzOowIJGKVNgddpZoLT3hgu+RtoBxenvRsCeNRSJFg9SsgR4W4OxgB4ITZeFCfP7q/JNjeKXUBU2an0UmuleC7dM3MJwu2HibXYvRt4Ry4qfQE6pjxH5Iqmtfi6kovrBbmbBJCxuaSY5C2AC8ntnk8/4BZxkXY6MIYPtA1h59eqUVOWWsB0g84D3IdR4+8SmJwQcX7scrJ2j5AREl6pQIDAQAB","osSku":"Windows
+        10 Enterprise","domainName":"WORKGROUP","adFqdn":"LAPTOP-S0HSJ7FB","dnsFqdn":"LAPTOP-S0HSJ7FB","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"cloudprovider":"N/A","logicalCoreCount":"8","manufacturer":"LENOVO","model":"20Y0S2PE00","mssqldiscovered":"false"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}},"agentUpgrade":{"enableAutomaticUpgrade":false},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"172.19.128.1","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"172.19.128.0/20"}}]},{"ipAddresses":[{"address":"10.144.1.251","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.144.1.0/24"}}]},{"ipAddresses":[{"address":"2001:0:2877:7aa:2018:33b2:f354:db3e","ipAddressVersion":"IPv6","subnet":{"addressPrefix":"2001:0:2877:7aa::/64"}}]}]}},"resources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine/extensions/custom-test","name":"custom-test","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-test","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","status":{"code":"0","level":"Information","message":"Extension
+        Message: Command execution finished, StdOut: LAPTOP-S0HSJ7FB\r\n"}}}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5024'
+      - '3111'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 07 Aug 2023 19:54:19 GMT
+      - Tue, 25 Jul 2023 22:44:37 GMT
       expires:
       - '-1'
       pragma:
@@ -69,17 +66,17 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines?api-version=2022-12-27
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine","name":"testmachine","location":"eastus2euap","type":"Microsoft.HybridCompute/machines","tags":{},"identity":{"type":"SystemAssigned","principalId":"bd65afe6-311a-47ba-9b70-a83004e881e9","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"properties":{"provisioningState":"Succeeded","agentVersion":"1.33.02399.1173","status":"Connected","lastStatusChange":"2023-08-07T19:52:23.6561736Z","errorDetails":[],"displayName":"LAPTOP-S0HSJ7FB","machineFqdn":"LAPTOP-S0HSJ7FB","osName":"windows","osVersion":"6.2.9200.3208","osType":"windows","osProfile":{"computerName":"LAPTOP-S0HSJ7FB"},"vmId":"ba6e88e7-a4a0-43a5-ba68-44baadb8b783","vmUuid":"1A9E1B42-3894-11EC-80F0-84A9388B55FE","clientPublicKey":"MIIBCgKCAQEAvlNwZVlZX9KbLLoUw1uOTbfmUW1MDxsF8sSo9BM9Bih43rXDcG9cq82b4GKJq6dgJwLsBpsQ6+J4Al3qZwyI1sS8P+Wc0d33ATu0hFXA0aIVD0jUJmuQm1hL+KqDBtVyvcGvfGXXQx74K15c8JoAipPKM+CBXkhvLtMIfGlMNzfYDLW8oMOz5Ggz0ir43o5tffmkZy6r68g5Lm/4ScsPBri2rmICpBX1t8ea9mGmdr/LRVlw4sjDvG0Bw8LhuU4wYd4twm8keLczemkjIdppPhUu6xfynRkrRgMVuX9dFQ4bU3H3TyD0qUagnQqW0/B3Szj+2FsH/g1DsKKb6CIQRwIDAQAB","osSku":"Windows
-        10 Enterprise","domainName":"WORKGROUP","adFqdn":"LAPTOP-S0HSJ7FB","dnsFqdn":"LAPTOP-S0HSJ7FB","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"cloudprovider":"N/A","coreCount":"4","logicalCoreCount":"8","manufacturer":"LENOVO","model":"20Y0S2PE00","mssqldiscovered":"false","processorCount":"1","productType":"4"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}},"agentUpgrade":{"enableAutomaticUpgrade":false},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"172.31.32.1","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"172.31.32.0/20"}}]},{"ipAddresses":[{"address":"10.144.1.251","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.144.1.0/24"}}]}]}}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine","name":"testmachine","location":"eastus2euap","type":"Microsoft.HybridCompute/machines","tags":{},"identity":{"type":"SystemAssigned","principalId":"99b856fa-df27-4054-afc3-279403ed0559","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"properties":{"provisioningState":"Succeeded","agentVersion":"1.32.02371.1114","status":"Connected","lastStatusChange":"2023-07-25T22:24:58.7011849Z","errorDetails":[],"displayName":"LAPTOP-S0HSJ7FB","machineFqdn":"LAPTOP-S0HSJ7FB","osName":"windows","osVersion":"10.0.19045.3208","osType":"windows","osProfile":{"computerName":"LAPTOP-S0HSJ7FB"},"vmId":"f9231c24-259b-4fb8-8090-0441ed4469fb","vmUuid":"1A9E1B42-3894-11EC-80F0-84A9388B55FE","clientPublicKey":"MIIBCgKCAQEApeTb5Om2RJWGI+Xkmqe7yOab4rxR60IWbH8c5EutgpdEo5TNi3/nchlB7avSgq2E1Ou3QtWp6pC/O7atfVblXVniLOo6j9UE8ZnPFa/Zd03Py+tD0e52BayzAi80QkX4QkLzOowIJGKVNgddpZoLT3hgu+RtoBxenvRsCeNRSJFg9SsgR4W4OxgB4ITZeFCfP7q/JNjeKXUBU2an0UmuleC7dM3MJwu2HibXYvRt4Ry4qfQE6pjxH5Iqmtfi6kovrBbmbBJCxuaSY5C2AC8ntnk8/4BZxkXY6MIYPtA1h59eqUVOWWsB0g84D3IdR4+8SmJwQcX7scrJ2j5AREl6pQIDAQAB","osSku":"Windows
+        10 Enterprise","domainName":"WORKGROUP","adFqdn":"LAPTOP-S0HSJ7FB","dnsFqdn":"LAPTOP-S0HSJ7FB","mssqlDiscovered":"false","cloudMetadata":{"provider":"N/A"},"detectedProperties":{"cloudprovider":"N/A","logicalCoreCount":"8","manufacturer":"LENOVO","model":"20Y0S2PE00","mssqldiscovered":"false"},"agentConfiguration":{"proxyUrl":"","incomingConnectionsPorts":[],"extensionsAllowList":[],"extensionsBlockList":[],"proxyBypass":[],"extensionsEnabled":"true","guestConfigurationEnabled":"true","configMode":"full"},"serviceStatuses":{"extensionService":{"status":"running","startupType":"automatic"},"guestConfigurationService":{"status":"running","startupType":"automatic"}},"agentUpgrade":{"enableAutomaticUpgrade":false},"networkProfile":{"networkInterfaces":[{"ipAddresses":[{"address":"172.19.128.1","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"172.19.128.0/20"}}]},{"ipAddresses":[{"address":"10.144.1.251","ipAddressVersion":"IPv4","subnet":{"addressPrefix":"10.144.1.0/24"}}]},{"ipAddresses":[{"address":"2001:0:2877:7aa:2018:33b2:f354:db3e","ipAddressVersion":"IPv6","subnet":{"addressPrefix":"2001:0:2877:7aa::/64"}}]}]}}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2274'
+      - '2367'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 07 Aug 2023 19:54:20 GMT
+      - Tue, 25 Jul 2023 22:44:37 GMT
       expires:
       - '-1'
       pragma:
@@ -94,1066 +91,6 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "eastus2euap", "properties": {"enableAutomaticUpgrade": true,
-      "publisher": "Microsoft.Compute", "settings": {"commandToExecute": "hostname"},
-      "type": "CustomScriptExtension", "typeHandlerVersion": "1.10.10"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine extension create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '221'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --name --location --enable-automatic-upgrade --type --publisher --type-handler-version
-        --machine-name --resource-group --settings
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine/extensions/custom-test?api-version=2022-12-27
-  response:
-    body:
-      string: ''
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/e7adf1b7-f86a-49af-9417-c1a520089eaf?api-version=2022-12-27
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      content-type:
-      - application/json
-      date:
-      - Mon, 07 Aug 2023 19:54:21 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/e7adf1b7-f86a-49af-9417-c1a520089eaf?api-version=2022-12-27
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '319'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine extension create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --name --location --enable-automatic-upgrade --type --publisher --type-handler-version
-        --machine-name --resource-group --settings
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/e7adf1b7-f86a-49af-9417-c1a520089eaf?api-version=2022-12-27
-  response:
-    body:
-      string: '{"name":"e7adf1b7-f86a-49af-9417-c1a520089eaf","status":"Queued","startTime":"2023-08-07T19:54:21.8736232Z"}'
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/e7adf1b7-f86a-49af-9417-c1a520089eaf?api-version=2022-12-27
-      cache-control:
-      - no-cache
-      content-length:
-      - '108'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 07 Aug 2023 19:54:21 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/e7adf1b7-f86a-49af-9417-c1a520089eaf?api-version=2022-12-27
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine extension create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --name --location --enable-automatic-upgrade --type --publisher --type-handler-version
-        --machine-name --resource-group --settings
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/e7adf1b7-f86a-49af-9417-c1a520089eaf?api-version=2022-12-27
-  response:
-    body:
-      string: '{"name":"e7adf1b7-f86a-49af-9417-c1a520089eaf","status":"InProgress","startTime":"2023-08-07T19:54:21.8736232Z"}'
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/e7adf1b7-f86a-49af-9417-c1a520089eaf?api-version=2022-12-27
-      cache-control:
-      - no-cache
-      content-length:
-      - '112'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 07 Aug 2023 19:56:22 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/e7adf1b7-f86a-49af-9417-c1a520089eaf?api-version=2022-12-27
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine extension create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --name --location --enable-automatic-upgrade --type --publisher --type-handler-version
-        --machine-name --resource-group --settings
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/e7adf1b7-f86a-49af-9417-c1a520089eaf?api-version=2022-12-27
-  response:
-    body:
-      string: '{"name":"e7adf1b7-f86a-49af-9417-c1a520089eaf","status":"Succeeded","startTime":"2023-08-07T19:54:21.8736232Z","properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine/extensions/custom-test","name":"custom-test","location":"eastus2euap","type":"Microsoft.HybridCompute/machines/extensions","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-test","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","status":{"code":"0","level":"Information","message":"Extension
-        Message: Command execution finished, StdOut: LAPTOP-S0HSJ7FB\r\n"}}}}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '866'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 07 Aug 2023 19:58:21 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine extension create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --name --location --enable-automatic-upgrade --type --publisher --type-handler-version
-        --machine-name --resource-group --settings
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine/extensions/custom-test?api-version=2022-12-27
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine/extensions/custom-test","name":"custom-test","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-test","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","status":{"code":"0","level":"Information","message":"Extension
-        Message: Command execution finished, StdOut: LAPTOP-S0HSJ7FB\r\n"}}}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '741'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 07 Aug 2023 19:58:22 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"maximumDuration": "PT4H", "rebootSetting": "IfRequired", "windowsParameters":
-      {"classificationsToInclude": ["Critical", "Security"]}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine install-patches
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '135'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --resource-group --name --maximum-duration --reboot-setting --windows-parameters
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine/installPatches?api-version=2022-12-27
-  response:
-    body:
-      string: ''
-    headers:
-      api-supported-versions:
-      - 2020-08-15-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Mon, 07 Aug 2023 19:58:25 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6796b4ec-c783-4b35-9463-e902b63b3dd5?api-version=2022-12-27
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine install-patches
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name --maximum-duration --reboot-setting --windows-parameters
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6796b4ec-c783-4b35-9463-e902b63b3dd5?api-version=2022-12-27
-  response:
-    body:
-      string: ''
-    headers:
-      api-supported-versions:
-      - 2020-08-15-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Mon, 07 Aug 2023 19:58:25 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6796b4ec-c783-4b35-9463-e902b63b3dd5?api-version=2022-12-27
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '999'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine install-patches
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name --maximum-duration --reboot-setting --windows-parameters
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6796b4ec-c783-4b35-9463-e902b63b3dd5?api-version=2022-12-27
-  response:
-    body:
-      string: ''
-    headers:
-      api-supported-versions:
-      - 2020-08-15-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Mon, 07 Aug 2023 19:58:56 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6796b4ec-c783-4b35-9463-e902b63b3dd5?api-version=2022-12-27
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '998'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine install-patches
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name --maximum-duration --reboot-setting --windows-parameters
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6796b4ec-c783-4b35-9463-e902b63b3dd5?api-version=2022-12-27
-  response:
-    body:
-      string: ''
-    headers:
-      api-supported-versions:
-      - 2020-08-15-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Mon, 07 Aug 2023 19:59:25 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6796b4ec-c783-4b35-9463-e902b63b3dd5?api-version=2022-12-27
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '997'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine install-patches
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name --maximum-duration --reboot-setting --windows-parameters
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6796b4ec-c783-4b35-9463-e902b63b3dd5?api-version=2022-12-27
-  response:
-    body:
-      string: ''
-    headers:
-      api-supported-versions:
-      - 2020-08-15-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Mon, 07 Aug 2023 19:59:56 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6796b4ec-c783-4b35-9463-e902b63b3dd5?api-version=2022-12-27
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '996'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine install-patches
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name --maximum-duration --reboot-setting --windows-parameters
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6796b4ec-c783-4b35-9463-e902b63b3dd5?api-version=2022-12-27
-  response:
-    body:
-      string: ''
-    headers:
-      api-supported-versions:
-      - 2020-08-15-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Mon, 07 Aug 2023 20:00:26 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6796b4ec-c783-4b35-9463-e902b63b3dd5?api-version=2022-12-27
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '995'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine install-patches
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name --maximum-duration --reboot-setting --windows-parameters
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6796b4ec-c783-4b35-9463-e902b63b3dd5?api-version=2022-12-27
-  response:
-    body:
-      string: ''
-    headers:
-      api-supported-versions:
-      - 2020-08-15-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Mon, 07 Aug 2023 20:00:56 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6796b4ec-c783-4b35-9463-e902b63b3dd5?api-version=2022-12-27
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '994'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine install-patches
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name --maximum-duration --reboot-setting --windows-parameters
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6796b4ec-c783-4b35-9463-e902b63b3dd5?api-version=2022-12-27
-  response:
-    body:
-      string: ''
-    headers:
-      api-supported-versions:
-      - 2020-08-15-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Mon, 07 Aug 2023 20:01:26 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6796b4ec-c783-4b35-9463-e902b63b3dd5?api-version=2022-12-27
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '993'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine install-patches
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name --maximum-duration --reboot-setting --windows-parameters
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6796b4ec-c783-4b35-9463-e902b63b3dd5?api-version=2022-12-27
-  response:
-    body:
-      string: '{"startDateTime":"2023-08-07T19:58:25.7413839Z","lastModifiedDateTime":"2023-08-07T20:01:30.8681282Z","startedBy":"User","patchServiceUsed":"WU","status":"Succeeded","maintenanceWindowExceeded":false,"rebootStatus":"NotNeeded","notSelectedPatchCount":7,"pendingPatchCount":0,"failedPatchCount":0,"installedPatchCount":0,"excludedPatchCount":0,"osType":"Windows","installationActivityId":"6796b4ec-c783-4b35-9463-e902b63b3dd5"}'
-    headers:
-      api-supported-versions:
-      - 2020-08-15-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '426'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 07 Aug 2023 20:01:57 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '992'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine assess-patches
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine/assessPatches?api-version=2022-12-27
-  response:
-    body:
-      string: ''
-    headers:
-      api-supported-versions:
-      - 2020-08-15-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Mon, 07 Aug 2023 20:02:03 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6173bfd4-bd25-4281-acaf-e60149958f4b?api-version=2022-12-27
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine assess-patches
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6173bfd4-bd25-4281-acaf-e60149958f4b?api-version=2022-12-27
-  response:
-    body:
-      string: ''
-    headers:
-      api-supported-versions:
-      - 2020-08-15-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Mon, 07 Aug 2023 20:02:03 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6173bfd4-bd25-4281-acaf-e60149958f4b?api-version=2022-12-27
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '999'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine assess-patches
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6173bfd4-bd25-4281-acaf-e60149958f4b?api-version=2022-12-27
-  response:
-    body:
-      string: ''
-    headers:
-      api-supported-versions:
-      - 2020-08-15-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Mon, 07 Aug 2023 20:02:34 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6173bfd4-bd25-4281-acaf-e60149958f4b?api-version=2022-12-27
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '998'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine assess-patches
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6173bfd4-bd25-4281-acaf-e60149958f4b?api-version=2022-12-27
-  response:
-    body:
-      string: ''
-    headers:
-      api-supported-versions:
-      - 2020-08-15-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Mon, 07 Aug 2023 20:03:05 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6173bfd4-bd25-4281-acaf-e60149958f4b?api-version=2022-12-27
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '997'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine assess-patches
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6173bfd4-bd25-4281-acaf-e60149958f4b?api-version=2022-12-27
-  response:
-    body:
-      string: ''
-    headers:
-      api-supported-versions:
-      - 2020-08-15-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Mon, 07 Aug 2023 20:03:35 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6173bfd4-bd25-4281-acaf-e60149958f4b?api-version=2022-12-27
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '996'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine assess-patches
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6173bfd4-bd25-4281-acaf-e60149958f4b?api-version=2022-12-27
-  response:
-    body:
-      string: ''
-    headers:
-      api-supported-versions:
-      - 2020-08-15-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Mon, 07 Aug 2023 20:04:05 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6173bfd4-bd25-4281-acaf-e60149958f4b?api-version=2022-12-27
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '995'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine assess-patches
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6173bfd4-bd25-4281-acaf-e60149958f4b?api-version=2022-12-27
-  response:
-    body:
-      string: ''
-    headers:
-      api-supported-versions:
-      - 2020-08-15-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Mon, 07 Aug 2023 20:04:35 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6173bfd4-bd25-4281-acaf-e60149958f4b?api-version=2022-12-27
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '994'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine assess-patches
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6173bfd4-bd25-4281-acaf-e60149958f4b?api-version=2022-12-27
-  response:
-    body:
-      string: ''
-    headers:
-      api-supported-versions:
-      - 2020-08-15-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Mon, 07 Aug 2023 20:05:05 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6173bfd4-bd25-4281-acaf-e60149958f4b?api-version=2022-12-27
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '993'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - connectedmachine assess-patches
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --name
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/updateCenterOperationResults/6173bfd4-bd25-4281-acaf-e60149958f4b?api-version=2022-12-27
-  response:
-    body:
-      string: '{"startDateTime":"2023-08-07T20:02:01.7167291Z","lastModifiedDateTime":"2023-08-07T20:05:08.8414966Z","startedBy":"User","rebootPending":false,"patchServiceUsed":"WU","status":"Succeeded","availablePatchCountByClassification":{"security":0,"critical":0,"definition":1,"updateRollup":0,"featurePack":0,"servicePack":0,"tools":0,"updates":0},"assessmentActivityId":"6173bfd4-bd25-4281-acaf-e60149958f4b","osType":"Windows"}'
-    headers:
-      api-supported-versions:
-      - 2020-08-15-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '421'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 07 Aug 2023 20:05:35 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '992'
     status:
       code: 200
       message: OK
@@ -1177,20 +114,16 @@ interactions:
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine/extensions/custom-test","name":"custom-test","location":"eastus2euap","type":"Microsoft.HybridCompute/machines/extensions","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-test","type":"CustomScriptExtension","typeHandlerVersion":"1.10.10","status":{"code":"0","level":"Information","message":"Extension
-        Message: Command execution finished, StdOut: LAPTOP-S0HSJ7FB\r\n"}}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine/extensions/WindowsOsUpdateExtension","name":"WindowsOsUpdateExtension","location":"eastus2euap","type":"Microsoft.HybridCompute/machines/extensions","properties":{"publisher":"Microsoft.SoftwareUpdateManagement","type":"WindowsOsUpdateExtension","typeHandlerVersion":"1.0.15.0","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"updateConfiguration":{"activityId":"6173bfd4-bd25-4281-acaf-e60149958f4b","startTime":"2023-08-07T20:02:01.7167291Z","action":"Assessment"}},"provisioningState":"Succeeded","instanceView":{"name":"WindowsOsUpdateExtension","type":"WindowsOsUpdateExtension","typeHandlerVersion":"1.0.15.0","status":{"code":"0","level":"Information","message":"Extension
-        Message: Assessment operation with activity id 6173bfd4-bd25-4281-acaf-e60149958f4b
-        completed successfully. 7 patches were found. , OperationResult: {\"activityId\":\"6173bfd4-bd25-4281-acaf-e60149958f4b\",\"inputStartTime\":\"2023-08-07T20:02:01Z\",\"lastModifiedTime\":\"2023-08-07T20:02:42Z\",\"extensionTriggerTime\":\"2023-08-07T20:02:14Z\",\"action\":\"Assessment\",\"actionStatus\":\"success\",\"patchServiceUsed\":\"WU\",\"assessmentDetails\":{\"rebootPending\":false,\"countByCategory\":{\"critical\":0,\"security\":0,\"updateRollup\":0,\"featurePack\":0,\"servicePack\":0,\"definition\":1,\"tools\":0,\"updates\":0,\"other\":6},\"totalCount\":7,\"patches\":\"zZVLb9RADMe/SpQTSHV23o/e+hCiouVAC0hUPcyzHbGblCS7VYX47jhbxEJbQCsuK+WQcTz2zM9/O5df6+VtdGM6ifV+HYKVlDEF3AcNwnoGzkUJLDPrgnIyOFLv1a1bJPQ+T2HZl/G+OmnHNJ+X69SGVL1fh6ty11dnJfTd0OWxOk45tTH11UE7llXpl0MF1ZtDTKUVYdWLD6kfStdWtOGWN0wy05CXmOmzX5/rhx8awtwNQ8kluBH9h3r/ssbYpS3Tsr5CB0x+3fUlTd9w3SffdeNhunGr0vUY621apf7d2jpgwNuln5fhJsVj3HhR1hdjhHEgBoi+IHqfEHw+oeti6MP5tBvvXO+3y/n8295v+Bye0xLuQSeB+BJPYIykGCoRSq3XyuQNvjU1xHB+P4xpgS9iRtmMEaoryh6yVgdnaKeiQR5CN4qTn0ym9M/heIygTj4HmoMETZ0AkbUHrKXDElsnCadEYE2fA3Xk2nfpyzIN4wOtP8KiSIoDE9vBilLrJImD7IkHIYIBw2QE77zOMlFqXNjA2kgJqtcnx0fTvSc0ZMb0xEw+YmYb21CCKtpVYBYo3RKYC4Y5aiFb70BIG8HxiZ9UUXjOVHbuL+qyM2qfVRdtdEMQFtlZVjiAtmSVFc+GxIxqygyExxN6pSQorhX3kTBt+IbVaWq7VVedjrFBIK9Kv7hzfZrYNIogm50EM40oBcxuB0ZlGTRRCmhgBETAEeU1JSADyTGxaGJmGzAfSxu7uwE1spnFkjBDzfOz+AkGroz1EVvbM6yicFmAicKBU9wyEWSyUf4/Br11L2lvsnLRYmWEmX50FFwQqJQccGxbJgUTT/TxSzOxhjZU7q4wsGn+SeTqOw==\",\"action\":\"Assessment\"},\"topLevelStatusMessage\":\"Assessment
-        operation with activity id 6173bfd4-bd25-4281-acaf-e60149958f4b completed
-        successfully. 7 patches were found. \",\"internalErrorMessage\":\"\",\"topLevelStatus\":0,\"logs\":\"i44FAA==\",\"errorCount\":0,\"failureRetryCount\":0,\"retriggerCount\":0,\"sequenceNumber\":3,\"errors\":null}"}}}}]}'
+        Message: Command execution finished, StdOut: LAPTOP-S0HSJ7FB\r\n"}}}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3501'
+      - '753'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 07 Aug 2023 20:05:36 GMT
+      - Tue, 25 Jul 2023 22:44:38 GMT
       expires:
       - '-1'
       pragma:
@@ -1237,7 +170,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 07 Aug 2023 20:05:37 GMT
+      - Tue, 25 Jul 2023 22:44:39 GMT
       expires:
       - '-1'
       pragma:
@@ -1283,7 +216,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 07 Aug 2023 20:05:37 GMT
+      - Tue, 25 Jul 2023 22:44:39 GMT
       expires:
       - '-1'
       pragma:
@@ -1329,7 +262,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 07 Aug 2023 20:05:39 GMT
+      - Tue, 25 Jul 2023 22:44:40 GMT
       expires:
       - '-1'
       pragma:
@@ -1374,7 +307,7 @@ interactions:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/90549bde-53ec-4ed7-8cb4-49cd124c9fd7?api-version=2022-12-27
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/664dc06b-b55a-41bb-914e-b453ded02964?api-version=2022-12-27
       cache-control:
       - no-cache
       content-length:
@@ -1382,11 +315,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 07 Aug 2023 20:05:40 GMT
+      - Tue, 25 Jul 2023 22:44:40 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/90549bde-53ec-4ed7-8cb4-49cd124c9fd7?api-version=2022-12-27
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/664dc06b-b55a-41bb-914e-b453ded02964?api-version=2022-12-27
       pragma:
       - no-cache
       server:
@@ -1416,13 +349,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/90549bde-53ec-4ed7-8cb4-49cd124c9fd7?api-version=2022-12-27
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/664dc06b-b55a-41bb-914e-b453ded02964?api-version=2022-12-27
   response:
     body:
-      string: '{"name":"90549bde-53ec-4ed7-8cb4-49cd124c9fd7","status":"Queued","startTime":"2023-08-07T20:05:40.3946764Z"}'
+      string: '{"name":"664dc06b-b55a-41bb-914e-b453ded02964","status":"Queued","startTime":"2023-07-25T22:44:41.3828077Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/90549bde-53ec-4ed7-8cb4-49cd124c9fd7?api-version=2022-12-27
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/664dc06b-b55a-41bb-914e-b453ded02964?api-version=2022-12-27
       cache-control:
       - no-cache
       content-length:
@@ -1430,11 +363,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 07 Aug 2023 20:05:40 GMT
+      - Tue, 25 Jul 2023 22:44:41 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/90549bde-53ec-4ed7-8cb4-49cd124c9fd7?api-version=2022-12-27
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/664dc06b-b55a-41bb-914e-b453ded02964?api-version=2022-12-27
       pragma:
       - no-cache
       server:
@@ -1466,13 +399,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/90549bde-53ec-4ed7-8cb4-49cd124c9fd7?api-version=2022-12-27
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/664dc06b-b55a-41bb-914e-b453ded02964?api-version=2022-12-27
   response:
     body:
-      string: '{"name":"90549bde-53ec-4ed7-8cb4-49cd124c9fd7","status":"InProgress","startTime":"2023-08-07T20:05:40.3946764Z"}'
+      string: '{"name":"664dc06b-b55a-41bb-914e-b453ded02964","status":"InProgress","startTime":"2023-07-25T22:44:41.3828077Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/90549bde-53ec-4ed7-8cb4-49cd124c9fd7?api-version=2022-12-27
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/664dc06b-b55a-41bb-914e-b453ded02964?api-version=2022-12-27
       cache-control:
       - no-cache
       content-length:
@@ -1480,11 +413,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 07 Aug 2023 20:07:40 GMT
+      - Tue, 25 Jul 2023 22:46:41 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/90549bde-53ec-4ed7-8cb4-49cd124c9fd7?api-version=2022-12-27
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/664dc06b-b55a-41bb-914e-b453ded02964?api-version=2022-12-27
       pragma:
       - no-cache
       server:
@@ -1516,10 +449,60 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/90549bde-53ec-4ed7-8cb4-49cd124c9fd7?api-version=2022-12-27
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/664dc06b-b55a-41bb-914e-b453ded02964?api-version=2022-12-27
   response:
     body:
-      string: '{"name":"90549bde-53ec-4ed7-8cb4-49cd124c9fd7","status":"Succeeded","startTime":"2023-08-07T20:05:40.3946764Z","properties":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine/extensions/custom-test","name":"custom-test","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-test","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","status":{"code":"0","level":"Information","message":"Extension
+      string: '{"name":"664dc06b-b55a-41bb-914e-b453ded02964","status":"InProgress","startTime":"2023-07-25T22:44:41.3828077Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/664dc06b-b55a-41bb-914e-b453ded02964?api-version=2022-12-27
+      cache-control:
+      - no-cache
+      content-length:
+      - '112'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 25 Jul 2023 22:48:42 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/664dc06b-b55a-41bb-914e-b453ded02964?api-version=2022-12-27
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine upgrade-extension
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --extension-targets --machine-name --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/664dc06b-b55a-41bb-914e-b453ded02964?api-version=2022-12-27
+  response:
+    body:
+      string: '{"name":"664dc06b-b55a-41bb-914e-b453ded02964","status":"Succeeded","startTime":"2023-07-25T22:44:41.3828077Z","properties":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine/extensions/custom-test","name":"custom-test","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":true,"settings":{"commandToExecute":"hostname"},"provisioningState":"Succeeded","instanceView":{"name":"custom-test","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","status":{"code":"0","level":"Information","message":"Extension
         Message: Command execution finished, StdOut: LAPTOP-S0HSJ7FB\r\n"}}}}]}'
     headers:
       cache-control:
@@ -1529,7 +512,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 07 Aug 2023 20:09:40 GMT
+      - Tue, 25 Jul 2023 22:50:41 GMT
       expires:
       - '-1'
       pragma:
@@ -1576,7 +559,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 07 Aug 2023 20:09:42 GMT
+      - Tue, 25 Jul 2023 22:50:43 GMT
       expires:
       - '-1'
       pragma:
@@ -1626,7 +609,7 @@ interactions:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/4adc90a9-e6a0-45f1-9325-3dc2f29b4ef1?api-version=2022-12-27
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/fff41960-c386-4416-a918-f91b45315437?api-version=2022-12-27
       cache-control:
       - no-cache
       content-length:
@@ -1634,11 +617,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 07 Aug 2023 20:09:42 GMT
+      - Tue, 25 Jul 2023 22:50:43 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/4adc90a9-e6a0-45f1-9325-3dc2f29b4ef1?api-version=2022-12-27
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/fff41960-c386-4416-a918-f91b45315437?api-version=2022-12-27
       pragma:
       - no-cache
       server:
@@ -1668,13 +651,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/4adc90a9-e6a0-45f1-9325-3dc2f29b4ef1?api-version=2022-12-27
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/fff41960-c386-4416-a918-f91b45315437?api-version=2022-12-27
   response:
     body:
-      string: '{"name":"4adc90a9-e6a0-45f1-9325-3dc2f29b4ef1","status":"Queued","startTime":"2023-08-07T20:09:42.9942743Z"}'
+      string: '{"name":"fff41960-c386-4416-a918-f91b45315437","status":"Queued","startTime":"2023-07-25T22:50:43.7179985Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/4adc90a9-e6a0-45f1-9325-3dc2f29b4ef1?api-version=2022-12-27
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/fff41960-c386-4416-a918-f91b45315437?api-version=2022-12-27
       cache-control:
       - no-cache
       content-length:
@@ -1682,11 +665,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 07 Aug 2023 20:09:43 GMT
+      - Tue, 25 Jul 2023 22:50:43 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/4adc90a9-e6a0-45f1-9325-3dc2f29b4ef1?api-version=2022-12-27
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/fff41960-c386-4416-a918-f91b45315437?api-version=2022-12-27
       pragma:
       - no-cache
       server:
@@ -1718,13 +701,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/4adc90a9-e6a0-45f1-9325-3dc2f29b4ef1?api-version=2022-12-27
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/fff41960-c386-4416-a918-f91b45315437?api-version=2022-12-27
   response:
     body:
-      string: '{"name":"4adc90a9-e6a0-45f1-9325-3dc2f29b4ef1","status":"InProgress","startTime":"2023-08-07T20:09:42.9942743Z"}'
+      string: '{"name":"fff41960-c386-4416-a918-f91b45315437","status":"InProgress","startTime":"2023-07-25T22:50:43.7179985Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/4adc90a9-e6a0-45f1-9325-3dc2f29b4ef1?api-version=2022-12-27
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/fff41960-c386-4416-a918-f91b45315437?api-version=2022-12-27
       cache-control:
       - no-cache
       content-length:
@@ -1732,11 +715,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 07 Aug 2023 20:11:42 GMT
+      - Tue, 25 Jul 2023 22:52:43 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/4adc90a9-e6a0-45f1-9325-3dc2f29b4ef1?api-version=2022-12-27
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/fff41960-c386-4416-a918-f91b45315437?api-version=2022-12-27
       pragma:
       - no-cache
       server:
@@ -1768,14 +751,14 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/4adc90a9-e6a0-45f1-9325-3dc2f29b4ef1?api-version=2022-12-27
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/fff41960-c386-4416-a918-f91b45315437?api-version=2022-12-27
   response:
     body:
-      string: '{"name":"4adc90a9-e6a0-45f1-9325-3dc2f29b4ef1","status":"Succeeded","startTime":"2023-08-07T20:09:42.9942743Z","properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine/extensions/custom-test","name":"custom-test","location":"eastus2euap","type":"Microsoft.HybridCompute/machines/extensions","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"dir"},"provisioningState":"Succeeded","instanceView":{"name":"custom-test","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","status":{"code":"0","level":"Information","message":"Extension
+      string: '{"name":"fff41960-c386-4416-a918-f91b45315437","status":"Succeeded","startTime":"2023-07-25T22:50:43.7179985Z","properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine/extensions/custom-test","name":"custom-test","location":"eastus2euap","type":"Microsoft.HybridCompute/machines/extensions","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"dir"},"provisioningState":"Succeeded","instanceView":{"name":"custom-test","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","status":{"code":"0","level":"Information","message":"Extension
         Message: Command execution finished, StdOut:  Volume in drive C is Windows\r\n
-        Volume Serial Number is 8ACF-78D8\r\n\r\n Directory of C:\\Packages\\Plugins\\Microsoft.Compute.CustomScriptExtension\\1.10.12\\Downloads\\1\r\n\r\n08/07/2023  01:09
-        PM    <DIR>          .\r\n08/07/2023  01:09 PM    <DIR>          ..\r\n               0
-        File(s)              0 bytes\r\n               2 Dir(s)  265,979,797,504 bytes
+        Volume Serial Number is 8ACF-78D8\r\n\r\n Directory of C:\\Packages\\Plugins\\Microsoft.Compute.CustomScriptExtension\\1.10.12\\Downloads\\1\r\n\r\n07/25/2023  03:50
+        PM    <DIR>          .\r\n07/25/2023  03:50 PM    <DIR>          ..\r\n               0
+        File(s)              0 bytes\r\n               2 Dir(s)  275,033,788,416 bytes
         free\r\n"}}}}}'
     headers:
       cache-control:
@@ -1785,7 +768,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 07 Aug 2023 20:13:43 GMT
+      - Tue, 25 Jul 2023 22:54:44 GMT
       expires:
       - '-1'
       pragma:
@@ -1824,9 +807,9 @@ interactions:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/az-sdk-test/providers/Microsoft.HybridCompute/machines/testmachine/extensions/custom-test","name":"custom-test","type":"Microsoft.HybridCompute/machines/extensions","location":"eastus2euap","properties":{"publisher":"Microsoft.Compute","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","autoUpgradeMinorVersion":false,"enableAutomaticUpgrade":false,"settings":{"commandToExecute":"dir"},"provisioningState":"Succeeded","instanceView":{"name":"custom-test","type":"CustomScriptExtension","typeHandlerVersion":"1.10.12","status":{"code":"0","level":"Information","message":"Extension
         Message: Command execution finished, StdOut:  Volume in drive C is Windows\r\n
-        Volume Serial Number is 8ACF-78D8\r\n\r\n Directory of C:\\Packages\\Plugins\\Microsoft.Compute.CustomScriptExtension\\1.10.12\\Downloads\\1\r\n\r\n08/07/2023  01:09
-        PM    <DIR>          .\r\n08/07/2023  01:09 PM    <DIR>          ..\r\n               0
-        File(s)              0 bytes\r\n               2 Dir(s)  265,979,797,504 bytes
+        Volume Serial Number is 8ACF-78D8\r\n\r\n Directory of C:\\Packages\\Plugins\\Microsoft.Compute.CustomScriptExtension\\1.10.12\\Downloads\\1\r\n\r\n07/25/2023  03:50
+        PM    <DIR>          .\r\n07/25/2023  03:50 PM    <DIR>          ..\r\n               0
+        File(s)              0 bytes\r\n               2 Dir(s)  275,033,788,416 bytes
         free\r\n"}}}}'
     headers:
       cache-control:
@@ -1836,7 +819,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 07 Aug 2023 20:13:43 GMT
+      - Tue, 25 Jul 2023 22:54:45 GMT
       expires:
       - '-1'
       pragma:
@@ -1878,7 +861,7 @@ interactions:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/4ce9f461-bc84-4d6c-835f-468d075f86d3?api-version=2022-12-27
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/7d1b4f42-a389-4abd-9e6b-a3e9bac5864d?api-version=2022-12-27
       cache-control:
       - no-cache
       content-length:
@@ -1886,11 +869,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 07 Aug 2023 20:13:44 GMT
+      - Tue, 25 Jul 2023 22:54:46 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/4ce9f461-bc84-4d6c-835f-468d075f86d3?api-version=2022-12-27
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/7d1b4f42-a389-4abd-9e6b-a3e9bac5864d?api-version=2022-12-27
       pragma:
       - no-cache
       server:
@@ -1920,13 +903,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/4ce9f461-bc84-4d6c-835f-468d075f86d3?api-version=2022-12-27
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/7d1b4f42-a389-4abd-9e6b-a3e9bac5864d?api-version=2022-12-27
   response:
     body:
-      string: '{"name":"4ce9f461-bc84-4d6c-835f-468d075f86d3","status":"Queued","startTime":"2023-08-07T20:13:45.1240123Z"}'
+      string: '{"name":"7d1b4f42-a389-4abd-9e6b-a3e9bac5864d","status":"Queued","startTime":"2023-07-25T22:54:46.7559384Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/4ce9f461-bc84-4d6c-835f-468d075f86d3?api-version=2022-12-27
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/7d1b4f42-a389-4abd-9e6b-a3e9bac5864d?api-version=2022-12-27
       cache-control:
       - no-cache
       content-length:
@@ -1934,11 +917,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 07 Aug 2023 20:13:45 GMT
+      - Tue, 25 Jul 2023 22:54:46 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/4ce9f461-bc84-4d6c-835f-468d075f86d3?api-version=2022-12-27
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/7d1b4f42-a389-4abd-9e6b-a3e9bac5864d?api-version=2022-12-27
       pragma:
       - no-cache
       server:
@@ -1970,13 +953,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/4ce9f461-bc84-4d6c-835f-468d075f86d3?api-version=2022-12-27
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/7d1b4f42-a389-4abd-9e6b-a3e9bac5864d?api-version=2022-12-27
   response:
     body:
-      string: '{"name":"4ce9f461-bc84-4d6c-835f-468d075f86d3","status":"InProgress","startTime":"2023-08-07T20:13:45.1240123Z"}'
+      string: '{"name":"7d1b4f42-a389-4abd-9e6b-a3e9bac5864d","status":"InProgress","startTime":"2023-07-25T22:54:46.7559384Z"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/4ce9f461-bc84-4d6c-835f-468d075f86d3?api-version=2022-12-27
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/7d1b4f42-a389-4abd-9e6b-a3e9bac5864d?api-version=2022-12-27
       cache-control:
       - no-cache
       content-length:
@@ -1984,11 +967,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 07 Aug 2023 20:15:45 GMT
+      - Tue, 25 Jul 2023 22:56:46 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/4ce9f461-bc84-4d6c-835f-468d075f86d3?api-version=2022-12-27
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationresults/7d1b4f42-a389-4abd-9e6b-a3e9bac5864d?api-version=2022-12-27
       pragma:
       - no-cache
       server:
@@ -2020,10 +1003,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/4ce9f461-bc84-4d6c-835f-468d075f86d3?api-version=2022-12-27
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/locations/eastus2euap/operationstatus/7d1b4f42-a389-4abd-9e6b-a3e9bac5864d?api-version=2022-12-27
   response:
     body:
-      string: '{"name":"4ce9f461-bc84-4d6c-835f-468d075f86d3","status":"Succeeded","startTime":"2023-08-07T20:13:45.1240123Z"}'
+      string: '{"name":"7d1b4f42-a389-4abd-9e6b-a3e9bac5864d","status":"Succeeded","startTime":"2023-07-25T22:54:46.7559384Z"}'
     headers:
       cache-control:
       - no-cache
@@ -2032,7 +1015,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 07 Aug 2023 20:17:45 GMT
+      - Tue, 25 Jul 2023 22:58:46 GMT
       expires:
       - '-1'
       pragma:
@@ -2080,7 +1063,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 07 Aug 2023 20:17:48 GMT
+      - Tue, 25 Jul 2023 22:58:49 GMT
       expires:
       - '-1'
       pragma:
