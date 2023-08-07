@@ -1522,6 +1522,10 @@ class ManagedEnvironmentPreviewClient(ManagedEnvironmentClient):
     api_version = PREVIEW_API_VERSION
 
 
+class AuthPreviewClient(AuthClient):
+    api_version = PREVIEW_API_VERSION
+
+
 class ConnectedEnvironmentClient():
     api_version = ARC_PREVIEW_API_VERSION
 

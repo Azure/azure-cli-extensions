@@ -36,9 +36,8 @@ from msrest.exceptions import DeserializationError
 
 from .containerapp_job_decorator import ContainerAppJobDecorator, ContainerAppJobCreateDecorator
 from .containerapp_env_decorator import ContainerAppEnvDecorator, ContainerAppEnvCreateDecorator, ContainerAppEnvUpdateDecorator
-from .containerapp_auth_decorator import ContainerAppAuthDecorator
-from .containerapp_decorator import ContainerAppCreateDecorator, BaseContainerAppDecorator, \
-    ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator
+from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
+from .containerapp_decorator import BaseContainerAppDecorator, ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_exception
 from ._clients import (
     ManagedEnvironmentClient,
@@ -49,7 +48,8 @@ from ._clients import (
     AuthClient,
     WorkloadProfileClient,
     ContainerAppsJobClient,
-    ContainerAppPreviewClient
+    ContainerAppPreviewClient,
+    AuthPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._github_oauth import get_github_access_token
@@ -5038,9 +5038,9 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
                        proxy_convention=None, proxy_custom_host_header=None,
                        proxy_custom_proto_header=None, excluded_paths=None):
     raw_parameters = locals()
-    containerapp_auth_decorator = ContainerAppAuthDecorator(
+    containerapp_auth_decorator = ContainerAppPreviewAuthDecorator(
         cmd=cmd,
-        client=AuthClient,
+        client=AuthPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
@@ -5051,9 +5051,9 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
 
 def show_auth_config(cmd, resource_group_name, name):
     raw_parameters = locals()
-    containerapp_auth_decorator = ContainerAppAuthDecorator(
+    containerapp_auth_decorator = ContainerAppPreviewAuthDecorator(
         cmd=cmd,
-        client=AuthClient,
+        client=AuthPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )

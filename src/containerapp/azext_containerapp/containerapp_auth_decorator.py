@@ -110,3 +110,10 @@ class ContainerAppAuthDecorator(BaseResource):
 
     def get_argument_excluded_paths(self):
         return self.get_param("excluded_paths")
+
+
+# decorator for preview auth show/update
+class ContainerAppPreviewAuthDecorator(ContainerAppAuthDecorator):
+    
+    def construct_payload(self):
+        super().construct_payload()
