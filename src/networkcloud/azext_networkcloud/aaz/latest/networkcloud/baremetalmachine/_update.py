@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine update",
-    is_experimental=True,
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update properties of the provided bare metal machine, or update tags associated with the bare metal machine. Properties and tag updates can be done independently.
@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-12-preview",
+        "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}", "2023-07-01"],
         ]
     }
 
@@ -165,7 +165,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }
@@ -279,6 +279,10 @@ class _UpdateHelper:
         )
 
         properties = _schema_bare_metal_machine_read.properties
+        properties.associated_resource_ids = AAZListType(
+            serialized_name="associatedResourceIds",
+            flags={"read_only": True},
+        )
         properties.bmc_connection_string = AAZStrType(
             serialized_name="bmcConnectionString",
             flags={"required": True},
@@ -385,6 +389,9 @@ class _UpdateHelper:
             serialized_name="virtualMachinesAssociatedIds",
             flags={"read_only": True},
         )
+
+        associated_resource_ids = _schema_bare_metal_machine_read.properties.associated_resource_ids
+        associated_resource_ids.Element = AAZStrType()
 
         bmc_credentials = _schema_bare_metal_machine_read.properties.bmc_credentials
         bmc_credentials.password = AAZStrType(

@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster update",
-    is_experimental=True,
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update the properties of the provided cluster, or update the tags associated with the cluster. Properties and tag updates can be done independently.
@@ -22,16 +22,16 @@ class Update(AAZCommand):
         az networkcloud cluster update --name "clusterName" --cluster-location "Foo Street, 3rd Floor, row 9" --tags key1="myvalue1" key2="myvalue2" --resource-group "resourceGroupName"
 
     :example: Patch cluster aggregatorOrSingleRackDefinition
-        az networkcloud cluster update --name "clusterName" --aggregator-or-single-rack-definition "{networkRackId:'/subscriptions/subscriptionId/resourceGroups/rgName/providers/Microsoft.Network/virtualNetworks/cmName/subnets/ClusterManagerSubnet',rackSkuId:'/subscriptions/subscriptionId/providers/Microsoft.NetworkCloud/rackSkus/VLab_Single_DellR750_8C2M_x70r3_9',rackSerialNumber:b99m99r1,rackLocation:b99m99r1,availabilityZone:1,storageApplianceConfigurationData:[{rackSlot:1,adminCredentials:{username:'adminuser',password:'password'},storageApplianceName:name,serialNumber:serial}],bareMetalMachineConfigurationData:[{bmcCredentials:{password:'bmcPassword',username:'root'},bmcMacAddress:'AA:BB:CC:DD:E7:08',bootMacAddress:'AA:BB:CC:F8:71:2E',machineName:lab00r750wkr1,rackSlot:2,serialNumber:5HS7PK3},{bmcCredentials:{password:'bmcPassword',username:'root'},bmcMacAddress:'AA:BB:CC:FD:DC:76',bootMacAddress:'AA:BB:CC:F8:50:CA',machineName:lab00r750wkr8,rackSlot:11,serialNumber:9M56PK3}]}" --compute-deployment-threshold type="PercentSuccess" grouping="PerCluster" value=90 --tags key1="myvalue1" key2="myvalue2" --resource-group "resourceGroupName"
+        az networkcloud cluster update --name "clusterName" --aggregator-or-single-rack-definition "{networkRackId:'/subscriptions/subscriptionId/resourceGroups/rgName/providers/Microsoft.Network/virtualNetworks/cmName/subnets/ClusterManagerSubnet',rackSkuId:'/subscriptions/subscriptionId/providers/Microsoft.NetworkCloud/rackSkus/VLab_Single_DellR750_8C2M_x70r3_9',rackSerialNumber:b99m99r1,rackLocation:b99m99r1,availabilityZone:1,storageApplianceConfigurationData:[{rackSlot:1,adminCredentials:{username:'adminuser',password:'password'},storageApplianceName:name,serialNumber:serial}],bareMetalMachineConfigurationData:[{bmcCredentials:{password:'bmcPassword',username:'root'},bmcMacAddress:'AA:BB:CC:DD:E7:08',bootMacAddress:'AA:BB:CC:F8:71:2E',machineName:lab00r750wkr1,rackSlot:2,serialNumber:5HS7PK3},{bmcCredentials:{password:'bmcPassword',username:'root'},bmcMacAddress:'AA:BB:CC:FD:DC:76',bootMacAddress:'AA:BB:CC:F8:50:CA',machineName:lab00r750wkr8,rackSlot:11,serialNumber:9M56PK3}]}" --compute-deployment-threshold type="PercentSuccess" grouping="PerCluster" value=90 --tags key1="myvalue1" key2="myvalue2" --resource-group "resourceGroupName
 
     :example: Patch cluster aggregatorOrSingleRackDefinition using json file input
         az networkcloud cluster update --name "clusterName" --aggregator-or-single-rack-definition ./aggregator-or-single-rack-definition.json --compute-deployment-threshold type="PercentSuccess" grouping="PerCluster" value=90 --tags key1="myvalue1" key2="myvalue2" --resource-group "resourceGroupName"
     """
 
     _aaz_info = {
-        "version": "2022-12-12-preview",
+        "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2023-07-01"],
         ]
     }
 
@@ -426,7 +426,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }
@@ -627,7 +627,6 @@ class _UpdateHelper:
         cls._build_schema_rack_definition_read(properties.aggregator_or_single_rack_definition)
         properties.analytics_workspace_id = AAZStrType(
             serialized_name="analyticsWorkspaceId",
-            flags={"required": True},
         )
         properties.available_upgrade_versions = AAZListType(
             serialized_name="availableUpgradeVersions",

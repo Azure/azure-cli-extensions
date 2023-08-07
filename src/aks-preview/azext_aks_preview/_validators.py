@@ -186,9 +186,10 @@ def validate_vm_set_type(namespace):
         if namespace.vm_set_type == '':
             return
         if namespace.vm_set_type.lower() != "availabilityset" and \
+            namespace.vm_set_type.lower() != "virtualmachines" and \
                 namespace.vm_set_type.lower() != "virtualmachinescalesets":
             raise CLIError(
-                "--vm-set-type can only be VirtualMachineScaleSets or AvailabilitySet")
+                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only)")
 
 
 def validate_load_balancer_sku(namespace):
@@ -229,19 +230,32 @@ def validate_load_balancer_outbound_ip_prefixes(namespace):
                 "--load-balancer-outbound-ip-prefixes cannot contain whitespace")
 
 
-def validate_taints(namespace):
+def validate_nodepool_taints(namespace):
+    """Validates that provided node taints is a valid format"""
+
+    if hasattr(namespace, 'nodepool_taints'):
+        taintsStr = namespace.nodepool_taints
+    else:
+        taintsStr = namespace.node_taints
+
+    if taintsStr is None or taintsStr == '':
+        return
+
+    for taint in taintsStr.split(','):
+        validate_taint(taint)
+
+
+def validate_taint(taint):
     """Validates that provided taint is a valid format"""
 
     regex = re.compile(
         r"^[a-zA-Z\d][\w\-\.\/]{0,252}=[a-zA-Z\d][\w\-\.]{0,62}:(NoSchedule|PreferNoSchedule|NoExecute)$")  # pylint: disable=line-too-long
 
-    if namespace.node_taints is not None and namespace.node_taints != '':
-        for taint in namespace.node_taints.split(','):
-            if taint == "":
-                continue
-            found = regex.findall(taint)
-            if not found:
-                raise CLIError('Invalid node taint: %s' % taint)
+    if taint == "":
+        return
+    found = regex.findall(taint)
+    if not found:
+        raise ArgumentUsageError('Invalid node taint: %s' % taint)
 
 
 def validate_priority(namespace):

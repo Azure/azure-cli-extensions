@@ -15,10 +15,12 @@ from .config import CONFIG
 
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
+    pass
 
 
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
+    pass
 
 
 def call_scenario1(test):
@@ -45,10 +47,8 @@ def step_create(test, checks=None):
         checks = []
     test.cmd('az networkcloud l3network create --name {name} --extended-location '
              'name={extendedLocation} type="CustomLocation" --location {location} '
-             '--hybrid-aks-ipam-enabled {hybridAksIpamEnabled} '
-             '--hybrid-aks-plugin-type  {hybridAksPluginType} '
-             ' --interface-name "eth0"  --ip-allocation-type {ipAllocationType}'
-             ' --ipv4-connected-prefix {ipv4prefix} --ipv6-connected-prefix {ipv6prefix} '
+             '--interface-name "eth0"  --ip-allocation-type {ipAllocationType} '
+             '--ipv4-connected-prefix {ipv4prefix} --ipv6-connected-prefix {ipv6prefix} '
              '--l3-isolation-domain-id {l3_isolation_domain_id} --vlan {vlan} --tags '
              ' {tags} --resource-group {rg}', checks=checks)
 
@@ -105,8 +105,6 @@ class L3NetworkScenarioTest(ScenarioTest):
             "type": CONFIG.get('L3_NETWORK', 'type'),
             'vlan': CONFIG.get('L3_NETWORK', 'vlan'),
             "ipAllocationType": CONFIG.get('L3_NETWORK', 'ip_allocation_type'),
-            "hybridAksPluginType": CONFIG.get('L3_NETWORK', 'hybrid_aks_plugin_type'),
-            "hybridAksIpamEnabled": CONFIG.get('L3_NETWORK', 'hybrid_aks_ipam_enabled'),
             "ipv4prefix": CONFIG.get('L3_NETWORK', 'ipv4prefix'),
             "ipv6prefix": CONFIG.get('L3_NETWORK', 'ipv6prefix'),
             "l3_isolation_domain_id": CONFIG.get('L3_NETWORK', 'l3_isolation_domain_id'),

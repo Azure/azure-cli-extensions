@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.25.0
+* Add support for performing database merge for Sql and MongoDB database account.
+
+++++++
 0.24.0
 * Create and manage mongo clusters.
 * Add 'source_backup_location' parameter to 'cosmosdb restore' command
