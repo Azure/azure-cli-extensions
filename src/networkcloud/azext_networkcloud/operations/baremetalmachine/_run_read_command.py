@@ -3,28 +3,23 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 #
 # --------------------------------------------------------------------------------------------
-# pylint: disable=unused-wildcard-import,anomalous-backslash-in-string,wildcard-import
 # pylint: disable=protected-access,duplicate-code
-# flake8: noqa
 
 """
  This code inherits the auto-generated code for BMM run read command, and adds retrieval of
  custom properties. It also processes the output directory if given and downloads the results
  of the command.
 """
-
-from pathlib import Path
-
-from azure.cli.core.aaz import *
-from azure.cli.core.azclierror import FileOperationError
-
-from ...aaz.latest.networkcloud.baremetalmachine import \
-    RunReadCommand as _RunReadCommand
-from ..custom_properties import CustomActionProperties
+from azext_networkcloud.aaz.latest.networkcloud.baremetalmachine import (
+    RunReadCommand as _RunReadCommand,
+)
+from azext_networkcloud.operations.custom_properties import CustomActionProperties
+from azext_networkcloud.operations.run_command_options import RunCommandOptions
+from azure.cli.core.aaz import AAZObjectType, AAZStrArg, AAZStrArgFormat
 
 
-class RunReadCommand(_RunReadCommand):
-    '''Custom class for baremetalmachine run read command '''
+class RunReadCommand(RunCommandOptions, _RunReadCommand):
+    """Custom class for baremetalmachine run read command"""
 
     # Handle custom properties returned by the actions
     # when run read command is executed.
@@ -38,12 +33,10 @@ class RunReadCommand(_RunReadCommand):
         args_schema.output = AAZStrArg(
             options=["--output-directory"],
             arg_group="BareMetalMachineRunReadCommandsParameters",
-            help="The output directory where the script execution results will be" +
-            " downloaded to from storage blob. Accepts relative or qualified directory path.",
+            help="The output directory where the script execution results will be"
+            + " downloaded to from storage blob. Accepts relative or qualified directory path.",
             required=False,
-            fmt=AAZStrArgFormat(
-                pattern="^(.+)([^\/]*)$"
-            )
+            fmt=AAZStrArgFormat(pattern=r"^(.+)([^\/]*)$"),
         )
         return args_schema
 
@@ -52,27 +45,19 @@ class RunReadCommand(_RunReadCommand):
         yield self.BareMetalMachineRunReadCommand(ctx=self.ctx)()
         self.post_operations()
 
-    def pre_operations(self):
-        args = self.ctx.args
-        output_directory = args.output
-        if has_value(args.output):
-            try:
-                Path(f"{output_directory}").mkdir(
-                    parents=True, exist_ok=True)
-            except OSError as ex:
-                raise FileOperationError(ex) from ex
-
-    class BareMetalMachineRunReadCommand(_RunReadCommand.BareMetalMachinesRunReadCommands):
-        '''Custom class for baremetalmachine run read command '''
+    class BareMetalMachineRunReadCommand(
+        _RunReadCommand.BareMetalMachinesRunReadCommands
+    ):
+        """Custom class for baremetalmachine run read command"""
 
         @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
-            cls._schema_on_200 = AAZObjectType()
+            cls._schema_on_200_201 = AAZObjectType()
             CustomActionProperties._build_schema_operation_status_result_read(
-                cls._schema_on_200)
+                cls._schema_on_200_201
+            )
 
-            return cls._schema_on_200
-
+            return cls._schema_on_200_201

@@ -12,17 +12,5 @@ def cf_timeseriesinsights_cl(cli_ctx, *_):
                                    TimeSeriesInsightsClient)
 
 
-def cf_environment(cli_ctx, *_):
-    return cf_timeseriesinsights_cl(cli_ctx).environments
-
-
 def cf_event_source(cli_ctx, *_):
     return cf_timeseriesinsights_cl(cli_ctx).event_sources
-
-
-def cf_reference_data_set(cli_ctx, *_):
-    return cf_timeseriesinsights_cl(cli_ctx).reference_data_sets
-
-
-def cf_access_policy(cli_ctx, *_):
-    return cf_timeseriesinsights_cl(cli_ctx).access_policies

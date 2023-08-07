@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud trunkednetwork list",
-    is_experimental=True,
+    is_preview=True,
 )
 class List(AAZCommand):
     """List trunked networks in the provided resource group or subscription.
@@ -26,10 +26,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-12-preview",
+        "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/trunkednetworks", "2022-12-12-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/trunkednetworks", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/trunkednetworks", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/trunkednetworks", "2023-07-01"],
         ]
     }
 
@@ -118,7 +118,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }
@@ -194,6 +194,10 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.associated_resource_ids = AAZListType(
+                serialized_name="associatedResourceIds",
+                flags={"read_only": True},
+            )
             properties.cluster_id = AAZStrType(
                 serialized_name="clusterId",
                 flags={"read_only": True},
@@ -231,6 +235,9 @@ class List(AAZCommand):
             properties.vlans = AAZListType(
                 flags={"required": True},
             )
+
+            associated_resource_ids = cls._schema_on_200.value.Element.properties.associated_resource_ids
+            associated_resource_ids.Element = AAZStrType()
 
             hybrid_aks_clusters_associated_ids = cls._schema_on_200.value.Element.properties.hybrid_aks_clusters_associated_ids
             hybrid_aks_clusters_associated_ids.Element = AAZStrType()
@@ -309,7 +316,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }
@@ -385,6 +392,10 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.associated_resource_ids = AAZListType(
+                serialized_name="associatedResourceIds",
+                flags={"read_only": True},
+            )
             properties.cluster_id = AAZStrType(
                 serialized_name="clusterId",
                 flags={"read_only": True},
@@ -422,6 +433,9 @@ class List(AAZCommand):
             properties.vlans = AAZListType(
                 flags={"required": True},
             )
+
+            associated_resource_ids = cls._schema_on_200.value.Element.properties.associated_resource_ids
+            associated_resource_ids.Element = AAZStrType()
 
             hybrid_aks_clusters_associated_ids = cls._schema_on_200.value.Element.properties.hybrid_aks_clusters_associated_ids
             hybrid_aks_clusters_associated_ids.Element = AAZStrType()

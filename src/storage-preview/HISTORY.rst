@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.9.0(2023-07-19)
+++++++++++++++++++
+* [BREAKING CHANGE] `az storage file/directory`: Default action changes from trimming trailing dot in file/directory names to not trimming, support `--disallow-trailing-dot` and `--disallow-source-trailing-dot`
+
 0.8.4(2023-04-27)
 ++++++++++++++++++
 * Bump azure_mgmt_storage to 2022_09_01 and remove commands supported in azure cli

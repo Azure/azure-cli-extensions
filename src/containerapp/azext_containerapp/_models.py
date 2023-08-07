@@ -206,10 +206,8 @@ JobTemplate = {
 
 # Added template for starting job executions
 JobExecutionTemplate = {
-    "template": {
-        "containers": None,  # [Container]
-        "initContainers": None  # [Container]
-    }
+    "containers": None,  # [Container]
+    "initContainers": None  # [Container]
 }
 
 JobConfiguration = {

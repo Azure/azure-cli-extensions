@@ -129,6 +129,7 @@ from azext_aks_preview._validators import (
     validate_node_public_ip_tags,
     validate_nodepool_id,
     validate_nodepool_labels,
+    validate_nodepool_taints,
     validate_nodepool_name,
     validate_nodepool_tags,
     validate_nodes_count,
@@ -146,7 +147,6 @@ from azext_aks_preview._validators import (
     validate_ssh_key_for_update,
     validate_start_date,
     validate_start_time,
-    validate_taints,
     validate_user,
     validate_utc_offset,
     validate_vm_set_type,
@@ -376,6 +376,7 @@ def load_arguments(self, _):
                    help='space-separated tags: key[=value] [key[=value] ...]. Use "" to clear existing tags.')
         c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels,
                    help='space-separated labels: key[=value] [key[=value] ...]. See https://aka.ms/node-labels for syntax of labels.')
+        c.argument('nodepool_taints', validator=validate_nodepool_taints)
         c.argument('node_osdisk_type', arg_type=get_enum_type(node_os_disk_types))
         c.argument('node_osdisk_size', type=int)
         c.argument('max_pods', type=int, options_list=['--max-pods', '-m'])
@@ -456,6 +457,7 @@ def load_arguments(self, _):
         c.argument('nrg_lockdown_restriction_level', arg_type=get_enum_type(nrg_lockdown_restriction_levels))
         c.argument('nat_gateway_managed_outbound_ip_count', type=int, validator=validate_nat_gateway_managed_outbound_ip_count)
         c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
+        c.argument('network_dataplane', arg_type=get_enum_type(network_dataplanes))
         c.argument('kube_proxy_config')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
         c.argument('node_os_upgrade_channel', arg_type=get_enum_type(node_os_upgrade_channels))
@@ -519,6 +521,7 @@ def load_arguments(self, _):
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels,
                    help='space-separated labels: key[=value] [key[=value] ...]. See https://aka.ms/node-labels for syntax of labels.')
+        c.argument('nodepool_taints', validator=validate_nodepool_taints)
         # misc
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('aks_custom_headers')
@@ -597,7 +600,7 @@ def load_arguments(self, _):
         c.argument('spot_max_price', type=float, validator=validate_spot_max_price)
         c.argument('labels', nargs='*', validator=validate_nodepool_labels)
         c.argument('tags', tags_type)
-        c.argument('node_taints', validator=validate_taints)
+        c.argument('node_taints', validator=validate_nodepool_taints)
         c.argument('node_osdisk_type', arg_type=get_enum_type(node_os_disk_types))
         c.argument('node_osdisk_size', type=int)
         c.argument('max_surge', validator=validate_max_surge)
@@ -606,6 +609,7 @@ def load_arguments(self, _):
         c.argument('max_pods', type=int, options_list=['--max-pods', '-m'])
         c.argument('zones', zones_type, options_list=['--zones', '-z'], help='Space-separated list of availability zones where agent nodes will be placed.')
         c.argument('ppg')
+        c.argument('vm_set_type', validator=validate_vm_set_type)
         c.argument('enable_encryption_at_host', action='store_true')
         c.argument('enable_ultra_ssd', action='store_true')
         c.argument('enable_fips_image', action='store_true')
@@ -637,7 +641,7 @@ def load_arguments(self, _):
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('labels', nargs='*', validator=validate_nodepool_labels)
         c.argument('tags', tags_type)
-        c.argument('node_taints', validator=validate_taints)
+        c.argument('node_taints', validator=validate_nodepool_taints)
         c.argument('max_surge', validator=validate_max_surge)
         c.argument('mode', arg_type=get_enum_type(node_mode_types))
         c.argument('scale_down_mode', arg_type=get_enum_type(scale_down_modes))
@@ -846,6 +850,10 @@ def load_arguments(self, _):
             c.argument('nodepool_id', required=True,
                        help='The nodepool id.', validator=validate_nodepool_id)
             c.argument('aks_custom_headers')
+
+    with self.argument_context('aks nodepool snapshot update') as c:
+        c.argument('snapshot_name', options_list=['--name', '-n'], help='The nodepool snapshot name.', validator=validate_snapshot_name)
+        c.argument('tags', tags_type, help='The tags to set to the snapshot.')
 
     for scope in ['aks nodepool snapshot show', 'aks nodepool snapshot delete']:
         with self.argument_context(scope) as c:

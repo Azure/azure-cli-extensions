@@ -70,9 +70,17 @@ class AzdevExtensionHelper:
         check_call(cmd, shell=True)
 
     def add_from_code(self):
+        # The containerapp-preview extension is a special case,
+        # it must depend on the continerapp extension and cannot run independently.
+        if self.extension_name == 'containerapp-preview':
+            self._cmd('azdev extension add containerapp')
         self._cmd('azdev extension add {}'.format(self.extension_name))
 
     def remove(self):
+        # The containerapp-preview extension is a special case,
+        # it must depend on the continerapp extension and cannot run independently.
+        if self.extension_name == 'containerapp-preview':
+            self._cmd('azdev extension remove containerapp')
         self._cmd('azdev extension remove {}'.format(self.extension_name))
 
     def linter(self):

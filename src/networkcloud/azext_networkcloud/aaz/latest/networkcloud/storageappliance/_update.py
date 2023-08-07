@@ -13,19 +13,19 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud storageappliance update",
-    is_experimental=True,
+    is_preview=True,
 )
 class Update(AAZCommand):
-    """Update properties of the provided bare metal machine, or update tags associated with the bare metal machine. Properties and tag updates can be done independently.
+    """Update properties of the provided storage appliance, or update tags associated with the storage appliance Properties and tag updates can be done independently.
 
     :example: Patch storage appliance
         az networkcloud storageappliance update --resource-group "resourceGroupName" --storage-appliance-name "storageApplianceName" --serial-number "BM1219XXX" --tags key1="myvalue1" key2="myvalue2"
     """
 
     _aaz_info = {
-        "version": "2022-12-12-preview",
+        "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/storageappliances/{}", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/storageappliances/{}", "2023-07-01"],
         ]
     }
 
@@ -162,7 +162,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }

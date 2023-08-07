@@ -1,0 +1,13 @@
+displayName: CLI-Test
+testPlan: sample-JMX-file.jmx
+description: 'Test created from az load test command'
+engineInstances: 1
+failureCriteria:
+  - avg(requests_per_sec > 10)
+env:
+  - name: 'rps'
+    value: 1
+splitAllCSVs: True
+autoStop:
+  errorPercentage: 90
+  timeWindow: 60

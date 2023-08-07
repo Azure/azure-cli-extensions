@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster metricsconfiguration list",
-    is_experimental=True,
+    is_preview=True,
 )
 class List(AAZCommand):
     """List metrics configurations of the cluster.
@@ -23,9 +23,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-12-preview",
+        "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/metricsconfigurations", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/metricsconfigurations", "2023-07-01"],
         ]
     }
 
@@ -59,7 +59,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MetricsConfigurationsListByResourceGroup(ctx=self.ctx)()
+        self.MetricsConfigurationsListByCluster(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,7 +75,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class MetricsConfigurationsListByResourceGroup(AAZHttpOperation):
+    class MetricsConfigurationsListByCluster(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -123,7 +123,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }

@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks/{}", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks/{}", "2023-07-01"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }
@@ -189,6 +189,10 @@ class Wait(AAZWaitCommand):
             properties.additional_egress_endpoints = AAZListType(
                 serialized_name="additionalEgressEndpoints",
             )
+            properties.associated_resource_ids = AAZListType(
+                serialized_name="associatedResourceIds",
+                flags={"read_only": True},
+            )
             properties.cluster_id = AAZStrType(
                 serialized_name="clusterId",
                 flags={"read_only": True},
@@ -228,6 +232,9 @@ class Wait(AAZWaitCommand):
             additional_egress_endpoints = cls._schema_on_200.properties.additional_egress_endpoints
             additional_egress_endpoints.Element = AAZObjectType()
             _WaitHelper._build_schema_egress_endpoint_read(additional_egress_endpoints.Element)
+
+            associated_resource_ids = cls._schema_on_200.properties.associated_resource_ids
+            associated_resource_ids.Element = AAZStrType()
 
             enabled_egress_endpoints = cls._schema_on_200.properties.enabled_egress_endpoints
             enabled_egress_endpoints.Element = AAZObjectType()
