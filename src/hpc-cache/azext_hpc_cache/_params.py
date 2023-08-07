@@ -34,7 +34,7 @@ storage_target_type = CLIArgumentType(help='Name of the Storage Target.')
 nfs3_usage_model_type = CLIArgumentType(
     help='Identify the primary usage model to be used for this Storage Target. '
          'You can use command `az hpc-cache usage-model list` to see the names of usage models. '
-         'For more details about usage models, please refer to https://docs.microsoft.com/azure/hpc-cache/hpc-cache-add-storage?tabs=azure-cli#choose-a-usage-model')
+         'For more details about usage models, please refer to https://learn.microsoft.com/azure/hpc-cache/hpc-cache-add-storage?tabs=azure-cli#choose-a-usage-model')
 
 
 def load_arguments(self, _):

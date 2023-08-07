@@ -9,7 +9,7 @@ az extension add --name stream-analytics
 
 ### Included Features
 #### Stream Analytics Management:
-Manage Stream Analytics: [more info](https://docs.microsoft.com/en-us/azure/stream-analytics/)\
+Manage Stream Analytics: [more info](https://learn.microsoft.com/azure/stream-analytics/)\
 *Examples:*
 
 ##### Create a Stream Analytics Job

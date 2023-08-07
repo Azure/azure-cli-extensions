@@ -9,7 +9,7 @@ az extension add --name import-export
 
 ### Included Features
 #### Import Export Management:
-Manage Import Export: [more info](https://docs.microsoft.com/en-us/azure/storage/common/storage-import-export-service)\
+Manage Import Export: [more info](https://learn.microsoft.com/azure/storage/common/storage-import-export-service)\
 *Examples:*
 
 ##### List locations to which you can ship the disks

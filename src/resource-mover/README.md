@@ -1,5 +1,5 @@
 # Azure CLI databricks Extension #
-This package is for the 'resource-mover' extension, i.e. 'az resource-mover'. More info on what is [Azure Resource Mover](https://docs.microsoft.com/en-us/azure/resource-mover/overview).
+This package is for the 'resource-mover' extension, i.e. 'az resource-mover'. More info on what is [Azure Resource Mover](https://learn.microsoft.com/azure/resource-mover/overview).
 
 ## How to use
 Install this extension using the below CLI command

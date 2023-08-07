@@ -213,7 +213,7 @@ def _validate_acs_settings(client, resource_group, service, acs_settings):
     try:
         result = sdk_no_wait(False, client.configuration_services.begin_validate, resource_group, service, DEFAULT_NAME, acs_settings).result()
     except Exception as err:  # pylint: disable=broad-except
-        raise ClientRequestError("{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
+        raise ClientRequestError("{0}. You may raise a support ticket if needed by the following link: https://learn.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
 
     if result is not None and result.git_property_validation_result is not None:
         git_result = result.git_property_validation_result

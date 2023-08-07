@@ -9,7 +9,7 @@ az extension add --name notification-hub
 
 ### Included Features
 #### Notification Hubs Management:
-Manage Notification Hubs and namespaces: [more info](https://docs.microsoft.com/azure/notification-hubs)\
+Manage Notification Hubs and namespaces: [more info](https://learn.microsoft.com/azure/notification-hubs)\
 *Examples:*
 
 ##### Create a Notification Hub Namespace
@@ -60,7 +60,7 @@ az notification-hub credential gcm update \
 ```
 
 ##### Test sending message to Android devices
-You may want to follow the [instructions](https://docs.microsoft.com/en-us/azure/notification-hubs/notification-hubs-android-push-notification-google-fcm-get-started) to set up an Android App to receive notifications.
+You may want to follow the [instructions](https://learn.microsoft.com/azure/notification-hubs/notification-hubs-android-push-notification-google-fcm-get-started) to set up an Android App to receive notifications.
 
 ```
 az notification-hub test-send \

@@ -1,7 +1,7 @@
 Microsoft Azure CLI 'hack' extension
 =========================================
 
-A bootstrapping application for quickly creating `web space <https://azure.microsoft.com/en-us/services/app-service/>`_, a database (Cosmos DB, SQL Server, or MySQL), and a `Cognitive Services <https://azure.microsoft.com/en-us/services/cognitive-services/>`_ key.
+A bootstrapping application for quickly creating `web space <https://azure.microsoft.com/services/app-service/>`_, a database (Cosmos DB, SQL Server, or MySQL), and a `Cognitive Services <https://azure.microsoft.com/services/cognitive-services/>`_ key.
 
 ------
 Create

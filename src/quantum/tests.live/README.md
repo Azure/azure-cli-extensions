@@ -11,7 +11,7 @@ to complete successfully.
 
 2. Login to Azure using either:
     * the [Azure Account extension in VS Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode.azure-account)
-    * `az login` from the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/)
+    * `az login` from the [Azure CLI](https://learn.microsoft.com/cli/azure/)
 
 3. Make this folder your current directory location: src\quantum\tests.live
 

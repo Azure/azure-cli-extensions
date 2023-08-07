@@ -9,7 +9,7 @@ az extension add --name image-gallery
 
 ### Included Features
 #### Image Gallery:
-Manage Image Gallery: [more info](https://docs.microsoft.com/en-us/azure/virtual-machines/shared-image-galleries) \
+Manage Image Gallery: [more info](https://learn.microsoft.com/azure/virtual-machines/shared-image-galleries) \
 *Examples:*
 
 ##### Get a gallery that has been community in the given location.

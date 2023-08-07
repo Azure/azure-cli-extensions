@@ -248,7 +248,7 @@ class PrivateEndpointConnectionsOperations:
         """Gets a list of private endpoint connections in the specified managed cluster.
 
         To learn more about private clusters, see:
-        https://docs.microsoft.com/azure/aks/private-clusters.
+        https://learn.microsoft.com/azure/aks/private-clusters.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -318,7 +318,7 @@ class PrivateEndpointConnectionsOperations:
         """Gets the specified private endpoint connection.
 
         To learn more about private clusters, see:
-        https://docs.microsoft.com/azure/aks/private-clusters.
+        https://learn.microsoft.com/azure/aks/private-clusters.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.

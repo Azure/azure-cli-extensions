@@ -1,5 +1,5 @@
 # Azure CLI blueprint Extension #
-This package is for the 'blueprint' extension, i.e. 'az blueprint'. More info on what is [Blueprint](https://docs.microsoft.com/azure/governance/blueprints/overview).
+This package is for the 'blueprint' extension, i.e. 'az blueprint'. More info on what is [Blueprint](https://learn.microsoft.com/azure/governance/blueprints/overview).
 
 ### How to use ###
 Install this extension using the below CLI command

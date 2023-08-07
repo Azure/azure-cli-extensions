@@ -85,9 +85,9 @@ class DiffDiskPlacement(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     user in the request to choose the location i.e, cache disk or resource disk space for Ephemeral
     OS disk provisioning. For more information on Ephemeral OS disk size requirements, please refer
     Ephemeral OS disk size requirements for Windows VM at
-    https://docs.microsoft.com/azure/virtual-machines/windows/ephemeral-os-disks#size-requirements
+    https://learn.microsoft.com/azure/virtual-machines/windows/ephemeral-os-disks#size-requirements
     and Linux VM at
-    https://docs.microsoft.com/azure/virtual-machines/linux/ephemeral-os-disks#size-requirements
+    https://learn.microsoft.com/azure/virtual-machines/linux/ephemeral-os-disks#size-requirements
     """
 
     CACHE_DISK = "CacheDisk"
@@ -597,8 +597,8 @@ class StorageAccountTypes(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     Standard SSD. Premium_LRS uses Premium SSD. UltraSSD_LRS uses Ultra disk. Premium_ZRS uses
     Premium SSD zone redundant storage. StandardSSD_ZRS uses Standard SSD zone redundant storage.
     For more information regarding disks supported for Windows Virtual Machines, refer to
-    https://docs.microsoft.com/azure/virtual-machines/windows/disks-types and, for Linux Virtual
-    Machines, refer to https://docs.microsoft.com/azure/virtual-machines/linux/disks-types
+    https://learn.microsoft.com/azure/virtual-machines/windows/disks-types and, for Linux Virtual
+    Machines, refer to https://learn.microsoft.com/azure/virtual-machines/linux/disks-types
     """
 
     STANDARD_LRS = "Standard_LRS"
@@ -672,13 +672,13 @@ class VirtualMachineSizeTypes(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)
     currently deprecated and will be removed by December 23rd 2023. :code:`<br>`:code:`<br>`
     Recommended way to get the list of available sizes is using these APIs:
     :code:`<br>`:code:`<br>` `List all available virtual machine sizes in an availability set
-    <https://docs.microsoft.com/rest/api/compute/availabilitysets/listavailablesizes>`_
+    <https://learn.microsoft.com/rest/api/compute/availabilitysets/listavailablesizes>`_
     :code:`<br>`:code:`<br>` `List all available virtual machine sizes in a region
-    <https://docs.microsoft.com/rest/api/compute/resourceskus/list>`_ :code:`<br>`:code:`<br>`
+    <https://learn.microsoft.com/rest/api/compute/resourceskus/list>`_ :code:`<br>`:code:`<br>`
     `List all available virtual machine sizes for resizing
-    <https://docs.microsoft.com/rest/api/compute/virtualmachines/listavailablesizes>`_. For more
+    <https://learn.microsoft.com/rest/api/compute/virtualmachines/listavailablesizes>`_. For more
     information about virtual machine sizes, see `Sizes for virtual machines
-    <https://docs.microsoft.com/azure/virtual-machines/sizes>`_. :code:`<br>`:code:`<br>` The
+    <https://learn.microsoft.com/azure/virtual-machines/sizes>`_. :code:`<br>`:code:`<br>` The
     available VM sizes depend on region and availability set.
     """
 

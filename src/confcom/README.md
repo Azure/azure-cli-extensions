@@ -28,7 +28,7 @@
     sudo apt install docker.io
     ```
 
-  - Windows: [Docker Desktop](https://www.docker.com/products/docker-desktop) and [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install)
+  - Windows: [Docker Desktop](https://www.docker.com/products/docker-desktop) and [WSL2](https://learn.microsoft.com/windows/wsl/install)
 
 ## Installation Instructions (End User)
 
@@ -41,7 +41,7 @@
 
       - **Notes for Windows user ONLY**:  even you have 64-bit python3 installed already, windows version **Azure CLI** installation package comes with a 32-bit python, which is not supported for now. So please use the `PyPI/pip` solution to install `azure-cli`.
 
-   2. Option 2:(Linux Only) [Install through Linux Package Tools](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt).
+   2. Option 2:(Linux Only) [Install through Linux Package Tools](https://learn.microsoft.com/cli/azure/install-azure-cli-linux?pivots=apt).
 
 2. Install the `confcom` extension:
 
@@ -53,7 +53,7 @@
 
 The `confcom` extension does not currently support:
 
-- [ARM Template functions](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions) other than `variables` and `parameters`.
+- [ARM Template functions](https://learn.microsoft.com/azure/azure-resource-manager/templates/template-functions) other than `variables` and `parameters`.
 - Variables and Parameters with non-primitive data types e.g. objects and arrays
 - Nested and Linked ARM Templates
 
@@ -61,6 +61,6 @@ The `confcom` extension does not currently support:
 
 This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft
 trademarks or logos is subject to and must follow
-[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
+[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/legal/intellectualproperty/trademarks/usage/general).
 Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
 Any use of third-party trademarks or logos are subject to those third-party's policies.

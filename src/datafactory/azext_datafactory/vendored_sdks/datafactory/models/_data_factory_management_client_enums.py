@@ -403,7 +403,7 @@ class IntegrationRuntimeReferenceType(str, Enum, metaclass=CaseInsensitiveEnumMe
 
 class IntegrationRuntimeSsisCatalogPricingTier(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The pricing tier for the catalog database. The valid values could be found in
-    https://azure.microsoft.com/en-us/pricing/details/sql-database/.
+    https://azure.microsoft.com/pricing/details/sql-database/.
     """
 
     BASIC = "Basic"

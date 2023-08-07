@@ -1727,7 +1727,7 @@ class VirtualMachineScaleSetsOperations:  # pylint: disable=too-many-public-meth
         """Perform maintenance on one or more virtual machines in a VM scale set. Operation on instances
         which are not eligible for perform maintenance will be failed. Please refer to best practices
         for more details:
-        https://docs.microsoft.com/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-maintenance-notifications.
+        https://learn.microsoft.com/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-maintenance-notifications.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str

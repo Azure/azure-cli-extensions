@@ -8,7 +8,7 @@ az extension add --name fluid-relay
 
 ### Included Features
 #### Server:
-Manage a fluid relay server: [more info](https://docs.microsoft.com/en-us/azure/azure-fluid-relay/overview/overview)  
+Manage a fluid relay server: [more info](https://learn.microsoft.com/azure/azure-fluid-relay/overview/overview)  
 *Examples:*
 ```
 az fluid-relay server create \
@@ -58,7 +58,7 @@ az fluid-relay server show \
 ```
 
 #### Container:
-Manage a fluid relay container: [more info](https://docs.microsoft.com/en-us/azure/azure-fluid-relay/overview/overview)
+Manage a fluid relay container: [more info](https://learn.microsoft.com/azure/azure-fluid-relay/overview/overview)
 ```
 az fluid-relay container list \
     -g MyResourceGroup \

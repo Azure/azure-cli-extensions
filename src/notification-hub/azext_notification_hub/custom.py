@@ -220,7 +220,7 @@ def debug_send_notificationhubs_hub(cmd, client,
                                     title='',
                                     payload=None,
                                     tag=None):
-    # Refer to tutorials in https://docs.microsoft.com/azure/notification-hubs/ for more details
+    # Refer to tutorials in https://learn.microsoft.com/azure/notification-hubs/ for more details
     if message is not None:
         if notification_format == 'gcm':
             parameters = {"data": {"message": message}}

@@ -80,7 +80,7 @@ helps['vm repair list-scripts'] = """
 
 helps['vm repair reset-nic'] = """
     type: command
-    short-summary: Reset the network interface stack on the VM guest OS. https://docs.microsoft.com/en-us/troubleshoot/azure/virtual-machines/reset-network-interface
+    short-summary: Reset the network interface stack on the VM guest OS. https://learn.microsoft.com/troubleshoot/azure/virtual-machines/reset-network-interface
     examples:
         - name: Reset the VM guest NIC. Specify VM resource group and name.
           text: >

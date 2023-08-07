@@ -4223,7 +4223,7 @@ class ManagementPolicy(Resource):
     :ivar last_modified_time: Returns the date and time the ManagementPolicies was last modified.
     :vartype last_modified_time: ~datetime.datetime
     :ivar policy: The Storage Account ManagementPolicy, in JSON format. See more details in:
-     https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts.
+     https://learn.microsoft.com/azure/storage/common/storage-lifecycle-managment-concepts.
     :vartype policy: ~azure.mgmt.storage.v2022_09_01.models.ManagementPolicySchema
     """
 
@@ -4245,7 +4245,7 @@ class ManagementPolicy(Resource):
     def __init__(self, *, policy: Optional["_models.ManagementPolicySchema"] = None, **kwargs):
         """
         :keyword policy: The Storage Account ManagementPolicy, in JSON format. See more details in:
-         https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts.
+         https://learn.microsoft.com/azure/storage/common/storage-lifecycle-managment-concepts.
         :paramtype policy: ~azure.mgmt.storage.v2022_09_01.models.ManagementPolicySchema
         """
         super().__init__(**kwargs)
@@ -4501,12 +4501,12 @@ class ManagementPolicyRule(_serialization.Model):
 
 
 class ManagementPolicySchema(_serialization.Model):
-    """The Storage Account ManagementPolicies Rules. See more details in: https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts.
+    """The Storage Account ManagementPolicies Rules. See more details in: https://learn.microsoft.com/azure/storage/common/storage-lifecycle-managment-concepts.
 
     All required parameters must be populated in order to send to Azure.
 
     :ivar rules: The Storage Account ManagementPolicies Rules. See more details in:
-     https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts.
+     https://learn.microsoft.com/azure/storage/common/storage-lifecycle-managment-concepts.
      Required.
     :vartype rules: list[~azure.mgmt.storage.v2022_09_01.models.ManagementPolicyRule]
     """
@@ -4522,7 +4522,7 @@ class ManagementPolicySchema(_serialization.Model):
     def __init__(self, *, rules: List["_models.ManagementPolicyRule"], **kwargs):
         """
         :keyword rules: The Storage Account ManagementPolicies Rules. See more details in:
-         https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts.
+         https://learn.microsoft.com/azure/storage/common/storage-lifecycle-managment-concepts.
          Required.
         :paramtype rules: list[~azure.mgmt.storage.v2022_09_01.models.ManagementPolicyRule]
         """

@@ -9,7 +9,7 @@ az extension add --name datafactory
 
 ### Included Features
 #### Factory:
-Manage a data factory: [more info](https://docs.microsoft.com/en-us/azure/data-factory/introduction)  
+Manage a data factory: [more info](https://learn.microsoft.com/azure/data-factory/introduction)  
 *Examples:*
 ```
 az datafactory factory create \
@@ -24,7 +24,7 @@ az datafactory factory update \
 ```
 
 #### LinkedService:
-Managed a linked service associated with the factory: [more info](https://docs.microsoft.com/en-us/azure/data-factory/concepts-linked-services)  
+Managed a linked service associated with the factory: [more info](https://learn.microsoft.com/azure/data-factory/concepts-linked-services)  
 *Examples:*  
 ```
 az datafactory linked-service create \
@@ -35,7 +35,7 @@ az datafactory linked-service create \
 ```
 
 #### Dataset
-Managed a view of the data that you want to use in data factory: [more info](https://docs.microsoft.com/en-us/azure/data-factory/concepts-datasets-linked-services)  
+Managed a view of the data that you want to use in data factory: [more info](https://learn.microsoft.com/azure/data-factory/concepts-datasets-linked-services)  
 *Examples:*  
 ```
 az datafactory dataset create \
@@ -46,7 +46,7 @@ az datafactory dataset create \
 ```
 
 #### Pipeline
-Use pipeline to define a set of activities to operate on your dataset: [more info](https://docs.microsoft.com/en-us/azure/data-factory/concepts-pipelines-activities)  
+Use pipeline to define a set of activities to operate on your dataset: [more info](https://learn.microsoft.com/azure/data-factory/concepts-pipelines-activities)  
 *Examples:*  
 ```
 az datafactory pipeline create \
@@ -66,7 +66,7 @@ az datafactory pipeline update \
 ```
 
 #### Pipeline-Run
-You can manually execute your pipeline activities(on demand): [more info](https://docs.microsoft.com/en-us/azure/data-factory/concepts-pipeline-execution-triggers#manual-execution-on-demand)  
+You can manually execute your pipeline activities(on demand): [more info](https://learn.microsoft.com/azure/data-factory/concepts-pipeline-execution-triggers#manual-execution-on-demand)  
 *Examples:*  
 ```
 az datafactory pipeline create-run \
@@ -103,7 +103,7 @@ az datafactory activity-run query-by-pipeline-run \
 ```
 
 #### Trigger
-Triggers are the other way that you can execute a pipeline run: [more info](https://docs.microsoft.com/en-us/azure/data-factory/concepts-pipeline-execution-triggers#trigger-execution)  
+Triggers are the other way that you can execute a pipeline run: [more info](https://learn.microsoft.com/azure/data-factory/concepts-pipeline-execution-triggers#trigger-execution)  
 *Examples:*  
 ```
 az datafactory trigger create \
@@ -143,7 +143,7 @@ az datafactory trigger-run rerun \
 ```
 
 #### Integration-Runtime
-The Integration-Runtime (IR) is the compute infrastructure used by data factory to provide the data integration capabilities: [more info](https://docs.microsoft.com/en-us/azure/data-factory/concepts-integration-runtime)  
+The Integration-Runtime (IR) is the compute infrastructure used by data factory to provide the data integration capabilities: [more info](https://learn.microsoft.com/azure/data-factory/concepts-integration-runtime)  
 *Examples:*  
 ```
 az datafactory integration-runtime self-hosted create \

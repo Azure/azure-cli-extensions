@@ -1,5 +1,5 @@
 # Azure CLI cloud-service Extension #
-This is the extension for cloud-service. Refer to https://azure.microsoft.com/en-us/services/cloud-services/.
+This is the extension for cloud-service. Refer to https://azure.microsoft.com/services/cloud-services/.
 
 ### How to use ###
 Install this extension using the below CLI command

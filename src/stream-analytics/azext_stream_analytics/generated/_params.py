@@ -84,7 +84,7 @@ def load_arguments(self, _):
                    'late could be included.  Supported range is -1 to 1814399 (20.23:59:59 days) and -1 is used to '
                    'specify wait indefinitely. If the property is absent, it is interpreted to have a value of -1.')
         c.argument('data_locale', type=str, help='The data locale of the stream analytics job. Value should be the '
-                   'name of a supported .NET Culture from the set https://msdn.microsoft.com/en-us/library/system.globa'
+                   'name of a supported .NET Culture from the set https://msdn.microsoft.com/library/system.globa'
                    'lization.culturetypes(v=vs.110).aspx. Defaults to \'en-US\' if none specified.')
         c.argument('compatibility_level', arg_type=get_enum_type(['1.0', '1.2']), help='Controls certain runtime '
                    'behaviors of the streaming job.')
@@ -146,7 +146,7 @@ def load_arguments(self, _):
                    'late could be included.  Supported range is -1 to 1814399 (20.23:59:59 days) and -1 is used to '
                    'specify wait indefinitely. If the property is absent, it is interpreted to have a value of -1.')
         c.argument('data_locale', type=str, help='The data locale of the stream analytics job. Value should be the '
-                   'name of a supported .NET Culture from the set https://msdn.microsoft.com/en-us/library/system.globa'
+                   'name of a supported .NET Culture from the set https://msdn.microsoft.com/library/system.globa'
                    'lization.culturetypes(v=vs.110).aspx. Defaults to \'en-US\' if none specified.')
         c.argument('compatibility_level', arg_type=get_enum_type(['1.0', '1.2']), help='Controls certain runtime '
                    'behaviors of the streaming job.')

@@ -54,7 +54,7 @@ class SubscriptionsOperations(object):
 
         :param location: The region in which to retrieve the subscription's quota information. You can
          find out which regions Azure Stream Analytics is supported in here:
-         https://azure.microsoft.com/en-us/regions/.
+         https://azure.microsoft.com/regions/.
         :type location: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SubscriptionQuotasListResult, or the result of cls(response)

@@ -7,9 +7,9 @@ This is an extension to Azure CLI to manage StorageMover resources.
 
 ### Deploy and register an Agent resource, which references a hybrid compute machine that can run jobs.
 #### Deploy Agent
-https://learn.microsoft.com/en-us/azure/storage-mover/agent-deploy?tabs=xdmshell
+https://learn.microsoft.com/azure/storage-mover/agent-deploy?tabs=xdmshell
 #### Register Agent
-https://learn.microsoft.com/en-us/azure/storage-mover/agent-register
+https://learn.microsoft.com/azure/storage-mover/agent-register
 
 ### Create a Project resource, which is a logical grouping of related jobs.
 `az storage-mover project create -g {rg} --storage-mover-name {mover_name} -n {project_name} --description ProjectDesc`

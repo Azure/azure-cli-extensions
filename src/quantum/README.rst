@@ -8,10 +8,10 @@ providing developers and customers access to the most competitive quantum offeri
 on the market.
 
 To learn more about azure quantum, visit:
-https://azure.microsoft.com/en-us/services/quantum/
+https://azure.microsoft.com/services/quantum/
 
 To learn more about quantum computing and Microsoft's Quantum Development Kit, visit:
-https://docs.microsoft.com/quantum/
+https://learn.microsoft.com/quantum/
 
 
 Creating Q# programs for execution from the command line
@@ -21,7 +21,7 @@ Prerequisites
 -------------
 
 - You need to have an Azure Quantum workspace in your subscription.
-- Install the [Quantum Development Kit](https://docs.microsoft.com/quantum/install-guide/standalone), if you haven't already.
+- Install the [Quantum Development Kit](https://learn.microsoft.com/quantum/install-guide/standalone), if you haven't already.
 
 
 Write your quantum application
@@ -32,7 +32,7 @@ Azure Quantum.
 
 .. tip::
    If this is the first time for you to create Q# quantum applications, you can learn how
-   in our [Microsoft Learn module](https://docs.microsoft.com/en-us/learn/modules/qsharp-create-first-quantum-development-kit/).
+   in our [Microsoft Learn module](https://learn.microsoft.com/learn/modules/qsharp-create-first-quantum-development-kit/).
 
 In this case we will use a simple quantum random bit generator. We create a Q#
 project and substitute the content of `Program.qs` with the following code:

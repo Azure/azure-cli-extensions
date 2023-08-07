@@ -19,8 +19,8 @@ Fixed help file text and an error loading the help files of all methods
 ++++++
 This version supports the new alert processing rule API (changed from action rule) and is breaking  old versions.
 It is recommended to replace all old versions to use this version of the CLI.
-new API for alert processing rule can be found here: https://docs.microsoft.com/en-us/rest/api/monitor/alertsmanagement/alert-processing-rules
-new documentation for alert processing rules can be found here: https://docs.microsoft.com/en-us/rest/api/monitor/alertsmanagement/alert-processing-rules
+new API for alert processing rule can be found here: https://learn.microsoft.com/rest/api/monitor/alertsmanagement/alert-processing-rules
+new documentation for alert processing rules can be found here: https://learn.microsoft.com/rest/api/monitor/alertsmanagement/alert-processing-rules
 
 0.1.1
 ++++++

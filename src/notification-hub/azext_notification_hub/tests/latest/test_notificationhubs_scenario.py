@@ -122,7 +122,7 @@ class NotificationHubsScenarioTest(ScenarioTest):
         #          checks=[JMESPathCheckExists('gcmCredential.googleApiKey')])
 
         # This test needs to use an Android App to receive notification:
-        # https://docs.microsoft.com/en-us/azure/notification-hubs/notification-hubs-android-push-notification-google-fcm-get-started
+        # https://learn.microsoft.com/azure/notification-hubs/notification-hubs-android-push-notification-google-fcm-get-started
         # self.cmd('az notification-hub test-send '
         #     '--resource-group {rg} '
         #     '--namespace-name {namespace-name} '

@@ -118,7 +118,7 @@ helps['dms project task create'] = """
                   },
                   "databases": {
                       "database_name": {
-                          // see https://docs.microsoft.com/th-th/azure/cosmos-db/request-units,     ||
+                          // see https://learn.microsoft.com/th-th/azure/cosmos-db/request-units,     ||
                           // set to null to use default
                           // or 0 if throughput should not be provisioned at the database level
                           "targetRUs": 0,
@@ -144,7 +144,7 @@ helps['dms project task create'] = """
                                           ...n
                                       ],
                                       // whether shard key is unique
-                                      // see https://docs.microsoft.com/azure/cosmos-db/partition-data
+                                      // see https://learn.microsoft.com/azure/cosmos-db/partition-data
                                       "isUnique": false
                                   },
                                   "targetRUs": 10000

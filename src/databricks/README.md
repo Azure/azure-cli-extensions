@@ -1,5 +1,5 @@
 # Azure CLI databricks Extension #
-This package is for the 'databricks' extension, i.e. 'az databricks'. More info on what is [Databricks](https://docs.microsoft.com/en-us/azure/azure-databricks/what-is-azure-databricks).
+This package is for the 'databricks' extension, i.e. 'az databricks'. More info on what is [Databricks](https://learn.microsoft.com/azure/azure-databricks/what-is-azure-databricks).
 
 ### How to use ###
 Install this extension using the below CLI command

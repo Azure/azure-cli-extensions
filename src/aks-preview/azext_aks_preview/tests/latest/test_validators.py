@@ -400,7 +400,7 @@ class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
         invalid_azure_keyvault_kms_key_id = "dummy key id"
         namespace = AzureKeyVaultKmsKeyIdNamespace(azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id)
         err = '--azure-keyvault-kms-key-id is not a valid Key Vault key ID. ' \
-              'See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
+              'See https://learn.microsoft.com/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
 
         with self.assertRaises(CLIError) as cm:
             validators.validate_azure_keyvault_kms_key_id(namespace)
@@ -410,7 +410,7 @@ class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
         invalid_azure_keyvault_kms_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname"
         namespace = AzureKeyVaultKmsKeyIdNamespace(azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id)
         err = '--azure-keyvault-kms-key-id is not a valid Key Vault key ID. ' \
-              'See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
+              'See https://learn.microsoft.com/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
 
         with self.assertRaises(CLIError) as cm:
             validators.validate_azure_keyvault_kms_key_id(namespace)
@@ -420,7 +420,7 @@ class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
         invalid_azure_keyvault_kms_key_id = "https://fakekeyvault.vault.azure.net/secrets/fakesecretname/fakesecretversion"
         namespace = AzureKeyVaultKmsKeyIdNamespace(azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id)
         err = '--azure-keyvault-kms-key-id is not a valid Key Vault key ID. ' \
-              'See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
+              'See https://learn.microsoft.com/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
 
         with self.assertRaises(CLIError) as cm:
             validators.validate_azure_keyvault_kms_key_id(namespace)

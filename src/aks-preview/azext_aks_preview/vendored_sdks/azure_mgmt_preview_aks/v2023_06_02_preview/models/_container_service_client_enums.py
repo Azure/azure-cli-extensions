@@ -13,7 +13,7 @@ from azure.core import CaseInsensitiveEnumMeta
 class AgentPoolMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """A cluster must have at least one 'System' Agent Pool at all times. For additional information
     on agent pool restrictions and best practices, see:
-    https://docs.microsoft.com/azure/aks/use-system-pools.
+    https://learn.microsoft.com/azure/aks/use-system-pools.
     """
 
     SYSTEM = "System"
@@ -231,14 +231,14 @@ class LicenseType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 class LoadBalancerSku(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The default is 'standard'. See `Azure Load Balancer SKUs
-    <https://docs.microsoft.com/azure/load-balancer/skus>`_ for more information about the
+    <https://learn.microsoft.com/azure/load-balancer/skus>`_ for more information about the
     differences between load balancer SKUs.
     """
 
     STANDARD = "standard"
     """Use a a standard Load Balancer. This is the recommended Load Balancer SKU. For more information
     #: about on working with the load balancer in the managed cluster, see the `standard Load Balancer
-    #: <https://docs.microsoft.com/azure/aks/load-balancer-standard>`_ article."""
+    #: <https://learn.microsoft.com/azure/aks/load-balancer-standard>`_ article."""
     BASIC = "basic"
     """Use a basic Load Balancer with limited functionality."""
 
@@ -304,7 +304,7 @@ class NetworkMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     TRANSPARENT = "transparent"
     """No bridge is created. Intra-VM Pod to Pod communication is through IP routes created by Azure
-    #: CNI. See `Transparent Mode <https://docs.microsoft.com/azure/aks/faq#transparent-mode>`_ for
+    #: CNI. See `Transparent Mode <https://learn.microsoft.com/azure/aks/faq#transparent-mode>`_ for
     #: more information."""
     BRIDGE = "bridge"
     """This is no longer supported"""
@@ -315,11 +315,11 @@ class NetworkPlugin(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     AZURE = "azure"
     """Use the Azure CNI network plugin. See `Azure CNI (advanced) networking
-    #: <https://docs.microsoft.com/azure/aks/concepts-network#azure-cni-advanced-networking>`_ for
+    #: <https://learn.microsoft.com/azure/aks/concepts-network#azure-cni-advanced-networking>`_ for
     #: more information."""
     KUBENET = "kubenet"
     """Use the Kubenet network plugin. See `Kubenet (basic) networking
-    #: <https://docs.microsoft.com/azure/aks/concepts-network#kubenet-basic-networking>`_ for more
+    #: <https://learn.microsoft.com/azure/aks/concepts-network#kubenet-basic-networking>`_ for more
     #: information."""
     NONE = "none"
     """Do not use a network plugin. A custom CNI will need to be installed after cluster creation for
@@ -339,11 +339,11 @@ class NetworkPolicy(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     CALICO = "calico"
     """Use Calico network policies. See `differences between Azure and Calico policies
-    #: <https://docs.microsoft.com/azure/aks/use-network-policies#differences-between-azure-and-calico-policies-and-their-capabilities>`_
+    #: <https://learn.microsoft.com/azure/aks/use-network-policies#differences-between-azure-and-calico-policies-and-their-capabilities>`_
     #: for more information."""
     AZURE = "azure"
     """Use Azure network policies. See `differences between Azure and Calico policies
-    #: <https://docs.microsoft.com/azure/aks/use-network-policies#differences-between-azure-and-calico-policies-and-their-capabilities>`_
+    #: <https://learn.microsoft.com/azure/aks/use-network-policies#differences-between-azure-and-calico-policies-and-their-capabilities>`_
     #: for more information."""
     CILIUM = "cilium"
     """Use Cilium to enforce network policies. This requires networkDataplane to be 'cilium'."""
@@ -380,7 +380,7 @@ class OSDiskType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The default is 'Ephemeral' if the VM supports it and has a cache disk larger than the requested
     OSDiskSizeGB. Otherwise, defaults to 'Managed'. May not be changed after creation. For more
     information see `Ephemeral OS
-    <https://docs.microsoft.com/azure/aks/cluster-configuration#ephemeral-os>`_.
+    <https://learn.microsoft.com/azure/aks/cluster-configuration#ephemeral-os>`_.
     """
 
     MANAGED = "Managed"
@@ -427,18 +427,18 @@ class OSType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 class OutboundType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """This can only be set at cluster creation time and cannot be changed later. For more information
-    see `egress outbound type <https://docs.microsoft.com/azure/aks/egress-outboundtype>`_.
+    see `egress outbound type <https://learn.microsoft.com/azure/aks/egress-outboundtype>`_.
     """
 
     LOAD_BALANCER = "loadBalancer"
     """The load balancer is used for egress through an AKS assigned public IP. This supports
     #: Kubernetes services of type 'loadBalancer'. For more information see `outbound type
     #: loadbalancer
-    #: <https://docs.microsoft.com/azure/aks/egress-outboundtype#outbound-type-of-loadbalancer>`_."""
+    #: <https://learn.microsoft.com/azure/aks/egress-outboundtype#outbound-type-of-loadbalancer>`_."""
     USER_DEFINED_ROUTING = "userDefinedRouting"
     """Egress paths must be defined by the user. This is an advanced scenario and requires proper
     #: network configuration. For more information see `outbound type userDefinedRouting
-    #: <https://docs.microsoft.com/azure/aks/egress-outboundtype#outbound-type-of-userdefinedrouting>`_."""
+    #: <https://learn.microsoft.com/azure/aks/egress-outboundtype#outbound-type-of-userdefinedrouting>`_."""
     MANAGED_NAT_GATEWAY = "managedNATGateway"
     """The AKS-managed NAT gateway is used for egress."""
     USER_ASSIGNED_NAT_GATEWAY = "userAssignedNATGateway"
@@ -478,7 +478,7 @@ class PublicNetworkAccess(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 class ResourceIdentityType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """For more information see `use managed identities in AKS
-    <https://docs.microsoft.com/azure/aks/use-managed-identity>`_.
+    <https://learn.microsoft.com/azure/aks/use-managed-identity>`_.
     """
 
     SYSTEM_ASSIGNED = "SystemAssigned"
@@ -504,7 +504,7 @@ class RestrictionLevel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 class ScaleDownMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Describes how VMs are added to or removed from Agent Pools. See `billing states
-    <https://docs.microsoft.com/azure/virtual-machines/states-billing>`_.
+    <https://learn.microsoft.com/azure/virtual-machines/states-billing>`_.
     """
 
     DELETE = "Delete"
@@ -517,7 +517,7 @@ class ScaleDownMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 class ScaleSetEvictionPolicy(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The eviction policy specifies what to do with the VM when it is evicted. The default is Delete.
     For more information about eviction see `spot VMs
-    <https://docs.microsoft.com/azure/virtual-machines/spot-vms>`_.
+    <https://learn.microsoft.com/azure/virtual-machines/spot-vms>`_.
     """
 
     DELETE = "Delete"
@@ -533,7 +533,7 @@ class ScaleSetPriority(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     SPOT = "Spot"
     """Spot priority VMs will be used. There is no SLA for spot nodes. See `spot on AKS
-    #: <https://docs.microsoft.com/azure/aks/spot-node-pool>`_ for more information."""
+    #: <https://learn.microsoft.com/azure/aks/spot-node-pool>`_ for more information."""
     REGULAR = "Regular"
     """Regular VMs will be used."""
 
@@ -603,7 +603,7 @@ class UpdateMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 class UpgradeChannel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """For more information see `setting the AKS cluster auto-upgrade channel
-    <https://docs.microsoft.com/azure/aks/upgrade-cluster#set-auto-upgrade-channel>`_.
+    <https://learn.microsoft.com/azure/aks/upgrade-cluster#set-auto-upgrade-channel>`_.
     """
 
     RAPID = "rapid"

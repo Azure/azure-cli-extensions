@@ -249,7 +249,7 @@ server_metric_id = CLIArgumentType(
     validator=validators.validate_metric_id,
     options_list=["--metric-id"],
     type=str,
-    help="Fully qualified ID of the server metric. Refer https://docs.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition",
+    help="Fully qualified ID of the server metric. Refer https://learn.microsoft.com/rest/api/monitor/metric-definitions/list#metricdefinition",
 )
 
 server_metric_name = CLIArgumentType(

@@ -356,7 +356,7 @@ class AzureMachineLearningWebServiceFunctionBinding(FunctionBinding):
     :param type: Required. Indicates the function binding type.Constant filled by server.
     :type type: str
     :param endpoint: The Request-Response execute endpoint of the Azure Machine Learning web
-     service. Find out more here: https://docs.microsoft.com/en-us/azure/machine-learning/machine-
+     service. Find out more here: https://learn.microsoft.com/azure/machine-learning/machine-
      learning-consume-web-services#request-response-service-rrs.
     :type endpoint: str
     :param api_key: The API key used to authenticate with Request-Response endpoint.
@@ -446,7 +446,7 @@ class AzureMachineLearningWebServiceFunctionRetrieveDefaultDefinitionParameters(
     :param binding_type: Required. Indicates the function binding type.Constant filled by server.
     :type binding_type: str
     :param execute_endpoint: The Request-Response execute endpoint of the Azure Machine Learning
-     web service. Find out more here: https://docs.microsoft.com/en-us/azure/machine-
+     web service. Find out more here: https://learn.microsoft.com/azure/machine-
      learning/machine-learning-consume-web-services#request-response-service-rrs.
     :type execute_endpoint: str
     :ivar udf_type: The function type. Default value: "Scalar".
@@ -1101,8 +1101,8 @@ class BlobDataSourceProperties(msrest.serialization.Model):
     :type container: str
     :param path_pattern: The blob path pattern. Not a regular expression. It represents a pattern
      against which blob names will be matched to determine whether or not they should be included as
-     input or output to the job. See https://docs.microsoft.com/en-
-     us/rest/api/streamanalytics/stream-analytics-input or https://docs.microsoft.com/en-
+     input or output to the job. See https://learn.microsoft.com/en-
+     us/rest/api/streamanalytics/stream-analytics-input or https://learn.microsoft.com/en-
      us/rest/api/streamanalytics/stream-analytics-output for a more detailed explanation and
      example.
     :type path_pattern: str
@@ -1157,8 +1157,8 @@ class BlobOutputDataSource(OutputDataSource):
     :type container: str
     :param path_pattern: The blob path pattern. Not a regular expression. It represents a pattern
      against which blob names will be matched to determine whether or not they should be included as
-     input or output to the job. See https://docs.microsoft.com/en-
-     us/rest/api/streamanalytics/stream-analytics-input or https://docs.microsoft.com/en-
+     input or output to the job. See https://learn.microsoft.com/en-
+     us/rest/api/streamanalytics/stream-analytics-input or https://learn.microsoft.com/en-
      us/rest/api/streamanalytics/stream-analytics-output for a more detailed explanation and
      example.
     :type path_pattern: str
@@ -1220,8 +1220,8 @@ class BlobOutputDataSourceProperties(BlobDataSourceProperties):
     :type container: str
     :param path_pattern: The blob path pattern. Not a regular expression. It represents a pattern
      against which blob names will be matched to determine whether or not they should be included as
-     input or output to the job. See https://docs.microsoft.com/en-
-     us/rest/api/streamanalytics/stream-analytics-input or https://docs.microsoft.com/en-
+     input or output to the job. See https://learn.microsoft.com/en-
+     us/rest/api/streamanalytics/stream-analytics-input or https://learn.microsoft.com/en-
      us/rest/api/streamanalytics/stream-analytics-output for a more detailed explanation and
      example.
     :type path_pattern: str
@@ -1277,8 +1277,8 @@ class BlobReferenceInputDataSource(ReferenceInputDataSource):
     :type container: str
     :param path_pattern: The blob path pattern. Not a regular expression. It represents a pattern
      against which blob names will be matched to determine whether or not they should be included as
-     input or output to the job. See https://docs.microsoft.com/en-
-     us/rest/api/streamanalytics/stream-analytics-input or https://docs.microsoft.com/en-
+     input or output to the job. See https://learn.microsoft.com/en-
+     us/rest/api/streamanalytics/stream-analytics-input or https://learn.microsoft.com/en-
      us/rest/api/streamanalytics/stream-analytics-output for a more detailed explanation and
      example.
     :type path_pattern: str
@@ -1334,8 +1334,8 @@ class BlobReferenceInputDataSourceProperties(BlobDataSourceProperties):
     :type container: str
     :param path_pattern: The blob path pattern. Not a regular expression. It represents a pattern
      against which blob names will be matched to determine whether or not they should be included as
-     input or output to the job. See https://docs.microsoft.com/en-
-     us/rest/api/streamanalytics/stream-analytics-input or https://docs.microsoft.com/en-
+     input or output to the job. See https://learn.microsoft.com/en-
+     us/rest/api/streamanalytics/stream-analytics-input or https://learn.microsoft.com/en-
      us/rest/api/streamanalytics/stream-analytics-output for a more detailed explanation and
      example.
     :type path_pattern: str
@@ -1418,8 +1418,8 @@ class BlobStreamInputDataSource(StreamInputDataSource):
     :type container: str
     :param path_pattern: The blob path pattern. Not a regular expression. It represents a pattern
      against which blob names will be matched to determine whether or not they should be included as
-     input or output to the job. See https://docs.microsoft.com/en-
-     us/rest/api/streamanalytics/stream-analytics-input or https://docs.microsoft.com/en-
+     input or output to the job. See https://learn.microsoft.com/en-
+     us/rest/api/streamanalytics/stream-analytics-input or https://learn.microsoft.com/en-
      us/rest/api/streamanalytics/stream-analytics-output for a more detailed explanation and
      example.
     :type path_pattern: str
@@ -1481,8 +1481,8 @@ class BlobStreamInputDataSourceProperties(BlobDataSourceProperties):
     :type container: str
     :param path_pattern: The blob path pattern. Not a regular expression. It represents a pattern
      against which blob names will be matched to determine whether or not they should be included as
-     input or output to the job. See https://docs.microsoft.com/en-
-     us/rest/api/streamanalytics/stream-analytics-input or https://docs.microsoft.com/en-
+     input or output to the job. See https://learn.microsoft.com/en-
+     us/rest/api/streamanalytics/stream-analytics-input or https://learn.microsoft.com/en-
      us/rest/api/streamanalytics/stream-analytics-output for a more detailed explanation and
      example.
     :type path_pattern: str
@@ -1878,8 +1878,8 @@ class CsvSerialization(Serialization):
      "Csv", "Avro", "Json", "Parquet".
     :type type: str or ~stream_analytics_management_client.models.EventSerializationType
     :param field_delimiter: Specifies the delimiter that will be used to separate comma-separated
-     value (CSV) records. See https://docs.microsoft.com/en-us/rest/api/streamanalytics/stream-
-     analytics-input or https://docs.microsoft.com/en-us/rest/api/streamanalytics/stream-analytics-
+     value (CSV) records. See https://learn.microsoft.com/rest/api/streamanalytics/stream-
+     analytics-input or https://learn.microsoft.com/rest/api/streamanalytics/stream-analytics-
      output for a list of supported values. Required on PUT (CreateOrReplace) requests.
     :type field_delimiter: str
     :param encoding: Specifies the encoding of the incoming data in the case of input and the
@@ -1993,7 +1993,7 @@ class DocumentDbOutputDataSource(OutputDataSource):
     :type database: str
     :param collection_name_pattern: The collection name pattern for the collections to be used. The
      collection name format can be constructed using the optional {partition} token, where
-     partitions start from 0. See the DocumentDB section of https://docs.microsoft.com/en-
+     partitions start from 0. See the DocumentDB section of https://learn.microsoft.com/en-
      us/rest/api/streamanalytics/stream-analytics-output for more information. Required on PUT
      (CreateOrReplace) requests.
     :type collection_name_pattern: str
@@ -2680,7 +2680,7 @@ class FunctionInput(msrest.serialization.Model):
 
     :param data_type: The (Azure Stream Analytics supported) data type of the function input
      parameter. A list of valid Azure Stream Analytics data types are described at
-     https://msdn.microsoft.com/en-us/library/azure/dn835065.aspx.
+     https://msdn.microsoft.com/library/azure/dn835065.aspx.
     :type data_type: str
     :param is_configuration_parameter: A flag indicating if the parameter is a configuration
      parameter. True if this input parameter is expected to be a constant. Default is false.

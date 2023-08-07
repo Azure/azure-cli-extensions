@@ -196,7 +196,7 @@ class Logging(object):
     This container cannot be deleted once Storage Analytics has been enabled, though 
     its contents can be deleted.
 
-    For more information, see  https://msdn.microsoft.com/en-us/library/azure/hh343262.aspx
+    For more information, see  https://msdn.microsoft.com/library/azure/hh343262.aspx
     '''
 
     def __init__(self, delete=False, read=False, write=False,
@@ -231,7 +231,7 @@ class Metrics(object):
     issues with requests made against the storage service, and to improve the 
     performance of applications that use a service.
 
-    For more information, see https://msdn.microsoft.com/en-us/library/azure/hh343258.aspx
+    For more information, see https://msdn.microsoft.com/library/azure/hh343258.aspx
     '''
 
     def __init__(self, enabled=False, include_apis=None,
@@ -264,7 +264,7 @@ class CorsRule(object):
     APIs in a different domain; CORS provides a secure way to allow one domain 
     (the origin domain) to call APIs in another domain. 
 
-    For more information, see https://msdn.microsoft.com/en-us/library/azure/dn535601.aspx
+    For more information, see https://msdn.microsoft.com/library/azure/dn535601.aspx
     '''
 
     def __init__(self, allowed_origins, allowed_methods, max_age_in_seconds=0,
@@ -369,7 +369,7 @@ class ServiceProperties(object):
     diagnose, and troubleshoot Azure Storage-related issues, see 
     http://azure.microsoft.com/documentation/articles/storage-monitoring-diagnosing-troubleshooting/
 
-    For more information on CORS, see https://msdn.microsoft.com/en-us/library/azure/dn535601.aspx
+    For more information on CORS, see https://msdn.microsoft.com/library/azure/dn535601.aspx
     '''
 
     pass

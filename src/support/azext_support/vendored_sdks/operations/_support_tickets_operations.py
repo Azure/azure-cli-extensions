@@ -124,7 +124,7 @@ class SupportTicketsOperations(object):
         :param top: The number of values to return in the collection. Default is 25 and max is 100.
         :type top: int
         :param filter: The filter to apply on the operation. We support 'odata v4.0' filter semantics.
-         `Learn more <https://docs.microsoft.com/odata/concepts/queryoptions-overview>`_. *Status*
+         `Learn more <https://learn.microsoft.com/odata/concepts/queryoptions-overview>`_. *Status*
          filter can only be used with Equals ('eq') operator. For *CreatedDate* filter, the supported
          operators are Greater Than ('gt') and Greater Than or Equals ('ge'). When using both filters,
          combine them using the logical 'AND'.
@@ -398,7 +398,7 @@ class SupportTicketsOperations(object):
         ticket will reach out to you for consent if your issue requires gathering diagnostic
         information from your Azure resources.:code:`<br/>`:code:`<br/>`\ **Creating a support ticket
         for on-behalf-of**\ : Include *x-ms-authorization-auxiliary* header to provide an auxiliary
-        token as per `documentation <https://docs.microsoft.com/azure/azure-resource-
+        token as per `documentation <https://learn.microsoft.com/azure/azure-resource-
         manager/management/authenticate-multi-tenant>`_. The primary token will be from the tenant for
         whom a support ticket is being raised against the subscription, i.e. Cloud solution provider
         (CSP) customer tenant. The auxiliary token will be from the Cloud solution provider (CSP)

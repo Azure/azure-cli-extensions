@@ -418,8 +418,8 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
         latest_agent_version = azure_arc_agent_version.split('.')
         # Comparing if the user version is compatible or not
         if((int(current_user_version[0]) < int(latest_agent_version[0])) or (int(latest_agent_version[1]) - int(current_user_version[1]) > 2)):
-            logger.warning("We found that you are on an older agent version that is not supported.\n Please visit this link to know the agent version support policy 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy'.\n")
-            diagnoser_output.append("We found that you are on an older agent version that is not supported.\n Please visit this link to know the agent version support policy 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy'.\n")
+            logger.warning("We found that you are on an older agent version that is not supported.\n Please visit this link to know the agent version support policy 'https://learn.microsoft.com/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy'.\n")
+            diagnoser_output.append("We found that you are on an older agent version that is not supported.\n Please visit this link to know the agent version support policy 'https://learn.microsoft.com/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy'.\n")
             return consts.Diagnostic_Check_Failed
 
         return consts.Diagnostic_Check_Passed
@@ -722,8 +722,8 @@ def check_msi_certificate_presence(corev1_api_instance):
 
         # Checking if msi cerificate is present or not
         if not msi_cert_present:
-            logger.warning("Error: Unable to pull MSI certificate. Please ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements'. \n")
-            diagnoser_output.append("Error: Unable to pull MSI certificate. Please ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements'. \n")
+            logger.warning("Error: Unable to pull MSI certificate. Please ensure to meet the following network requirements 'https://learn.microsoft.com/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements'. \n")
+            diagnoser_output.append("Error: Unable to pull MSI certificate. Please ensure to meet the following network requirements 'https://learn.microsoft.com/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements'. \n")
             return consts.Diagnostic_Check_Failed
 
         return consts.Diagnostic_Check_Passed

@@ -543,7 +543,7 @@ def _select_distro_linux(distro):
 
 
 def _select_distro_linux_gen2(distro):
-    # base on the document : https://docs.microsoft.com/en-us/azure/virtual-machines/generation-2#generation-2-vm-images-in-azure-marketplace
+    # base on the document : https://learn.microsoft.com/azure/virtual-machines/generation-2#generation-2-vm-images-in-azure-marketplace
     # RHEL/Centos/Oracle 6 are not supported for Gen 2
     image_lookup = {
         'rhel6': 'RedHat:rhel-raw:7-raw-gen2:latest',

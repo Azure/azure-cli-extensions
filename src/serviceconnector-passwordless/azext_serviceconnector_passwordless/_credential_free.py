@@ -570,7 +570,7 @@ class SqlHandler(TargetHandler):
             'ODBC Driver 17 for SQL Server', 'ODBC Driver 18 for SQL Server']]
         if not drivers:
             ex = CLIInternalError(
-                "Please manually install odbc 17/18 for SQL server, reference: https://docs.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server/")
+                "Please manually install odbc 17/18 for SQL server, reference: https://learn.microsoft.com/sql/connect/odbc/download-odbc-driver-for-sql-server/")
             telemetry.set_exception(ex, "No-ODBC-Driver")
             raise ex
         try:

@@ -30,7 +30,7 @@ To create a dedicate hardware security module, one must have already setup all o
 - A subnet for the virtual network gateway 
 - A public IP address for the gateway 
 
-More instructions can be found at: https://docs.microsoft.com/en-us/azure/dedicated-hsm/
+More instructions can be found at: https://learn.microsoft.com/azure/dedicated-hsm/
 
 An example of CLI commands that would setup a very basic network that manages a dedicated HSM via a VM would be:
 

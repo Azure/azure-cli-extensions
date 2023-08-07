@@ -18,5 +18,5 @@ long-summary: |
     The purpose of `az init` is not to replace the `az config` command, but to simplify the setting of configurations by offering an interactive question-answer experience.
     While both `az init` and `az config` modify the same configuration file, `az init` is aimed at an interactive, standardized approach to managing your configuration and designed to only set the most common configurations.
     For more granular control of all available configurations, please use `az config`.
-    For more information on configuring your Azure CLI environment, please see https://docs.microsoft.com/en-us/cli/azure/azure-cli-configuration.
+    For more information on configuring your Azure CLI environment, please see https://learn.microsoft.com/cli/azure/azure-cli-configuration.
 """

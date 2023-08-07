@@ -26,11 +26,11 @@ def validate_asp_sku(cmd, namespace):
     if namespace.sku in ['I1', 'I2', 'I3']:
         if res.get('properties').get('hostingEnvironment') is None:
             raise CLIError("The pricing tier 'Isolated' is not allowed for this app service plan. Use this link to "
-                           "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
+                           "learn more: https://learn.microsoft.com/azure/app-service/overview-hosting-plans")
     else:
         if res.get('properties').get('hostingEnvironment') is not None:
             raise CLIError("Only pricing tier 'Isolated' is allowed in this app service plan. Use this link to "
-                           "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
+                           "learn more: https://learn.microsoft.com/azure/app-service/overview-hosting-plans")
 
 
 def validate_asp_create(cmd, namespace):

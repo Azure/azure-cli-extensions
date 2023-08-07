@@ -672,7 +672,7 @@ Learning web service function."
             Usage: --ml-properties execute-endpoint=XX
 
             execute-endpoint: The Request-Response execute endpoint of the Azure Machine Learning web service. Find \
-out more here: https://docs.microsoft.com/en-us/azure/stream-analytics/machine-learning-udf
+out more here: https://learn.microsoft.com/azure/stream-analytics/machine-learning-udf
 """
 
 helps['stream-analytics function test'] = """

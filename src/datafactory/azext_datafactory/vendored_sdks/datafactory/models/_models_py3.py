@@ -30453,7 +30453,7 @@ class HDInsightOnDemandLinkedService(LinkedService):  # pylint: disable=too-many
     :vartype zookeeper_node_size: JSON
     :ivar script_actions: Custom script actions to run on HDI ondemand cluster once it's up. Please
      refer to
-     https://docs.microsoft.com/en-us/azure/hdinsight/hdinsight-hadoop-customize-cluster-linux?toc=%2Fen-us%2Fazure%2Fhdinsight%2Fr-server%2FTOC.json&bc=%2Fen-us%2Fazure%2Fbread%2Ftoc.json#understanding-script-actions.
+     https://learn.microsoft.com/azure/hdinsight/hdinsight-hadoop-customize-cluster-linux?toc=%2Fen-us%2Fazure%2Fhdinsight%2Fr-server%2FTOC.json&bc=%2Fen-us%2Fazure%2Fbread%2Ftoc.json#understanding-script-actions.
     :vartype script_actions: list[~azure.mgmt.datafactory.models.ScriptAction]
     :ivar virtual_network_id: The ARM resource ID for the vNet to which the cluster should be
      joined after creation. Type: string (or Expression with resultType string).
@@ -30672,7 +30672,7 @@ class HDInsightOnDemandLinkedService(LinkedService):  # pylint: disable=too-many
         :paramtype zookeeper_node_size: JSON
         :keyword script_actions: Custom script actions to run on HDI ondemand cluster once it's up.
          Please refer to
-         https://docs.microsoft.com/en-us/azure/hdinsight/hdinsight-hadoop-customize-cluster-linux?toc=%2Fen-us%2Fazure%2Fhdinsight%2Fr-server%2FTOC.json&bc=%2Fen-us%2Fazure%2Fbread%2Ftoc.json#understanding-script-actions.
+         https://learn.microsoft.com/azure/hdinsight/hdinsight-hadoop-customize-cluster-linux?toc=%2Fen-us%2Fazure%2Fhdinsight%2Fr-server%2FTOC.json&bc=%2Fen-us%2Fazure%2Fbread%2Ftoc.json#understanding-script-actions.
         :paramtype script_actions: list[~azure.mgmt.datafactory.models.ScriptAction]
         :keyword virtual_network_id: The ARM resource ID for the vNet to which the cluster should be
          joined after creation. Type: string (or Expression with resultType string).
@@ -33545,7 +33545,7 @@ class IntegrationRuntimeComputeProperties(_serialization.Model):
     :vartype additional_properties: dict[str, JSON]
     :ivar location: The location for managed integration runtime. The supported regions could be
      found on
-     https://docs.microsoft.com/en-us/azure/data-factory/data-factory-data-movement-activities.
+     https://learn.microsoft.com/azure/data-factory/data-factory-data-movement-activities.
     :vartype location: str
     :ivar node_size: The node size requirement to managed integration runtime.
     :vartype node_size: str
@@ -33594,7 +33594,7 @@ class IntegrationRuntimeComputeProperties(_serialization.Model):
         :paramtype additional_properties: dict[str, JSON]
         :keyword location: The location for managed integration runtime. The supported regions could be
          found on
-         https://docs.microsoft.com/en-us/azure/data-factory/data-factory-data-movement-activities.
+         https://learn.microsoft.com/azure/data-factory/data-factory-data-movement-activities.
         :paramtype location: str
         :keyword node_size: The node size requirement to managed integration runtime.
         :paramtype node_size: str
@@ -34265,7 +34265,7 @@ class IntegrationRuntimeSsisCatalogInfo(_serialization.Model):
      database.
     :vartype catalog_admin_password: ~azure.mgmt.datafactory.models.SecureString
     :ivar catalog_pricing_tier: The pricing tier for the catalog database. The valid values could
-     be found in https://azure.microsoft.com/en-us/pricing/details/sql-database/. Known values are:
+     be found in https://azure.microsoft.com/pricing/details/sql-database/. Known values are:
      "Basic", "Standard", "Premium", and "PremiumRS".
     :vartype catalog_pricing_tier: str or
      ~azure.mgmt.datafactory.models.IntegrationRuntimeSsisCatalogPricingTier
@@ -34310,7 +34310,7 @@ class IntegrationRuntimeSsisCatalogInfo(_serialization.Model):
          database.
         :paramtype catalog_admin_password: ~azure.mgmt.datafactory.models.SecureString
         :keyword catalog_pricing_tier: The pricing tier for the catalog database. The valid values
-         could be found in https://azure.microsoft.com/en-us/pricing/details/sql-database/. Known values
+         could be found in https://azure.microsoft.com/pricing/details/sql-database/. Known values
          are: "Basic", "Standard", "Premium", and "PremiumRS".
         :paramtype catalog_pricing_tier: str or
          ~azure.mgmt.datafactory.models.IntegrationRuntimeSsisCatalogPricingTier

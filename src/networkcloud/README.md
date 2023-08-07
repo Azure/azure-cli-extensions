@@ -41,4 +41,4 @@ Below is a high-level overview of networkcloud commands.
 | az networkcloud virtualmachine console         | Provides commands to manage virtual machine's consoles.                            |
 | az networkcloud volume                         | Provides commands to manage volumes.                                               |
 
-For more details, please refer to [Azure Operator Nexus - NetworkCloud](https://learn.microsoft.com/en-us/azure/operator-nexus/).
+For more details, please refer to [Azure Operator Nexus - NetworkCloud](https://learn.microsoft.com/azure/operator-nexus/).

@@ -200,7 +200,7 @@ ADDONS_DESCRIPTIONS = {
 CONST_CREDENTIAL_FORMAT_AZURE = "azure"
 CONST_CREDENTIAL_FORMAT_EXEC = "exec"
 
-# refer https://docs.microsoft.com/en-us/rest/api/storageservices/
+# refer https://learn.microsoft.com/rest/api/storageservices/
 # naming-and-referencing-containers--blobs--and-metadata#container-names
 CONST_CONTAINER_NAME_MAX_LENGTH = 63
 
