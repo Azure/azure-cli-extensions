@@ -8,6 +8,7 @@ Upcoming
 * 'az containerapp job start': update start execution payload format to exlude template property from API version 2023-05-01 onwards
 * 'az containerapp service': add support for creation and deletion of MariaDB
 * 'az containerapp create/list': support --environment-type parameter
+* 'az containerapp logs show': fix raising error for response status code is not OK
 
 0.3.36
 ++++++
