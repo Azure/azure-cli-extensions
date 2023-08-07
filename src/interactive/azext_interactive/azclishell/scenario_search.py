@@ -6,8 +6,9 @@
 from enum import Enum
 import threading
 import json
-from ._azclierror import ScenarioSearchError
 from azure.cli.core.style import Style, print_styled_text
+from ._azclierror import ScenarioSearchError
+from .recommendation import RecommendType
 
 
 class SearchScope(int, Enum):
@@ -62,9 +63,11 @@ class SearchThread(threading.Thread):
                                                           match_rule=match_rule,
                                                           top=self.cli_ctx.config.getint('next', 'num_limit',
                                                                                          fallback=5))
-            self.result = search_result_to_scenario_list(self.result)
+            self.result = {"content": search_result_to_scenario_list(self.result), "api_version": self.api_version,
+                           "type": RecommendType.Search}
         except ScenarioSearchError:
-            self.result = "Connection Error. Please check your network connection."
+            self.result = {"content": "Connection Error. Please check your network connection.",
+                           "api_version": self.api_version, "type": RecommendType.Error}
 
 
 # copied from azext_scenario_guide.requests.search_online: https://github.com/Azure/azure-cli-extensions/blob/7365e1ba3cc858b075cbc98aeb4e5ce5c91db745/src/scenario-guide/azext_scenario_guide/requests.py#L13
@@ -172,7 +175,7 @@ def search_result_to_scenario_list(search_results):
     for raw_scenario in search_results:
         # type 5 means the scenario is from online search
         scenario = {'scenario': raw_scenario['description'], 'nextCommandSet': raw_scenario['commandSet'],
-                    'source': raw_scenario['source'], 'type': 5, 'executeIndex': range(len(raw_scenario['commandSet'])),
+                    'source': raw_scenario['source'], 'type': RecommendType.Search, 'executeIndex': range(len(raw_scenario['commandSet'])),
                     'score': raw_scenario['score'], 'reason': raw_scenario['description'],
                     'highlights': raw_scenario['highlights'], 'description': raw_scenario['description']}
         # update command list: az group list => group list
