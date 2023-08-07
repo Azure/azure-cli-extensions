@@ -114,6 +114,5 @@ class ContainerAppAuthDecorator(BaseResource):
 
 # decorator for preview auth show/update
 class ContainerAppPreviewAuthDecorator(ContainerAppAuthDecorator):
-    
     def construct_payload(self):
         super().construct_payload()
