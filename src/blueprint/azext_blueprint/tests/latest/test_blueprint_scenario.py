@@ -29,8 +29,7 @@ class BlueprintScenarioTest(ScenarioTest):
             'identityName': self.create_random_name(prefix='testid_', length=24),
             'rgName': self.create_random_name(prefix='blueprint-rg-', length=24),
             'policy_filename': TEST_DIR+'/input/create/policy_params.json',
-            'blueprint_filename': TEST_DIR+'/input/create/blueprint_params.json',
-            'assignment_filename': TEST_DIR+'/input/create/assignment_params.json.json',
+            'blueprint_filename': TEST_DIR+'/input/create/blueprint_params.json'
         })
 
         test_identity = self.cmd('az identity create '
@@ -124,79 +123,6 @@ class BlueprintScenarioTest(ScenarioTest):
             '--change-notes "First release"',
             checks=[])
 
-        from unittest import mock
-        with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
-            assignment = self.cmd(
-                'az blueprint assignment create '
-                '--name "{assignmentName}" '
-                '--location "westus2" '
-                '--identity-type "SystemAssigned" '
-                '--blueprint-version "/subscriptions/{subscription}/providers/Microsoft.Blueprint/blueprints/{blueprintName}/versions/1.0" '
-                '--locks-mode "None" '
-                '--resource-group-value artifact_name=myRgArt name={rgName} location=westus2 '
-                '--parameters {assignment_filename}',
-                checks=[JMESPathCheckExists('identity.principalId')]).get_output_in_json()
-
-        principal_id = assignment['identity']['principalId']
-        assert len(principal_id) > 0
-
-        self.cmd(
-            'az blueprint assignment wait '
-            '--name "{assignmentName}" '
-            '--created',
-            checks=[])
-
-        self.cmd(
-            'az blueprint assignment show '
-            '--name "{assignmentName}"',
-            checks=[])
-
-        self.cmd(
-            'az blueprint assignment list ',
-            checks=[
-                self.check("length([?provisioningState == 'succeeded']) == length(@)", True),
-            ])
-
-        self.cmd('az blueprint assignment who '
-            '--name "{assignmentName}"',
-            checks=[])
-
-        with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
-            self.cmd(
-                'az role assignment create '
-                '--assignee-object-id {identityPrincipalId} '
-                '--role Owner '
-                '--scope /subscriptions/{subscription}/resourceGroups/{rgName}')
-
-        import time
-        time.sleep(600)
-        assignment = self.cmd(
-            'az blueprint assignment update '
-            '--name "{assignmentName}" '
-            '--location "westus2" '
-            '--user-assigned-identity {userAssignedIdentity} '
-            '--locks-mode "AllResourcesReadOnly" ',
-            checks=[self.exists('identity.userAssignedIdentities'),
-                    self.check('locks.mode', 'AllResourcesReadOnly', case_sensitive=False)]).get_output_in_json()
-
-        self.cmd(
-            'az blueprint assignment wait '
-            '--name "{assignmentName}" '
-            '--updated',
-            checks=[])
-
-        self.cmd(
-            'az blueprint assignment delete '
-            '--name "{assignmentName}" '
-            '-y',
-            checks=[])
-
-        self.cmd(
-            'az blueprint assignment wait '
-            '--name "{assignmentName}" '
-            '--deleted',
-            checks=[])
-
         self.cmd(
             'az blueprint version show '
             '--blueprint-name "{blueprintName}" '
@@ -271,10 +197,125 @@ class BlueprintScenarioTest(ScenarioTest):
 
         # delete a blueprint assignment will not delete the resources created in the target scope
         # delete the resource group that contains the created resources to clean up
-        self.cmd('az group delete '
-                 '--subscription "{subscription}" '
-                 '--name "{rgName}" '
-                 '-y')
+        # self.cmd('az group delete '
+        #          '--subscription "{subscription}" '
+        #          '--name "{rgName}" '
+        #          '-y')
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='cli_test_blueprint_assignment')
+    def test_blueprint_assignment(self, resource_group):
+        self.kwargs.update({
+            'blueprintName': self.create_random_name(prefix='test-bp-', length=24),
+            'subscription': self.get_subscription_id(),
+            'assignmentName': self.create_random_name(prefix='Assignment-test-bp', length=24),
+            'identityName': self.create_random_name(prefix='testid_', length=24),
+            'rgName': self.create_random_name(prefix='blueprint-rg-', length=24),
+            'policy_filename': TEST_DIR + '/input/create/policy_params.json',
+            'blueprint_filename': TEST_DIR + '/input/create/blueprint_params.json',
+            'assignment_filename': TEST_DIR + '/input/create/assignment_params.json',
+        })
+
+        test_identity = self.cmd('az identity create '
+                                 '-g {rg} '
+                                 '-n {identityName}').get_output_in_json()
+        self.kwargs.update({
+            'userAssignedIdentity': test_identity['id'],
+            'identityPrincipalId': test_identity['principalId']
+        })
+
+        self.cmd(
+            'az blueprint create '
+            '--name "{blueprintName}" '
+            '--description "An example blueprint." '
+            '--target-scope "subscription"',
+            checks=[
+                JMESPathCheck('name', self.kwargs.get('blueprintName', ''))
+            ])
+        self.cmd(
+            'az blueprint resource-group add '
+            '--blueprint-name "{blueprintName}" '
+            '--artifact-name "myRgArt" '
+            '--display-name "Resource Group 1"',
+            checks=[
+                JMESPathCheck(
+                    'myRgArt.displayName',
+                    "Resource Group 1")
+            ])
+        self.cmd(
+            'az blueprint update '
+            '--name "{blueprintName}" '
+            '--parameters {blueprint_filename}',
+            checks=[JMESPathCheckExists('parameters')])
+        self.cmd(
+            'az blueprint publish '
+            '--blueprint-name "{blueprintName}" '
+            '--version "1.0" '
+            '--change-notes "First release"',
+            checks=[])
+        from unittest import mock
+        with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
+            assignment = self.cmd(
+                'az blueprint assignment create '
+                '--name "{assignmentName}" '
+                '--location "westus2" '
+                '--identity-type "SystemAssigned" '
+                '--blueprint-version "/subscriptions/{subscription}/providers/Microsoft.Blueprint/blueprints/{blueprintName}/versions/1.0" '
+                '--locks-mode "None" '
+                '--resource-group-value artifact_name=myRgArt name={rgName} location=westus2 '
+                '--parameters {assignment_filename}')
+
+        self.cmd(
+            'az blueprint assignment wait '
+            '--name "{assignmentName}" '
+            '--created',
+            checks=[])
+
+        self.cmd(
+            'az blueprint assignment show '
+            '--name "{assignmentName}"',
+            checks=[self.check('provisioningState', 'succeeded')])
+
+        self.cmd('az blueprint assignment list ', )
+
+        self.cmd('az blueprint assignment who '
+                 '--name "{assignmentName}"')
+
+        with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
+            self.cmd(
+                'az role assignment create '
+                '--assignee-object-id {identityPrincipalId} '
+                '--role Owner '
+                '--scope /subscriptions/{subscription}/resourceGroups/{rgName}')
+
+        import time
+        time.sleep(600)
+        self.cmd(
+            'az blueprint assignment update '
+            '--name "{assignmentName}" '
+            '--location "westus2" '
+            '--user-assigned-identity {userAssignedIdentity} '
+            '--locks-mode "AllResourcesReadOnly" ',
+            checks=[self.exists('identity.userAssignedIdentities'),
+                    self.check('locks.mode', 'AllResourcesReadOnly', case_sensitive=False)]).get_output_in_json()
+
+        self.cmd(
+            'az blueprint assignment wait '
+            '--name "{assignmentName}" '
+            '--updated',
+            checks=[])
+
+        self.cmd(
+            'az blueprint assignment delete '
+            '--name "{assignmentName}" '
+            '-y',
+            checks=[])
+
+        self.cmd(
+            'az blueprint assignment wait '
+            '--name "{assignmentName}" '
+            '--deleted',
+            checks=[])
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_blueprint_import')
@@ -283,13 +324,16 @@ class BlueprintScenarioTest(ScenarioTest):
         self.kwargs.update({
             'blueprintName': self.create_random_name(prefix='test-import-bp', length=24),
             'subscription': self.get_subscription_id(),
-            'assignmentName': self.create_random_name(prefix='Assignment-test-import-bp', length=32)
+            'assignmentName': self.create_random_name(prefix='Assignment-test-import-bp', length=32),
+            'input_path_01': TEST_DIR+'/input/import_with_arm',
+            'input_path_02': TEST_DIR+'/input/import_with_artifacts',
+            'assignment_filename': TEST_DIR+'/input/import_with_artifacts/assignment_params.json',
         })
 
         self.cmd(
             'az blueprint import '
             '--name "{blueprintName}" '
-            '--input-path "src/blueprint/azext_blueprint/tests/latest/input/import_with_arm" '
+            '--input-path {input_path_01} '
             '-y',
             checks=[JMESPathCheck('name', self.kwargs.get('blueprintName', '')),
                     JMESPathCheck('targetScope', 'subscription'),
@@ -299,7 +343,7 @@ class BlueprintScenarioTest(ScenarioTest):
         self.cmd(
             'az blueprint import '
             '--name "{blueprintName}" '
-            '--input-path "src/blueprint/azext_blueprint/tests/latest/input/import_with_artifacts" '
+            '--input-path {input_path_02} '
             '-y',
             checks=[JMESPathCheckExists('parameters.contributors')])
 
@@ -327,7 +371,7 @@ class BlueprintScenarioTest(ScenarioTest):
                 '--blueprint-version "/subscriptions/{subscription}/providers/Microsoft.Blueprint/blueprints/{blueprintName}/versions/1.0" '
                 '--locks-mode "None" '
                 '--resource-group-value artifact_name=storageRG name=storage-rg location=westus2 '
-                '--parameters @src/blueprint/azext_blueprint/tests/latest/input/import_with_artifacts/assignment_params.json',
+                '--parameters {assignment_filename}',
                 checks=[JMESPathCheckExists('identity.principalId')]).get_output_in_json()
 
         principal_id = assignment['identity']['principalId']
@@ -402,30 +446,31 @@ class BlueprintScenarioTest(ScenarioTest):
         self.kwargs.update({
             'blueprintName': self.create_random_name(prefix='test-imported-bp', length=24),
             'subscription': self.get_subscription_id(),
+            'input_path': TEST_DIR+'/input/export_with_artifacts/input',
+            'output_path': TEST_DIR+'/input/export_with_artifacts/exported',
         })
 
         # this will overwrite the previous settings
         self.cmd(
             'az blueprint import '
             '--name "{blueprintName}" '
-            '--input-path "src/blueprint/azext_blueprint/tests/latest/input/export_with_artifacts/input" '
+            '--input-path {input_path} '
             '-y',
             checks=[])
 
         self.cmd(
             'az blueprint export '
-            '--output-path "src/blueprint/azext_blueprint/tests/latest/input/export_with_artifacts/exported" '
+            '--output-path {output_path} '
             '--name "{blueprintName}" '
             '--yes',
             checks=[])
 
         # check if the import and output artifacts are equal in content
-        input_blueprint = "src/blueprint/azext_blueprint/tests/latest/input/export_with_artifacts/input/blueprint.json"
-        input_artifact_directory = "src/blueprint/azext_blueprint/tests/latest/input/export_with_artifacts/input/artifacts"
-        output_blueprint = f"src/blueprint/azext_blueprint/tests/latest/input/export_with_artifacts/exported/{self.kwargs['blueprintName']}/blueprint.json"
-        output_artifact_directory = f"src/blueprint/azext_blueprint/tests/latest/input/export_with_artifacts/exported/{self.kwargs['blueprintName']}/artifacts"
-        output_path = Path(f"src/blueprint/azext_blueprint/tests/latest/input/export_with_artifacts/exported/{self.kwargs['blueprintName']}")
-
+        input_blueprint = TEST_DIR + "/input/export_with_artifacts/input/blueprint.json"
+        input_artifact_directory = TEST_DIR + "/input/export_with_artifacts/input/artifacts"
+        output_blueprint = TEST_DIR + f"/input/export_with_artifacts/exported/{self.kwargs['blueprintName']}/blueprint.json"
+        output_artifact_directory = TEST_DIR + f"/input/export_with_artifacts/exported/{self.kwargs['blueprintName']}/artifacts"
+        output_path = Path(TEST_DIR + f"/input/export_with_artifacts/exported/{self.kwargs['blueprintName']}")
         # recursive function to check for json equality
         def ordered(obj):
             if isinstance(obj, dict):

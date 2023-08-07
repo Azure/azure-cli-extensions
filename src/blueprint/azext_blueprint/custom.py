@@ -16,10 +16,12 @@ from azure.core.exceptions import HttpResponseError
 from ._client_factory import cf_artifacts
 from .aaz.latest.blueprint import Create as _BlueprintCreate, Update as _BlueprintUpdate, Delete as _BlueprintDelete, \
     Show as _BlueprintShow, List as _BlueprintList
+from .aaz.latest.blueprint.artifact import Update as _BlueprintArtifactUpdate, Delete as _BlueprintArtifactDelete, \
+    Show as _BlueprintArtifactShow, List as _BlueprintArtifactList
 from .aaz.latest.blueprint.assignment import Delete as _BlueprintAssignmentDelete, Show as _BlueprintAssignmentShow, \
     List as _BlueprintAssignmentList, Who as _BlueprintAssignmentWho
 from .aaz.latest.blueprint.version import Delete as _BlueprintVersionDelete, Show as _BlueprintVersionShow, \
-    List as _BlueprintVersionList
+    List as _BlueprintVersionList, Create as _BlueprintPublish
 from .aaz.latest.blueprint.version.artifact import Show as _BlueprintVersionArtifactShow, \
     List as _BlueprintVersionArtifactList
 
@@ -51,8 +53,7 @@ def import_blueprint_with_artifacts(cmd,
                 body['description'] = blueprint_properties['description']  # str
             body['target_scope'] = blueprint_properties.get('targetScope', 'subscription')  # str
             if 'parameters' in blueprint_properties:
-                body['parameters'] = blueprint_properties[
-                    'parameters']  # dictionary
+                body['parameters'] = blueprint_properties['parameters']  # dictionary
             if 'resourceGroups' in blueprint_properties:
                 body['resource_groups'] = blueprint_properties['resourceGroups']  # dictionary
 
@@ -89,6 +90,74 @@ def import_blueprint_with_artifacts(cmd,
                                          artifact=artifact)
 
     return blueprint_response
+
+
+# def import_blueprint_with_artifacts(cmd,
+#                                     client,
+#                                     blueprint_name,
+#                                     input_path,
+#                                     management_group=None,
+#                                     subscription=None,
+#                                     resource_scope=None):
+#     artifact_client = cf_artifacts(cmd.cli_ctx)
+#     body = {}
+#     blueprint_path = os.path.join(input_path, 'blueprint.json')
+#     art_dict = {}
+#
+#     try:
+#         with open(blueprint_path) as blueprint_file:
+#             try:
+#                 blueprint = json.load(blueprint_file)
+#             except json.decoder.JSONDecodeError as ex:
+#                 raise CLIError('JSON decode error for {}: {}'.format(blueprint_path, str(ex))) from ex
+#             if 'properties' not in blueprint:
+#                 raise CLIError("blueprint.json does not contain the 'properties' field")
+#             blueprint_properties = blueprint['properties']
+#             if 'displayName' in blueprint_properties:
+#                 body['display_name'] = blueprint_properties['displayName']  # str
+#             if 'description' in blueprint_properties:
+#                 body['description'] = blueprint_properties['description']  # str
+#             body['target_scope'] = blueprint_properties.get('targetScope', 'subscription')  # str
+#             if 'parameters' in blueprint_properties:
+#                 body['parameters'] = blueprint_properties['parameters']  # dictionary
+#             if 'resourceGroups' in blueprint_properties:
+#                 body['resource_groups'] = blueprint_properties['resourceGroups']  # dictionary
+#
+#         for filename in os.listdir(os.path.join(input_path, 'artifacts')):
+#             artifact_name = filename.split('.')[0]
+#             filepath = os.path.join(input_path, 'artifacts', filename)
+#             # skip hidden files
+#             if ((os.name != 'nt' and not filename.startswith('.')) or
+#                     (os.name == 'nt' and not bool(os.stat(filepath).st_file_attributes & stat.FILE_ATTRIBUTE_HIDDEN))):
+#                 with open(filepath) as artifact_file:
+#                     try:
+#                         artifact = json.load(artifact_file)
+#                         art_dict[artifact_name] = artifact
+#                     except json.decoder.JSONDecodeError as ex:
+#                         raise CLIError('JSON decode error for {}: {}'.format(filepath, str(ex))) from ex
+#     except FileNotFoundError as ex:
+#         raise CLIError('File not Found: {}'.format(str(ex))) from ex
+#
+#     # Only import when all files have no errors
+#     body['name'] = blueprint_name
+#     body['resource_scope'] = resource_scope
+#     blueprint_response = _BlueprintCreate(cli_ctx=cmd.cli_ctx)(body)
+#
+#     # delete old artifacts
+#     artifacts = _BlueprintArtifactList(cli_ctx=cmd.cli_ctx)(command_args={'resource_scope': resource_scope,
+#                                                                           'blueprint_name': blueprint_name})
+#     for artifact in artifacts:
+#         _BlueprintArtifactDelete(cli_ctx=cmd.cli_ctx)(command_args={'resource_scope': resource_scope,
+#                                                                     'blueprint_name': blueprint_name,
+#                                                                     'name': artifact['name']})
+#     # create new artifacts
+#     for artifact_name, artifact in art_dict.items():
+#         artifact_client.create_or_update(resource_scope=resource_scope,
+#                                          blueprint_name=blueprint_name,
+#                                          artifact_name=artifact_name,
+#                                          artifact=artifact)
+#
+#     return blueprint_response
 
 
 def _blueprint_validator(cmd):
@@ -368,19 +437,49 @@ def export_blueprint_with_artifacts(cmd, client, blueprint_name, output_path,
     return blueprint
 
 
-def delete_blueprint_artifact(cmd, blueprint_name, artifact_name,
+def delete_blueprint_artifact(client, blueprint_name, artifact_name,
                               management_group=None, subscription=None, resource_scope=None):
-    # return client.delete(resource_scope=resource_scope,
-    #                      blueprint_name=blueprint_name,
-    #                      artifact_name=artifact_name)
-    blueprint_artifact = {
-        "blueprint_name": blueprint_name,
-        "name": artifact_name,
-        "resource_scope": resource_scope
-    }
-    from azext_blueprint.aaz.latest.blueprint.artifact import Delete
-    Delete_Blueprint_Artifact = Delete(cli_ctx=cmd.cli_ctx)
-    return Delete_Blueprint_Artifact(blueprint_artifact)
+    return client.delete(resource_scope=resource_scope,
+                         blueprint_name=blueprint_name,
+                         artifact_name=artifact_name)
+    # blueprint_artifact = {
+    #     "blueprint_name": blueprint_name,
+    #     "name": artifact_name,
+    #     "resource_scope": resource_scope
+    # }
+    # from azext_blueprint.aaz.latest.blueprint.artifact import Delete
+    # Delete_Blueprint_Artifact = Delete(cli_ctx=cmd.cli_ctx)
+    # return Delete_Blueprint_Artifact(blueprint_artifact)
+
+
+class BlueprintArtifactDelete(_BlueprintArtifactDelete):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        from azure.cli.core.aaz import AAZStrArg
+        args_schema.management_group = AAZStrArg(
+            options=["--management-group", "-m"],
+            arg_group='Resource_scope',
+            help="Use management group for the scope of the blueprint."
+        )
+        args_schema.subscription_id = AAZStrArg(
+            options=["--subscription", "-s"],
+            arg_group='Resource_scope',
+            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
+                 "--subscription value or the default subscription will be used as the scope."
+        )
+        args_schema.resource_scope._required = False
+        args_schema.resource_scope._registered = False
+        return args_schema
+
+    def _cli_arguments_loader(self):
+        from knack.arguments import CLICommandArgument
+        args = super()._cli_arguments_loader()
+        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        return args
+
+    def pre_operations(self):
+        _blueprint_validator(self)
 
 
 def get_blueprint_artifact(cmd, blueprint_name, artifact_name,
@@ -396,6 +495,36 @@ def get_blueprint_artifact(cmd, blueprint_name, artifact_name,
     return Get_Blueprint_Artifact(blueprint_artifact)
 
 
+class BlueprintArtifactShow(_BlueprintArtifactShow):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        from azure.cli.core.aaz import AAZStrArg
+        args_schema.management_group = AAZStrArg(
+            options=["--management-group", "-m"],
+            arg_group='Resource_scope',
+            help="Use management group for the scope of the blueprint."
+        )
+        args_schema.subscription_id = AAZStrArg(
+            options=["--subscription", "-s"],
+            arg_group='Resource_scope',
+            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
+                 "--subscription value or the default subscription will be used as the scope."
+        )
+        args_schema.resource_scope._required = False
+        args_schema.resource_scope._registered = False
+        return args_schema
+
+    def _cli_arguments_loader(self):
+        from knack.arguments import CLICommandArgument
+        args = super()._cli_arguments_loader()
+        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        return args
+
+    def pre_operations(self):
+        _blueprint_validator(self)
+
+
 def list_blueprint_artifact(cmd, blueprint_name, management_group=None, subscription=None, resource_scope=None):
     blueprint_artifact = {
         "blueprint_name": blueprint_name,
@@ -406,7 +535,37 @@ def list_blueprint_artifact(cmd, blueprint_name, management_group=None, subscrip
     return List_Blueprint_Artifact(blueprint_artifact)
 
 
-def add_blueprint_resource_group(cmd,
+class BlueprintArtifactList(_BlueprintArtifactList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        from azure.cli.core.aaz import AAZStrArg
+        args_schema.management_group = AAZStrArg(
+            options=["--management-group", "-m"],
+            arg_group='Resource_scope',
+            help="Use management group for the scope of the blueprint."
+        )
+        args_schema.subscription_id = AAZStrArg(
+            options=["--subscription", "-s"],
+            arg_group='Resource_scope',
+            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
+                 "--subscription value or the default subscription will be used as the scope."
+        )
+        args_schema.resource_scope._required = False
+        args_schema.resource_scope._registered = False
+        return args_schema
+
+    def _cli_arguments_loader(self):
+        from knack.arguments import CLICommandArgument
+        args = super()._cli_arguments_loader()
+        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        return args
+
+    def pre_operations(self):
+        _blueprint_validator(self)
+
+
+def add_blueprint_resource_group(cmd, client,
                                  blueprint_name,
                                  management_group=None,
                                  subscription=None,
@@ -450,7 +609,7 @@ def add_blueprint_resource_group(cmd,
         "resource_scope": resource_scope,
     }
     from azext_blueprint.aaz.latest.blueprint import Show
-    body = Show(cli_ctx=cmd.cli_ctx)(show_args)
+    body = Show(cli_ctx=cmd.cli_ctx)(args)
     rg_key = artifact_name
     body.setdefault('resourceGroups', {})
     if artifact_name is None:
@@ -473,12 +632,12 @@ def add_blueprint_resource_group(cmd,
         "tags": tags
     }
     from azext_blueprint.aaz.latest.blueprint import Update
-    args['resource_groups'][rg_key] = resource_group
+    args.setdefault('resource_groups', {})[rg_key] = resource_group
     rgs = Update(cli_ctx=cmd.cli_ctx)(args)['resourceGroups']
     return {k: v for k, v in rgs.items() if k == artifact_name}
 
 
-def update_blueprint_resource_group(cmd,
+def update_blueprint_resource_group(cmd, client,
                                     blueprint_name,
                                     artifact_name,
                                     management_group=None,
@@ -533,13 +692,13 @@ def update_blueprint_resource_group(cmd,
     if tags is not None:
         resource_group['tags'] = tags
     from azext_blueprint.aaz.latest.blueprint import Update
-    args['resource_groups'][artifact_name] = resource_group
+    args.setdefault('resource_groups', {})[artifact_name] = resource_group
     rgs = Update(cli_ctx=cmd.cli_ctx)(args)['resourceGroups']
     return {k: v for k, v in rgs.items() if k == artifact_name}
 
 
 # todo test
-def remove_blueprint_resource_group(cmd, blueprint_name,
+def remove_blueprint_resource_group(cmd, client, blueprint_name,
                                     artifact_name, management_group=None, subscription=None, resource_scope=None):
     # body = client.get(resource_scope=resource_scope, blueprint_name=blueprint_name).as_dict()
     # if artifact_name not in body.setdefault('resource_groups', {}):
@@ -566,7 +725,7 @@ def remove_blueprint_resource_group(cmd, blueprint_name,
     return deleted_rg
 
 
-def get_blueprint_resource_group(cmd, blueprint_name,
+def get_blueprint_resource_group(cmd, client, blueprint_name,
                                  artifact_name, management_group=None, subscription=None, resource_scope=None):
     # rgs = client.get(resource_scope=resource_scope,
     #                  blueprint_name=blueprint_name).resource_groups
@@ -580,7 +739,7 @@ def get_blueprint_resource_group(cmd, blueprint_name,
     return {k: v for k, v in rgs.items() if k == artifact_name}
 
 
-def list_blueprint_resource_group(cmd, blueprint_name, management_group=None,
+def list_blueprint_resource_group(cmd, client, blueprint_name, management_group=None,
                                   subscription=None, resource_scope=None):
     # body = client.get(resource_scope=resource_scope, blueprint_name=blueprint_name)
     # return body.resource_groups
@@ -618,18 +777,8 @@ def create_blueprint_artifact_policy(client,
                                    artifact_name=artifact_name,
                                    artifact=body)
 
-    # args = {
-    #     "blueprint_name": blueprint_name,
-    #     "name": artifact_name,
-    #     "resource_scope": resource_scope,
-    #     "policy_assignment": body
-    # }
-    # from azext_blueprint.aaz.latest.blueprint.artifact import Create
-    # Create_Blueprint_Artifact_Policy = Create(cli_ctx=cmd.cli_ctx)
-    # return Create_Blueprint_Artifact_Policy(args)
 
-
-def update_blueprint_artifact_policy(cmd,
+def update_blueprint_artifact_policy(client,
                                      blueprint_name,
                                      artifact_name,
                                      management_group=None,
@@ -640,26 +789,24 @@ def update_blueprint_artifact_policy(cmd,
                                      resource_group_art=None,
                                      description=None,
                                      depends_on=None):
-    body = {}
-    if has_value(parameters):
+    body = client.get(resource_scope=resource_scope,
+                      blueprint_name=blueprint_name,
+                      artifact_name=artifact_name).as_dict()
+    if parameters is not None:
         body['parameters'] = parameters
-    if has_value(display_name):
+    if display_name is not None:
         body['display_name'] = display_name
-    if has_value(resource_group_art):
+    if resource_group_art is not None:
         body['resource_group'] = resource_group_art
-    if has_value(description):
+    if description is not None:
         body['description'] = description
-    if has_value(depends_on):
-        body['depends_on'] = depends_on
-    args = {
-        "resource_scope": resource_scope,
-        "blueprint_name": blueprint_name,
-        "name": artifact_name,
-        "policy_assignment": body
-    }
-    from azext_blueprint.aaz.latest.blueprint.artifact import Create
-    Update_Blueprint_Artifact_Policy = Create(cli_ctx=cmd.cli_ctx)
-    return Update_Blueprint_Artifact_Policy(args)
+    if depends_on is not None:
+        body['depends_on'] = _process_depends_on_for_update(depends_on)
+
+    return client.create_or_update(resource_scope=resource_scope,
+                                   blueprint_name=blueprint_name,
+                                   artifact_name=artifact_name,
+                                   artifact=body)
 
 
 def create_blueprint_artifact_role(client,
@@ -693,7 +840,7 @@ def create_blueprint_artifact_role(client,
                                    artifact=body)
 
 
-def update_blueprint_artifact_role(cmd,
+def update_blueprint_artifact_role(client,
                                    blueprint_name,
                                    artifact_name,
                                    management_group=None,
@@ -703,27 +850,26 @@ def update_blueprint_artifact_role(cmd,
                                    resource_group_art=None,
                                    description=None,
                                    depends_on=None):
-    body = {}
-    if has_value(display_name):
+    body = client.get(resource_scope=resource_scope,
+                      blueprint_name=blueprint_name,
+                      artifact_name=artifact_name).as_dict()
+
+    if display_name is not None:
         body['display_name'] = display_name
-    if has_value(resource_group_art):
+    if resource_group_art is not None:
         body['resource_group'] = resource_group_art
-    if has_value(description):
+    if description is not None:
         body['description'] = description
-    if has_value(depends_on):
-        body['depends_on'] = depends_on
-    args = {
-        "blueprint_name": blueprint_name,
-        "name": artifact_name,
-        "resource_scope": resource_scope,
-        "role_assignment": body
-    }
-    from azext_blueprint.aaz.latest.blueprint.artifact import Create
-    Update_Blueprint_Artifact_Role = Create(cli_ctx=cmd.cli_ctx)
-    return Update_Blueprint_Artifact_Role(args)
+    if depends_on is not None:
+        body['depends_on'] = _process_depends_on_for_update(depends_on)
+
+    return client.create_or_update(resource_scope=resource_scope,
+                                   blueprint_name=blueprint_name,
+                                   artifact_name=artifact_name,
+                                   artifact=body)
 
 
-def create_blueprint_artifact_template(cmd,
+def create_blueprint_artifact_template(client,
                                        blueprint_name,
                                        template,
                                        artifact_name,
@@ -738,25 +884,23 @@ def create_blueprint_artifact_template(cmd,
     body = {
         'display_name': display_name,
         'template': template,
+        'kind': 'template',
         'description': description,
         'depends_on': depends_on,
         'parameters': parameters,
         'resource_group': resource_group_art
     }
-    args = {
-        "blueprint_name": blueprint_name,
-        "name": artifact_name,
-        "resource_scope": resource_scope,
-        "template": body
-    }
-    from azext_blueprint.aaz.latest.blueprint.artifact import Create
-    Create_Blueprint_Artifact_Template = Create(cli_ctx=cmd.cli_ctx)
-    return Create_Blueprint_Artifact_Template(args)
+    return client.create_or_update(resource_scope=resource_scope,
+                                   blueprint_name=blueprint_name,
+                                   artifact_name=artifact_name,
+                                   artifact=body)
 
 
-def update_blueprint_artifact_template(cmd,
+def update_blueprint_artifact_template(client,
                                        blueprint_name,
                                        artifact_name,
+                                       management_group=None,
+                                       subscription=None,
                                        resource_scope=None,
                                        template=None,
                                        parameters=None,
@@ -764,28 +908,27 @@ def update_blueprint_artifact_template(cmd,
                                        resource_group_art=None,
                                        description=None,
                                        depends_on=None):
-    body = {}
-    if has_value(template):
+    body = client.get(resource_scope=resource_scope,
+                      blueprint_name=blueprint_name,
+                      artifact_name=artifact_name).as_dict()
+
+    if template is not None:
         body['template'] = template
-    if has_value(parameters):
+    if parameters is not None:
         body['parameters'] = parameters
-    if has_value(display_name):
+    if display_name is not None:
         body['display_name'] = display_name
-    if has_value(resource_group_art):
+    if resource_group_art is not None:
         body['resource_group'] = resource_group_art
-    if has_value(description):
+    if description is not None:
         body['description'] = description
-    if has_value(depends_on):
-        body['depends_on'] = depends_on
-    args = {
-        "blueprint_name": blueprint_name,
-        "name": artifact_name,
-        "resource_scope": resource_scope,
-        "template": body
-    }
-    from azext_blueprint.aaz.latest.blueprint.artifact import Create
-    Update_Blueprint_Artifact_Template = Create(cli_ctx=cmd.cli_ctx)
-    return Update_Blueprint_Artifact_Template(args)
+    if depends_on is not None:
+        body['depends_on'] = _process_depends_on_for_update(depends_on)
+
+    return client.create_or_update(resource_scope=resource_scope,
+                                   blueprint_name=blueprint_name,
+                                   artifact_name=artifact_name,
+                                   artifact=body)
 
 
 def publish_blueprint(client,
@@ -802,6 +945,36 @@ def publish_blueprint(client,
                          blueprint_name=blueprint_name,
                          version_id=version_id,
                          published_blueprint=body)
+
+
+class BlueprintPublish(_BlueprintPublish):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        from azure.cli.core.aaz import AAZStrArg
+        args_schema.management_group = AAZStrArg(
+            options=["--management-group", "-m"],
+            arg_group='Resource_scope',
+            help="Use management group for the scope of the blueprint."
+        )
+        args_schema.subscription_id = AAZStrArg(
+            options=["--subscription", "-s"],
+            arg_group='Resource_scope',
+            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
+                 "--subscription value or the default subscription will be used as the scope."
+        )
+        args_schema.resource_scope._required = False
+        args_schema.resource_scope._registered = False
+        return args_schema
+
+    def _cli_arguments_loader(self):
+        from knack.arguments import CLICommandArgument
+        args = super()._cli_arguments_loader()
+        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        return args
+
+    def pre_operations(self):
+        _blueprint_validator(self)
 
 
 def delete_blueprint_version(client, blueprint_name, version_id,
@@ -1058,7 +1231,7 @@ def _assign_owner_role_in_target_scope(cmd, role_scope, spn_object_id,):
                                assignee_principal_type='ServicePrincipal')
 
 
-def update_blueprint_assignment(client,
+def update_blueprint_assignment(cmd, client,
                                 assignment_name,
                                 management_group=None,
                                 subscription=None,

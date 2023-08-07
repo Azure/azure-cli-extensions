@@ -21,16 +21,16 @@ def load_command_table(self, _):
         from azext_blueprint.custom import BlueprintCreate, BlueprintDelete, BlueprintShow, BlueprintList, BlueprintUpdate
         self.command_table["blueprint create"] = BlueprintCreate(loader=self)
         self.command_table["blueprint delete"] = BlueprintDelete(loader=self)
-        self.command_table["blueprint show"] = BlueprintShow(loader=self)
+        # self.command_table["blueprint show"] = BlueprintShow(loader=self)
         self.command_table["blueprint list"] = BlueprintList(loader=self)
-        self.command_table["blueprint update"] = BlueprintUpdate(loader=self)
+        # self.command_table["blueprint update"] = BlueprintUpdate(loader=self)
         # g.custom_command('create', 'create_blueprint')
         # g.custom_command('update', 'update_blueprint')
-        # g.generic_update_command('update', custom_func_name='update_blueprint',
-        #                          setter_arg_name='blueprint',
-        #                          setter_name='create_or_update')
+        g.generic_update_command('update', custom_func_name='update_blueprint',
+                                 setter_arg_name='blueprint',
+                                 setter_name='create_or_update')
         # g.custom_command('delete', 'delete_blueprint', confirmation=True)
-        # g.custom_show_command('show', 'get_blueprint')
+        g.custom_show_command('show', 'get_blueprint')
         # g.custom_command('list', 'list_blueprint')
         g.custom_command('import', 'import_blueprint_with_artifacts',
                          confirmation="This operation will overwrite any unpublished changes"
@@ -50,9 +50,13 @@ def load_command_table(self, _):
                         '.{}',
         client_factory=cf_artifacts)
     with self.command_group('blueprint artifact', blueprint_artifacts, client_factory=cf_artifacts) as g:
-        g.custom_command('delete', 'delete_blueprint_artifact', confirmation=True)
-        g.custom_show_command('show', 'get_blueprint_artifact')
-        g.custom_command('list', 'list_blueprint_artifact')
+        # g.custom_command('delete', 'delete_blueprint_artifact', confirmation=True)
+        # g.custom_show_command('show', 'get_blueprint_artifact')
+        # g.custom_command('list', 'list_blueprint_artifact')
+        from azext_blueprint.custom import BlueprintArtifactDelete, BlueprintArtifactShow, BlueprintArtifactList
+        self.command_table["blueprint artifact delete"] = BlueprintArtifactDelete(loader=self)
+        self.command_table["blueprint artifact show"] = BlueprintArtifactShow(loader=self)
+        self.command_table["blueprint artifact list"] = BlueprintArtifactList(loader=self)
 
     with self.command_group('blueprint artifact policy', blueprint_artifacts, client_factory=cf_artifacts) as g:
         g.custom_command('create', 'create_blueprint_artifact_policy')
@@ -73,11 +77,13 @@ def load_command_table(self, _):
         client_factory=cf_published_blueprints)
     with self.command_group('blueprint', blueprint_published_blueprints,
                             client_factory=cf_published_blueprints, is_experimental=True) as g:
-        g.custom_command('publish', 'publish_blueprint')
-        g.custom_command('version delete', 'delete_blueprint_version', confirmation=True)
-        g.custom_command('version show', 'get_blueprint_version')
-        g.custom_command('version list', 'list_blueprint_version')
-        from azext_blueprint.custom import BlueprintVersionDelete, BlueprintVersionShow, BlueprintVersionList
+        # g.custom_command('publish', 'publish_blueprint')
+        # g.custom_command('version delete', 'delete_blueprint_version', confirmation=True)
+        # g.custom_command('version show', 'get_blueprint_version')
+        # g.custom_command('version list', 'list_blueprint_version')
+        from azext_blueprint.custom import BlueprintPublish, BlueprintVersionDelete, BlueprintVersionShow, \
+            BlueprintVersionList
+        self.command_table["blueprint publish"] = BlueprintPublish(loader=self)
         self.command_table["blueprint version delete"] = BlueprintVersionDelete(loader=self)
         self.command_table["blueprint version show"] = BlueprintVersionShow(loader=self)
         self.command_table["blueprint version list"] = BlueprintVersionList(loader=self)
@@ -89,8 +95,8 @@ def load_command_table(self, _):
         client_factory=cf_published_artifacts)
     with self.command_group('blueprint version artifact', blueprint_published_artifacts,
                             client_factory=cf_published_artifacts) as g:
-        g.custom_show_command('show', 'get_blueprint_version_artifact')
-        g.custom_command('list', 'list_blueprint_version_artifact')
+        # g.custom_show_command('show', 'get_blueprint_version_artifact')
+        # g.custom_command('list', 'list_blueprint_version_artifact')
         from azext_blueprint.custom import BlueprintVersionArtifactShow, BlueprintVersionArtifactList
         self.command_table["blueprint version artifact show"] = BlueprintVersionArtifactShow(loader=self)
         self.command_table["blueprint version artifact list"] = BlueprintVersionArtifactList(loader=self)
@@ -103,11 +109,11 @@ def load_command_table(self, _):
     with self.command_group('blueprint assignment', blueprint_assignments, client_factory=cf_assignments) as g:
         g.custom_command('create', 'create_blueprint_assignment')
         g.custom_command('update', 'update_blueprint_assignment')
-        g.custom_command('delete', 'delete_blueprint_assignment', confirmation=True)
-        g.custom_show_command('show', 'get_blueprint_assignment')
-        g.custom_command('list', 'list_blueprint_assignment')
+        # g.custom_command('delete', 'delete_blueprint_assignment', confirmation=True)
+        # g.custom_show_command('show', 'get_blueprint_assignment')
+        # g.custom_command('list', 'list_blueprint_assignment')
         g.custom_wait_command('wait', 'get_blueprint_assignment')
-        g.custom_command('who', 'who_is_blueprint_blueprint_assignment')
+        # g.custom_command('who', 'who_is_blueprint_blueprint_assignment')
         from azext_blueprint.custom import BlueprintAssignmentDelete, BlueprintAssignmentShow, BlueprintAssignmentList, \
             BlueprintAssignmentWho
         self.command_table["blueprint assignment delete"] = BlueprintAssignmentDelete(loader=self)

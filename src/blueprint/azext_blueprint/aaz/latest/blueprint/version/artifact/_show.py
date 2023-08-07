@@ -63,8 +63,8 @@ class Show(AAZCommand):
             help="The scope of the resource. Valid scopes are: management group (format: '/providers/Microsoft.Management/managementGroups/{managementGroup}'), subscription (format: '/subscriptions/{subscriptionId}').",
             required=True,
         )
-        _args_schema.version_id = AAZStrArg(
-            options=["--version-id"],
+        _args_schema.version = AAZStrArg(
+            options=["--version"],
             help="Version of the published blueprint definition.",
             required=True,
         )
@@ -130,7 +130,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "versionId", self.ctx.args.version_id,
+                    "versionId", self.ctx.args.version,
                     required=True,
                 ),
             }

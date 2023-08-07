@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "blueprint version show",
+    "blueprint version create",
     is_preview=True,
 )
-class Show(AAZCommand):
-    """Get a published version of a blueprint.
+class Create(AAZCommand):
+    """Publish a new version of the blueprint definition with the latest artifacts. Published blueprint definitions are immutable.
 
-    :example: Get a published management group blueprint
-        az blueprint version show --management-group MyManagementGroup --blueprint-name MyBlueprint --version v2
+    :example: Publish a management group blueprint
+        az blueprint publish --management-group MyManagementGroup --blueprint-name MyBlueprint --version v2
 
-    :example: Get a published subscription blueprint
-        az blueprint version show --subscription MySubscription --blueprint-name MyBlueprint --version v2
+    :example: Publish a subscription blueprint
+        az blueprint publish --subscription MySubscription --blueprint-name MyBlueprint --version v2
     """
 
     _aaz_info = {
@@ -63,11 +63,59 @@ class Show(AAZCommand):
             help="Version of the published blueprint definition.",
             required=True,
         )
+        _args_schema.change_notes = AAZStrArg(
+            options=["--change-notes"],
+            help="Version-specific change notes.",
+            fmt=AAZStrArgFormat(
+                max_length=500,
+            ),
+        )
+
+        # define Arg Group "Properties"
         return cls._args_schema
+
+    _args_parameter_definition_metadata_create = None
+
+    @classmethod
+    def _build_args_parameter_definition_metadata_create(cls, _schema):
+        if cls._args_parameter_definition_metadata_create is not None:
+            _schema.description = cls._args_parameter_definition_metadata_create.description
+            _schema.display_name = cls._args_parameter_definition_metadata_create.display_name
+            _schema.strong_type = cls._args_parameter_definition_metadata_create.strong_type
+            return
+
+        cls._args_parameter_definition_metadata_create = AAZObjectArg()
+
+        parameter_definition_metadata_create = cls._args_parameter_definition_metadata_create
+        parameter_definition_metadata_create.description = AAZStrArg(
+            options=["description"],
+            help="Description of this parameter/resourceGroup.",
+            fmt=AAZStrArgFormat(
+                max_length=500,
+            ),
+        )
+        parameter_definition_metadata_create.display_name = AAZStrArg(
+            options=["display-name"],
+            help="DisplayName of this parameter/resourceGroup.",
+            fmt=AAZStrArgFormat(
+                max_length=256,
+            ),
+        )
+        parameter_definition_metadata_create.strong_type = AAZStrArg(
+            options=["strong-type"],
+            help="StrongType for UI to render rich experience during blueprint assignment. Supported strong types are resourceType, principalId and location.",
+            fmt=AAZStrArgFormat(
+                max_length=64,
+            ),
+        )
+
+        _schema.description = cls._args_parameter_definition_metadata_create.description
+        _schema.display_name = cls._args_parameter_definition_metadata_create.display_name
+        _schema.strong_type = cls._args_parameter_definition_metadata_create.strong_type
 
     def _execute_operations(self):
         self.pre_operations()
-        self.PublishedBlueprintsGet(ctx=self.ctx)()
+        self.PublishedBlueprintsCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -82,14 +130,14 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class PublishedBlueprintsGet(AAZHttpOperation):
+    class PublishedBlueprintsCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
+            if session.http_response.status_code in [201]:
+                return self.on_201(session)
 
             return self.on_error(session.http_response)
 
@@ -102,7 +150,7 @@ class Show(AAZCommand):
 
         @property
         def method(self):
-            return "GET"
+            return "PUT"
 
         @property
         def error_format(self):
@@ -141,43 +189,62 @@ class Show(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
 
-        def on_200(self, session):
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"client_flatten": True}}
+            )
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("blueprintName", AAZStrType, ".blueprint_name")
+                properties.set_prop("changeNotes", AAZStrType, ".change_notes")
+
+            return self.serialize_content(_content_value)
+
+        def on_201(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200
+                schema_builder=self._build_schema_on_201
             )
 
-        _schema_on_200 = None
+        _schema_on_201 = None
 
         @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
+        def _build_schema_on_201(cls):
+            if cls._schema_on_201 is not None:
+                return cls._schema_on_201
 
-            cls._schema_on_200 = AAZObjectType()
+            cls._schema_on_201 = AAZObjectType()
 
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_201 = cls._schema_on_201
+            _schema_on_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _schema_on_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
+            _schema_on_201.properties = AAZObjectType(
                 flags={"required": True, "client_flatten": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _schema_on_201.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_201.properties
             properties.blueprint_name = AAZStrType(
                 serialized_name="blueprintName",
             )
@@ -197,10 +264,10 @@ class Show(AAZCommand):
                 serialized_name="targetScope",
             )
 
-            parameters = cls._schema_on_200.properties.parameters
+            parameters = cls._schema_on_201.properties.parameters
             parameters.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.properties.parameters.Element
+            _element = cls._schema_on_201.properties.parameters.Element
             _element.allowed_values = AAZListType(
                 serialized_name="allowedValues",
             )
@@ -210,18 +277,18 @@ class Show(AAZCommand):
             _element.metadata = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _ShowHelper._build_schema_parameter_definition_metadata_read(_element.metadata)
+            _CreateHelper._build_schema_parameter_definition_metadata_read(_element.metadata)
             _element.type = AAZStrType(
                 flags={"required": True},
             )
 
-            allowed_values = cls._schema_on_200.properties.parameters.Element.allowed_values
+            allowed_values = cls._schema_on_201.properties.parameters.Element.allowed_values
             allowed_values.Element = AAZStrType()
 
-            resource_groups = cls._schema_on_200.properties.resource_groups
+            resource_groups = cls._schema_on_201.properties.resource_groups
             resource_groups.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.properties.resource_groups.Element
+            _element = cls._schema_on_201.properties.resource_groups.Element
             _element.depends_on = AAZListType(
                 serialized_name="dependsOn",
             )
@@ -229,17 +296,17 @@ class Show(AAZCommand):
             _element.metadata = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _ShowHelper._build_schema_parameter_definition_metadata_read(_element.metadata)
+            _CreateHelper._build_schema_parameter_definition_metadata_read(_element.metadata)
             _element.name = AAZStrType()
             _element.tags = AAZDictType()
 
-            depends_on = cls._schema_on_200.properties.resource_groups.Element.depends_on
+            depends_on = cls._schema_on_201.properties.resource_groups.Element.depends_on
             depends_on.Element = AAZStrType()
 
-            tags = cls._schema_on_200.properties.resource_groups.Element.tags
+            tags = cls._schema_on_201.properties.resource_groups.Element.tags
             tags.Element = AAZStrType()
 
-            status = cls._schema_on_200.properties.status
+            status = cls._schema_on_201.properties.status
             status.last_modified = AAZStrType(
                 serialized_name="lastModified",
                 flags={"read_only": True},
@@ -249,11 +316,19 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
-            return cls._schema_on_200
+            return cls._schema_on_201
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _CreateHelper:
+    """Helper class for Create"""
+
+    @classmethod
+    def _build_schema_parameter_definition_metadata_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("description", AAZStrType, ".description")
+        _builder.set_prop("displayName", AAZStrType, ".display_name")
+        _builder.set_prop("strongType", AAZStrType, ".strong_type")
 
     _schema_parameter_definition_metadata_read = None
 
@@ -281,4 +356,4 @@ class _ShowHelper:
         _schema.strong_type = cls._schema_parameter_definition_metadata_read.strong_type
 
 
-__all__ = ["Show"]
+__all__ = ["Create"]

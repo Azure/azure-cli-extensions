@@ -142,9 +142,26 @@ class Create(AAZCommand):
             options=["location"],
             help="Location of this resourceGroup. Leave empty if the resource group location will be specified during the blueprint assignment.",
         )
-        _element.metadata = AAZObjectArg(
-            options=["metadata"],
-            help="User-friendly properties for this resource group.",
+        _element.description = AAZStrArg(
+            options=["description"],
+            help="Description of this parameter/resourceGroup.",
+            fmt=AAZStrArgFormat(
+                max_length=500,
+            ),
+        )
+        _element.display_name = AAZStrArg(
+            options=["display-name"],
+            help="DisplayName of this parameter/resourceGroup.",
+            fmt=AAZStrArgFormat(
+                max_length=256,
+            ),
+        )
+        _element.strong_type = AAZStrArg(
+            options=["strong-type"],
+            help="StrongType for UI to render rich experience during blueprint assignment. Supported strong types are resourceType, principalId and location.",
+            fmt=AAZStrArgFormat(
+                max_length=64,
+            ),
         )
         _element.name = AAZStrArg(
             options=["name"],
@@ -157,29 +174,6 @@ class Create(AAZCommand):
 
         depends_on = cls._args_schema.resource_groups.Element.depends_on
         depends_on.Element = AAZStrArg()
-
-        metadata = cls._args_schema.resource_groups.Element.metadata
-        metadata.description = AAZStrArg(
-            options=["description"],
-            help="Description of this parameter/resourceGroup.",
-            fmt=AAZStrArgFormat(
-                max_length=500,
-            ),
-        )
-        metadata.display_name = AAZStrArg(
-            options=["display-name"],
-            help="DisplayName of this parameter/resourceGroup.",
-            fmt=AAZStrArgFormat(
-                max_length=256,
-            ),
-        )
-        metadata.strong_type = AAZStrArg(
-            options=["strong-type"],
-            help="StrongType for UI to render rich experience during blueprint assignment. Supported strong types are resourceType, principalId and location.",
-            fmt=AAZStrArgFormat(
-                max_length=64,
-            ),
-        )
 
         tags = cls._args_schema.resource_groups.Element.tags
         tags.Element = AAZStrArg()
@@ -311,7 +305,7 @@ class Create(AAZCommand):
             if _elements is not None:
                 _elements.set_prop("dependsOn", AAZListType, ".depends_on")
                 _elements.set_prop("location", AAZStrType, ".location")
-                _elements.set_prop("metadata", AAZObjectType, ".metadata", typ_kwargs={"flags": {"client_flatten": True}})
+                _elements.set_prop("metadata", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
                 _elements.set_prop("name", AAZStrType, ".name")
                 _elements.set_prop("tags", AAZDictType, ".tags")
 
