@@ -487,10 +487,10 @@ def create_containerapp(cmd,
     containerapp_create_decorator.register_provider(CONTAINER_APPS_RP)
     containerapp_create_decorator.validate_arguments()
 
-    containerapp_create_decorator.construct_containerapp()
-    r = containerapp_create_decorator.create_containerapp()
-    containerapp_create_decorator.construct_containerapp_for_post_process(r)
-    r = containerapp_create_decorator.post_process_containerapp(r)
+    containerapp_create_decorator.construct_payload()
+    r = containerapp_create_decorator.create()
+    containerapp_create_decorator.construct_for_post_process(r)
+    r = containerapp_create_decorator.post_process(r)
     return r
 
 
@@ -3804,7 +3804,7 @@ def stream_containerapp_logs(cmd, resource_group_name, name, container=None, rev
                         headers=headers)
 
     if not resp.ok:
-        ValidationError(f"Got bad status from the logstream API: {resp.status_code}")
+        raise ValidationError(f"Got bad status from the logstream API: {resp.status_code}")
 
     for line in resp.iter_lines():
         if line:

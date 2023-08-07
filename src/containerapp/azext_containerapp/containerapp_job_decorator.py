@@ -218,6 +218,8 @@ class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not self.get_argument_no_wait():
             not self.get_argument_disable_warnings() and logger.warning('Containerapp job creation in progress. Please monitor the creation using `az containerapp job show -n {} -g {}`'.format(self.get_argument_name, self.get_argument_resource_group_name()))
 
+        return r
+
     def construct_payload(self):
         if self.get_argument_registry_identity() and not is_registry_msi_system(self.get_argument_registry_identity()):
             logger.info("Creating an acrpull role assignment for the registry identity")
