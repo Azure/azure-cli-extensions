@@ -1057,14 +1057,31 @@ def delete_vm(
     force=None,
     delete_from_host=None,
     delete_machine=None,
+    retain=None,
     no_wait=False,
 ):
+
+    if retain and delete_from_host:
+        raise CLIError(
+            "Arguments --retain and --delete-from-host cannot be used together." +
+            "VM is retained in VMWare by default, it is deleted when --delete-from-host is provided."
+        )
 
     machine_id = get_hcrp_machine_id(
         cmd,
         resource_group_name,
         resource_name,
     )
+
+    machine_client = cf_machine(cmd.cli_ctx)
+
+    if no_wait and delete_machine:
+        if delete_from_host:
+            raise CLIError(
+                "Cannot delete VMWare VM from host when --no-wait and --delete-machine is provided."
+            )
+        machine_client.delete(resource_group_name, resource_name)
+        return
 
     try:
         op = sdk_no_wait(
@@ -1074,13 +1091,9 @@ def delete_vm(
         # Nothing to delete if the parent machine does not exist.
         return
 
-    if no_wait:
-        return
-
     op.result()
     if delete_machine:
         # Wait for the VM to be deleted from the host.
-        machine_client = cf_machine(cmd.cli_ctx)
         machine_client.delete(resource_group_name, resource_name)
 
 
@@ -1096,6 +1109,17 @@ def show_vm(
         resource_name,
     )
     return client.get(machine_id)
+
+
+def list_vm(
+    cmd,
+    resource_group_name=None,
+):
+    resources_filter = "resourceType eq 'Microsoft.ConnectedVMwarevSphere/VCenters'"
+    resources_client = get_resources_client(cmd.cli_ctx)
+    if resource_group_name is not None:
+        return list(resources_client.list_by_resource_group(resource_group_name, filter=resources_filter))
+    return list(resources_client.list(filter=resources_filter))
 
 
 def start_vm(
