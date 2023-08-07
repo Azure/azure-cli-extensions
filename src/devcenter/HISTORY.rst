@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.3
+++++++
+* Update dev-box-definition to devbox-definition parameter
+
 1.0.2
 ++++++
 * Update allowPartialScopes to True for ARG query
