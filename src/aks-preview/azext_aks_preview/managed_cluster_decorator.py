@@ -1161,6 +1161,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         interval_hours = self._get_image_cleaner_interval_hours(enable_validation=True)
 
         return interval_hours
+    
+    def get_disable_image_integrity(self) -> bool:
+        """Obtain the value of disable_image_integrity.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        disable_image_integrity = self.raw_param.get("disable_image_integrity")
+
+        return disable_image_integrity
 
     def get_cluster_snapshot_id(self) -> Union[str, None]:
         """Obtain the values of cluster_snapshot_id.
@@ -3284,6 +3294,32 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_image_integrity(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update security profile imageIntegrity for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        disable_image_integrity = self.context.get_disable_image_integrity()
+
+        # no image integrity related changes
+        if not disable_image_integrity:
+            return mc
+
+        if mc.security_profile is None:
+            mc.security_profile = self.models.ManagedClusterSecurityProfile()
+
+        image_integrity_profile = mc.security_profile.image_integrity
+
+        if image_integrity_profile is None:
+            image_integrity_profile = self.models.ManagedClusterSecurityProfileImageIntegrity()
+            mc.security_profile.image_integrity = image_integrity_profile
+
+        image_integrity_profile.enabled = False
+
+        return mc
+
     def update_storage_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update storage profile for the ManagedCluster object.
 
@@ -3645,6 +3681,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_node_restriction(mc)
         # update image cleaner
         mc = self.update_image_cleaner(mc)
+        # update image integrity
+        mc = self.update_image_integrity(mc)
         # update workload auto scaler profile
         mc = self.update_workload_auto_scaler_profile(mc)
         # update azure monitor metrics profile

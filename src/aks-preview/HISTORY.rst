@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 ++++++
 
+0.5.151
++++++++
+* Add `--disable-image-integrity` to the `az aks update` command.
+
 0.5.150
 +++++++
 * Vendor new SDK and bump API version to 2023-06-02-preview.
