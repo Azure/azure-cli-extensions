@@ -195,13 +195,6 @@ class BlueprintScenarioTest(ScenarioTest):
                  '-y',
                  checks=[])
 
-        # delete a blueprint assignment will not delete the resources created in the target scope
-        # delete the resource group that contains the created resources to clean up
-        # self.cmd('az group delete '
-        #          '--subscription "{subscription}" '
-        #          '--name "{rgName}" '
-        #          '-y')
-
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_blueprint_assignment')
     def test_blueprint_assignment(self, resource_group):
@@ -316,6 +309,24 @@ class BlueprintScenarioTest(ScenarioTest):
             '--name "{assignmentName}" '
             '--deleted',
             checks=[])
+
+        self.cmd(
+            'az blueprint resource-group remove '
+            '--blueprint-name "{blueprintName}" '
+            '--artifact-name "myRgArt" -y ',
+            checks=[])
+
+        self.cmd('az blueprint delete '
+                 '--name "{blueprintName}" '
+                 '-y',
+                 checks=[])
+
+        # delete a blueprint assignment will not delete the resources created in the target scope
+        # delete the resource group that contains the created resources to clean up
+        self.cmd('az group delete '
+                 '--subscription "{subscription}" '
+                 '--name "{rgName}" '
+                 '-y')
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_blueprint_import')

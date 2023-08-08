@@ -18,7 +18,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_blueprint000001","name":"cli_test_blueprint000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_blueprint","date":"2023-08-08T07:58:33Z","module":"blueprint"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_blueprint000001","name":"cli_test_blueprint000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_blueprint","date":"2023-08-08T09:47:08Z","module":"blueprint"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:34 GMT
+      - Tue, 08 Aug 2023 09:47:14 GMT
       expires:
       - '-1'
       pragma:
@@ -64,7 +64,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004?api-version=2023-01-31
   response:
     body:
-      string: '{"location":"westus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004","name":"testid_000004","type":"Microsoft.ManagedIdentity/userAssignedIdentities","properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","principalId":"5f6d3ca8-ba35-42a4-8ad8-3806e84cd254","clientId":"5d375f0b-7e0e-4f1b-877f-da4782cf9680"}}'
+      string: '{"location":"westus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_blueprint000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000004","name":"testid_000004","type":"Microsoft.ManagedIdentity/userAssignedIdentities","properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","principalId":"2b7ffecf-fa02-4484-9790-28bbf9bba2b8","clientId":"e855df4b-d58b-4a24-9aa8-a745082b499f"}}'
     headers:
       cache-control:
       - no-cache
@@ -73,7 +73,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:39 GMT
+      - Tue, 08 Aug 2023 09:47:20 GMT
       expires:
       - '-1'
       location:
@@ -85,7 +85,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1189'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -115,7 +115,7 @@ interactions:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"parameters\": {},\r\n    \"resourceGroups\":
         {},\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n      \"timeCreated\":
-        \"2023-08-08T07:58:41+00:00\",\r\n      \"lastModified\": \"2023-08-08T07:58:41.2523889+00:00\"\r\n
+        \"2023-08-08T09:47:22+00:00\",\r\n      \"lastModified\": \"2023-08-08T09:47:22.4564129+00:00\"\r\n
         \   },\r\n    \"description\": \"An example blueprint.\"\r\n  },\r\n  \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
@@ -127,7 +127,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:40 GMT
+      - Tue, 08 Aug 2023 09:47:22 GMT
       expires:
       - '-1'
       pragma:
@@ -139,7 +139,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -940,6 +940,13 @@ interactions:
         \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-whh5b7ubg66jyhm2\",\r\n
         \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-bp-whh5b7ubg66jyhm2\"\r\n
         \   },\r\n    {\r\n      \"properties\": {\r\n        \"parameters\": {},\r\n
+        \       \"resourceGroups\": {},\r\n        \"targetScope\": \"subscription\",\r\n
+        \       \"status\": {\r\n          \"timeCreated\": \"2023-08-08T09:47:22+00:00\",\r\n
+        \         \"lastModified\": \"2023-08-08T09:47:22.4564129+00:00\"\r\n        },\r\n
+        \       \"description\": \"An example blueprint.\"\r\n      },\r\n      \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
+        \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-bp-000002\"\r\n
+        \   },\r\n    {\r\n      \"properties\": {\r\n        \"parameters\": {},\r\n
         \       \"resourceGroups\": {\r\n          \"myRgArt\": {\r\n            \"metadata\":
         {\r\n              \"displayName\": \"Resource Group 1\"\r\n            },\r\n
         \           \"dependsOn\": []\r\n          }\r\n        },\r\n        \"targetScope\":
@@ -1481,45 +1488,16 @@ interactions:
         \"2023-08-07T12:39:11.0381723+00:00\"\r\n        },\r\n        \"description\":
         \"An example blueprint.\"\r\n      },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-uegtxsr64y3oabbz\",\r\n
         \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-bp-uegtxsr64y3oabbz\"\r\n
-        \   },\r\n    {\r\n      \"properties\": {\r\n        \"parameters\": {\r\n
-        \         \"storageAccountType\": {\r\n            \"type\": \"string\",\r\n
-        \           \"metadata\": {\r\n              \"displayName\": \"storage account
-        type.\"\r\n            },\r\n            \"defaultValue\": \"Standard_LRS\",\r\n
-        \           \"allowedValues\": [\r\n              \"Standard_LRS\",\r\n              \"Standard_GRS\",\r\n
-        \             \"Standard_ZRS\",\r\n              \"Premium_LRS\"\r\n            ]\r\n
-        \         },\r\n          \"tagName\": {\r\n            \"type\": \"string\",\r\n
-        \           \"metadata\": {\r\n              \"displayName\": \"The name of
-        the tag to provide the policy assignment.\"\r\n            }\r\n          },\r\n
-        \         \"tagValue\": {\r\n            \"type\": \"string\",\r\n            \"metadata\":
-        {\r\n              \"displayName\": \"The value of the tag to provide the
-        policy assignment.\"\r\n            }\r\n          },\r\n          \"contributors\":
-        {\r\n            \"type\": \"array\",\r\n            \"metadata\": {\r\n              \"description\":
-        \"List of AAD object IDs that is assigned Contributor role at the subscription\",\r\n
-        \             \"strongType\": \"PrincipalId\"\r\n            }\r\n          },\r\n
-        \         \"owners\": {\r\n            \"type\": \"array\",\r\n            \"metadata\":
-        {\r\n              \"description\": \"List of AAD object IDs that is assigned
-        Owner role at the resource group\",\r\n              \"strongType\": \"PrincipalId\"\r\n
-        \           }\r\n          }\r\n        },\r\n        \"resourceGroups\":
-        {\r\n          \"storageRG\": {\r\n            \"metadata\": {\r\n              \"description\":
-        \"Contains the resource template deployment and a role assignment.\"\r\n            },\r\n
-        \           \"dependsOn\": []\r\n          }\r\n        },\r\n        \"targetScope\":
-        \"subscription\",\r\n        \"status\": {\r\n          \"timeCreated\": \"2023-08-07T13:02:43+00:00\",\r\n
-        \         \"lastModified\": \"2023-08-07T13:02:47.7208589+00:00\"\r\n        },\r\n
-        \       \"description\": \"This blueprint sets tag policy and role assignment
-        on the subscription, creates a ResourceGroup, and deploys a resource template
-        and role assignment to that ResourceGroup.\"\r\n      },\r\n      \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-import-bp4rch4sfwka\",\r\n
-        \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-import-bp4rch4sfwka\"\r\n
-        \   }\r\n  ],\r\n  \"nextLink\": \"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints?api-version=2018-11-01-preview&$skipToken=H4sIAAAAAAAEAIuuVirJz07NU7JS0g7ydLGqy3Q1LHH0zA9NC3QuKMoMdQQB53JbW-WgECtD5ZAgZytDAwNlz-AwKyNlT1d_KzNTU1ND5UBnNysLJR2losS89FQlq2ql3EyQkQamzoYubo6WjpYGLuYg-dzECqiwq7GLm5ObhamZs1JtbSwAwfTj-IcAAAA%3d\"\r\n}"
+        \   }\r\n  ],\r\n  \"nextLink\": \"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints?api-version=2018-11-01-preview&$skipToken=H4sIAAAAAAAEAIuuVirJz07NU7JS0g7ydLGqy3Q1LHH0zA9NC3TOKMoMdQQB53JbW-WgECtD5ZAgZytDAwNlz-AwKyNlT1d_KzNTU1ND5UBnNysLJR2losS89FQlq2ql3EyQkQamzoYubo6WjpYGLuYg-dzECqiwq7GLm5ObhamZs1JtbSwA9BkOH4cAAAA%3d\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '108067'
+      - '106357'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:42 GMT
+      - Tue, 08 Aug 2023 09:47:23 GMT
       expires:
       - '-1'
       pragma:
@@ -1551,11 +1529,40 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints?api-version=2018-11-01-preview&$skipToken=H4sIAAAAAAAEAIuuVirJz07NU7JS0g7ydLGqy3Q1LHH0zA9NC3QuKMoMdQQB53JbW-WgECtD5ZAgZytDAwNlz-AwKyNlT1d_KzNTU1ND5UBnNysLJR2losS89FQlq2ql3EyQkQamzoYubo6WjpYGLuYg-dzECqiwq7GLm5ObhamZs1JtbSwAwfTj-IcAAAA%3D
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints?api-version=2018-11-01-preview&$skipToken=H4sIAAAAAAAEAIuuVirJz07NU7JS0g7ydLGqy3Q1LHH0zA9NC3TOKMoMdQQB53JbW-WgECtD5ZAgZytDAwNlz-AwKyNlT1d_KzNTU1ND5UBnNysLJR2losS89FQlq2ql3EyQkQamzoYubo6WjpYGLuYg-dzECqiwq7GLm5ObhamZs1JtbSwA9BkOH4cAAAA%3D
   response:
     body:
       string: "{\r\n  \"value\": [\r\n    {\r\n      \"properties\": {\r\n        \"parameters\":
-        {},\r\n        \"resourceGroups\": {\r\n          \"myRgArt\": {\r\n            \"metadata\":
+        {\r\n          \"storageAccountType\": {\r\n            \"type\": \"string\",\r\n
+        \           \"metadata\": {\r\n              \"displayName\": \"storage account
+        type.\"\r\n            },\r\n            \"defaultValue\": \"Standard_LRS\",\r\n
+        \           \"allowedValues\": [\r\n              \"Standard_LRS\",\r\n              \"Standard_GRS\",\r\n
+        \             \"Standard_ZRS\",\r\n              \"Premium_LRS\"\r\n            ]\r\n
+        \         },\r\n          \"tagName\": {\r\n            \"type\": \"string\",\r\n
+        \           \"metadata\": {\r\n              \"displayName\": \"The name of
+        the tag to provide the policy assignment.\"\r\n            }\r\n          },\r\n
+        \         \"tagValue\": {\r\n            \"type\": \"string\",\r\n            \"metadata\":
+        {\r\n              \"displayName\": \"The value of the tag to provide the
+        policy assignment.\"\r\n            }\r\n          },\r\n          \"contributors\":
+        {\r\n            \"type\": \"array\",\r\n            \"metadata\": {\r\n              \"description\":
+        \"List of AAD object IDs that is assigned Contributor role at the subscription\",\r\n
+        \             \"strongType\": \"PrincipalId\"\r\n            }\r\n          },\r\n
+        \         \"owners\": {\r\n            \"type\": \"array\",\r\n            \"metadata\":
+        {\r\n              \"description\": \"List of AAD object IDs that is assigned
+        Owner role at the resource group\",\r\n              \"strongType\": \"PrincipalId\"\r\n
+        \           }\r\n          }\r\n        },\r\n        \"resourceGroups\":
+        {\r\n          \"storageRG\": {\r\n            \"metadata\": {\r\n              \"description\":
+        \"Contains the resource template deployment and a role assignment.\"\r\n            },\r\n
+        \           \"dependsOn\": []\r\n          }\r\n        },\r\n        \"targetScope\":
+        \"subscription\",\r\n        \"status\": {\r\n          \"timeCreated\": \"2023-08-07T13:02:43+00:00\",\r\n
+        \         \"lastModified\": \"2023-08-07T13:02:47.7208589+00:00\"\r\n        },\r\n
+        \       \"description\": \"This blueprint sets tag policy and role assignment
+        on the subscription, creates a ResourceGroup, and deploys a resource template
+        and role assignment to that ResourceGroup.\"\r\n      },\r\n      \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-import-bp4rch4sfwka\",\r\n
+        \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-import-bp4rch4sfwka\"\r\n
+        \   },\r\n    {\r\n      \"properties\": {\r\n        \"parameters\": {},\r\n
+        \       \"resourceGroups\": {\r\n          \"myRgArt\": {\r\n            \"metadata\":
         {\r\n              \"displayName\": \"Resource Group 1\"\r\n            },\r\n
         \           \"dependsOn\": []\r\n          }\r\n        },\r\n        \"targetScope\":
         \"subscription\",\r\n        \"status\": {\r\n          \"timeCreated\": \"2023-08-07T13:55:26+00:00\",\r\n
@@ -1794,23 +1801,106 @@ interactions:
         \       \"description\": \"An example blueprint.\"\r\n      },\r\n      \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-z4vytf7t24grgtrk\",\r\n
         \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-bp-z4vytf7t24grgtrk\"\r\n
-        \   },\r\n    {\r\n      \"properties\": {\r\n        \"parameters\": {},\r\n
-        \       \"resourceGroups\": {},\r\n        \"targetScope\": \"subscription\",\r\n
-        \       \"status\": {\r\n          \"timeCreated\": \"2023-08-08T07:58:41+00:00\",\r\n
-        \         \"lastModified\": \"2023-08-08T07:58:41.2523889+00:00\"\r\n        },\r\n
-        \       \"description\": \"An example blueprint.\"\r\n      },\r\n      \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
-        \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-bp-000002\"\r\n
+        \   },\r\n    {\r\n      \"properties\": {\r\n        \"parameters\": {\r\n
+        \         \"storageAccountType\": {\r\n            \"type\": \"string\",\r\n
+        \           \"defaultValue\": \"Standard_LRS\",\r\n            \"allowedValues\":
+        [\r\n              \"Standard_LRS\",\r\n              \"Standard_GRS\",\r\n
+        \             \"Standard_ZRS\",\r\n              \"Premium_LRS\"\r\n            ]\r\n
+        \         },\r\n          \"tagName\": {\r\n            \"type\": \"string\"\r\n
+        \         },\r\n          \"tagValue\": {\r\n            \"type\": \"string\"\r\n
+        \         },\r\n          \"contributors\": {\r\n            \"type\": \"array\"\r\n
+        \         },\r\n          \"owners\": {\r\n            \"type\": \"array\"\r\n
+        \         }\r\n        },\r\n        \"resourceGroups\": {\r\n          \"storageRG\":
+        {\r\n            \"dependsOn\": []\r\n          }\r\n        },\r\n        \"targetScope\":
+        \"subscription\",\r\n        \"status\": {\r\n          \"timeCreated\": \"2023-08-08T08:12:06+00:00\",\r\n
+        \         \"lastModified\": \"2023-08-08T08:12:06.2815904+00:00\"\r\n        },\r\n
+        \       \"description\": \"This blueprint sets tag policy and role assignment
+        on the subscription, creates a ResourceGroup, and deploys a resource template
+        and role assignment to that ResourceGroup.\"\r\n      },\r\n      \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bp4qk5oqsf\",\r\n
+        \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-imported-bp4qk5oqsf\"\r\n
+        \   },\r\n    {\r\n      \"properties\": {\r\n        \"parameters\": {\r\n
+        \         \"storageAccountType\": {\r\n            \"type\": \"string\",\r\n
+        \           \"defaultValue\": \"Standard_LRS\",\r\n            \"allowedValues\":
+        [\r\n              \"Standard_LRS\",\r\n              \"Standard_GRS\",\r\n
+        \             \"Standard_ZRS\",\r\n              \"Premium_LRS\"\r\n            ]\r\n
+        \         },\r\n          \"tagName\": {\r\n            \"type\": \"string\"\r\n
+        \         },\r\n          \"tagValue\": {\r\n            \"type\": \"string\"\r\n
+        \         },\r\n          \"contributors\": {\r\n            \"type\": \"array\"\r\n
+        \         },\r\n          \"owners\": {\r\n            \"type\": \"array\"\r\n
+        \         }\r\n        },\r\n        \"resourceGroups\": {\r\n          \"storageRG\":
+        {\r\n            \"dependsOn\": []\r\n          }\r\n        },\r\n        \"targetScope\":
+        \"subscription\",\r\n        \"status\": {\r\n          \"timeCreated\": \"2023-08-08T08:13:46+00:00\",\r\n
+        \         \"lastModified\": \"2023-08-08T08:13:46.664836+00:00\"\r\n        },\r\n
+        \       \"description\": \"This blueprint sets tag policy and role assignment
+        on the subscription, creates a ResourceGroup, and deploys a resource template
+        and role assignment to that ResourceGroup.\"\r\n      },\r\n      \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bpdu732vah\",\r\n
+        \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-imported-bpdu732vah\"\r\n
+        \   },\r\n    {\r\n      \"properties\": {\r\n        \"parameters\": {\r\n
+        \         \"storageAccountType\": {\r\n            \"type\": \"string\",\r\n
+        \           \"defaultValue\": \"Standard_LRS\",\r\n            \"allowedValues\":
+        [\r\n              \"Standard_LRS\",\r\n              \"Standard_GRS\",\r\n
+        \             \"Standard_ZRS\",\r\n              \"Premium_LRS\"\r\n            ]\r\n
+        \         },\r\n          \"tagName\": {\r\n            \"type\": \"string\"\r\n
+        \         },\r\n          \"tagValue\": {\r\n            \"type\": \"string\"\r\n
+        \         },\r\n          \"contributors\": {\r\n            \"type\": \"array\"\r\n
+        \         },\r\n          \"owners\": {\r\n            \"type\": \"array\"\r\n
+        \         }\r\n        },\r\n        \"resourceGroups\": {\r\n          \"storageRG\":
+        {\r\n            \"dependsOn\": []\r\n          }\r\n        },\r\n        \"targetScope\":
+        \"subscription\",\r\n        \"status\": {\r\n          \"timeCreated\": \"2023-08-08T08:15:00+00:00\",\r\n
+        \         \"lastModified\": \"2023-08-08T08:15:00.2188564+00:00\"\r\n        },\r\n
+        \       \"description\": \"This blueprint sets tag policy and role assignment
+        on the subscription, creates a ResourceGroup, and deploys a resource template
+        and role assignment to that ResourceGroup.\"\r\n      },\r\n      \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bppitlgtrm\",\r\n
+        \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-imported-bppitlgtrm\"\r\n
+        \   },\r\n    {\r\n      \"properties\": {\r\n        \"parameters\": {\r\n
+        \         \"storageAccountType\": {\r\n            \"type\": \"string\",\r\n
+        \           \"defaultValue\": \"Standard_LRS\",\r\n            \"allowedValues\":
+        [\r\n              \"Standard_LRS\",\r\n              \"Standard_GRS\",\r\n
+        \             \"Standard_ZRS\",\r\n              \"Premium_LRS\"\r\n            ]\r\n
+        \         },\r\n          \"tagName\": {\r\n            \"type\": \"string\"\r\n
+        \         },\r\n          \"tagValue\": {\r\n            \"type\": \"string\"\r\n
+        \         },\r\n          \"contributors\": {\r\n            \"type\": \"array\"\r\n
+        \         },\r\n          \"owners\": {\r\n            \"type\": \"array\"\r\n
+        \         }\r\n        },\r\n        \"resourceGroups\": {\r\n          \"storageRG\":
+        {\r\n            \"dependsOn\": []\r\n          }\r\n        },\r\n        \"targetScope\":
+        \"subscription\",\r\n        \"status\": {\r\n          \"timeCreated\": \"2023-08-08T08:21:00+00:00\",\r\n
+        \         \"lastModified\": \"2023-08-08T08:21:00.4593654+00:00\"\r\n        },\r\n
+        \       \"description\": \"This blueprint sets tag policy and role assignment
+        on the subscription, creates a ResourceGroup, and deploys a resource template
+        and role assignment to that ResourceGroup.\"\r\n      },\r\n      \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bpfdemhfjp\",\r\n
+        \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-imported-bpfdemhfjp\"\r\n
+        \   },\r\n    {\r\n      \"properties\": {\r\n        \"parameters\": {\r\n
+        \         \"storageAccountType\": {\r\n            \"type\": \"string\",\r\n
+        \           \"defaultValue\": \"Standard_LRS\",\r\n            \"allowedValues\":
+        [\r\n              \"Standard_LRS\",\r\n              \"Standard_GRS\",\r\n
+        \             \"Standard_ZRS\",\r\n              \"Premium_LRS\"\r\n            ]\r\n
+        \         },\r\n          \"tagName\": {\r\n            \"type\": \"string\"\r\n
+        \         },\r\n          \"tagValue\": {\r\n            \"type\": \"string\"\r\n
+        \         },\r\n          \"contributors\": {\r\n            \"type\": \"array\"\r\n
+        \         },\r\n          \"owners\": {\r\n            \"type\": \"array\"\r\n
+        \         }\r\n        },\r\n        \"resourceGroups\": {\r\n          \"storageRG\":
+        {\r\n            \"dependsOn\": []\r\n          }\r\n        },\r\n        \"targetScope\":
+        \"subscription\",\r\n        \"status\": {\r\n          \"timeCreated\": \"2023-08-08T08:22:58+00:00\",\r\n
+        \         \"lastModified\": \"2023-08-08T08:22:58.1124406+00:00\"\r\n        },\r\n
+        \       \"description\": \"This blueprint sets tag policy and role assignment
+        on the subscription, creates a ResourceGroup, and deploys a resource template
+        and role assignment to that ResourceGroup.\"\r\n      },\r\n      \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-imported-bppjagmtwd\",\r\n
+        \     \"type\": \"Microsoft.Blueprint/blueprints\",\r\n      \"name\": \"test-imported-bppjagmtwd\"\r\n
         \   }\r\n  ]\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '20206'
+      - '28795'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:42 GMT
+      - Tue, 08 Aug 2023 09:47:23 GMT
       expires:
       - '-1'
       pragma:
@@ -1849,7 +1939,7 @@ interactions:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"parameters\": {},\r\n    \"resourceGroups\":
         {},\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n      \"timeCreated\":
-        \"2023-08-08T07:58:41+00:00\",\r\n      \"lastModified\": \"2023-08-08T07:58:41.2523889+00:00\"\r\n
+        \"2023-08-08T09:47:22+00:00\",\r\n      \"lastModified\": \"2023-08-08T09:47:22.4564129+00:00\"\r\n
         \   },\r\n    \"description\": \"An example blueprint.\"\r\n  },\r\n  \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
@@ -1861,7 +1951,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:43 GMT
+      - Tue, 08 Aug 2023 09:47:22 GMT
       expires:
       - '-1'
       pragma:
@@ -1900,7 +1990,7 @@ interactions:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"parameters\": {},\r\n    \"resourceGroups\":
         {},\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n      \"timeCreated\":
-        \"2023-08-08T07:58:41+00:00\",\r\n      \"lastModified\": \"2023-08-08T07:58:41.2523889+00:00\"\r\n
+        \"2023-08-08T09:47:22+00:00\",\r\n      \"lastModified\": \"2023-08-08T09:47:22.4564129+00:00\"\r\n
         \   },\r\n    \"description\": \"An example blueprint.\"\r\n  },\r\n  \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
@@ -1912,7 +2002,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:44 GMT
+      - Tue, 08 Aug 2023 09:47:21 GMT
       expires:
       - '-1'
       pragma:
@@ -1959,8 +2049,8 @@ interactions:
         {\r\n      \"myRgArt\": {\r\n        \"metadata\": {\r\n          \"displayName\":
         \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\": []\r\n      }\r\n
         \   },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n
-        \     \"timeCreated\": \"2023-08-08T07:58:41+00:00\",\r\n      \"lastModified\":
-        \"2023-08-08T07:58:45.6932787+00:00\"\r\n    },\r\n    \"description\": \"An
+        \     \"timeCreated\": \"2023-08-08T09:47:22+00:00\",\r\n      \"lastModified\":
+        \"2023-08-08T09:47:27.2956918+00:00\"\r\n    },\r\n    \"description\": \"An
         example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
@@ -1971,7 +2061,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:44 GMT
+      - Tue, 08 Aug 2023 09:47:22 GMT
       expires:
       - '-1'
       pragma:
@@ -1983,7 +2073,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1191'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -2010,8 +2100,8 @@ interactions:
         {\r\n      \"myRgArt\": {\r\n        \"metadata\": {\r\n          \"displayName\":
         \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\": []\r\n      }\r\n
         \   },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n
-        \     \"timeCreated\": \"2023-08-08T07:58:41+00:00\",\r\n      \"lastModified\":
-        \"2023-08-08T07:58:45.6932787+00:00\"\r\n    },\r\n    \"description\": \"An
+        \     \"timeCreated\": \"2023-08-08T09:47:22+00:00\",\r\n      \"lastModified\":
+        \"2023-08-08T09:47:27.2956918+00:00\"\r\n    },\r\n    \"description\": \"An
         example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
@@ -2022,7 +2112,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:46 GMT
+      - Tue, 08 Aug 2023 09:47:27 GMT
       expires:
       - '-1'
       pragma:
@@ -2063,8 +2153,8 @@ interactions:
         {\r\n      \"myRgArt\": {\r\n        \"metadata\": {\r\n          \"displayName\":
         \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\": []\r\n      }\r\n
         \   },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n
-        \     \"timeCreated\": \"2023-08-08T07:58:41+00:00\",\r\n      \"lastModified\":
-        \"2023-08-08T07:58:45.6932787+00:00\"\r\n    },\r\n    \"description\": \"An
+        \     \"timeCreated\": \"2023-08-08T09:47:22+00:00\",\r\n      \"lastModified\":
+        \"2023-08-08T09:47:27.2956918+00:00\"\r\n    },\r\n    \"description\": \"An
         example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
@@ -2075,7 +2165,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:47 GMT
+      - Tue, 08 Aug 2023 09:47:29 GMT
       expires:
       - '-1'
       pragma:
@@ -2133,7 +2223,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:48 GMT
+      - Tue, 08 Aug 2023 09:47:31 GMT
       expires:
       - '-1'
       pragma:
@@ -2145,7 +2235,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -2192,7 +2282,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:49 GMT
+      - Tue, 08 Aug 2023 09:47:31 GMT
       expires:
       - '-1'
       pragma:
@@ -2204,7 +2294,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1194'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -2242,7 +2332,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:50 GMT
+      - Tue, 08 Aug 2023 09:47:34 GMT
       expires:
       - '-1'
       pragma:
@@ -2283,8 +2373,8 @@ interactions:
         {\r\n      \"myRgArt\": {\r\n        \"metadata\": {\r\n          \"displayName\":
         \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\": []\r\n      }\r\n
         \   },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n
-        \     \"timeCreated\": \"2023-08-08T07:58:41+00:00\",\r\n      \"lastModified\":
-        \"2023-08-08T07:58:45.6932787+00:00\"\r\n    },\r\n    \"description\": \"An
+        \     \"timeCreated\": \"2023-08-08T09:47:22+00:00\",\r\n      \"lastModified\":
+        \"2023-08-08T09:47:27.2956918+00:00\"\r\n    },\r\n    \"description\": \"An
         example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
@@ -2295,7 +2385,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:51 GMT
+      - Tue, 08 Aug 2023 09:47:35 GMT
       expires:
       - '-1'
       pragma:
@@ -2336,8 +2426,8 @@ interactions:
         {\r\n      \"myRgArt\": {\r\n        \"metadata\": {\r\n          \"displayName\":
         \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\": []\r\n      }\r\n
         \   },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\": {\r\n
-        \     \"timeCreated\": \"2023-08-08T07:58:41+00:00\",\r\n      \"lastModified\":
-        \"2023-08-08T07:58:45.6932787+00:00\"\r\n    },\r\n    \"description\": \"An
+        \     \"timeCreated\": \"2023-08-08T09:47:22+00:00\",\r\n      \"lastModified\":
+        \"2023-08-08T09:47:27.2956918+00:00\"\r\n    },\r\n    \"description\": \"An
         example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
@@ -2348,7 +2438,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:53 GMT
+      - Tue, 08 Aug 2023 09:47:36 GMT
       expires:
       - '-1'
       pragma:
@@ -2403,8 +2493,8 @@ interactions:
         \   },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n        \"metadata\":
         {\r\n          \"displayName\": \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\":
         []\r\n      }\r\n    },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\":
-        {\r\n      \"timeCreated\": \"2023-08-08T07:58:41+00:00\",\r\n      \"lastModified\":
-        \"2023-08-08T07:58:53.7379923+00:00\"\r\n    },\r\n    \"description\": \"An
+        {\r\n      \"timeCreated\": \"2023-08-08T09:47:22+00:00\",\r\n      \"lastModified\":
+        \"2023-08-08T09:47:37.1925042+00:00\"\r\n    },\r\n    \"description\": \"An
         example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
@@ -2415,7 +2505,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:53 GMT
+      - Tue, 08 Aug 2023 09:47:37 GMT
       expires:
       - '-1'
       pragma:
@@ -2427,7 +2517,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -2465,8 +2555,8 @@ interactions:
         \   },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n        \"metadata\":
         {\r\n          \"displayName\": \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\":
         []\r\n      }\r\n    },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\":
-        {\r\n      \"timeCreated\": \"2023-08-08T07:58:54.6128135+00:00\",\r\n      \"lastModified\":
-        \"2023-08-08T07:58:54.6128135+00:00\"\r\n    },\r\n    \"description\": \"An
+        {\r\n      \"timeCreated\": \"2023-08-08T09:47:38.6520236+00:00\",\r\n      \"lastModified\":
+        \"2023-08-08T09:47:38.6520236+00:00\"\r\n    },\r\n    \"description\": \"An
         example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints/versions\",\r\n  \"name\": \"1.0\"\r\n}"
     headers:
@@ -2477,7 +2567,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:53 GMT
+      - Tue, 08 Aug 2023 09:47:38 GMT
       expires:
       - '-1'
       pragma:
@@ -2489,7 +2579,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1190'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -2522,8 +2612,8 @@ interactions:
         \   },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n        \"metadata\":
         {\r\n          \"displayName\": \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\":
         []\r\n      }\r\n    },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\":
-        {\r\n      \"timeCreated\": \"2023-08-08T07:58:54+00:00\",\r\n      \"lastModified\":
-        \"2023-08-08T07:58:54.6128135+00:00\"\r\n    },\r\n    \"description\": \"An
+        {\r\n      \"timeCreated\": \"2023-08-08T09:47:38+00:00\",\r\n      \"lastModified\":
+        \"2023-08-08T09:47:38.6520236+00:00\"\r\n    },\r\n    \"description\": \"An
         example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints/versions\",\r\n  \"name\": \"1.0\"\r\n}"
     headers:
@@ -2534,7 +2624,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:55 GMT
+      - Tue, 08 Aug 2023 09:47:39 GMT
       expires:
       - '-1'
       pragma:
@@ -2583,8 +2673,8 @@ interactions:
         \           \"metadata\": {\r\n              \"displayName\": \"Resource Group
         1\"\r\n            },\r\n            \"dependsOn\": []\r\n          }\r\n
         \       },\r\n        \"targetScope\": \"subscription\",\r\n        \"status\":
-        {\r\n          \"timeCreated\": \"2023-08-08T07:58:54+00:00\",\r\n          \"lastModified\":
-        \"2023-08-08T07:58:54.6128135+00:00\"\r\n        },\r\n        \"description\":
+        {\r\n          \"timeCreated\": \"2023-08-08T09:47:38+00:00\",\r\n          \"lastModified\":
+        \"2023-08-08T09:47:38.6520236+00:00\"\r\n        },\r\n        \"description\":
         \"An example blueprint.\"\r\n      },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
         \     \"type\": \"Microsoft.Blueprint/blueprints/versions\",\r\n      \"name\":
         \"1.0\"\r\n    }\r\n  ]\r\n}"
@@ -2596,7 +2686,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:55 GMT
+      - Tue, 08 Aug 2023 09:47:40 GMT
       expires:
       - '-1'
       pragma:
@@ -2648,7 +2738,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:56 GMT
+      - Tue, 08 Aug 2023 09:47:41 GMT
       expires:
       - '-1'
       pragma:
@@ -2710,7 +2800,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:57 GMT
+      - Tue, 08 Aug 2023 09:47:42 GMT
       expires:
       - '-1'
       pragma:
@@ -2759,8 +2849,8 @@ interactions:
         \   },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n        \"metadata\":
         {\r\n          \"displayName\": \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\":
         []\r\n      }\r\n    },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\":
-        {\r\n      \"timeCreated\": \"2023-08-08T07:58:54+00:00\",\r\n      \"lastModified\":
-        \"2023-08-08T07:58:54.6128135+00:00\"\r\n    },\r\n    \"description\": \"An
+        {\r\n      \"timeCreated\": \"2023-08-08T09:47:38+00:00\",\r\n      \"lastModified\":
+        \"2023-08-08T09:47:38.6520236+00:00\"\r\n    },\r\n    \"description\": \"An
         example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002/versions/1.0\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints/versions\",\r\n  \"name\": \"1.0\"\r\n}"
     headers:
@@ -2771,7 +2861,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:57 GMT
+      - Tue, 08 Aug 2023 09:47:44 GMT
       expires:
       - '-1'
       pragma:
@@ -2787,7 +2877,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14997'
+      - '14999'
     status:
       code: 200
       message: OK
@@ -2824,7 +2914,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:58 GMT
+      - Tue, 08 Aug 2023 09:47:45 GMT
       expires:
       - '-1'
       pragma:
@@ -2882,7 +2972,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:58:59 GMT
+      - Tue, 08 Aug 2023 09:47:45 GMT
       expires:
       - '-1'
       pragma:
@@ -2894,7 +2984,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1193'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -2932,7 +3022,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:59:00 GMT
+      - Tue, 08 Aug 2023 09:47:46 GMT
       expires:
       - '-1'
       pragma:
@@ -2993,7 +3083,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:59:00 GMT
+      - Tue, 08 Aug 2023 09:47:47 GMT
       expires:
       - '-1'
       pragma:
@@ -3005,7 +3095,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -3045,7 +3135,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:59:01 GMT
+      - Tue, 08 Aug 2023 09:47:46 GMT
       expires:
       - '-1'
       pragma:
@@ -3061,7 +3151,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14997'
+      - '14999'
     status:
       code: 200
       message: OK
@@ -3093,8 +3183,8 @@ interactions:
         \   },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n        \"metadata\":
         {\r\n          \"displayName\": \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\":
         []\r\n      }\r\n    },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\":
-        {\r\n      \"timeCreated\": \"2023-08-08T07:58:41+00:00\",\r\n      \"lastModified\":
-        \"2023-08-08T07:58:53.7379923+00:00\"\r\n    },\r\n    \"description\": \"An
+        {\r\n      \"timeCreated\": \"2023-08-08T09:47:22+00:00\",\r\n      \"lastModified\":
+        \"2023-08-08T09:47:37.1925042+00:00\"\r\n    },\r\n    \"description\": \"An
         example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
@@ -3105,7 +3195,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:59:01 GMT
+      - Tue, 08 Aug 2023 09:47:49 GMT
       expires:
       - '-1'
       pragma:
@@ -3151,8 +3241,8 @@ interactions:
         \   },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n        \"metadata\":
         {\r\n          \"displayName\": \"Resource Group 1\"\r\n        },\r\n        \"dependsOn\":
         []\r\n      }\r\n    },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\":
-        {\r\n      \"timeCreated\": \"2023-08-08T07:58:41+00:00\",\r\n      \"lastModified\":
-        \"2023-08-08T07:58:53.7379923+00:00\"\r\n    },\r\n    \"description\": \"An
+        {\r\n      \"timeCreated\": \"2023-08-08T09:47:22+00:00\",\r\n      \"lastModified\":
+        \"2023-08-08T09:47:37.1925042+00:00\"\r\n    },\r\n    \"description\": \"An
         example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
@@ -3163,7 +3253,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:59:02 GMT
+      - Tue, 08 Aug 2023 09:47:51 GMT
       expires:
       - '-1'
       pragma:
@@ -3218,8 +3308,8 @@ interactions:
         \   },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n        \"metadata\":
         {\r\n          \"displayName\": \"Resource Group 2\"\r\n        },\r\n        \"dependsOn\":
         []\r\n      }\r\n    },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\":
-        {\r\n      \"timeCreated\": \"2023-08-08T07:58:41+00:00\",\r\n      \"lastModified\":
-        \"2023-08-08T07:59:03.5640275+00:00\"\r\n    },\r\n    \"description\": \"An
+        {\r\n      \"timeCreated\": \"2023-08-08T09:47:22+00:00\",\r\n      \"lastModified\":
+        \"2023-08-08T09:47:51.9400632+00:00\"\r\n    },\r\n    \"description\": \"An
         example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
@@ -3230,7 +3320,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:59:02 GMT
+      - Tue, 08 Aug 2023 09:47:51 GMT
       expires:
       - '-1'
       pragma:
@@ -3242,7 +3332,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -3274,8 +3364,8 @@ interactions:
         \   },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n        \"metadata\":
         {\r\n          \"displayName\": \"Resource Group 2\"\r\n        },\r\n        \"dependsOn\":
         []\r\n      }\r\n    },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\":
-        {\r\n      \"timeCreated\": \"2023-08-08T07:58:41+00:00\",\r\n      \"lastModified\":
-        \"2023-08-08T07:59:03.5640275+00:00\"\r\n    },\r\n    \"description\": \"An
+        {\r\n      \"timeCreated\": \"2023-08-08T09:47:22+00:00\",\r\n      \"lastModified\":
+        \"2023-08-08T09:47:51.9400632+00:00\"\r\n    },\r\n    \"description\": \"An
         example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
@@ -3286,7 +3376,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:59:04 GMT
+      - Tue, 08 Aug 2023 09:47:53 GMT
       expires:
       - '-1'
       pragma:
@@ -3332,8 +3422,8 @@ interactions:
         \   },\r\n    \"resourceGroups\": {\r\n      \"myRgArt\": {\r\n        \"metadata\":
         {\r\n          \"displayName\": \"Resource Group 2\"\r\n        },\r\n        \"dependsOn\":
         []\r\n      }\r\n    },\r\n    \"targetScope\": \"subscription\",\r\n    \"status\":
-        {\r\n      \"timeCreated\": \"2023-08-08T07:58:41+00:00\",\r\n      \"lastModified\":
-        \"2023-08-08T07:59:03.5640275+00:00\"\r\n    },\r\n    \"description\": \"An
+        {\r\n      \"timeCreated\": \"2023-08-08T09:47:22+00:00\",\r\n      \"lastModified\":
+        \"2023-08-08T09:47:51.9400632+00:00\"\r\n    },\r\n    \"description\": \"An
         example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
@@ -3344,7 +3434,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:59:04 GMT
+      - Tue, 08 Aug 2023 09:47:53 GMT
       expires:
       - '-1'
       pragma:
@@ -3396,8 +3486,8 @@ interactions:
         {\r\n        \"type\": \"string\",\r\n        \"metadata\": {\r\n          \"displayName\":
         \"Members\"\r\n        },\r\n        \"allowedValues\": []\r\n      }\r\n
         \   },\r\n    \"resourceGroups\": {},\r\n    \"targetScope\": \"subscription\",\r\n
-        \   \"status\": {\r\n      \"timeCreated\": \"2023-08-08T07:58:41+00:00\",\r\n
-        \     \"lastModified\": \"2023-08-08T07:59:05.3967056+00:00\"\r\n    },\r\n
+        \   \"status\": {\r\n      \"timeCreated\": \"2023-08-08T09:47:22+00:00\",\r\n
+        \     \"lastModified\": \"2023-08-08T09:47:54.8764606+00:00\"\r\n    },\r\n
         \   \"description\": \"An example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
@@ -3408,7 +3498,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:59:04 GMT
+      - Tue, 08 Aug 2023 09:47:54 GMT
       expires:
       - '-1'
       pragma:
@@ -3420,7 +3510,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -3452,8 +3542,8 @@ interactions:
         {\r\n        \"type\": \"string\",\r\n        \"metadata\": {\r\n          \"displayName\":
         \"Members\"\r\n        },\r\n        \"allowedValues\": []\r\n      }\r\n
         \   },\r\n    \"resourceGroups\": {},\r\n    \"targetScope\": \"subscription\",\r\n
-        \   \"status\": {\r\n      \"timeCreated\": \"2023-08-08T07:58:41+00:00\",\r\n
-        \     \"lastModified\": \"2023-08-08T07:59:05.3967056+00:00\"\r\n    },\r\n
+        \   \"status\": {\r\n      \"timeCreated\": \"2023-08-08T09:47:22+00:00\",\r\n
+        \     \"lastModified\": \"2023-08-08T09:47:54.8764606+00:00\"\r\n    },\r\n
         \   \"description\": \"An example blueprint.\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Blueprint/blueprints/test-bp-000002\",\r\n
         \ \"type\": \"Microsoft.Blueprint/blueprints\",\r\n  \"name\": \"test-bp-000002\"\r\n}"
     headers:
@@ -3464,7 +3554,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 08 Aug 2023 07:59:05 GMT
+      - Tue, 08 Aug 2023 09:47:56 GMT
       expires:
       - '-1'
       pragma:
