@@ -63,11 +63,13 @@ class Create(AAZCommand):
         _args_schema.sku = AAZStrArg(
             options=["--sku"],
             help="SKU of Firewall policy.",
+            is_preview=True,
             enum={"Basic": "Basic", "Premium": "Premium", "Standard": "Standard"},
         )
         _args_schema.sql = AAZBoolArg(
             options=["--sql"],
             help="A flag to indicate if SQL Redirect traffic filtering is enabled.",
+            is_preview=True,
         )
         _args_schema.threat_intel_mode = AAZStrArg(
             options=["--threat-intel-mode"],
@@ -130,6 +132,7 @@ class Create(AAZCommand):
             options=["--idps-mode"],
             arg_group="Intrustion Detection",
             help="IDPS mode.",
+            is_preview=True,
             enum={"Alert": "Alert", "Deny": "Deny", "Off": "Off"},
         )
 
@@ -162,11 +165,13 @@ class Create(AAZCommand):
             options=["--key-vault-secret-id"],
             arg_group="TLS Inspection",
             help="Secret Id of (base-64 encoded unencrypted pfx) Secret or Certificate object stored in KeyVault.",
+            is_preview=True,
         )
         _args_schema.cert_name = AAZStrArg(
             options=["--cert-name"],
             arg_group="TLS Inspection",
             help="Name of the CA certificate.",
+            is_preview=True,
         )
 
         # define Arg Group "Threat Intel Allowlist"

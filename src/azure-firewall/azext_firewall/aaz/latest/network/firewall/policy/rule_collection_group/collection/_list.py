@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """None
+    """List all rule collections of an Azure firewall policy rule collection group.
     """
 
     _aaz_info = {

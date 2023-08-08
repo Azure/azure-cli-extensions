@@ -10,4 +10,3 @@
 
 from .__cmd_group import *
 from ._list import *
-from ._update import *
