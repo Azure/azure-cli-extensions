@@ -11,7 +11,7 @@ Release History
     * `vm extension` command : Create, Update, Delete, Show, List MachineExtensions
 * If underlying machine is not present, it gets created during vm create
 * Added delete-from-host flag for `vm delete`
-* Removed VM List option as VMInstance is a child resource of Machines.
+* Deprecated VM List option as VM Instance is a child resource of Machines.
 * Updated tests and helps accordingly.
 
 0.1.12
