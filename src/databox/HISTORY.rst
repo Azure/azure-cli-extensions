@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.0.1
+1.1.0
 ++++++
 * `az databox job create`: Add new parameters `--transfer-all-blobs` and `--transfer-all-files` to support setting transfer all details
 
