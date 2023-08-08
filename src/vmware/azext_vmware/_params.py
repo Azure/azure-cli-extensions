@@ -26,7 +26,7 @@ def load_arguments(self, _):
     with self.argument_context('vmware private-cloud') as c:
         c.argument('cluster_size', help='Number of hosts for the default management cluster. Minimum of 3 and maximum of 16.')
         c.argument('internet', help='Connectivity to internet. Specify "Enabled" or "Disabled".')
-        c.argument('yes', help='Delete without confirmation.')
+        c.argument('yes')
 
     with self.argument_context('vmware cluster') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the cluster.')

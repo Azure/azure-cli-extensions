@@ -20,7 +20,6 @@ def load_command_table(self, _):
 
     with self.command_group('vmware private-cloud', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('listadmincredentials', 'privatecloud_listadmincredentials', deprecate_info=g.deprecate(redirect='az vmware private-cloud list-admin-credentials', hide=True))
-        g.custom_command('list-admin-credentials', 'privatecloud_listadmincredentials')
         g.custom_command('addidentitysource', 'privatecloud_addidentitysource', deprecate_info=g.deprecate(redirect='az vmware private-cloud add-identity-source', hide=True))
         g.custom_command('add-identity-source', 'privatecloud_addidentitysource')
         g.custom_command('deleteidentitysource', 'privatecloud_deleteidentitysource', deprecate_info=g.deprecate(redirect='az vmware private-cloud delete-identity-source', hide=True))
@@ -29,7 +28,6 @@ def load_command_table(self, _):
         g.custom_command('delete-cmk-encryption', 'privatecloud_deletecmkenryption', deprecate_info=g.deprecate(redirect='az vmware private-cloud disable-cmk-encryption', hide=True))
         g.custom_command('enable-cmk-encryption', 'privatecloud_addcmkencryption')
         g.custom_command('disable-cmk-encryption', 'privatecloud_deletecmkenryption')
-        g.custom_command('rotate-vcenter-password', 'privatecloud_rotate_vcenter_password')
         g.custom_command('rotate-nsxt-password', 'privatecloud_rotate_nsxt_password')
 
     with self.command_group('vmware private-cloud identity', vmware_sdk, client_factory=cf_vmware) as g:

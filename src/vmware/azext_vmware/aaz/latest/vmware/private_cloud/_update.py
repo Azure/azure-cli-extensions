@@ -88,12 +88,101 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.encryption = AAZObjectArg(
+            options=["--encryption"],
+            arg_group="Properties",
+            help="Customer managed key encryption, can be enabled or disabled",
+        )
+        _args_schema.identity_sources = AAZListArg(
+            options=["--identity-sources"],
+            arg_group="Properties",
+            help="vCenter Single Sign On Identity Sources",
+        )
         _args_schema.internet = AAZStrArg(
             options=["--internet"],
             arg_group="Properties",
             help="Connectivity to internet is enabled or disabled",
             default="Disabled",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+
+        encryption = cls._args_schema.encryption
+        encryption.key_vault_properties = AAZObjectArg(
+            options=["key-vault-properties"],
+            help="The key vault where the encryption key is stored",
+        )
+        encryption.status = AAZStrArg(
+            options=["status"],
+            help="Status of customer managed encryption key",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+
+        key_vault_properties = cls._args_schema.encryption.key_vault_properties
+        key_vault_properties.key_name = AAZStrArg(
+            options=["key-name"],
+            help="The name of the key.",
+        )
+        key_vault_properties.key_vault_url = AAZStrArg(
+            options=["key-vault-url"],
+            help="The URL of the vault.",
+        )
+        key_vault_properties.key_version = AAZStrArg(
+            options=["key-version"],
+            help="The version of the key.",
+        )
+
+        identity_sources = cls._args_schema.identity_sources
+        identity_sources.Element = AAZObjectArg()
+
+        _element = cls._args_schema.identity_sources.Element
+        _element.alias = AAZStrArg(
+            options=["alias"],
+            help="The domain's NetBIOS name",
+            required=True,
+        )
+        _element.base_group_dn = AAZStrArg(
+            options=["base-group-dn"],
+            help="The base distinguished name for groups",
+            required=True,
+        )
+        _element.base_user_dn = AAZStrArg(
+            options=["base-user-dn"],
+            help="The base distinguished name for users",
+            required=True,
+        )
+        _element.domain = AAZStrArg(
+            options=["domain"],
+            help="The domain's dns name",
+            required=True,
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="The name of the identity source",
+            required=True,
+        )
+        _element.password = AAZStrArg(
+            options=["password"],
+            help="The password of the Active Directory user with a minimum of read-only access to Base DN for users and groups.",
+            required=True,
+        )
+        _element.primary_server = AAZStrArg(
+            options=["primary-server"],
+            help="Primary server URL",
+            required=True,
+        )
+        _element.secondary_server = AAZStrArg(
+            options=["secondary-server"],
+            help="Secondary server URL",
+        )
+        _element.ssl = AAZStrArg(
+            options=["ssl"],
+            help="Protect LDAP communication using SSL certificate (LDAPS)",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _element.username = AAZStrArg(
+            options=["username"],
+            help="The ID of an Active Directory user with a minimum of read-only access to Base DN for users and group",
+            required=True,
         )
         return cls._args_schema
 
@@ -213,8 +302,38 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("encryption", AAZObjectType, ".encryption")
+                properties.set_prop("identitySources", AAZListType, ".identity_sources")
                 properties.set_prop("internet", AAZStrType, ".internet")
                 properties.set_prop("managementCluster", AAZObjectType)
+
+            encryption = _builder.get(".properties.encryption")
+            if encryption is not None:
+                encryption.set_prop("keyVaultProperties", AAZObjectType, ".key_vault_properties")
+                encryption.set_prop("status", AAZStrType, ".status")
+
+            key_vault_properties = _builder.get(".properties.encryption.keyVaultProperties")
+            if key_vault_properties is not None:
+                key_vault_properties.set_prop("keyName", AAZStrType, ".key_name")
+                key_vault_properties.set_prop("keyVaultUrl", AAZStrType, ".key_vault_url")
+                key_vault_properties.set_prop("keyVersion", AAZStrType, ".key_version")
+
+            identity_sources = _builder.get(".properties.identitySources")
+            if identity_sources is not None:
+                identity_sources.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.identitySources[]")
+            if _elements is not None:
+                _elements.set_prop("alias", AAZStrType, ".alias", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("baseGroupDN", AAZStrType, ".base_group_dn", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("baseUserDN", AAZStrType, ".base_user_dn", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("domain", AAZStrType, ".domain", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"required": True, "secret": True}})
+                _elements.set_prop("primaryServer", AAZStrType, ".primary_server", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("secondaryServer", AAZStrType, ".secondary_server")
+                _elements.set_prop("ssl", AAZStrType, ".ssl")
+                _elements.set_prop("username", AAZStrType, ".username", typ_kwargs={"flags": {"required": True}})
 
             management_cluster = _builder.get(".properties.managementCluster")
             if management_cluster is not None:

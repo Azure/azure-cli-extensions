@@ -12,6 +12,8 @@ from .__cmd_group import *
 from ._create import *
 from ._delete import *
 from ._list import *
+from ._list_admin_credential import *
+from ._rotate_vcenter_password import *
 from ._show import *
 from ._update import *
 from ._wait import *

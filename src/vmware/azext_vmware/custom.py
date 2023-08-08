@@ -154,14 +154,6 @@ def privatecloud_identity_get(client: AVSClient, resource_group_name, private_cl
     return client.private_clouds.get(resource_group_name, private_cloud).identity
 
 
-def privatecloud_rotate_vcenter_password(client: AVSClient, resource_group_name, private_cloud, yes=False):
-    from knack.prompting import prompt_y_n
-    msg = ROTATE_VCENTER_PASSWORD_TERMS
-    if not yes and not prompt_y_n(msg, default="n"):
-        return None
-    return client.private_clouds.begin_rotate_vcenter_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
 def privatecloud_rotate_nsxt_password():
     from knack.prompting import prompt
     msg = ROTATE_NSXT_PASSWORD_TERMS
