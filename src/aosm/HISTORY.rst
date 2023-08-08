@@ -5,6 +5,7 @@ Release History
 
 unreleased
 ++++++++++
+* Added a `--clean` flag to the NSD `delete` command. This flag will delete the NSDG on top of the other resources deleted by the `delete` command.
 * Added integration tests for `publish` and `delete` commands.
 * Added a `--force` flag to the aosm `build` and `delete` commands. This command will force the `build` or `delete` commands to proceed without waiting on user input to confirm.
 * `az aosm nfd build` options `--order-params` and `--interactive` to help users choose which NF parameters to expose as deployParameters. Feature added that allows CNF value mappings file to be generated if none is supplied.

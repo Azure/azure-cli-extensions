@@ -53,6 +53,7 @@ def build_definition(
     :type cmd: _type_
     :param config_file: path to the file
     :param definition_type: VNF, CNF
+    :param force: force the build even if the design has already been built
     """
 
     # Read the config from the given file
@@ -208,6 +209,7 @@ def delete_published_definition(
     :param clean: if True, will delete the NFDG, artifact stores and publisher too.
         Defaults to False. Only works if no resources have those as a parent.     Use
         with care.
+    :param force: if True, will not prompt for confirmation before deleting the resources.
     """
     config = _get_config_from_file(
         config_file=config_file, configuration_type=definition_type
@@ -284,6 +286,7 @@ def build_design(cmd, client: HybridNetworkManagementClient, config_file: str, f
     :param client:
     :type client: HybridNetworkManagementClient
     :param config_file: path to the file
+    :param force: force the build, even if the design has already been built
     """
 
     api_clients = ApiClients(
@@ -308,6 +311,7 @@ def delete_published_design(
     cmd,
     client: HybridNetworkManagementClient,
     config_file,
+    clean=False,
     force=False,
 ):
     """
@@ -317,6 +321,8 @@ def delete_published_design(
     :param clean: if True, will delete the NSDG, artifact stores and publisher too.
                   Defaults to False. Only works if no resources have those as a parent.
                     Use with care.
+    :param clean: if True, will delete the NSDG on top of the other resources.
+    :param force: if True, will not prompt for confirmation before deleting the resources.
     """
     config = _get_config_from_file(config_file=config_file, configuration_type=NSD)
 
@@ -325,7 +331,7 @@ def delete_published_design(
     )
 
     destroyer = ResourceDeleter(api_clients, config)
-    destroyer.delete_nsd(force=force)
+    destroyer.delete_nsd(clean=clean, force=force)
 
 
 def publish_design(

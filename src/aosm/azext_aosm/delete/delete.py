@@ -87,7 +87,7 @@ class ResourceDeleter:
                 self.delete_artifact_store("sa")
             self.delete_publisher()
 
-    def delete_nsd(self, force: bool = False) -> None:
+    def delete_nsd(self, clean: bool = False, force: bool = False) -> None:
         """
         Delete the NSDV and manifests.
 
@@ -102,6 +102,8 @@ class ResourceDeleter:
                 f" {self.config.acr_manifest_names} and configuration group schema"
                 f" {self.config.cg_schema_name}?"
             )
+            if clean:
+                print(f"Because of the --clean flag, the NSDG {self.config.nsdg_name} will also be deleted.")
             print("There is no undo. Type 'delete' to confirm")
             if not input_ack("delete", "Confirm delete:"):
                 print("Not proceeding with delete")
@@ -110,6 +112,8 @@ class ResourceDeleter:
         self.delete_nsdv()
         self.delete_artifact_manifest("acr")
         self.delete_config_group_schema()
+        if clean:
+            self.delete_nsdg()
 
     def delete_nfdv(self):
         assert isinstance(self.config, NFConfiguration)

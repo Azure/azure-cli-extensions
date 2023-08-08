@@ -131,3 +131,8 @@ def load_arguments(self: AzCommandsLoader, _):
             help="The path to the configuration file.",
         )
         c.argument("skip", arg_type=ns_skip_steps, help="Optional skip steps")
+        c.argument(
+            "clean",
+            arg_type=get_three_state_flag(),
+            help="Also delete NSD Group. Use with care.",
+        )
