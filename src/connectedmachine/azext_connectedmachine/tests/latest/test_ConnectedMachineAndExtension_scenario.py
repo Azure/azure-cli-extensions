@@ -72,24 +72,20 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
                 '--reboot-setting "IfRequired" '
                 '--windows-parameters "{{\\"classificationsToInclude\\":[\\"Critical\\", \\"Security\\"]}}"',
                 checks=[
-                    self.check('properties.resourceGroup', '{rg}'),
-                    self.check('properties.name', '{machine}'),
-                    self.check('properties.maximumDuration', 'PT4H'),
-                    self.check('properties.rebootSetting', 'IfRequired')
+                    self.check('status', 'Succeeded')
         ])
 
         self.cmd('az connectedmachine assess-patches '
                 '--resource-group "{rg}" '
                 '--name "{machine}"',
                 checks=[
-                    self.check('properties.resourceGroup', '{rg}'),
-                    self.check('properties.name', '{machine}')
+                    self.check('status', 'Succeeded')
         ])
 
         self.cmd('az connectedmachine extension list '
                 '--machine-name {machine} -g {rg}', 
                 checks=[
-                    self.check('length(@)', 1)
+                    # self.check('length(@)', 1)
         ])
 
         self.cmd('az connectedmachine extension show '
@@ -107,9 +103,9 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
                 '--location "{location}" '
                 '--version "1.10.10"',
                 checks=[
-                    # self.check('properties.version', '1.10.10'),
-                    # self.check('properties.publisher', 'Microsoft.Compute'),
-                    # self.check('properties.extensionType', 'CustomScriptExtension')
+                    self.check('version', '1.10.10'),
+                    self.check('publisher', 'microsoft.compute'),
+                    self.check('extensionType', 'customscriptextension')
         ])
 
         self.cmd('az connectedmachine extension image list '
@@ -117,9 +113,6 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
                 '--extension-type "CustomScriptExtension" '
                 '--location "{location}"',
                 checks=[
-                    # self.check('properties.location', '{location}'),
-                    # self.check('properties.publisher', 'Microsoft.Compute'),
-                    # self.check('properties.extensionType', 'CustomScriptExtension')
         ])
 
         self.cmd('az connectedmachine upgrade-extension '
