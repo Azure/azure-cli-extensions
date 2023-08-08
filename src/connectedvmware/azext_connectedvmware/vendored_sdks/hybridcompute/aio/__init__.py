@@ -6,4 +6,10 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-__path__ = __import__('pkgutil').extend_path(__path__, __name__)
+from ._hybrid_compute_management_client import HybridComputeManagementClient
+__all__ = ['HybridComputeManagementClient']
+
+# `._patch.py` is used for handwritten extensions to the generated code
+# Example: https://github.com/Azure/azure-sdk-for-python/blob/main/doc/dev/customize_code/how-to-patch-sdk-code.md
+from ._patch import patch_sdk
+patch_sdk()

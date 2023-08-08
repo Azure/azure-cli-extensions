@@ -6,4 +6,4 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-__path__ = __import__('pkgutil').extend_path(__path__, __name__)
+VERSION = "1.0.0b1"
