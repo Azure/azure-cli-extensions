@@ -14,12 +14,11 @@ def load_command_table(self, _):
         operations_tmpl='azext_vmware.vendored_sdks.operations#PrivateCloudOperations.{}',
         client_factory=cf_vmware)
 
+    from .operations.private_cloud import PrivateCloudCreate, PrivateCloudUpdate
+    self.command_table['vmware private-cloud create'] = PrivateCloudCreate(loader=self)
+    self.command_table['vmware private-cloud update'] = PrivateCloudUpdate(loader=self)
+
     with self.command_group('vmware private-cloud', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('list', 'privatecloud_list')
-        g.custom_show_command('show', 'privatecloud_show')
-        g.custom_command('create', 'privatecloud_create')
-        g.custom_command('update', 'privatecloud_update')
-        g.custom_command('delete', 'privatecloud_delete')
         g.custom_command('listadmincredentials', 'privatecloud_listadmincredentials', deprecate_info=g.deprecate(redirect='az vmware private-cloud list-admin-credentials', hide=True))
         g.custom_command('list-admin-credentials', 'privatecloud_listadmincredentials')
         g.custom_command('addidentitysource', 'privatecloud_addidentitysource', deprecate_info=g.deprecate(redirect='az vmware private-cloud add-identity-source', hide=True))

@@ -38,16 +38,6 @@ Press any key to continue
 '''
 
 
-def privatecloud_list(client: AVSClient, resource_group_name=None):
-    if resource_group_name is None:
-        return client.private_clouds.list_in_subscription()
-    return client.private_clouds.list(resource_group_name)
-
-
-def privatecloud_show(client: AVSClient, resource_group_name, name):
-    return client.private_clouds.get(resource_group_name, name)
-
-
 def privatecloud_addavailabilityzone(client: AVSClient, resource_group_name, private_cloud, strategy=None, zone=None, secondary_zone=None):
     from azext_vmware.vendored_sdks.avs_client.models import AvailabilityProperties
     pc = client.private_clouds.get(resource_group_name, private_cloud)
@@ -96,14 +86,6 @@ def privatecloud_update(client: AVSClient, resource_group_name, name, cluster_si
     if internet is not None:
         private_cloud_update.internet = internet
     return client.private_clouds.begin_update(resource_group_name, name, private_cloud_update)
-
-
-def privatecloud_delete(client: AVSClient, resource_group_name, name, yes=False):
-    from knack.prompting import prompt_y_n
-    msg = 'This will delete the private cloud. Are you sure?'
-    if not yes and not prompt_y_n(msg, default="n"):
-        return None
-    return client.private_clouds.begin_delete(resource_group_name, name)
 
 
 def privatecloud_listadmincredentials(client: AVSClient, resource_group_name, private_cloud):
