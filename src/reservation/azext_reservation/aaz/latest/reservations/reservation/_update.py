@@ -113,7 +113,7 @@ class Update(AAZCommand):
         _args_schema.renewal_properties = AAZObjectArg(
             options=["--renewal-properties"],
             arg_group="RenewProperties",
-            help="renewal purchase properties",
+            help={"short-summary": "renewal purchase properties", "long-summary": "Renewal purchase properties. Sample input: --renewal-properties {applied-scope-type:Shared,billing-plan:Monthly,billing-scope-id:/subscriptions/00000000-0000-0000-0000-000000000000,display-name:newName,instance-flexibility:On,quantity:5,term:P1Y,reserved-resource-type:VirtualMachines,sku:Standard_B1ls,Location:eastus}"},
         )
 
         renewal_properties = cls._args_schema.renewal_properties
