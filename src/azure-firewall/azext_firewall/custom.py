@@ -859,7 +859,7 @@ class IntrusionDetectionAdd(_AzureFirewallPoliciesUpdate):
     def pre_instance_update(self, instance):
         from azure.cli.core.azclierror import RequiredArgumentMissingError, InvalidArgumentValueError
         args = self.ctx.args
-        if instance.properties.intrusion_detection is None:
+        if not has_value(instance.properties.intrusion_detection):
             raise RequiredArgumentMissingError(
                 'Intrusion detection mode is not set. Setting it by update command first')
 
@@ -868,7 +868,7 @@ class IntrusionDetectionAdd(_AzureFirewallPoliciesUpdate):
                 'id': args.signature_id,
                 'mode': args.signature_mode
             }
-            if instance.properties.intrusion_detection.configuration is not None:
+            if has_value(instance.properties.intrusion_detection.configuration):
                 for overrided_signature in instance.properties.intrusion_detection.configuration.signature_overrides:
                     if overrided_signature.id == args.signature_id:
                         raise InvalidArgumentValueError(
