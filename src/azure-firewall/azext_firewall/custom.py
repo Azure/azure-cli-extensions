@@ -17,9 +17,10 @@ from ._client_factory import network_client_factory
 from .aaz.latest.network.firewall import Create as _AzureFirewallCreate, Update as _AzureFirewallUpdate, \
     Show as _AzureFirewallShow
 from .aaz.latest.network.firewall.policy import Create as _AzureFirewallPoliciesCreate, \
-    Update as _AzureFirewallPoliciesUpdate, Show as _AzureFirewallPoliciesShow
+    Update as _AzureFirewallPoliciesUpdate
 from .aaz.latest.network.firewall.policy.rule_collection_group import Create as _RuleCollectionGroupCreate, \
     Update as _RuleCollectionGroupUpdate
+from .aaz.latest.network.firewall.policy.intrusion_detection import Show as _IntrusionDetectionShow
 
 logger = get_logger(__name__)
 
@@ -904,7 +905,7 @@ class IntrusionDetectionAdd(_AzureFirewallPoliciesUpdate):
     "network firewall policy intrusion-detection list",
     is_preview=True,
 )
-class IntrusionDetectionList(_AzureFirewallPoliciesShow):
+class IntrusionDetectionList(_IntrusionDetectionShow):
     """
     List all intrusion detection configuration
     """
@@ -913,8 +914,6 @@ class IntrusionDetectionList(_AzureFirewallPoliciesShow):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.name._options = ['--policy-name']
-        args_schema.name._id_part = None
-        args_schema.expand._registered = False
         return args_schema
 
     def _output(self, *args, **kwargs):
