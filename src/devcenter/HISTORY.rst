@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.0.3
+2.0.0
 ++++++
 * Update dev-box-definition to devbox-definition parameter
 
