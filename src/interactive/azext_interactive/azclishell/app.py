@@ -302,7 +302,7 @@ class AzInteractiveShell(object):
         lines = []
         for key in GESTURE_INFO:
             lines.append(fill(GESTURE_INFO[key], initial_indent=key.ljust(GESTURE_LENGTH) + ': ',
-                              subsequent_indent=' ' * (GESTURE_LENGTH + 2), width=cols, max_lines=2,
+                              subsequent_indent=' ' * (GESTURE_LENGTH + 2), width=cols, max_lines=1,
                               placeholder='...'))
 
         self.cli.buffers['symbols'].reset(initial_document=Document(u'{}'.format('\n'.join(lines))))
