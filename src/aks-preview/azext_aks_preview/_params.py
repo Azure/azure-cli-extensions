@@ -609,6 +609,7 @@ def load_arguments(self, _):
         c.argument('max_pods', type=int, options_list=['--max-pods', '-m'])
         c.argument('zones', zones_type, options_list=['--zones', '-z'], help='Space-separated list of availability zones where agent nodes will be placed.')
         c.argument('ppg')
+        c.argument('vm_set_type', validator=validate_vm_set_type)
         c.argument('enable_encryption_at_host', action='store_true')
         c.argument('enable_ultra_ssd', action='store_true')
         c.argument('enable_fips_image', action='store_true')
