@@ -1,0 +1,489 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.Network/virtualNetworks/cli-test-vnet-H2A-B2A-1?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"cli-test-vnet-H2A-B2A-1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.Network/virtualNetworks/cli-test-vnet-H2A-B2A-1\",\r\n
+        \ \"etag\": \"W/\\\"f9464957-ad0f-4a5f-bd0f-568acd279c2d\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus\",\r\n
+        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\":
+        \"efdb24f4-5b24-4967-bfbd-10f6dc2613b7\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [\r\n
+        \     {\r\n        \"name\": \"MySubnet\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.Network/virtualNetworks/cli-test-vnet-H2A-B2A-1/subnets/MySubnet\",\r\n
+        \       \"etag\": \"W/\\\"f9464957-ad0f-4a5f-bd0f-568acd279c2d\\\"\",\r\n
+        \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
+        \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
+        [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
+        \"Enabled\"\r\n        },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n
+        \     }\r\n    ],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\":
+        false\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1295'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 08 Aug 2023 04:02:22 GMT
+      etag:
+      - W/"f9464957-ad0f-4a5f-bd0f-568acd279c2d"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - b28865c3-4b28-4816-888b-f4925998b0c3
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) azsdk-python-azure-mgmt-storage/21.1.0b1 Python/3.9.13
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.Storage/storageAccounts/cliteststorageh2ab2a?api-version=2023-01-01
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.Storage/storageAccounts/cliteststorageh2ab2a","name":"cliteststorageh2ab2a","type":"Microsoft.Storage/storageAccounts","location":"eastus","tags":{},"properties":{"keyCreationTime":{"key1":"2023-08-08T02:27:58.0835694Z","key2":"2023-08-08T02:27:58.0835694Z"},"allowCrossTenantReplication":false,"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":true,"networkAcls":{"ipv6Rules":[],"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-08-08T02:27:58.0991233Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-08-08T02:27:58.0991233Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2023-08-08T02:27:57.9116245Z","primaryEndpoints":{"dfs":"https://cliteststorageh2ab2a.dfs.core.windows.net/","web":"https://cliteststorageh2ab2a.z13.web.core.windows.net/","blob":"https://cliteststorageh2ab2a.blob.core.windows.net/","queue":"https://cliteststorageh2ab2a.queue.core.windows.net/","table":"https://cliteststorageh2ab2a.table.core.windows.net/","file":"https://cliteststorageh2ab2a.file.core.windows.net/"},"primaryLocation":"eastus","statusOfPrimary":"available","secondaryLocation":"westus","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://cliteststorageh2ab2a-secondary.dfs.core.windows.net/","web":"https://cliteststorageh2ab2a-secondary.z13.web.core.windows.net/","blob":"https://cliteststorageh2ab2a-secondary.blob.core.windows.net/","queue":"https://cliteststorageh2ab2a-secondary.queue.core.windows.net/","table":"https://cliteststorageh2ab2a-secondary.table.core.windows.net/"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1960'
+      content-type:
+      - application/json
+      date:
+      - Tue, 08 Aug 2023 04:02:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - group show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.13
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli.test.rg.SRVault.H2AB2A?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A","name":"cli.test.rg.SRVault.H2AB2A","type":"Microsoft.Resources/resourceGroups","location":"eastus","properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '249'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 08 Aug 2023 04:02:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationPolicies/cli-test-policy-H2A-B2A-1?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationPolicies/cli-test-policy-H2A-B2A-1","name":"cli-test-policy-H2A-B2A-1","type":"Microsoft.RecoveryServices/vaults/replicationPolicies","properties":{"friendlyName":"cli-test-policy-H2A-B2A-1","providerSpecificDetails":{"instanceType":"HyperVReplicaAzure","recoveryPointHistoryDurationInHours":2,"applicationConsistentSnapshotFrequencyInHours":1,"replicationInterval":300,"encryption":"Disabled","activeStorageAccountId":null}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '599'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 08 Aug 2023 04:02:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protection-container list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name --fabric-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationProtectionContainers?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationProtectionContainers/cloud_f6225961-7332-5220-a2a2-845daf1e0859","name":"cloud_f6225961-7332-5220-a2a2-845daf1e0859","type":"Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers","properties":{"fabricFriendlyName":"SRsourcehypervSite","friendlyName":"SRsourcehypervSite","fabricType":"HyperVSite","protectedItemCount":1,"pairingStatus":"Paired","role":"Primary","fabricSpecificDetails":null}}],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '663'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 08 Aug 2023 04:02:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protectable-item list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name --protection-container --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationProtectionContainers/cloud_f6225961-7332-5220-a2a2-845daf1e0859/replicationProtectableItems?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationProtectionContainers/cloud_f6225961-7332-5220-a2a2-845daf1e0859/replicationProtectableItems/4468b400-1393-4d08-a81e-0e3c19c04a0b","name":"4468b400-1393-4d08-a81e-0e3c19c04a0b","type":"Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectableItems","properties":{"friendlyName":"VM1","protectionStatus":"Protected","replicationProtectedItemId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationProtectionContainers/cloud_f6225961-7332-5220-a2a2-845daf1e0859/replicationProtectedItems/cli-test-protected-item-H2A-B2A-1","recoveryServicesProviderId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationRecoveryServicesProviders/6115326b-8f28-42de-ac9b-6c2d8276a1a5","protectionReadinessErrors":[],"supportedReplicationProviders":["HyperVReplicaAzure"],"customDetails":{"instanceType":"HyperVVirtualMachine","sourceItemId":"4468b400-1393-4d08-a81e-0e3c19c04a0b","generation":"1","osDetails":null,"diskDetails":[{"maxSizeMB":40960,"vhdType":"Data","vhdId":"e6a167ba-26ce-4546-b818-79e6a0f5a006","vhdName":"VM1"}],"hasPhysicalDisk":"NotPresent","hasFibreChannelAdapter":"NotPresent","hasSharedVhd":"Unknown","hyperVHostId":"srsourcehyperv2"}}}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationProtectionContainers/cloud_f6225961-7332-5220-a2a2-845daf1e0859/replicationProtectableItems?api-version=2022-08-01&$skipToken=ReplicationGroup%3ABegin"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2114'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 08 Aug 2023 04:02:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protectable-item list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name --protection-container --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationProtectionContainers/cloud_f6225961-7332-5220-a2a2-845daf1e0859/replicationProtectableItems?api-version=2022-08-01&$skipToken=ReplicationGroup%3ABegin
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 08 Aug 2023 04:02:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --protection-container --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationProtectionContainers/cloud_f6225961-7332-5220-a2a2-845daf1e0859/replicationProtectedItems/cli-test-protected-item-H2A-B2A-1?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationProtectionContainers/cloud_f6225961-7332-5220-a2a2-845daf1e0859/replicationProtectedItems/cli-test-protected-item-H2A-B2A-1","name":"cli-test-protected-item-H2A-B2A-1","type":"Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectedItems","properties":{"friendlyName":"VM1","protectedItemType":"HyperVVirtualMachine","protectableItemId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationProtectionContainers/cloud_f6225961-7332-5220-a2a2-845daf1e0859/replicationProtectableItems/4468b400-1393-4d08-a81e-0e3c19c04a0b","recoveryServicesProviderId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationRecoveryServicesProviders/6115326b-8f28-42de-ac9b-6c2d8276a1a5","primaryFabricFriendlyName":"SRsourcehypervSite","primaryFabricProvider":"SingleHostHyperVFabric","recoveryFabricFriendlyName":"Microsoft
+        Azure","recoveryFabricId":"Microsoft Azure","primaryProtectionContainerFriendlyName":"SRsourcehypervSite","recoveryProtectionContainerFriendlyName":"Microsoft
+        Azure","protectionState":"InitialReplicationRecoveryCompletionPending","protectionStateDescription":"Waiting
+        for first recovery point","activeLocation":"Primary","testFailoverState":"None","testFailoverStateDescription":"None","switchProviderState":"None","switchProviderStateDescription":null,"allowedOperations":["DisableProtection"],"replicationHealth":"Normal","failoverHealth":"Normal","healthErrors":[],"policyId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationPolicies/cli-test-policy-H2A-B2A-1","policyFriendlyName":"cli-test-policy-H2A-B2A-1","currentScenario":{"scenarioName":"None","jobId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationJobs/None","startTime":"1753-01-01T01:01:01Z"},"failoverRecoveryPointId":null,"providerSpecificDetails":{"instanceType":"HyperVReplicaAzure","azureVmDiskDetails":[{"vhdType":"OperatingSystem","vhdId":"e6a167ba-26ce-4546-b818-79e6a0f5a006","diskId":"4468B400-1393-4D08-A81E-0E3C19C04A0B_83F8638B-8DCA-4152-9EDA-2CA8B33039B4_0_0","vhdName":"VM1","maxSizeMB":"40960","targetDiskLocation":null,"targetDiskName":null,"lunId":"0","diskEncryptionSetId":null,"customTargetDiskName":null}],"recoveryAzureVmName":"VM1","recoveryAzureVMSize":"Standard_A2m_v2","recoveryAzureStorageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.Storage/storageAccounts/cliteststorageh2ab2a","recoveryAzureLogStorageAccountId":null,"lastReplicatedTime":"2023-08-08T03:59:35Z","rpoInSeconds":null,"lastRpoCalculatedTime":null,"vmId":"4468b400-1393-4d08-a81e-0e3c19c04a0b","vmProtectionState":"UnprotectedStatesBegin","vmProtectionStateDescription":"Enabling
+        protection","initialReplicationDetails":{"initialReplicationType":"InitialReplication","initialReplicationProgressPercentage":"8"},"vmNics":[],"selectedRecoveryAzureNetworkId":null,"selectedSourceNicId":null,"encryption":"Disabled","oSDetails":{"osType":"Windows","productType":"UNKNOWN","osEdition":"Standard","oSVersion":"1.1.1.1","oSMajorVersion":"0","oSMinorVersion":"0"},"sourceVmRamSizeInMB":16384,"sourceVmCpuCount":1,"enableRdpOnTargetOption":"Never","recoveryAzureResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A","recoveryAvailabilitySetId":null,"targetAvailabilityZone":null,"targetProximityPlacementGroupId":null,"useManagedDisks":"false","licenseType":"NotSpecified","sqlServerLicenseType":"NotSpecified","targetVmTags":{},"seedManagedDiskTags":null,"targetManagedDiskTags":null,"targetNicTags":null,"protectedManagedDisks":[]},"recoveryContainerId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/d49858f157601230a6ac5862fbbc6e63bf38d23ecd96cf953767945d457fe9d5/replicationProtectionContainers/d38048d4-b460-4791-8ece-108395ee8478","eventCorrelationId":"8287d622-13b5-49ff-86f5-ffa8367c6001"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4717'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 08 Aug 2023 04:02:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --protection-container --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationProtectionContainers/cloud_f6225961-7332-5220-a2a2-845daf1e0859/replicationProtectedItems/cli-test-protected-item-H2A-B2A-1?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationProtectionContainers/cloud_f6225961-7332-5220-a2a2-845daf1e0859/replicationProtectedItems/cli-test-protected-item-H2A-B2A-1","name":"cli-test-protected-item-H2A-B2A-1","type":"Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectedItems","properties":{"friendlyName":"VM1","protectedItemType":"HyperVVirtualMachine","protectableItemId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationProtectionContainers/cloud_f6225961-7332-5220-a2a2-845daf1e0859/replicationProtectableItems/4468b400-1393-4d08-a81e-0e3c19c04a0b","recoveryServicesProviderId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationRecoveryServicesProviders/6115326b-8f28-42de-ac9b-6c2d8276a1a5","primaryFabricFriendlyName":"SRsourcehypervSite","primaryFabricProvider":"SingleHostHyperVFabric","recoveryFabricFriendlyName":"Microsoft
+        Azure","recoveryFabricId":"Microsoft Azure","primaryProtectionContainerFriendlyName":"SRsourcehypervSite","recoveryProtectionContainerFriendlyName":"Microsoft
+        Azure","protectionState":"InitialReplicationRecoveryCompletionPending","protectionStateDescription":"Waiting
+        for first recovery point","activeLocation":"Primary","testFailoverState":"None","testFailoverStateDescription":"None","switchProviderState":"None","switchProviderStateDescription":null,"allowedOperations":["DisableProtection"],"replicationHealth":"Normal","failoverHealth":"Normal","healthErrors":[],"policyId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationPolicies/cli-test-policy-H2A-B2A-1","policyFriendlyName":"cli-test-policy-H2A-B2A-1","currentScenario":{"scenarioName":"None","jobId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationJobs/None","startTime":"1753-01-01T01:01:01Z"},"failoverRecoveryPointId":null,"providerSpecificDetails":{"instanceType":"HyperVReplicaAzure","azureVmDiskDetails":[{"vhdType":"OperatingSystem","vhdId":"e6a167ba-26ce-4546-b818-79e6a0f5a006","diskId":"4468B400-1393-4D08-A81E-0E3C19C04A0B_83F8638B-8DCA-4152-9EDA-2CA8B33039B4_0_0","vhdName":"VM1","maxSizeMB":"40960","targetDiskLocation":null,"targetDiskName":null,"lunId":"0","diskEncryptionSetId":null,"customTargetDiskName":null}],"recoveryAzureVmName":"VM1","recoveryAzureVMSize":"Standard_A2m_v2","recoveryAzureStorageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.Storage/storageAccounts/cliteststorageh2ab2a","recoveryAzureLogStorageAccountId":null,"lastReplicatedTime":"2023-08-08T03:59:35Z","rpoInSeconds":null,"lastRpoCalculatedTime":null,"vmId":"4468b400-1393-4d08-a81e-0e3c19c04a0b","vmProtectionState":"UnprotectedStatesBegin","vmProtectionStateDescription":"Enabling
+        protection","initialReplicationDetails":{"initialReplicationType":"InitialReplication","initialReplicationProgressPercentage":"8"},"vmNics":[],"selectedRecoveryAzureNetworkId":null,"selectedSourceNicId":null,"encryption":"Disabled","oSDetails":{"osType":"Windows","productType":"UNKNOWN","osEdition":"Standard","oSVersion":"1.1.1.1","oSMajorVersion":"0","oSMinorVersion":"0"},"sourceVmRamSizeInMB":16384,"sourceVmCpuCount":1,"enableRdpOnTargetOption":"Never","recoveryAzureResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A","recoveryAvailabilitySetId":null,"targetAvailabilityZone":null,"targetProximityPlacementGroupId":null,"useManagedDisks":"false","licenseType":"NotSpecified","sqlServerLicenseType":"NotSpecified","targetVmTags":{},"seedManagedDiskTags":null,"targetManagedDiskTags":null,"targetNicTags":null,"protectedManagedDisks":[]},"recoveryContainerId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/d49858f157601230a6ac5862fbbc6e63bf38d23ecd96cf953767945d457fe9d5/replicationProtectionContainers/d38048d4-b460-4791-8ece-108395ee8478","eventCorrelationId":"8287d622-13b5-49ff-86f5-ffa8367c6001"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4717'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 08 Aug 2023 04:07:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery protected-item show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --protection-container --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationProtectionContainers/cloud_f6225961-7332-5220-a2a2-845daf1e0859/replicationProtectedItems/cli-test-protected-item-H2A-B2A-1?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationProtectionContainers/cloud_f6225961-7332-5220-a2a2-845daf1e0859/replicationProtectedItems/cli-test-protected-item-H2A-B2A-1","name":"cli-test-protected-item-H2A-B2A-1","type":"Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectedItems","properties":{"friendlyName":"VM1","protectedItemType":"HyperVVirtualMachine","protectableItemId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationProtectionContainers/cloud_f6225961-7332-5220-a2a2-845daf1e0859/replicationProtectableItems/4468b400-1393-4d08-a81e-0e3c19c04a0b","recoveryServicesProviderId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/SRsourcehypervSite/replicationRecoveryServicesProviders/6115326b-8f28-42de-ac9b-6c2d8276a1a5","primaryFabricFriendlyName":"SRsourcehypervSite","primaryFabricProvider":"SingleHostHyperVFabric","recoveryFabricFriendlyName":"Microsoft
+        Azure","recoveryFabricId":"Microsoft Azure","primaryProtectionContainerFriendlyName":"SRsourcehypervSite","recoveryProtectionContainerFriendlyName":"Microsoft
+        Azure","protectionState":"Protected","protectionStateDescription":"Protected","activeLocation":"Primary","testFailoverState":"None","testFailoverStateDescription":"None","switchProviderState":"None","switchProviderStateDescription":null,"allowedOperations":[],"replicationHealth":"Normal","failoverHealth":"Normal","healthErrors":[],"policyId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationPolicies/cli-test-policy-H2A-B2A-1","policyFriendlyName":"cli-test-policy-H2A-B2A-1","currentScenario":{"scenarioName":"EnableProtection","jobId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationJobs/6a12f9e0-e786-4d7b-88b9-9871f6ff6164","startTime":"2023-08-08T04:11:54.5561216Z"},"failoverRecoveryPointId":null,"providerSpecificDetails":{"instanceType":"HyperVReplicaAzure","azureVmDiskDetails":[{"vhdType":"OperatingSystem","vhdId":"e6a167ba-26ce-4546-b818-79e6a0f5a006","diskId":"4468B400-1393-4D08-A81E-0E3C19C04A0B_83F8638B-8DCA-4152-9EDA-2CA8B33039B4_0_0","vhdName":"VM1","maxSizeMB":"40960","targetDiskLocation":null,"targetDiskName":null,"lunId":"0","diskEncryptionSetId":null,"customTargetDiskName":null}],"recoveryAzureVmName":"VM1","recoveryAzureVMSize":"Standard_A2m_v2","recoveryAzureStorageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.Storage/storageAccounts/cliteststorageh2ab2a","recoveryAzureLogStorageAccountId":null,"lastReplicatedTime":"2023-08-08T03:59:35Z","rpoInSeconds":1,"lastRpoCalculatedTime":"2023-08-08T04:09:37.4744333Z","vmId":"4468b400-1393-4d08-a81e-0e3c19c04a0b","vmProtectionState":"UnprotectedStatesBegin","vmProtectionStateDescription":"Enabling
+        protection","initialReplicationDetails":{"initialReplicationType":"InitialReplication","initialReplicationProgressPercentage":"8"},"vmNics":[],"selectedRecoveryAzureNetworkId":null,"selectedSourceNicId":null,"encryption":"Disabled","oSDetails":{"osType":"Windows","productType":"UNKNOWN","osEdition":"Standard","oSVersion":"1.1.1.1","oSMajorVersion":"0","oSMinorVersion":"0"},"sourceVmRamSizeInMB":16384,"sourceVmCpuCount":1,"enableRdpOnTargetOption":"Never","recoveryAzureResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A","recoveryAvailabilitySetId":null,"targetAvailabilityZone":null,"targetProximityPlacementGroupId":null,"useManagedDisks":"false","licenseType":"NotSpecified","sqlServerLicenseType":"NotSpecified","lastRecoveryPointReceived":"2023-08-08T04:09:35.5267417Z","targetVmTags":{},"seedManagedDiskTags":null,"targetManagedDiskTags":null,"targetNicTags":null,"protectedManagedDisks":[]},"recoveryContainerId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault.H2AB2A/providers/Microsoft.RecoveryServices/vaults/SRCliVaultH2AB2A/replicationFabrics/d49858f157601230a6ac5862fbbc6e63bf38d23ecd96cf953767945d457fe9d5/replicationProtectionContainers/d38048d4-b460-4791-8ece-108395ee8478","eventCorrelationId":"8287d622-13b5-49ff-86f5-ffa8367c6001"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4775'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 08 Aug 2023 04:12:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
