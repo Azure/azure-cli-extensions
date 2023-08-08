@@ -573,10 +573,10 @@ class AzInteractiveShell(object):
             initial_document=Document(scenario.get('reason') or scenario.get('scenario') or 'Running a E2E Scenario. ')
         )
 
-        step_msg = ([(Style.WARNING, 'Do you want to further modify the current scenario?'),
+        step_msg = ([(Style.WARNING, '\nAre you satisfied with the current scenario script?'),
                      (Style.SECONDARY, "(y/n)\n"),
-                     (Style.PRIMARY, 'If y, you will start a scenario to execute the script.\n'),
-                     (Style.PRIMARY, 'If n, you can give some more messages to optimize the script.\n')])
+                     (Style.PRIMARY, 'If y, you will start a walk through to execute the script.\n'),
+                     (Style.PRIMARY, 'If n, please provide more descriptions to optimize the script.\n')])
         self.need_chatgpt_refine_script = not get_yes_or_no_option(step_msg)
         if self.need_chatgpt_refine_script:
             # Since the chatgpt_generation function is recursive, when using the chatgpt servic to modify the script.
