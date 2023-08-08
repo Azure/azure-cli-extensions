@@ -1115,7 +1115,7 @@ def list_vm(
     cmd,
     resource_group_name=None,
 ):
-    resources_filter = "resourceType eq 'Microsoft.ConnectedVMwarevSphere/VCenters'"
+    resources_filter = "resourceType eq 'Microsoft.ConnectedVMwarevSphere/VirtualMachineInstances'"
     resources_client = get_resources_client(cmd.cli_ctx)
     if resource_group_name is not None:
         return list(resources_client.list_by_resource_group(resource_group_name, filter=resources_filter))
