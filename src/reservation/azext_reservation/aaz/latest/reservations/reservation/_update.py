@@ -117,6 +117,10 @@ class Update(AAZCommand):
         )
 
         renewal_properties = cls._args_schema.renewal_properties
+        renewal_properties.location = AAZStrArg(
+            options=["location"],
+            help="The Azure region where the reserved resource lives.",
+        )
         renewal_properties.applied_scope_properties = AAZObjectArg(
             options=["applied-scope-properties"],
         )
@@ -351,6 +355,7 @@ class Update(AAZCommand):
 
             purchase_properties = _builder.get(".properties.renewProperties.purchaseProperties")
             if purchase_properties is not None:
+                purchase_properties.set_prop("location", AAZStrType, ".location")
                 purchase_properties.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
                 purchase_properties.set_prop("sku", AAZObjectType)
 
