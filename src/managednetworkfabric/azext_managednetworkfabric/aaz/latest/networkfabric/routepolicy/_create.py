@@ -15,13 +15,13 @@ from azure.cli.core.aaz import *
     "networkfabric routepolicy create",
 )
 class Create(AAZCommand):
-    """Create a Route Policy resource.
+    """Create a Route Policy resource
 
     :example: Create a Route Policy Example 1
-        az networkfabric routepolicy create --resource-group "example-rg" --resource-name "example-routepolicy" --location "westus3" --statements "[{sequenceNumber:1234,condition:{ipCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipCommunities/example-ipCommunityName'],ipPrefixId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/example-ipPrefixName'},action:{localPreference:123,actionType:Permit,ipCommunityProperties:{add:{ipCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipCommunities/example-ipCommunityName']}}}}]"
+        az networkfabric routepolicy create --resource-group "example-rg" --resource-name "example-routepolicy" --location "westus3" --nf-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric" --address-family-type "IPv4" --statements "[{sequenceNumber:1234,condition:{ipCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipCommunities/example-ipCommunityName'],ipPrefixId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/example-ipPrefixName',type:Or},action:{localPreference:123,actionType:Permit,ipCommunityProperties:{add:{ipCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipCommunities/example-ipCommunityName']}}}}]"
 
     :example: Create a Route Policy Example 2
-        az networkfabric routepolicy create --resource-group "example-rg" --resource-name "example-routepolicy" --location "westus3" --statements "[{sequenceNumber:1235,condition:{ipExtendedCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipExtendedCommunities/example-ipExtendedCommunityName']},action:{localPreference:1235,actionType:Deny,ipExtendedCommunityProperties:{set:{ipExtendedCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipExtendedCommunities/example-ipExtendedCommunityName']}}}}]"
+        az networkfabric routepolicy create --resource-group "example-rg" --resource-name "example-routepolicy" --location "westus3" --nf-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric" --address-family-type "IPv4" --statements "[{sequenceNumber:1235,condition:{ipExtendedCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipExtendedCommunities/example-ipExtendedCommunityName'],type:And},action:{localPreference:1235,actionType:Deny,ipExtendedCommunityProperties:{set:{ipExtendedCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipExtendedCommunities/example-ipExtendedCommunityName']}}}}]"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
         az networkfabric routepolicy create --statements ??
@@ -30,9 +30,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies/{}", "2023-06-15"],
         ]
     }
 
@@ -59,7 +59,7 @@ class Create(AAZCommand):
         )
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the Route Policy",
+            help="Name of the Route Policy.",
             required=True,
         )
 
@@ -86,10 +86,25 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.address_family_type = AAZStrArg(
+            options=["--address-family-type"],
+            arg_group="Properties",
+            help="AddressFamilyType. This parameter decides whether the given ipv4 or ipv6 route policy. Default value is IPv4.",
+            enum={"IPv4": "IPv4", "IPv6": "IPv6"},
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
-            help="Switch configuration description.",
+            help="Description for underlying resource.",
+        )
+        _args_schema.nf_id = AAZResourceIdArg(
+            options=["--nf-id"],
+            arg_group="Properties",
+            help="ARM Resource ID of the Network Fabric.",
+            required=True,
         )
         _args_schema.statements = AAZListArg(
             options=["--statements"],
@@ -109,7 +124,7 @@ class Create(AAZCommand):
         )
         _element.annotation = AAZStrArg(
             options=["annotation"],
-            help="Switch configuration description.",
+            help="Description for underlying resource.",
         )
         _element.condition = AAZObjectArg(
             options=["condition"],
@@ -118,7 +133,7 @@ class Create(AAZCommand):
         )
         _element.sequence_number = AAZIntArg(
             options=["sequence-number"],
-            help="Sequence to insert to/delete from existing route. The value should be between 1 to 4294967295.",
+            help="Sequence to insert to/delete from existing route.",
             required=True,
             fmt=AAZIntArgFormat(
                 maximum=4294967295,
@@ -129,13 +144,16 @@ class Create(AAZCommand):
         action = cls._args_schema.statements.Element.action
         action.action_type = AAZStrArg(
             options=["action-type"],
-            help="action. Example: Permit | Deny.",
+            help="Action type. Example: Permit.",
             required=True,
-            enum={"Deny": "Deny", "Permit": "Permit"},
+            enum={"Continue": "Continue", "Deny": "Deny", "Permit": "Permit"},
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
         action.ip_community_properties = AAZObjectArg(
             options=["ip-community-properties"],
-            help="ipCommunity Properties.",
+            help="IP Community Properties.",
         )
         action.ip_extended_community_properties = AAZObjectArg(
             options=["ip-extended-community-properties"],
@@ -143,7 +161,7 @@ class Create(AAZCommand):
         )
         action.local_preference = AAZIntArg(
             options=["local-preference"],
-            help="localPreference of the route policy. The value should be between 0 to 4294967295",
+            help="Local Preference of the route policy.",
             fmt=AAZIntArgFormat(
                 maximum=4294967295,
                 minimum=0,
@@ -153,97 +171,57 @@ class Create(AAZCommand):
         ip_community_properties = cls._args_schema.statements.Element.action.ip_community_properties
         ip_community_properties.add = AAZObjectArg(
             options=["add"],
-            help="Route policy add manipulations.",
+            help="List of IP Community IDs.",
         )
+        cls._build_args_ip_community_id_list_create(ip_community_properties.add)
         ip_community_properties.delete = AAZObjectArg(
             options=["delete"],
-            help="Route policy delete manipulations.",
+            help="List of IP Community IDs.",
         )
+        cls._build_args_ip_community_id_list_create(ip_community_properties.delete)
         ip_community_properties.set = AAZObjectArg(
             options=["set"],
-            help="Route policy set manipulations.",
+            help="List of IP Community IDs.",
         )
-
-        add = cls._args_schema.statements.Element.action.ip_community_properties.add
-        add.ip_community_ids = AAZListArg(
-            options=["ip-community-ids"],
-            help="List of IPCommunity resource IDs.",
-        )
-
-        ip_community_ids = cls._args_schema.statements.Element.action.ip_community_properties.add.ip_community_ids
-        ip_community_ids.Element = AAZStrArg()
-
-        delete = cls._args_schema.statements.Element.action.ip_community_properties.delete
-        delete.ip_community_ids = AAZListArg(
-            options=["ip-community-ids"],
-            help="List of IPCommunity resource IDs.",
-        )
-
-        ip_community_ids = cls._args_schema.statements.Element.action.ip_community_properties.delete.ip_community_ids
-        ip_community_ids.Element = AAZStrArg()
-
-        set = cls._args_schema.statements.Element.action.ip_community_properties.set
-        set.ip_community_ids = AAZListArg(
-            options=["ip-community-ids"],
-            help="List of IPCommunity resource IDs.",
-        )
-
-        ip_community_ids = cls._args_schema.statements.Element.action.ip_community_properties.set.ip_community_ids
-        ip_community_ids.Element = AAZStrArg()
+        cls._build_args_ip_community_id_list_create(ip_community_properties.set)
 
         ip_extended_community_properties = cls._args_schema.statements.Element.action.ip_extended_community_properties
         ip_extended_community_properties.add = AAZObjectArg(
             options=["add"],
-            help="Route policy add manipulations.",
+            help="List of IP Extended Community IDs.",
         )
+        cls._build_args_ip_extended_community_id_list_create(ip_extended_community_properties.add)
         ip_extended_community_properties.delete = AAZObjectArg(
             options=["delete"],
-            help="Route policy delete manipulations.",
+            help="List of IP Extended Community IDs.",
         )
+        cls._build_args_ip_extended_community_id_list_create(ip_extended_community_properties.delete)
         ip_extended_community_properties.set = AAZObjectArg(
             options=["set"],
-            help="Route policy set manipulations.",
+            help="List of IP Extended Community IDs.",
         )
-
-        add = cls._args_schema.statements.Element.action.ip_extended_community_properties.add
-        add.ip_extended_community_ids = AAZListArg(
-            options=["ip-extended-community-ids"],
-            help="List of IPExtendedCommunity resource IDs.",
-        )
-
-        ip_extended_community_ids = cls._args_schema.statements.Element.action.ip_extended_community_properties.add.ip_extended_community_ids
-        ip_extended_community_ids.Element = AAZStrArg()
-
-        delete = cls._args_schema.statements.Element.action.ip_extended_community_properties.delete
-        delete.ip_extended_community_ids = AAZListArg(
-            options=["ip-extended-community-ids"],
-            help="List of IPExtendedCommunity resource IDs.",
-        )
-
-        ip_extended_community_ids = cls._args_schema.statements.Element.action.ip_extended_community_properties.delete.ip_extended_community_ids
-        ip_extended_community_ids.Element = AAZStrArg()
-
-        set = cls._args_schema.statements.Element.action.ip_extended_community_properties.set
-        set.ip_extended_community_ids = AAZListArg(
-            options=["ip-extended-community-ids"],
-            help="List of IPExtendedCommunity resource IDs.",
-        )
-
-        ip_extended_community_ids = cls._args_schema.statements.Element.action.ip_extended_community_properties.set.ip_extended_community_ids
-        ip_extended_community_ids.Element = AAZStrArg()
+        cls._build_args_ip_extended_community_id_list_create(ip_extended_community_properties.set)
 
         condition = cls._args_schema.statements.Element.condition
         condition.ip_community_ids = AAZListArg(
             options=["ip-community-ids"],
-            help="List of IPCommunity ARM resource IDs",
+            help="List of IP Community resource IDs.",
         )
         condition.ip_extended_community_ids = AAZListArg(
             options=["ip-extended-community-ids"],
-            help="List of IPExtendedCommunity ARM resource IDs",
+            help="List of IP Extended Community resource IDs.",
         )
         condition.ip_prefix_id = AAZStrArg(
             options=["ip-prefix-id"],
-            help="ARM Resource Id of IpPrefix",
+            help="Arm Resource Id of IpPrefix.",
+        )
+        condition.type = AAZStrArg(
+            options=["type"],
+            help="Type of the condition used. Default value is Or.",
+            enum={"And": "And", "Or": "Or"},
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
 
         ip_community_ids = cls._args_schema.statements.Element.condition.ip_community_ids
@@ -252,6 +230,48 @@ class Create(AAZCommand):
         ip_extended_community_ids = cls._args_schema.statements.Element.condition.ip_extended_community_ids
         ip_extended_community_ids.Element = AAZStrArg()
         return cls._args_schema
+
+    _args_ip_community_id_list_create = None
+
+    @classmethod
+    def _build_args_ip_community_id_list_create(cls, _schema):
+        if cls._args_ip_community_id_list_create is not None:
+            _schema.ip_community_ids = cls._args_ip_community_id_list_create.ip_community_ids
+            return
+
+        cls._args_ip_community_id_list_create = AAZObjectArg()
+
+        ip_community_id_list_create = cls._args_ip_community_id_list_create
+        ip_community_id_list_create.ip_community_ids = AAZListArg(
+            options=["ip-community-ids"],
+            help="List of IP Community resource IDs.",
+        )
+
+        ip_community_ids = cls._args_ip_community_id_list_create.ip_community_ids
+        ip_community_ids.Element = AAZStrArg()
+
+        _schema.ip_community_ids = cls._args_ip_community_id_list_create.ip_community_ids
+
+    _args_ip_extended_community_id_list_create = None
+
+    @classmethod
+    def _build_args_ip_extended_community_id_list_create(cls, _schema):
+        if cls._args_ip_extended_community_id_list_create is not None:
+            _schema.ip_extended_community_ids = cls._args_ip_extended_community_id_list_create.ip_extended_community_ids
+            return
+
+        cls._args_ip_extended_community_id_list_create = AAZObjectArg()
+
+        ip_extended_community_id_list_create = cls._args_ip_extended_community_id_list_create
+        ip_extended_community_id_list_create.ip_extended_community_ids = AAZListArg(
+            options=["ip-extended-community-ids"],
+            help="List of IP Extended Community resource IDs.",
+        )
+
+        ip_extended_community_ids = cls._args_ip_extended_community_id_list_create.ip_extended_community_ids
+        ip_extended_community_ids.Element = AAZStrArg()
+
+        _schema.ip_extended_community_ids = cls._args_ip_extended_community_id_list_create.ip_extended_community_ids
 
     def _execute_operations(self):
         self.pre_operations()
@@ -334,7 +354,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -365,7 +385,9 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("addressFamilyType", AAZStrType, ".address_family_type")
                 properties.set_prop("annotation", AAZStrType, ".annotation")
+                properties.set_prop("networkFabricId", AAZStrType, ".nf_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("statements", AAZListType, ".statements", typ_kwargs={"flags": {"required": True}})
 
             statements = _builder.get(".properties.statements")
@@ -388,69 +410,22 @@ class Create(AAZCommand):
 
             ip_community_properties = _builder.get(".properties.statements[].action.ipCommunityProperties")
             if ip_community_properties is not None:
-                ip_community_properties.set_prop("add", AAZObjectType, ".add")
-                ip_community_properties.set_prop("delete", AAZObjectType, ".delete")
-                ip_community_properties.set_prop("set", AAZObjectType, ".set")
-
-            add = _builder.get(".properties.statements[].action.ipCommunityProperties.add")
-            if add is not None:
-                add.set_prop("ipCommunityIds", AAZListType, ".ip_community_ids")
-
-            ip_community_ids = _builder.get(".properties.statements[].action.ipCommunityProperties.add.ipCommunityIds")
-            if ip_community_ids is not None:
-                ip_community_ids.set_elements(AAZStrType, ".")
-
-            delete = _builder.get(".properties.statements[].action.ipCommunityProperties.delete")
-            if delete is not None:
-                delete.set_prop("ipCommunityIds", AAZListType, ".ip_community_ids")
-
-            ip_community_ids = _builder.get(".properties.statements[].action.ipCommunityProperties.delete.ipCommunityIds")
-            if ip_community_ids is not None:
-                ip_community_ids.set_elements(AAZStrType, ".")
-
-            set = _builder.get(".properties.statements[].action.ipCommunityProperties.set")
-            if set is not None:
-                set.set_prop("ipCommunityIds", AAZListType, ".ip_community_ids")
-
-            ip_community_ids = _builder.get(".properties.statements[].action.ipCommunityProperties.set.ipCommunityIds")
-            if ip_community_ids is not None:
-                ip_community_ids.set_elements(AAZStrType, ".")
+                _CreateHelper._build_schema_ip_community_id_list_create(ip_community_properties.set_prop("add", AAZObjectType, ".add"))
+                _CreateHelper._build_schema_ip_community_id_list_create(ip_community_properties.set_prop("delete", AAZObjectType, ".delete"))
+                _CreateHelper._build_schema_ip_community_id_list_create(ip_community_properties.set_prop("set", AAZObjectType, ".set"))
 
             ip_extended_community_properties = _builder.get(".properties.statements[].action.ipExtendedCommunityProperties")
             if ip_extended_community_properties is not None:
-                ip_extended_community_properties.set_prop("add", AAZObjectType, ".add")
-                ip_extended_community_properties.set_prop("delete", AAZObjectType, ".delete")
-                ip_extended_community_properties.set_prop("set", AAZObjectType, ".set")
-
-            add = _builder.get(".properties.statements[].action.ipExtendedCommunityProperties.add")
-            if add is not None:
-                add.set_prop("ipExtendedCommunityIds", AAZListType, ".ip_extended_community_ids")
-
-            ip_extended_community_ids = _builder.get(".properties.statements[].action.ipExtendedCommunityProperties.add.ipExtendedCommunityIds")
-            if ip_extended_community_ids is not None:
-                ip_extended_community_ids.set_elements(AAZStrType, ".")
-
-            delete = _builder.get(".properties.statements[].action.ipExtendedCommunityProperties.delete")
-            if delete is not None:
-                delete.set_prop("ipExtendedCommunityIds", AAZListType, ".ip_extended_community_ids")
-
-            ip_extended_community_ids = _builder.get(".properties.statements[].action.ipExtendedCommunityProperties.delete.ipExtendedCommunityIds")
-            if ip_extended_community_ids is not None:
-                ip_extended_community_ids.set_elements(AAZStrType, ".")
-
-            set = _builder.get(".properties.statements[].action.ipExtendedCommunityProperties.set")
-            if set is not None:
-                set.set_prop("ipExtendedCommunityIds", AAZListType, ".ip_extended_community_ids")
-
-            ip_extended_community_ids = _builder.get(".properties.statements[].action.ipExtendedCommunityProperties.set.ipExtendedCommunityIds")
-            if ip_extended_community_ids is not None:
-                ip_extended_community_ids.set_elements(AAZStrType, ".")
+                _CreateHelper._build_schema_ip_extended_community_id_list_create(ip_extended_community_properties.set_prop("add", AAZObjectType, ".add"))
+                _CreateHelper._build_schema_ip_extended_community_id_list_create(ip_extended_community_properties.set_prop("delete", AAZObjectType, ".delete"))
+                _CreateHelper._build_schema_ip_extended_community_id_list_create(ip_extended_community_properties.set_prop("set", AAZObjectType, ".set"))
 
             condition = _builder.get(".properties.statements[].condition")
             if condition is not None:
                 condition.set_prop("ipCommunityIds", AAZListType, ".ip_community_ids")
                 condition.set_prop("ipExtendedCommunityIds", AAZListType, ".ip_extended_community_ids")
                 condition.set_prop("ipPrefixId", AAZStrType, ".ip_prefix_id")
+                condition.set_prop("type", AAZStrType, ".type")
 
             ip_community_ids = _builder.get(".properties.statements[].condition.ipCommunityIds")
             if ip_community_ids is not None:
@@ -506,7 +481,22 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.address_family_type = AAZStrType(
+                serialized_name="addressFamilyType",
+            )
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            properties.network_fabric_id = AAZStrType(
+                serialized_name="networkFabricId",
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -572,6 +562,7 @@ class Create(AAZCommand):
             condition.ip_prefix_id = AAZStrType(
                 serialized_name="ipPrefixId",
             )
+            condition.type = AAZStrType()
 
             ip_community_ids = cls._schema_on_200_201.properties.statements.Element.condition.ip_community_ids
             ip_community_ids.Element = AAZStrType()
@@ -607,6 +598,26 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
+
+    @classmethod
+    def _build_schema_ip_community_id_list_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("ipCommunityIds", AAZListType, ".ip_community_ids")
+
+        ip_community_ids = _builder.get(".ipCommunityIds")
+        if ip_community_ids is not None:
+            ip_community_ids.set_elements(AAZStrType, ".")
+
+    @classmethod
+    def _build_schema_ip_extended_community_id_list_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("ipExtendedCommunityIds", AAZListType, ".ip_extended_community_ids")
+
+        ip_extended_community_ids = _builder.get(".ipExtendedCommunityIds")
+        if ip_extended_community_ids is not None:
+            ip_extended_community_ids.set_elements(AAZStrType, ".")
 
     _schema_ip_community_id_list_read = None
 

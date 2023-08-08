@@ -2,6 +2,10 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+MANAGED_ENVIRONMENT_TYPE = "managed"
+CONNECTED_ENVIRONMENT_TYPE = "connected"
+MANAGED_ENVIRONMENT_RESOURCE_TYPE = "managedEnvironments"
+CONNECTED_ENVIRONMENT_RESOURCE_TYPE = "connectedEnvironments"
 
 MAXIMUM_SECRET_LENGTH = 20
 MAXIMUM_CONTAINER_APP_NAME_LENGTH = 32
@@ -11,6 +15,8 @@ LONG_POLLING_INTERVAL_SECS = 10
 
 ACR_IMAGE_SUFFIX = ".azurecr.io"
 
+CONTAINER_APPS_SDK_MODELS = "azext_containerapp._sdk_models"
+
 LOG_ANALYTICS_RP = "Microsoft.OperationalInsights"
 CONTAINER_APPS_RP = "Microsoft.App"
 SERVICE_LINKER_RP = "Microsoft.ServiceLinker"
@@ -18,7 +24,7 @@ SERVICE_LINKER_RP = "Microsoft.ServiceLinker"
 MANAGED_CERTIFICATE_RT = "managedCertificates"
 PRIVATE_CERTIFICATE_RT = "certificates"
 
-DEV_SERVICE_LIST = ["kafka", "postgres", "redis"]
+DEV_SERVICE_LIST = ["kafka", "postgres", "redis", "mariadb"]
 
 DEV_KAFKA_IMAGE = 'kafka'
 DEV_KAFKA_SERVICE_TYPE = 'kafka'
@@ -31,6 +37,10 @@ DEV_POSTGRES_CONTAINER_NAME = 'postgres'
 DEV_REDIS_IMAGE = 'redis'
 DEV_REDIS_SERVICE_TYPE = 'redis'
 DEV_REDIS_CONTAINER_NAME = 'redis'
+
+DEV_MARIADB_IMAGE = 'mariadb'
+DEV_MARIADB_SERVICE_TYPE = 'mariadb'
+DEV_MARIADB_CONTAINER_NAME = 'mariadb'
 
 PENDING_STATUS = "Pending"
 SUCCEEDED_STATUS = "Succeeded"

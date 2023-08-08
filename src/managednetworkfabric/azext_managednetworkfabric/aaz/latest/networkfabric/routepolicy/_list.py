@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "networkfabric routepolicy list",
 )
 class List(AAZCommand):
-    """List all Route Policies in the provided resource group or subscription.
+    """List all Route Policies in the provided resource group or subscription
 
     :example: List the Route Policies for Resource Group
         az networkfabric routepolicy list --resource-group "example-rg"
@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/routepolicies", "2023-02-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/routepolicies", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies", "2023-06-15"],
         ]
     }
 
@@ -119,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -183,7 +183,22 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.address_family_type = AAZStrType(
+                serialized_name="addressFamilyType",
+            )
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            properties.network_fabric_id = AAZStrType(
+                serialized_name="networkFabricId",
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -249,6 +264,7 @@ class List(AAZCommand):
             condition.ip_prefix_id = AAZStrType(
                 serialized_name="ipPrefixId",
             )
+            condition.type = AAZStrType()
 
             ip_community_ids = cls._schema_on_200.value.Element.properties.statements.Element.condition.ip_community_ids
             ip_community_ids.Element = AAZStrType()
@@ -321,7 +337,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -385,7 +401,22 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.address_family_type = AAZStrType(
+                serialized_name="addressFamilyType",
+            )
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            properties.network_fabric_id = AAZStrType(
+                serialized_name="networkFabricId",
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -451,6 +482,7 @@ class List(AAZCommand):
             condition.ip_prefix_id = AAZStrType(
                 serialized_name="ipPrefixId",
             )
+            condition.type = AAZStrType()
 
             ip_community_ids = cls._schema_on_200.value.Element.properties.statements.Element.condition.ip_community_ids
             ip_community_ids.Element = AAZStrType()

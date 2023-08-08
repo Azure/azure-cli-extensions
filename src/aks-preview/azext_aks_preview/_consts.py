@@ -38,6 +38,7 @@ CONST_OS_SKU_AZURELINUX = "AzureLinux"
 # vm set type
 CONST_VIRTUAL_MACHINE_SCALE_SETS = "VirtualMachineScaleSets"
 CONST_AVAILABILITY_SET = "AvailabilitySet"
+CONST_VIRTUAL_MACHINES = "VirtualMachines"
 
 # vm size
 CONST_DEFAULT_NODE_VM_SIZE = "Standard_DS2_v2"

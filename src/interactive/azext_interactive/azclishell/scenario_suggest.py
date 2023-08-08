@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import re
+from collections import defaultdict
 
 from prompt_toolkit.auto_suggest import AutoSuggest, Suggestion
 
@@ -31,7 +32,7 @@ class ScenarioAutoSuggest(AutoSuggest):
         # The sample should not start with 'az '
         self.cur_sample = sample.split('az ')[-1]
         # Find parameters used in sample and its value
-        self.param_sample_value_map = {}
+        self.param_sample_value_map = defaultdict(lambda: None)
         # Find the command part of sample
         self.cur_command = self.cur_sample.split('-')[0].strip()
         cur_param = ''
