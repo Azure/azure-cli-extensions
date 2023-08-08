@@ -481,7 +481,7 @@ class BlueprintScenarioTest(ScenarioTest):
         input_artifact_directory = TEST_DIR + "/input/export_with_artifacts/input/artifacts"
         output_blueprint = TEST_DIR + f"/input/export_with_artifacts/exported/{self.kwargs['blueprintName']}/blueprint.json"
         output_artifact_directory = TEST_DIR + f"/input/export_with_artifacts/exported/{self.kwargs['blueprintName']}/artifacts"
-        output_path = Path(TEST_DIR + f"/input/export_with_artifacts/exported/{self.kwargs['blueprintName']}")
+        output_path = Path(f"/input/export_with_artifacts/exported/{self.kwargs['blueprintName']}")
         # recursive function to check for json equality
         def ordered(obj):
             if isinstance(obj, dict):
