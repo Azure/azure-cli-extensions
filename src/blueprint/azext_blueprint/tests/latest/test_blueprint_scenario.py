@@ -111,7 +111,7 @@ class BlueprintScenarioTest(ScenarioTest):
             checks=[JMESPathCheck('name', self.kwargs.get('blueprintName', ''))])
 
         self.cmd(
-            'az blueprint update '
+            'blueprint update '
             '--name "{blueprintName}" '
             '--parameters {blueprint_filename}',
             checks=[JMESPathCheckExists('parameters')])

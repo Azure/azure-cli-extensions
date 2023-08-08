@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "blueprint version create",
+    "blueprint publish",
     is_preview=True,
 )
-class Create(AAZCommand):
+class Publish(AAZCommand):
     """Publish a new version of the blueprint definition with the latest artifacts. Published blueprint definitions are immutable.
 
     :example: Publish a management group blueprint
@@ -277,7 +277,7 @@ class Create(AAZCommand):
             _element.metadata = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _CreateHelper._build_schema_parameter_definition_metadata_read(_element.metadata)
+            _PublishHelper._build_schema_parameter_definition_metadata_read(_element.metadata)
             _element.type = AAZStrType(
                 flags={"required": True},
             )
@@ -296,7 +296,7 @@ class Create(AAZCommand):
             _element.metadata = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _CreateHelper._build_schema_parameter_definition_metadata_read(_element.metadata)
+            _PublishHelper._build_schema_parameter_definition_metadata_read(_element.metadata)
             _element.name = AAZStrType()
             _element.tags = AAZDictType()
 
@@ -319,8 +319,8 @@ class Create(AAZCommand):
             return cls._schema_on_201
 
 
-class _CreateHelper:
-    """Helper class for Create"""
+class _PublishHelper:
+    """Helper class for Publish"""
 
     @classmethod
     def _build_schema_parameter_definition_metadata_create(cls, _builder):
@@ -356,4 +356,4 @@ class _CreateHelper:
         _schema.strong_type = cls._schema_parameter_definition_metadata_read.strong_type
 
 
-__all__ = ["Create"]
+__all__ = ["Publish"]

@@ -1,0 +1,40 @@
+{
+    "id": "/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Blueprint/blueprints/test-imported-bppitlgtrm",
+    "name": "test-imported-bppitlgtrm",
+    "description": "This blueprint sets tag policy and role assignment on the subscription, creates a ResourceGroup, and deploys a resource template and role assignment to that ResourceGroup.",
+    "parameters": {
+        "storageAccountType": {
+            "allowedValues": [
+                "Standard_LRS",
+                "Standard_GRS",
+                "Standard_ZRS",
+                "Premium_LRS"
+            ],
+            "defaultValue": "Standard_LRS",
+            "type": "string"
+        },
+        "tagName": {
+            "type": "string"
+        },
+        "tagValue": {
+            "type": "string"
+        },
+        "contributors": {
+            "type": "array"
+        },
+        "owners": {
+            "type": "array"
+        }
+    },
+    "resourceGroups": {
+        "storageRG": {
+            "dependsOn": []
+        }
+    },
+    "status": {
+        "lastModified": "2023-08-08T08:15:00.2188564+00:00",
+        "timeCreated": "2023-08-08T08:15:00+00:00"
+    },
+    "targetScope": "subscription",
+    "type": "Microsoft.Blueprint/blueprints"
+}
