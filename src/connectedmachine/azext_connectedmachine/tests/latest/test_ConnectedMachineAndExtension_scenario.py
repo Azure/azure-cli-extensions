@@ -51,7 +51,7 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
         self.cmd('az connectedmachine extension create '
                 '--name "{customScriptName}" '
                 '--location "{location}" '
-                '--enable-automatic-upgrade true '
+                '--enable-auto-upgrade true '
                 '--type "CustomScriptExtension" '
                 '--publisher "Microsoft.Compute" '
                 '--type-handler-version "1.10.10" '

@@ -91,12 +91,12 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.auto_upgrade_minor_version = AAZBoolArg(
-            options=["--auto-upgrade-minor-version"],
+            options=["--upgrade-minor-ver"],
             arg_group="Properties",
             help="Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true.",
         )
         _args_schema.enable_automatic_upgrade = AAZBoolArg(
-            options=["--enable-automatic-upgrade"],
+            options=["--enable-auto-upgrade"],
             arg_group="Properties",
             help="Indicates whether the extension should be automatically upgraded by the platform if there is a newer version available.",
         )

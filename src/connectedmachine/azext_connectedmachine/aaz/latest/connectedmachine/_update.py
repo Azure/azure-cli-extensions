@@ -61,6 +61,10 @@ class Update(AAZCommand):
             required=True,
         )
 
+        _args_schema.location = AAZStrArg(
+            required=True,
+        )
+
         # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
@@ -136,13 +140,13 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.parent_cluster_resource_id = AAZStrArg(
-            options=["--parent-cluster-resource-id"],
+            options=["--parent-cluster-id"],
             arg_group="Properties",
             help="The resource id of the parent cluster (Azure HCI) this machine is assigned to, if any.",
             nullable=True,
         )
         _args_schema.private_link_scope_resource_id = AAZStrArg(
-            options=["--private-link-scope-resource-id"],
+            options=["--private-scope-id"],
             arg_group="Properties",
             help="The resource id of the private link scope this machine is assigned to, if any.",
             nullable=True,

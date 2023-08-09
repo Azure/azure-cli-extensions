@@ -62,59 +62,7 @@ connectedmachine_private_link_scope = CliCommandType(
 
 
 def load_command_table(self, _):
-#     with self.command_group('connectedmachine', connectedmachine_machine, client_factory=cf_machine) as g:
-#         g.custom_command('list', 'connectedmachine_list')
-#         g.custom_show_command('show', 'connectedmachine_show')
-#         g.custom_command('delete', 'connectedmachine_delete', confirmation=True)
-
-#     with self.command_group('connectedmachine', connectedmachine_, client_factory=cf_connectedmachine_cl) as g:
-#         g.custom_command('upgrade-extension', 'connectedmachine_upgrade_extension')
-
-    # with self.command_group(
-    #     'connectedmachine extension', connectedmachine_machine_extension, client_factory=cf_machine_extension
-    # ) as g:
-    #     g.custom_command('list', 'connectedmachine_extension_list')
-    #     g.custom_show_command('show', 'connectedmachine_extension_show')
-    #     g.custom_command('create', 'connectedmachine_extension_create', supports_no_wait=True)
-    #     g.custom_command('update', 'connectedmachine_extension_update', supports_no_wait=True)
-    #     g.custom_command('delete', 'connectedmachine_extension_delete', supports_no_wait=True, confirmation=True)
-    #     g.custom_wait_command('wait', 'connectedmachine_extension_show')
-
-    # with self.command_group(
-    #     'connectedmachine private-endpoint-connection',
-    #     connectedmachine_private_endpoint_connection,
-    #     client_factory=cf_private_endpoint_connection,
-    # ) as g:
-    #     g.custom_command('list', 'connectedmachine_private_endpoint_connection_list')
-    #     g.custom_show_command('show', 'connectedmachine_private_endpoint_connection_show')
-    #     g.custom_command('update', 'connectedmachine_private_endpoint_connection_update', supports_no_wait=True)
-    #     g.custom_command(
-    #         'delete', 'connectedmachine_private_endpoint_connection_delete', supports_no_wait=True, confirmation=True
-    #     )
-    #     g.custom_wait_command('wait', 'connectedmachine_private_endpoint_connection_show')
-
-    # with self.command_group(
-    #     'connectedmachine private-link-resource',
-    #     connectedmachine_private_link_resource,
-    #     client_factory=cf_private_link_resource,
-    # ) as g:
-    #     g.custom_command('list', 'connectedmachine_private_link_resource_list')
-    #     g.custom_show_command('show', 'connectedmachine_private_link_resource_show')
-
     with self.command_group(
         'connectedmachine private-link-scope', connectedmachine_private_link_scope, client_factory=cf_private_link_scope
     ) as g:
-    #     g.custom_command('list', 'connectedmachine_private_link_scope_list')
-    #     g.custom_show_command('show', 'connectedmachine_private_link_scope_show')
-    #     g.custom_command('create', 'connectedmachine_private_link_scope_create')
-    #     g.generic_update_command('update', custom_func_name='connectedmachine_private_link_scope_update')
-    #     g.custom_command(
-    #         'delete', 'connectedmachine_private_link_scope_delete', supports_no_wait=True, confirmation=True
-    #     )
-    #     # g.custom_command('show-validation-detail', 'connectedmachine_private_link_scope_show_validation_detail')
-    #     # g.custom_command(
-    #     #     'show-validation-detail-for-machine',
-    #     #     'connectedmachine_private_link_scope_show_validation_detail_for_machine',
-    #     # )
         g.custom_command('update-tag', 'connectedmachine_private_link_scope_update_tag')
-    #     g.custom_wait_command('wait', 'connectedmachine_private_link_scope_show')
