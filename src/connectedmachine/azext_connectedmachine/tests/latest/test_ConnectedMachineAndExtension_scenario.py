@@ -123,7 +123,7 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
 
         self.cmd('az connectedmachine extension update '
                 '--name "{customScriptName}" '
-                '--enable-automatic-upgrade false '
+                '--enable-auto-upgrade false '
                 '--settings "{{\\"commandToExecute\\":\\"dir\\"}}" '
                 '--machine-name "{machine}" '
                 '--resource-group "{rg}"',
