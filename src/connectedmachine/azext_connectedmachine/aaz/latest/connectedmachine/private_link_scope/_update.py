@@ -15,10 +15,10 @@ from azure.cli.core.aaz import *
     "connectedmachine private-link-scope update",
 )
 class Update(AAZCommand):
-    """Update an Azure Arc PrivateLinkScope. Note: You cannot                                          specify a different value for InstrumentationKey nor AppId in the Put operation.
+    """Update an Azure Arc PrivateLinkScope. Note: You cannot specify a different value for InstrumentationKey nor AppId in the Put operation.
 
     :example: Sample command for private-link-scope update
-        az connectedmachine private-link-scope update --location westus --tags Tag1=Value1 --resource-group my-resource-group --scope-name my-privatelinkscope
+        az connectedmachine private-link-scope update --tags Tag1=Value1 --resource-group my-resource-group --scope-name my-privatelinkscope
     """
 
     _aaz_info = {
@@ -54,9 +54,6 @@ class Update(AAZCommand):
             help="The name of the Azure Arc PrivateLinkScope resource.",
             required=True,
             id_part="name",
-        )
-        _args_schema.location = AAZStrArg(
-            required=True,
         )
 
         # define Arg Group "Parameters"

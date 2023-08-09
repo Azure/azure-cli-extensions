@@ -57,11 +57,14 @@ class Update(AAZCommand):
                 min_length=1,
             ),
         )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
-        )
 
         _args_schema.location = AAZStrArg(
+            options=["--location"],
+            help="The location of the hybrid machine.",
+            required=True,
+        )
+        
+        _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
 
@@ -74,6 +77,7 @@ class Update(AAZCommand):
             help="Identity for the resource.",
             nullable=True,
         )
+
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Parameters",
