@@ -27,7 +27,6 @@ from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import open_page_in_browser
-from azure.cli.command_modules.appservice.utils import _normalize_location
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, prompt as prompt_str
 
