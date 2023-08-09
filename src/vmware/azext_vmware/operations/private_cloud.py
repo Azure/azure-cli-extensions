@@ -50,6 +50,8 @@ class PrivateCloudUpdate(_PrivateCloudUpdate):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.identity._registered = False
+        # updated by vmware private-cloud enable-cmk-encryption/disable-cmk-encryption
+        args_schema.encryption._registered = False
+        # updated by vmware private-cloud add-identity-source/delete-identity-source
+        args_schema.identity_sources._registered = False
         return args_schema
-
-

@@ -38,60 +38,6 @@ Press any key to continue
 '''
 
 
-def privatecloud_addavailabilityzone(client: AVSClient, resource_group_name, private_cloud, strategy=None, zone=None, secondary_zone=None):
-    from azext_vmware.vendored_sdks.avs_client.models import AvailabilityProperties
-    pc = client.private_clouds.get(resource_group_name, private_cloud)
-    pc.availability = AvailabilityProperties(strategy=strategy, zone=zone, secondary_zone=secondary_zone)
-    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
-
-
-# pylint: disable=too-many-locals
-def privatecloud_create(client: AVSClient, resource_group_name, name, sku, cluster_size, network_block, location=None, internet=None, vcenter_password=None, nsxt_password=None, strategy=None, zone=None, secondary_zone=None, tags=None, accept_eula=False, mi_system_assigned=False, yes=False):
-    from knack.prompting import prompt_y_n
-    if not accept_eula:
-        print(LEGAL_TERMS)
-        msg = 'Do you agree to the above additional terms for AVS?'
-        if not yes and not prompt_y_n(msg, default="n"):
-            return None
-    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloud, Circuit, ManagementCluster, Sku, PrivateCloudIdentity, ResourceIdentityType, AvailabilityProperties, AvailabilityStrategy
-    cloud = PrivateCloud(sku=Sku(name=sku), ciruit=Circuit(), management_cluster=ManagementCluster(cluster_size=cluster_size), network_block=network_block)
-    if location is not None:
-        cloud.location = location
-    if tags is not None:
-        cloud.tags = tags
-    if mi_system_assigned:
-        cloud.identity = PrivateCloudIdentity(type=ResourceIdentityType.SYSTEM_ASSIGNED)
-    else:
-        cloud.identity = PrivateCloudIdentity(type=ResourceIdentityType.NONE)
-    if internet is not None:
-        cloud.internet = internet
-    if vcenter_password is not None:
-        cloud.vcenter_password = vcenter_password
-    if nsxt_password is not None:
-        cloud.nsxt_password = nsxt_password
-    if strategy == AvailabilityStrategy.SINGLE_ZONE:
-        cloud.availability = AvailabilityProperties(strategy=AvailabilityStrategy.SINGLE_ZONE, zone=zone, secondary_zone=secondary_zone)
-    if strategy == AvailabilityStrategy.DUAL_ZONE:
-        cloud.availability = AvailabilityProperties(strategy=AvailabilityStrategy.DUAL_ZONE, zone=zone, secondary_zone=secondary_zone)
-    return client.private_clouds.begin_create_or_update(resource_group_name, name, cloud)
-
-
-def privatecloud_update(client: AVSClient, resource_group_name, name, cluster_size=None, internet=None, tags=None):
-    from azext_vmware.vendored_sdks.avs_client.models import ManagementCluster
-    private_cloud_update = client.private_clouds.get(resource_group_name, name)
-    if tags is not None:
-        private_cloud_update.tags = tags
-    if cluster_size is not None:
-        private_cloud_update.management_cluster = ManagementCluster(cluster_size=cluster_size)
-    if internet is not None:
-        private_cloud_update.internet = internet
-    return client.private_clouds.begin_update(resource_group_name, name, private_cloud_update)
-
-
-def privatecloud_listadmincredentials(client: AVSClient, resource_group_name, private_cloud):
-    return client.private_clouds.list_admin_credentials(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
 def privatecloud_addidentitysource(client: AVSClient, resource_group_name, name, private_cloud, alias, domain, base_user_dn, base_group_dn, primary_server, username, password, secondary_server=None, ssl="Disabled"):
     from azext_vmware.vendored_sdks.avs_client.models import IdentitySource
     pc = client.private_clouds.get(resource_group_name, private_cloud)
@@ -116,42 +62,67 @@ def privatecloud_deleteidentitysource(client: AVSClient, resource_group_name, na
     return pc
 
 
-def privatecloud_addcmkencryption(client: AVSClient, resource_group_name, private_cloud, enc_kv_key_name=None, enc_kv_key_version=None, enc_kv_url=None):
-    from azext_vmware.vendored_sdks.avs_client.models import Encryption, EncryptionKeyVaultProperties, EncryptionState
-    pc = client.private_clouds.get(resource_group_name, private_cloud)
-    pc.encryption = Encryption(status=EncryptionState.ENABLED, key_vault_properties=EncryptionKeyVaultProperties(key_name=enc_kv_key_name, key_version=enc_kv_key_version, key_vault_url=enc_kv_url))
-    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+def privatecloud_addcmkencryption(cmd, resource_group_name, private_cloud, enc_kv_key_name=None, enc_kv_key_version=None, enc_kv_url=None):
+    from .operations.private_cloud import PrivateCloudUpdate
+    return PrivateCloudUpdate(cli_ctx=cmd.cli_ctx)(command_args={
+        "private_cloud_name": private_cloud,
+        "resource_group": resource_group_name,
+        "encryption": {
+            "statue": "Enabled",
+            "key_vault_properties": {
+                "key_name": enc_kv_key_name,
+                "key_version": enc_kv_key_version,
+                "key_vault_url": enc_kv_url
+            }
+        }
+    })
 
 
-def privatecloud_deletecmkenryption(client: AVSClient, resource_group_name, private_cloud, yes=False):
+def privatecloud_deletecmkenryption(cmd, resource_group_name, private_cloud, yes=False):
     from knack.prompting import prompt_y_n
     msg = 'This will delete the managed keys encryption. Are you sure?'
     if not yes and not prompt_y_n(msg, default="n"):
         return None
-    from azext_vmware.vendored_sdks.avs_client.models import Encryption, EncryptionState
-    pc = client.private_clouds.get(resource_group_name, private_cloud)
-    pc.encryption = Encryption(status=EncryptionState.DISABLED)
-    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+    from .operations.private_cloud import PrivateCloudUpdate
+    return PrivateCloudUpdate(cli_ctx=cmd.cli_ctx)(command_args={
+        "private_cloud_name": private_cloud,
+        "resource_group": resource_group_name,
+        "encryption": {
+            "statue": "Disabled",
+        }
+    })
 
 
-def privatecloud_identity_assign(client: AVSClient, resource_group_name, private_cloud, system_assigned=False):
-    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudIdentity, ResourceIdentityType
-    pc = client.private_clouds.get(resource_group_name, private_cloud)
+def privatecloud_identity_assign(cmd, resource_group_name, private_cloud, system_assigned=False):
+    from .operations.private_cloud import PrivateCloudUpdate
     if system_assigned:
-        pc.identity = PrivateCloudIdentity(type=ResourceIdentityType.SYSTEM_ASSIGNED)
-    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+        return PrivateCloudUpdate(cli_ctx=cmd.cli_ctx)(command_args={
+            "private_cloud_name": private_cloud,
+            "resource_group": resource_group_name,
+            "identity": {
+                "type": "SystemAssigned",
+            }
+        })
 
 
-def privatecloud_identity_remove(client: AVSClient, resource_group_name, private_cloud, system_assigned=False):
-    from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudIdentity, ResourceIdentityType
-    pc = client.private_clouds.get(resource_group_name, private_cloud)
+def privatecloud_identity_remove(cmd, resource_group_name, private_cloud, system_assigned=False):
+    from .operations.private_cloud import PrivateCloudUpdate
     if system_assigned:
-        pc.identity = PrivateCloudIdentity(type=ResourceIdentityType.NONE)
-    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+        return PrivateCloudUpdate(cli_ctx=cmd.cli_ctx)(command_args={
+            "private_cloud_name": private_cloud,
+            "resource_group": resource_group_name,
+            "identity": {
+                "type": "None",
+            }
+        })
 
 
-def privatecloud_identity_get(client: AVSClient, resource_group_name, private_cloud):
-    return client.private_clouds.get(resource_group_name, private_cloud).identity
+def privatecloud_identity_get(cmd, resource_group_name, private_cloud):
+    from .aaz.latest.vmware.private_cloud import Show
+    return Show(cli_ctx=cmd.cli_ctx)(command_args={
+        "private_cloud_name": private_cloud,
+        "resource_group": resource_group_name,
+    }).get("identity")
 
 
 def privatecloud_rotate_nsxt_password():
