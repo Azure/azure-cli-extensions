@@ -619,7 +619,10 @@ def create_af_application_rule(cmd, resource_group_name, azure_firewall_name, co
                            'application_rule_collections', AzureFirewallApplicationRuleCollection,
                            AzureFirewallApplicationRule, item_name, params, collection_params)
 
-
+@register_command(
+    "network firewall threat-intel-allowlist create",
+    is_preview=True,
+)
 class ThreatIntelAllowListCreate(_AzureFirewallUpdate):
     """Create an Azure Firewall Threat Intelligence Allow List.
 
@@ -631,6 +634,8 @@ class ThreatIntelAllowListCreate(_AzureFirewallUpdate):
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZListArg, AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.name._required = True
+        args_schema.name._id_part = None
         args_schema.ip_addresses = AAZListArg(
             options=['--ip-addresses'],
             help='Space-separated list of IPv4 addresses.'
@@ -641,7 +646,14 @@ class ThreatIntelAllowListCreate(_AzureFirewallUpdate):
             help='Space-separated list of FQDNs'
         )
         args_schema.fqdns.Element = AAZStrArg()
-        args_schema.additional_properties._flatten = True
+        args_schema.firewall_policy._registered = False
+        args_schema.threat_intel_mode._registered = False
+        args_schema.addresses._registered = False
+        args_schema.public_ip_count._registered = False
+        args_schema.additional_properties._registered = False
+        args_schema.virtual_hub._registered = False
+        args_schema.zones._registered = False
+        args_schema.tags._registered = False
         return args_schema
 
     def pre_instance_update(self, instance):
@@ -662,7 +674,10 @@ class ThreatIntelAllowListCreate(_AzureFirewallUpdate):
         })
         return output
 
-
+@register_command(
+    "network firewall threat-intel-allowlist update",
+    is_preview=True,
+)
 class ThreatIntelAllowListUpdate(_AzureFirewallUpdate):
     """Update Azure Firewall Threat Intelligence Allow List.
 
@@ -674,6 +689,8 @@ class ThreatIntelAllowListUpdate(_AzureFirewallUpdate):
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZListArg, AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.name._required = True
+        args_schema.name._id_part = None
         args_schema.ip_addresses = AAZListArg(
             options=['--ip-addresses'],
             help='Space-separated list of IPv4 addresses.'
@@ -684,6 +701,14 @@ class ThreatIntelAllowListUpdate(_AzureFirewallUpdate):
             help='Space-separated list of FQDNs'
         )
         args_schema.fqdns.Element = AAZStrArg()
+        args_schema.firewall_policy._registered = False
+        args_schema.threat_intel_mode._registered = False
+        args_schema.addresses._registered = False
+        args_schema.public_ip_count._registered = False
+        args_schema.additional_properties._registered = False
+        args_schema.virtual_hub._registered = False
+        args_schema.zones._registered = False
+        args_schema.tags._registered = False
         return args_schema
 
     def pre_instance_update(self, instance):
@@ -706,14 +731,48 @@ class ThreatIntelAllowListUpdate(_AzureFirewallUpdate):
         })
         return output
 
-
+@register_command(
+    "network firewall threat-intel-allowlist show",
+    is_preview=True,
+)
 class ThreatIntelAllowListShow(_AzureFirewallShow):
+    """
+    Get the details of an Azure Firewall Threat Intelligence Allow List.
+    """
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.name._required = True
+        args_schema.name._id_part = None
+        return args_schema
+
     def _output(self, *args, **kwargs):
         output = super()._output(*args, **kwargs)
         return output['additionalProperties']
 
-
+@register_command(
+    "network firewall threat-intel-allowlist delete",
+    is_preview=True,
+)
 class ThreatIntelAllowListDelete(_AzureFirewallUpdate):
+    """
+    Delete an Azure Firewall Threat Intelligence Allow List.
+    """
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.name._required = True
+        args_schema.name._id_part = None
+        args_schema.firewall_policy._registered = False
+        args_schema.threat_intel_mode._registered = False
+        args_schema.addresses._registered = False
+        args_schema.public_ip_count._registered = False
+        args_schema.additional_properties._registered = False
+        args_schema.virtual_hub._registered = False
+        args_schema.zones._registered = False
+        args_schema.tags._registered = False
+        return args_schema
+
     def pre_instance_update(self, instance):
         if has_value(instance.properties.additional_properties):
             instance.properties.additional_properties._data.pop('ThreatIntel.Whitelist.IpAddresses', None)
