@@ -1161,7 +1161,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         interval_hours = self._get_image_cleaner_interval_hours(enable_validation=True)
 
         return interval_hours
-    
+
     def get_disable_image_integrity(self) -> bool:
         """Obtain the value of disable_image_integrity.
 
