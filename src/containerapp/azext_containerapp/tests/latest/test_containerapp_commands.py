@@ -990,6 +990,32 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
             JMESPathCheck("properties.configuration.secrets[0].name", f"{acr}azurecrio-{acr}")
         ])
 
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_registry_acr_look_up_credentical(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='aca', length=24)
+        acr = self.create_random_name(prefix='acr', length=24)
+        image_source = "mcr.microsoft.com/k8se/quickstart:latest"
+        image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
+
+        create_containerapp_env(self, env, resource_group)
+
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        self.cmd(f'acr import -n {acr} --source {image_source}')
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app}  --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("identity.type", "None"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+            JMESPathCheck("properties.configuration.secrets[0].name", f"{acr}azurecrio-{acr}")
+        ])
+
+
 
 class ContainerappScaleTests(ScenarioTest):
     @AllowLargeResponse(8192)
