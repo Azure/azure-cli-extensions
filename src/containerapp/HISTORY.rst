@@ -11,6 +11,7 @@ Upcoming
 * 'az containerapp logs show': fix raising error for response status code is not OK
 * 'az containerapp auth show/update': support api-version 2023-05-02-preview
 * 'az containerapp create': --yaml support property additionalPortMappings for api-version 2023-05-02-preview
+* 'az containerapp create': add support for insecure ingress with flag --allow-insecure
 
 0.3.36
 ++++++
