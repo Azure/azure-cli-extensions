@@ -35,12 +35,6 @@ def load_command_table(self, _):
         g.custom_command('remove', 'privatecloud_identity_remove')
         g.custom_show_command('show', 'privatecloud_identity_get')
 
-    with self.command_group('vmware authorization', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'authorization_create')
-        g.custom_command('list', 'authorization_list')
-        g.custom_command('delete', 'authorization_delete')
-        g.custom_show_command('show', 'authorization_show')
-
     with self.command_group('vmware hcx-enterprise-site', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'hcxenterprisesite_create')
         g.custom_command('list', 'hcxenterprisesite_list')

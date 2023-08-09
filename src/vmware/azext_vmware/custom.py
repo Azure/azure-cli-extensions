@@ -141,27 +141,6 @@ def check_trial_availability(client: AVSClient, location, sku=None):
     return client.locations.check_trial_availability(location=location, sku=Sku(name=sku))
 
 
-def authorization_create(client: AVSClient, resource_group_name, private_cloud, name, express_route_id=None):
-    from azext_vmware.vendored_sdks.avs_client.models import ExpressRouteAuthorization
-    return client.authorizations.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, authorization_name=name, authorization=ExpressRouteAuthorization(express_route_id=express_route_id))
-
-
-def authorization_list(client: AVSClient, resource_group_name, private_cloud):
-    return client.authorizations.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
-def authorization_show(client: AVSClient, resource_group_name, private_cloud, name):
-    return client.authorizations.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, authorization_name=name)
-
-
-def authorization_delete(client: AVSClient, resource_group_name, private_cloud, name, yes=False):
-    from knack.prompting import prompt_y_n
-    msg = 'This will delete the authorization. Are you sure?'
-    if not yes and not prompt_y_n(msg, default="n"):
-        return None
-    return client.authorizations.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, authorization_name=name)
-
-
 def hcxenterprisesite_create(client: AVSClient, resource_group_name, private_cloud, name):
     from azext_vmware.vendored_sdks.avs_client.models import HcxEnterpriseSite
     return client.hcx_enterprise_sites.create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, hcx_enterprise_site_name=name, hcx_enterprise_site=HcxEnterpriseSite())
