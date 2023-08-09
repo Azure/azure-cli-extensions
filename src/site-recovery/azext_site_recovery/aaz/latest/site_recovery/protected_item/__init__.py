@@ -13,6 +13,7 @@ from ._create import *
 from ._delete import *
 from ._failover_commit import *
 from ._list import *
+from ._planned_failover import *
 from ._remove import *
 from ._show import *
 from ._unplanned_failover import *
