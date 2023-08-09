@@ -713,6 +713,7 @@ def aks_update(
     load_balancer_managed_outbound_ipv6_count=None,
     outbound_type=None,
     network_plugin_mode=None,
+    network_dataplane=None,
     pod_cidr=None,
     enable_pod_security_policy=False,
     disable_pod_security_policy=False,
@@ -1066,6 +1067,7 @@ def aks_agentpool_add(
     max_pods=0,
     zones=None,
     ppg=None,
+    vm_set_type=None,
     enable_encryption_at_host=False,
     enable_ultra_ssd=False,
     enable_fips_image=False,
@@ -1521,7 +1523,7 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
         if (instance.ingress_profile is None) or (instance.ingress_profile.web_app_routing is None) or not instance.ingress_profile.web_app_routing.enabled:
             raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
 
-    if addon == "monitoring" and enable_msi_auth_for_monitoring is None:
+    elif addon == "monitoring" and enable_msi_auth_for_monitoring is None:
         enable_msi_auth_for_monitoring = True
 
     else:

@@ -15,19 +15,19 @@ from azure.cli.core.aaz import *
     "networkfabric controller create",
 )
 class Create(AAZCommand):
-    """Create a Network Fabric Controller resource.
+    """Create a Network Fabric Controller resource
 
     :example: Create a Network Fabric Controller. For RE-PUT with 'mrg' parameter, both name and location properties are required.
-        az networkfabric controller create --resource-group "example-rg" --location "westus3"  --resource-name "example-nfc" --ipv4-address-space "10.0.0.0/19" --infra-er-connections "[{expressRouteCircuitId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit',expressRouteAuthorizationKey:'auth-key'},{expressRouteCircuitId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit',expressRouteAuthorizationKey:'auth-key'}]" --workload-er-connections "[{expressRouteCircuitId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit',expressRouteAuthorizationKey:'auth-key'},{expressRouteCircuitId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit',expressRouteAuthorizationKey:'auth-key'}]" --mrg name=example-mrgName location=eastus
+        az networkfabric controller create --resource-group "example-rg" --location "westus3"  --resource-name "example-nfc" --ipv4-address-space "10.0.0.0/19" --is-workload-management-network-enabled "True" --nfc-sku "Basic" --infra-er-connections "[{expressRouteCircuitId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit',expressRouteAuthorizationKey:'auth-key'},{expressRouteCircuitId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit',expressRouteAuthorizationKey:'auth-key'}]" --workload-er-connections "[{expressRouteCircuitId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit',expressRouteAuthorizationKey:'auth-key'},{expressRouteCircuitId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit',expressRouteAuthorizationKey:'auth-key'}]" --mrg name=example-mrgName location=eastus
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
         az networkfabric controller create --infra-er-connections ??
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers/{}", "2023-06-15"],
         ]
     }
 
@@ -50,7 +50,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the Network Fabric Controller",
+            help="Name of the Network Fabric Controller.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -84,7 +84,7 @@ class Create(AAZCommand):
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
-            help="Switch configuration description.",
+            help="Description for underlying resource.",
         )
         _args_schema.infra_er_connections = AAZListArg(
             options=["--infra-er-connections"],
@@ -95,16 +95,34 @@ class Create(AAZCommand):
             options=["--ipv4-address-space"],
             arg_group="Properties",
             help="IPv4 Network Fabric Controller Address Space.",
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.ipv6_address_space = AAZStrArg(
             options=["--ipv6-address-space"],
             arg_group="Properties",
             help="IPv6 Network Fabric Controller Address Space.",
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+        _args_schema.is_workload_management_network_enabled = AAZStrArg(
+            options=["--is-workload-management-network-enabled"],
+            arg_group="Properties",
+            help="A workload management network is required for all the tenant (workload) traffic. This traffic is only dedicated for Tenant workloads which are required to access internet or any other MSFT/Public endpoints. Default value is True.",
+            enum={"False": "False", "True": "True"},
         )
         _args_schema.managed_resource_group_configuration = AAZObjectArg(
             options=["--mrg", "--managed-resource-group-configuration"],
             arg_group="Properties",
             help="Managed Resource Group configuration properties.",
+        )
+        _args_schema.nfc_sku = AAZStrArg(
+            options=["--nfc-sku"],
+            arg_group="Properties",
+            help="Network Fabric Controller SKU.",
+            enum={"Basic": "Basic", "HighPerformance": "HighPerformance", "Standard": "Standard"},
         )
         _args_schema.workload_er_connections = AAZListArg(
             options=["--workload-er-connections"],
@@ -145,12 +163,12 @@ class Create(AAZCommand):
         express_route_connection_information_create = cls._args_express_route_connection_information_create
         express_route_connection_information_create.express_route_authorization_key = AAZStrArg(
             options=["express-route-authorization-key"],
-            help="Authorization key for the circuit, must be of type Microsoft.Network/expressRouteCircuits/authorizations.",
+            help="Authorization key for the circuit, must be of type Microsoft.Network/expressRouteCircuits/authorizations. The Auth Key is a mandatory attribute.",
             required=True,
         )
         express_route_connection_information_create.express_route_circuit_id = AAZStrArg(
             options=["express-route-circuit-id"],
-            help="The name of express route circuit, must be of type Microsoft.NetworkexpressRouteCircuits/circuitName.",
+            help="The express route circuit Azure resource ID, must be of type Microsoft.Network/expressRouteCircuits/circuitName. The ExpressRoute Circuit is a mandatory attribute.",
             required=True,
         )
 
@@ -238,7 +256,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -264,7 +282,7 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -273,7 +291,9 @@ class Create(AAZCommand):
                 properties.set_prop("infrastructureExpressRouteConnections", AAZListType, ".infra_er_connections")
                 properties.set_prop("ipv4AddressSpace", AAZStrType, ".ipv4_address_space")
                 properties.set_prop("ipv6AddressSpace", AAZStrType, ".ipv6_address_space")
+                properties.set_prop("isWorkloadManagementNetworkEnabled", AAZStrType, ".is_workload_management_network_enabled")
                 properties.set_prop("managedResourceGroupConfiguration", AAZObjectType, ".managed_resource_group_configuration")
+                properties.set_prop("nfcSku", AAZStrType, ".nfc_sku")
                 properties.set_prop("workloadExpressRouteConnections", AAZListType, ".workload_er_connections")
 
             infrastructure_express_route_connections = _builder.get(".properties.infrastructureExpressRouteConnections")
@@ -323,7 +343,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -343,11 +363,15 @@ class Create(AAZCommand):
                 serialized_name="infrastructureServices",
                 flags={"read_only": True},
             )
+            _CreateHelper._build_schema_controller_services_read(properties.infrastructure_services)
             properties.ipv4_address_space = AAZStrType(
                 serialized_name="ipv4AddressSpace",
             )
             properties.ipv6_address_space = AAZStrType(
                 serialized_name="ipv6AddressSpace",
+            )
+            properties.is_workload_management_network_enabled = AAZStrType(
+                serialized_name="isWorkloadManagementNetworkEnabled",
             )
             properties.managed_resource_group_configuration = AAZObjectType(
                 serialized_name="managedResourceGroupConfiguration",
@@ -356,12 +380,15 @@ class Create(AAZCommand):
                 serialized_name="networkFabricIds",
                 flags={"read_only": True},
             )
-            properties.operational_state = AAZStrType(
-                serialized_name="operationalState",
-                flags={"read_only": True},
+            properties.nfc_sku = AAZStrType(
+                serialized_name="nfcSku",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.tenant_internet_gateway_ids = AAZListType(
+                serialized_name="tenantInternetGatewayIds",
                 flags={"read_only": True},
             )
             properties.workload_express_route_connections = AAZListType(
@@ -375,24 +402,11 @@ class Create(AAZCommand):
                 serialized_name="workloadServices",
                 flags={"read_only": True},
             )
+            _CreateHelper._build_schema_controller_services_read(properties.workload_services)
 
             infrastructure_express_route_connections = cls._schema_on_200_201.properties.infrastructure_express_route_connections
             infrastructure_express_route_connections.Element = AAZObjectType()
             _CreateHelper._build_schema_express_route_connection_information_read(infrastructure_express_route_connections.Element)
-
-            infrastructure_services = cls._schema_on_200_201.properties.infrastructure_services
-            infrastructure_services.ipv4_address_spaces = AAZListType(
-                serialized_name="ipv4AddressSpaces",
-            )
-            infrastructure_services.ipv6_address_spaces = AAZListType(
-                serialized_name="ipv6AddressSpaces",
-            )
-
-            ipv4_address_spaces = cls._schema_on_200_201.properties.infrastructure_services.ipv4_address_spaces
-            ipv4_address_spaces.Element = AAZStrType()
-
-            ipv6_address_spaces = cls._schema_on_200_201.properties.infrastructure_services.ipv6_address_spaces
-            ipv6_address_spaces.Element = AAZStrType()
 
             managed_resource_group_configuration = cls._schema_on_200_201.properties.managed_resource_group_configuration
             managed_resource_group_configuration.location = AAZStrType()
@@ -401,23 +415,12 @@ class Create(AAZCommand):
             network_fabric_ids = cls._schema_on_200_201.properties.network_fabric_ids
             network_fabric_ids.Element = AAZStrType()
 
+            tenant_internet_gateway_ids = cls._schema_on_200_201.properties.tenant_internet_gateway_ids
+            tenant_internet_gateway_ids.Element = AAZStrType()
+
             workload_express_route_connections = cls._schema_on_200_201.properties.workload_express_route_connections
             workload_express_route_connections.Element = AAZObjectType()
             _CreateHelper._build_schema_express_route_connection_information_read(workload_express_route_connections.Element)
-
-            workload_services = cls._schema_on_200_201.properties.workload_services
-            workload_services.ipv4_address_spaces = AAZListType(
-                serialized_name="ipv4AddressSpaces",
-            )
-            workload_services.ipv6_address_spaces = AAZListType(
-                serialized_name="ipv6AddressSpaces",
-            )
-
-            ipv4_address_spaces = cls._schema_on_200_201.properties.workload_services.ipv4_address_spaces
-            ipv4_address_spaces.Element = AAZStrType()
-
-            ipv6_address_spaces = cls._schema_on_200_201.properties.workload_services.ipv6_address_spaces
-            ipv6_address_spaces.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
@@ -454,6 +457,36 @@ class _CreateHelper:
             return
         _builder.set_prop("expressRouteAuthorizationKey", AAZStrType, ".express_route_authorization_key", typ_kwargs={"flags": {"required": True, "secret": True}})
         _builder.set_prop("expressRouteCircuitId", AAZStrType, ".express_route_circuit_id", typ_kwargs={"flags": {"required": True}})
+
+    _schema_controller_services_read = None
+
+    @classmethod
+    def _build_schema_controller_services_read(cls, _schema):
+        if cls._schema_controller_services_read is not None:
+            _schema.ipv4_address_spaces = cls._schema_controller_services_read.ipv4_address_spaces
+            _schema.ipv6_address_spaces = cls._schema_controller_services_read.ipv6_address_spaces
+            return
+
+        cls._schema_controller_services_read = _schema_controller_services_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        controller_services_read = _schema_controller_services_read
+        controller_services_read.ipv4_address_spaces = AAZListType(
+            serialized_name="ipv4AddressSpaces",
+        )
+        controller_services_read.ipv6_address_spaces = AAZListType(
+            serialized_name="ipv6AddressSpaces",
+        )
+
+        ipv4_address_spaces = _schema_controller_services_read.ipv4_address_spaces
+        ipv4_address_spaces.Element = AAZStrType()
+
+        ipv6_address_spaces = _schema_controller_services_read.ipv6_address_spaces
+        ipv6_address_spaces.Element = AAZStrType()
+
+        _schema.ipv4_address_spaces = cls._schema_controller_services_read.ipv4_address_spaces
+        _schema.ipv6_address_spaces = cls._schema_controller_services_read.ipv6_address_spaces
 
     _schema_express_route_connection_information_read = None
 

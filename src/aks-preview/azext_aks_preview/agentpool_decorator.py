@@ -9,6 +9,7 @@ from types import SimpleNamespace
 from typing import Dict, TypeVar, Union, List
 
 from azure.cli.command_modules.acs._consts import AgentPoolDecoratorMode, DecoratorMode
+
 from azure.cli.command_modules.acs.agentpool_decorator import (
     AKSAgentPoolAddDecorator,
     AKSAgentPoolContext,
@@ -26,7 +27,12 @@ from azure.cli.core.util import read_file_content
 from knack.log import get_logger
 
 from azext_aks_preview._client_factory import cf_agent_pools
-from azext_aks_preview._consts import CONST_WORKLOAD_RUNTIME_OCI_CONTAINER
+from azext_aks_preview._consts import (
+    CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
+    CONST_VIRTUAL_MACHINE_SCALE_SETS,
+    CONST_AVAILABILITY_SET,
+    CONST_VIRTUAL_MACHINES
+)
 from azext_aks_preview._helpers import get_nodepool_snapshot_by_snapshot_id
 
 logger = get_logger(__name__)
@@ -67,6 +73,32 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             external_functions["get_snapshot_by_snapshot_id"] = get_nodepool_snapshot_by_snapshot_id
             self.__external_functions = SimpleNamespace(**external_functions)
         return self.__external_functions
+
+    def get_vm_set_type(self) -> str:
+        """Obtain the value of vm_set_type, default value is CONST_VIRTUAL_MACHINE_SCALE_SETS.
+        :return: string
+        """
+        # read the original value passed by the command
+        vm_set_type = self.raw_param.get("vm_set_type", CONST_VIRTUAL_MACHINE_SCALE_SETS)
+        # try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.MANAGED_CLUSTER:
+            if self.agentpool and self.agentpool.type is not None:
+                vm_set_type = self.agentpool.type
+        else:
+            if self.agentpool and self.agentpool.type_properties_type is not None:
+                vm_set_type = self.agentpool.type_properties_type
+
+        # normalize
+        if vm_set_type.lower() == CONST_VIRTUAL_MACHINE_SCALE_SETS.lower():
+            vm_set_type = CONST_VIRTUAL_MACHINE_SCALE_SETS
+        elif vm_set_type.lower() == CONST_AVAILABILITY_SET.lower():
+            vm_set_type = CONST_AVAILABILITY_SET
+        elif vm_set_type.lower() == CONST_VIRTUAL_MACHINES.lower():
+            vm_set_type = CONST_VIRTUAL_MACHINES
+        else:
+            raise InvalidArgumentValueError("--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only)")
+        # this parameter does not need validation
+        return vm_set_type
 
     def get_crg_id(self) -> Union[str, None]:
         """Obtain the value of crg_id.

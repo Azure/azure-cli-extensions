@@ -209,7 +209,7 @@ def _ensure_pymssql():
         python_path = os.environ.get('PYTHONPATH', '')
         os.environ['PYTHONPATH'] = python_path + ':' + db_up_ext_path if python_path else db_up_ext_path
         cmd = [sys.executable, '-m', 'pip', 'install', '--target', db_up_ext_path,
-               'pymssql~=2.2.4', '-vv', '--disable-pip-version-check', '--no-cache-dir']
+               'pymssql==2.2.7', '-vv', '--disable-pip-version-check', '--no-cache-dir']
         logger.warning('  Installing "pymssql" pip packages')
         with HomebrewPipPatch():
             subprocess.check_output(cmd, stderr=subprocess.STDOUT)

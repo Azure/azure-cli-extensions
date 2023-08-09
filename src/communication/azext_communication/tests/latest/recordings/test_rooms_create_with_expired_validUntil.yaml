@@ -1,0 +1,55 @@
+interactions:
+- request:
+    body: '{"validFrom": "2023-07-19T22:09:39.072032", "validUntil": "2023-07-19T19:09:39.072032"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '87'
+      Content-Type:
+      - application/json
+      Repeatability-First-Sent:
+      - Wed, 19 Jul 2023 21:09:39 GMT
+      Repeatability-Request-ID:
+      - 928e37a0-2678-11ee-b780-8cf8c5abc371
+      User-Agent:
+      - AzureCli/1.7.1b1 azsdk-python-communication-rooms/1.0.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
+      x-ms-content-sha256:
+      - WZ7uG4rBM0Xz4XbtyilxopVwkSYR7V9YQfELL2/pDa8=
+      x-ms-date:
+      - Wed, 19 Jul 2023 21:09:39 GMT
+      x-ms-return-client-request-id:
+      - 'true'
+    method: POST
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2023-06-14
+  response:
+    body:
+      string: '{"error": {"code": "BadRequest", "message": "The request could not
+        be understood by the server due to malformed syntax.", "details": [{"code":
+        "BadArgument", "message": "The time range end is in the past.", "target":
+        "ValidUntil"}]}}'
+    headers:
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 19 Jul 2023 21:09:40 GMT
+      ms-cv:
+      - 9DBAkYwCMEyLljwNXWAGbQ.0
+      request-context:
+      - appId=
+      transfer-encoding:
+      - chunked
+      x-azure-ref:
+      - 0FFG4ZAAAAADtJ3oFLRg4ToPBYLkxNqh4WVZSMzExMDAwMTE1MDMzADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      x-cache:
+      - CONFIG_NOCACHE
+      x-ms-error-code:
+      - BadRequest
+    status:
+      code: 400
+      message: Bad Request
+version: 1
