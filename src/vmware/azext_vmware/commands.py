@@ -35,12 +35,6 @@ def load_command_table(self, _):
         g.custom_command('remove', 'privatecloud_identity_remove')
         g.custom_show_command('show', 'privatecloud_identity_get')
 
-    with self.command_group('vmware hcx-enterprise-site', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'hcxenterprisesite_create')
-        g.custom_command('list', 'hcxenterprisesite_list')
-        g.custom_command('delete', 'hcxenterprisesite_delete')
-        g.custom_show_command('show', 'hcxenterprisesite_show')
-
     with self.command_group('vmware location', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('checkquotaavailability', 'check_quota_availability', deprecate_info=g.deprecate(redirect='az vmware location check-quota-availability', hide=True))
         g.custom_command('checktrialavailability', 'check_trial_availability', deprecate_info=g.deprecate(redirect='az vmware location check-trial-availability', hide=True))

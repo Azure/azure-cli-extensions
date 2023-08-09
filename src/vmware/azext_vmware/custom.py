@@ -141,27 +141,6 @@ def check_trial_availability(client: AVSClient, location, sku=None):
     return client.locations.check_trial_availability(location=location, sku=Sku(name=sku))
 
 
-def hcxenterprisesite_create(client: AVSClient, resource_group_name, private_cloud, name):
-    from azext_vmware.vendored_sdks.avs_client.models import HcxEnterpriseSite
-    return client.hcx_enterprise_sites.create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, hcx_enterprise_site_name=name, hcx_enterprise_site=HcxEnterpriseSite())
-
-
-def hcxenterprisesite_list(client: AVSClient, resource_group_name, private_cloud):
-    return client.hcx_enterprise_sites.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
-def hcxenterprisesite_show(client: AVSClient, resource_group_name, private_cloud, name):
-    return client.hcx_enterprise_sites.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, hcx_enterprise_site_name=name)
-
-
-def hcxenterprisesite_delete(client: AVSClient, resource_group_name, private_cloud, name, yes=False):
-    from knack.prompting import prompt_y_n
-    msg = 'This will delete the HCX enterprise site. Are you sure?'
-    if not yes and not prompt_y_n(msg, default="n"):
-        return None
-    return client.hcx_enterprise_sites.delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, hcx_enterprise_site_name=name)
-
-
 def datastore_create():
     print('Please use "az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create" instead.')
 
