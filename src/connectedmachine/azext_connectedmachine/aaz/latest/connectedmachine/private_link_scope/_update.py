@@ -55,6 +55,9 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
         )
+        _args_schema.location = AAZStrArg(
+            required=True,
+        )
 
         # define Arg Group "Parameters"
 

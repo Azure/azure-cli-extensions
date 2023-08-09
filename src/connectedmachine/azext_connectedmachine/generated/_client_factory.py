@@ -11,7 +11,6 @@
 
 def cf_connectedmachine_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azext_connectedmachine.vendored_sdks.connectedmachine import ConnectedMachine
     return get_mgmt_service_client(cli_ctx,
                                    ConnectedMachine)
 
