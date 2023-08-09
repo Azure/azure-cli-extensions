@@ -35,14 +35,6 @@ def load_command_table(self, _):
         g.custom_command('remove', 'privatecloud_identity_remove')
         g.custom_show_command('show', 'privatecloud_identity_get')
 
-    with self.command_group('vmware cluster', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'cluster_create')
-        g.custom_command('update', 'cluster_update')
-        g.custom_command('list', 'cluster_list')
-        g.custom_command('delete', 'cluster_delete')
-        g.custom_command('list-zones', 'cluster_list_zones')
-        g.custom_show_command('show', 'cluster_show')
-
     with self.command_group('vmware authorization', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'authorization_create')
         g.custom_command('list', 'authorization_list')

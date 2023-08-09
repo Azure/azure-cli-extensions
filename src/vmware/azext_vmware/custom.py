@@ -132,36 +132,6 @@ def privatecloud_rotate_nsxt_password():
     # return client.private_clouds.begin_rotate_nsxt_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 
 
-def cluster_create(client: AVSClient, resource_group_name, name, sku, private_cloud, size=None, hosts=None):
-    from azext_vmware.vendored_sdks.avs_client.models import Sku, Cluster
-    return client.clusters.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name, cluster=Cluster(sku=Sku(name=sku), cluster_size=size, hosts=hosts))
-
-
-def cluster_update(client: AVSClient, resource_group_name, name, private_cloud, size=None, hosts=None):
-    from azext_vmware.vendored_sdks.avs_client.models import ClusterUpdate
-    return client.clusters.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name, cluster_update=ClusterUpdate(cluster_size=size, hosts=hosts))
-
-
-def cluster_list(client: AVSClient, resource_group_name, private_cloud):
-    return client.clusters.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
-def cluster_show(client: AVSClient, resource_group_name, private_cloud, name):
-    return client.clusters.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name)
-
-
-def cluster_delete(client: AVSClient, resource_group_name, private_cloud, name, yes=False):
-    from knack.prompting import prompt_y_n
-    msg = 'This will delete the cluster. Are you sure?'
-    if not yes and not prompt_y_n(msg, default="n"):
-        return None
-    return client.clusters.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name)
-
-
-def cluster_list_zones(client: AVSClient, resource_group_name, private_cloud, name):
-    return client.clusters.list_zones(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name)
-
-
 def check_quota_availability(client: AVSClient, location):
     return client.locations.check_quota_availability(location)
 
