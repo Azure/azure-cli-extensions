@@ -12,25 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "vmware cluster list-zones",
+    "vmware datastore list",
 )
-class ListZones(AAZCommand):
-    """List hosts by zone in a cluster in a private cloud, including the first cluster which is the default management cluster.
-
-    The default management cluster is created and managed as part of the private cloud.
+class List(AAZCommand):
+    """List datastores in a private cloud cluster
     """
 
     _aaz_info = {
         "version": "2022-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}/listzones", "2022-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}/datastores", "2022-05-01"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -44,16 +43,14 @@ class ListZones(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
-            options=["-n", "--name", "--cluster-name"],
+            options=["--cluster", "--cluster-name"],
             help="Name of the cluster in the private cloud",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.private_cloud = AAZStrArg(
             options=["-c", "--private-cloud"],
-            help="The name of the private cloud.",
+            help="Name of the private cloud",
             required=True,
-            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -62,7 +59,7 @@ class ListZones(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ClustersListZones(ctx=self.ctx)()
+        self.DatastoresList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,10 +71,11 @@ class ListZones(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class ClustersListZones(AAZHttpOperation):
+    class DatastoresList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -91,13 +89,13 @@ class ListZones(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/clusters/{clusterName}/listZones",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/clusters/{clusterName}/datastores",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "GET"
 
         @property
         def error_format(self):
@@ -162,27 +160,72 @@ class ListZones(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.zones = AAZListType()
-
-            zones = cls._schema_on_200.zones
-            zones.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.zones.Element
-            _element.hosts = AAZListType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
                 flags={"read_only": True},
             )
-            _element.zone = AAZStrType(
+            _schema_on_200.value = AAZListType(
                 flags={"read_only": True},
             )
 
-            hosts = cls._schema_on_200.zones.Element.hosts
-            hosts.Element = AAZStrType()
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.disk_pool_volume = AAZObjectType(
+                serialized_name="diskPoolVolume",
+            )
+            properties.net_app_volume = AAZObjectType(
+                serialized_name="netAppVolume",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            disk_pool_volume = cls._schema_on_200.value.Element.properties.disk_pool_volume
+            disk_pool_volume.lun_name = AAZStrType(
+                serialized_name="lunName",
+                flags={"required": True},
+            )
+            disk_pool_volume.mount_option = AAZStrType(
+                serialized_name="mountOption",
+            )
+            disk_pool_volume.path = AAZStrType(
+                flags={"read_only": True},
+            )
+            disk_pool_volume.target_id = AAZStrType(
+                serialized_name="targetId",
+                flags={"required": True},
+            )
+
+            net_app_volume = cls._schema_on_200.value.Element.properties.net_app_volume
+            net_app_volume.id = AAZStrType(
+                flags={"required": True},
+            )
 
             return cls._schema_on_200
 
 
-class _ListZonesHelper:
-    """Helper class for ListZones"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["ListZones"]
+__all__ = ["List"]

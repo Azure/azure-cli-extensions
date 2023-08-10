@@ -145,34 +145,6 @@ def datastore_create():
     print('Please use "az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create" instead.')
 
 
-def datastore_netappvolume_create(client: AVSClient, resource_group_name, private_cloud, cluster, name, volume_id):
-    from azext_vmware.vendored_sdks.avs_client.models import NetAppVolume, Datastore
-    net_app_volume = NetAppVolume(id=volume_id)
-    return client.datastores.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name, datastore=Datastore(net_app_volume=net_app_volume))
-
-
-def datastore_diskpoolvolume_create(client: AVSClient, resource_group_name, private_cloud, cluster, name, target_id, lun_name, mount_option="MOUNT"):
-    from azext_vmware.vendored_sdks.avs_client.models import DiskPoolVolume, Datastore
-    disk_pool_volume = DiskPoolVolume(target_id=target_id, lun_name=lun_name, mount_option=mount_option)
-    return client.datastores.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name, datastore=Datastore(disk_pool_volume=disk_pool_volume))
-
-
-def datastore_list(client: AVSClient, resource_group_name, private_cloud, cluster):
-    return client.datastores.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster)
-
-
-def datastore_show(client: AVSClient, resource_group_name, private_cloud, cluster, name):
-    return client.datastores.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name)
-
-
-def datastore_delete(client: AVSClient, resource_group_name, private_cloud, cluster, name, yes=False):
-    from knack.prompting import prompt_y_n
-    msg = 'This will delete the datastore. Are you sure?'
-    if not yes and not prompt_y_n(msg, default="n"):
-        return None
-    return client.datastores.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name)
-
-
 def addon_list(client: AVSClient, resource_group_name, private_cloud):
     return client.addons.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 

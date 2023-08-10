@@ -18,6 +18,10 @@ def load_command_table(self, _):
     self.command_table['vmware private-cloud create'] = PrivateCloudCreate(loader=self)
     self.command_table['vmware private-cloud update'] = PrivateCloudUpdate(loader=self)
 
+    from .operations.datastore import DatastoreNetappVolumeCreate, DatastoreDiskPoolVolumeCreate
+    self.command_table['vmware datastore netapp-volume create'] = DatastoreNetappVolumeCreate(loader=self)
+    self.command_table['vmware datastore disk-pool-volume create'] = DatastoreDiskPoolVolumeCreate(loader=self)
+
     with self.command_group('vmware private-cloud', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('listadmincredentials', 'privatecloud_listadmincredentials', deprecate_info=g.deprecate(redirect='az vmware private-cloud list-admin-credentials', hide=True))
         g.custom_command('addidentitysource', 'privatecloud_addidentitysource', deprecate_info=g.deprecate(redirect='az vmware private-cloud add-identity-source', hide=True))
@@ -41,15 +45,6 @@ def load_command_table(self, _):
 
     with self.command_group('vmware datastore', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'datastore_create', deprecate_info=g.deprecate(redirect='"az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create"', hide=True))
-        g.custom_command('list', 'datastore_list')
-        g.custom_show_command('show', 'datastore_show')
-        g.custom_command('delete', 'datastore_delete')
-
-    with self.command_group('vmware datastore netapp-volume', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'datastore_netappvolume_create')
-
-    with self.command_group('vmware datastore disk-pool-volume', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'datastore_diskpoolvolume_create')
 
     with self.command_group('vmware addon', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('list', 'addon_list')

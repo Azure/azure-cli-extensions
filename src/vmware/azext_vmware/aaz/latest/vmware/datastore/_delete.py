@@ -12,25 +12,25 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "vmware cluster list-zones",
+    "vmware datastore delete",
+    confirmation="This will delete the datastore. Are you sure?",
 )
-class ListZones(AAZCommand):
-    """List hosts by zone in a cluster in a private cloud, including the first cluster which is the default management cluster.
-
-    The default management cluster is created and managed as part of the private cloud.
+class Delete(AAZCommand):
+    """Delete a datastore in a private cloud cluster
     """
 
     _aaz_info = {
         "version": "2022-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}/listzones", "2022-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}/datastores/{}", "2022-05-01"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -44,14 +44,20 @@ class ListZones(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
-            options=["-n", "--name", "--cluster-name"],
+            options=["--cluster", "--cluster-name"],
             help="Name of the cluster in the private cloud",
             required=True,
             id_part="child_name_1",
         )
+        _args_schema.datastore_name = AAZStrArg(
+            options=["-n", "--name", "--datastore-name"],
+            help="Name of the datastore in the private cloud cluster",
+            required=True,
+            id_part="child_name_2",
+        )
         _args_schema.private_cloud = AAZStrArg(
             options=["-c", "--private-cloud"],
-            help="The name of the private cloud.",
+            help="Name of the private cloud",
             required=True,
             id_part="name",
         )
@@ -62,7 +68,7 @@ class ListZones(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ClustersListZones(ctx=self.ctx)()
+        yield self.DatastoresDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,31 +79,52 @@ class ListZones(AAZCommand):
     def post_operations(self):
         pass
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
-
-    class ClustersListZones(AAZHttpOperation):
+    class DatastoresDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [204]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_204,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/clusters/{clusterName}/listZones",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/clusters/{clusterName}/datastores/{datastoreName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "DELETE"
 
         @property
         def error_format(self):
@@ -108,6 +135,10 @@ class ListZones(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "clusterName", self.ctx.args.cluster_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "datastoreName", self.ctx.args.datastore_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -135,54 +166,15 @@ class ListZones(AAZCommand):
             }
             return parameters
 
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
         def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
+            pass
 
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.zones = AAZListType()
-
-            zones = cls._schema_on_200.zones
-            zones.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.zones.Element
-            _element.hosts = AAZListType(
-                flags={"read_only": True},
-            )
-            _element.zone = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            hosts = cls._schema_on_200.zones.Element.hosts
-            hosts.Element = AAZStrType()
-
-            return cls._schema_on_200
+        def on_204(self, session):
+            pass
 
 
-class _ListZonesHelper:
-    """Helper class for ListZones"""
+class _DeleteHelper:
+    """Helper class for Delete"""
 
 
-__all__ = ["ListZones"]
+__all__ = ["Delete"]
