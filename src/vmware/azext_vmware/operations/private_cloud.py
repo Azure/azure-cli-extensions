@@ -7,6 +7,7 @@ from ..aaz.latest.vmware.private_cloud import Create as _PrivateCloudCreate, Upd
 from ..custom import LEGAL_TERMS
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
+from knack.arguments import CLICommandArgument
 
 
 class PrivateCloudCreate(_PrivateCloudCreate):
@@ -15,29 +16,25 @@ class PrivateCloudCreate(_PrivateCloudCreate):
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZBoolArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.accept_eula = AAZBoolArg(
-            options=["--accept-eula"],
-            help="Accept the end-user license agreement without prompting."
-        )
-        args_schema.yes = AAZBoolArg(
-            options=["--yes", "-y"],
-            help="Do not prompt for confirmation"
-        )
         args_schema.mi_system_assigned = AAZBoolArg(
             options=["--mi-system-assigned"],
             help="Enable a system assigned identity."
         )
-        # use mi_system_assigned to assign this value
+        # use mi_system_assigned to assign this value in pre_operations
         args_schema.identity._registered = False
         return args_schema
 
+    def load_arguments(self):
+        super().load_arguments()
+        # This is a special customization which to overwrite default yes argument in framework
+        # to backword compatible with the old command.
+        if self.confirmation:
+            self.arguments['yes'] = CLICommandArgument(
+                dest='yes', options_list=['--yes', '-y', '--accept-eula'], action='store_true',
+                help='Accept the end-user license agreement without prompting.')
+
     def pre_operations(self):
-        args = self.args
-        if not args.accept_eula:
-            print(LEGAL_TERMS)
-            msg = 'Do you agree to the above additional terms for AVS?'
-            if not args.yes and not prompt_y_n(msg, default="n"):
-                raise CLIError('Operation cancelled.')
+        args = self.ctx.args
         if args.mi_system_assigned:
             args.identity.type = "SystemAssigned"
         else:
