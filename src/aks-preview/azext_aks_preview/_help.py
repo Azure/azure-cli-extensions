@@ -2638,12 +2638,12 @@ helps['aks mesh disable-ingress-gateway'] = """
 
 helps['aks ai'] = """
     type: command
-    short-summary: Start a chat with the Azure Kubernetes Service expert
+    short-summary: Start a chat with the Azure Kubernetes Service expert.
     long-summary: This command initiates a chat assistant with expertise in Azure Kubernetes Service, offering guidance on troubleshooting issues using az commands.
     examples:
-        - name: How to create a microsoft aks cluster with az command line
+        - name: How to create a AKS private cluster.
           text: |-
             az aks ai 
-            Prompt: how to create a microsoft aks cluster with az command line
+            Prompt: how to create a private aks cluster 
 
 """
