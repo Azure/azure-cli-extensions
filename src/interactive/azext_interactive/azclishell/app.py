@@ -301,6 +301,11 @@ class AzInteractiveShell(object):
         from textwrap import fill
         lines = []
         for key in GESTURE_INFO:
+            # Build the help text of each GESTURE_INFO, use `fill` to support wrap(but here we fix the max_lines to 1)
+            # `subsequent_indent` is to align the lines of GESTURE_INFO with the first line
+            # e.g.
+            # %%[cmd]   : set a scope, and scopes
+            #             can be chained
             lines.append(fill(GESTURE_INFO[key], initial_indent=key.ljust(GESTURE_LENGTH) + ': ',
                               subsequent_indent=' ' * (GESTURE_LENGTH + 2), width=cols, max_lines=1,
                               placeholder='...'))
