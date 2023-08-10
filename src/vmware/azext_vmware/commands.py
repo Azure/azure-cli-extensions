@@ -38,8 +38,6 @@ def load_command_table(self, _):
     with self.command_group('vmware location', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('checkquotaavailability', 'check_quota_availability', deprecate_info=g.deprecate(redirect='az vmware location check-quota-availability', hide=True))
         g.custom_command('checktrialavailability', 'check_trial_availability', deprecate_info=g.deprecate(redirect='az vmware location check-trial-availability', hide=True))
-        g.custom_command('check-quota-availability', 'check_quota_availability')
-        g.custom_command('check-trial-availability', 'check_trial_availability')
 
     with self.command_group('vmware datastore', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'datastore_create', deprecate_info=g.deprecate(redirect='"az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create"', hide=True))
