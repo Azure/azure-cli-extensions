@@ -286,14 +286,17 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.cmd('network dns record-set cname create -g {} -z {} -n {}'.format(resource_group, zone_name, subdomain_1)).get_output_in_json()
         self.cmd('network dns record-set cname set-record -g {} -z {} -n {} -c {}'.format(resource_group, zone_name, subdomain_1, fqdn)).get_output_in_json()
         
-        # add hostname without binding
+        # add hostname without binding, it is a Private key certificates
         self.cmd('containerapp hostname add -g {} -n {} --hostname {}'.format(resource_group, ca_name, hostname_1), checks={
             JMESPathCheck('length(@)', 1),
             JMESPathCheck('[0].name', hostname_1),
             JMESPathCheck('[0].bindingType', "Disabled"),
         })
         self.cmd('containerapp hostname add -g {} -n {} --hostname {}'.format(resource_group, ca_name, hostname_1), expect_failure=True)
-        
+        self.cmd('containerapp env certificate list -g {} -n {} -c {} -p'.format(resource_group, env_name, cert_name), checks=[
+            JMESPathCheck('length(@)', 1),
+        ])
+
         # create a managed certificate
         self.cmd('containerapp env certificate create -n {} -g {} --hostname {} -v cname -c {}'.format(env_name, resource_group, hostname_1, cert_name), checks=[
             JMESPathCheck('type', "Microsoft.App/managedEnvironments/managedCertificates"),
@@ -301,7 +304,6 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.subjectName', hostname_1),
         ]).get_output_in_json()
 
-        self.cmd('containerapp env certificate create -n {} -g {} --hostname {} -v cname'.format(env_name, resource_group, hostname_1), expect_failure=True)
         self.cmd('containerapp env certificate list -g {} -n {} -m'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 1),
         ])

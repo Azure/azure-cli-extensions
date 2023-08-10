@@ -5041,11 +5041,13 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
 
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
-        # test no updates made with empty network plugin settings
+        # test update network dataplane
         dec_4 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {},
+            {
+                "network_dataplane": "cilium",
+            },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_4 = self.models.ManagedCluster(
@@ -5053,6 +5055,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 network_plugin="azure",
                 network_plugin_mode="overlay",
+                network_dataplane="cilium",
                 pod_cidr="100.64.0.0/16",
                 service_cidr="192.168.0.0/16"
             ),
@@ -5069,12 +5072,48 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             network_profile=self.models.ContainerServiceNetworkProfile(
                 network_plugin="azure",
                 network_plugin_mode="overlay",
+                network_dataplane="cilium",
                 pod_cidr="100.64.0.0/16",
                 service_cidr="192.168.0.0/16",
             ),
         )
 
         self.assertEqual(dec_mc_4, ground_truth_mc_4)
+
+        # test no updates made with empty network plugin settings
+        dec_5 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16"
+            ),
+        )
+
+        dec_5.context.attach_mc(mc_5)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_5.update_network_plugin_settings(None)
+        dec_mc_5 = dec_5.update_network_plugin_settings(mc_5)
+
+        ground_truth_mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+            ),
+        )
+
+        self.assertEqual(dec_mc_5, ground_truth_mc_5)
 
     def test_update_api_server_access_profile(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(

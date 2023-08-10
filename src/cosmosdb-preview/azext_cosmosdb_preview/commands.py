@@ -45,6 +45,10 @@ def load_command_table(self, _):
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#MongoDBResourcesOperations.{}',
         client_factory=cf_mongo_db_resources)
 
+    cosmosdb_sql_sdk = CliCommandType(
+        operations_tmpl='azure.mgmt.cosmosdb.operations#SqlResourcesOperations.{}',
+        client_factory=cf_sql_resources)
+
     with self.command_group('managed-cassandra cluster', cosmosdb_managed_cassandra_cluster_sdk, client_factory=cf_cassandra_cluster) as g:
         g.custom_command('create', 'cli_cosmosdb_managed_cassandra_cluster_create', supports_no_wait=True)
         g.custom_command('update', 'cli_cosmosdb_managed_cassandra_cluster_update', supports_no_wait=True)
@@ -83,6 +87,10 @@ def load_command_table(self, _):
         g.command('list', 'list_mongo_user_definitions')
         g.show_command('show', 'get_mongo_user_definition')
         g.command('delete', 'begin_delete_mongo_user_definition', confirmation=True)
+
+    with self.command_group('cosmosdb sql container', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
+        g.custom_command('create', 'cli_cosmosdb_sql_container_create')
+        g.custom_command('update', 'cli_cosmosdb_sql_container_update')
 
     # restorable accounts api sdk
     cosmosdb_sdk = CliCommandType(
@@ -208,6 +216,14 @@ def load_command_table(self, _):
     # Retrieve partition throughput for Sql containers
     with self.command_group('cosmosdb sql container', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
         g.custom_command('retrieve-partition-throughput', 'cli_begin_retrieve_sql_container_partition_throughput', is_preview=True)
+
+    # Merge partitions for Sql databases
+    with self.command_group('cosmosdb sql database', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:
+        g.custom_command('merge', 'cli_begin_sql_database_partition_merge', is_preview=True)
+
+    # Merge partitions for mongodb databases
+    with self.command_group('cosmosdb mongodb database', cosmosdb_mongo_sdk, client_factory=cf_mongo_db_resources) as g:
+        g.custom_command('merge', 'cli_begin_mongo_db_database_partition_merge', is_preview=True)
 
     # Redistribute partition throughput for Sql containers
     with self.command_group('cosmosdb sql container', cosmosdb_sql_sdk, client_factory=cf_sql_resources) as g:

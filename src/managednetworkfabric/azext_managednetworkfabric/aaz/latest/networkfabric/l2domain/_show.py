@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "networkfabric l2domain show",
 )
 class Show(AAZCommand):
-    """Show details of the provided L2 Isolation Domain resource.
+    """Show details of the provided L2 Isolation Domain resource
 
     :example: Show the L2 Isolation Domain
         az networkfabric l2domain show --resource-group "example-rg" --resource-name "example-l2domain"
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l2isolationdomains/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l2isolationdomains/{}", "2023-06-15"],
         ]
     }
 
@@ -46,7 +46,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the L2 Isolation Domain",
+            help="Name of the L2 Isolation Domain.",
             required=True,
             id_part="name",
         )
@@ -121,7 +121,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -164,7 +164,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -181,8 +181,8 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             properties.annotation = AAZStrType()
-            properties.disabled_on_resources = AAZListType(
-                serialized_name="disabledOnResources",
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
                 flags={"read_only": True},
             )
             properties.mtu = AAZIntType()
@@ -198,9 +198,6 @@ class Show(AAZCommand):
                 serialized_name="vlanId",
                 flags={"required": True},
             )
-
-            disabled_on_resources = cls._schema_on_200.properties.disabled_on_resources
-            disabled_on_resources.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

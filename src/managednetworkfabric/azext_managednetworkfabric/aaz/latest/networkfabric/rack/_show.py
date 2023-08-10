@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "networkfabric rack show",
 )
 class Show(AAZCommand):
-    """Show details of the provided Network Rack resource.
+    """Show details of the provided Network Rack resource
 
     :example: Show the Network Rack
         az networkfabric rack show --resource-group "example-rg" --resource-name "example-rack"
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkracks/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkracks/{}", "2023-06-15"],
         ]
     }
 
@@ -46,7 +46,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the Network Rack",
+            help="Name of the Network Rack.",
             required=True,
             id_part="name",
         )
@@ -121,7 +121,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -185,9 +185,8 @@ class Show(AAZCommand):
                 serialized_name="networkFabricId",
                 flags={"required": True},
             )
-            properties.network_rack_sku = AAZStrType(
-                serialized_name="networkRackSku",
-                flags={"required": True},
+            properties.network_rack_type = AAZStrType(
+                serialized_name="networkRackType",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",

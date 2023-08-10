@@ -15,10 +15,10 @@ from azure.cli.core.aaz import *
     "networkfabric internalnetwork create",
 )
 class Create(AAZCommand):
-    """Create a Internal Network resource.
+    """Create a Internal Network resource
 
     :example: Create a Internal Network
-        az networkfabric internalnetwork create --resource-group "example-rg" --l3-isolation-domain-name "example-l3domain" --resource-name "example-internalNetwork" --vlan-id 2600 --mtu 1500 --connected-ipv4-subnets "[{prefix:'10.0.0.1/21'},{prefix:'10.0.0.1/22'}]" --static-route-configuration "{ipv4Routes:[{prefix:'10.1.0.0/24',nextHop:['10.0.0.1','10.0.0.2']},{prefix:'10.1.0.0/24',nextHop:['10.0.0.1','10.0.0.2']}]}" --bgp-configuration  "{defaultRouteOriginate:True,allowAS:2,allowASOverride:Enable,peerASN:65047,ipv4ListenRangePrefixes:['10.1.0.0/28','10.1.0.1/28'],ipv4NeighborAddress:[{address:'10.0.0.11'},{address:'10.0.0.12'}]}" --export-route-policy-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy" --import-route-policy-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy"
+        az networkfabric internalnetwork create --resource-group "example-rg" --l3-isolation-domain-name "example-l3domain" --resource-name "example-internalNetwork" --vlan-id 2600 --mtu 1500 --extension "NoExtension" --is-monitoring-enabled "True" --connected-ipv4-subnets "[{prefix:'10.0.0.1/21'},{prefix:'10.1.1.1/22'}]" --connected-ipv6-subnets "[{prefix:'2fff::/64'}]" --static-route-configuration "{extension:NPB,bfdConfiguration:{multiplier:5,intervalInMilliSeconds:300},ipv4Routes:[{prefix:'10.1.0.0/24',nextHop:['10.0.0.1','10.0.0.2']},{prefix:'10.1.0.0/24',nextHop:['10.0.0.1','10.0.0.2']}],ipv6Routes:[{prefix:'2fff::/64',nextHop:['3fff::1']}]}" --bgp-configuration  "{bfdConfiguration:{multiplier:5,intervalInMilliSeconds:300},defaultRouteOriginate:True,allowAS:2,allowASOverride:Enable,peerASN:65047,ipv4ListenRangePrefixes:['10.1.1.1/28','10.0.0.1/28'],ipv6ListenRangePrefixes:['2fff::/66'],ipv4NeighborAddress:[{address:'10.0.0.11'},{address:'10.0.0.12'}],ipv6NeighborAddress:[{address:'2fff::'}]}" --import-route-policy "{importIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',importIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}" --export-route-policy "{exportIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy',exportIpv6RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
         az networkfabric internalnetwork create --static-route-configuration ??
@@ -26,9 +26,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/internalnetworks/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/internalnetworks/{}", "2023-06-15"],
         ]
     }
 
@@ -51,12 +51,12 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the InternalNetwork",
+            help="Name of the Internal Network.",
             required=True,
         )
         _args_schema.l3_isolation_domain_name = AAZStrArg(
             options=["--l3domain", "--l3-isolation-domain-name"],
-            help="Name of the L3IsolationDomain",
+            help="Name of the L3 Isolation Domain.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -70,54 +70,92 @@ class Create(AAZCommand):
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
-            help="Switch configuration description.",
+            help="Description for underlying resource.",
         )
         _args_schema.bgp_configuration = AAZObjectArg(
             options=["--bgp-configuration"],
             arg_group="Properties",
-            help="BGP configuration properties",
+            help="BGP configuration properties.",
         )
         _args_schema.connected_ipv4_subnets = AAZListArg(
             options=["--connected-ipv4-subnets"],
             arg_group="Properties",
-            help="List with object connectedIPv4Subnets.",
+            help="List of Connected IPv4 Subnets.",
         )
         _args_schema.connected_ipv6_subnets = AAZListArg(
             options=["--connected-ipv6-subnets"],
             arg_group="Properties",
-            help="List with object connectedIPv6Subnets.",
+            help="List of connected IPv6 Subnets.",
         )
-        _args_schema.export_route_policy_id = AAZStrArg(
+        _args_schema.egress_acl_id = AAZResourceIdArg(
+            options=["--egress-acl-id"],
+            arg_group="Properties",
+            help="Egress Acl ARM resource ID.",
+        )
+        _args_schema.export_route_policy = AAZObjectArg(
+            options=["--export-route-policy"],
+            arg_group="Properties",
+            help="Export Route Policy either IPv4 or IPv6.",
+        )
+        _args_schema.export_route_policy_id = AAZResourceIdArg(
             options=["--export-route-policy-id"],
             arg_group="Properties",
-            help="ARM resource ID of importRoutePolicy.",
+            help="ARM Resource ID of the RoutePolicy. This is used for the backward compatibility.",
         )
-        _args_schema.import_route_policy_id = AAZStrArg(
+        _args_schema.extension = AAZStrArg(
+            options=["--extension"],
+            arg_group="Properties",
+            help="Internal Network Extension type. Default value is NoExtension. Example: NoExtension.",
+            enum={"NPB": "NPB", "NoExtension": "NoExtension"},
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+        _args_schema.import_route_policy = AAZObjectArg(
+            options=["--import-route-policy"],
+            arg_group="Properties",
+            help="Import Route Policy either IPv4 or IPv6.",
+        )
+        _args_schema.import_route_policy_id = AAZResourceIdArg(
             options=["--import-route-policy-id"],
             arg_group="Properties",
-            help="ARM resource ID of importRoutePolicy.",
+            help="ARM Resource ID of the RoutePolicy. This is used for the backward compatibility.",
+        )
+        _args_schema.ingress_acl_id = AAZResourceIdArg(
+            options=["--ingress-acl-id"],
+            arg_group="Properties",
+            help="Ingress Acl ARM resource ID.",
+        )
+        _args_schema.is_monitoring_enabled = AAZStrArg(
+            options=["--is-monitoring-enabled"],
+            arg_group="Properties",
+            help="To check whether monitoring of internal network is enabled or not. Default value is False. Example: False.",
+            enum={"False": "False", "True": "True"},
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.mtu = AAZIntArg(
             options=["--mtu"],
             arg_group="Properties",
-            help="Maximum transmission unit: The value should be between 1500-9000. Default value is 1500",
+            help="Maximum transmission unit. The value should be between 64 to 9200. Default value is 1500. Example: 1500.",
             fmt=AAZIntArgFormat(
-                maximum=9000,
-                minimum=1500,
+                maximum=9200,
+                minimum=64,
             ),
         )
         _args_schema.static_route_configuration = AAZObjectArg(
             options=["--static-route-configuration"],
             arg_group="Properties",
-            help="staticRouteConfiguration model.",
+            help="Static Route Configuration properties.",
         )
         _args_schema.vlan_id = AAZIntArg(
             options=["--vlan-id"],
             arg_group="Properties",
-            help="Vlan identifier value. The value should be between 501-4095. Example: 501.",
+            help="Vlan identifier. The value should be between 100-4094. Example: 1001.",
             required=True,
             fmt=AAZIntArgFormat(
-                maximum=4095,
+                maximum=4094,
                 minimum=100,
             ),
         )
@@ -125,8 +163,7 @@ class Create(AAZCommand):
         bgp_configuration = cls._args_schema.bgp_configuration
         bgp_configuration.allow_as = AAZIntArg(
             options=["allow-as"],
-            help="Allows for routes to be received and processed even if the router detects its own ASN in the AS-Path. 0 is disable, Possible values are 1-10, default is 2.",
-            default=2,
+            help="Allows for routes to be received and processed even if the router detects its own ASN in the AS-Path. 0 is disable, Possible values are 1-10, Default value is 2.",
             fmt=AAZIntArgFormat(
                 maximum=10,
                 minimum=0,
@@ -134,140 +171,239 @@ class Create(AAZCommand):
         )
         bgp_configuration.allow_as_override = AAZStrArg(
             options=["allow-as-override"],
-            help="Enable Or Disable state.",
+            help="Enable Or Disable state. Example: Enable",
             enum={"Disable": "Disable", "Enable": "Enable"},
         )
         bgp_configuration.annotation = AAZStrArg(
             options=["annotation"],
-            help="Switch configuration description.",
+            help="Description for underlying resource.",
         )
+        bgp_configuration.bfd_configuration = AAZObjectArg(
+            options=["bfd-configuration"],
+            help="BFD configuration properties.",
+        )
+        cls._build_args_bfd_configuration_create(bgp_configuration.bfd_configuration)
         bgp_configuration.default_route_originate = AAZStrArg(
             options=["default-route-originate"],
-            help="Enables default route to be originated when advertising routes via BGP.",
+            help="Originate a defaultRoute. Example: True.",
             enum={"False": "False", "True": "True"},
         )
         bgp_configuration.ipv4_listen_range_prefixes = AAZListArg(
             options=["ipv4-listen-range-prefixes"],
-            help="BGP Ipv4 ListenRange. Example: 10.1.0.0/28.",
+            help="List of BGP IPv4 Listen Range prefixes.",
         )
         bgp_configuration.ipv4_neighbor_address = AAZListArg(
             options=["ipv4-neighbor-address"],
-            help="Specific IPv4 address for peering.",
+            help="List with stringified IPv4 Neighbor Addresses.",
         )
         bgp_configuration.ipv6_listen_range_prefixes = AAZListArg(
             options=["ipv6-listen-range-prefixes"],
-            help="BGP Ipv6 ListenRange.",
+            help="List of BGP IPv6 Listen Ranges prefixes.",
         )
         bgp_configuration.ipv6_neighbor_address = AAZListArg(
             options=["ipv6-neighbor-address"],
-            help="Specific IPv6 address for peering.",
+            help="List with stringified IPv6 Neighbor Address.",
         )
         bgp_configuration.peer_asn = AAZIntArg(
             options=["peer-asn"],
-            help="Peer ASN of Network Function. The value should be between 1 to 65535. Example: 65047.",
+            help="Peer ASN. The value should be between 1 to 4294967295. Example: 65047.",
             required=True,
             fmt=AAZIntArgFormat(
-                maximum=65535,
+                maximum=4294967295,
                 minimum=1,
             ),
         )
 
         ipv4_listen_range_prefixes = cls._args_schema.bgp_configuration.ipv4_listen_range_prefixes
-        ipv4_listen_range_prefixes.Element = AAZStrArg()
+        ipv4_listen_range_prefixes.Element = AAZStrArg(
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
 
         ipv4_neighbor_address = cls._args_schema.bgp_configuration.ipv4_neighbor_address
         ipv4_neighbor_address.Element = AAZObjectArg()
-
-        _element = cls._args_schema.bgp_configuration.ipv4_neighbor_address.Element
-        _element.address = AAZStrArg(
-            options=["address"],
-            help="IP Address of the IPv4NeighborAddress. Example: \"10.0.0.11\".",
-        )
+        cls._build_args_neighbor_address_create(ipv4_neighbor_address.Element)
 
         ipv6_listen_range_prefixes = cls._args_schema.bgp_configuration.ipv6_listen_range_prefixes
-        ipv6_listen_range_prefixes.Element = AAZStrArg()
+        ipv6_listen_range_prefixes.Element = AAZStrArg(
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
 
         ipv6_neighbor_address = cls._args_schema.bgp_configuration.ipv6_neighbor_address
         ipv6_neighbor_address.Element = AAZObjectArg()
-
-        _element = cls._args_schema.bgp_configuration.ipv6_neighbor_address.Element
-        _element.address = AAZStrArg(
-            options=["address"],
-            help="IP address of the ipv6NeighborAddress. Example: \"3FFE:FFFF:0:CD31::a4\"",
-        )
+        cls._build_args_neighbor_address_create(ipv6_neighbor_address.Element)
 
         connected_ipv4_subnets = cls._args_schema.connected_ipv4_subnets
         connected_ipv4_subnets.Element = AAZObjectArg()
-
-        _element = cls._args_schema.connected_ipv4_subnets.Element
-        _element.annotation = AAZStrArg(
-            options=["annotation"],
-            help="Switch configuration description.",
-        )
-        _element.prefix = AAZStrArg(
-            options=["prefix"],
-            help="IPv4 Prefix of the subnet in the VLAN. Subnet length range should be from 8 to 28. Example: \"10.0.0.1/21\"",
-        )
+        cls._build_args_connected_subnet_create(connected_ipv4_subnets.Element)
 
         connected_ipv6_subnets = cls._args_schema.connected_ipv6_subnets
         connected_ipv6_subnets.Element = AAZObjectArg()
+        cls._build_args_connected_subnet_create(connected_ipv6_subnets.Element)
 
-        _element = cls._args_schema.connected_ipv6_subnets.Element
-        _element.annotation = AAZStrArg(
-            options=["annotation"],
-            help="Switch configuration description.",
+        export_route_policy = cls._args_schema.export_route_policy
+        export_route_policy.export_ipv4_route_policy_id = AAZResourceIdArg(
+            options=["export-ipv4-route-policy-id"],
+            help="ARM resource ID of RoutePolicy.",
         )
-        _element.prefix = AAZStrArg(
-            options=["prefix"],
-            help="IPv6 Prefix of the subnet in the VLAN. Subnet length range should be from 16 to 124. Example: \"3FFE:FFFF:0:CD30::a4/121\"",
+        export_route_policy.export_ipv6_route_policy_id = AAZResourceIdArg(
+            options=["export-ipv6-route-policy-id"],
+            help="ARM resource ID of RoutePolicy.",
+        )
+
+        import_route_policy = cls._args_schema.import_route_policy
+        import_route_policy.import_ipv4_route_policy_id = AAZResourceIdArg(
+            options=["import-ipv4-route-policy-id"],
+            help="ARM resource ID of RoutePolicy.",
+        )
+        import_route_policy.import_ipv6_route_policy_id = AAZResourceIdArg(
+            options=["import-ipv6-route-policy-id"],
+            help="ARM resource ID of RoutePolicy.",
         )
 
         static_route_configuration = cls._args_schema.static_route_configuration
+        static_route_configuration.bfd_configuration = AAZObjectArg(
+            options=["bfd-configuration"],
+            help="BFD configuration properties",
+        )
+        cls._build_args_bfd_configuration_create(static_route_configuration.bfd_configuration)
+        static_route_configuration.extension = AAZStrArg(
+            options=["extension"],
+            help="Static Route Extension type. Default value is NoExtension. Example: NoExtension.",
+            enum={"NPB": "NPB", "NoExtension": "NoExtension"},
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
         static_route_configuration.ipv4_routes = AAZListArg(
             options=["ipv4-routes"],
-            help="Static IPv4 routes configuration.",
+            help="List of IPv4 Routes.",
         )
         static_route_configuration.ipv6_routes = AAZListArg(
             options=["ipv6-routes"],
-            help="Static IPv6 routes configuration.",
+            help="List of IPv6 Routes.",
         )
 
         ipv4_routes = cls._args_schema.static_route_configuration.ipv4_routes
         ipv4_routes.Element = AAZObjectArg()
-
-        _element = cls._args_schema.static_route_configuration.ipv4_routes.Element
-        _element.next_hop = AAZListArg(
-            options=["next-hop"],
-            help="List of next hop IPv4 addresses. Example: \"10.0.0.1\"",
-            required=True,
-        )
-        _element.prefix = AAZStrArg(
-            options=["prefix"],
-            help="IPv4 prefix of the staticIpv4Route. Example: \"10.1.0.0/24\"",
-            required=True,
-        )
-
-        next_hop = cls._args_schema.static_route_configuration.ipv4_routes.Element.next_hop
-        next_hop.Element = AAZStrArg()
+        cls._build_args_static_route_properties_create(ipv4_routes.Element)
 
         ipv6_routes = cls._args_schema.static_route_configuration.ipv6_routes
         ipv6_routes.Element = AAZObjectArg()
-
-        _element = cls._args_schema.static_route_configuration.ipv6_routes.Element
-        _element.next_hop = AAZListArg(
-            options=["next-hop"],
-            help="List of next hop IPv6 addresses. Example: \"2ffe::1\"",
-            required=True,
-        )
-        _element.prefix = AAZStrArg(
-            options=["prefix"],
-            help="IPv6 prefix of the staticIPv6Route. Example: \"2fff::/64\"",
-            required=True,
-        )
-
-        next_hop = cls._args_schema.static_route_configuration.ipv6_routes.Element.next_hop
-        next_hop.Element = AAZStrArg()
+        cls._build_args_static_route_properties_create(ipv6_routes.Element)
         return cls._args_schema
+
+    _args_bfd_configuration_create = None
+
+    @classmethod
+    def _build_args_bfd_configuration_create(cls, _schema):
+        if cls._args_bfd_configuration_create is not None:
+            _schema.interval_in_milli_seconds = cls._args_bfd_configuration_create.interval_in_milli_seconds
+            _schema.multiplier = cls._args_bfd_configuration_create.multiplier
+            return
+
+        cls._args_bfd_configuration_create = AAZObjectArg()
+
+        bfd_configuration_create = cls._args_bfd_configuration_create
+        bfd_configuration_create.interval_in_milli_seconds = AAZIntArg(
+            options=["interval-in-milli-seconds"],
+            help="Interval in milliseconds. Default value is 300. Example: 300.",
+        )
+        bfd_configuration_create.multiplier = AAZIntArg(
+            options=["multiplier"],
+            help="Multiplier for the Bfd Configuration. Default value is 5. Example: 5.",
+        )
+
+        _schema.interval_in_milli_seconds = cls._args_bfd_configuration_create.interval_in_milli_seconds
+        _schema.multiplier = cls._args_bfd_configuration_create.multiplier
+
+    _args_connected_subnet_create = None
+
+    @classmethod
+    def _build_args_connected_subnet_create(cls, _schema):
+        if cls._args_connected_subnet_create is not None:
+            _schema.annotation = cls._args_connected_subnet_create.annotation
+            _schema.prefix = cls._args_connected_subnet_create.prefix
+            return
+
+        cls._args_connected_subnet_create = AAZObjectArg()
+
+        connected_subnet_create = cls._args_connected_subnet_create
+        connected_subnet_create.annotation = AAZStrArg(
+            options=["annotation"],
+            help="Description for underlying resource.",
+        )
+        connected_subnet_create.prefix = AAZStrArg(
+            options=["prefix"],
+            help="Prefix of the Connected Subnet.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+
+        _schema.annotation = cls._args_connected_subnet_create.annotation
+        _schema.prefix = cls._args_connected_subnet_create.prefix
+
+    _args_neighbor_address_create = None
+
+    @classmethod
+    def _build_args_neighbor_address_create(cls, _schema):
+        if cls._args_neighbor_address_create is not None:
+            _schema.address = cls._args_neighbor_address_create.address
+            return
+
+        cls._args_neighbor_address_create = AAZObjectArg()
+
+        neighbor_address_create = cls._args_neighbor_address_create
+        neighbor_address_create.address = AAZStrArg(
+            options=["address"],
+            help="IP Address.",
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+
+        _schema.address = cls._args_neighbor_address_create.address
+
+    _args_static_route_properties_create = None
+
+    @classmethod
+    def _build_args_static_route_properties_create(cls, _schema):
+        if cls._args_static_route_properties_create is not None:
+            _schema.next_hop = cls._args_static_route_properties_create.next_hop
+            _schema.prefix = cls._args_static_route_properties_create.prefix
+            return
+
+        cls._args_static_route_properties_create = AAZObjectArg()
+
+        static_route_properties_create = cls._args_static_route_properties_create
+        static_route_properties_create.next_hop = AAZListArg(
+            options=["next-hop"],
+            help="List of next hop addresses.",
+            required=True,
+        )
+        static_route_properties_create.prefix = AAZStrArg(
+            options=["prefix"],
+            help="Prefix of the route.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+
+        next_hop = cls._args_static_route_properties_create.next_hop
+        next_hop.Element = AAZStrArg(
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+
+        _schema.next_hop = cls._args_static_route_properties_create.next_hop
+        _schema.prefix = cls._args_static_route_properties_create.prefix
 
     def _execute_operations(self):
         self.pre_operations()
@@ -354,7 +490,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -387,8 +523,14 @@ class Create(AAZCommand):
                 properties.set_prop("bgpConfiguration", AAZObjectType, ".bgp_configuration")
                 properties.set_prop("connectedIPv4Subnets", AAZListType, ".connected_ipv4_subnets")
                 properties.set_prop("connectedIPv6Subnets", AAZListType, ".connected_ipv6_subnets")
+                properties.set_prop("egressAclId", AAZStrType, ".egress_acl_id")
+                properties.set_prop("exportRoutePolicy", AAZObjectType, ".export_route_policy")
                 properties.set_prop("exportRoutePolicyId", AAZStrType, ".export_route_policy_id")
+                properties.set_prop("extension", AAZStrType, ".extension")
+                properties.set_prop("importRoutePolicy", AAZObjectType, ".import_route_policy")
                 properties.set_prop("importRoutePolicyId", AAZStrType, ".import_route_policy_id")
+                properties.set_prop("ingressAclId", AAZStrType, ".ingress_acl_id")
+                properties.set_prop("isMonitoringEnabled", AAZStrType, ".is_monitoring_enabled")
                 properties.set_prop("mtu", AAZIntType, ".mtu")
                 properties.set_prop("staticRouteConfiguration", AAZObjectType, ".static_route_configuration")
                 properties.set_prop("vlanId", AAZIntType, ".vlan_id", typ_kwargs={"flags": {"required": True}})
@@ -398,6 +540,7 @@ class Create(AAZCommand):
                 bgp_configuration.set_prop("allowAS", AAZIntType, ".allow_as")
                 bgp_configuration.set_prop("allowASOverride", AAZStrType, ".allow_as_override")
                 bgp_configuration.set_prop("annotation", AAZStrType, ".annotation")
+                _CreateHelper._build_schema_bfd_configuration_create(bgp_configuration.set_prop("bfdConfiguration", AAZObjectType, ".bfd_configuration"))
                 bgp_configuration.set_prop("defaultRouteOriginate", AAZStrType, ".default_route_originate")
                 bgp_configuration.set_prop("ipv4ListenRangePrefixes", AAZListType, ".ipv4_listen_range_prefixes")
                 bgp_configuration.set_prop("ipv4NeighborAddress", AAZListType, ".ipv4_neighbor_address")
@@ -411,11 +554,7 @@ class Create(AAZCommand):
 
             ipv4_neighbor_address = _builder.get(".properties.bgpConfiguration.ipv4NeighborAddress")
             if ipv4_neighbor_address is not None:
-                ipv4_neighbor_address.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.bgpConfiguration.ipv4NeighborAddress[]")
-            if _elements is not None:
-                _elements.set_prop("address", AAZStrType, ".address")
+                _CreateHelper._build_schema_neighbor_address_create(ipv4_neighbor_address.set_elements(AAZObjectType, "."))
 
             ipv6_listen_range_prefixes = _builder.get(".properties.bgpConfiguration.ipv6ListenRangePrefixes")
             if ipv6_listen_range_prefixes is not None:
@@ -423,60 +562,40 @@ class Create(AAZCommand):
 
             ipv6_neighbor_address = _builder.get(".properties.bgpConfiguration.ipv6NeighborAddress")
             if ipv6_neighbor_address is not None:
-                ipv6_neighbor_address.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.bgpConfiguration.ipv6NeighborAddress[]")
-            if _elements is not None:
-                _elements.set_prop("address", AAZStrType, ".address")
+                _CreateHelper._build_schema_neighbor_address_create(ipv6_neighbor_address.set_elements(AAZObjectType, "."))
 
             connected_i_pv4_subnets = _builder.get(".properties.connectedIPv4Subnets")
             if connected_i_pv4_subnets is not None:
-                connected_i_pv4_subnets.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.connectedIPv4Subnets[]")
-            if _elements is not None:
-                _elements.set_prop("annotation", AAZStrType, ".annotation")
-                _elements.set_prop("prefix", AAZStrType, ".prefix")
+                _CreateHelper._build_schema_connected_subnet_create(connected_i_pv4_subnets.set_elements(AAZObjectType, "."))
 
             connected_i_pv6_subnets = _builder.get(".properties.connectedIPv6Subnets")
             if connected_i_pv6_subnets is not None:
-                connected_i_pv6_subnets.set_elements(AAZObjectType, ".")
+                _CreateHelper._build_schema_connected_subnet_create(connected_i_pv6_subnets.set_elements(AAZObjectType, "."))
 
-            _elements = _builder.get(".properties.connectedIPv6Subnets[]")
-            if _elements is not None:
-                _elements.set_prop("annotation", AAZStrType, ".annotation")
-                _elements.set_prop("prefix", AAZStrType, ".prefix")
+            export_route_policy = _builder.get(".properties.exportRoutePolicy")
+            if export_route_policy is not None:
+                export_route_policy.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id")
+                export_route_policy.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id")
+
+            import_route_policy = _builder.get(".properties.importRoutePolicy")
+            if import_route_policy is not None:
+                import_route_policy.set_prop("importIpv4RoutePolicyId", AAZStrType, ".import_ipv4_route_policy_id")
+                import_route_policy.set_prop("importIpv6RoutePolicyId", AAZStrType, ".import_ipv6_route_policy_id")
 
             static_route_configuration = _builder.get(".properties.staticRouteConfiguration")
             if static_route_configuration is not None:
+                _CreateHelper._build_schema_bfd_configuration_create(static_route_configuration.set_prop("bfdConfiguration", AAZObjectType, ".bfd_configuration"))
+                static_route_configuration.set_prop("extension", AAZStrType, ".extension")
                 static_route_configuration.set_prop("ipv4Routes", AAZListType, ".ipv4_routes")
                 static_route_configuration.set_prop("ipv6Routes", AAZListType, ".ipv6_routes")
 
             ipv4_routes = _builder.get(".properties.staticRouteConfiguration.ipv4Routes")
             if ipv4_routes is not None:
-                ipv4_routes.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.staticRouteConfiguration.ipv4Routes[]")
-            if _elements is not None:
-                _elements.set_prop("nextHop", AAZListType, ".next_hop", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("prefix", AAZStrType, ".prefix", typ_kwargs={"flags": {"required": True}})
-
-            next_hop = _builder.get(".properties.staticRouteConfiguration.ipv4Routes[].nextHop")
-            if next_hop is not None:
-                next_hop.set_elements(AAZStrType, ".")
+                _CreateHelper._build_schema_static_route_properties_create(ipv4_routes.set_elements(AAZObjectType, "."))
 
             ipv6_routes = _builder.get(".properties.staticRouteConfiguration.ipv6Routes")
             if ipv6_routes is not None:
-                ipv6_routes.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.staticRouteConfiguration.ipv6Routes[]")
-            if _elements is not None:
-                _elements.set_prop("nextHop", AAZListType, ".next_hop", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("prefix", AAZStrType, ".prefix", typ_kwargs={"flags": {"required": True}})
-
-            next_hop = _builder.get(".properties.staticRouteConfiguration.ipv6Routes[].nextHop")
-            if next_hop is not None:
-                next_hop.set_elements(AAZStrType, ".")
+                _CreateHelper._build_schema_static_route_properties_create(ipv6_routes.set_elements(AAZObjectType, "."))
 
             return self.serialize_content(_content_value)
 
@@ -521,19 +640,11 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             properties.annotation = AAZStrType()
-            properties.bfd_disabled_on_resources = AAZListType(
-                serialized_name="bfdDisabledOnResources",
-                flags={"read_only": True},
-            )
-            properties.bfd_for_static_routes_disabled_on_resources = AAZListType(
-                serialized_name="bfdForStaticRoutesDisabledOnResources",
-                flags={"read_only": True},
-            )
             properties.bgp_configuration = AAZObjectType(
                 serialized_name="bgpConfiguration",
             )
-            properties.bgp_disabled_on_resources = AAZListType(
-                serialized_name="bgpDisabledOnResources",
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
                 flags={"read_only": True},
             )
             properties.connected_i_pv4_subnets = AAZListType(
@@ -542,15 +653,27 @@ class Create(AAZCommand):
             properties.connected_i_pv6_subnets = AAZListType(
                 serialized_name="connectedIPv6Subnets",
             )
-            properties.disabled_on_resources = AAZListType(
-                serialized_name="disabledOnResources",
-                flags={"read_only": True},
+            properties.egress_acl_id = AAZStrType(
+                serialized_name="egressAclId",
+            )
+            properties.export_route_policy = AAZObjectType(
+                serialized_name="exportRoutePolicy",
             )
             properties.export_route_policy_id = AAZStrType(
                 serialized_name="exportRoutePolicyId",
             )
+            properties.extension = AAZStrType()
+            properties.import_route_policy = AAZObjectType(
+                serialized_name="importRoutePolicy",
+            )
             properties.import_route_policy_id = AAZStrType(
                 serialized_name="importRoutePolicyId",
+            )
+            properties.ingress_acl_id = AAZStrType(
+                serialized_name="ingressAclId",
+            )
+            properties.is_monitoring_enabled = AAZStrType(
+                serialized_name="isMonitoringEnabled",
             )
             properties.mtu = AAZIntType()
             properties.provisioning_state = AAZStrType(
@@ -564,12 +687,6 @@ class Create(AAZCommand):
                 serialized_name="vlanId",
                 flags={"required": True},
             )
-
-            bfd_disabled_on_resources = cls._schema_on_200_201.properties.bfd_disabled_on_resources
-            bfd_disabled_on_resources.Element = AAZStrType()
-
-            bfd_for_static_routes_disabled_on_resources = cls._schema_on_200_201.properties.bfd_for_static_routes_disabled_on_resources
-            bfd_for_static_routes_disabled_on_resources.Element = AAZStrType()
 
             bgp_configuration = cls._schema_on_200_201.properties.bgp_configuration
             bgp_configuration.allow_as = AAZIntType(
@@ -612,52 +729,45 @@ class Create(AAZCommand):
 
             ipv4_neighbor_address = cls._schema_on_200_201.properties.bgp_configuration.ipv4_neighbor_address
             ipv4_neighbor_address.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.bgp_configuration.ipv4_neighbor_address.Element
-            _element.address = AAZStrType()
-            _element.operational_state = AAZStrType(
-                serialized_name="operationalState",
-                flags={"read_only": True},
-            )
+            _CreateHelper._build_schema_neighbor_address_read(ipv4_neighbor_address.Element)
 
             ipv6_listen_range_prefixes = cls._schema_on_200_201.properties.bgp_configuration.ipv6_listen_range_prefixes
             ipv6_listen_range_prefixes.Element = AAZStrType()
 
             ipv6_neighbor_address = cls._schema_on_200_201.properties.bgp_configuration.ipv6_neighbor_address
             ipv6_neighbor_address.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.bgp_configuration.ipv6_neighbor_address.Element
-            _element.address = AAZStrType()
-            _element.operational_state = AAZStrType(
-                serialized_name="operationalState",
-                flags={"read_only": True},
-            )
-
-            bgp_disabled_on_resources = cls._schema_on_200_201.properties.bgp_disabled_on_resources
-            bgp_disabled_on_resources.Element = AAZStrType()
+            _CreateHelper._build_schema_neighbor_address_read(ipv6_neighbor_address.Element)
 
             connected_i_pv4_subnets = cls._schema_on_200_201.properties.connected_i_pv4_subnets
             connected_i_pv4_subnets.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.connected_i_pv4_subnets.Element
-            _element.annotation = AAZStrType()
-            _element.prefix = AAZStrType()
+            _CreateHelper._build_schema_connected_subnet_read(connected_i_pv4_subnets.Element)
 
             connected_i_pv6_subnets = cls._schema_on_200_201.properties.connected_i_pv6_subnets
             connected_i_pv6_subnets.Element = AAZObjectType()
+            _CreateHelper._build_schema_connected_subnet_read(connected_i_pv6_subnets.Element)
 
-            _element = cls._schema_on_200_201.properties.connected_i_pv6_subnets.Element
-            _element.annotation = AAZStrType()
-            _element.prefix = AAZStrType()
+            export_route_policy = cls._schema_on_200_201.properties.export_route_policy
+            export_route_policy.export_ipv4_route_policy_id = AAZStrType(
+                serialized_name="exportIpv4RoutePolicyId",
+            )
+            export_route_policy.export_ipv6_route_policy_id = AAZStrType(
+                serialized_name="exportIpv6RoutePolicyId",
+            )
 
-            disabled_on_resources = cls._schema_on_200_201.properties.disabled_on_resources
-            disabled_on_resources.Element = AAZStrType()
+            import_route_policy = cls._schema_on_200_201.properties.import_route_policy
+            import_route_policy.import_ipv4_route_policy_id = AAZStrType(
+                serialized_name="importIpv4RoutePolicyId",
+            )
+            import_route_policy.import_ipv6_route_policy_id = AAZStrType(
+                serialized_name="importIpv6RoutePolicyId",
+            )
 
             static_route_configuration = cls._schema_on_200_201.properties.static_route_configuration
             static_route_configuration.bfd_configuration = AAZObjectType(
                 serialized_name="bfdConfiguration",
             )
             _CreateHelper._build_schema_bfd_configuration_read(static_route_configuration.bfd_configuration)
+            static_route_configuration.extension = AAZStrType()
             static_route_configuration.ipv4_routes = AAZListType(
                 serialized_name="ipv4Routes",
             )
@@ -667,33 +777,11 @@ class Create(AAZCommand):
 
             ipv4_routes = cls._schema_on_200_201.properties.static_route_configuration.ipv4_routes
             ipv4_routes.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.static_route_configuration.ipv4_routes.Element
-            _element.next_hop = AAZListType(
-                serialized_name="nextHop",
-                flags={"required": True},
-            )
-            _element.prefix = AAZStrType(
-                flags={"required": True},
-            )
-
-            next_hop = cls._schema_on_200_201.properties.static_route_configuration.ipv4_routes.Element.next_hop
-            next_hop.Element = AAZStrType()
+            _CreateHelper._build_schema_static_route_properties_read(ipv4_routes.Element)
 
             ipv6_routes = cls._schema_on_200_201.properties.static_route_configuration.ipv6_routes
             ipv6_routes.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.static_route_configuration.ipv6_routes.Element
-            _element.next_hop = AAZListType(
-                serialized_name="nextHop",
-                flags={"required": True},
-            )
-            _element.prefix = AAZStrType(
-                flags={"required": True},
-            )
-
-            next_hop = cls._schema_on_200_201.properties.static_route_configuration.ipv6_routes.Element.next_hop
-            next_hop.Element = AAZStrType()
+            _CreateHelper._build_schema_static_route_properties_read(ipv6_routes.Element)
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
@@ -721,13 +809,44 @@ class Create(AAZCommand):
 class _CreateHelper:
     """Helper class for Create"""
 
+    @classmethod
+    def _build_schema_bfd_configuration_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("intervalInMilliSeconds", AAZIntType, ".interval_in_milli_seconds")
+        _builder.set_prop("multiplier", AAZIntType, ".multiplier")
+
+    @classmethod
+    def _build_schema_connected_subnet_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("annotation", AAZStrType, ".annotation")
+        _builder.set_prop("prefix", AAZStrType, ".prefix", typ_kwargs={"flags": {"required": True}})
+
+    @classmethod
+    def _build_schema_neighbor_address_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("address", AAZStrType, ".address")
+
+    @classmethod
+    def _build_schema_static_route_properties_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("nextHop", AAZListType, ".next_hop", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("prefix", AAZStrType, ".prefix", typ_kwargs={"flags": {"required": True}})
+
+        next_hop = _builder.get(".nextHop")
+        if next_hop is not None:
+            next_hop.set_elements(AAZStrType, ".")
+
     _schema_bfd_configuration_read = None
 
     @classmethod
     def _build_schema_bfd_configuration_read(cls, _schema):
         if cls._schema_bfd_configuration_read is not None:
             _schema.administrative_state = cls._schema_bfd_configuration_read.administrative_state
-            _schema.interval = cls._schema_bfd_configuration_read.interval
+            _schema.interval_in_milli_seconds = cls._schema_bfd_configuration_read.interval_in_milli_seconds
             _schema.multiplier = cls._schema_bfd_configuration_read.multiplier
             return
 
@@ -738,16 +857,81 @@ class _CreateHelper:
             serialized_name="administrativeState",
             flags={"read_only": True},
         )
-        bfd_configuration_read.interval = AAZIntType(
-            flags={"read_only": True},
+        bfd_configuration_read.interval_in_milli_seconds = AAZIntType(
+            serialized_name="intervalInMilliSeconds",
         )
-        bfd_configuration_read.multiplier = AAZIntType(
+        bfd_configuration_read.multiplier = AAZIntType()
+
+        _schema.administrative_state = cls._schema_bfd_configuration_read.administrative_state
+        _schema.interval_in_milli_seconds = cls._schema_bfd_configuration_read.interval_in_milli_seconds
+        _schema.multiplier = cls._schema_bfd_configuration_read.multiplier
+
+    _schema_connected_subnet_read = None
+
+    @classmethod
+    def _build_schema_connected_subnet_read(cls, _schema):
+        if cls._schema_connected_subnet_read is not None:
+            _schema.annotation = cls._schema_connected_subnet_read.annotation
+            _schema.prefix = cls._schema_connected_subnet_read.prefix
+            return
+
+        cls._schema_connected_subnet_read = _schema_connected_subnet_read = AAZObjectType()
+
+        connected_subnet_read = _schema_connected_subnet_read
+        connected_subnet_read.annotation = AAZStrType()
+        connected_subnet_read.prefix = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.annotation = cls._schema_connected_subnet_read.annotation
+        _schema.prefix = cls._schema_connected_subnet_read.prefix
+
+    _schema_neighbor_address_read = None
+
+    @classmethod
+    def _build_schema_neighbor_address_read(cls, _schema):
+        if cls._schema_neighbor_address_read is not None:
+            _schema.address = cls._schema_neighbor_address_read.address
+            _schema.configuration_state = cls._schema_neighbor_address_read.configuration_state
+            return
+
+        cls._schema_neighbor_address_read = _schema_neighbor_address_read = AAZObjectType()
+
+        neighbor_address_read = _schema_neighbor_address_read
+        neighbor_address_read.address = AAZStrType()
+        neighbor_address_read.configuration_state = AAZStrType(
+            serialized_name="configurationState",
             flags={"read_only": True},
         )
 
-        _schema.administrative_state = cls._schema_bfd_configuration_read.administrative_state
-        _schema.interval = cls._schema_bfd_configuration_read.interval
-        _schema.multiplier = cls._schema_bfd_configuration_read.multiplier
+        _schema.address = cls._schema_neighbor_address_read.address
+        _schema.configuration_state = cls._schema_neighbor_address_read.configuration_state
+
+    _schema_static_route_properties_read = None
+
+    @classmethod
+    def _build_schema_static_route_properties_read(cls, _schema):
+        if cls._schema_static_route_properties_read is not None:
+            _schema.next_hop = cls._schema_static_route_properties_read.next_hop
+            _schema.prefix = cls._schema_static_route_properties_read.prefix
+            return
+
+        cls._schema_static_route_properties_read = _schema_static_route_properties_read = AAZObjectType()
+
+        static_route_properties_read = _schema_static_route_properties_read
+        static_route_properties_read.next_hop = AAZListType(
+            serialized_name="nextHop",
+            flags={"required": True},
+        )
+        static_route_properties_read.prefix = AAZStrType(
+            flags={"required": True},
+        )
+
+        next_hop = _schema_static_route_properties_read.next_hop
+        next_hop.Element = AAZStrType()
+
+        _schema.next_hop = cls._schema_static_route_properties_read.next_hop
+        _schema.prefix = cls._schema_static_route_properties_read.prefix
 
 
 __all__ = ["Create"]
