@@ -584,21 +584,21 @@ def devcenter_project_list_dp(cmd, dev_center=None, endpoint=None):
             return []
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, endpoint, dev_center)
 
-    return cf_dataplane.project.list()
+    return cf_dataplane.dev_center.list_projects()
 
 
 def devcenter_project_show_dp(cmd, project_name, dev_center=None, endpoint=None):
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
-    return cf_dataplane.project.get(project_name=project_name)
+    return cf_dataplane.dev_center.get_project(project_name=project_name)
 
 
 def devcenter_pool_list_dp(cmd, project_name, dev_center=None, endpoint=None):
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
-    return cf_dataplane.pool.list()
+    return cf_dataplane.dev_boxes.list_pools(project_name=project_name)
 
 
 def devcenter_pool_show_dp(
@@ -607,7 +607,7 @@ def devcenter_pool_show_dp(
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
-    return cf_dataplane.pool.get(pool_name=pool_name)
+    return cf_dataplane.dev_boxes.get_pool(project_name=project_name, pool_name=pool_name)
 
 
 def devcenter_schedule_list_dp(
