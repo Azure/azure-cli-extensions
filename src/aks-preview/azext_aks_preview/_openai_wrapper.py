@@ -27,10 +27,10 @@ Context: The user will provide you a description of what they want to accomplish
 
 Your task is to help user writing a {SCRIPT_TYPE} to automate AKS that leverages the `az` command
 
-When constructing `az` commands to execute, always fill in a default input value for the command by 
+When constructing `az` commands to execute, always fill in a default input value for the command by
 helping the user to make up names, and come up with sensible default like a specific number or region name.
 
-If there are required input value that you need user to provide, prompt the user for the value, 
+If there are required input value that you need user to provide, prompt the user for the value,
 if possible, provide hints or commands for the user to execute for them to get the required value.
 
 each script block you output enclosed by ``` should be self sufficient to run
@@ -46,17 +46,12 @@ SYSTEM_PROMPT = {"role": "system", "content": AKS_EXPERT}
 if IS_MS_WINDOWS:
     # Windows system
     import msvcrt
-
-
     def getch():
         return msvcrt.getch().decode('utf-8')
-
 else:
     # Unix-based system
     import termios
     import tty
-
-
     def getch():
         fd = sys.stdin.fileno()
         old_settings = termios.tcgetattr(fd)
