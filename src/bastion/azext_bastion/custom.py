@@ -283,8 +283,7 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
                 errorMessage = json.loads(response.content)['message']
                 if errorMessage:
                     raise ClientRequestError("Request failed with error: " + json.loads(response.content)['message'])
-                else:
-                    raise ClientRequestError("Request to EncodingReservedUnitTypes v2 API endpoint failed.")
+                raise ClientRequestError("Request to EncodingReservedUnitTypes v2 API endpoint failed.")
 
             _write_to_file(response)
             rdpfilepath = os.getcwd() + "/conn.rdp"
