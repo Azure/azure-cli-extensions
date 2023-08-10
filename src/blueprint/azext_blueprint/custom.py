@@ -95,35 +95,48 @@ def import_blueprint_with_artifacts(cmd,
 def _blueprint_validator(cmd):
     from azure.cli.core.commands.client_factory import get_subscription_id
     args = cmd.ctx.args
-    args.resource_scope = '/providers/Microsoft.Management/managementGroups/{}'.format(
-        args.management_group
-    ) if has_value(args.management_group) else '/subscriptions/{}'.format(
-        has_value(args.subscription_id) if has_value(args.subscription_id) else get_subscription_id(cmd.cli_ctx))
+    if has_value(args.management_group):
+        args.resource_scope = '/providers/Microsoft.Management/managementGroups/{}'.format(args.management_group)
+    elif has_value(args.subscription_id):
+        args.resource_scope = '/subscriptions/{}'.format(args.subscription_id)
+    else:
+        args.resource_scope = '/subscriptions/{}'.format(get_subscription_id(cmd.cli_ctx))
+
+
+def build_arguments_schema(args_schema):
+    from azure.cli.core.aaz import AAZStrArg
+    args_schema.management_group = AAZStrArg(
+        options=['--management-group', '-m'],
+        arg_group="Resource_scope",
+        help="Use management group for the scope of the blueprint.")
+    args_schema.subscription_id = AAZStrArg(
+        options=['--subscription', '-s'],
+        arg_group="Resource_scope",
+        help="Use subscription for the scope of the blueprint. If --management-group is not specified, "
+             "--subscription value or the default subscription will be used as the scope.")
+    args_schema.resource_scope._required = False
+    args_schema.resource_scope._registered = False
+    return args_schema
+
+
+# ignore the global subscription param
+def cli_arguments_loader(args):
+    from knack.arguments import CLICommandArgument
+    args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+    return args
 
 
 class BlueprintCreate(_BlueprintCreate):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.management_group = AAZStrArg(
-            options=['--management-group', '-m'],
-            arg_group="Resource_scope",
-            help="Use management group for the scope of the blueprint.")
-        args_schema.subscription_id = AAZStrArg(
-            options=['--subscription', '-s'],
-            arg_group="Resource_scope",
-            help="Use subscription for the scope of the blueprint. If --management-group is not specified, "
-                 "--subscription value or the default subscription will be used as the scope.")
-        args_schema.resource_scope._required = False
-        args_schema.resource_scope._registered = False
-        return args_schema
+        return build_arguments_schema(args_schema)
 
+    # ignore the global subscription param
     def _cli_arguments_loader(self):
-        from knack.arguments import CLICommandArgument
         args = super()._cli_arguments_loader()
-        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        cli_arguments_loader(args)
         return args
 
     def pre_operations(self):
@@ -136,28 +149,13 @@ class BlueprintUpdate(_BlueprintUpdate):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.management_group = AAZStrArg(
-            options=['--management-group', '-m'],
-            arg_group="Resource_scope",
-            help="Use management group for the scope of the blueprint.",
-            nullable=True
-        )
-        args_schema.subscription_id = AAZStrArg(
-            options=['--subscription', '-s'],
-            arg_group="Resource_scope",
-            help="Use subscription for the scope of the blueprint. If --management-group is not specified, "
-                 "--subscription value or the default subscription will be used as the scope.",
-            nullable=True)
-        args_schema.resource_scope._required = False
-        args_schema.resource_scope._registered = False
-        return args_schema
+        return build_arguments_schema(args_schema)
 
+    # ignore the global subscription param
     def _cli_arguments_loader(self):
-        from knack.arguments import CLICommandArgument
         args = super()._cli_arguments_loader()
-        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        cli_arguments_loader(args)
         return args
 
     def pre_operations(self):
@@ -170,26 +168,12 @@ class BlueprintDelete(_BlueprintDelete):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZStrArg
-        args_schema.management_group = AAZStrArg(
-            options=["--management-group", "-m"],
-            arg_group='Resource_scope',
-            help="Use management group for the scope of the blueprint."
-        )
-        args_schema.subscription_id = AAZStrArg(
-            options=["--subscription", "-s"],
-            arg_group='Resource_scope',
-            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
-                 "--subscription value or the default subscription will be used as the scope."
-        )
-        args_schema.resource_scope._required = False
-        args_schema.resource_scope._registered = False
-        return args_schema
+        return build_arguments_schema(args_schema)
 
+    # ignore the global subscription param
     def _cli_arguments_loader(self):
-        from knack.arguments import CLICommandArgument
         args = super()._cli_arguments_loader()
-        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        cli_arguments_loader(args)
         return args
 
     def pre_operations(self):
@@ -202,26 +186,12 @@ class BlueprintShow(_BlueprintShow):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZStrArg
-        args_schema.management_group = AAZStrArg(
-            options=["--management-group", "-m"],
-            arg_group='Resource_scope',
-            help="Use management group for the scope of the blueprint."
-        )
-        args_schema.subscription_id = AAZStrArg(
-            options=["--subscription", "-s"],
-            arg_group='Resource_scope',
-            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
-                 "--subscription value or the default subscription will be used as the scope."
-        )
-        args_schema.resource_scope._required = False
-        args_schema.resource_scope._registered = False
-        return args_schema
+        return build_arguments_schema(args_schema)
 
+    # ignore the global subscription param
     def _cli_arguments_loader(self):
-        from knack.arguments import CLICommandArgument
         args = super()._cli_arguments_loader()
-        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        cli_arguments_loader(args)
         return args
 
     def pre_operations(self):
@@ -234,26 +204,12 @@ class BlueprintList(_BlueprintList):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZStrArg
-        args_schema.management_group = AAZStrArg(
-            options=["--management-group", "-m"],
-            arg_group='Resource_scope',
-            help="Use management group for the scope of the blueprint."
-        )
-        args_schema.subscription_id = AAZStrArg(
-            options=["--subscription", "-s"],
-            arg_group='Resource_scope',
-            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
-                 "--subscription value or the default subscription will be used as the scope."
-        )
-        args_schema.resource_scope._required = False
-        args_schema.resource_scope._registered = False
-        return args_schema
+        return build_arguments_schema(args_schema)
 
+    # ignore the global subscription param
     def _cli_arguments_loader(self):
-        from knack.arguments import CLICommandArgument
         args = super()._cli_arguments_loader()
-        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        cli_arguments_loader(args)
         return args
 
     def pre_operations(self):
@@ -302,26 +258,12 @@ class BlueprintArtifactDelete(_BlueprintArtifactDelete):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZStrArg
-        args_schema.management_group = AAZStrArg(
-            options=["--management-group", "-m"],
-            arg_group='Resource_scope',
-            help="Use management group for the scope of the blueprint."
-        )
-        args_schema.subscription_id = AAZStrArg(
-            options=["--subscription", "-s"],
-            arg_group='Resource_scope',
-            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
-                 "--subscription value or the default subscription will be used as the scope."
-        )
-        args_schema.resource_scope._required = False
-        args_schema.resource_scope._registered = False
-        return args_schema
+        return build_arguments_schema(args_schema)
 
+    # ignore the global subscription param
     def _cli_arguments_loader(self):
-        from knack.arguments import CLICommandArgument
         args = super()._cli_arguments_loader()
-        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        cli_arguments_loader(args)
         return args
 
     def pre_operations(self):
@@ -334,26 +276,12 @@ class BlueprintArtifactShow(_BlueprintArtifactShow):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZStrArg
-        args_schema.management_group = AAZStrArg(
-            options=["--management-group", "-m"],
-            arg_group='Resource_scope',
-            help="Use management group for the scope of the blueprint."
-        )
-        args_schema.subscription_id = AAZStrArg(
-            options=["--subscription", "-s"],
-            arg_group='Resource_scope',
-            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
-                 "--subscription value or the default subscription will be used as the scope."
-        )
-        args_schema.resource_scope._required = False
-        args_schema.resource_scope._registered = False
-        return args_schema
+        return build_arguments_schema(args_schema)
 
+    # ignore the global subscription param
     def _cli_arguments_loader(self):
-        from knack.arguments import CLICommandArgument
         args = super()._cli_arguments_loader()
-        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        cli_arguments_loader(args)
         return args
 
     def pre_operations(self):
@@ -366,26 +294,12 @@ class BlueprintArtifactList(_BlueprintArtifactList):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZStrArg
-        args_schema.management_group = AAZStrArg(
-            options=["--management-group", "-m"],
-            arg_group='Resource_scope',
-            help="Use management group for the scope of the blueprint."
-        )
-        args_schema.subscription_id = AAZStrArg(
-            options=["--subscription", "-s"],
-            arg_group='Resource_scope',
-            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
-                 "--subscription value or the default subscription will be used as the scope."
-        )
-        args_schema.resource_scope._required = False
-        args_schema.resource_scope._registered = False
-        return args_schema
+        return build_arguments_schema(args_schema)
 
+    # ignore the global subscription param
     def _cli_arguments_loader(self):
-        from knack.arguments import CLICommandArgument
         args = super()._cli_arguments_loader()
-        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        cli_arguments_loader(args)
         return args
 
     def pre_operations(self):
@@ -410,7 +324,7 @@ def add_blueprint_resource_group(cmd,
         "name": blueprint_name,
         "resource_scope": resource_scope,
     }
-    body = BlueprintShow(cli_ctx=cmd.cli_ctx)(args)
+    body = BlueprintShow(cli_ctx=cmd.cli_ctx)(command_args=args)
     rg_key = artifact_name
     body.setdefault('resourceGroups', {})
     if artifact_name is None:
@@ -433,7 +347,7 @@ def add_blueprint_resource_group(cmd,
         "tags": tags
     }
     args.setdefault('resource_groups', {})[rg_key] = resource_group
-    rgs = BlueprintUpdate(cli_ctx=cmd.cli_ctx)(args)['resourceGroups']
+    rgs = BlueprintUpdate(cli_ctx=cmd.cli_ctx)(command_args=args)['resourceGroups']
     return {k: v for k, v in rgs.items() if k == artifact_name}
 
 
@@ -453,7 +367,7 @@ def update_blueprint_resource_group(cmd,
         "name": blueprint_name,
         "resource_scope": resource_scope,
     }
-    body = BlueprintShow(cli_ctx=cmd.cli_ctx)(args)
+    body = BlueprintShow(cli_ctx=cmd.cli_ctx)(command_args=args)
     if artifact_name not in body.setdefault('resourceGroups', {}):
         raise CLIError('The specified artifact name: {} can not be found.'.format(artifact_name))
     resource_group = body['resourceGroups'][artifact_name]
@@ -470,7 +384,7 @@ def update_blueprint_resource_group(cmd,
     if tags is not None:
         resource_group['tags'] = tags
     args.setdefault('resource_groups', {})[artifact_name] = resource_group
-    rgs = BlueprintUpdate(cli_ctx=cmd.cli_ctx)(args)['resourceGroups']
+    rgs = BlueprintUpdate(cli_ctx=cmd.cli_ctx)(command_args=args)['resourceGroups']
     return {k: v for k, v in rgs.items() if k == artifact_name}
 
 
@@ -481,13 +395,13 @@ def remove_blueprint_resource_group(cmd, blueprint_name,
         "name": blueprint_name,
         "resource_scope": resource_scope,
     }
-    body = BlueprintShow(cli_ctx=cmd.cli_ctx)(args)
+    body = BlueprintShow(cli_ctx=cmd.cli_ctx)(command_args=args)
     if artifact_name not in body.setdefault('resourceGroups', {}):
         raise CLIError('The specified artifact name: {} can not be found.'.format(artifact_name))
     deleted_rg = body['resourceGroups'][artifact_name]
     del body['resourceGroups'][artifact_name]
     args['resource_groups'] = body['resourceGroups']
-    BlueprintUpdate(cli_ctx=cmd.cli_ctx)(args)
+    BlueprintUpdate(cli_ctx=cmd.cli_ctx)(command_args=args)
     return deleted_rg
 
 
@@ -497,7 +411,7 @@ def get_blueprint_resource_group(cmd, blueprint_name,
         "name": blueprint_name,
         "resource_scope": resource_scope,
     }
-    rgs = BlueprintShow(cli_ctx=cmd.cli_ctx)(show_args)['resourceGroups']
+    rgs = BlueprintShow(cli_ctx=cmd.cli_ctx)(command_args=show_args)['resourceGroups']
     return {k: v for k, v in rgs.items() if k == artifact_name}
 
 
@@ -507,7 +421,7 @@ def list_blueprint_resource_group(cmd, blueprint_name, management_group=None,
         "name": blueprint_name,
         "resource_scope": resource_scope,
     }
-    return BlueprintShow(cli_ctx=cmd.cli_ctx)(show_args)['resourceGroups']
+    return BlueprintShow(cli_ctx=cmd.cli_ctx)(command_args=show_args)['resourceGroups']
 
 
 def create_blueprint_artifact_policy(client,
@@ -694,26 +608,12 @@ class BlueprintPublish(_BlueprintPublish):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZStrArg
-        args_schema.management_group = AAZStrArg(
-            options=["--management-group", "-m"],
-            arg_group='Resource_scope',
-            help="Use management group for the scope of the blueprint."
-        )
-        args_schema.subscription_id = AAZStrArg(
-            options=["--subscription", "-s"],
-            arg_group='Resource_scope',
-            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
-                 "--subscription value or the default subscription will be used as the scope."
-        )
-        args_schema.resource_scope._required = False
-        args_schema.resource_scope._registered = False
-        return args_schema
+        return build_arguments_schema(args_schema)
 
+    # ignore the global subscription param
     def _cli_arguments_loader(self):
-        from knack.arguments import CLICommandArgument
         args = super()._cli_arguments_loader()
-        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        cli_arguments_loader(args)
         return args
 
     def pre_operations(self):
@@ -726,26 +626,12 @@ class BlueprintVersionDelete(_BlueprintVersionDelete):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZStrArg
-        args_schema.management_group = AAZStrArg(
-            options=["--management-group", "-m"],
-            arg_group='Resource_scope',
-            help="Use management group for the scope of the blueprint."
-        )
-        args_schema.subscription_id = AAZStrArg(
-            options=["--subscription", "-s"],
-            arg_group='Resource_scope',
-            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
-                 "--subscription value or the default subscription will be used as the scope."
-        )
-        args_schema.resource_scope._required = False
-        args_schema.resource_scope._registered = False
-        return args_schema
+        return build_arguments_schema(args_schema)
 
+    # ignore the global subscription param
     def _cli_arguments_loader(self):
-        from knack.arguments import CLICommandArgument
         args = super()._cli_arguments_loader()
-        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        cli_arguments_loader(args)
         return args
 
     def pre_operations(self):
@@ -758,26 +644,12 @@ class BlueprintVersionShow(_BlueprintVersionShow):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZStrArg
-        args_schema.management_group = AAZStrArg(
-            options=["--management-group", "-m"],
-            arg_group='Resource_scope',
-            help="Use management group for the scope of the blueprint."
-        )
-        args_schema.subscription_id = AAZStrArg(
-            options=["--subscription", "-s"],
-            arg_group='Resource_scope',
-            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
-                 "--subscription value or the default subscription will be used as the scope."
-        )
-        args_schema.resource_scope._required = False
-        args_schema.resource_scope._registered = False
-        return args_schema
+        return build_arguments_schema(args_schema)
 
+    # ignore the global subscription param
     def _cli_arguments_loader(self):
-        from knack.arguments import CLICommandArgument
         args = super()._cli_arguments_loader()
-        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        cli_arguments_loader(args)
         return args
 
     def pre_operations(self):
@@ -790,26 +662,12 @@ class BlueprintVersionList(_BlueprintVersionList):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZStrArg
-        args_schema.management_group = AAZStrArg(
-            options=["--management-group", "-m"],
-            arg_group='Resource_scope',
-            help="Use management group for the scope of the blueprint."
-        )
-        args_schema.subscription_id = AAZStrArg(
-            options=["--subscription", "-s"],
-            arg_group='Resource_scope',
-            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
-                 "--subscription value or the default subscription will be used as the scope."
-        )
-        args_schema.resource_scope._required = False
-        args_schema.resource_scope._registered = False
-        return args_schema
+        return build_arguments_schema(args_schema)
 
+    # ignore the global subscription param
     def _cli_arguments_loader(self):
-        from knack.arguments import CLICommandArgument
         args = super()._cli_arguments_loader()
-        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        cli_arguments_loader(args)
         return args
 
     def pre_operations(self):
@@ -822,26 +680,12 @@ class BlueprintVersionArtifactShow(_BlueprintVersionArtifactShow):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZStrArg
-        args_schema.management_group = AAZStrArg(
-            options=["--management-group", "-m"],
-            arg_group='Resource_scope',
-            help="Use management group for the scope of the blueprint."
-        )
-        args_schema.subscription_id = AAZStrArg(
-            options=["--subscription", "-s"],
-            arg_group='Resource_scope',
-            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
-                 "--subscription value or the default subscription will be used as the scope."
-        )
-        args_schema.resource_scope._required = False
-        args_schema.resource_scope._registered = False
-        return args_schema
+        return build_arguments_schema(args_schema)
 
+    # ignore the global subscription param
     def _cli_arguments_loader(self):
-        from knack.arguments import CLICommandArgument
         args = super()._cli_arguments_loader()
-        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        cli_arguments_loader(args)
         return args
 
     def pre_operations(self):
@@ -854,26 +698,12 @@ class BlueprintVersionArtifactList(_BlueprintVersionArtifactList):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZStrArg
-        args_schema.management_group = AAZStrArg(
-            options=["--management-group", "-m"],
-            arg_group='Resource_scope',
-            help="Use management group for the scope of the blueprint."
-        )
-        args_schema.subscription_id = AAZStrArg(
-            options=["--subscription", "-s"],
-            arg_group='Resource_scope',
-            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
-                 "--subscription value or the default subscription will be used as the scope."
-        )
-        args_schema.resource_scope._required = False
-        args_schema.resource_scope._registered = False
-        return args_schema
+        return build_arguments_schema(args_schema)
 
+    # ignore the global subscription param
     def _cli_arguments_loader(self):
-        from knack.arguments import CLICommandArgument
         args = super()._cli_arguments_loader()
-        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        cli_arguments_loader(args)
         return args
 
     def pre_operations(self):
@@ -1016,26 +846,12 @@ class BlueprintAssignmentDelete(_BlueprintAssignmentDelete):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZStrArg
-        args_schema.management_group = AAZStrArg(
-            options=["--management-group", "-m"],
-            arg_group='Resource_scope',
-            help="Use management group for the scope of the blueprint."
-        )
-        args_schema.subscription_id = AAZStrArg(
-            options=["--subscription", "-s"],
-            arg_group='Resource_scope',
-            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
-                 "--subscription value or the default subscription will be used as the scope."
-        )
-        args_schema.resource_scope._required = False
-        args_schema.resource_scope._registered = False
-        return args_schema
+        return build_arguments_schema(args_schema)
 
+    # ignore the global subscription param
     def _cli_arguments_loader(self):
-        from knack.arguments import CLICommandArgument
         args = super()._cli_arguments_loader()
-        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        cli_arguments_loader(args)
         return args
 
     def pre_operations(self):
@@ -1052,26 +868,12 @@ class BlueprintAssignmentShow(_BlueprintAssignmentShow):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZStrArg
-        args_schema.management_group = AAZStrArg(
-            options=["--management-group", "-m"],
-            arg_group='Resource_scope',
-            help="Use management group for the scope of the blueprint."
-        )
-        args_schema.subscription_id = AAZStrArg(
-            options=["--subscription", "-s"],
-            arg_group='Resource_scope',
-            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
-                 "--subscription value or the default subscription will be used as the scope."
-        )
-        args_schema.resource_scope._required = False
-        args_schema.resource_scope._registered = False
-        return args_schema
+        return build_arguments_schema(args_schema)
 
+    # ignore the global subscription param
     def _cli_arguments_loader(self):
-        from knack.arguments import CLICommandArgument
         args = super()._cli_arguments_loader()
-        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        cli_arguments_loader(args)
         return args
 
     def pre_operations(self):
@@ -1084,26 +886,12 @@ class BlueprintAssignmentList(_BlueprintAssignmentList):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZStrArg
-        args_schema.management_group = AAZStrArg(
-            options=["--management-group", "-m"],
-            arg_group='Resource_scope',
-            help="Use management group for the scope of the blueprint."
-        )
-        args_schema.subscription_id = AAZStrArg(
-            options=["--subscription", "-s"],
-            arg_group='Resource_scope',
-            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
-                 "--subscription value or the default subscription will be used as the scope."
-        )
-        args_schema.resource_scope._required = False
-        args_schema.resource_scope._registered = False
-        return args_schema
+        return build_arguments_schema(args_schema)
 
+    # ignore the global subscription param
     def _cli_arguments_loader(self):
-        from knack.arguments import CLICommandArgument
         args = super()._cli_arguments_loader()
-        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        cli_arguments_loader(args)
         return args
 
     def pre_operations(self):
@@ -1121,26 +909,12 @@ class BlueprintAssignmentWho(_BlueprintAssignmentWho):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZStrArg
-        args_schema.management_group = AAZStrArg(
-            options=["--management-group", "-m"],
-            arg_group='Resource_scope',
-            help="Use management group for the scope of the blueprint."
-        )
-        args_schema.subscription_id = AAZStrArg(
-            options=["--subscription", "-s"],
-            arg_group='Resource_scope',
-            help="Use subscription for the scope of the blueprint. If --management-group is not specified,"
-                 "--subscription value or the default subscription will be used as the scope."
-        )
-        args_schema.resource_scope._required = False
-        args_schema.resource_scope._registered = False
-        return args_schema
+        return build_arguments_schema(args_schema)
 
+    # ignore the global subscription param
     def _cli_arguments_loader(self):
-        from knack.arguments import CLICommandArgument
         args = super()._cli_arguments_loader()
-        args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+        cli_arguments_loader(args)
         return args
 
     def pre_operations(self):
