@@ -140,26 +140,27 @@ class Create(AAZCommand):
         provider_specific_input.Element = AAZObjectArg()
 
         _element = cls._args_schema.provider_specific_input.Element
-        _element.a2_a = AAZObjectArg(
-            options=["a2-a"],
+        _element.a2a = AAZObjectArg(
+            options=["a2a"],
+            help="a2a",
         )
 
-        a2_a = cls._args_schema.provider_specific_input.Element.a2_a
-        a2_a.primary_extended_location = AAZObjectArg(
+        a2a = cls._args_schema.provider_specific_input.Element.a2a
+        a2a.primary_extended_location = AAZObjectArg(
             options=["primary-extended-location"],
             help="The primary extended location.",
         )
-        cls._build_args_extended_location_create(a2_a.primary_extended_location)
-        a2_a.primary_zone = AAZStrArg(
+        cls._build_args_extended_location_create(a2a.primary_extended_location)
+        a2a.primary_zone = AAZStrArg(
             options=["primary-zone"],
             help="The primary zone.",
         )
-        a2_a.recovery_extended_location = AAZObjectArg(
+        a2a.recovery_extended_location = AAZObjectArg(
             options=["recovery-extended-location"],
             help="The recovery extended location.",
         )
-        cls._build_args_extended_location_create(a2_a.recovery_extended_location)
-        a2_a.recovery_zone = AAZStrArg(
+        cls._build_args_extended_location_create(a2a.recovery_extended_location)
+        a2a.recovery_zone = AAZStrArg(
             options=["recovery-zone"],
             help="The recovery zone.",
         )
@@ -446,15 +447,15 @@ class Create(AAZCommand):
 
             _elements = _builder.get(".properties.providerSpecificInput[]")
             if _elements is not None:
-                _elements.set_const("instanceType", "A2A", AAZStrType, ".a2_a", typ_kwargs={"flags": {"required": True}})
+                _elements.set_const("instanceType", "A2A", AAZStrType, ".a2a", typ_kwargs={"flags": {"required": True}})
                 _elements.discriminate_by("instanceType", "A2A")
 
             disc_a2_a = _builder.get(".properties.providerSpecificInput[]{instanceType:A2A}")
             if disc_a2_a is not None:
-                _CreateHelper._build_schema_extended_location_create(disc_a2_a.set_prop("primaryExtendedLocation", AAZObjectType, ".a2_a.primary_extended_location"))
-                disc_a2_a.set_prop("primaryZone", AAZStrType, ".a2_a.primary_zone")
-                _CreateHelper._build_schema_extended_location_create(disc_a2_a.set_prop("recoveryExtendedLocation", AAZObjectType, ".a2_a.recovery_extended_location"))
-                disc_a2_a.set_prop("recoveryZone", AAZStrType, ".a2_a.recovery_zone")
+                _CreateHelper._build_schema_extended_location_create(disc_a2_a.set_prop("primaryExtendedLocation", AAZObjectType, ".a2a.primary_extended_location"))
+                disc_a2_a.set_prop("primaryZone", AAZStrType, ".a2a.primary_zone")
+                _CreateHelper._build_schema_extended_location_create(disc_a2_a.set_prop("recoveryExtendedLocation", AAZObjectType, ".a2a.recovery_extended_location"))
+                disc_a2_a.set_prop("recoveryZone", AAZStrType, ".a2a.recovery_zone")
 
             return self.serialize_content(_content_value)
 

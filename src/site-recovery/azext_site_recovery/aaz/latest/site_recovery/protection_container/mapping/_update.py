@@ -105,8 +105,9 @@ class Update(AAZCommand):
         provider_specific_input.hyper_v_replica_azure = AAZObjectArg(
             options=["hyper-v-replica-azure"],
         )
-        provider_specific_input.v_mware_cbt = AAZObjectArg(
-            options=["v-mware-cbt"],
+        provider_specific_input.vmware_cbt = AAZObjectArg(
+            options=["vmware-cbt"],
+            help="vmware-cbt",
         )
 
         a2a = cls._args_schema.provider_specific_input.a2a
@@ -135,32 +136,32 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        v_mware_cbt = cls._args_schema.provider_specific_input.v_mware_cbt
-        v_mware_cbt.key_vault_id = AAZStrArg(
+        vmware_cbt = cls._args_schema.provider_specific_input.vmware_cbt
+        vmware_cbt.key_vault_id = AAZStrArg(
             options=["key-vault-id"],
             help="The target key vault ARM Id.",
             nullable=True,
         )
-        v_mware_cbt.key_vault_uri = AAZStrArg(
+        vmware_cbt.key_vault_uri = AAZStrArg(
             options=["key-vault-uri"],
             help="The target key vault URL.",
             nullable=True,
         )
-        v_mware_cbt.service_bus_connection_string_secret_name = AAZStrArg(
+        vmware_cbt.service_bus_connection_string_secret_name = AAZStrArg(
             options=["service-bus-connection-string-secret-name"],
             help="The secret name of the service bus connection string.",
             nullable=True,
         )
-        v_mware_cbt.storage_account_id = AAZStrArg(
+        vmware_cbt.storage_account_id = AAZStrArg(
             options=["storage-account-id"],
             help="The storage account ARM Id.",
         )
-        v_mware_cbt.storage_account_sas_secret_name = AAZStrArg(
+        vmware_cbt.storage_account_sas_secret_name = AAZStrArg(
             options=["storage-account-sas-secret-name"],
             help="The secret name of the storage account.",
             nullable=True,
         )
-        v_mware_cbt.target_location = AAZStrArg(
+        vmware_cbt.target_location = AAZStrArg(
             options=["target-location"],
             help="The target location.",
         )
@@ -437,7 +438,7 @@ class Update(AAZCommand):
             if provider_specific_input is not None:
                 provider_specific_input.set_const("instanceType", "A2A", AAZStrType, ".a2a", typ_kwargs={"flags": {"required": True}})
                 provider_specific_input.set_const("instanceType", "HyperVReplicaAzure", AAZStrType, ".hyper_v_replica_azure", typ_kwargs={"flags": {"required": True}})
-                provider_specific_input.set_const("instanceType", "VMwareCbt", AAZStrType, ".v_mware_cbt", typ_kwargs={"flags": {"required": True}})
+                provider_specific_input.set_const("instanceType", "VMwareCbt", AAZStrType, ".vmware_cbt", typ_kwargs={"flags": {"required": True}})
                 provider_specific_input.discriminate_by("instanceType", "A2A")
                 provider_specific_input.discriminate_by("instanceType", "HyperVReplicaAzure")
                 provider_specific_input.discriminate_by("instanceType", "VMwareCbt")
@@ -454,12 +455,12 @@ class Update(AAZCommand):
 
             disc_v_mware_cbt = _builder.get(".properties.providerSpecificInput{instanceType:VMwareCbt}")
             if disc_v_mware_cbt is not None:
-                disc_v_mware_cbt.set_prop("keyVaultId", AAZStrType, ".v_mware_cbt.key_vault_id")
-                disc_v_mware_cbt.set_prop("keyVaultUri", AAZStrType, ".v_mware_cbt.key_vault_uri")
-                disc_v_mware_cbt.set_prop("serviceBusConnectionStringSecretName", AAZStrType, ".v_mware_cbt.service_bus_connection_string_secret_name")
-                disc_v_mware_cbt.set_prop("storageAccountId", AAZStrType, ".v_mware_cbt.storage_account_id", typ_kwargs={"flags": {"required": True}})
-                disc_v_mware_cbt.set_prop("storageAccountSasSecretName", AAZStrType, ".v_mware_cbt.storage_account_sas_secret_name")
-                disc_v_mware_cbt.set_prop("targetLocation", AAZStrType, ".v_mware_cbt.target_location", typ_kwargs={"flags": {"required": True}})
+                disc_v_mware_cbt.set_prop("keyVaultId", AAZStrType, ".vmware_cbt.key_vault_id")
+                disc_v_mware_cbt.set_prop("keyVaultUri", AAZStrType, ".vmware_cbt.key_vault_uri")
+                disc_v_mware_cbt.set_prop("serviceBusConnectionStringSecretName", AAZStrType, ".vmware_cbt.service_bus_connection_string_secret_name")
+                disc_v_mware_cbt.set_prop("storageAccountId", AAZStrType, ".vmware_cbt.storage_account_id", typ_kwargs={"flags": {"required": True}})
+                disc_v_mware_cbt.set_prop("storageAccountSasSecretName", AAZStrType, ".vmware_cbt.storage_account_sas_secret_name")
+                disc_v_mware_cbt.set_prop("targetLocation", AAZStrType, ".vmware_cbt.target_location", typ_kwargs={"flags": {"required": True}})
 
             return _instance_value
 

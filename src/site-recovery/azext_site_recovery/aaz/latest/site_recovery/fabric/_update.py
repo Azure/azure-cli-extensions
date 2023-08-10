@@ -83,8 +83,9 @@ class Update(AAZCommand):
         custom_details.in_mage_rcm = AAZObjectArg(
             options=["in-mage-rcm"],
         )
-        custom_details.v_mware_v2 = AAZObjectArg(
-            options=["v-mware-v2"],
+        custom_details.vmware_v2 = AAZObjectArg(
+            options=["vmware-v2"],
+            help="vmware-v2",
         )
 
         azure = cls._args_schema.custom_details.azure
@@ -137,17 +138,17 @@ class Update(AAZCommand):
             help="The tenant Id for the service principal with which the on-premise management/data plane components would communicate with our Azure services.",
         )
 
-        v_mware_v2 = cls._args_schema.custom_details.v_mware_v2
-        v_mware_v2.migration_solution_id = AAZStrArg(
+        vmware_v2 = cls._args_schema.custom_details.vmware_v2
+        vmware_v2.migration_solution_id = AAZStrArg(
             options=["migration-solution-id"],
             help="The ARM Id of the migration solution.",
         )
-        v_mware_v2.physical_site_id = AAZStrArg(
+        vmware_v2.physical_site_id = AAZStrArg(
             options=["physical-site-id"],
             help="The ARM Id of the physical site.",
             nullable=True,
         )
-        v_mware_v2.vmware_site_id = AAZStrArg(
+        vmware_v2.vmware_site_id = AAZStrArg(
             options=["vmware-site-id"],
             help="The ARM Id of the VMware site.",
             nullable=True,
@@ -408,7 +409,7 @@ class Update(AAZCommand):
                 custom_details.set_const("instanceType", "Azure", AAZStrType, ".azure", typ_kwargs={"flags": {"required": True}})
                 custom_details.set_const("instanceType", "HyperVSite", AAZStrType, ".hyper_v_site", typ_kwargs={"flags": {"required": True}})
                 custom_details.set_const("instanceType", "InMageRcm", AAZStrType, ".in_mage_rcm", typ_kwargs={"flags": {"required": True}})
-                custom_details.set_const("instanceType", "VMwareV2", AAZStrType, ".v_mware_v2", typ_kwargs={"flags": {"required": True}})
+                custom_details.set_const("instanceType", "VMwareV2", AAZStrType, ".vmware_v2", typ_kwargs={"flags": {"required": True}})
                 custom_details.discriminate_by("instanceType", "Azure")
                 custom_details.discriminate_by("instanceType", "HyperVSite")
                 custom_details.discriminate_by("instanceType", "InMageRcm")
@@ -438,9 +439,9 @@ class Update(AAZCommand):
 
             disc_v_mware_v2 = _builder.get(".properties.customDetails{instanceType:VMwareV2}")
             if disc_v_mware_v2 is not None:
-                disc_v_mware_v2.set_prop("migrationSolutionId", AAZStrType, ".v_mware_v2.migration_solution_id", typ_kwargs={"flags": {"required": True}})
-                disc_v_mware_v2.set_prop("physicalSiteId", AAZStrType, ".v_mware_v2.physical_site_id")
-                disc_v_mware_v2.set_prop("vmwareSiteId", AAZStrType, ".v_mware_v2.vmware_site_id")
+                disc_v_mware_v2.set_prop("migrationSolutionId", AAZStrType, ".vmware_v2.migration_solution_id", typ_kwargs={"flags": {"required": True}})
+                disc_v_mware_v2.set_prop("physicalSiteId", AAZStrType, ".vmware_v2.physical_site_id")
+                disc_v_mware_v2.set_prop("vmwareSiteId", AAZStrType, ".vmware_v2.vmware_site_id")
 
             return _instance_value
 

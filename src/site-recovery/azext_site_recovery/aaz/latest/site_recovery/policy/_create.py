@@ -100,8 +100,9 @@ class Create(AAZCommand):
         provider_specific_input.in_mage_rcm_failback = AAZObjectArg(
             options=["in-mage-rcm-failback"],
         )
-        provider_specific_input.v_mware_cbt = AAZObjectArg(
-            options=["v-mware-cbt"],
+        provider_specific_input.vmware_cbt = AAZObjectArg(
+            options=["vmware-cbt"],
+            help="vmware-cbt",
         )
 
         a2a = cls._args_schema.provider_specific_input.a2a
@@ -309,16 +310,16 @@ class Create(AAZCommand):
             help="The crash consistent snapshot frequency (in minutes).",
         )
 
-        v_mware_cbt = cls._args_schema.provider_specific_input.v_mware_cbt
-        v_mware_cbt.app_consistent_frequency_in_minutes = AAZIntArg(
+        vmware_cbt = cls._args_schema.provider_specific_input.vmware_cbt
+        vmware_cbt.app_consistent_frequency_in_minutes = AAZIntArg(
             options=["app-consistent-frequency-in-minutes"],
             help="The app consistent snapshot frequency (in minutes).",
         )
-        v_mware_cbt.crash_consistent_frequency_in_minutes = AAZIntArg(
+        vmware_cbt.crash_consistent_frequency_in_minutes = AAZIntArg(
             options=["crash-consistent-frequency-in-minutes"],
             help="The crash consistent snapshot frequency (in minutes).",
         )
-        v_mware_cbt.recovery_point_history_in_minutes = AAZIntArg(
+        vmware_cbt.recovery_point_history_in_minutes = AAZIntArg(
             options=["recovery-point-history-in-minutes"],
             help="The duration in minutes until which the recovery points need to be stored.",
         )
@@ -450,7 +451,7 @@ class Create(AAZCommand):
                 provider_specific_input.set_const("instanceType", "InMageAzureV2", AAZStrType, ".in_mage_azure_v2", typ_kwargs={"flags": {"required": True}})
                 provider_specific_input.set_const("instanceType", "InMageRcm", AAZStrType, ".in_mage_rcm", typ_kwargs={"flags": {"required": True}})
                 provider_specific_input.set_const("instanceType", "InMageRcmFailback", AAZStrType, ".in_mage_rcm_failback", typ_kwargs={"flags": {"required": True}})
-                provider_specific_input.set_const("instanceType", "VMwareCbt", AAZStrType, ".v_mware_cbt", typ_kwargs={"flags": {"required": True}})
+                provider_specific_input.set_const("instanceType", "VMwareCbt", AAZStrType, ".vmware_cbt", typ_kwargs={"flags": {"required": True}})
                 provider_specific_input.discriminate_by("instanceType", "A2A")
                 provider_specific_input.discriminate_by("instanceType", "HyperVReplica2012")
                 provider_specific_input.discriminate_by("instanceType", "HyperVReplica2012R2")
@@ -536,9 +537,9 @@ class Create(AAZCommand):
 
             disc_v_mware_cbt = _builder.get(".properties.providerSpecificInput{instanceType:VMwareCbt}")
             if disc_v_mware_cbt is not None:
-                disc_v_mware_cbt.set_prop("appConsistentFrequencyInMinutes", AAZIntType, ".v_mware_cbt.app_consistent_frequency_in_minutes")
-                disc_v_mware_cbt.set_prop("crashConsistentFrequencyInMinutes", AAZIntType, ".v_mware_cbt.crash_consistent_frequency_in_minutes")
-                disc_v_mware_cbt.set_prop("recoveryPointHistoryInMinutes", AAZIntType, ".v_mware_cbt.recovery_point_history_in_minutes")
+                disc_v_mware_cbt.set_prop("appConsistentFrequencyInMinutes", AAZIntType, ".vmware_cbt.app_consistent_frequency_in_minutes")
+                disc_v_mware_cbt.set_prop("crashConsistentFrequencyInMinutes", AAZIntType, ".vmware_cbt.crash_consistent_frequency_in_minutes")
+                disc_v_mware_cbt.set_prop("recoveryPointHistoryInMinutes", AAZIntType, ".vmware_cbt.recovery_point_history_in_minutes")
 
             return self.serialize_content(_content_value)
 

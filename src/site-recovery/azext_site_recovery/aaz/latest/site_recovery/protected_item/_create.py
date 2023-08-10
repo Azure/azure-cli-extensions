@@ -93,8 +93,9 @@ class Create(AAZCommand):
             options=["a2a"],
             help="A2A",
         )
-        provider_specific_details.a2_a_cross_cluster_migration = AAZObjectArg(
-            options=["a2-a-cross-cluster-migration"],
+        provider_specific_details.a2a_cross_cluster_migration = AAZObjectArg(
+            options=["a2a-cross-cluster-migration"],
+            help="a2a-cross-cluster-migration",
         )
         provider_specific_details.hyper_v_replica_azure = AAZObjectArg(
             options=["hyper-v-replica-azure"],
@@ -255,12 +256,12 @@ class Create(AAZCommand):
             help="The target disk type after failover. Its an optional value and will be same as source disk type if not user provided.",
         )
 
-        a2_a_cross_cluster_migration = cls._args_schema.provider_specific_details.a2_a_cross_cluster_migration
-        a2_a_cross_cluster_migration.fabric_object_id = AAZStrArg(
+        a2a_cross_cluster_migration = cls._args_schema.provider_specific_details.a2a_cross_cluster_migration
+        a2a_cross_cluster_migration.fabric_object_id = AAZStrArg(
             options=["fabric-object-id"],
             help="The fabric specific object Id of the virtual machine.",
         )
-        a2_a_cross_cluster_migration.recovery_container_id = AAZStrArg(
+        a2a_cross_cluster_migration.recovery_container_id = AAZStrArg(
             options=["recovery-container-id"],
             help="The recovery container Id.",
         )
@@ -941,7 +942,7 @@ class Create(AAZCommand):
             provider_specific_details = _builder.get(".properties.providerSpecificDetails")
             if provider_specific_details is not None:
                 provider_specific_details.set_const("instanceType", "A2A", AAZStrType, ".a2a", typ_kwargs={"flags": {"required": True}})
-                provider_specific_details.set_const("instanceType", "A2ACrossClusterMigration", AAZStrType, ".a2_a_cross_cluster_migration", typ_kwargs={"flags": {"required": True}})
+                provider_specific_details.set_const("instanceType", "A2ACrossClusterMigration", AAZStrType, ".a2a_cross_cluster_migration", typ_kwargs={"flags": {"required": True}})
                 provider_specific_details.set_const("instanceType", "HyperVReplicaAzure", AAZStrType, ".hyper_v_replica_azure", typ_kwargs={"flags": {"required": True}})
                 provider_specific_details.set_const("instanceType", "InMage", AAZStrType, ".in_mage", typ_kwargs={"flags": {"required": True}})
                 provider_specific_details.set_const("instanceType", "InMageAzureV2", AAZStrType, ".in_mage_azure_v2", typ_kwargs={"flags": {"required": True}})
@@ -1005,8 +1006,8 @@ class Create(AAZCommand):
 
             disc_a2_a_cross_cluster_migration = _builder.get(".properties.providerSpecificDetails{instanceType:A2ACrossClusterMigration}")
             if disc_a2_a_cross_cluster_migration is not None:
-                disc_a2_a_cross_cluster_migration.set_prop("fabricObjectId", AAZStrType, ".a2_a_cross_cluster_migration.fabric_object_id")
-                disc_a2_a_cross_cluster_migration.set_prop("recoveryContainerId", AAZStrType, ".a2_a_cross_cluster_migration.recovery_container_id")
+                disc_a2_a_cross_cluster_migration.set_prop("fabricObjectId", AAZStrType, ".a2a_cross_cluster_migration.fabric_object_id")
+                disc_a2_a_cross_cluster_migration.set_prop("recoveryContainerId", AAZStrType, ".a2a_cross_cluster_migration.recovery_container_id")
 
             disc_hyper_v_replica_azure = _builder.get(".properties.providerSpecificDetails{instanceType:HyperVReplicaAzure}")
             if disc_hyper_v_replica_azure is not None:
