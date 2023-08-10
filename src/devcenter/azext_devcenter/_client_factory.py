@@ -7,31 +7,10 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-from .utils import get_project_data
+from .utils import get_project_data, DevCenterClientTokenCredential
 from ._validators import validate_endpoint
+
 # Data plane
-
-from collections import namedtuple
-DevCenterClientAccessToken = namedtuple("AccessToken", ["token", "expires_on"])
-import requests
-
-
-class DevCenterClientTokenCredential:
-    """Simple access token Authentication. Returns the access token as-is.
-    """
-
-    def __init__(self, access_token, expires_on):
-        self.access_token = access_token
-        self.expires_on = expires_on
-
-    def get_token(self, *arg, **kwargs):
-        return DevCenterClientAccessToken(self.access_token, self.expires_on)
-
-    def signed_session(self, session=None):
-        session = session or requests.Session()
-        header = "{} {}".format('Bearer', self.access_token)
-        session.headers['Authorization'] = header
-        return session
 
 
 def cf_devcenter_dataplane(cli_ctx, endpoint=None, dev_center=None, project_name=None):
@@ -41,7 +20,6 @@ def cf_devcenter_dataplane(cli_ctx, endpoint=None, dev_center=None, project_name
     )
 
     validate_endpoint(endpoint, dev_center)
-    print(endpoint)
 
     if endpoint is None and dev_center is not None:
         project = get_project_data(cli_ctx, dev_center, project_name)
@@ -54,7 +32,6 @@ def cf_devcenter_dataplane(cli_ctx, endpoint=None, dev_center=None, project_name
     expires_on=token['expires_on']
 
     credential = DevCenterClientTokenCredential(access_token, expires_on)
-    
 
     cli_ctx.cloud.endpoints.active_directory_resource_id = "https://devcenter.azure.com"
     return DevCenterClient(endpoint, credential)

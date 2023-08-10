@@ -9,7 +9,24 @@ from datetime import timedelta
 from azure.cli.core.azclierror import ResourceNotFoundError, AzureInternalError
 from azure.cli.core.util import send_raw_request
 from azure.cli.core._profile import Profile
+from collections import namedtuple
+import requests
 
+DevCenterClientAccessToken = namedtuple("AccessToken", ["token", "expires_on"])
+
+class DevCenterClientTokenCredential:
+    def __init__(self, access_token, expires_on):
+        self.access_token = access_token
+        self.expires_on = expires_on
+
+    def get_token(self, *arg, **kwargs):
+        return DevCenterClientAccessToken(self.access_token, self.expires_on)
+
+    def signed_session(self, session=None):
+        session = session or requests.Session()
+        header = "{} {}".format('Bearer', self.access_token)
+        session.headers['Authorization'] = header
+        return session
 
 def get_project_arg(cli_ctx, dev_center_name, project_name=None):
     management_hostname = cli_ctx.cloud.endpoints.resource_manager.strip("/")
