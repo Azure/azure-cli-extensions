@@ -25,7 +25,6 @@ class DevCenterClientTokenCredential:
         self.expires_on = expires_on
 
     def get_token(self, *arg, **kwargs):
-        import time
         return DevCenterClientAccessToken(self.access_token, self.expires_on)
 
     def signed_session(self, session=None):
@@ -54,7 +53,7 @@ def cf_devcenter_dataplane(cli_ctx, endpoint=None, dev_center=None, project_name
     access_token = token['accessToken']
     expires_on=token['expires_on']
 
-    credential = DevCenterClientTokenCredential(access_token=access_token, expires_on=expires_on)
+    credential = DevCenterClientTokenCredential(access_token, expires_on)
     
 
     cli_ctx.cloud.endpoints.active_directory_resource_id = "https://devcenter.azure.com"
