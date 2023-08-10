@@ -151,6 +151,7 @@ from azext_aks_preview._validators import (
     validate_utc_offset,
     validate_vm_set_type,
     validate_vnet_subnet_id,
+    validate_azure_service_mesh_pluginca
 )
 from azure.cli.core.commands.parameters import (
     edge_zone_type,
@@ -902,6 +903,12 @@ def load_arguments(self, _):
         c.argument('ingress_gateway_type',
                    arg_type=get_enum_type(ingress_gateway_types))
 
+    with self.argument_context('aks mesh enable') as c:
+        c.argument('key_vault_id', required=False, help='The Azure Keyvault id with plugin CA info.',validator=validate_azure_service_mesh_pluginca)
+        c.argument('ca_cert_object_name', required=False, help='Intermediate cert object name in the Azure Keyvault.', validator=validate_azure_service_mesh_pluginca)
+        c.argument('ca_key_object_name', required=False, help='Intermediate key object name in the Azure Keyvault.', validator=validate_azure_service_mesh_pluginca)
+        c.argument('root_cert_object_name', required=False, help='Root cert object name in the Azure Keyvault.', validator=validate_azure_service_mesh_pluginca)
+        c.argument('cert_chain_object_name', required=False, help='Cert chain object name in the Azure Keyvault.', validator=validate_azure_service_mesh_pluginca)
 
 def _get_default_install_location(exe_name):
     system = platform.system()

@@ -2185,6 +2185,24 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 )
                 updated = True
 
+        # deal with plugin ca
+        key_vault_id = self.raw_param.get("key_vault_id", None)
+        ca_cert_object_name = self.raw_param.get("ca_cert_object_name", None)
+        ca_key_object_name = self.raw_param.get("ca_key_object_name", None)
+        root_cert_object_name = self.raw_param.get("root_cert_object_name", None)
+        cert_chain_object_name = self.raw_param.get("cert_chain_object_name", None)
+        if enable_asm and key_vault_id is not None and ca_cert_object_name is not None and ca_key_object_name is not None and root_cert_object_name is not None and cert_chain_object_name is not None:
+            if new_profile.istio.certificate_authority is None:
+                new_profile.istio.certificate_authority = self.models.IstioCertificateAuthority()
+            if new_profile.istio.certificate_authority.plugin is None:
+                new_profile.istio.certificate_authority.plugin = self.models.IstioPluginCertificateAuthority()
+            new_profile.istio.certificate_authority.plugin.key_vault_id=key_vault_id
+            new_profile.istio.certificate_authority.plugin.cert_object_name=ca_cert_object_name
+            new_profile.istio.certificate_authority.plugin.key_object_name=ca_key_object_name
+            new_profile.istio.certificate_authority.plugin.root_cert_object_name=root_cert_object_name
+            new_profile.istio.certificate_authority.plugin.cert_chain_object_name=cert_chain_object_name
+            updated = True
+
         if updated:
             return new_profile
         else:
