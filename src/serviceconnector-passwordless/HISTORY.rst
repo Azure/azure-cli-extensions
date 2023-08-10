@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.3.7
+++++++
+* Make some improvements.
+
 0.3.6
 ++++++
 * Make some improvements.
