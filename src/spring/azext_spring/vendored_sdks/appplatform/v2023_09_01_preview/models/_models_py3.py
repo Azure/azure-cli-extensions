@@ -65,6 +65,8 @@ class AcceleratorBasicAuthSetting(AcceleratorAuthSetting):
 
     :ivar auth_type: The type of the auth setting. Required.
     :vartype auth_type: str
+    :ivar ca_cert_resource_id: Resource Id of CA certificate for https URL of Git repository.
+    :vartype ca_cert_resource_id: str
     :ivar username: Username of git repository basic auth. Required.
     :vartype username: str
     :ivar password: Password of git repository basic auth.
@@ -78,12 +80,17 @@ class AcceleratorBasicAuthSetting(AcceleratorAuthSetting):
 
     _attribute_map = {
         "auth_type": {"key": "authType", "type": "str"},
+        "ca_cert_resource_id": {"key": "caCertResourceId", "type": "str"},
         "username": {"key": "username", "type": "str"},
         "password": {"key": "password", "type": "str"},
     }
 
-    def __init__(self, *, username: str, password: Optional[str] = None, **kwargs: Any) -> None:
+    def __init__(
+        self, *, username: str, ca_cert_resource_id: Optional[str] = None, password: Optional[str] = None, **kwargs: Any
+    ) -> None:
         """
+        :keyword ca_cert_resource_id: Resource Id of CA certificate for https URL of Git repository.
+        :paramtype ca_cert_resource_id: str
         :keyword username: Username of git repository basic auth. Required.
         :paramtype username: str
         :keyword password: Password of git repository basic auth.
@@ -91,6 +98,7 @@ class AcceleratorBasicAuthSetting(AcceleratorAuthSetting):
         """
         super().__init__(**kwargs)
         self.auth_type: str = "BasicAuth"
+        self.ca_cert_resource_id = ca_cert_resource_id
         self.username = username
         self.password = password
 
@@ -112,7 +120,7 @@ class AcceleratorGitRepository(_serialization.Model):
     :vartype git_tag: str
     :ivar auth_setting: Properties of the auth setting payload. Required.
     :vartype auth_setting:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.AcceleratorAuthSetting
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.AcceleratorAuthSetting
     """
 
     _validation = {
@@ -153,7 +161,7 @@ class AcceleratorGitRepository(_serialization.Model):
         :paramtype git_tag: str
         :keyword auth_setting: Properties of the auth setting payload. Required.
         :paramtype auth_setting:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.AcceleratorAuthSetting
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.AcceleratorAuthSetting
         """
         super().__init__(**kwargs)
         self.url = url
@@ -171,6 +179,8 @@ class AcceleratorPublicSetting(AcceleratorAuthSetting):
 
     :ivar auth_type: The type of the auth setting. Required.
     :vartype auth_type: str
+    :ivar ca_cert_resource_id: Resource Id of CA certificate for https URL of Git repository.
+    :vartype ca_cert_resource_id: str
     """
 
     _validation = {
@@ -179,12 +189,17 @@ class AcceleratorPublicSetting(AcceleratorAuthSetting):
 
     _attribute_map = {
         "auth_type": {"key": "authType", "type": "str"},
+        "ca_cert_resource_id": {"key": "caCertResourceId", "type": "str"},
     }
 
-    def __init__(self, **kwargs: Any) -> None:
-        """ """
+    def __init__(self, *, ca_cert_resource_id: Optional[str] = None, **kwargs: Any) -> None:
+        """
+        :keyword ca_cert_resource_id: Resource Id of CA certificate for https URL of Git repository.
+        :paramtype ca_cert_resource_id: str
+        """
         super().__init__(**kwargs)
         self.auth_type: str = "Public"
+        self.ca_cert_resource_id = ca_cert_resource_id
 
 
 class AcceleratorSshSetting(AcceleratorAuthSetting):
@@ -288,7 +303,7 @@ class Resource(_serialization.Model):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     """
 
     _validation = {
@@ -327,7 +342,7 @@ class ProxyResource(Resource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     """
 
     _validation = {
@@ -361,10 +376,10 @@ class ApiPortalCustomDomainResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: The properties of custom domain for API portal.
     :vartype properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApiPortalCustomDomainProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApiPortalCustomDomainProperties
     """
 
     _validation = {
@@ -388,7 +403,7 @@ class ApiPortalCustomDomainResource(ProxyResource):
         """
         :keyword properties: The properties of custom domain for API portal.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApiPortalCustomDomainProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApiPortalCustomDomainProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -400,7 +415,7 @@ class ApiPortalCustomDomainResourceCollection(_serialization.Model):
 
     :ivar value: Collection of API portal custom domain resources.
     :vartype value:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ApiPortalCustomDomainResource]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApiPortalCustomDomainResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -421,7 +436,7 @@ class ApiPortalCustomDomainResourceCollection(_serialization.Model):
         """
         :keyword value: Collection of API portal custom domain resources.
         :paramtype value:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ApiPortalCustomDomainResource]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApiPortalCustomDomainResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -467,7 +482,7 @@ class ApiPortalProperties(_serialization.Model):
     :ivar provisioning_state: State of the API portal. Known values are: "Creating", "Updating",
      "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApiPortalProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApiPortalProvisioningState
     :ivar public: Indicates whether the API portal exposes endpoint.
     :vartype public: bool
     :ivar url: URL of the API portal, exposed when 'public' is true.
@@ -479,12 +494,12 @@ class ApiPortalProperties(_serialization.Model):
     :ivar source_urls: Collection of OpenAPI source URL locations.
     :vartype source_urls: list[str]
     :ivar sso_properties: Single sign-on related configuration.
-    :vartype sso_properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SsoProperties
+    :vartype sso_properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SsoProperties
     :ivar resource_requests: The requested resource quantity for required CPU and Memory.
     :vartype resource_requests:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApiPortalResourceRequests
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApiPortalResourceRequests
     :ivar instances: Collection of instances belong to API portal.
-    :vartype instances: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ApiPortalInstance]
+    :vartype instances: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApiPortalInstance]
     """
 
     _validation = {
@@ -526,7 +541,7 @@ class ApiPortalProperties(_serialization.Model):
         :keyword source_urls: Collection of OpenAPI source URL locations.
         :paramtype source_urls: list[str]
         :keyword sso_properties: Single sign-on related configuration.
-        :paramtype sso_properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SsoProperties
+        :paramtype sso_properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SsoProperties
         """
         super().__init__(**kwargs)
         self.provisioning_state = None
@@ -552,11 +567,11 @@ class ApiPortalResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: API portal properties payload.
-    :vartype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApiPortalProperties
+    :vartype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApiPortalProperties
     :ivar sku: Sku of the API portal resource.
-    :vartype sku: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Sku
+    :vartype sku: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Sku
     """
 
     _validation = {
@@ -584,9 +599,9 @@ class ApiPortalResource(ProxyResource):
     ) -> None:
         """
         :keyword properties: API portal properties payload.
-        :paramtype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApiPortalProperties
+        :paramtype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApiPortalProperties
         :keyword sku: Sku of the API portal resource.
-        :paramtype sku: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Sku
+        :paramtype sku: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Sku
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -597,7 +612,7 @@ class ApiPortalResourceCollection(_serialization.Model):
     """Object that includes an array of API portal resources and a possible link for next set.
 
     :ivar value: Collection of API portal resources.
-    :vartype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ApiPortalResource]
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApiPortalResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -617,7 +632,7 @@ class ApiPortalResourceCollection(_serialization.Model):
     ) -> None:
         """
         :keyword value: Collection of API portal resources.
-        :paramtype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ApiPortalResource]
+        :paramtype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApiPortalResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -655,6 +670,177 @@ class ApiPortalResourceRequests(_serialization.Model):
         self.memory = None
 
 
+class ApmProperties(_serialization.Model):
+    """Properties of an APM.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar type: APM Type. Required.
+    :vartype type: str
+    :ivar provisioning_state: State of the APM. Known values are: "Creating", "Updating",
+     "Succeeded", "Failed", "Deleting", and "Canceled".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApmProvisioningState
+    :ivar properties: Non-sensitive properties for the APM.
+    :vartype properties: dict[str, str]
+    :ivar secrets: Sensitive properties for the APM.
+    :vartype secrets: dict[str, str]
+    """
+
+    _validation = {
+        "type": {"required": True},
+        "provisioning_state": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "type": {"key": "type", "type": "str"},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "properties": {"key": "properties", "type": "{str}"},
+        "secrets": {"key": "secrets", "type": "{str}"},
+    }
+
+    def __init__(
+        self,
+        *,
+        type: str,
+        properties: Optional[Dict[str, str]] = None,
+        secrets: Optional[Dict[str, str]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword type: APM Type. Required.
+        :paramtype type: str
+        :keyword properties: Non-sensitive properties for the APM.
+        :paramtype properties: dict[str, str]
+        :keyword secrets: Sensitive properties for the APM.
+        :paramtype secrets: dict[str, str]
+        """
+        super().__init__(**kwargs)
+        self.type = type
+        self.provisioning_state = None
+        self.properties = properties
+        self.secrets = secrets
+
+
+class ApmReference(_serialization.Model):
+    """A reference to the APM.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar resource_id: Resource Id of the APM. Required.
+    :vartype resource_id: str
+    """
+
+    _validation = {
+        "resource_id": {"required": True},
+    }
+
+    _attribute_map = {
+        "resource_id": {"key": "resourceId", "type": "str"},
+    }
+
+    def __init__(self, *, resource_id: str, **kwargs: Any) -> None:
+        """
+        :keyword resource_id: Resource Id of the APM. Required.
+        :paramtype resource_id: str
+        """
+        super().__init__(**kwargs)
+        self.resource_id = resource_id
+
+
+class ApmResource(ProxyResource):
+    """APM Resource object.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource.
+    :vartype type: str
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
+    :ivar properties: Properties of an APM.
+    :vartype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApmProperties
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "ApmProperties"},
+    }
+
+    def __init__(self, *, properties: Optional["_models.ApmProperties"] = None, **kwargs: Any) -> None:
+        """
+        :keyword properties: Properties of an APM.
+        :paramtype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApmProperties
+        """
+        super().__init__(**kwargs)
+        self.properties = properties
+
+
+class ApmResourceCollection(_serialization.Model):
+    """Object that includes an array of APM resources and a possible link for next set.
+
+    :ivar value: Collection of APM resources.
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApmResource]
+    :ivar next_link: URL client should use to fetch the next page (per server side paging).
+     It's null for now, added for future use.
+    :vartype next_link: str
+    """
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[ApmResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(
+        self, *, value: Optional[List["_models.ApmResource"]] = None, next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword value: Collection of APM resources.
+        :paramtype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApmResource]
+        :keyword next_link: URL client should use to fetch the next page (per server side paging).
+         It's null for now, added for future use.
+        :paramtype next_link: str
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
+class ApmSecretKeys(_serialization.Model):
+    """Keys of APM sensitive properties.
+
+    :ivar value: Collection of the keys for the APM sensitive properties.
+    :vartype value: list[str]
+    """
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[str]"},
+    }
+
+    def __init__(self, *, value: Optional[List[str]] = None, **kwargs: Any) -> None:
+        """
+        :keyword value: Collection of the keys for the APM sensitive properties.
+        :paramtype value: list[str]
+        """
+        super().__init__(**kwargs)
+        self.value = value
+
+
 class ApplicationAcceleratorComponent(_serialization.Model):
     """ApplicationAcceleratorComponent.
 
@@ -664,10 +850,10 @@ class ApplicationAcceleratorComponent(_serialization.Model):
     :vartype name: str
     :ivar resource_requests:
     :vartype resource_requests:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationAcceleratorResourceRequests
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationAcceleratorResourceRequests
     :ivar instances:
     :vartype instances:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationAcceleratorInstance]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationAcceleratorInstance]
     """
 
     _validation = {
@@ -687,7 +873,7 @@ class ApplicationAcceleratorComponent(_serialization.Model):
         """
         :keyword resource_requests:
         :paramtype resource_requests:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationAcceleratorResourceRequests
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationAcceleratorResourceRequests
         """
         super().__init__(**kwargs)
         self.name = None
@@ -732,10 +918,10 @@ class ApplicationAcceleratorProperties(_serialization.Model):
     :ivar provisioning_state: State of the application accelerator. Known values are: "Creating",
      "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationAcceleratorProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationAcceleratorProvisioningState
     :ivar components: Collection of components belong to application accelerator.
     :vartype components:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationAcceleratorComponent]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationAcceleratorComponent]
     """
 
     _validation = {
@@ -767,12 +953,12 @@ class ApplicationAcceleratorResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Application accelerator properties payload.
     :vartype properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationAcceleratorProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationAcceleratorProperties
     :ivar sku: Sku of the application accelerator resource.
-    :vartype sku: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Sku
+    :vartype sku: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Sku
     """
 
     _validation = {
@@ -801,9 +987,9 @@ class ApplicationAcceleratorResource(ProxyResource):
         """
         :keyword properties: Application accelerator properties payload.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationAcceleratorProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationAcceleratorProperties
         :keyword sku: Sku of the application accelerator resource.
-        :paramtype sku: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Sku
+        :paramtype sku: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Sku
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -816,7 +1002,7 @@ class ApplicationAcceleratorResourceCollection(_serialization.Model):
 
     :ivar value: Collection of application accelerator resources.
     :vartype value:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationAcceleratorResource]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationAcceleratorResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -837,7 +1023,7 @@ class ApplicationAcceleratorResourceCollection(_serialization.Model):
         """
         :keyword value: Collection of application accelerator resources.
         :paramtype value:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationAcceleratorResource]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationAcceleratorResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -914,10 +1100,10 @@ class ApplicationLiveViewComponent(_serialization.Model):
     :vartype name: any
     :ivar resource_requests: The requested resource quantity for required CPU and Memory.
     :vartype resource_requests:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationLiveViewResourceRequests
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationLiveViewResourceRequests
     :ivar instances: Collection of instances belong to Application Live View.
     :vartype instances:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationLiveViewInstance]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationLiveViewInstance]
     """
 
     _validation = {
@@ -977,10 +1163,10 @@ class ApplicationLiveViewProperties(_serialization.Model):
     :ivar provisioning_state: State of the Application Live View. Known values are: "Creating",
      "Updating", "Succeeded", "Failed", "Deleting", and "Canceled".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationLiveViewProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationLiveViewProvisioningState
     :ivar components: Component details of Application Live View.
     :vartype components:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationLiveViewComponent]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationLiveViewComponent]
     """
 
     _validation = {
@@ -1012,10 +1198,10 @@ class ApplicationLiveViewResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Application Live View properties payload.
     :vartype properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationLiveViewProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationLiveViewProperties
     """
 
     _validation = {
@@ -1037,7 +1223,7 @@ class ApplicationLiveViewResource(ProxyResource):
         """
         :keyword properties: Application Live View properties payload.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationLiveViewProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationLiveViewProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -1049,7 +1235,7 @@ class ApplicationLiveViewResourceCollection(_serialization.Model):
 
     :ivar value: Collection of Application Live View resources.
     :vartype value:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationLiveViewResource]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationLiveViewResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -1070,7 +1256,7 @@ class ApplicationLiveViewResourceCollection(_serialization.Model):
         """
         :keyword value: Collection of Application Live View resources.
         :paramtype value:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationLiveViewResource]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationLiveViewResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -1127,11 +1313,11 @@ class AppResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Properties of the App resource.
-    :vartype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.AppResourceProperties
+    :vartype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.AppResourceProperties
     :ivar identity: The Managed Identity type of the app resource.
-    :vartype identity: ~azure.mgmt.appplatform.v2022_11_01_preview.models.ManagedIdentityProperties
+    :vartype identity: ~azure.mgmt.appplatform.v2023_09_01_preview.models.ManagedIdentityProperties
     :ivar location: The GEO location of the application, always the same with its parent resource.
     :vartype location: str
     """
@@ -1163,10 +1349,10 @@ class AppResource(ProxyResource):
     ) -> None:
         """
         :keyword properties: Properties of the App resource.
-        :paramtype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.AppResourceProperties
+        :paramtype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.AppResourceProperties
         :keyword identity: The Managed Identity type of the app resource.
         :paramtype identity:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ManagedIdentityProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ManagedIdentityProperties
         :keyword location: The GEO location of the application, always the same with its parent
          resource.
         :paramtype location: str
@@ -1181,7 +1367,7 @@ class AppResourceCollection(_serialization.Model):
     """Object that includes an array of App resources and a possible link for next set.
 
     :ivar value: Collection of App resources.
-    :vartype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.AppResource]
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.AppResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -1197,7 +1383,7 @@ class AppResourceCollection(_serialization.Model):
     ) -> None:
         """
         :keyword value: Collection of App resources.
-        :paramtype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.AppResource]
+        :paramtype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.AppResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -1217,31 +1403,36 @@ class AppResourceProperties(_serialization.Model):  # pylint: disable=too-many-i
     :ivar url: URL of the App.
     :vartype url: str
     :ivar addon_configs: Collection of addons.
-    :vartype addon_configs: dict[str, dict[str, JSON]]
+    :vartype addon_configs: dict[str, JSON]
     :ivar provisioning_state: Provisioning state of the App. Known values are: "Succeeded",
      "Failed", "Creating", "Updating", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.AppResourceProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.AppResourceProvisioningState
     :ivar fqdn: Fully qualified dns Name.
     :vartype fqdn: str
     :ivar https_only: Indicate if only https is allowed.
     :vartype https_only: bool
     :ivar temporary_disk: Temporary disk settings.
-    :vartype temporary_disk: ~azure.mgmt.appplatform.v2022_11_01_preview.models.TemporaryDisk
+    :vartype temporary_disk: ~azure.mgmt.appplatform.v2023_09_01_preview.models.TemporaryDisk
     :ivar persistent_disk: Persistent disk settings.
-    :vartype persistent_disk: ~azure.mgmt.appplatform.v2022_11_01_preview.models.PersistentDisk
+    :vartype persistent_disk: ~azure.mgmt.appplatform.v2023_09_01_preview.models.PersistentDisk
     :ivar custom_persistent_disks: List of custom persistent disks.
     :vartype custom_persistent_disks:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomPersistentDiskResource]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomPersistentDiskResource]
     :ivar enable_end_to_end_tls: Indicate if end to end TLS is enabled.
     :vartype enable_end_to_end_tls: bool
     :ivar loaded_certificates: Collection of loaded certificates.
     :vartype loaded_certificates:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.LoadedCertificate]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.LoadedCertificate]
     :ivar vnet_addons: Additional App settings in vnet injection instance.
-    :vartype vnet_addons: ~azure.mgmt.appplatform.v2022_11_01_preview.models.AppVNetAddons
+    :vartype vnet_addons: ~azure.mgmt.appplatform.v2023_09_01_preview.models.AppVNetAddons
     :ivar ingress_settings: App ingress settings payload.
-    :vartype ingress_settings: ~azure.mgmt.appplatform.v2022_11_01_preview.models.IngressSettings
+    :vartype ingress_settings: ~azure.mgmt.appplatform.v2023_09_01_preview.models.IngressSettings
+    :ivar secrets: Collection of auth secrets.
+    :vartype secrets: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.Secret]
+    :ivar workload_profile_name: The workload profile used for this app. Supported for Consumption
+     + Dedicated plan.
+    :vartype workload_profile_name: str
     """
 
     _validation = {
@@ -1253,7 +1444,7 @@ class AppResourceProperties(_serialization.Model):  # pylint: disable=too-many-i
     _attribute_map = {
         "public": {"key": "public", "type": "bool"},
         "url": {"key": "url", "type": "str"},
-        "addon_configs": {"key": "addonConfigs", "type": "{{object}}"},
+        "addon_configs": {"key": "addonConfigs", "type": "{object}"},
         "provisioning_state": {"key": "provisioningState", "type": "str"},
         "fqdn": {"key": "fqdn", "type": "str"},
         "https_only": {"key": "httpsOnly", "type": "bool"},
@@ -1264,13 +1455,15 @@ class AppResourceProperties(_serialization.Model):  # pylint: disable=too-many-i
         "loaded_certificates": {"key": "loadedCertificates", "type": "[LoadedCertificate]"},
         "vnet_addons": {"key": "vnetAddons", "type": "AppVNetAddons"},
         "ingress_settings": {"key": "ingressSettings", "type": "IngressSettings"},
+        "secrets": {"key": "secrets", "type": "[Secret]"},
+        "workload_profile_name": {"key": "workloadProfileName", "type": "str"},
     }
 
     def __init__(
         self,
         *,
         public: Optional[bool] = None,
-        addon_configs: Optional[Dict[str, Dict[str, JSON]]] = None,
+        addon_configs: Optional[Dict[str, JSON]] = None,
         https_only: bool = False,
         temporary_disk: Optional["_models.TemporaryDisk"] = None,
         persistent_disk: Optional["_models.PersistentDisk"] = None,
@@ -1279,31 +1472,38 @@ class AppResourceProperties(_serialization.Model):  # pylint: disable=too-many-i
         loaded_certificates: Optional[List["_models.LoadedCertificate"]] = None,
         vnet_addons: Optional["_models.AppVNetAddons"] = None,
         ingress_settings: Optional["_models.IngressSettings"] = None,
+        secrets: Optional[List["_models.Secret"]] = None,
+        workload_profile_name: Optional[str] = None,
         **kwargs: Any
     ) -> None:
         """
         :keyword public: Indicates whether the App exposes public endpoint.
         :paramtype public: bool
         :keyword addon_configs: Collection of addons.
-        :paramtype addon_configs: dict[str, dict[str, JSON]]
+        :paramtype addon_configs: dict[str, JSON]
         :keyword https_only: Indicate if only https is allowed.
         :paramtype https_only: bool
         :keyword temporary_disk: Temporary disk settings.
-        :paramtype temporary_disk: ~azure.mgmt.appplatform.v2022_11_01_preview.models.TemporaryDisk
+        :paramtype temporary_disk: ~azure.mgmt.appplatform.v2023_09_01_preview.models.TemporaryDisk
         :keyword persistent_disk: Persistent disk settings.
-        :paramtype persistent_disk: ~azure.mgmt.appplatform.v2022_11_01_preview.models.PersistentDisk
+        :paramtype persistent_disk: ~azure.mgmt.appplatform.v2023_09_01_preview.models.PersistentDisk
         :keyword custom_persistent_disks: List of custom persistent disks.
         :paramtype custom_persistent_disks:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomPersistentDiskResource]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomPersistentDiskResource]
         :keyword enable_end_to_end_tls: Indicate if end to end TLS is enabled.
         :paramtype enable_end_to_end_tls: bool
         :keyword loaded_certificates: Collection of loaded certificates.
         :paramtype loaded_certificates:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.LoadedCertificate]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.LoadedCertificate]
         :keyword vnet_addons: Additional App settings in vnet injection instance.
-        :paramtype vnet_addons: ~azure.mgmt.appplatform.v2022_11_01_preview.models.AppVNetAddons
+        :paramtype vnet_addons: ~azure.mgmt.appplatform.v2023_09_01_preview.models.AppVNetAddons
         :keyword ingress_settings: App ingress settings payload.
-        :paramtype ingress_settings: ~azure.mgmt.appplatform.v2022_11_01_preview.models.IngressSettings
+        :paramtype ingress_settings: ~azure.mgmt.appplatform.v2023_09_01_preview.models.IngressSettings
+        :keyword secrets: Collection of auth secrets.
+        :paramtype secrets: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.Secret]
+        :keyword workload_profile_name: The workload profile used for this app. Supported for
+         Consumption + Dedicated plan.
+        :paramtype workload_profile_name: str
         """
         super().__init__(**kwargs)
         self.public = public
@@ -1319,6 +1519,8 @@ class AppResourceProperties(_serialization.Model):  # pylint: disable=too-many-i
         self.loaded_certificates = loaded_certificates
         self.vnet_addons = vnet_addons
         self.ingress_settings = ingress_settings
+        self.secrets = secrets
+        self.workload_profile_name = workload_profile_name
 
 
 class AppVNetAddons(_serialization.Model):
@@ -1358,7 +1560,7 @@ class AvailableOperations(_serialization.Model):
     """Available operations of the service.
 
     :ivar value: Collection of available operation details.
-    :vartype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.OperationDetail]
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.OperationDetail]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -1374,7 +1576,7 @@ class AvailableOperations(_serialization.Model):
     ) -> None:
         """
         :keyword value: Collection of available operation details.
-        :paramtype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.OperationDetail]
+        :paramtype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.OperationDetail]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -1391,7 +1593,7 @@ class AvailableRuntimeVersions(_serialization.Model):
 
     :ivar value: A list of all supported runtime versions.
     :vartype value:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.SupportedRuntimeVersion]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedRuntimeVersion]
     """
 
     _validation = {
@@ -1418,11 +1620,14 @@ class CustomPersistentDiskProperties(_serialization.Model):
 
     :ivar type: The type of the underlying resource to mount as a persistent disk. Required.
      "AzureFileVolume"
-    :vartype type: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.Type
+    :vartype type: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.Type
     :ivar mount_path: The mount path of the persistent disk. Required.
     :vartype mount_path: str
     :ivar read_only: Indicates whether the persistent disk is a readOnly one.
     :vartype read_only: bool
+    :ivar enable_sub_path: If set to true, it will create and mount a dedicated directory for every
+     individual app instance.
+    :vartype enable_sub_path: bool
     :ivar mount_options: These are the mount options for a persistent disk.
     :vartype mount_options: list[str]
     """
@@ -1436,6 +1641,7 @@ class CustomPersistentDiskProperties(_serialization.Model):
         "type": {"key": "type", "type": "str"},
         "mount_path": {"key": "mountPath", "type": "str"},
         "read_only": {"key": "readOnly", "type": "bool"},
+        "enable_sub_path": {"key": "enableSubPath", "type": "bool"},
         "mount_options": {"key": "mountOptions", "type": "[str]"},
     }
 
@@ -1446,6 +1652,7 @@ class CustomPersistentDiskProperties(_serialization.Model):
         *,
         mount_path: str,
         read_only: Optional[bool] = None,
+        enable_sub_path: bool = False,
         mount_options: Optional[List[str]] = None,
         **kwargs: Any
     ) -> None:
@@ -1454,6 +1661,9 @@ class CustomPersistentDiskProperties(_serialization.Model):
         :paramtype mount_path: str
         :keyword read_only: Indicates whether the persistent disk is a readOnly one.
         :paramtype read_only: bool
+        :keyword enable_sub_path: If set to true, it will create and mount a dedicated directory for
+         every individual app instance.
+        :paramtype enable_sub_path: bool
         :keyword mount_options: These are the mount options for a persistent disk.
         :paramtype mount_options: list[str]
         """
@@ -1461,6 +1671,7 @@ class CustomPersistentDiskProperties(_serialization.Model):
         self.type: Optional[str] = None
         self.mount_path = mount_path
         self.read_only = read_only
+        self.enable_sub_path = enable_sub_path
         self.mount_options = mount_options
 
 
@@ -1471,27 +1682,30 @@ class AzureFileVolume(CustomPersistentDiskProperties):
 
     :ivar type: The type of the underlying resource to mount as a persistent disk. Required.
      "AzureFileVolume"
-    :vartype type: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.Type
+    :vartype type: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.Type
     :ivar mount_path: The mount path of the persistent disk. Required.
     :vartype mount_path: str
     :ivar read_only: Indicates whether the persistent disk is a readOnly one.
     :vartype read_only: bool
+    :ivar enable_sub_path: If set to true, it will create and mount a dedicated directory for every
+     individual app instance.
+    :vartype enable_sub_path: bool
     :ivar mount_options: These are the mount options for a persistent disk.
     :vartype mount_options: list[str]
-    :ivar share_name: The share name of the Azure File share. Required.
+    :ivar share_name: The share name of the Azure File share.
     :vartype share_name: str
     """
 
     _validation = {
         "type": {"required": True},
         "mount_path": {"required": True},
-        "share_name": {"required": True},
     }
 
     _attribute_map = {
         "type": {"key": "type", "type": "str"},
         "mount_path": {"key": "mountPath", "type": "str"},
         "read_only": {"key": "readOnly", "type": "bool"},
+        "enable_sub_path": {"key": "enableSubPath", "type": "bool"},
         "mount_options": {"key": "mountOptions", "type": "[str]"},
         "share_name": {"key": "shareName", "type": "str"},
     }
@@ -1500,9 +1714,10 @@ class AzureFileVolume(CustomPersistentDiskProperties):
         self,
         *,
         mount_path: str,
-        share_name: str,
         read_only: Optional[bool] = None,
+        enable_sub_path: bool = False,
         mount_options: Optional[List[str]] = None,
+        share_name: Optional[str] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -1510,12 +1725,21 @@ class AzureFileVolume(CustomPersistentDiskProperties):
         :paramtype mount_path: str
         :keyword read_only: Indicates whether the persistent disk is a readOnly one.
         :paramtype read_only: bool
+        :keyword enable_sub_path: If set to true, it will create and mount a dedicated directory for
+         every individual app instance.
+        :paramtype enable_sub_path: bool
         :keyword mount_options: These are the mount options for a persistent disk.
         :paramtype mount_options: list[str]
-        :keyword share_name: The share name of the Azure File share. Required.
+        :keyword share_name: The share name of the Azure File share.
         :paramtype share_name: str
         """
-        super().__init__(mount_path=mount_path, read_only=read_only, mount_options=mount_options, **kwargs)
+        super().__init__(
+            mount_path=mount_path,
+            read_only=read_only,
+            enable_sub_path=enable_sub_path,
+            mount_options=mount_options,
+            **kwargs
+        )
         self.type: str = "AzureFileVolume"
         self.share_name = share_name
 
@@ -1532,10 +1756,10 @@ class BindingResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Properties of the Binding resource.
     :vartype properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.BindingResourceProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.BindingResourceProperties
     """
 
     _validation = {
@@ -1557,7 +1781,7 @@ class BindingResource(ProxyResource):
         """
         :keyword properties: Properties of the Binding resource.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.BindingResourceProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.BindingResourceProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -1567,7 +1791,7 @@ class BindingResourceCollection(_serialization.Model):
     """Object that includes an array of Binding resources and a possible link for next set.
 
     :ivar value: Collection of Binding resources.
-    :vartype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.BindingResource]
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.BindingResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -1583,7 +1807,7 @@ class BindingResourceCollection(_serialization.Model):
     ) -> None:
         """
         :keyword value: Collection of Binding resources.
-        :paramtype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.BindingResource]
+        :paramtype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.BindingResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -1607,7 +1831,7 @@ class BindingResourceProperties(_serialization.Model):
     :ivar key: The key of the bound resource.
     :vartype key: str
     :ivar binding_parameters: Binding parameters of the Binding resource.
-    :vartype binding_parameters: dict[str, JSON]
+    :vartype binding_parameters: dict[str, str]
     :ivar generated_properties: The generated Spring Boot property file for this binding. The
      secret will be deducted.
     :vartype generated_properties: str
@@ -1630,7 +1854,7 @@ class BindingResourceProperties(_serialization.Model):
         "resource_type": {"key": "resourceType", "type": "str"},
         "resource_id": {"key": "resourceId", "type": "str"},
         "key": {"key": "key", "type": "str"},
-        "binding_parameters": {"key": "bindingParameters", "type": "{object}"},
+        "binding_parameters": {"key": "bindingParameters", "type": "{str}"},
         "generated_properties": {"key": "generatedProperties", "type": "str"},
         "created_at": {"key": "createdAt", "type": "str"},
         "updated_at": {"key": "updatedAt", "type": "str"},
@@ -1641,7 +1865,7 @@ class BindingResourceProperties(_serialization.Model):
         *,
         resource_id: Optional[str] = None,
         key: Optional[str] = None,
-        binding_parameters: Optional[Dict[str, JSON]] = None,
+        binding_parameters: Optional[Dict[str, str]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -1650,7 +1874,7 @@ class BindingResourceProperties(_serialization.Model):
         :keyword key: The key of the bound resource.
         :paramtype key: str
         :keyword binding_parameters: Binding parameters of the Binding resource.
-        :paramtype binding_parameters: dict[str, JSON]
+        :paramtype binding_parameters: dict[str, str]
         """
         super().__init__(**kwargs)
         self.resource_name = None
@@ -1675,9 +1899,9 @@ class Build(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Properties of the build resource.
-    :vartype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildProperties
+    :vartype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildProperties
     """
 
     _validation = {
@@ -1698,7 +1922,7 @@ class Build(ProxyResource):
     def __init__(self, *, properties: Optional["_models.BuildProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: Properties of the build resource.
-        :paramtype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildProperties
+        :paramtype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -1708,7 +1932,7 @@ class BuildCollection(_serialization.Model):
     """Object that includes an array of Build resources and a possible link for next set.
 
     :ivar value: Collection of Build resources.
-    :vartype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.Build]
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.Build]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -1724,7 +1948,7 @@ class BuildCollection(_serialization.Model):
     ) -> None:
         """
         :keyword value: Collection of Build resources.
-        :paramtype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.Build]
+        :paramtype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.Build]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -1742,12 +1966,12 @@ class BuilderProperties(_serialization.Model):
     :ivar provisioning_state: Builder provision status. Known values are: "Creating", "Updating",
      "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuilderProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuilderProvisioningState
     :ivar stack: Builder cluster stack property.
-    :vartype stack: ~azure.mgmt.appplatform.v2022_11_01_preview.models.StackProperties
+    :vartype stack: ~azure.mgmt.appplatform.v2023_09_01_preview.models.StackProperties
     :ivar buildpack_groups: Builder buildpack groups.
     :vartype buildpack_groups:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildpacksGroupProperties]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildpacksGroupProperties]
     """
 
     _validation = {
@@ -1769,10 +1993,10 @@ class BuilderProperties(_serialization.Model):
     ) -> None:
         """
         :keyword stack: Builder cluster stack property.
-        :paramtype stack: ~azure.mgmt.appplatform.v2022_11_01_preview.models.StackProperties
+        :paramtype stack: ~azure.mgmt.appplatform.v2023_09_01_preview.models.StackProperties
         :keyword buildpack_groups: Builder buildpack groups.
         :paramtype buildpack_groups:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildpacksGroupProperties]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildpacksGroupProperties]
         """
         super().__init__(**kwargs)
         self.provisioning_state = None
@@ -1792,9 +2016,9 @@ class BuilderResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Property of the Builder resource.
-    :vartype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuilderProperties
+    :vartype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuilderProperties
     """
 
     _validation = {
@@ -1815,7 +2039,7 @@ class BuilderResource(ProxyResource):
     def __init__(self, *, properties: Optional["_models.BuilderProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: Property of the Builder resource.
-        :paramtype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuilderProperties
+        :paramtype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuilderProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -1825,7 +2049,7 @@ class BuilderResourceCollection(_serialization.Model):
     """Object that includes an array of Builder resources and a possible link for next set.
 
     :ivar value: Collection of Builder resources.
-    :vartype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.BuilderResource]
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.BuilderResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -1841,7 +2065,7 @@ class BuilderResourceCollection(_serialization.Model):
     ) -> None:
         """
         :keyword value: Collection of Builder resources.
-        :paramtype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.BuilderResource]
+        :paramtype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.BuilderResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -1886,14 +2110,14 @@ class BuildpackBindingProperties(_serialization.Model):
 
     :ivar binding_type: Buildpack Binding Type. Known values are: "ApplicationInsights",
      "ApacheSkyWalking", "AppDynamics", "Dynatrace", "NewRelic", "ElasticAPM", and "CACertificates".
-    :vartype binding_type: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.BindingType
+    :vartype binding_type: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.BindingType
     :ivar provisioning_state: State of the Buildpack Binding. Known values are: "Creating",
      "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildpackBindingProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildpackBindingProvisioningState
     :ivar launch_properties: The object describes the buildpack binding launch properties.
     :vartype launch_properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildpackBindingLaunchProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildpackBindingLaunchProperties
     """
 
     _validation = {
@@ -1916,10 +2140,10 @@ class BuildpackBindingProperties(_serialization.Model):
         """
         :keyword binding_type: Buildpack Binding Type. Known values are: "ApplicationInsights",
          "ApacheSkyWalking", "AppDynamics", "Dynatrace", "NewRelic", "ElasticAPM", and "CACertificates".
-        :paramtype binding_type: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.BindingType
+        :paramtype binding_type: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.BindingType
         :keyword launch_properties: The object describes the buildpack binding launch properties.
         :paramtype launch_properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildpackBindingLaunchProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildpackBindingLaunchProperties
         """
         super().__init__(**kwargs)
         self.binding_type = binding_type
@@ -1939,10 +2163,10 @@ class BuildpackBindingResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Properties of a buildpack binding.
     :vartype properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildpackBindingProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildpackBindingProperties
     """
 
     _validation = {
@@ -1964,7 +2188,7 @@ class BuildpackBindingResource(ProxyResource):
         """
         :keyword properties: Properties of a buildpack binding.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildpackBindingProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildpackBindingProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -1975,7 +2199,7 @@ class BuildpackBindingResourceCollection(_serialization.Model):
 
     :ivar value: Collection of BuildpackBinding resources.
     :vartype value:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildpackBindingResource]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildpackBindingResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -1996,7 +2220,7 @@ class BuildpackBindingResourceCollection(_serialization.Model):
         """
         :keyword value: Collection of BuildpackBinding resources.
         :paramtype value:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildpackBindingResource]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildpackBindingResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -2033,7 +2257,7 @@ class BuildpacksGroupProperties(_serialization.Model):
     :vartype name: str
     :ivar buildpacks: Buildpacks in the buildpack group.
     :vartype buildpacks:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildpackProperties]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildpackProperties]
     """
 
     _attribute_map = {
@@ -2053,7 +2277,7 @@ class BuildpacksGroupProperties(_serialization.Model):
         :paramtype name: str
         :keyword buildpacks: Buildpacks in the buildpack group.
         :paramtype buildpacks:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildpackProperties]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildpackProperties]
         """
         super().__init__(**kwargs)
         self.name = name
@@ -2074,15 +2298,20 @@ class BuildProperties(_serialization.Model):
     :ivar provisioning_state: Provisioning state of the KPack build result. Known values are:
      "Creating", "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildProvisioningState
     :ivar env: The environment variables for this build.
     :vartype env: dict[str, str]
+    :ivar apms: The APMs for this build.
+    :vartype apms: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApmReference]
+    :ivar certificates: The CA Certificates for this build.
+    :vartype certificates:
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.CertificateReference]
     :ivar triggered_build_result: The build result triggered by this build.
     :vartype triggered_build_result:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.TriggeredBuildResult
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.TriggeredBuildResult
     :ivar resource_requests: The customized build resource for this build.
     :vartype resource_requests:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildResourceRequests
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildResourceRequests
     """
 
     _validation = {
@@ -2096,6 +2325,8 @@ class BuildProperties(_serialization.Model):
         "agent_pool": {"key": "agentPool", "type": "str"},
         "provisioning_state": {"key": "provisioningState", "type": "str"},
         "env": {"key": "env", "type": "{str}"},
+        "apms": {"key": "apms", "type": "[ApmReference]"},
+        "certificates": {"key": "certificates", "type": "[CertificateReference]"},
         "triggered_build_result": {"key": "triggeredBuildResult", "type": "TriggeredBuildResult"},
         "resource_requests": {"key": "resourceRequests", "type": "BuildResourceRequests"},
     }
@@ -2107,6 +2338,8 @@ class BuildProperties(_serialization.Model):
         builder: Optional[str] = None,
         agent_pool: Optional[str] = None,
         env: Optional[Dict[str, str]] = None,
+        apms: Optional[List["_models.ApmReference"]] = None,
+        certificates: Optional[List["_models.CertificateReference"]] = None,
         resource_requests: Optional["_models.BuildResourceRequests"] = None,
         **kwargs: Any
     ) -> None:
@@ -2119,9 +2352,14 @@ class BuildProperties(_serialization.Model):
         :paramtype agent_pool: str
         :keyword env: The environment variables for this build.
         :paramtype env: dict[str, str]
+        :keyword apms: The APMs for this build.
+        :paramtype apms: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApmReference]
+        :keyword certificates: The CA Certificates for this build.
+        :paramtype certificates:
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.CertificateReference]
         :keyword resource_requests: The customized build resource for this build.
         :paramtype resource_requests:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildResourceRequests
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildResourceRequests
         """
         super().__init__(**kwargs)
         self.relative_path = relative_path
@@ -2129,6 +2367,8 @@ class BuildProperties(_serialization.Model):
         self.agent_pool = agent_pool
         self.provisioning_state = None
         self.env = env
+        self.apms = apms
+        self.certificates = certificates
         self.triggered_build_result = None
         self.resource_requests = resource_requests
 
@@ -2179,9 +2419,9 @@ class BuildResult(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Properties of the build result resource.
-    :vartype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildResultProperties
+    :vartype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildResultProperties
     """
 
     _validation = {
@@ -2202,7 +2442,7 @@ class BuildResult(ProxyResource):
     def __init__(self, *, properties: Optional["_models.BuildResultProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: Properties of the build result resource.
-        :paramtype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildResultProperties
+        :paramtype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildResultProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -2212,7 +2452,7 @@ class BuildResultCollection(_serialization.Model):
     """Object that includes an array of Build result resources and a possible link for next set.
 
     :ivar value: Collection of Build result resources.
-    :vartype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildResult]
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildResult]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -2228,7 +2468,7 @@ class BuildResultCollection(_serialization.Model):
     ) -> None:
         """
         :keyword value: Collection of Build result resources.
-        :paramtype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildResult]
+        :paramtype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildResult]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -2268,20 +2508,23 @@ class BuildResultProperties(_serialization.Model):
     :ivar provisioning_state: Provisioning state of the KPack build result. Known values are:
      "Queuing", "Building", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildResultProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildResultProvisioningState
     :ivar error: Error when build is failed.
-    :vartype error: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Error
+    :vartype error: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Error
     :ivar build_pod_name: The build pod name which can be used to get the build log streaming.
     :vartype build_pod_name: str
     :ivar build_stages: All of the build stage (init-container and container) resources in build
      pod.
     :vartype build_stages:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildStageProperties]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildStageProperties]
+    :ivar image: The container registry image of this build result.
+    :vartype image: str
     """
 
     _validation = {
         "provisioning_state": {"readonly": True},
         "build_stages": {"readonly": True},
+        "image": {"readonly": True},
     }
 
     _attribute_map = {
@@ -2290,6 +2533,7 @@ class BuildResultProperties(_serialization.Model):
         "error": {"key": "error", "type": "Error"},
         "build_pod_name": {"key": "buildPodName", "type": "str"},
         "build_stages": {"key": "buildStages", "type": "[BuildStageProperties]"},
+        "image": {"key": "image", "type": "str"},
     }
 
     def __init__(
@@ -2304,7 +2548,7 @@ class BuildResultProperties(_serialization.Model):
         :keyword name: The name of this build result.
         :paramtype name: str
         :keyword error: Error when build is failed.
-        :paramtype error: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Error
+        :paramtype error: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Error
         :keyword build_pod_name: The build pod name which can be used to get the build log streaming.
         :paramtype build_pod_name: str
         """
@@ -2314,6 +2558,7 @@ class BuildResultProperties(_serialization.Model):
         self.error = error
         self.build_pod_name = build_pod_name
         self.build_stages = None
+        self.image = None
 
 
 class UserSourceInfo(_serialization.Model):
@@ -2406,9 +2651,9 @@ class BuildService(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Properties of the build resource.
-    :vartype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildServiceProperties
+    :vartype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildServiceProperties
     """
 
     _validation = {
@@ -2430,7 +2675,7 @@ class BuildService(ProxyResource):
         """
         :keyword properties: Properties of the build resource.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildServiceProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildServiceProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -2445,7 +2690,7 @@ class BuildServiceAgentPoolProperties(_serialization.Model):
     :vartype provisioning_state: str
     :ivar pool_size: build service agent pool size properties.
     :vartype pool_size:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildServiceAgentPoolSizeProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildServiceAgentPoolSizeProperties
     """
 
     _validation = {
@@ -2463,7 +2708,7 @@ class BuildServiceAgentPoolProperties(_serialization.Model):
         """
         :keyword pool_size: build service agent pool size properties.
         :paramtype pool_size:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildServiceAgentPoolSizeProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildServiceAgentPoolSizeProperties
         """
         super().__init__(**kwargs)
         self.provisioning_state = None
@@ -2482,10 +2727,10 @@ class BuildServiceAgentPoolResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: build service agent pool properties.
     :vartype properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildServiceAgentPoolProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildServiceAgentPoolProperties
     """
 
     _validation = {
@@ -2509,7 +2754,7 @@ class BuildServiceAgentPoolResource(ProxyResource):
         """
         :keyword properties: build service agent pool properties.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildServiceAgentPoolProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildServiceAgentPoolProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -2521,7 +2766,7 @@ class BuildServiceAgentPoolResourceCollection(_serialization.Model):
 
     :ivar value: Collection of build service agent pool resource.
     :vartype value:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildServiceAgentPoolResource]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildServiceAgentPoolResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -2542,7 +2787,7 @@ class BuildServiceAgentPoolResourceCollection(_serialization.Model):
         """
         :keyword value: Collection of build service agent pool resource.
         :paramtype value:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildServiceAgentPoolResource]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildServiceAgentPoolResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -2591,7 +2836,7 @@ class BuildServiceCollection(_serialization.Model):
     """Object that includes an array of Build service resources and a possible link for next set.
 
     :ivar value: Collection of Build service resources.
-    :vartype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildService]
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildService]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -2607,7 +2852,7 @@ class BuildServiceCollection(_serialization.Model):
     ) -> None:
         """
         :keyword value: Collection of Build service resources.
-        :paramtype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildService]
+        :paramtype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildService]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -2622,22 +2867,26 @@ class BuildServiceProperties(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
+    :ivar container_registry: The resource id of the container registry used in this build service.
+    :vartype container_registry: str
     :ivar k_pack_version: The installed KPack version in this build service.
     :vartype k_pack_version: str
-    :ivar provisioning_state: Provisioning state of the KPack build result. Known values are:
+    :ivar provisioning_state: Provisioning state of the KPack build service. Known values are:
      "Creating", "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildServiceProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildServiceProvisioningState
     :ivar resource_requests: The runtime resource configuration of this build service.
     :vartype resource_requests:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildServicePropertiesResourceRequests
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildServicePropertiesResourceRequests
     """
 
     _validation = {
+        "k_pack_version": {"readonly": True},
         "provisioning_state": {"readonly": True},
     }
 
     _attribute_map = {
+        "container_registry": {"key": "containerRegistry", "type": "str"},
         "k_pack_version": {"key": "kPackVersion", "type": "str"},
         "provisioning_state": {"key": "provisioningState", "type": "str"},
         "resource_requests": {"key": "resourceRequests", "type": "BuildServicePropertiesResourceRequests"},
@@ -2646,19 +2895,21 @@ class BuildServiceProperties(_serialization.Model):
     def __init__(
         self,
         *,
-        k_pack_version: Optional[str] = None,
+        container_registry: Optional[str] = None,
         resource_requests: Optional["_models.BuildServicePropertiesResourceRequests"] = None,
         **kwargs: Any
     ) -> None:
         """
-        :keyword k_pack_version: The installed KPack version in this build service.
-        :paramtype k_pack_version: str
+        :keyword container_registry: The resource id of the container registry used in this build
+         service.
+        :paramtype container_registry: str
         :keyword resource_requests: The runtime resource configuration of this build service.
         :paramtype resource_requests:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.BuildServicePropertiesResourceRequests
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.BuildServicePropertiesResourceRequests
         """
         super().__init__(**kwargs)
-        self.k_pack_version = k_pack_version
+        self.container_registry = container_registry
+        self.k_pack_version = None
         self.provisioning_state = None
         self.resource_requests = resource_requests
 
@@ -2701,7 +2952,7 @@ class BuildStageProperties(_serialization.Model):
     :ivar status: The provisioning state of this build stage resource. Known values are:
      "NotStarted", "Running", "Succeeded", and "Failed".
     :vartype status: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.KPackBuildStageProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.KPackBuildStageProvisioningState
     :ivar exit_code: The exit code of this build init container.
     :vartype exit_code: str
     :ivar reason: The reason of this build init container.
@@ -2760,7 +3011,7 @@ class CertificateProperties(_serialization.Model):
     :ivar provisioning_state: Provisioning state of the Certificate. Known values are: "Creating",
      "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.CertificateResourceProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.CertificateResourceProvisioningState
     """
 
     _validation = {
@@ -2808,6 +3059,32 @@ class CertificateProperties(_serialization.Model):
         self.provisioning_state = None
 
 
+class CertificateReference(_serialization.Model):
+    """A reference to the certificate.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar resource_id: Resource Id of the certificate. Required.
+    :vartype resource_id: str
+    """
+
+    _validation = {
+        "resource_id": {"required": True},
+    }
+
+    _attribute_map = {
+        "resource_id": {"key": "resourceId", "type": "str"},
+    }
+
+    def __init__(self, *, resource_id: str, **kwargs: Any) -> None:
+        """
+        :keyword resource_id: Resource Id of the certificate. Required.
+        :paramtype resource_id: str
+        """
+        super().__init__(**kwargs)
+        self.resource_id = resource_id
+
+
 class CertificateResource(ProxyResource):
     """Certificate resource payload.
 
@@ -2820,9 +3097,9 @@ class CertificateResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Properties of the certificate resource payload.
-    :vartype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.CertificateProperties
+    :vartype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.CertificateProperties
     """
 
     _validation = {
@@ -2843,7 +3120,7 @@ class CertificateResource(ProxyResource):
     def __init__(self, *, properties: Optional["_models.CertificateProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: Properties of the certificate resource payload.
-        :paramtype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.CertificateProperties
+        :paramtype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.CertificateProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -2853,7 +3130,7 @@ class CertificateResourceCollection(_serialization.Model):
     """Collection compose of certificate resources list and a possible link for next page.
 
     :ivar value: The certificate resources list.
-    :vartype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.CertificateResource]
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.CertificateResource]
     :ivar next_link: The link to next page of certificate list.
     :vartype next_link: str
     """
@@ -2872,7 +3149,7 @@ class CertificateResourceCollection(_serialization.Model):
     ) -> None:
         """
         :keyword value: The certificate resources list.
-        :paramtype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.CertificateResource]
+        :paramtype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.CertificateResource]
         :keyword next_link: The link to next page of certificate list.
         :paramtype next_link: str
         """
@@ -2894,7 +3171,7 @@ class CloudErrorBody(_serialization.Model):
      error.
     :vartype target: str
     :ivar details: A list of additional details about the error.
-    :vartype details: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.CloudErrorBody]
+    :vartype details: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.CloudErrorBody]
     """
 
     _attribute_map = {
@@ -2924,7 +3201,7 @@ class CloudErrorBody(_serialization.Model):
          error.
         :paramtype target: str
         :keyword details: A list of additional details about the error.
-        :paramtype details: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.CloudErrorBody]
+        :paramtype details: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.CloudErrorBody]
         """
         super().__init__(**kwargs)
         self.code = code
@@ -2933,7 +3210,7 @@ class CloudErrorBody(_serialization.Model):
         self.details = details
 
 
-class ClusterResourceProperties(_serialization.Model):
+class ClusterResourceProperties(_serialization.Model):  # pylint: disable=too-many-instance-attributes
     """Service properties payload.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -2942,24 +3219,33 @@ class ClusterResourceProperties(_serialization.Model):
      "Updating", "Starting", "Stopping", "Deleting", "Deleted", "Succeeded", "Failed", "Moving",
      "Moved", and "MoveFailed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ProvisioningState
     :ivar network_profile: Network profile of the Service.
-    :vartype network_profile: ~azure.mgmt.appplatform.v2022_11_01_preview.models.NetworkProfile
+    :vartype network_profile: ~azure.mgmt.appplatform.v2023_09_01_preview.models.NetworkProfile
     :ivar vnet_addons: Additional Service settings in vnet injection instance.
-    :vartype vnet_addons: ~azure.mgmt.appplatform.v2022_11_01_preview.models.ServiceVNetAddons
+    :vartype vnet_addons: ~azure.mgmt.appplatform.v2023_09_01_preview.models.ServiceVNetAddons
+    :ivar maintenance_schedule_configuration: Additional Service settings for planned maintenance.
+    :vartype maintenance_schedule_configuration:
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.MaintenanceScheduleConfiguration
     :ivar version: Version of the Service.
     :vartype version: int
     :ivar service_id: ServiceInstanceEntity Id which uniquely identifies a created resource.
     :vartype service_id: str
+    :ivar managed_environment_id: The resource Id of the Managed Environment that the Spring Apps
+     instance builds on.
+    :vartype managed_environment_id: str
+    :ivar infra_resource_group: The name of the resource group that contains the infrastructure
+     resources.
+    :vartype infra_resource_group: str
     :ivar power_state: Power state of the Service. Known values are: "Running" and "Stopped".
-    :vartype power_state: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.PowerState
+    :vartype power_state: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.PowerState
     :ivar zone_redundant:
     :vartype zone_redundant: bool
     :ivar fqdn: Fully qualified dns name of the service instance.
     :vartype fqdn: str
     :ivar marketplace_resource: Purchasing 3rd party product of the Service resource.
     :vartype marketplace_resource:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.MarketplaceResource
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.MarketplaceResource
     """
 
     _validation = {
@@ -2974,8 +3260,14 @@ class ClusterResourceProperties(_serialization.Model):
         "provisioning_state": {"key": "provisioningState", "type": "str"},
         "network_profile": {"key": "networkProfile", "type": "NetworkProfile"},
         "vnet_addons": {"key": "vnetAddons", "type": "ServiceVNetAddons"},
+        "maintenance_schedule_configuration": {
+            "key": "maintenanceScheduleConfiguration",
+            "type": "MaintenanceScheduleConfiguration",
+        },
         "version": {"key": "version", "type": "int"},
         "service_id": {"key": "serviceId", "type": "str"},
+        "managed_environment_id": {"key": "managedEnvironmentId", "type": "str"},
+        "infra_resource_group": {"key": "infraResourceGroup", "type": "str"},
         "power_state": {"key": "powerState", "type": "str"},
         "zone_redundant": {"key": "zoneRedundant", "type": "bool"},
         "fqdn": {"key": "fqdn", "type": "str"},
@@ -2987,27 +3279,43 @@ class ClusterResourceProperties(_serialization.Model):
         *,
         network_profile: Optional["_models.NetworkProfile"] = None,
         vnet_addons: Optional["_models.ServiceVNetAddons"] = None,
+        maintenance_schedule_configuration: Optional["_models.MaintenanceScheduleConfiguration"] = None,
+        managed_environment_id: Optional[str] = None,
+        infra_resource_group: Optional[str] = None,
         zone_redundant: bool = False,
         marketplace_resource: Optional["_models.MarketplaceResource"] = None,
         **kwargs: Any
     ) -> None:
         """
         :keyword network_profile: Network profile of the Service.
-        :paramtype network_profile: ~azure.mgmt.appplatform.v2022_11_01_preview.models.NetworkProfile
+        :paramtype network_profile: ~azure.mgmt.appplatform.v2023_09_01_preview.models.NetworkProfile
         :keyword vnet_addons: Additional Service settings in vnet injection instance.
-        :paramtype vnet_addons: ~azure.mgmt.appplatform.v2022_11_01_preview.models.ServiceVNetAddons
+        :paramtype vnet_addons: ~azure.mgmt.appplatform.v2023_09_01_preview.models.ServiceVNetAddons
+        :keyword maintenance_schedule_configuration: Additional Service settings for planned
+         maintenance.
+        :paramtype maintenance_schedule_configuration:
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.MaintenanceScheduleConfiguration
+        :keyword managed_environment_id: The resource Id of the Managed Environment that the Spring
+         Apps instance builds on.
+        :paramtype managed_environment_id: str
+        :keyword infra_resource_group: The name of the resource group that contains the infrastructure
+         resources.
+        :paramtype infra_resource_group: str
         :keyword zone_redundant:
         :paramtype zone_redundant: bool
         :keyword marketplace_resource: Purchasing 3rd party product of the Service resource.
         :paramtype marketplace_resource:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.MarketplaceResource
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.MarketplaceResource
         """
         super().__init__(**kwargs)
         self.provisioning_state = None
         self.network_profile = network_profile
         self.vnet_addons = vnet_addons
+        self.maintenance_schedule_configuration = maintenance_schedule_configuration
         self.version = None
         self.service_id = None
+        self.managed_environment_id = managed_environment_id
+        self.infra_resource_group = infra_resource_group
         self.power_state = None
         self.zone_redundant = zone_redundant
         self.fqdn = None
@@ -3021,7 +3329,7 @@ class ConfigServerGitProperty(_serialization.Model):
 
     :ivar repositories: Repositories of git.
     :vartype repositories:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.GitPatternRepository]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.GitPatternRepository]
     :ivar uri: URI of the repository. Required.
     :vartype uri: str
     :ivar label: Label of the repository.
@@ -3077,7 +3385,7 @@ class ConfigServerGitProperty(_serialization.Model):
         """
         :keyword repositories: Repositories of git.
         :paramtype repositories:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.GitPatternRepository]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.GitPatternRepository]
         :keyword uri: URI of the repository. Required.
         :paramtype uri: str
         :keyword label: Label of the repository.
@@ -3118,11 +3426,15 @@ class ConfigServerProperties(_serialization.Model):
     :ivar provisioning_state: State of the config server. Known values are: "NotAvailable",
      "Deleted", "Failed", "Succeeded", and "Updating".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigServerState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigServerState
     :ivar error: Error when apply config server settings.
-    :vartype error: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Error
+    :vartype error: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Error
+    :ivar enabled_state: Enabled state of the config server. This is only used in Consumption tier.
+     Known values are: "Enabled" and "Disabled".
+    :vartype enabled_state: str or
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigServerEnabledState
     :ivar config_server: Settings of config server.
-    :vartype config_server: ~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigServerSettings
+    :vartype config_server: ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigServerSettings
     """
 
     _validation = {
@@ -3132,6 +3444,7 @@ class ConfigServerProperties(_serialization.Model):
     _attribute_map = {
         "provisioning_state": {"key": "provisioningState", "type": "str"},
         "error": {"key": "error", "type": "Error"},
+        "enabled_state": {"key": "enabledState", "type": "str"},
         "config_server": {"key": "configServer", "type": "ConfigServerSettings"},
     }
 
@@ -3139,19 +3452,25 @@ class ConfigServerProperties(_serialization.Model):
         self,
         *,
         error: Optional["_models.Error"] = None,
+        enabled_state: Optional[Union[str, "_models.ConfigServerEnabledState"]] = None,
         config_server: Optional["_models.ConfigServerSettings"] = None,
         **kwargs: Any
     ) -> None:
         """
         :keyword error: Error when apply config server settings.
-        :paramtype error: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Error
+        :paramtype error: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Error
+        :keyword enabled_state: Enabled state of the config server. This is only used in Consumption
+         tier. Known values are: "Enabled" and "Disabled".
+        :paramtype enabled_state: str or
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigServerEnabledState
         :keyword config_server: Settings of config server.
         :paramtype config_server:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigServerSettings
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigServerSettings
         """
         super().__init__(**kwargs)
         self.provisioning_state = None
         self.error = error
+        self.enabled_state = enabled_state
         self.config_server = config_server
 
 
@@ -3167,9 +3486,9 @@ class ConfigServerResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Properties of the Config Server resource.
-    :vartype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigServerProperties
+    :vartype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigServerProperties
     """
 
     _validation = {
@@ -3191,7 +3510,7 @@ class ConfigServerResource(ProxyResource):
         """
         :keyword properties: Properties of the Config Server resource.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigServerProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigServerProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -3202,7 +3521,7 @@ class ConfigServerSettings(_serialization.Model):
 
     :ivar git_property: Property of git environment.
     :vartype git_property:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigServerGitProperty
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigServerGitProperty
     """
 
     _attribute_map = {
@@ -3213,7 +3532,7 @@ class ConfigServerSettings(_serialization.Model):
         """
         :keyword git_property: Property of git environment.
         :paramtype git_property:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigServerGitProperty
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigServerGitProperty
         """
         super().__init__(**kwargs)
         self.git_property = git_property
@@ -3265,7 +3584,7 @@ class ConfigServerSettingsValidateResult(_serialization.Model):
     :vartype is_valid: bool
     :ivar details: The detail validation results.
     :vartype details:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigServerSettingsErrorRecord]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigServerSettingsErrorRecord]
     """
 
     _attribute_map = {
@@ -3285,7 +3604,7 @@ class ConfigServerSettingsValidateResult(_serialization.Model):
         :paramtype is_valid: bool
         :keyword details: The detail validation results.
         :paramtype details:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigServerSettingsErrorRecord]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigServerSettingsErrorRecord]
         """
         super().__init__(**kwargs)
         self.is_valid = is_valid
@@ -3297,7 +3616,7 @@ class ConfigurationServiceGitProperty(_serialization.Model):
 
     :ivar repositories: Repositories of Application Configuration Service git property.
     :vartype repositories:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigurationServiceGitRepository]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigurationServiceGitRepository]
     """
 
     _attribute_map = {
@@ -3310,7 +3629,7 @@ class ConfigurationServiceGitProperty(_serialization.Model):
         """
         :keyword repositories: Repositories of Application Configuration Service git property.
         :paramtype repositories:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigurationServiceGitRepository]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigurationServiceGitRepository]
         """
         super().__init__(**kwargs)
         self.repositories = repositories
@@ -3323,7 +3642,7 @@ class ConfigurationServiceGitPropertyValidateResult(_serialization.Model):
     :vartype is_valid: bool
     :ivar git_repos_validation_result: The detail validation results.
     :vartype git_repos_validation_result:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ValidationMessages]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ValidationMessages]
     """
 
     _attribute_map = {
@@ -3343,7 +3662,7 @@ class ConfigurationServiceGitPropertyValidateResult(_serialization.Model):
         :paramtype is_valid: bool
         :keyword git_repos_validation_result: The detail validation results.
         :paramtype git_repos_validation_result:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ValidationMessages]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ValidationMessages]
         """
         super().__init__(**kwargs)
         self.is_valid = is_valid
@@ -3377,6 +3696,12 @@ class ConfigurationServiceGitRepository(_serialization.Model):  # pylint: disabl
     :vartype private_key: str
     :ivar strict_host_key_checking: Strict host key checking or not.
     :vartype strict_host_key_checking: bool
+    :ivar git_implementation: Git libraries used to support various repository providers. Known
+     values are: "go-git" and "libgit2".
+    :vartype git_implementation: str or
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.GitImplementation
+    :ivar ca_cert_resource_id: Resource Id of CA certificate for https URL of Git repository.
+    :vartype ca_cert_resource_id: str
     """
 
     _validation = {
@@ -3398,6 +3723,8 @@ class ConfigurationServiceGitRepository(_serialization.Model):  # pylint: disabl
         "host_key_algorithm": {"key": "hostKeyAlgorithm", "type": "str"},
         "private_key": {"key": "privateKey", "type": "str"},
         "strict_host_key_checking": {"key": "strictHostKeyChecking", "type": "bool"},
+        "git_implementation": {"key": "gitImplementation", "type": "str"},
+        "ca_cert_resource_id": {"key": "caCertResourceId", "type": "str"},
     }
 
     def __init__(
@@ -3414,6 +3741,8 @@ class ConfigurationServiceGitRepository(_serialization.Model):  # pylint: disabl
         host_key_algorithm: Optional[str] = None,
         private_key: Optional[str] = None,
         strict_host_key_checking: Optional[bool] = None,
+        git_implementation: Optional[Union[str, "_models.GitImplementation"]] = None,
+        ca_cert_resource_id: Optional[str] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -3439,6 +3768,12 @@ class ConfigurationServiceGitRepository(_serialization.Model):  # pylint: disabl
         :paramtype private_key: str
         :keyword strict_host_key_checking: Strict host key checking or not.
         :paramtype strict_host_key_checking: bool
+        :keyword git_implementation: Git libraries used to support various repository providers. Known
+         values are: "go-git" and "libgit2".
+        :paramtype git_implementation: str or
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.GitImplementation
+        :keyword ca_cert_resource_id: Resource Id of CA certificate for https URL of Git repository.
+        :paramtype ca_cert_resource_id: str
         """
         super().__init__(**kwargs)
         self.name = name
@@ -3452,6 +3787,8 @@ class ConfigurationServiceGitRepository(_serialization.Model):  # pylint: disabl
         self.host_key_algorithm = host_key_algorithm
         self.private_key = private_key
         self.strict_host_key_checking = strict_host_key_checking
+        self.git_implementation = git_implementation
+        self.ca_cert_resource_id = ca_cert_resource_id
 
 
 class ConfigurationServiceInstance(_serialization.Model):
@@ -3490,16 +3827,20 @@ class ConfigurationServiceProperties(_serialization.Model):
     :ivar provisioning_state: State of the Application Configuration Service. Known values are:
      "Creating", "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigurationServiceProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigurationServiceProvisioningState
+    :ivar generation: The generation of the Application Configuration Service. Known values are:
+     "Gen1" and "Gen2".
+    :vartype generation: str or
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigurationServiceGeneration
     :ivar resource_requests: The requested resource quantity for required CPU and Memory.
     :vartype resource_requests:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigurationServiceResourceRequests
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigurationServiceResourceRequests
     :ivar instances: Collection of instances belong to Application Configuration Service.
     :vartype instances:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigurationServiceInstance]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigurationServiceInstance]
     :ivar settings: The settings of Application Configuration Service.
     :vartype settings:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigurationServiceSettings
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigurationServiceSettings
     """
 
     _validation = {
@@ -3510,19 +3851,31 @@ class ConfigurationServiceProperties(_serialization.Model):
 
     _attribute_map = {
         "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "generation": {"key": "generation", "type": "str"},
         "resource_requests": {"key": "resourceRequests", "type": "ConfigurationServiceResourceRequests"},
         "instances": {"key": "instances", "type": "[ConfigurationServiceInstance]"},
         "settings": {"key": "settings", "type": "ConfigurationServiceSettings"},
     }
 
-    def __init__(self, *, settings: Optional["_models.ConfigurationServiceSettings"] = None, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        *,
+        generation: Union[str, "_models.ConfigurationServiceGeneration"] = "Gen1",
+        settings: Optional["_models.ConfigurationServiceSettings"] = None,
+        **kwargs: Any
+    ) -> None:
         """
+        :keyword generation: The generation of the Application Configuration Service. Known values are:
+         "Gen1" and "Gen2".
+        :paramtype generation: str or
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigurationServiceGeneration
         :keyword settings: The settings of Application Configuration Service.
         :paramtype settings:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigurationServiceSettings
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigurationServiceSettings
         """
         super().__init__(**kwargs)
         self.provisioning_state = None
+        self.generation = generation
         self.resource_requests = None
         self.instances = None
         self.settings = settings
@@ -3540,10 +3893,10 @@ class ConfigurationServiceResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Application Configuration Service properties payload.
     :vartype properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigurationServiceProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigurationServiceProperties
     """
 
     _validation = {
@@ -3565,7 +3918,7 @@ class ConfigurationServiceResource(ProxyResource):
         """
         :keyword properties: Application Configuration Service properties payload.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigurationServiceProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigurationServiceProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -3577,7 +3930,7 @@ class ConfigurationServiceResourceCollection(_serialization.Model):
 
     :ivar value: Collection of configuration service resources.
     :vartype value:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigurationServiceResource]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigurationServiceResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -3598,7 +3951,7 @@ class ConfigurationServiceResourceCollection(_serialization.Model):
         """
         :keyword value: Collection of configuration service resources.
         :paramtype value:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigurationServiceResource]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigurationServiceResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -3646,7 +3999,7 @@ class ConfigurationServiceSettings(_serialization.Model):
 
     :ivar git_property: Property of git environment.
     :vartype git_property:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigurationServiceGitProperty
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigurationServiceGitProperty
     """
 
     _attribute_map = {
@@ -3659,7 +4012,7 @@ class ConfigurationServiceSettings(_serialization.Model):
         """
         :keyword git_property: Property of git environment.
         :paramtype git_property:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigurationServiceGitProperty
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigurationServiceGitProperty
         """
         super().__init__(**kwargs)
         self.git_property = git_property
@@ -3670,7 +4023,7 @@ class ConfigurationServiceSettingsValidateResult(_serialization.Model):
 
     :ivar git_property_validation_result: Validation result for configuration service settings.
     :vartype git_property_validation_result:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigurationServiceGitPropertyValidateResult
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigurationServiceGitPropertyValidateResult
     """
 
     _attribute_map = {
@@ -3689,7 +4042,7 @@ class ConfigurationServiceSettingsValidateResult(_serialization.Model):
         """
         :keyword git_property_validation_result: Validation result for configuration service settings.
         :paramtype git_property_validation_result:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ConfigurationServiceGitPropertyValidateResult
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ConfigurationServiceGitPropertyValidateResult
         """
         super().__init__(**kwargs)
         self.git_property_validation_result = git_property_validation_result
@@ -3713,6 +4066,219 @@ class ContainerProbeSettings(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.disable_probe = disable_probe
+
+
+class ContainerRegistryCredentials(_serialization.Model):
+    """The credential for the container registry resource.
+
+    You probably want to use the sub-classes and not this class directly. Known sub-classes are:
+    ContainerRegistryBasicCredentials
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar type: The credential type of the container registry credentials. Required.
+    :vartype type: str
+    """
+
+    _validation = {
+        "type": {"required": True},
+    }
+
+    _attribute_map = {
+        "type": {"key": "type", "type": "str"},
+    }
+
+    _subtype_map = {"type": {"BasicAuth": "ContainerRegistryBasicCredentials"}}
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.type: Optional[str] = None
+
+
+class ContainerRegistryBasicCredentials(ContainerRegistryCredentials):
+    """The basic authentication properties for the container registry resource.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar type: The credential type of the container registry credentials. Required.
+    :vartype type: str
+    :ivar server: The login server of the Container Registry. Required.
+    :vartype server: str
+    :ivar username: The username of the Container Registry. Required.
+    :vartype username: str
+    :ivar password: The password of the Container Registry. Required.
+    :vartype password: str
+    """
+
+    _validation = {
+        "type": {"required": True},
+        "server": {"required": True},
+        "username": {"required": True},
+        "password": {"required": True},
+    }
+
+    _attribute_map = {
+        "type": {"key": "type", "type": "str"},
+        "server": {"key": "server", "type": "str"},
+        "username": {"key": "username", "type": "str"},
+        "password": {"key": "password", "type": "str"},
+    }
+
+    def __init__(self, *, server: str, username: str, password: str, **kwargs: Any) -> None:
+        """
+        :keyword server: The login server of the Container Registry. Required.
+        :paramtype server: str
+        :keyword username: The username of the Container Registry. Required.
+        :paramtype username: str
+        :keyword password: The password of the Container Registry. Required.
+        :paramtype password: str
+        """
+        super().__init__(**kwargs)
+        self.type: str = "BasicAuth"
+        self.server = server
+        self.username = username
+        self.password = password
+
+
+class ContainerRegistryProperties(_serialization.Model):
+    """Container registry resource payload.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar credentials: The credentials of the container registry resource. Required.
+    :vartype credentials:
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ContainerRegistryCredentials
+    :ivar provisioning_state: State of the Container Registry. Known values are: "Creating",
+     "Updating", "Succeeded", "Failed", "Deleting", and "Canceled".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ContainerRegistryProvisioningState
+    """
+
+    _validation = {
+        "credentials": {"required": True},
+        "provisioning_state": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "credentials": {"key": "credentials", "type": "ContainerRegistryCredentials"},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+    }
+
+    def __init__(self, *, credentials: "_models.ContainerRegistryCredentials", **kwargs: Any) -> None:
+        """
+        :keyword credentials: The credentials of the container registry resource. Required.
+        :paramtype credentials:
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ContainerRegistryCredentials
+        """
+        super().__init__(**kwargs)
+        self.credentials = credentials
+        self.provisioning_state = None
+
+
+class ContainerRegistryResource(ProxyResource):
+    """Container registry resource payload.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource.
+    :vartype type: str
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
+    :ivar properties: Properties of the container registry resource payload.
+    :vartype properties:
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ContainerRegistryProperties
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "ContainerRegistryProperties"},
+    }
+
+    def __init__(self, *, properties: Optional["_models.ContainerRegistryProperties"] = None, **kwargs: Any) -> None:
+        """
+        :keyword properties: Properties of the container registry resource payload.
+        :paramtype properties:
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ContainerRegistryProperties
+        """
+        super().__init__(**kwargs)
+        self.properties = properties
+
+
+class ContainerRegistryResourceCollection(_serialization.Model):
+    """Collection compose of container registry resources list and a possible link for next page.
+
+    :ivar value: The container registry resources list.
+    :vartype value:
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ContainerRegistryResource]
+    :ivar next_link: The link to next page of storage list.
+    :vartype next_link: str
+    """
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[ContainerRegistryResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["_models.ContainerRegistryResource"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword value: The container registry resources list.
+        :paramtype value:
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ContainerRegistryResource]
+        :keyword next_link: The link to next page of storage list.
+        :paramtype next_link: str
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
+class ContainerRegistryValidateResult(_serialization.Model):
+    """Validation result for container registry properties.
+
+    :ivar is_valid: Indicate if the container registry properties are valid.
+    :vartype is_valid: bool
+    :ivar message: Detailed validation messages.
+    :vartype message: str
+    """
+
+    _attribute_map = {
+        "is_valid": {"key": "isValid", "type": "bool"},
+        "message": {"key": "message", "type": "str"},
+    }
+
+    def __init__(self, *, is_valid: Optional[bool] = None, message: Optional[str] = None, **kwargs: Any) -> None:
+        """
+        :keyword is_valid: Indicate if the container registry properties are valid.
+        :paramtype is_valid: bool
+        :keyword message: Detailed validation messages.
+        :paramtype message: str
+        """
+        super().__init__(**kwargs)
+        self.is_valid = is_valid
+        self.message = message
 
 
 class ContentCertificateProperties(CertificateProperties):
@@ -3741,7 +4307,7 @@ class ContentCertificateProperties(CertificateProperties):
     :ivar provisioning_state: Provisioning state of the Certificate. Known values are: "Creating",
      "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.CertificateResourceProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.CertificateResourceProvisioningState
     :ivar content: The content of uploaded certificate.
     :vartype content: str
     """
@@ -3797,7 +4363,7 @@ class CustomContainer(_serialization.Model):
     :vartype args: list[str]
     :ivar image_registry_credential: Credential of the image registry.
     :vartype image_registry_credential:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ImageRegistryCredential
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ImageRegistryCredential
     :ivar language_framework: Language framework of the container image uploaded. Supported values:
      "springboot", "", null.
     :vartype language_framework: str
@@ -3837,7 +4403,7 @@ class CustomContainer(_serialization.Model):
         :paramtype args: list[str]
         :keyword image_registry_credential: Credential of the image registry.
         :paramtype image_registry_credential:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ImageRegistryCredential
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ImageRegistryCredential
         :keyword language_framework: Language framework of the container image uploaded. Supported
          values: "springboot", "", null.
         :paramtype language_framework: str
@@ -3861,7 +4427,7 @@ class CustomContainerUserSourceInfo(UserSourceInfo):
     :ivar version: Version of the source.
     :vartype version: str
     :ivar custom_container: Custom container payload.
-    :vartype custom_container: ~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomContainer
+    :vartype custom_container: ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomContainer
     """
 
     _validation = {
@@ -3885,7 +4451,7 @@ class CustomContainerUserSourceInfo(UserSourceInfo):
         :keyword version: Version of the source.
         :paramtype version: str
         :keyword custom_container: Custom container payload.
-        :paramtype custom_container: ~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomContainer
+        :paramtype custom_container: ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomContainer
         """
         super().__init__(version=version, **kwargs)
         self.type: str = "Container"
@@ -3906,7 +4472,7 @@ class CustomDomainProperties(_serialization.Model):
     :ivar provisioning_state: Provisioning state of the Domain. Known values are: "Creating",
      "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomDomainResourceProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomDomainResourceProvisioningState
     """
 
     _validation = {
@@ -3947,9 +4513,9 @@ class CustomDomainResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Properties of the custom domain resource.
-    :vartype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomDomainProperties
+    :vartype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomDomainProperties
     """
 
     _validation = {
@@ -3971,7 +4537,7 @@ class CustomDomainResource(ProxyResource):
         """
         :keyword properties: Properties of the custom domain resource.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomDomainProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomDomainProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -3981,7 +4547,7 @@ class CustomDomainResourceCollection(_serialization.Model):
     """Collection compose of a custom domain resources list and a possible link for next page.
 
     :ivar value: The custom domain resources list.
-    :vartype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomDomainResource]
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomDomainResource]
     :ivar next_link: The link to next page of custom domain list.
     :vartype next_link: str
     """
@@ -4000,7 +4566,7 @@ class CustomDomainResourceCollection(_serialization.Model):
     ) -> None:
         """
         :keyword value: The custom domain resources list.
-        :paramtype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomDomainResource]
+        :paramtype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomDomainResource]
         :keyword next_link: The link to next page of custom domain list.
         :paramtype next_link: str
         """
@@ -4071,7 +4637,7 @@ class CustomizedAcceleratorProperties(_serialization.Model):
     :ivar provisioning_state: State of the customized accelerator. Known values are: "Creating",
      "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomizedAcceleratorProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorProvisioningState
     :ivar display_name:
     :vartype display_name: str
     :ivar description:
@@ -4082,7 +4648,7 @@ class CustomizedAcceleratorProperties(_serialization.Model):
     :vartype accelerator_tags: list[str]
     :ivar git_repository: Required.
     :vartype git_repository:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.AcceleratorGitRepository
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.AcceleratorGitRepository
     """
 
     _validation = {
@@ -4120,7 +4686,7 @@ class CustomizedAcceleratorProperties(_serialization.Model):
         :paramtype accelerator_tags: list[str]
         :keyword git_repository: Required.
         :paramtype git_repository:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.AcceleratorGitRepository
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.AcceleratorGitRepository
         """
         super().__init__(**kwargs)
         self.provisioning_state = None
@@ -4143,12 +4709,12 @@ class CustomizedAcceleratorResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Customized accelerator properties payload.
     :vartype properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomizedAcceleratorProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorProperties
     :ivar sku: Sku of the customized accelerator resource.
-    :vartype sku: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Sku
+    :vartype sku: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Sku
     """
 
     _validation = {
@@ -4177,9 +4743,9 @@ class CustomizedAcceleratorResource(ProxyResource):
         """
         :keyword properties: Customized accelerator properties payload.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomizedAcceleratorProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorProperties
         :keyword sku: Sku of the customized accelerator resource.
-        :paramtype sku: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Sku
+        :paramtype sku: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Sku
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -4191,7 +4757,7 @@ class CustomizedAcceleratorResourceCollection(_serialization.Model):
 
     :ivar value:
     :vartype value:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomizedAcceleratorResource]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorResource]
     :ivar next_link:
     :vartype next_link: str
     """
@@ -4211,7 +4777,7 @@ class CustomizedAcceleratorResourceCollection(_serialization.Model):
         """
         :keyword value:
         :paramtype value:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomizedAcceleratorResource]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorResource]
         :keyword next_link:
         :paramtype next_link: str
         """
@@ -4226,7 +4792,7 @@ class CustomizedAcceleratorValidateResult(_serialization.Model):
     :ivar state: State of the customized accelerator validation result. Known values are: "Valid"
      and "Invalid".
     :vartype state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomizedAcceleratorValidateResultState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorValidateResultState
     :ivar error_message: The detail validation results.
     :vartype error_message: str
     """
@@ -4247,7 +4813,7 @@ class CustomizedAcceleratorValidateResult(_serialization.Model):
         :keyword state: State of the customized accelerator validation result. Known values are:
          "Valid" and "Invalid".
         :paramtype state: str or
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomizedAcceleratorValidateResultState
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorValidateResultState
         :keyword error_message: The detail validation results.
         :paramtype error_message: str
         """
@@ -4264,7 +4830,7 @@ class CustomPersistentDiskResource(_serialization.Model):
     :ivar custom_persistent_disk_properties: Properties of the custom persistent disk resource
      payload.
     :vartype custom_persistent_disk_properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomPersistentDiskProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomPersistentDiskProperties
     :ivar storage_id: The resource id of Azure Spring Apps Storage resource. Required.
     :vartype storage_id: str
     """
@@ -4292,13 +4858,54 @@ class CustomPersistentDiskResource(_serialization.Model):
         :keyword custom_persistent_disk_properties: Properties of the custom persistent disk resource
          payload.
         :paramtype custom_persistent_disk_properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.CustomPersistentDiskProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomPersistentDiskProperties
         :keyword storage_id: The resource id of Azure Spring Apps Storage resource. Required.
         :paramtype storage_id: str
         """
         super().__init__(**kwargs)
         self.custom_persistent_disk_properties = custom_persistent_disk_properties
         self.storage_id = storage_id
+
+
+class CustomScaleRule(_serialization.Model):
+    """Azure Spring Apps App Instance Custom scaling rule.
+
+    :ivar type: Type of the custom scale rule
+     eg: azure-servicebus, redis etc.
+    :vartype type: str
+    :ivar metadata: Metadata properties to describe custom scale rule.
+    :vartype metadata: dict[str, str]
+    :ivar auth: Authentication secrets for the custom scale rule.
+    :vartype auth: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ScaleRuleAuth]
+    """
+
+    _attribute_map = {
+        "type": {"key": "type", "type": "str"},
+        "metadata": {"key": "metadata", "type": "{str}"},
+        "auth": {"key": "auth", "type": "[ScaleRuleAuth]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        type: Optional[str] = None,
+        metadata: Optional[Dict[str, str]] = None,
+        auth: Optional[List["_models.ScaleRuleAuth"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword type: Type of the custom scale rule
+         eg: azure-servicebus, redis etc.
+        :paramtype type: str
+        :keyword metadata: Metadata properties to describe custom scale rule.
+        :paramtype metadata: dict[str, str]
+        :keyword auth: Authentication secrets for the custom scale rule.
+        :paramtype auth: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ScaleRuleAuth]
+        """
+        super().__init__(**kwargs)
+        self.type = type
+        self.metadata = metadata
+        self.auth = auth
 
 
 class DeploymentInstance(_serialization.Model):
@@ -4381,12 +4988,12 @@ class DeploymentResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Properties of the Deployment resource.
     :vartype properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.DeploymentResourceProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.DeploymentResourceProperties
     :ivar sku: Sku of the Deployment resource.
-    :vartype sku: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Sku
+    :vartype sku: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Sku
     """
 
     _validation = {
@@ -4415,9 +5022,9 @@ class DeploymentResource(ProxyResource):
         """
         :keyword properties: Properties of the Deployment resource.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.DeploymentResourceProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.DeploymentResourceProperties
         :keyword sku: Sku of the Deployment resource.
-        :paramtype sku: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Sku
+        :paramtype sku: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Sku
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -4428,7 +5035,7 @@ class DeploymentResourceCollection(_serialization.Model):
     """Object that includes an array of App resources and a possible link for next set.
 
     :ivar value: Collection of Deployment resources.
-    :vartype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.DeploymentResource]
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.DeploymentResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -4448,7 +5055,7 @@ class DeploymentResourceCollection(_serialization.Model):
     ) -> None:
         """
         :keyword value: Collection of Deployment resources.
-        :paramtype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.DeploymentResource]
+        :paramtype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.DeploymentResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -4464,21 +5071,21 @@ class DeploymentResourceProperties(_serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar source: Uploaded source information of the deployment.
-    :vartype source: ~azure.mgmt.appplatform.v2022_11_01_preview.models.UserSourceInfo
+    :vartype source: ~azure.mgmt.appplatform.v2023_09_01_preview.models.UserSourceInfo
     :ivar deployment_settings: Deployment settings of the Deployment.
     :vartype deployment_settings:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.DeploymentSettings
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.DeploymentSettings
     :ivar provisioning_state: Provisioning state of the Deployment. Known values are: "Creating",
      "Updating", "Succeeded", and "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.DeploymentResourceProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.DeploymentResourceProvisioningState
     :ivar status: Status of the Deployment. Known values are: "Stopped" and "Running".
     :vartype status: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.DeploymentResourceStatus
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.DeploymentResourceStatus
     :ivar active: Indicates whether the Deployment is active.
     :vartype active: bool
     :ivar instances: Collection of instances belong to the Deployment.
-    :vartype instances: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.DeploymentInstance]
+    :vartype instances: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.DeploymentInstance]
     """
 
     _validation = {
@@ -4506,10 +5113,10 @@ class DeploymentResourceProperties(_serialization.Model):
     ) -> None:
         """
         :keyword source: Uploaded source information of the deployment.
-        :paramtype source: ~azure.mgmt.appplatform.v2022_11_01_preview.models.UserSourceInfo
+        :paramtype source: ~azure.mgmt.appplatform.v2023_09_01_preview.models.UserSourceInfo
         :keyword deployment_settings: Deployment settings of the Deployment.
         :paramtype deployment_settings:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.DeploymentSettings
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.DeploymentSettings
         :keyword active: Indicates whether the Deployment is active.
         :paramtype active: bool
         """
@@ -4528,19 +5135,21 @@ class DeploymentSettings(_serialization.Model):
     :ivar resource_requests: The requested resource quantity for required CPU and Memory. It is
      recommended that using this field to represent the required CPU and Memory, the old field cpu
      and memoryInGB will be deprecated later.
-    :vartype resource_requests: ~azure.mgmt.appplatform.v2022_11_01_preview.models.ResourceRequests
+    :vartype resource_requests: ~azure.mgmt.appplatform.v2023_09_01_preview.models.ResourceRequests
     :ivar environment_variables: Collection of environment variables.
     :vartype environment_variables: dict[str, str]
+    :ivar apms: Collection of ApmReferences.
+    :vartype apms: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApmReference]
     :ivar addon_configs: Collection of addons.
-    :vartype addon_configs: dict[str, dict[str, JSON]]
+    :vartype addon_configs: dict[str, JSON]
     :ivar liveness_probe: Periodic probe of App Instance liveness. App Instance will be restarted
      if the probe fails. More info:
      https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes.
-    :vartype liveness_probe: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Probe
+    :vartype liveness_probe: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Probe
     :ivar readiness_probe: Periodic probe of App Instance service readiness. App Instance will be
      removed from service endpoints if the probe fails. More info:
      https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes.
-    :vartype readiness_probe: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Probe
+    :vartype readiness_probe: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Probe
     :ivar startup_probe: StartupProbe indicates that the App Instance has successfully initialized.
      If specified, no other probes are executed until this completes successfully. If this probe
      fails, the Pod will be restarted, just as if the livenessProbe failed. This can be used to
@@ -4548,7 +5157,7 @@ class DeploymentSettings(_serialization.Model):
      might take a long time to load data or warm a cache, than during steady-state operation. This
      cannot be updated. More info:
      https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes.
-    :vartype startup_probe: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Probe
+    :vartype startup_probe: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Probe
     :ivar termination_grace_period_seconds: Optional duration in seconds the App Instance needs to
      terminate gracefully. May be decreased in delete request. Value must be non-negative integer.
      The value zero indicates stop immediately via the kill signal (no opportunity to shut down). If
@@ -4557,19 +5166,23 @@ class DeploymentSettings(_serialization.Model):
      signal and the time when the processes are forcibly halted with a kill signal. Set this value
      longer than the expected cleanup time for your process. Defaults to 90 seconds.
     :vartype termination_grace_period_seconds: int
+    :ivar scale: Scaling properties for the Azure Spring Apps App Instance.
+    :vartype scale: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Scale
     :ivar container_probe_settings: Container liveness and readiness probe settings.
     :vartype container_probe_settings:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ContainerProbeSettings
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ContainerProbeSettings
     """
 
     _attribute_map = {
         "resource_requests": {"key": "resourceRequests", "type": "ResourceRequests"},
         "environment_variables": {"key": "environmentVariables", "type": "{str}"},
-        "addon_configs": {"key": "addonConfigs", "type": "{{object}}"},
+        "apms": {"key": "apms", "type": "[ApmReference]"},
+        "addon_configs": {"key": "addonConfigs", "type": "{object}"},
         "liveness_probe": {"key": "livenessProbe", "type": "Probe"},
         "readiness_probe": {"key": "readinessProbe", "type": "Probe"},
         "startup_probe": {"key": "startupProbe", "type": "Probe"},
         "termination_grace_period_seconds": {"key": "terminationGracePeriodSeconds", "type": "int"},
+        "scale": {"key": "scale", "type": "Scale"},
         "container_probe_settings": {"key": "containerProbeSettings", "type": "ContainerProbeSettings"},
     }
 
@@ -4578,11 +5191,13 @@ class DeploymentSettings(_serialization.Model):
         *,
         resource_requests: Optional["_models.ResourceRequests"] = None,
         environment_variables: Optional[Dict[str, str]] = None,
-        addon_configs: Optional[Dict[str, Dict[str, JSON]]] = None,
+        apms: Optional[List["_models.ApmReference"]] = None,
+        addon_configs: Optional[Dict[str, JSON]] = None,
         liveness_probe: Optional["_models.Probe"] = None,
         readiness_probe: Optional["_models.Probe"] = None,
         startup_probe: Optional["_models.Probe"] = None,
         termination_grace_period_seconds: int = 90,
+        scale: Optional["_models.Scale"] = None,
         container_probe_settings: Optional["_models.ContainerProbeSettings"] = None,
         **kwargs: Any
     ) -> None:
@@ -4591,19 +5206,21 @@ class DeploymentSettings(_serialization.Model):
          recommended that using this field to represent the required CPU and Memory, the old field cpu
          and memoryInGB will be deprecated later.
         :paramtype resource_requests:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ResourceRequests
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ResourceRequests
         :keyword environment_variables: Collection of environment variables.
         :paramtype environment_variables: dict[str, str]
+        :keyword apms: Collection of ApmReferences.
+        :paramtype apms: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApmReference]
         :keyword addon_configs: Collection of addons.
-        :paramtype addon_configs: dict[str, dict[str, JSON]]
+        :paramtype addon_configs: dict[str, JSON]
         :keyword liveness_probe: Periodic probe of App Instance liveness. App Instance will be
          restarted if the probe fails. More info:
          https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes.
-        :paramtype liveness_probe: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Probe
+        :paramtype liveness_probe: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Probe
         :keyword readiness_probe: Periodic probe of App Instance service readiness. App Instance will
          be removed from service endpoints if the probe fails. More info:
          https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes.
-        :paramtype readiness_probe: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Probe
+        :paramtype readiness_probe: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Probe
         :keyword startup_probe: StartupProbe indicates that the App Instance has successfully
          initialized. If specified, no other probes are executed until this completes successfully. If
          this probe fails, the Pod will be restarted, just as if the livenessProbe failed. This can be
@@ -4611,7 +5228,7 @@ class DeploymentSettings(_serialization.Model):
          it might take a long time to load data or warm a cache, than during steady-state operation.
          This cannot be updated. More info:
          https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes.
-        :paramtype startup_probe: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Probe
+        :paramtype startup_probe: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Probe
         :keyword termination_grace_period_seconds: Optional duration in seconds the App Instance needs
          to terminate gracefully. May be decreased in delete request. Value must be non-negative
          integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut
@@ -4620,18 +5237,22 @@ class DeploymentSettings(_serialization.Model):
          signal and the time when the processes are forcibly halted with a kill signal. Set this value
          longer than the expected cleanup time for your process. Defaults to 90 seconds.
         :paramtype termination_grace_period_seconds: int
+        :keyword scale: Scaling properties for the Azure Spring Apps App Instance.
+        :paramtype scale: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Scale
         :keyword container_probe_settings: Container liveness and readiness probe settings.
         :paramtype container_probe_settings:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ContainerProbeSettings
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ContainerProbeSettings
         """
         super().__init__(**kwargs)
         self.resource_requests = resource_requests
         self.environment_variables = environment_variables
+        self.apms = apms
         self.addon_configs = addon_configs
         self.liveness_probe = liveness_probe
         self.readiness_probe = readiness_probe
         self.startup_probe = startup_probe
         self.termination_grace_period_seconds = termination_grace_period_seconds
+        self.scale = scale
         self.container_probe_settings = container_probe_settings
 
 
@@ -4644,10 +5265,10 @@ class DevToolPortalComponent(_serialization.Model):
     :vartype name: str
     :ivar resource_requests: The requested resource quantity for required CPU and Memory.
     :vartype resource_requests:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.DevToolPortalResourceRequests
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.DevToolPortalResourceRequests
     :ivar instances: Collection of instances belong to Dev Tool Portal.
     :vartype instances:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.DevToolPortalInstance]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.DevToolPortalInstance]
     """
 
     _validation = {
@@ -4677,7 +5298,7 @@ class DevToolPortalFeatureDetail(_serialization.Model):
 
     :ivar state: State of the plugin. Known values are: "Enabled" and "Disabled".
     :vartype state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.DevToolPortalFeatureState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.DevToolPortalFeatureState
     :ivar route: Route path to visit the plugin.
     :vartype route: str
     """
@@ -4695,7 +5316,7 @@ class DevToolPortalFeatureDetail(_serialization.Model):
         """
         :keyword state: State of the plugin. Known values are: "Enabled" and "Disabled".
         :paramtype state: str or
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.DevToolPortalFeatureState
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.DevToolPortalFeatureState
         """
         super().__init__(**kwargs)
         self.state = state
@@ -4707,10 +5328,10 @@ class DevToolPortalFeatureSettings(_serialization.Model):
 
     :ivar application_accelerator: Detail of Accelerator plugin.
     :vartype application_accelerator:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.DevToolPortalFeatureDetail
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.DevToolPortalFeatureDetail
     :ivar application_live_view: Detail of App Live View plugin.
     :vartype application_live_view:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.DevToolPortalFeatureDetail
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.DevToolPortalFeatureDetail
     """
 
     _attribute_map = {
@@ -4728,10 +5349,10 @@ class DevToolPortalFeatureSettings(_serialization.Model):
         """
         :keyword application_accelerator: Detail of Accelerator plugin.
         :paramtype application_accelerator:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.DevToolPortalFeatureDetail
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.DevToolPortalFeatureDetail
         :keyword application_live_view: Detail of App Live View plugin.
         :paramtype application_live_view:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.DevToolPortalFeatureDetail
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.DevToolPortalFeatureDetail
         """
         super().__init__(**kwargs)
         self.application_accelerator = application_accelerator
@@ -4775,20 +5396,20 @@ class DevToolPortalProperties(_serialization.Model):
     :ivar provisioning_state: State of the Dev Tool Portal. Known values are: "Creating",
      "Updating", "Succeeded", "Failed", "Deleting", and "Canceled".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.DevToolPortalProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.DevToolPortalProvisioningState
     :ivar components: Collection of components belong to Dev Tool Portal.
     :vartype components:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.DevToolPortalComponent]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.DevToolPortalComponent]
     :ivar public: Indicates whether the resource exposes public endpoint.
     :vartype public: bool
     :ivar url: URL of the resource, exposed when 'public' is true.
     :vartype url: str
     :ivar sso_properties: Single sign-on related configuration.
     :vartype sso_properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.DevToolPortalSsoProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.DevToolPortalSsoProperties
     :ivar features: Settings for Dev Tool Portal.
     :vartype features:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.DevToolPortalFeatureSettings
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.DevToolPortalFeatureSettings
     """
 
     _validation = {
@@ -4819,10 +5440,10 @@ class DevToolPortalProperties(_serialization.Model):
         :paramtype public: bool
         :keyword sso_properties: Single sign-on related configuration.
         :paramtype sso_properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.DevToolPortalSsoProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.DevToolPortalSsoProperties
         :keyword features: Settings for Dev Tool Portal.
         :paramtype features:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.DevToolPortalFeatureSettings
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.DevToolPortalFeatureSettings
         """
         super().__init__(**kwargs)
         self.provisioning_state = None
@@ -4845,9 +5466,9 @@ class DevToolPortalResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Dev Tool Portal properties payload.
-    :vartype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.DevToolPortalProperties
+    :vartype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.DevToolPortalProperties
     """
 
     _validation = {
@@ -4869,7 +5490,7 @@ class DevToolPortalResource(ProxyResource):
         """
         :keyword properties: Dev Tool Portal properties payload.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.DevToolPortalProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.DevToolPortalProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -4879,7 +5500,7 @@ class DevToolPortalResourceCollection(_serialization.Model):
     """Object that includes an array of Dev Tool Portal resources and a possible link for next set.
 
     :ivar value: Collection of Dev Tool Portal resources.
-    :vartype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.DevToolPortalResource]
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.DevToolPortalResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -4900,7 +5521,7 @@ class DevToolPortalResourceCollection(_serialization.Model):
         """
         :keyword value: Collection of Dev Tool Portal resources.
         :paramtype value:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.DevToolPortalResource]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.DevToolPortalResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -5058,6 +5679,130 @@ class Error(_serialization.Model):
         self.message = message
 
 
+class EurekaServerProperties(_serialization.Model):
+    """Eureka server properties payload.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar provisioning_state: State of the eureka server. Known values are: "Failed", "Succeeded",
+     "Updating", and "Canceled".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.EurekaServerState
+    :ivar enabled_state: Enabled state of the eureka server. This is only used in Consumption tier.
+     Known values are: "Enabled" and "Disabled".
+    :vartype enabled_state: str or
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.EurekaServerEnabledState
+    :ivar error: Error when applying eureka server settings.
+    :vartype error: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Error
+    """
+
+    _validation = {
+        "provisioning_state": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "enabled_state": {"key": "enabledState", "type": "str"},
+        "error": {"key": "error", "type": "Error"},
+    }
+
+    def __init__(
+        self,
+        *,
+        enabled_state: Optional[Union[str, "_models.EurekaServerEnabledState"]] = None,
+        error: Optional["_models.Error"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword enabled_state: Enabled state of the eureka server. This is only used in Consumption
+         tier. Known values are: "Enabled" and "Disabled".
+        :paramtype enabled_state: str or
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.EurekaServerEnabledState
+        :keyword error: Error when applying eureka server settings.
+        :paramtype error: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Error
+        """
+        super().__init__(**kwargs)
+        self.provisioning_state = None
+        self.enabled_state = enabled_state
+        self.error = error
+
+
+class EurekaServerResource(ProxyResource):
+    """Eureka server resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource.
+    :vartype type: str
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
+    :ivar properties: Properties of the eureka server resource.
+    :vartype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.EurekaServerProperties
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "EurekaServerProperties"},
+    }
+
+    def __init__(self, *, properties: Optional["_models.EurekaServerProperties"] = None, **kwargs: Any) -> None:
+        """
+        :keyword properties: Properties of the eureka server resource.
+        :paramtype properties:
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.EurekaServerProperties
+        """
+        super().__init__(**kwargs)
+        self.properties = properties
+
+
+class EurekaServerResourceCollection(_serialization.Model):
+    """Object that includes an array of Eureka server resources and a possible link for next set.
+
+    :ivar value: Collection of Eureka server resources.
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.EurekaServerResource]
+    :ivar next_link: URL client should use to fetch the next page (per server side paging).
+     It's null for now, added for future use.
+    :vartype next_link: str
+    """
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[EurekaServerResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["_models.EurekaServerResource"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword value: Collection of Eureka server resources.
+        :paramtype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.EurekaServerResource]
+        :keyword next_link: URL client should use to fetch the next page (per server side paging).
+         It's null for now, added for future use.
+        :paramtype next_link: str
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
 class ProbeAction(_serialization.Model):
     """The action of the probe.
 
@@ -5068,7 +5813,7 @@ class ProbeAction(_serialization.Model):
 
     :ivar type: The type of the action to take to perform the health check. Required. Known values
      are: "HTTPGetAction", "TCPSocketAction", and "ExecAction".
-    :vartype type: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.ProbeActionType
+    :vartype type: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.ProbeActionType
     """
 
     _validation = {
@@ -5096,7 +5841,7 @@ class ExecAction(ProbeAction):
 
     :ivar type: The type of the action to take to perform the health check. Required. Known values
      are: "HTTPGetAction", "TCPSocketAction", and "ExecAction".
-    :vartype type: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.ProbeActionType
+    :vartype type: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.ProbeActionType
     :ivar command: Command is the command line to execute inside the container, the working
      directory for the command is root ('/') in the container's filesystem. The command is not run
      inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you
@@ -5288,6 +6033,8 @@ class GatewayCorsProperties(_serialization.Model):
     :ivar allowed_origins: Allowed origins to make cross-site requests. The special value ``*``
      allows all domains.
     :vartype allowed_origins: list[str]
+    :ivar allowed_origin_patterns: Allowed origin patterns to make cross-site requests.
+    :vartype allowed_origin_patterns: list[str]
     :ivar allowed_methods: Allowed HTTP methods on cross-site requests. The special value ``*``
      allows all methods. If not set, ``GET`` and ``HEAD`` are allowed by default.
     :vartype allowed_methods: list[str]
@@ -5306,6 +6053,7 @@ class GatewayCorsProperties(_serialization.Model):
 
     _attribute_map = {
         "allowed_origins": {"key": "allowedOrigins", "type": "[str]"},
+        "allowed_origin_patterns": {"key": "allowedOriginPatterns", "type": "[str]"},
         "allowed_methods": {"key": "allowedMethods", "type": "[str]"},
         "allowed_headers": {"key": "allowedHeaders", "type": "[str]"},
         "max_age": {"key": "maxAge", "type": "int"},
@@ -5317,6 +6065,7 @@ class GatewayCorsProperties(_serialization.Model):
         self,
         *,
         allowed_origins: Optional[List[str]] = None,
+        allowed_origin_patterns: Optional[List[str]] = None,
         allowed_methods: Optional[List[str]] = None,
         allowed_headers: Optional[List[str]] = None,
         max_age: Optional[int] = None,
@@ -5328,6 +6077,8 @@ class GatewayCorsProperties(_serialization.Model):
         :keyword allowed_origins: Allowed origins to make cross-site requests. The special value ``*``
          allows all domains.
         :paramtype allowed_origins: list[str]
+        :keyword allowed_origin_patterns: Allowed origin patterns to make cross-site requests.
+        :paramtype allowed_origin_patterns: list[str]
         :keyword allowed_methods: Allowed HTTP methods on cross-site requests. The special value ``*``
          allows all methods. If not set, ``GET`` and ``HEAD`` are allowed by default.
         :paramtype allowed_methods: list[str]
@@ -5345,6 +6096,7 @@ class GatewayCorsProperties(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.allowed_origins = allowed_origins
+        self.allowed_origin_patterns = allowed_origin_patterns
         self.allowed_methods = allowed_methods
         self.allowed_headers = allowed_headers
         self.max_age = max_age
@@ -5384,10 +6136,10 @@ class GatewayCustomDomainResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: The properties of custom domain for Spring Cloud Gateway.
     :vartype properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayCustomDomainProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayCustomDomainProperties
     """
 
     _validation = {
@@ -5409,7 +6161,7 @@ class GatewayCustomDomainResource(ProxyResource):
         """
         :keyword properties: The properties of custom domain for Spring Cloud Gateway.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayCustomDomainProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayCustomDomainProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -5421,7 +6173,7 @@ class GatewayCustomDomainResourceCollection(_serialization.Model):
 
     :ivar value: Collection of Spring Cloud Gateway custom domain resources.
     :vartype value:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayCustomDomainResource]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayCustomDomainResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -5442,7 +6194,7 @@ class GatewayCustomDomainResourceCollection(_serialization.Model):
         """
         :keyword value: Collection of Spring Cloud Gateway custom domain resources.
         :paramtype value:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayCustomDomainResource]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayCustomDomainResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -5487,9 +6239,9 @@ class GatewayOperatorProperties(_serialization.Model):
 
     :ivar resource_requests: The requested resource quantity for required CPU and Memory.
     :vartype resource_requests:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayOperatorResourceRequests
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayOperatorResourceRequests
     :ivar instances: Collection of instances belong to Spring Cloud Gateway operator.
-    :vartype instances: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayInstance]
+    :vartype instances: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayInstance]
     """
 
     _validation = {
@@ -5550,7 +6302,7 @@ class GatewayProperties(_serialization.Model):  # pylint: disable=too-many-insta
     :ivar provisioning_state: State of the Spring Cloud Gateway. Known values are: "Creating",
      "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayProvisioningState
     :ivar public: Indicates whether the Spring Cloud Gateway exposes endpoint.
     :vartype public: bool
     :ivar url: URL of the Spring Cloud Gateway, exposed when 'public' is true.
@@ -5558,26 +6310,31 @@ class GatewayProperties(_serialization.Model):  # pylint: disable=too-many-insta
     :ivar https_only: Indicate if only https is allowed.
     :vartype https_only: bool
     :ivar sso_properties: Single sign-on related configuration.
-    :vartype sso_properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SsoProperties
+    :vartype sso_properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SsoProperties
     :ivar api_metadata_properties: API metadata property for Spring Cloud Gateway.
     :vartype api_metadata_properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayApiMetadataProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayApiMetadataProperties
     :ivar cors_properties: Cross-Origin Resource Sharing property.
     :vartype cors_properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayCorsProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayCorsProperties
+    :ivar client_auth: Client-Certification Authentication.
+    :vartype client_auth:
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayPropertiesClientAuth
     :ivar apm_types: Collection of APM type used in Spring Cloud Gateway.
-    :vartype apm_types: list[str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApmType]
+    :vartype apm_types: list[str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApmType]
     :ivar environment_variables: Environment variables of Spring Cloud Gateway.
     :vartype environment_variables:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayPropertiesEnvironmentVariables
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayPropertiesEnvironmentVariables
     :ivar resource_requests: The requested resource quantity for required CPU and Memory.
     :vartype resource_requests:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayResourceRequests
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayResourceRequests
+    :ivar addon_configs: Collection of addons for Spring Cloud Gateway.
+    :vartype addon_configs: dict[str, JSON]
     :ivar instances: Collection of instances belong to Spring Cloud Gateway.
-    :vartype instances: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayInstance]
+    :vartype instances: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayInstance]
     :ivar operator_properties: Properties of the Spring Cloud Gateway Operator.
     :vartype operator_properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayOperatorProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayOperatorProperties
     """
 
     _validation = {
@@ -5596,9 +6353,11 @@ class GatewayProperties(_serialization.Model):  # pylint: disable=too-many-insta
         "sso_properties": {"key": "ssoProperties", "type": "SsoProperties"},
         "api_metadata_properties": {"key": "apiMetadataProperties", "type": "GatewayApiMetadataProperties"},
         "cors_properties": {"key": "corsProperties", "type": "GatewayCorsProperties"},
+        "client_auth": {"key": "clientAuth", "type": "GatewayPropertiesClientAuth"},
         "apm_types": {"key": "apmTypes", "type": "[str]"},
         "environment_variables": {"key": "environmentVariables", "type": "GatewayPropertiesEnvironmentVariables"},
         "resource_requests": {"key": "resourceRequests", "type": "GatewayResourceRequests"},
+        "addon_configs": {"key": "addonConfigs", "type": "{object}"},
         "instances": {"key": "instances", "type": "[GatewayInstance]"},
         "operator_properties": {"key": "operatorProperties", "type": "GatewayOperatorProperties"},
     }
@@ -5611,9 +6370,11 @@ class GatewayProperties(_serialization.Model):  # pylint: disable=too-many-insta
         sso_properties: Optional["_models.SsoProperties"] = None,
         api_metadata_properties: Optional["_models.GatewayApiMetadataProperties"] = None,
         cors_properties: Optional["_models.GatewayCorsProperties"] = None,
+        client_auth: Optional["_models.GatewayPropertiesClientAuth"] = None,
         apm_types: Optional[List[Union[str, "_models.ApmType"]]] = None,
         environment_variables: Optional["_models.GatewayPropertiesEnvironmentVariables"] = None,
         resource_requests: Optional["_models.GatewayResourceRequests"] = None,
+        addon_configs: Optional[Dict[str, JSON]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -5622,21 +6383,26 @@ class GatewayProperties(_serialization.Model):  # pylint: disable=too-many-insta
         :keyword https_only: Indicate if only https is allowed.
         :paramtype https_only: bool
         :keyword sso_properties: Single sign-on related configuration.
-        :paramtype sso_properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SsoProperties
+        :paramtype sso_properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SsoProperties
         :keyword api_metadata_properties: API metadata property for Spring Cloud Gateway.
         :paramtype api_metadata_properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayApiMetadataProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayApiMetadataProperties
         :keyword cors_properties: Cross-Origin Resource Sharing property.
         :paramtype cors_properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayCorsProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayCorsProperties
+        :keyword client_auth: Client-Certification Authentication.
+        :paramtype client_auth:
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayPropertiesClientAuth
         :keyword apm_types: Collection of APM type used in Spring Cloud Gateway.
-        :paramtype apm_types: list[str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApmType]
+        :paramtype apm_types: list[str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApmType]
         :keyword environment_variables: Environment variables of Spring Cloud Gateway.
         :paramtype environment_variables:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayPropertiesEnvironmentVariables
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayPropertiesEnvironmentVariables
         :keyword resource_requests: The requested resource quantity for required CPU and Memory.
         :paramtype resource_requests:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayResourceRequests
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayResourceRequests
+        :keyword addon_configs: Collection of addons for Spring Cloud Gateway.
+        :paramtype addon_configs: dict[str, JSON]
         """
         super().__init__(**kwargs)
         self.provisioning_state = None
@@ -5646,11 +6412,53 @@ class GatewayProperties(_serialization.Model):  # pylint: disable=too-many-insta
         self.sso_properties = sso_properties
         self.api_metadata_properties = api_metadata_properties
         self.cors_properties = cors_properties
+        self.client_auth = client_auth
         self.apm_types = apm_types
         self.environment_variables = environment_variables
         self.resource_requests = resource_requests
+        self.addon_configs = addon_configs
         self.instances = None
         self.operator_properties = None
+
+
+class GatewayPropertiesClientAuth(_serialization.Model):
+    """Client-Certification Authentication.
+
+    :ivar certificates: Collection of certificate resource Ids in Azure Spring Apps.
+    :vartype certificates: list[str]
+    :ivar certificate_verification: Whether to enable certificate verification or not. Known values
+     are: "Enabled" and "Disabled".
+    :vartype certificate_verification: str or
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayCertificateVerification
+    """
+
+    _validation = {
+        "certificates": {"unique": True},
+    }
+
+    _attribute_map = {
+        "certificates": {"key": "certificates", "type": "[str]"},
+        "certificate_verification": {"key": "certificateVerification", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        certificates: Optional[List[str]] = None,
+        certificate_verification: Union[str, "_models.GatewayCertificateVerification"] = "Disabled",
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword certificates: Collection of certificate resource Ids in Azure Spring Apps.
+        :paramtype certificates: list[str]
+        :keyword certificate_verification: Whether to enable certificate verification or not. Known
+         values are: "Enabled" and "Disabled".
+        :paramtype certificate_verification: str or
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayCertificateVerification
+        """
+        super().__init__(**kwargs)
+        self.certificates = certificates
+        self.certificate_verification = certificate_verification
 
 
 class GatewayPropertiesEnvironmentVariables(_serialization.Model):
@@ -5693,11 +6501,11 @@ class GatewayResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Spring Cloud Gateway properties payload.
-    :vartype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayProperties
+    :vartype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayProperties
     :ivar sku: Sku of the Spring Cloud Gateway resource.
-    :vartype sku: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Sku
+    :vartype sku: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Sku
     """
 
     _validation = {
@@ -5725,9 +6533,9 @@ class GatewayResource(ProxyResource):
     ) -> None:
         """
         :keyword properties: Spring Cloud Gateway properties payload.
-        :paramtype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayProperties
+        :paramtype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayProperties
         :keyword sku: Sku of the Spring Cloud Gateway resource.
-        :paramtype sku: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Sku
+        :paramtype sku: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Sku
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -5738,7 +6546,7 @@ class GatewayResourceCollection(_serialization.Model):
     """Object that includes an array of gateway resources and a possible link for next set.
 
     :ivar value: Collection of gateway resources.
-    :vartype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayResource]
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -5754,7 +6562,7 @@ class GatewayResourceCollection(_serialization.Model):
     ) -> None:
         """
         :keyword value: Collection of gateway resources.
-        :paramtype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayResource]
+        :paramtype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -5818,20 +6626,20 @@ class GatewayRouteConfigProperties(_serialization.Model):
     :ivar provisioning_state: State of the Spring Cloud Gateway route config. Known values are:
      "Creating", "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayProvisioningState
     :ivar app_resource_id: The resource Id of the Azure Spring Apps app, required unless route
      defines ``uri``.
     :vartype app_resource_id: str
     :ivar open_api: OpenAPI properties of Spring Cloud Gateway route config.
     :vartype open_api:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayRouteConfigOpenApiProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayRouteConfigOpenApiProperties
     :ivar protocol: Protocol of routed Azure Spring Apps applications. Known values are: "HTTP" and
      "HTTPS".
     :vartype protocol: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayRouteConfigProtocol
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayRouteConfigProtocol
     :ivar routes: Array of API routes, each route contains properties such as ``title``\ , ``uri``\
      , ``ssoEnabled``\ , ``predicates``\ , ``filters``.
-    :vartype routes: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayApiRoute]
+    :vartype routes: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayApiRoute]
     :ivar sso_enabled: Enable Single Sign-On in app level.
     :vartype sso_enabled: bool
     :ivar predicates: A number of conditions to evaluate a route for each request in app level.
@@ -5877,14 +6685,14 @@ class GatewayRouteConfigProperties(_serialization.Model):
         :paramtype app_resource_id: str
         :keyword open_api: OpenAPI properties of Spring Cloud Gateway route config.
         :paramtype open_api:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayRouteConfigOpenApiProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayRouteConfigOpenApiProperties
         :keyword protocol: Protocol of routed Azure Spring Apps applications. Known values are: "HTTP"
          and "HTTPS".
         :paramtype protocol: str or
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayRouteConfigProtocol
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayRouteConfigProtocol
         :keyword routes: Array of API routes, each route contains properties such as ``title``\ ,
          ``uri``\ , ``ssoEnabled``\ , ``predicates``\ , ``filters``.
-        :paramtype routes: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayApiRoute]
+        :paramtype routes: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayApiRoute]
         :keyword sso_enabled: Enable Single Sign-On in app level.
         :paramtype sso_enabled: bool
         :keyword predicates: A number of conditions to evaluate a route for each request in app level.
@@ -5919,10 +6727,10 @@ class GatewayRouteConfigResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: API route config of the Spring Cloud Gateway.
     :vartype properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayRouteConfigProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayRouteConfigProperties
     """
 
     _validation = {
@@ -5944,7 +6752,7 @@ class GatewayRouteConfigResource(ProxyResource):
         """
         :keyword properties: API route config of the Spring Cloud Gateway.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayRouteConfigProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayRouteConfigProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -5956,7 +6764,7 @@ class GatewayRouteConfigResourceCollection(_serialization.Model):
 
     :ivar value: Collection of Spring Cloud Gateway route config resources.
     :vartype value:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayRouteConfigResource]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayRouteConfigResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -5977,7 +6785,7 @@ class GatewayRouteConfigResourceCollection(_serialization.Model):
         """
         :keyword value: Collection of Spring Cloud Gateway route config resources.
         :paramtype value:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.GatewayRouteConfigResource]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayRouteConfigResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -6089,6 +6897,26 @@ class GitPatternRepository(_serialization.Model):  # pylint: disable=too-many-in
         self.strict_host_key_checking = strict_host_key_checking
 
 
+class GloballyEnabledApms(_serialization.Model):
+    """Globally enabled APMs payload.
+
+    :ivar value: Collection of the globally enabled APMs.
+    :vartype value: list[str]
+    """
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[str]"},
+    }
+
+    def __init__(self, *, value: Optional[List[str]] = None, **kwargs: Any) -> None:
+        """
+        :keyword value: Collection of the globally enabled APMs.
+        :paramtype value: list[str]
+        """
+        super().__init__(**kwargs)
+        self.value = value
+
+
 class HTTPGetAction(ProbeAction):
     """HTTPGetAction describes an action based on HTTP Get requests.
 
@@ -6096,7 +6924,7 @@ class HTTPGetAction(ProbeAction):
 
     :ivar type: The type of the action to take to perform the health check. Required. Known values
      are: "HTTPGetAction", "TCPSocketAction", and "ExecAction".
-    :vartype type: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.ProbeActionType
+    :vartype type: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.ProbeActionType
     :ivar path: Path to access on the HTTP server.
     :vartype path: str
     :ivar scheme: Scheme to use for connecting to the host. Defaults to HTTP.
@@ -6107,7 +6935,7 @@ class HTTPGetAction(ProbeAction):
      * ``"HTTP"`` means that the scheme used will be http://
      * ``"HTTPS"`` means that the scheme used will be https://. Known values are: "HTTP" and
      "HTTPS".
-    :vartype scheme: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.HTTPSchemeType
+    :vartype scheme: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.HTTPSchemeType
     """
 
     _validation = {
@@ -6138,12 +6966,44 @@ class HTTPGetAction(ProbeAction):
          * ``"HTTP"`` means that the scheme used will be http://
          * ``"HTTPS"`` means that the scheme used will be https://. Known values are: "HTTP" and
          "HTTPS".
-        :paramtype scheme: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.HTTPSchemeType
+        :paramtype scheme: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.HTTPSchemeType
         """
         super().__init__(**kwargs)
         self.type: str = "HTTPGetAction"
         self.path = path
         self.scheme = scheme
+
+
+class HttpScaleRule(_serialization.Model):
+    """Azure Spring Apps App Instance Http scaling rule.
+
+    :ivar metadata: Metadata properties to describe http scale rule.
+    :vartype metadata: dict[str, str]
+    :ivar auth: Authentication secrets for the custom scale rule.
+    :vartype auth: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ScaleRuleAuth]
+    """
+
+    _attribute_map = {
+        "metadata": {"key": "metadata", "type": "{str}"},
+        "auth": {"key": "auth", "type": "[ScaleRuleAuth]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        metadata: Optional[Dict[str, str]] = None,
+        auth: Optional[List["_models.ScaleRuleAuth"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword metadata: Metadata properties to describe http scale rule.
+        :paramtype metadata: dict[str, str]
+        :keyword auth: Authentication secrets for the custom scale rule.
+        :paramtype auth: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ScaleRuleAuth]
+        """
+        super().__init__(**kwargs)
+        self.metadata = metadata
+        self.auth = auth
 
 
 class ImageRegistryCredential(_serialization.Model):
@@ -6202,16 +7062,16 @@ class IngressSettings(_serialization.Model):
     :ivar session_affinity: Type of the affinity, set this to Cookie to enable session affinity.
      Known values are: "Cookie" and "None".
     :vartype session_affinity: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.SessionAffinity
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.SessionAffinity
     :ivar session_cookie_max_age: Time in seconds until the cookie expires.
     :vartype session_cookie_max_age: int
     :ivar backend_protocol: How ingress should communicate with this app backend service. Known
      values are: "GRPC" and "Default".
     :vartype backend_protocol: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.BackendProtocol
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.BackendProtocol
     :ivar client_auth: Client-Certification Authentication.
     :vartype client_auth:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.IngressSettingsClientAuth
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.IngressSettingsClientAuth
     """
 
     _attribute_map = {
@@ -6242,16 +7102,16 @@ class IngressSettings(_serialization.Model):
         :keyword session_affinity: Type of the affinity, set this to Cookie to enable session affinity.
          Known values are: "Cookie" and "None".
         :paramtype session_affinity: str or
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.SessionAffinity
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.SessionAffinity
         :keyword session_cookie_max_age: Time in seconds until the cookie expires.
         :paramtype session_cookie_max_age: int
         :keyword backend_protocol: How ingress should communicate with this app backend service. Known
          values are: "GRPC" and "Default".
         :paramtype backend_protocol: str or
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.BackendProtocol
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.BackendProtocol
         :keyword client_auth: Client-Certification Authentication.
         :paramtype client_auth:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.IngressSettingsClientAuth
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.IngressSettingsClientAuth
         """
         super().__init__(**kwargs)
         self.read_timeout_in_seconds = read_timeout_in_seconds
@@ -6408,7 +7268,7 @@ class KeyVaultCertificateProperties(CertificateProperties):  # pylint: disable=t
     :ivar provisioning_state: Provisioning state of the Certificate. Known values are: "Creating",
      "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.CertificateResourceProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.CertificateResourceProvisioningState
     :ivar vault_uri: The vault uri of user key vault. Required.
     :vartype vault_uri: str
     :ivar key_vault_cert_name: The certificate name of key vault. Required.
@@ -6577,19 +7437,47 @@ class LogSpecification(_serialization.Model):
         self.blob_duration = blob_duration
 
 
+class MaintenanceScheduleConfiguration(_serialization.Model):
+    """Configuration for the planned maintenance.
+
+    You probably want to use the sub-classes and not this class directly. Known sub-classes are:
+    WeeklyMaintenanceScheduleConfiguration
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar frequency: The frequency to run the maintenance job. Required. "Weekly"
+    :vartype frequency: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.Frequency
+    """
+
+    _validation = {
+        "frequency": {"required": True},
+    }
+
+    _attribute_map = {
+        "frequency": {"key": "frequency", "type": "str"},
+    }
+
+    _subtype_map = {"frequency": {"Weekly": "WeeklyMaintenanceScheduleConfiguration"}}
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.frequency: Optional[str] = None
+
+
 class ManagedIdentityProperties(_serialization.Model):
     """Managed identity properties retrieved from ARM request headers.
 
     :ivar type: Type of the managed identity. Known values are: "None", "SystemAssigned",
      "UserAssigned", and "SystemAssigned,UserAssigned".
-    :vartype type: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.ManagedIdentityType
+    :vartype type: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.ManagedIdentityType
     :ivar principal_id: Principal Id of system-assigned managed identity.
     :vartype principal_id: str
     :ivar tenant_id: Tenant Id of system-assigned managed identity.
     :vartype tenant_id: str
     :ivar user_assigned_identities: Properties of user-assigned managed identities.
     :vartype user_assigned_identities: dict[str,
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.UserAssignedManagedIdentity]
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.UserAssignedManagedIdentity]
     """
 
     _attribute_map = {
@@ -6611,14 +7499,14 @@ class ManagedIdentityProperties(_serialization.Model):
         """
         :keyword type: Type of the managed identity. Known values are: "None", "SystemAssigned",
          "UserAssigned", and "SystemAssigned,UserAssigned".
-        :paramtype type: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.ManagedIdentityType
+        :paramtype type: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.ManagedIdentityType
         :keyword principal_id: Principal Id of system-assigned managed identity.
         :paramtype principal_id: str
         :keyword tenant_id: Tenant Id of system-assigned managed identity.
         :paramtype tenant_id: str
         :keyword user_assigned_identities: Properties of user-assigned managed identities.
         :paramtype user_assigned_identities: dict[str,
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.UserAssignedManagedIdentity]
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.UserAssignedManagedIdentity]
         """
         super().__init__(**kwargs)
         self.type = type
@@ -6732,7 +7620,7 @@ class MetricSpecification(_serialization.Model):  # pylint: disable=too-many-ins
      duration where no metric is emitted/published.
     :vartype fill_gap_with_zero: bool
     :ivar dimensions: Dimensions of the metric.
-    :vartype dimensions: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.MetricDimension]
+    :vartype dimensions: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.MetricDimension]
     :ivar source_mdm_namespace: Name of the MDM namespace. Optional.
     :vartype source_mdm_namespace: str
     """
@@ -6790,7 +7678,7 @@ class MetricSpecification(_serialization.Model):  # pylint: disable=too-many-ins
          duration where no metric is emitted/published.
         :paramtype fill_gap_with_zero: bool
         :keyword dimensions: Dimensions of the metric.
-        :paramtype dimensions: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.MetricDimension]
+        :paramtype dimensions: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.MetricDimension]
         :keyword source_mdm_namespace: Name of the MDM namespace. Optional.
         :paramtype source_mdm_namespace: str
         """
@@ -6816,9 +7704,9 @@ class MonitoringSettingProperties(_serialization.Model):
     :ivar provisioning_state: State of the Monitoring Setting. Known values are: "NotAvailable",
      "Failed", "Succeeded", and "Updating".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.MonitoringSettingState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.MonitoringSettingState
     :ivar error: Error when apply Monitoring Setting changes.
-    :vartype error: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Error
+    :vartype error: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Error
     :ivar trace_enabled: Indicates whether enable the trace functionality, which will be deprecated
      since api version 2020-11-01-preview. Please leverage appInsightsInstrumentationKey to indicate
      if monitoringSettings enabled or not.
@@ -6831,7 +7719,7 @@ class MonitoringSettingProperties(_serialization.Model):
     :vartype app_insights_sampling_rate: float
     :ivar app_insights_agent_versions: Indicates the versions of application insight agent.
     :vartype app_insights_agent_versions:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationInsightsAgentVersions
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationInsightsAgentVersions
     """
 
     _validation = {
@@ -6860,7 +7748,7 @@ class MonitoringSettingProperties(_serialization.Model):
     ) -> None:
         """
         :keyword error: Error when apply Monitoring Setting changes.
-        :paramtype error: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Error
+        :paramtype error: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Error
         :keyword trace_enabled: Indicates whether enable the trace functionality, which will be
          deprecated since api version 2020-11-01-preview. Please leverage appInsightsInstrumentationKey
          to indicate if monitoringSettings enabled or not.
@@ -6873,7 +7761,7 @@ class MonitoringSettingProperties(_serialization.Model):
         :paramtype app_insights_sampling_rate: float
         :keyword app_insights_agent_versions: Indicates the versions of application insight agent.
         :paramtype app_insights_agent_versions:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ApplicationInsightsAgentVersions
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApplicationInsightsAgentVersions
         """
         super().__init__(**kwargs)
         self.provisioning_state = None
@@ -6896,10 +7784,10 @@ class MonitoringSettingResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Properties of the Monitoring Setting resource.
     :vartype properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.MonitoringSettingProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.MonitoringSettingProperties
     """
 
     _validation = {
@@ -6921,7 +7809,7 @@ class MonitoringSettingResource(ProxyResource):
         """
         :keyword properties: Properties of the Monitoring Setting resource.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.MonitoringSettingProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.MonitoringSettingProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -7074,12 +7962,12 @@ class NetworkProfile(_serialization.Model):
     :vartype app_network_resource_group: str
     :ivar outbound_i_ps: Desired outbound IP resources for Azure Spring Apps resource.
     :vartype outbound_i_ps:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.NetworkProfileOutboundIPs
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.NetworkProfileOutboundIPs
     :ivar required_traffics: Required inbound or outbound traffics for Azure Spring Apps resource.
     :vartype required_traffics:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.RequiredTraffic]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.RequiredTraffic]
     :ivar ingress_config: Ingress configuration payload for Azure Spring Apps resource.
-    :vartype ingress_config: ~azure.mgmt.appplatform.v2022_11_01_preview.models.IngressConfig
+    :vartype ingress_config: ~azure.mgmt.appplatform.v2023_09_01_preview.models.IngressConfig
     :ivar outbound_type: The egress traffic type of Azure Spring Apps VNet instances.
     :vartype outbound_type: str
     """
@@ -7129,7 +8017,7 @@ class NetworkProfile(_serialization.Model):
          for customer apps in Azure Spring Apps.
         :paramtype app_network_resource_group: str
         :keyword ingress_config: Ingress configuration payload for Azure Spring Apps resource.
-        :paramtype ingress_config: ~azure.mgmt.appplatform.v2022_11_01_preview.models.IngressConfig
+        :paramtype ingress_config: ~azure.mgmt.appplatform.v2023_09_01_preview.models.IngressConfig
         :keyword outbound_type: The egress traffic type of Azure Spring Apps VNet instances.
         :paramtype outbound_type: str
         """
@@ -7178,14 +8066,14 @@ class OperationDetail(_serialization.Model):
     :ivar is_data_action: Indicates whether the operation is a data action.
     :vartype is_data_action: bool
     :ivar display: Display of the operation.
-    :vartype display: ~azure.mgmt.appplatform.v2022_11_01_preview.models.OperationDisplay
+    :vartype display: ~azure.mgmt.appplatform.v2023_09_01_preview.models.OperationDisplay
     :ivar action_type: Enum. Indicates the action type. "Internal" refers to actions that are for
      internal only APIs. "Internal"
-    :vartype action_type: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.ActionType
+    :vartype action_type: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.ActionType
     :ivar origin: Origin of the operation.
     :vartype origin: str
     :ivar properties: Properties of the operation.
-    :vartype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.OperationProperties
+    :vartype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.OperationProperties
     """
 
     _validation = {
@@ -7217,11 +8105,11 @@ class OperationDetail(_serialization.Model):
         :keyword is_data_action: Indicates whether the operation is a data action.
         :paramtype is_data_action: bool
         :keyword display: Display of the operation.
-        :paramtype display: ~azure.mgmt.appplatform.v2022_11_01_preview.models.OperationDisplay
+        :paramtype display: ~azure.mgmt.appplatform.v2023_09_01_preview.models.OperationDisplay
         :keyword origin: Origin of the operation.
         :paramtype origin: str
         :keyword properties: Properties of the operation.
-        :paramtype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.OperationProperties
+        :paramtype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.OperationProperties
         """
         super().__init__(**kwargs)
         self.name = name
@@ -7283,7 +8171,7 @@ class OperationProperties(_serialization.Model):
 
     :ivar service_specification: Service specifications of the operation.
     :vartype service_specification:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ServiceSpecification
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ServiceSpecification
     """
 
     _attribute_map = {
@@ -7296,7 +8184,7 @@ class OperationProperties(_serialization.Model):
         """
         :keyword service_specification: Service specifications of the operation.
         :paramtype service_specification:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ServiceSpecification
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ServiceSpecification
         """
         super().__init__(**kwargs)
         self.service_specification = service_specification
@@ -7347,7 +8235,7 @@ class PredefinedAcceleratorProperties(_serialization.Model):
     :ivar provisioning_state: Provisioning state of the predefined accelerator. Known values are:
      "Creating", "Updating", "Succeeded", and "Failed".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.PredefinedAcceleratorProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.PredefinedAcceleratorProvisioningState
     :ivar display_name:
     :vartype display_name: str
     :ivar description:
@@ -7358,7 +8246,7 @@ class PredefinedAcceleratorProperties(_serialization.Model):
     :vartype accelerator_tags: list[str]
     :ivar state: State of the predefined accelerator. Known values are: "Enabled" and "Disabled".
     :vartype state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.PredefinedAcceleratorState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.PredefinedAcceleratorState
     """
 
     _validation = {
@@ -7383,7 +8271,7 @@ class PredefinedAcceleratorProperties(_serialization.Model):
         :keyword state: State of the predefined accelerator. Known values are: "Enabled" and
          "Disabled".
         :paramtype state: str or
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.PredefinedAcceleratorState
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.PredefinedAcceleratorState
         """
         super().__init__(**kwargs)
         self.provisioning_state = None
@@ -7406,12 +8294,12 @@ class PredefinedAcceleratorResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Predefined accelerator properties payload.
     :vartype properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.PredefinedAcceleratorProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.PredefinedAcceleratorProperties
     :ivar sku: Sku of the predefined accelerator resource.
-    :vartype sku: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Sku
+    :vartype sku: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Sku
     """
 
     _validation = {
@@ -7440,9 +8328,9 @@ class PredefinedAcceleratorResource(ProxyResource):
         """
         :keyword properties: Predefined accelerator properties payload.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.PredefinedAcceleratorProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.PredefinedAcceleratorProperties
         :keyword sku: Sku of the predefined accelerator resource.
-        :paramtype sku: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Sku
+        :paramtype sku: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Sku
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -7454,7 +8342,7 @@ class PredefinedAcceleratorResourceCollection(_serialization.Model):
 
     :ivar value:
     :vartype value:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.PredefinedAcceleratorResource]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.PredefinedAcceleratorResource]
     :ivar next_link:
     :vartype next_link: str
     """
@@ -7474,7 +8362,7 @@ class PredefinedAcceleratorResourceCollection(_serialization.Model):
         """
         :keyword value:
         :paramtype value:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.PredefinedAcceleratorResource]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.PredefinedAcceleratorResource]
         :keyword next_link:
         :paramtype next_link: str
         """
@@ -7490,7 +8378,7 @@ class Probe(_serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :ivar probe_action: The action of the probe.
-    :vartype probe_action: ~azure.mgmt.appplatform.v2022_11_01_preview.models.ProbeAction
+    :vartype probe_action: ~azure.mgmt.appplatform.v2023_09_01_preview.models.ProbeAction
     :ivar disable_probe: Indicate whether the probe is disabled. Required.
     :vartype disable_probe: bool
     :ivar initial_delay_seconds: Number of seconds after the App Instance has started before probes
@@ -7537,7 +8425,7 @@ class Probe(_serialization.Model):
     ) -> None:
         """
         :keyword probe_action: The action of the probe.
-        :paramtype probe_action: ~azure.mgmt.appplatform.v2022_11_01_preview.models.ProbeAction
+        :paramtype probe_action: ~azure.mgmt.appplatform.v2023_09_01_preview.models.ProbeAction
         :keyword disable_probe: Indicate whether the probe is disabled. Required.
         :paramtype disable_probe: bool
         :keyword initial_delay_seconds: Number of seconds after the App Instance has started before
@@ -7566,13 +8454,52 @@ class Probe(_serialization.Model):
         self.success_threshold = success_threshold
 
 
+class QueueScaleRule(_serialization.Model):
+    """Azure Spring Apps App Instance Azure Queue based scaling rule.
+
+    :ivar queue_name: Queue name.
+    :vartype queue_name: str
+    :ivar queue_length: Queue length.
+    :vartype queue_length: int
+    :ivar auth: Authentication secrets for the queue scale rule.
+    :vartype auth: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ScaleRuleAuth]
+    """
+
+    _attribute_map = {
+        "queue_name": {"key": "queueName", "type": "str"},
+        "queue_length": {"key": "queueLength", "type": "int"},
+        "auth": {"key": "auth", "type": "[ScaleRuleAuth]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        queue_name: Optional[str] = None,
+        queue_length: Optional[int] = None,
+        auth: Optional[List["_models.ScaleRuleAuth"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword queue_name: Queue name.
+        :paramtype queue_name: str
+        :keyword queue_length: Queue length.
+        :paramtype queue_length: int
+        :keyword auth: Authentication secrets for the queue scale rule.
+        :paramtype auth: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ScaleRuleAuth]
+        """
+        super().__init__(**kwargs)
+        self.queue_name = queue_name
+        self.queue_length = queue_length
+        self.auth = auth
+
+
 class RegenerateTestKeyRequestPayload(_serialization.Model):
     """Regenerate test key request payload.
 
     All required parameters must be populated in order to send to Azure.
 
     :ivar key_type: Type of the test key. Required. Known values are: "Primary" and "Secondary".
-    :vartype key_type: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.TestKeyType
+    :vartype key_type: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.TestKeyType
     """
 
     _validation = {
@@ -7586,7 +8513,7 @@ class RegenerateTestKeyRequestPayload(_serialization.Model):
     def __init__(self, *, key_type: Union[str, "_models.TestKeyType"], **kwargs: Any) -> None:
         """
         :keyword key_type: Type of the test key. Required. Known values are: "Primary" and "Secondary".
-        :paramtype key_type: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.TestKeyType
+        :paramtype key_type: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.TestKeyType
         """
         super().__init__(**kwargs)
         self.key_type = key_type
@@ -7652,7 +8579,7 @@ class RequiredTraffic(_serialization.Model):
     :ivar fqdns: The FQDN list of required traffic.
     :vartype fqdns: list[str]
     :ivar direction: The direction of required traffic. Known values are: "Inbound" and "Outbound".
-    :vartype direction: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.TrafficDirection
+    :vartype direction: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.TrafficDirection
     """
 
     _validation = {
@@ -7721,17 +8648,17 @@ class ResourceSku(_serialization.Model):
     :ivar tier: Gets the tier of SKU.
     :vartype tier: str
     :ivar capacity: Gets the capacity of SKU.
-    :vartype capacity: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SkuCapacity
+    :vartype capacity: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SkuCapacity
     :ivar locations: Gets the set of locations that the SKU is available.
     :vartype locations: list[str]
     :ivar location_info: Gets a list of locations and availability zones in those locations where
      the SKU is available.
     :vartype location_info:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ResourceSkuLocationInfo]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ResourceSkuLocationInfo]
     :ivar restrictions: Gets the restrictions because of which SKU cannot be used. This is
      empty if there are no restrictions.
     :vartype restrictions:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ResourceSkuRestrictions]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ResourceSkuRestrictions]
     """
 
     _attribute_map = {
@@ -7764,17 +8691,17 @@ class ResourceSku(_serialization.Model):
         :keyword tier: Gets the tier of SKU.
         :paramtype tier: str
         :keyword capacity: Gets the capacity of SKU.
-        :paramtype capacity: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SkuCapacity
+        :paramtype capacity: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SkuCapacity
         :keyword locations: Gets the set of locations that the SKU is available.
         :paramtype locations: list[str]
         :keyword location_info: Gets a list of locations and availability zones in those locations
          where the SKU is available.
         :paramtype location_info:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ResourceSkuLocationInfo]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ResourceSkuLocationInfo]
         :keyword restrictions: Gets the restrictions because of which SKU cannot be used. This is
          empty if there are no restrictions.
         :paramtype restrictions:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ResourceSkuRestrictions]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ResourceSkuRestrictions]
         """
         super().__init__(**kwargs)
         self.resource_type = resource_type
@@ -7816,7 +8743,7 @@ class ResourceSkuCollection(_serialization.Model):
     """Object that includes an array of Azure Spring Apps SKU and a possible link for next set.
 
     :ivar value: Collection of resource SKU.
-    :vartype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ResourceSku]
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ResourceSku]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -7832,7 +8759,7 @@ class ResourceSkuCollection(_serialization.Model):
     ) -> None:
         """
         :keyword value: Collection of resource SKU.
-        :paramtype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ResourceSku]
+        :paramtype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ResourceSku]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -7851,7 +8778,7 @@ class ResourceSkuLocationInfo(_serialization.Model):
     :vartype zones: list[str]
     :ivar zone_details: Gets details of capabilities available to a SKU in specific zones.
     :vartype zone_details:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ResourceSkuZoneDetails]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ResourceSkuZoneDetails]
     """
 
     _attribute_map = {
@@ -7875,7 +8802,7 @@ class ResourceSkuLocationInfo(_serialization.Model):
         :paramtype zones: list[str]
         :keyword zone_details: Gets details of capabilities available to a SKU in specific zones.
         :paramtype zone_details:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ResourceSkuZoneDetails]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ResourceSkuZoneDetails]
         """
         super().__init__(**kwargs)
         self.location = location
@@ -7917,18 +8844,18 @@ class ResourceSkuRestrictions(_serialization.Model):
     :ivar type: Gets the type of restrictions. Possible values include: 'Location', 'Zone'. Known
      values are: "Location" and "Zone".
     :vartype type: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ResourceSkuRestrictionsType
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ResourceSkuRestrictionsType
     :ivar values: Gets the value of restrictions. If the restriction type is set to
      location. This would be different locations where the SKU is restricted.
     :vartype values: list[str]
     :ivar restriction_info: Gets the information about the restriction where the SKU cannot be
      used.
     :vartype restriction_info:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ResourceSkuRestrictionInfo
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ResourceSkuRestrictionInfo
     :ivar reason_code: Gets the reason for restriction. Possible values include: 'QuotaId',
      'NotAvailableForSubscription'. Known values are: "QuotaId" and "NotAvailableForSubscription".
     :vartype reason_code: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ResourceSkuRestrictionsReasonCode
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ResourceSkuRestrictionsReasonCode
     """
 
     _attribute_map = {
@@ -7951,18 +8878,18 @@ class ResourceSkuRestrictions(_serialization.Model):
         :keyword type: Gets the type of restrictions. Possible values include: 'Location', 'Zone'.
          Known values are: "Location" and "Zone".
         :paramtype type: str or
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ResourceSkuRestrictionsType
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ResourceSkuRestrictionsType
         :keyword values: Gets the value of restrictions. If the restriction type is set to
          location. This would be different locations where the SKU is restricted.
         :paramtype values: list[str]
         :keyword restriction_info: Gets the information about the restriction where the SKU cannot be
          used.
         :paramtype restriction_info:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ResourceSkuRestrictionInfo
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ResourceSkuRestrictionInfo
         :keyword reason_code: Gets the reason for restriction. Possible values include: 'QuotaId',
          'NotAvailableForSubscription'. Known values are: "QuotaId" and "NotAvailableForSubscription".
         :paramtype reason_code: str or
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ResourceSkuRestrictionsReasonCode
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ResourceSkuRestrictionsReasonCode
         """
         super().__init__(**kwargs)
         self.type = type
@@ -7980,7 +8907,7 @@ class ResourceSkuZoneDetails(_serialization.Model):
     :ivar capabilities: Gets a list of capabilities that are available for the SKU in the
      specified list of zones.
     :vartype capabilities:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ResourceSkuCapabilities]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ResourceSkuCapabilities]
     """
 
     _attribute_map = {
@@ -8002,7 +8929,7 @@ class ResourceSkuZoneDetails(_serialization.Model):
         :keyword capabilities: Gets a list of capabilities that are available for the SKU in the
          specified list of zones.
         :paramtype capabilities:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ResourceSkuCapabilities]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ResourceSkuCapabilities]
         """
         super().__init__(**kwargs)
         self.name = name
@@ -8033,6 +8960,155 @@ class ResourceUploadDefinition(_serialization.Model):
         super().__init__(**kwargs)
         self.relative_path = relative_path
         self.upload_url = upload_url
+
+
+class Scale(_serialization.Model):
+    """Azure Spring Apps scaling configurations.
+
+    :ivar min_replicas: Optional. Minimum number of container replicas.
+    :vartype min_replicas: int
+    :ivar max_replicas: Optional. Maximum number of container replicas. Defaults to 10 if not set.
+    :vartype max_replicas: int
+    :ivar rules: Scaling rules.
+    :vartype rules: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ScaleRule]
+    """
+
+    _attribute_map = {
+        "min_replicas": {"key": "minReplicas", "type": "int"},
+        "max_replicas": {"key": "maxReplicas", "type": "int"},
+        "rules": {"key": "rules", "type": "[ScaleRule]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        min_replicas: Optional[int] = None,
+        max_replicas: int = 10,
+        rules: Optional[List["_models.ScaleRule"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword min_replicas: Optional. Minimum number of container replicas.
+        :paramtype min_replicas: int
+        :keyword max_replicas: Optional. Maximum number of container replicas. Defaults to 10 if not
+         set.
+        :paramtype max_replicas: int
+        :keyword rules: Scaling rules.
+        :paramtype rules: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ScaleRule]
+        """
+        super().__init__(**kwargs)
+        self.min_replicas = min_replicas
+        self.max_replicas = max_replicas
+        self.rules = rules
+
+
+class ScaleRule(_serialization.Model):
+    """Azure Spring Apps App Instance scaling rule.
+
+    :ivar name: Scale Rule Name.
+    :vartype name: str
+    :ivar azure_queue: Azure Queue based scaling.
+    :vartype azure_queue: ~azure.mgmt.appplatform.v2023_09_01_preview.models.QueueScaleRule
+    :ivar custom: Custom scale rule.
+    :vartype custom: ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomScaleRule
+    :ivar http: HTTP requests based scaling.
+    :vartype http: ~azure.mgmt.appplatform.v2023_09_01_preview.models.HttpScaleRule
+    :ivar tcp: Tcp requests based scaling.
+    :vartype tcp: ~azure.mgmt.appplatform.v2023_09_01_preview.models.TcpScaleRule
+    """
+
+    _attribute_map = {
+        "name": {"key": "name", "type": "str"},
+        "azure_queue": {"key": "azureQueue", "type": "QueueScaleRule"},
+        "custom": {"key": "custom", "type": "CustomScaleRule"},
+        "http": {"key": "http", "type": "HttpScaleRule"},
+        "tcp": {"key": "tcp", "type": "TcpScaleRule"},
+    }
+
+    def __init__(
+        self,
+        *,
+        name: Optional[str] = None,
+        azure_queue: Optional["_models.QueueScaleRule"] = None,
+        custom: Optional["_models.CustomScaleRule"] = None,
+        http: Optional["_models.HttpScaleRule"] = None,
+        tcp: Optional["_models.TcpScaleRule"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword name: Scale Rule Name.
+        :paramtype name: str
+        :keyword azure_queue: Azure Queue based scaling.
+        :paramtype azure_queue: ~azure.mgmt.appplatform.v2023_09_01_preview.models.QueueScaleRule
+        :keyword custom: Custom scale rule.
+        :paramtype custom: ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomScaleRule
+        :keyword http: HTTP requests based scaling.
+        :paramtype http: ~azure.mgmt.appplatform.v2023_09_01_preview.models.HttpScaleRule
+        :keyword tcp: Tcp requests based scaling.
+        :paramtype tcp: ~azure.mgmt.appplatform.v2023_09_01_preview.models.TcpScaleRule
+        """
+        super().__init__(**kwargs)
+        self.name = name
+        self.azure_queue = azure_queue
+        self.custom = custom
+        self.http = http
+        self.tcp = tcp
+
+
+class ScaleRuleAuth(_serialization.Model):
+    """Auth Secrets for Azure Spring Apps App Instance Scale Rule.
+
+    :ivar secret_ref: Name of the Azure Spring Apps App Instance secret from which to pull the auth
+     params.
+    :vartype secret_ref: str
+    :ivar trigger_parameter: Trigger Parameter that uses the secret.
+    :vartype trigger_parameter: str
+    """
+
+    _attribute_map = {
+        "secret_ref": {"key": "secretRef", "type": "str"},
+        "trigger_parameter": {"key": "triggerParameter", "type": "str"},
+    }
+
+    def __init__(
+        self, *, secret_ref: Optional[str] = None, trigger_parameter: Optional[str] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword secret_ref: Name of the Azure Spring Apps App Instance secret from which to pull the
+         auth params.
+        :paramtype secret_ref: str
+        :keyword trigger_parameter: Trigger Parameter that uses the secret.
+        :paramtype trigger_parameter: str
+        """
+        super().__init__(**kwargs)
+        self.secret_ref = secret_ref
+        self.trigger_parameter = trigger_parameter
+
+
+class Secret(_serialization.Model):
+    """Secret definition.
+
+    :ivar name: Secret Name.
+    :vartype name: str
+    :ivar value: Secret Value.
+    :vartype value: str
+    """
+
+    _attribute_map = {
+        "name": {"key": "name", "type": "str"},
+        "value": {"key": "value", "type": "str"},
+    }
+
+    def __init__(self, *, name: Optional[str] = None, value: Optional[str] = None, **kwargs: Any) -> None:
+        """
+        :keyword name: Secret Name.
+        :paramtype name: str
+        :keyword value: Secret Value.
+        :paramtype value: str
+        """
+        super().__init__(**kwargs)
+        self.name = name
+        self.value = value
 
 
 class ServiceRegistryInstance(_serialization.Model):
@@ -8071,13 +9147,13 @@ class ServiceRegistryProperties(_serialization.Model):
     :ivar provisioning_state: State of the Service Registry. Known values are: "Creating",
      "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ServiceRegistryProvisioningState
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ServiceRegistryProvisioningState
     :ivar resource_requests: The requested resource quantity for required CPU and Memory.
     :vartype resource_requests:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ServiceRegistryResourceRequests
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ServiceRegistryResourceRequests
     :ivar instances: Collection of instances belong to Service Registry.
     :vartype instances:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ServiceRegistryInstance]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ServiceRegistryInstance]
     """
 
     _validation = {
@@ -8112,10 +9188,10 @@ class ServiceRegistryResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Service Registry properties payload.
     :vartype properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ServiceRegistryProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ServiceRegistryProperties
     """
 
     _validation = {
@@ -8137,7 +9213,7 @@ class ServiceRegistryResource(ProxyResource):
         """
         :keyword properties: Service Registry properties payload.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ServiceRegistryProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ServiceRegistryProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -8148,7 +9224,7 @@ class ServiceRegistryResourceCollection(_serialization.Model):
 
     :ivar value: Collection of Service Registry resources.
     :vartype value:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ServiceRegistryResource]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ServiceRegistryResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -8169,7 +9245,7 @@ class ServiceRegistryResourceCollection(_serialization.Model):
         """
         :keyword value: Collection of Service Registry resources.
         :paramtype value:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ServiceRegistryResource]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ServiceRegistryResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -8224,7 +9300,7 @@ class TrackedResource(Resource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar location: The GEO location of the resource.
     :vartype location: str
     :ivar tags: Tags of the service which is a list of key value pairs that describe the resource.
@@ -8272,16 +9348,16 @@ class ServiceResource(TrackedResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar location: The GEO location of the resource.
     :vartype location: str
     :ivar tags: Tags of the service which is a list of key value pairs that describe the resource.
     :vartype tags: dict[str, str]
     :ivar properties: Properties of the Service resource.
     :vartype properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.ClusterResourceProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ClusterResourceProperties
     :ivar sku: Sku of the Service resource.
-    :vartype sku: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Sku
+    :vartype sku: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Sku
     """
 
     _validation = {
@@ -8319,9 +9395,9 @@ class ServiceResource(TrackedResource):
         :paramtype tags: dict[str, str]
         :keyword properties: Properties of the Service resource.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.ClusterResourceProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ClusterResourceProperties
         :keyword sku: Sku of the Service resource.
-        :paramtype sku: ~azure.mgmt.appplatform.v2022_11_01_preview.models.Sku
+        :paramtype sku: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Sku
         """
         super().__init__(location=location, tags=tags, **kwargs)
         self.properties = properties
@@ -8332,7 +9408,7 @@ class ServiceResourceList(_serialization.Model):
     """Object that includes an array of Service resources and a possible link for next set.
 
     :ivar value: Collection of Service resources.
-    :vartype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ServiceResource]
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ServiceResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -8348,7 +9424,7 @@ class ServiceResourceList(_serialization.Model):
     ) -> None:
         """
         :keyword value: Collection of Service resources.
-        :paramtype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.ServiceResource]
+        :paramtype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ServiceResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -8363,10 +9439,10 @@ class ServiceSpecification(_serialization.Model):
 
     :ivar log_specifications: Specifications of the Log for Azure Monitoring.
     :vartype log_specifications:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.LogSpecification]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.LogSpecification]
     :ivar metric_specifications: Specifications of the Metrics for Azure Monitoring.
     :vartype metric_specifications:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.MetricSpecification]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.MetricSpecification]
     """
 
     _attribute_map = {
@@ -8384,10 +9460,10 @@ class ServiceSpecification(_serialization.Model):
         """
         :keyword log_specifications: Specifications of the Log for Azure Monitoring.
         :paramtype log_specifications:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.LogSpecification]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.LogSpecification]
         :keyword metric_specifications: Specifications of the Metrics for Azure Monitoring.
         :paramtype metric_specifications:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.MetricSpecification]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.MetricSpecification]
         """
         super().__init__(**kwargs)
         self.log_specifications = log_specifications
@@ -8400,20 +9476,30 @@ class ServiceVNetAddons(_serialization.Model):
     :ivar log_stream_public_endpoint: Indicates whether the log stream in vnet injection instance
      could be accessed from internet.
     :vartype log_stream_public_endpoint: bool
+    :ivar data_plane_public_endpoint: Indicates whether the data plane components(log stream, app
+     connect, remote debugging) in vnet injection instance could be accessed from internet.
+    :vartype data_plane_public_endpoint: bool
     """
 
     _attribute_map = {
         "log_stream_public_endpoint": {"key": "logStreamPublicEndpoint", "type": "bool"},
+        "data_plane_public_endpoint": {"key": "dataPlanePublicEndpoint", "type": "bool"},
     }
 
-    def __init__(self, *, log_stream_public_endpoint: bool = False, **kwargs: Any) -> None:
+    def __init__(
+        self, *, log_stream_public_endpoint: bool = False, data_plane_public_endpoint: bool = False, **kwargs: Any
+    ) -> None:
         """
         :keyword log_stream_public_endpoint: Indicates whether the log stream in vnet injection
          instance could be accessed from internet.
         :paramtype log_stream_public_endpoint: bool
+        :keyword data_plane_public_endpoint: Indicates whether the data plane components(log stream,
+         app connect, remote debugging) in vnet injection instance could be accessed from internet.
+        :paramtype data_plane_public_endpoint: bool
         """
         super().__init__(**kwargs)
         self.log_stream_public_endpoint = log_stream_public_endpoint
+        self.data_plane_public_endpoint = data_plane_public_endpoint
 
 
 class Sku(_serialization.Model):
@@ -8463,7 +9549,7 @@ class SkuCapacity(_serialization.Model):
     :vartype default: int
     :ivar scale_type: Gets or sets the type of the scale. Known values are: "None", "Manual", and
      "Automatic".
-    :vartype scale_type: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.SkuScaleType
+    :vartype scale_type: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.SkuScaleType
     """
 
     _validation = {
@@ -8495,13 +9581,33 @@ class SkuCapacity(_serialization.Model):
         :paramtype default: int
         :keyword scale_type: Gets or sets the type of the scale. Known values are: "None", "Manual",
          and "Automatic".
-        :paramtype scale_type: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.SkuScaleType
+        :paramtype scale_type: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.SkuScaleType
         """
         super().__init__(**kwargs)
         self.minimum = minimum
         self.maximum = maximum
         self.default = default
         self.scale_type = scale_type
+
+
+class SkuObject(_serialization.Model):
+    """Resource Sku object used for scaling out and scaling in.
+
+    :ivar sku: Sku of the Spring Cloud Gateway resource.
+    :vartype sku: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Sku
+    """
+
+    _attribute_map = {
+        "sku": {"key": "sku", "type": "Sku"},
+    }
+
+    def __init__(self, *, sku: Optional["_models.Sku"] = None, **kwargs: Any) -> None:
+        """
+        :keyword sku: Sku of the Spring Cloud Gateway resource.
+        :paramtype sku: ~azure.mgmt.appplatform.v2023_09_01_preview.models.Sku
+        """
+        super().__init__(**kwargs)
+        self.sku = sku
 
 
 class SourceUploadedUserSourceInfo(UploadedUserSourceInfo):
@@ -8651,7 +9757,7 @@ class StorageProperties(_serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :ivar storage_type: The type of the storage. Required. "StorageAccount"
-    :vartype storage_type: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.StorageType
+    :vartype storage_type: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.StorageType
     """
 
     _validation = {
@@ -8676,7 +9782,7 @@ class StorageAccount(StorageProperties):
     All required parameters must be populated in order to send to Azure.
 
     :ivar storage_type: The type of the storage. Required. "StorageAccount"
-    :vartype storage_type: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.StorageType
+    :vartype storage_type: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.StorageType
     :ivar account_name: The account name of the Azure Storage Account. Required.
     :vartype account_name: str
     :ivar account_key: The account key of the Azure Storage Account. Required.
@@ -8720,9 +9826,9 @@ class StorageResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Properties of the storage resource payload.
-    :vartype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.StorageProperties
+    :vartype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.StorageProperties
     """
 
     _validation = {
@@ -8743,7 +9849,7 @@ class StorageResource(ProxyResource):
     def __init__(self, *, properties: Optional["_models.StorageProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: Properties of the storage resource payload.
-        :paramtype properties: ~azure.mgmt.appplatform.v2022_11_01_preview.models.StorageProperties
+        :paramtype properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.StorageProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -8753,7 +9859,7 @@ class StorageResourceCollection(_serialization.Model):
     """Collection compose of storage resources list and a possible link for next page.
 
     :ivar value: The storage resources list.
-    :vartype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.StorageResource]
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.StorageResource]
     :ivar next_link: The link to next page of storage list.
     :vartype next_link: str
     """
@@ -8768,8 +9874,62 @@ class StorageResourceCollection(_serialization.Model):
     ) -> None:
         """
         :keyword value: The storage resources list.
-        :paramtype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.StorageResource]
+        :paramtype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.StorageResource]
         :keyword next_link: The link to next page of storage list.
+        :paramtype next_link: str
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
+class SupportedApmType(_serialization.Model):
+    """Supported APM type.
+
+    :ivar name: The name of the supported APM type.
+    :vartype name: str
+    """
+
+    _attribute_map = {
+        "name": {"key": "name", "type": "str"},
+    }
+
+    def __init__(self, *, name: Optional[str] = None, **kwargs: Any) -> None:
+        """
+        :keyword name: The name of the supported APM type.
+        :paramtype name: str
+        """
+        super().__init__(**kwargs)
+        self.name = name
+
+
+class SupportedApmTypes(_serialization.Model):
+    """Supported APM types payload.
+
+    :ivar value: Collection of the supported APM type.
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedApmType]
+    :ivar next_link: URL client should use to fetch the next page (per server side paging).
+     It's null for now, added for future use.
+    :vartype next_link: str
+    """
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[SupportedApmType]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["_models.SupportedApmType"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword value: Collection of the supported APM type.
+        :paramtype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedApmType]
+        :keyword next_link: URL client should use to fetch the next page (per server side paging).
+         It's null for now, added for future use.
         :paramtype next_link: str
         """
         super().__init__(**kwargs)
@@ -8789,10 +9949,10 @@ class SupportedBuildpackResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Supported buildpack resource properties.
     :vartype properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.SupportedBuildpackResourceProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedBuildpackResourceProperties
     """
 
     _validation = {
@@ -8816,7 +9976,7 @@ class SupportedBuildpackResource(ProxyResource):
         """
         :keyword properties: Supported buildpack resource properties.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.SupportedBuildpackResourceProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedBuildpackResourceProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -8848,7 +10008,7 @@ class SupportedBuildpacksCollection(_serialization.Model):
 
     :ivar value: Collection of supported buildpacks resources.
     :vartype value:
-     list[~azure.mgmt.appplatform.v2022_11_01_preview.models.SupportedBuildpackResource]
+     list[~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedBuildpackResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -8869,7 +10029,7 @@ class SupportedBuildpacksCollection(_serialization.Model):
         """
         :keyword value: Collection of supported buildpacks resources.
         :paramtype value:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.SupportedBuildpackResource]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedBuildpackResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -8884,11 +10044,11 @@ class SupportedRuntimeVersion(_serialization.Model):
 
     :ivar value: The raw value which could be passed to deployment CRUD operations. Known values
      are: "Java_8", "Java_11", "Java_17", and "NetCore_31".
-    :vartype value: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.SupportedRuntimeValue
+    :vartype value: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedRuntimeValue
     :ivar platform: The platform of this runtime version (possible values: "Java" or ".NET"). Known
      values are: "Java" and ".NET Core".
     :vartype platform: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.SupportedRuntimePlatform
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedRuntimePlatform
     :ivar version: The detailed version (major.minor) of the platform.
     :vartype version: str
     """
@@ -8911,11 +10071,11 @@ class SupportedRuntimeVersion(_serialization.Model):
         :keyword value: The raw value which could be passed to deployment CRUD operations. Known values
          are: "Java_8", "Java_11", "Java_17", and "NetCore_31".
         :paramtype value: str or
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.SupportedRuntimeValue
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedRuntimeValue
         :keyword platform: The platform of this runtime version (possible values: "Java" or ".NET").
          Known values are: "Java" and ".NET Core".
         :paramtype platform: str or
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.SupportedRuntimePlatform
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedRuntimePlatform
         :keyword version: The detailed version (major.minor) of the platform.
         :paramtype version: str
         """
@@ -8937,10 +10097,10 @@ class SupportedStackResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.appplatform.v2022_11_01_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SystemData
     :ivar properties: Supported stack resource properties.
     :vartype properties:
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.SupportedStackResourceProperties
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedStackResourceProperties
     """
 
     _validation = {
@@ -8964,7 +10124,7 @@ class SupportedStackResource(ProxyResource):
         """
         :keyword properties: Supported stack resource properties.
         :paramtype properties:
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.SupportedStackResourceProperties
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedStackResourceProperties
         """
         super().__init__(**kwargs)
         self.properties = properties
@@ -9000,7 +10160,7 @@ class SupportedStacksCollection(_serialization.Model):
     """Object that includes an array of supported stacks resources and a possible link for next set.
 
     :ivar value: Collection of supported stacks resources.
-    :vartype value: list[~azure.mgmt.appplatform.v2022_11_01_preview.models.SupportedStackResource]
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedStackResource]
     :ivar next_link: URL client should use to fetch the next page (per server side paging).
      It's null for now, added for future use.
     :vartype next_link: str
@@ -9021,7 +10181,7 @@ class SupportedStacksCollection(_serialization.Model):
         """
         :keyword value: Collection of supported stacks resources.
         :paramtype value:
-         list[~azure.mgmt.appplatform.v2022_11_01_preview.models.SupportedStackResource]
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedStackResource]
         :keyword next_link: URL client should use to fetch the next page (per server side paging).
          It's null for now, added for future use.
         :paramtype next_link: str
@@ -9039,7 +10199,7 @@ class SystemData(_serialization.Model):
     :ivar created_by_type: The type of identity that created the resource. Known values are:
      "User", "Application", "ManagedIdentity", and "Key".
     :vartype created_by_type: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.CreatedByType
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.CreatedByType
     :ivar created_at: The timestamp of resource creation (UTC).
     :vartype created_at: ~datetime.datetime
     :ivar last_modified_by: The identity that last modified the resource.
@@ -9047,7 +10207,7 @@ class SystemData(_serialization.Model):
     :ivar last_modified_by_type: The type of identity that last modified the resource. Known values
      are: "User", "Application", "ManagedIdentity", and "Key".
     :vartype last_modified_by_type: str or
-     ~azure.mgmt.appplatform.v2022_11_01_preview.models.LastModifiedByType
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.LastModifiedByType
     :ivar last_modified_at: The timestamp of resource modification (UTC).
     :vartype last_modified_at: ~datetime.datetime
     """
@@ -9078,7 +10238,7 @@ class SystemData(_serialization.Model):
         :keyword created_by_type: The type of identity that created the resource. Known values are:
          "User", "Application", "ManagedIdentity", and "Key".
         :paramtype created_by_type: str or
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.CreatedByType
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.CreatedByType
         :keyword created_at: The timestamp of resource creation (UTC).
         :paramtype created_at: ~datetime.datetime
         :keyword last_modified_by: The identity that last modified the resource.
@@ -9086,7 +10246,7 @@ class SystemData(_serialization.Model):
         :keyword last_modified_by_type: The type of identity that last modified the resource. Known
          values are: "User", "Application", "ManagedIdentity", and "Key".
         :paramtype last_modified_by_type: str or
-         ~azure.mgmt.appplatform.v2022_11_01_preview.models.LastModifiedByType
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.LastModifiedByType
         :keyword last_modified_at: The timestamp of resource modification (UTC).
         :paramtype last_modified_at: ~datetime.datetime
         """
@@ -9099,6 +10259,38 @@ class SystemData(_serialization.Model):
         self.last_modified_at = last_modified_at
 
 
+class TcpScaleRule(_serialization.Model):
+    """Azure Spring Apps App Instance Tcp scaling rule.
+
+    :ivar metadata: Metadata properties to describe tcp scale rule.
+    :vartype metadata: dict[str, str]
+    :ivar auth: Authentication secrets for the tcp scale rule.
+    :vartype auth: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ScaleRuleAuth]
+    """
+
+    _attribute_map = {
+        "metadata": {"key": "metadata", "type": "{str}"},
+        "auth": {"key": "auth", "type": "[ScaleRuleAuth]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        metadata: Optional[Dict[str, str]] = None,
+        auth: Optional[List["_models.ScaleRuleAuth"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword metadata: Metadata properties to describe tcp scale rule.
+        :paramtype metadata: dict[str, str]
+        :keyword auth: Authentication secrets for the tcp scale rule.
+        :paramtype auth: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ScaleRuleAuth]
+        """
+        super().__init__(**kwargs)
+        self.metadata = metadata
+        self.auth = auth
+
+
 class TCPSocketAction(ProbeAction):
     """TCPSocketAction describes an action based on opening a socket.
 
@@ -9106,7 +10298,7 @@ class TCPSocketAction(ProbeAction):
 
     :ivar type: The type of the action to take to perform the health check. Required. Known values
      are: "HTTPGetAction", "TCPSocketAction", and "ExecAction".
-    :vartype type: str or ~azure.mgmt.appplatform.v2022_11_01_preview.models.ProbeActionType
+    :vartype type: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.ProbeActionType
     """
 
     _validation = {
@@ -9278,3 +10470,50 @@ class ValidationMessages(_serialization.Model):
         super().__init__(**kwargs)
         self.name = name
         self.messages = messages
+
+
+class WeeklyMaintenanceScheduleConfiguration(MaintenanceScheduleConfiguration):
+    """Weekly planned maintenance.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar frequency: The frequency to run the maintenance job. Required. "Weekly"
+    :vartype frequency: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.Frequency
+    :ivar hour: The hour to run the maintenance job. Required.
+    :vartype hour: int
+    :ivar duration_hours: The duration time to run the maintenance job.
+    :vartype duration_hours: int
+    :ivar day: The day to run the maintenance job. Required. Known values are: "Monday", "Tuesday",
+     "Wednesday", "Thursday", "Friday", "Saturday", and "Sunday".
+    :vartype day: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.WeekDay
+    """
+
+    _validation = {
+        "frequency": {"required": True},
+        "hour": {"required": True, "maximum": 23, "minimum": 0},
+        "duration_hours": {"readonly": True},
+        "day": {"required": True},
+    }
+
+    _attribute_map = {
+        "frequency": {"key": "frequency", "type": "str"},
+        "hour": {"key": "hour", "type": "int"},
+        "duration_hours": {"key": "durationHours", "type": "int"},
+        "day": {"key": "day", "type": "str"},
+    }
+
+    def __init__(self, *, hour: int, day: Union[str, "_models.WeekDay"], **kwargs: Any) -> None:
+        """
+        :keyword hour: The hour to run the maintenance job. Required.
+        :paramtype hour: int
+        :keyword day: The day to run the maintenance job. Required. Known values are: "Monday",
+         "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", and "Sunday".
+        :paramtype day: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.WeekDay
+        """
+        super().__init__(**kwargs)
+        self.frequency: str = "Weekly"
+        self.hour = hour
+        self.duration_hours = None
+        self.day = day

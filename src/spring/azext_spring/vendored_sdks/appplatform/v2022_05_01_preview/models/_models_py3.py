@@ -3121,7 +3121,8 @@ class CustomContainer(_serialization.Model):
     :ivar image_registry_credential: Credential of the image registry.
     :vartype image_registry_credential:
      ~azure.mgmt.appplatform.v2022_05_01_preview.models.ImageRegistryCredential
-    :ivar language_framework: Language framework of the container image uploaded.
+    :ivar language_framework: Language framework of the container image uploaded. Supported values:
+     "springboot", "", null.
     :vartype language_framework: str
     """
 
@@ -3160,7 +3161,8 @@ class CustomContainer(_serialization.Model):
         :keyword image_registry_credential: Credential of the image registry.
         :paramtype image_registry_credential:
          ~azure.mgmt.appplatform.v2022_05_01_preview.models.ImageRegistryCredential
-        :keyword language_framework: Language framework of the container image uploaded.
+        :keyword language_framework: Language framework of the container image uploaded. Supported
+         values: "springboot", "", null.
         :paramtype language_framework: str
         """
         super().__init__(**kwargs)
