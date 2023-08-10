@@ -47,7 +47,7 @@ def step_list_subscription(test, checks=None):
         checks = []
     test.cmd('az networkfabric rack list')
 
-class RackScenarioTest1(ScenarioTest):
+class GA_RackScenarioTest1(ScenarioTest):
     ''' RackScenario test'''
 
     def __init__(self, *args, **kwargs):
@@ -57,7 +57,6 @@ class RackScenarioTest1(ScenarioTest):
             'rg': CONFIG.get('NETWORK_RACK', 'resource_group')
         })
 
-    #@ResourceGroupPreparer(name_prefix='cli_test_rack_rg_', key='rg', parameter_name='rg', location="westus3")
-    def test_Rack_scenario1(self):
+    def test_GA_Rack_scenario1(self):
         ''' test scenario for Rack CRUD operations'''
         call_scenario1(self)

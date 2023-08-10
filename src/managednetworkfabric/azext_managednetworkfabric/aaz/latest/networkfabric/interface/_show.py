@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "networkfabric interface show",
 )
 class Show(AAZCommand):
-    """Show details of the provided Network Interface resource.
+    """Show details of the provided Network Interface resource
 
     :example: Show the Network Interface
         az networkfabric interface show -g "example-rg" --network-device-name "example-device" --resource-name "example-interface"
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/networkinterfaces/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/networkinterfaces/{}", "2023-06-15"],
         ]
     }
 
@@ -46,13 +46,13 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.network_device_name = AAZStrArg(
             options=["--device", "--network-device-name"],
-            help="Name of the Network Device",
+            help="Name of the Network Device.",
             required=True,
             id_part="name",
         )
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the NetworkInterfaceName",
+            help="Name of the Network Interface.",
             required=True,
             id_part="child_name_1",
         )
@@ -131,7 +131,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }

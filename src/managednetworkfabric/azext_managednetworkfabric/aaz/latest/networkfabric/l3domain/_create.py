@@ -15,19 +15,19 @@ from azure.cli.core.aaz import *
     "networkfabric l3domain create",
 )
 class Create(AAZCommand):
-    """Create a L3 Isolation Domain resource.
+    """Create a L3 Isolation Domain resource
 
     :example: Create a L3 Isolation Domain
-        az networkfabric l3domain create --resource-group "example-rg" --resource-name "example-l3domain" --location "westus3" --nf-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabricName" --redistribute-connected-subnets "True" --redistribute-static-routes "True" --aggregate-route-configuration "{ipv4Routes:[{prefix:'10.0.0.1/28'},{prefix:'10.0.0.2/28'}],ipv6Routes:[{prefix:'2fff::/64'},{prefix:'2fff::/65'}]}" --connected-subnet-route-policy "{exportRoutePolicyId:'exportRoutePolicyId'}"
+        az networkfabric l3domain create --resource-group "example-rg" --resource-name "example-l3domain" --location "westus3" --nf-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabricName" --redistribute-connected-subnets "True" --redistribute-static-routes "True" --aggregate-route-configuration "{ipv4Routes:[{prefix:'10.0.0.1/28'},{prefix:'10.0.0.2/28'}],ipv6Routes:[{prefix:'2fff::/64'},{prefix:'2fff::/65'}]}" --connected-subnet-route-policy "{exportRoutePolicy:{exportIpv4RoutePolicyId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/microsoft.managednetworkfabric/routePolicies/example-routepolicy'}}"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
         az networkfabric l3domain create --connected-subnet-route-policy ??
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}", "2023-06-15"],
         ]
     }
 
@@ -50,7 +50,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the L3 Isolation Domain",
+            help="Name of the L3 Isolation Domain.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -84,75 +84,103 @@ class Create(AAZCommand):
         _args_schema.aggregate_route_configuration = AAZObjectArg(
             options=["--aggregate-route-configuration"],
             arg_group="Properties",
-            help="List of Ipv4 and Ipv6 route configurations.",
+            help="Aggregate route configurations.",
         )
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
-            help="Switch configuration description.",
+            help="Description for underlying resource.",
         )
         _args_schema.connected_subnet_route_policy = AAZObjectArg(
             options=["--connected-subnet-route-policy"],
             arg_group="Properties",
-            help="Connected Subnet RoutePolicy",
+            help="Connected Subnet RoutePolicy.",
         )
-        _args_schema.description = AAZStrArg(
-            options=["--description"],
-            arg_group="Properties",
-            help="L3 Isolation Domain description.",
-        )
-        _args_schema.nf_id = AAZStrArg(
+        _args_schema.nf_id = AAZResourceIdArg(
             options=["--nf-id"],
             arg_group="Properties",
-            help="Resource ID of the Network Fabric resource",
+            help="ARM Resource ID of the Network Fabric.",
+            required=True,
         )
         _args_schema.redistribute_connected_subnets = AAZStrArg(
             options=["--redistribute-connected-subnets"],
             arg_group="Properties",
-            help="Advertise Connected Subnets. Default Value is True. Ex: \"True\" | \"False\".",
+            help="Advertise Connected Subnets. Default value is True. Example: True.",
             enum={"False": "False", "True": "True"},
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.redistribute_static_routes = AAZStrArg(
             options=["--redistribute-static-routes"],
             arg_group="Properties",
-            help="Advertise Static Routes. Default Value is False. Ex: \"True\" | \"False\".",
+            help="Advertise Static Routes. Default value is False. Example: True.",
             enum={"False": "False", "True": "True"},
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
 
         aggregate_route_configuration = cls._args_schema.aggregate_route_configuration
         aggregate_route_configuration.ipv4_routes = AAZListArg(
             options=["ipv4-routes"],
-            help="List of Ipv4Route prefixes.",
+            help="List of IPv4 Route prefixes.",
         )
         aggregate_route_configuration.ipv6_routes = AAZListArg(
             options=["ipv6-routes"],
-            help="List of Ipv6Routes prefixes.",
+            help="List of IPv6 Route prefixes.",
         )
 
         ipv4_routes = cls._args_schema.aggregate_route_configuration.ipv4_routes
         ipv4_routes.Element = AAZObjectArg()
-
-        _element = cls._args_schema.aggregate_route_configuration.ipv4_routes.Element
-        _element.prefix = AAZStrArg(
-            options=["prefix"],
-            help="IPv4 Prefix of the aggregate Ipv4Route.",
-        )
+        cls._build_args_aggregate_route_create(ipv4_routes.Element)
 
         ipv6_routes = cls._args_schema.aggregate_route_configuration.ipv6_routes
         ipv6_routes.Element = AAZObjectArg()
-
-        _element = cls._args_schema.aggregate_route_configuration.ipv6_routes.Element
-        _element.prefix = AAZStrArg(
-            options=["prefix"],
-            help="IPv6 Prefix of the aggregate IPv6 Route.",
-        )
+        cls._build_args_aggregate_route_create(ipv6_routes.Element)
 
         connected_subnet_route_policy = cls._args_schema.connected_subnet_route_policy
-        connected_subnet_route_policy.export_route_policy_id = AAZStrArg(
+        connected_subnet_route_policy.export_route_policy = AAZObjectArg(
+            options=["export-route-policy"],
+            help="Array of ARM Resource ID of the RoutePolicies.",
+        )
+        connected_subnet_route_policy.export_route_policy_id = AAZResourceIdArg(
             options=["export-route-policy-id"],
-            help="exportRoutePolicyId value.",
+            help="ARM Resource ID of the Route Policy. This is used for the backward compatibility.",
+        )
+
+        export_route_policy = cls._args_schema.connected_subnet_route_policy.export_route_policy
+        export_route_policy.export_ipv4_route_policy_id = AAZResourceIdArg(
+            options=["export-ipv4-route-policy-id"],
+            help="ARM Resource ID of the RoutePolicy.",
+        )
+        export_route_policy.export_ipv6_route_policy_id = AAZResourceIdArg(
+            options=["export-ipv6-route-policy-id"],
+            help="ARM Resource ID of the RoutePolicy.",
         )
         return cls._args_schema
+
+    _args_aggregate_route_create = None
+
+    @classmethod
+    def _build_args_aggregate_route_create(cls, _schema):
+        if cls._args_aggregate_route_create is not None:
+            _schema.prefix = cls._args_aggregate_route_create.prefix
+            return
+
+        cls._args_aggregate_route_create = AAZObjectArg()
+
+        aggregate_route_create = cls._args_aggregate_route_create
+        aggregate_route_create.prefix = AAZStrArg(
+            options=["prefix"],
+            help="Prefix of the aggregate Route.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+
+        _schema.prefix = cls._args_aggregate_route_create.prefix
 
     def _execute_operations(self):
         self.pre_operations()
@@ -235,7 +263,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -261,7 +289,7 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -269,7 +297,6 @@ class Create(AAZCommand):
                 properties.set_prop("aggregateRouteConfiguration", AAZObjectType, ".aggregate_route_configuration")
                 properties.set_prop("annotation", AAZStrType, ".annotation")
                 properties.set_prop("connectedSubnetRoutePolicy", AAZObjectType, ".connected_subnet_route_policy")
-                properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("networkFabricId", AAZStrType, ".nf_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("redistributeConnectedSubnets", AAZStrType, ".redistribute_connected_subnets")
                 properties.set_prop("redistributeStaticRoutes", AAZStrType, ".redistribute_static_routes")
@@ -281,23 +308,21 @@ class Create(AAZCommand):
 
             ipv4_routes = _builder.get(".properties.aggregateRouteConfiguration.ipv4Routes")
             if ipv4_routes is not None:
-                ipv4_routes.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.aggregateRouteConfiguration.ipv4Routes[]")
-            if _elements is not None:
-                _elements.set_prop("prefix", AAZStrType, ".prefix")
+                _CreateHelper._build_schema_aggregate_route_create(ipv4_routes.set_elements(AAZObjectType, "."))
 
             ipv6_routes = _builder.get(".properties.aggregateRouteConfiguration.ipv6Routes")
             if ipv6_routes is not None:
-                ipv6_routes.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.aggregateRouteConfiguration.ipv6Routes[]")
-            if _elements is not None:
-                _elements.set_prop("prefix", AAZStrType, ".prefix")
+                _CreateHelper._build_schema_aggregate_route_create(ipv6_routes.set_elements(AAZObjectType, "."))
 
             connected_subnet_route_policy = _builder.get(".properties.connectedSubnetRoutePolicy")
             if connected_subnet_route_policy is not None:
+                connected_subnet_route_policy.set_prop("exportRoutePolicy", AAZObjectType, ".export_route_policy")
                 connected_subnet_route_policy.set_prop("exportRoutePolicyId", AAZStrType, ".export_route_policy_id")
+
+            export_route_policy = _builder.get(".properties.connectedSubnetRoutePolicy.exportRoutePolicy")
+            if export_route_policy is not None:
+                export_route_policy.set_prop("exportIpv4RoutePolicyId", AAZStrType, ".export_ipv4_route_policy_id")
+                export_route_policy.set_prop("exportIpv6RoutePolicyId", AAZStrType, ".export_ipv6_route_policy_id")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -333,7 +358,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -353,21 +378,16 @@ class Create(AAZCommand):
                 serialized_name="aggregateRouteConfiguration",
             )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
             properties.connected_subnet_route_policy = AAZObjectType(
                 serialized_name="connectedSubnetRoutePolicy",
-            )
-            properties.description = AAZStrType()
-            properties.disabled_on_resources = AAZListType(
-                serialized_name="disabledOnResources",
-                flags={"read_only": True},
             )
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
-            )
-            properties.option_b_disabled_on_resources = AAZListType(
-                serialized_name="optionBDisabledOnResources",
-                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -397,19 +417,20 @@ class Create(AAZCommand):
             _CreateHelper._build_schema_aggregate_route_read(ipv6_routes.Element)
 
             connected_subnet_route_policy = cls._schema_on_200_201.properties.connected_subnet_route_policy
-            connected_subnet_route_policy.administrative_state = AAZStrType(
-                serialized_name="administrativeState",
-                flags={"read_only": True},
+            connected_subnet_route_policy.export_route_policy = AAZObjectType(
+                serialized_name="exportRoutePolicy",
             )
             connected_subnet_route_policy.export_route_policy_id = AAZStrType(
                 serialized_name="exportRoutePolicyId",
             )
 
-            disabled_on_resources = cls._schema_on_200_201.properties.disabled_on_resources
-            disabled_on_resources.Element = AAZStrType()
-
-            option_b_disabled_on_resources = cls._schema_on_200_201.properties.option_b_disabled_on_resources
-            option_b_disabled_on_resources.Element = AAZStrType()
+            export_route_policy = cls._schema_on_200_201.properties.connected_subnet_route_policy.export_route_policy
+            export_route_policy.export_ipv4_route_policy_id = AAZStrType(
+                serialized_name="exportIpv4RoutePolicyId",
+            )
+            export_route_policy.export_ipv6_route_policy_id = AAZStrType(
+                serialized_name="exportIpv6RoutePolicyId",
+            )
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
@@ -440,6 +461,12 @@ class Create(AAZCommand):
 class _CreateHelper:
     """Helper class for Create"""
 
+    @classmethod
+    def _build_schema_aggregate_route_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("prefix", AAZStrType, ".prefix", typ_kwargs={"flags": {"required": True}})
+
     _schema_aggregate_route_read = None
 
     @classmethod
@@ -451,7 +478,9 @@ class _CreateHelper:
         cls._schema_aggregate_route_read = _schema_aggregate_route_read = AAZObjectType()
 
         aggregate_route_read = _schema_aggregate_route_read
-        aggregate_route_read.prefix = AAZStrType()
+        aggregate_route_read.prefix = AAZStrType(
+            flags={"required": True},
+        )
 
         _schema.prefix = cls._schema_aggregate_route_read.prefix
 

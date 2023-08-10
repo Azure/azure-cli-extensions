@@ -4,14 +4,15 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, disable=too-many-statements
 
+from azure.cli.core import AzCommandsLoader
 from ._client_factory import (
     cf_vcenter,
     cf_resource_pool,
     cf_virtual_network,
     cf_virtual_machine_template,
-    cf_virtual_machine,
+    cf_virtual_machine_instance,
     cf_inventory_item,
-    cf_guest_agent,
+    cf_vminstance_guest_agent,
     cf_cluster,
     cf_datastore,
     cf_host,
@@ -19,7 +20,7 @@ from ._client_factory import (
 )
 
 
-def load_command_table(self, _):
+def load_command_table(self: AzCommandsLoader, _):
 
     with self.command_group('connectedvmware vcenter', client_factory=cf_vcenter) as g:
         g.custom_command('connect', 'connect_vcenter', supports_no_wait=True)
@@ -82,19 +83,21 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_vm_template')
 
     with self.command_group(
-        'connectedvmware vm', client_factory=cf_virtual_machine
+        'connectedvmware vm', client_factory=cf_virtual_machine_instance
     ) as g:
         g.custom_command('create', 'create_vm', supports_no_wait=True)
         g.custom_command('delete', 'delete_vm', supports_no_wait=True, confirmation=True)
         g.custom_command('update', 'update_vm', supports_no_wait=True)
         g.custom_show_command('show', 'show_vm')
-        g.custom_command('list', 'list_vm')
+        # g.custom_command('list', 'list_vm')
+        g.custom_command('list', 'list_vm',
+                         deprecate_info=g.deprecate(redirect='az connectedvmware vm show', hide=True))
         g.custom_command('start', 'start_vm', supports_no_wait=True)
         g.custom_command('stop', 'stop_vm', supports_no_wait=True)
         g.custom_command('restart', 'restart_vm', supports_no_wait=True)
 
     with self.command_group(
-        'connectedvmware vm nic', client_factory=cf_virtual_machine
+        'connectedvmware vm nic', client_factory=cf_virtual_machine_instance
     ) as g:
         g.custom_command('add', 'add_nic', supports_no_wait=True)
         g.custom_command('update', 'update_nic', supports_no_wait=True)
@@ -103,7 +106,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_nics')
 
     with self.command_group(
-        'connectedvmware vm disk', client_factory=cf_virtual_machine
+        'connectedvmware vm disk', client_factory=cf_virtual_machine_instance
     ) as g:
         g.custom_command('add', 'add_disk', supports_no_wait=True)
         g.custom_command('update', 'update_disk', supports_no_wait=True)
@@ -112,7 +115,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_disks')
 
     with self.command_group(
-        'connectedvmware vm guest-agent', client_factory=cf_guest_agent
+        'connectedvmware vm guest-agent', client_factory=cf_vminstance_guest_agent
     ) as g:
         g.custom_command('enable', 'enable_guest_agent', supports_no_wait=True)
         g.custom_show_command('show', 'show_guest_agent')

@@ -34,6 +34,7 @@ def load_arguments(self, _):
     with self.argument_context('webpubsub create') as c:
         c.argument('sku', help='The sku name of the webpubsub service. Allowed values: Free_F1, Standard_S1, Premium_P1')
         c.argument('unit_count', help='The number of webpubsub service unit count', type=int)
+        c.argument('kind', help='The kind of the webpubsub service. Allowed values: WebPubSub, SocketIO')
 
     with self.argument_context('webpubsub update') as c:
         c.argument('sku', help='The sku name of the webpubsub service. Allowed values: Free_F1, Standard_S1, Premium_P1')

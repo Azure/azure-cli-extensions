@@ -12,6 +12,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 ++++++
 
+0.5.150
++++++++
+* Vendor new SDK and bump API version to 2023-06-02-preview.
+* Add `--network-dataplane` to the `az aks update` command.
+* Support "VirtualMachines" agent pool type to `az aks create --vm-set-type` and `az aks nodepool add --vm-set-type`. This is internal use only, not for public preview.
+
 0.5.149
 +++++++
 * `az aks addon update`: Fix unexpected error 'Addon "web_application_routing" is not enabled in this cluster' when trying to update the web app routing addon for an managed cluster that already has it enabled.
