@@ -275,5 +275,6 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         })
         self.cmd('az storage account create -n {sa} -g {rg} -l eastus2euap --sku Standard_LRS')
         self.cmd('az storage account migration start --account-name {sa} -g {rg} --sku Standard_ZRS --no-wait')
+        # other status would take days to months
         self.cmd('az storage account migration show -n default -g {rg} --account-name {sa}',
                  checks=[JMESPathCheck('migrationStatus', 'SubmittedForConversion')])
