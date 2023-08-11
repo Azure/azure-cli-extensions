@@ -118,7 +118,7 @@ class UpdateSubscription(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.maintenance_configuration_id = AAZStrArg(
-            options=["--maintenance-configuration-id"],
+            options=["--config-id", "--maintenance-configuration-id"],
             arg_group="Properties",
             help="The maintenance configuration Id",
         )
