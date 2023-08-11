@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/endpoints/{}", "2023-07-01-preview"],
         ]
     }
 
@@ -130,7 +130,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }
@@ -201,6 +201,16 @@ class Show(AAZCommand):
                 flags={"required": True},
             )
 
+            disc_azure_storage_smb_file_share = cls._schema_on_200.properties.discriminate_by("endpoint_type", "AzureStorageSmbFileShare")
+            disc_azure_storage_smb_file_share.file_share_name = AAZStrType(
+                serialized_name="fileShareName",
+                flags={"required": True},
+            )
+            disc_azure_storage_smb_file_share.storage_account_resource_id = AAZStrType(
+                serialized_name="storageAccountResourceId",
+                flags={"required": True},
+            )
+
             disc_nfs_mount = cls._schema_on_200.properties.discriminate_by("endpoint_type", "NfsMount")
             disc_nfs_mount.export = AAZStrType(
                 flags={"required": True},
@@ -210,6 +220,27 @@ class Show(AAZCommand):
             )
             disc_nfs_mount.nfs_version = AAZStrType(
                 serialized_name="nfsVersion",
+            )
+
+            disc_smb_mount = cls._schema_on_200.properties.discriminate_by("endpoint_type", "SmbMount")
+            disc_smb_mount.credentials = AAZObjectType()
+            disc_smb_mount.host = AAZStrType(
+                flags={"required": True},
+            )
+            disc_smb_mount.share_name = AAZStrType(
+                serialized_name="shareName",
+                flags={"required": True},
+            )
+
+            credentials = cls._schema_on_200.properties.discriminate_by("endpoint_type", "SmbMount").credentials
+            credentials.password_uri = AAZStrType(
+                serialized_name="passwordUri",
+            )
+            credentials.type = AAZStrType(
+                flags={"required": True},
+            )
+            credentials.username_uri = AAZStrType(
+                serialized_name="usernameUri",
             )
 
             system_data = cls._schema_on_200.system_data

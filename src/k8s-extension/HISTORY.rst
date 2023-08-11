@@ -7,6 +7,10 @@ Release History
 ++++++++++++++++++
 * microsoft.azuremonitor.containers: Extend ContainerInsights Extension dataCollectionSettings with streams and containerlogv2 field. Also, add a kind tag in DCR creation for the ContainerInsights extension.
 * microsoft.dapr: Use semver instead of packaging
+* microsoft.azuremonitor.containers.metrics: update logic to sanitize cluster name for dc* objects
+* microsoft.openservicemesh: Fix osm-arc version check for CI tags
+* add support to skip provisioning of prerequisites for Azure Monitor K8s extensions
+* add support for extensionsType api
 
 1.4.2
 ++++++++++++++++++

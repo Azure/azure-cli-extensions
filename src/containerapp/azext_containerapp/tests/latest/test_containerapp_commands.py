@@ -160,11 +160,12 @@ class ContainerappIngressTests(ScenarioTest):
 
         create_containerapp_env(self, env_name, resource_group)
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80 --allow-insecure'.format(resource_group, ca_name, env_name))
 
         self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
             JMESPathCheck('external', True),
             JMESPathCheck('targetPort', 80),
+            JMESPathCheck('allowInsecure', True),
         ])
 
         self.cmd('containerapp ingress disable -g {} -n {}'.format(resource_group, ca_name, env_name))
@@ -716,6 +717,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
         redis_ca_name = 'redis'
         postgres_ca_name = 'postgres'
         kafka_ca_name = 'kafka'
+        mariadb_ca_name = 'mariadb'
 
         create_containerapp_env(self, env_name, resource_group)
 
@@ -728,6 +730,9 @@ class ContainerappServiceBindingTests(ScenarioTest):
         self.cmd('containerapp service kafka create -g {} -n {} --environment {}'.format(
             resource_group, kafka_ca_name, env_name))
 
+        self.cmd('containerapp service mariadb create -g {} -n {} --environment {}'.format(
+            resource_group, mariadb_ca_name, env_name))
+
         self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
             resource_group, ca_name, env_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "postgres_binding"),
@@ -739,11 +744,12 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
         ])
 
-        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka'.format(
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb'.format(
             resource_group, ca_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
             JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding"),
-            JMESPathCheck('properties.template.serviceBinds[2].name', "kafka")
+            JMESPathCheck('properties.template.serviceBinds[2].name', "kafka"),
+            JMESPathCheck('properties.template.serviceBinds[3].name', "mariadb")
         ])
 
         self.cmd('containerapp service postgres delete -g {} -n {} --yes'.format(
@@ -751,9 +757,12 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
         self.cmd('containerapp service redis delete -g {} -n {} --yes'.format(
             resource_group, redis_ca_name, env_name))
-        
+
         self.cmd('containerapp service kafka delete -g {} -n {} --yes'.format(
             resource_group, kafka_ca_name, env_name))
+
+        self.cmd('containerapp service mariadb delete -g {} -n {} --yes'.format(
+            resource_group, mariadb_ca_name, env_name))
 
         self.cmd('containerapp service list -g {} --environment {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
@@ -982,6 +991,32 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
             JMESPathCheck("properties.configuration.secrets[0].name", f"{acr}azurecrio-{acr}")
         ])
 
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_registry_acr_look_up_credentical(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='aca', length=24)
+        acr = self.create_random_name(prefix='acr', length=24)
+        image_source = "mcr.microsoft.com/k8se/quickstart:latest"
+        image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
+
+        create_containerapp_env(self, env, resource_group)
+
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        self.cmd(f'acr import -n {acr} --source {image_source}')
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app}  --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("identity.type", "None"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+            JMESPathCheck("properties.configuration.secrets[0].name", f"{acr}azurecrio-{acr}")
+        ])
+
+
 
 class ContainerappScaleTests(ScenarioTest):
     @AllowLargeResponse(8192)
@@ -1103,6 +1138,116 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].secretRef", "app-key"),
 
         ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_preview_create_with_yaml(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='yaml', length=24)
+
+        create_containerapp_env(self, env, resource_group)
+        containerapp_env = self.cmd(
+            'containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+
+        user_identity_name = self.create_random_name(prefix='containerapp-user', length=24)
+        user_identity = self.cmd(
+            'identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
+        user_identity_id = user_identity['id']
+
+        # test managedEnvironmentId
+        containerapp_yaml_text = f"""
+                                location: {TEST_LOCATION}
+                                type: Microsoft.App/containerApps
+                                tags:
+                                    tagname: value
+                                properties:
+                                  managedEnvironmentId: {containerapp_env["id"]}
+                                  configuration:
+                                    activeRevisionsMode: Multiple
+                                    ingress:
+                                      external: false
+                                      additionalPortMappings:
+                                      - external: false
+                                        targetPort: 12345
+                                      - external: false
+                                        targetPort: 9090
+                                        exposedPort: 23456
+                                      allowInsecure: false
+                                      targetPort: 80
+                                      traffic:
+                                        - latestRevision: true
+                                          weight: 100
+                                      transport: Auto
+                                      ipSecurityRestrictions:
+                                        - name: name
+                                          ipAddressRange: "1.1.1.1/10"
+                                          action: "Allow"
+                                  template:
+                                    revisionSuffix: myrevision
+                                    terminationGracePeriodSeconds: 90
+                                    containers:
+                                      - image: nginx
+                                        name: nginx
+                                        env:
+                                          - name: HTTP_PORT
+                                            value: 80
+                                        command:
+                                          - npm
+                                          - start
+                                        resources:
+                                          cpu: 0.5
+                                          memory: 1Gi
+                                    scale:
+                                      minReplicas: 1
+                                      maxReplicas: 3
+                                      rules:
+                                      - http:
+                                          auth:
+                                          - secretRef: secretref
+                                            triggerParameter: trigger
+                                          metadata:
+                                            concurrentRequests: '50'
+                                            key: value
+                                        name: http-scale-rule
+                                identity:
+                                  type: UserAssigned
+                                  userAssignedIdentities:
+                                    {user_identity_id}: {{}}
+                                """
+        containerapp_file_name = f"{self._testMethodName}_containerapp.yml"
+
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+        self.cmd(
+            f'containerapp create -n {app} -g {resource_group} --environment {env} --yaml {containerapp_file_name}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.configuration.ingress.external", False),
+            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[0].external", False),
+            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[0].targetPort", 12345),
+            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].external", False),
+            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].targetPort", 9090),
+            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].exposedPort", 23456),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange",
+                          "1.1.1.1/10"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
+            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
+            JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
+            JMESPathCheck("properties.template.terminationGracePeriodSeconds", 90),
+            JMESPathCheck("properties.template.containers[0].name", "nginx"),
+            JMESPathCheck("properties.template.scale.minReplicas", 1),
+            JMESPathCheck("properties.template.scale.maxReplicas", 3),
+            JMESPathCheck("properties.template.scale.rules[0].name", "http-scale-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.concurrentRequests", "50"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
+        ])
+
+        clean_up_test_file(containerapp_file_name)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
