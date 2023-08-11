@@ -81,7 +81,7 @@ jobs:
     - bash: python scripts/ci/source_code_static_analysis.py
       displayName: "Static Analysis"
 
-- job: StaticAnalysis v2
+- job: StaticAnalysisv2
   displayName: "Static Analysis v2"
   pool:
     name: 'pool-ubuntu-2004'
@@ -96,7 +96,7 @@ jobs:
         set -ev
         source ./env/bin/activate
         azdev style
-      displayName: "Static Analysis"
+      displayName: "Static Analysis v2"
 
 - job: IndexVerify
   displayName: "Verify Extensions Index"
