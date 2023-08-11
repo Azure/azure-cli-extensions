@@ -25,8 +25,10 @@ logger = get_logger(__name__)
 
 
 def _get_test_data_file(filename):
-    curr_dir = os.path.dirname(os.path.realpath(__file__))
-    return os.path.join(curr_dir, 'data', filename).replace('\\', '\\\\')
+    # Don't output temporary test data to "**/azext_connectedk8s/tests/latest/data/" as that location
+    # is for re-usable test data files by Azure CLI repositories convention.
+    root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))))
+    return os.path.join(root, "temp", filename).replace('\\', '\\\\')
 
 
 def install_helm_client():

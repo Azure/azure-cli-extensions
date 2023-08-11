@@ -89,7 +89,7 @@ def _check_service_configuration(cmd, resource_uri, port):
         # is not setup correctly, the connection will fail.
         # The more likely scenario is that the request failed with a "Authorization Error",
         # in case the user isn't an owner/contributor.
-        return None
+        return True
     if port:
         return serviceConfig['port'] == int(port)
 
@@ -235,7 +235,7 @@ def _get_proxy_filename_and_url(arc_proxy_folder):
     logger.debug("Platform OS: %s", operating_system)
     logger.debug("Platform architecture: %s", machine)
 
-    if machine.endswith('64'):
+    if machine.endswith('64') and 'ARM' not in machine.upper():
         architecture = 'amd64'
     elif machine.endswith('86'):
         architecture = '386'

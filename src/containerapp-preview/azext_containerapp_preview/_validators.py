@@ -6,7 +6,7 @@ from ._constants import (MANAGED_ENVIRONMENT_TYPE,
                          CONNECTED_ENVIRONMENT_TYPE,
                          MANAGED_ENVIRONMENT_RESOURCE_TYPE,
                          CONNECTED_ENVIRONMENT_RESOURCE_TYPE,
-                         CONTAINERAPP_NAMESPACE)
+                         CONTAINER_APPS_RP)
 
 
 def validate_env_name_or_id(cmd, namespace):
@@ -37,7 +37,7 @@ def validate_env_name_or_id(cmd, namespace):
             namespace.managed_env = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx),
                 resource_group=namespace.resource_group_name,
-                namespace=CONTAINERAPP_NAMESPACE,
+                namespace=CONTAINER_APPS_RP,
                 type=CONNECTED_ENVIRONMENT_RESOURCE_TYPE,
                 name=namespace.managed_env
             )
@@ -46,7 +46,7 @@ def validate_env_name_or_id(cmd, namespace):
             namespace.managed_env = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx),
                 resource_group=namespace.resource_group_name,
-                namespace=CONTAINERAPP_NAMESPACE,
+                namespace=CONTAINER_APPS_RP,
                 type=MANAGED_ENVIRONMENT_RESOURCE_TYPE,
                 name=namespace.managed_env
             )

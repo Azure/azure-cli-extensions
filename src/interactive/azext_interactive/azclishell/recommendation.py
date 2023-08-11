@@ -388,8 +388,6 @@ def gen_command_in_scenario(scenario, file=None):
         print_styled_text([(Style.ACTION, "Running: ")] + command_sample,
                           file=file)
         yield nx_cmd, ''.join([part[1] for part in command_sample])
-    print_styled_text([(Style.SUCCESS, '\n(✓)Done: '),
-                       (Style.PRIMARY, 'All commands in this scenario have been executed! \n')])
 
 
 def _get_command_sample(command):

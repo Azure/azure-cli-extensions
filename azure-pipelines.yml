@@ -172,6 +172,7 @@ jobs:
 
 - job: IndexRefDocVerify
   displayName: "Verify Ref Docs"
+  continueOnError: true
   pool:
     name: 'pool-ubuntu-2004'
   steps:

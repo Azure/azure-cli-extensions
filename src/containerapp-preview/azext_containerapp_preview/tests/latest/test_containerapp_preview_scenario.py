@@ -5,6 +5,7 @@
 
 import os
 import time
+from time import sleep
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
 from subprocess import run
 
@@ -15,24 +16,20 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ContainerappScenarioTest(ScenarioTest):
-    def setUp(self):
-        super(ContainerappScenarioTest, self).setUp()
+    def __init__(self, method_name, config_file=None, recording_name=None, recording_processors=None,
+                 replay_processors=None, recording_patches=None, replay_patches=None, random_config_dir=False):
+
+        super().__init__(method_name, config_file, recording_name, recording_processors, replay_processors,
+                         recording_patches, replay_patches, random_config_dir)
         cmd = ['azdev', 'extension', 'add', 'containerapp']
         run(cmd, check=True)
         cmd = ['azdev', 'extension', 'add', 'connectedk8s']
         run(cmd, check=True)
         cmd = ['azdev', 'extension', 'add', 'k8s-extension']
         run(cmd, check=True)
-
-    def tearDown(self):
-        cmd = ['azdev', 'extension', 'remove', 'containerapp']
-        run(cmd, check=True)
-        cmd = ['azdev', 'extension', 'remove', 'connectedk8s']
-        run(cmd, check=True)
-        cmd = ['azdev', 'extension', 'remove', 'k8s-extension']
-        run(cmd, check=True)
-
-        super(ContainerappScenarioTest, self).tearDown()
+        # Wait for extensions to be installed
+        # We mock time.sleep in azure-sdk-tools, that's why we need to use sleep here.
+        sleep(120)
 
     @ResourceGroupPreparer(location="eastus", random_name_length=15)
     def test_containerapp_preview_environment_type(self, resource_group):

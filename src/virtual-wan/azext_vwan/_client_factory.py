@@ -19,10 +19,6 @@ def cf_virtual_hubs(cli_ctx, _):
     return network_client_factory(cli_ctx).virtual_hubs
 
 
-def cf_virtual_hub_connection(cli_ctx, _):
-    return network_client_factory(cli_ctx).hub_virtual_network_connections
-
-
 def cf_virtual_hub_bgpconnection(cli_ctx, _):
     return network_client_factory(cli_ctx).virtual_hub_bgp_connection
 

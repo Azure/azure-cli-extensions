@@ -2,6 +2,10 @@
 
 Release History
 ===============
+upcoming
+++++++
+* containerapp-preview requires the version of containerapp extension >= 0.3.36
+* containerapp-preview auto install containerapp extension if not exist
 
 1.0.0b1
 ++++++

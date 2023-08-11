@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "networkfabric device update",
 )
 class Update(AAZCommand):
-    """Update the properties of the provided Network Device resource.
+    """Update the Network Device resource.
 
     :example: Update the Network Device
         az networkfabric device update --resource-group "example-rg" --resource-name "example-device" --host-name "AustinNF-AR-CE1" --serial-number "Arista;DCS-7280DR3-24;12.05;JPE21115446"
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}", "2023-06-15"],
         ]
     }
 
@@ -47,7 +47,7 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the Network Device",
+            help="Name of the Network Device.",
             required=True,
             id_part="name",
         )
@@ -62,7 +62,7 @@ class Update(AAZCommand):
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Body",
-            help="Azure resource tags that will replace the existing ones.",
+            help="Resource tags",
         )
 
         tags = cls._args_schema.tags
@@ -74,17 +74,23 @@ class Update(AAZCommand):
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
-            help="Switch configuration description.",
+            help="Description for underlying resource.",
         )
         _args_schema.host_name = AAZStrArg(
             options=["--host-name"],
             arg_group="Properties",
-            help="The Host Name of the device. All Network Device names should follow the format <Fabric Name>-<Rack Type>-<Device Type>. Example: AustinNF-AR-CE1",
+            help="The Host Name of the device. All Network Device names should follow the format <Fabric Name>-<Rack Type>-<Device Type>. Example: AustinNF-AR-CE1.",
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.serial_number = AAZStrArg(
             options=["--serial-number"],
             arg_group="Properties",
-            help="serialNumber of the format Make;Model;HardwareRevisionId;SerialNumber. Example: Arista;DCS-7280DR3-24;12.05;JPE21116969",
+            help="Serial number of the device. Format of serial Number - Make;Model;HardwareRevisionId;SerialNumber. Example: Arista;DCS-7280DR3-24;12.05;JPE21116969",
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
         return cls._args_schema
 
@@ -169,7 +175,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -237,7 +243,7 @@ class Update(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -249,17 +255,32 @@ class Update(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
             properties.host_name = AAZStrType(
                 serialized_name="hostName",
             )
+            properties.management_ipv4_address = AAZStrType(
+                serialized_name="managementIpv4Address",
+                flags={"read_only": True},
+            )
+            properties.management_ipv6_address = AAZStrType(
+                serialized_name="managementIpv6Address",
+                flags={"read_only": True},
+            )
             properties.network_device_role = AAZStrType(
                 serialized_name="networkDeviceRole",
-                flags={"required": True},
+                flags={"read_only": True},
             )
             properties.network_device_sku = AAZStrType(
                 serialized_name="networkDeviceSku",
-                flags={"required": True},
             )
             properties.network_rack_id = AAZStrType(
                 serialized_name="networkRackId",

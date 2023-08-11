@@ -20,38 +20,22 @@ def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
     pass
 
-def setup_scenario2(test):
-    ''' Env setup_scenario2 '''
-    pass
-
-def cleanup_scenario2(test):
-    '''Env cleanup_scenario2 '''
-    pass
-
 def call_scenario1(test):
     ''' # Testcase: scenario1'''
     setup_scenario1(test)
     step_create(test, checks=[])
     step_show(test, checks=[])
-    step_list_subscription(test, checks=[])
     step_list_resource_group(test, checks=[])
-    # skip testing delete until the Network Fabric Controller can be deleted without being created
-    # Instead we will delete in scenario 2
-    # step_delete(test, checks=[])
-    cleanup_scenario1(test)
-
-def call_scenario2(test):
-    setup_scenario2(test)
     step_delete(test, checks=[])
-    cleanup_scenario2(test)
+    cleanup_scenario1(test)
 
 def step_create(test, checks=None):
     '''nfc create operation'''
     if checks is None:
         checks = []
-    test.cmd('az networkfabric controller create --resource-group {rg} --location {location} --resource-name {name}'
-			 ' --infra-er-connections {infraERConnections} --workload-er-connections {workloadERConnections}'
-             ' --ipv4-address-space {ipv4AddressSpace} --no-wait' , checks=checks)
+    test.cmd('networkfabric controller create --resource-group {rg} --location {location}  --resource-name {name}'
+             ' --ipv4-address-space {ipv4AddressSpace} --is-workload-management-network-enabled {isWorkloadManagementNetworkEnabled} --nfc-sku {nfcSku}'
+             ' --infra-er-connections {infraERConnections} --workload-er-connections {workloadERConnections}' , checks=checks)
 
 def step_show(test, checks=None):
     '''nfc show operation'''
@@ -59,13 +43,6 @@ def step_show(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric controller show --resource-name {name} --resource-group {rg}')
-    
-def step_delete(test, checks=None):
-    '''nfc delete operation'''
-    if checks is None:
-        checks = []
-    test.cmd(
-        'az networkfabric controller delete --resource-name {nameDelete} --resource-group {rg}')
 
 def step_list_resource_group(test, checks=None):
     '''nfc list by resource group operation'''
@@ -73,31 +50,29 @@ def step_list_resource_group(test, checks=None):
         checks = []
     test.cmd('az networkfabric controller list --resource-group {rg}')
 
-def step_list_subscription(test, checks=None):
-    '''nfc list by subscription operation'''
+def step_delete(test, checks=None):
+    '''nfc delete operation'''
     if checks is None:
         checks = []
-    test.cmd('az networkfabric controller list')
+    test.cmd(
+        'az networkfabric controller delete --resource-name {name} --resource-group {rg}')
 
-class NFCScenarioTest1(ScenarioTest):
+class GA_NFCScenarioTest1(ScenarioTest):
     ''' NFCScenario test'''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.kwargs.update({
             'name': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'name'),
-            'nameDelete': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'nameDelete'),
             'rg': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'resource_group'),
             'location': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'location'),
             'infraERConnections': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'infra_ER_Connections'),
             'workloadERConnections': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'workload_ER_Connections'),
-            'ipv4AddressSpace': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'ipv4_address_space')
+            'ipv4AddressSpace': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'ipv4_address_space'),
+            'isWorkloadManagementNetworkEnabled': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'is_workload_management_network_enabled'),
+            'nfcSku': CONFIG.get('NETWORK_FABRIC_CONTROLLER', 'nfc_sku')
         })
 
-    def test_nfc_scenario1(self):
+    def test_GA_nfc_scenario1(self):
         ''' test scenario for NFC CRUD operations'''
         call_scenario1(self)
-
-    def test_nfc_scenario2(self):
-        ''' test scenario for NFC CRUD operations'''
-        call_scenario2(self)
