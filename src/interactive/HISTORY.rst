@@ -3,7 +3,7 @@
 Release History
 ===============
 
-upcoming
+0.5.3
 +++++
 * Optimize the visualization of help text when the window is reduced horizontally
 
