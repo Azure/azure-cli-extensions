@@ -2619,16 +2619,3 @@ helps['aks mesh disable-ingress-gateway'] = """
       - name: Disable an internal ingress gateway.
         text: az aks mesh disable-ingress-gateway --resource-group MyResourceGroup --name MyManagedCluster --ingress-gateway-type Internal
 """
-helps['aks mesh check-migration'] = """
-    type: command
-    short-summary: Check whether the cluster is ready to migrate from OSS Istio to Azure Service Mesh(ASM)
-    long-summary: This command checks user's cluster to see if it is ready to migrate from OSS Istio to ASM 
-    parameters:
-      - name: --kubeconfig
-        type: string
-        short-summary: Specify the kubeconfig file
-        long-summary: Allowed values are "External" which is backed by a load balancer with an external IP address, "Internal" which is backed by a load balancer with an internal IP address.
-    examples:
-      - name: Check if the cluster is ready to migrate from OSS Istio to Azure Service Mesh(ASM)
-        text: az aks mesh check-migration --resource-group MyResourceGroup --name MyManagedCluster --kubeconfig=path/to/kubeconfig
-"""
