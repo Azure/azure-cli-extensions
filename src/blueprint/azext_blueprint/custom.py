@@ -900,11 +900,6 @@ class BlueprintAssignmentList(_BlueprintAssignmentList):
             _blueprint_validator(self)
 
 
-def wait_for_blueprint_assignment(client, assignment_name, management_group=None,
-                                  subscription=None, resource_scope=None):
-    client.wait(resource_scope=resource_scope, assignment_name=assignment_name)
-
-
 class BlueprintAssignmentWho(_BlueprintAssignmentWho):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
