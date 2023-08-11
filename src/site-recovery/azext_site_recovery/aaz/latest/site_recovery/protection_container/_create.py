@@ -19,6 +19,9 @@ class Create(AAZCommand):
 
     :example: protection-container create for A2A
         az site-recovery protection-container create -g rg --fabric-name fabric1_name -n container1_name --vault-name vault_name --provider-input '[{instance-type:A2A}]'
+
+    :example: protection-container create for hyper-v-replica-azure
+        az site-recovery protection-container mapping create -g "rg" --fabric-name "fabric_name" -n "container_mapping_name" --protection-container "container_name" --vault-name "vault_name" --policy-id "policy_id" --target-container \"Microsoft Azure\" --provider-input '{hyper-v-replica-azure:""}'
     """
 
     _aaz_info = {

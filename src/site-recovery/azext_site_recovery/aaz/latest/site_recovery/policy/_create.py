@@ -25,6 +25,9 @@ class Create(AAZCommand):
 
     :example: policy create for A2A
         az site-recovery policy create -g rg --vault-name vault_name -n policy_name --provider-specific-input {a2a:{multi-vm-sync-status:Enable}}
+
+    :example: policy create for hyper-v-replica-azure
+        az site-recovery policy create -g "rg" --vault-name "vault_name" -n "policy_name" --provider-specific-input '{hyper-v-replica-azure:{application-consistent-snapshot-frequency-in-hours:1,recovery-point-history-duration:2,replication-interval:300}}'
     """
 
     _aaz_info = {

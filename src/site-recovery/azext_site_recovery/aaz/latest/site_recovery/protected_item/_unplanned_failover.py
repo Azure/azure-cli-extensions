@@ -22,6 +22,9 @@ class UnplannedFailover(AAZCommand):
 
     :example: protected-item failback for A2A
         az site-recovery protected-item unplanned-failover --fabric-name fabric2_name --protection-container container2_name -n protected_item_name -g rg --vault-name vault_name --failover-direction PrimaryToRecovery --provider-details '{a2a:{}}' --source-site-operations NotRequired
+
+    :example: protected-item failover hyper-v-replica-azure
+        az site-recovery protected-item unplanned-failover --fabric-name "fabric_name" --protection-container "container_name" -n "protected_item_name" -g "rg" --vault-name "vault_name" --failover-direction PrimaryToRecovery --provider-details '{hyper-v-replica-azure:""}' --source-site-operations NotRequired
     """
 
     _aaz_info = {

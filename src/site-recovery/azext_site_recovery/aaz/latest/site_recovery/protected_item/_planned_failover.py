@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class PlannedFailover(AAZCommand):
     """Operation to initiate a planned failover of the replication protected item.
+
+    :example: failback hyper-v-replica-azure
+        az site-recovery protected-item planned-failover --fabric-name "fabric_name" --protection-container "container_name" -n "protected_item_name" -g "rg" --vault-name "vault_name" --failover-direction RecoveryToPrimary --provider-details '{hyper-v-replica-azure-failback:{data-sync-option:ForSynchronization,recovery-vm-creation-option:NoAction}}'
     """
 
     _aaz_info = {

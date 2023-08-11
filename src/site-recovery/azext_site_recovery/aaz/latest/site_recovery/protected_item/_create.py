@@ -19,6 +19,9 @@ class Create(AAZCommand):
 
     :example: protected-item create for A2A
         az site-recovery protected-item create -g rg --fabric-name fabric1_name -n protected_item_name --protection-container container1_name --vault-name vault_name --policy-id policy_id --provider-details '{a2a:{fabric-object-id:vm_id,vm-managed-disks:[{disk-id:os_disk,primary-staging-azure-storage-account-id:storage1_id,recovery-resource-group-id:rg_id}],recovery-azure-network-id:vnet2_id,recovery-container-id:container2_id,recovery-resource-group-id:rg_id,recovery-subnet-name:vnet2_subnet}}'
+
+    :example: protected-item create for hyper-v-replica-azure
+        az site-recovery protected-item create -g "rg" --fabric-name "fabric_name" -n "protected_item_name" --protection-container "container_name" --vault-name "vault_name" --policy-id "policy_id" --protectable-item-id "protectable_item_id" --provider-details '{hyper-v-replica-azure:{disks-to-include:["vhd_id"],enable-rdp-on-target-option:Never,os-type:Windows,target-azure-network-id:"vnet_id",target-azure-subnet-id:"subnet_id",target-azure-v2-resource-group-id:"rg_id",target-azure-vm-name:"hypervvm_name",target-storage-account-id:"storage_id",use-managed-disks:false,vhd-id:"vhd_id"}}'
     """
 
     _aaz_info = {

@@ -17,8 +17,11 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create operation to create a recovery plan.
 
-    :example: recovery-plan create
+    :example: recovery-plan create A2A
         az site-recovery recovery-plan create -n recovery_plan_name -g rg --vault-name vault_name --groups '[{group-type:Boot,replication-protected-items:[{id:protected_item_id,virtual-machine-id:vm_id}]}]' --primary-fabric-id fabric1_id --recovery-fabric-id fabric2_id --failover-deployment-model ResourceManager
+
+    :example: recovery-plan create hyper-v-replica-azure
+        az site-recovery recovery-plan create -n "recovery_plan_name" -g "rg" --vault-name "vault_name" --groups '[{group-type:Boot,replication-protected-items:[{id:"protected_item_id",virtual-machine-id:"protectable_item_id"}]}]' --primary-fabric-id "fabric_id" --recovery-fabric-id \"Microsoft Azure\" --failover-deployment-model ResourceManager
     """
 
     _aaz_info = {
