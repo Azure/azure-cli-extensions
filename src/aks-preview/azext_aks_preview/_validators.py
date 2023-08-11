@@ -817,4 +817,3 @@ def validate_os_sku(namespace):
             CONST_OS_SKU_CBLMARINER,
             CONST_OS_SKU_MARINER,
         )
-
