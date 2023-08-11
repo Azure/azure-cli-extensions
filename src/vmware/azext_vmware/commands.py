@@ -22,6 +22,30 @@ def load_command_table(self, _):
     self.command_table['vmware datastore netapp-volume create'] = DatastoreNetappVolumeCreate(loader=self)
     self.command_table['vmware datastore disk-pool-volume create'] = DatastoreDiskPoolVolumeCreate(loader=self)
 
+    from .operations.addon import AddonVrCreate, AddonVrUpdate, AddonVrShow, AddonVrDelete
+    self.command_table['vmware addon vr create'] = AddonVrCreate(loader=self)
+    self.command_table['vmware addon vr update'] = AddonVrUpdate(loader=self)
+    self.command_table['vmware addon vr show'] = AddonVrShow(loader=self)
+    self.command_table['vmware addon vr delete'] = AddonVrDelete(loader=self)
+
+    from .operations.addon import AddonHcxCreate, AddonHcxUpdate, AddonHcxShow, AddonHcxDelete
+    self.command_table['vmware addon hcx create'] = AddonHcxCreate(loader=self)
+    self.command_table['vmware addon hcx update'] = AddonHcxUpdate(loader=self)
+    self.command_table['vmware addon hcx show'] = AddonHcxShow(loader=self)
+    self.command_table['vmware addon hcx delete'] = AddonHcxDelete(loader=self)
+
+    from .operations.addon import AddonSrmCreate, AddonSrmUpdate, AddonSrmShow, AddonSrmDelete
+    self.command_table['vmware addon srm create'] = AddonSrmCreate(loader=self)
+    self.command_table['vmware addon srm update'] = AddonSrmUpdate(loader=self)
+    self.command_table['vmware addon srm show'] = AddonSrmShow(loader=self)
+    self.command_table['vmware addon srm delete'] = AddonSrmDelete(loader=self)
+
+    from .operations.addon import AddonArcCreate, AddonArcUpdate, AddonArcShow, AddonArcDelete
+    self.command_table['vmware addon arc create'] = AddonArcCreate(loader=self)
+    self.command_table['vmware addon arc update'] = AddonArcUpdate(loader=self)
+    self.command_table['vmware addon arc show'] = AddonArcShow(loader=self)
+    self.command_table['vmware addon arc delete'] = AddonArcDelete(loader=self)
+
     with self.command_group('vmware private-cloud', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('listadmincredentials', 'privatecloud_listadmincredentials', deprecate_info=g.deprecate(redirect='az vmware private-cloud list-admin-credentials', hide=True))
         g.custom_command('addidentitysource', 'privatecloud_addidentitysource', deprecate_info=g.deprecate(redirect='az vmware private-cloud add-identity-source', hide=True))
@@ -45,33 +69,6 @@ def load_command_table(self, _):
 
     with self.command_group('vmware datastore', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'datastore_create', deprecate_info=g.deprecate(redirect='"az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create"', hide=True))
-
-    with self.command_group('vmware addon', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('list', 'addon_list')
-
-    with self.command_group('vmware addon vr', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'addon_vr_create')
-        g.custom_show_command('show', 'addon_vr_show')
-        g.custom_command('update', 'addon_vr_update')
-        g.custom_command('delete', 'addon_vr_delete')
-
-    with self.command_group('vmware addon hcx', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'addon_hcx_create')
-        g.custom_show_command('show', 'addon_hcx_show')
-        g.custom_command('update', 'addon_hcx_update')
-        g.custom_command('delete', 'addon_hcx_delete')
-
-    with self.command_group('vmware addon srm', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'addon_srm_create')
-        g.custom_show_command('show', 'addon_srm_show')
-        g.custom_command('update', 'addon_srm_update')
-        g.custom_command('delete', 'addon_srm_delete')
-
-    with self.command_group('vmware addon arc', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'addon_arc_create')
-        g.custom_show_command('show', 'addon_arc_show')
-        g.custom_command('update', 'addon_arc_update')
-        g.custom_command('delete', 'addon_arc_delete')
 
     with self.command_group('vmware global-reach-connection', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'globalreachconnection_create')

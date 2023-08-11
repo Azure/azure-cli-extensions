@@ -145,15 +145,16 @@ def datastore_create():
     print('Please use "az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create" instead.')
 
 
-def addon_list(client: AVSClient, resource_group_name, private_cloud):
-    return client.addons.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
-def addon_vr_create(client: AVSClient, resource_group_name, private_cloud, vrs_count: int):
-    from azext_vmware.vendored_sdks.avs_client.models import AddonVrProperties, Addon
-    properties = AddonVrProperties(vrs_count=vrs_count)
-    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="vr", addon=Addon(properties=properties))
-
+def addon_vr_create(cmd, resource_group_name, private_cloud, vrs_count: int):
+    from .aaz.latest.vmware.addon import Create
+    return Create(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "private_cloud": private_cloud,
+        "addon_name": "vr",
+        "vr": {
+            "vrs_count": vrs_count
+        }
+    })
 
 def addon_hcx_create(client: AVSClient, resource_group_name, private_cloud, offer: str):
     from azext_vmware.vendored_sdks.avs_client.models import AddonHcxProperties, Addon
@@ -173,20 +174,40 @@ def addon_arc_create(client: AVSClient, resource_group_name, private_cloud, vcen
     return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="arc", addon=Addon(properties=properties))
 
 
-def addon_vr_show(client: AVSClient, resource_group_name, private_cloud):
-    return client.addons.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="vr")
+def addon_vr_show(cmd, resource_group_name, private_cloud):
+    from .aaz.latest.vmware.addon import Show
+    return Show(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "private_cloud": private_cloud,
+        "addon_name": "vr",
+    })
 
 
-def addon_hcx_show(client: AVSClient, resource_group_name, private_cloud):
-    return client.addons.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="hcx")
+def addon_hcx_show(cmd, resource_group_name, private_cloud):
+    from .aaz.latest.vmware.addon import Show
+    return Show(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "private_cloud": private_cloud,
+        "addon_name": "hcx",
+    })
 
 
-def addon_srm_show(client: AVSClient, resource_group_name, private_cloud):
-    return client.addons.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="srm")
+def addon_srm_show(cmd, resource_group_name, private_cloud):
+    from .aaz.latest.vmware.addon import Show
+    return Show(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "private_cloud": private_cloud,
+        "addon_name": "srm",
+    })
 
 
-def addon_arc_show(client: AVSClient, resource_group_name, private_cloud):
-    return client.addons.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="arc")
+def addon_arc_show(cmd, resource_group_name, private_cloud):
+    from .aaz.latest.vmware.addon import Show
+    return Show(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "private_cloud": private_cloud,
+        "addon_name": "arc",
+    })
 
 
 def addon_vr_update(client: AVSClient, resource_group_name, private_cloud, vrs_count: int):

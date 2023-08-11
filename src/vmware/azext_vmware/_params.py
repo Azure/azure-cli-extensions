@@ -141,7 +141,7 @@ def load_arguments(self, _):
         c.argument('yes', help='Delete without confirmation.')
 
     with self.argument_context('vmware addon vr') as c:
-        c.argument('vrs_count', help='The vSphere Replication Server (VRS) count.')
+        c.argument('vrs_count', type=int, help='The vSphere Replication Server (VRS) count.')
 
     with self.argument_context('vmware addon hcx') as c:
         c.argument('offer', help='The HCX offer, example "VMware MaaS Cloud Provider (Enterprise)".')
