@@ -291,7 +291,6 @@ class MysqlFlexibleHandler(TargetHandler):
             telemetry.set_exception(e, "No-Db")
             raise e
 
-
     def set_user_admin(self, user_object_id, **kwargs):
         mysql_identity_id = kwargs['mysql_identity_id']
         admins = run_cli_cmd(
