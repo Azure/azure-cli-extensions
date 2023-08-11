@@ -619,6 +619,7 @@ def create_af_application_rule(cmd, resource_group_name, azure_firewall_name, co
                            'application_rule_collections', AzureFirewallApplicationRuleCollection,
                            AzureFirewallApplicationRule, item_name, params, collection_params)
 
+
 @register_command(
     "network firewall threat-intel-allowlist create",
     is_preview=True,
@@ -673,6 +674,7 @@ class ThreatIntelAllowListCreate(_AzureFirewallUpdate):
             **output.pop('additionalProperties')
         })
         return output
+
 
 @register_command(
     "network firewall threat-intel-allowlist update",
@@ -731,6 +733,7 @@ class ThreatIntelAllowListUpdate(_AzureFirewallUpdate):
         })
         return output
 
+
 @register_command(
     "network firewall threat-intel-allowlist show",
     is_preview=True,
@@ -749,6 +752,7 @@ class ThreatIntelAllowListShow(_AzureFirewallShow):
     def _output(self, *args, **kwargs):
         output = super()._output(*args, **kwargs)
         return output['additionalProperties']
+
 
 @register_command(
     "network firewall threat-intel-allowlist delete",
