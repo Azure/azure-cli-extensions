@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "connectedmachine extension list",
 )
 class List(AAZCommand):
-    """The operation to get all extensions of a Non-Azure machine.
+    """Get all extensions of a Non-Azure machine.
 
     :example: Sample command for extension list
         az connectedmachine extension list --machine-name myMachine --resource-group myResourceGroup
