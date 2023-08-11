@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "connectedmachine extension show",
 )
 class Show(AAZCommand):
-    """The operation to create or update the extension.
+    """Create or update the extension.
 
     :example: Sample command for extension show
         az connectedmachine extension show --name CustomScriptExtension --machine-name myMachine --resource-group myResourceGroup
