@@ -121,6 +121,9 @@ class AcceleratorGitRepository(_serialization.Model):
     :ivar auth_setting: Properties of the auth setting payload. Required.
     :vartype auth_setting:
      ~azure.mgmt.appplatform.v2023_09_01_preview.models.AcceleratorAuthSetting
+    :ivar sub_path: Folder path inside the git repository to consider as the root of the
+     accelerator or fragment.
+    :vartype sub_path: str
     """
 
     _validation = {
@@ -135,6 +138,7 @@ class AcceleratorGitRepository(_serialization.Model):
         "commit": {"key": "commit", "type": "str"},
         "git_tag": {"key": "gitTag", "type": "str"},
         "auth_setting": {"key": "authSetting", "type": "AcceleratorAuthSetting"},
+        "sub_path": {"key": "subPath", "type": "str"},
     }
 
     def __init__(
@@ -146,6 +150,7 @@ class AcceleratorGitRepository(_serialization.Model):
         branch: Optional[str] = None,
         commit: Optional[str] = None,
         git_tag: Optional[str] = None,
+        sub_path: Optional[str] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -162,6 +167,9 @@ class AcceleratorGitRepository(_serialization.Model):
         :keyword auth_setting: Properties of the auth setting payload. Required.
         :paramtype auth_setting:
          ~azure.mgmt.appplatform.v2023_09_01_preview.models.AcceleratorAuthSetting
+        :keyword sub_path: Folder path inside the git repository to consider as the root of the
+         accelerator or fragment.
+        :paramtype sub_path: str
         """
         super().__init__(**kwargs)
         self.url = url
@@ -170,6 +178,7 @@ class AcceleratorGitRepository(_serialization.Model):
         self.commit = commit
         self.git_tag = git_tag
         self.auth_setting = auth_setting
+        self.sub_path = sub_path
 
 
 class AcceleratorPublicSetting(AcceleratorAuthSetting):
@@ -4638,6 +4647,9 @@ class CustomizedAcceleratorProperties(_serialization.Model):
      "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorProvisioningState
+    :ivar type: Type of the customized accelerator. Known values are: "Accelerator" and "Fragment".
+    :vartype type: str or
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorType
     :ivar display_name:
     :vartype display_name: str
     :ivar description:
@@ -4646,6 +4658,8 @@ class CustomizedAcceleratorProperties(_serialization.Model):
     :vartype icon_url: str
     :ivar accelerator_tags:
     :vartype accelerator_tags: list[str]
+    :ivar imports: Imports references all imports that this accelerator/fragment depends upon.
+    :vartype imports: list[str]
     :ivar git_repository: Required.
     :vartype git_repository:
      ~azure.mgmt.appplatform.v2023_09_01_preview.models.AcceleratorGitRepository
@@ -4653,15 +4667,18 @@ class CustomizedAcceleratorProperties(_serialization.Model):
 
     _validation = {
         "provisioning_state": {"readonly": True},
+        "imports": {"readonly": True},
         "git_repository": {"required": True},
     }
 
     _attribute_map = {
         "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "type": {"key": "type", "type": "str"},
         "display_name": {"key": "displayName", "type": "str"},
         "description": {"key": "description", "type": "str"},
         "icon_url": {"key": "iconUrl", "type": "str"},
         "accelerator_tags": {"key": "acceleratorTags", "type": "[str]"},
+        "imports": {"key": "imports", "type": "[str]"},
         "git_repository": {"key": "gitRepository", "type": "AcceleratorGitRepository"},
     }
 
@@ -4669,6 +4686,7 @@ class CustomizedAcceleratorProperties(_serialization.Model):
         self,
         *,
         git_repository: "_models.AcceleratorGitRepository",
+        type: Optional[Union[str, "_models.CustomizedAcceleratorType"]] = None,
         display_name: Optional[str] = None,
         description: Optional[str] = None,
         icon_url: Optional[str] = None,
@@ -4676,6 +4694,10 @@ class CustomizedAcceleratorProperties(_serialization.Model):
         **kwargs: Any
     ) -> None:
         """
+        :keyword type: Type of the customized accelerator. Known values are: "Accelerator" and
+         "Fragment".
+        :paramtype type: str or
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorType
         :keyword display_name:
         :paramtype display_name: str
         :keyword description:
@@ -4690,10 +4712,12 @@ class CustomizedAcceleratorProperties(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.provisioning_state = None
+        self.type = type
         self.display_name = display_name
         self.description = description
         self.icon_url = icon_url
         self.accelerator_tags = accelerator_tags
+        self.imports = None
         self.git_repository = git_repository
 
 

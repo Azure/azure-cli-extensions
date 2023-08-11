@@ -277,6 +277,7 @@ from ._app_platform_management_client_enums import ContainerRegistryProvisioning
 from ._app_platform_management_client_enums import CreatedByType
 from ._app_platform_management_client_enums import CustomDomainResourceProvisioningState
 from ._app_platform_management_client_enums import CustomizedAcceleratorProvisioningState
+from ._app_platform_management_client_enums import CustomizedAcceleratorType
 from ._app_platform_management_client_enums import CustomizedAcceleratorValidateResultState
 from ._app_platform_management_client_enums import DeploymentResourceProvisioningState
 from ._app_platform_management_client_enums import DeploymentResourceStatus
@@ -586,6 +587,7 @@ __all__ = [
     "CreatedByType",
     "CustomDomainResourceProvisioningState",
     "CustomizedAcceleratorProvisioningState",
+    "CustomizedAcceleratorType",
     "CustomizedAcceleratorValidateResultState",
     "DeploymentResourceProvisioningState",
     "DeploymentResourceStatus",

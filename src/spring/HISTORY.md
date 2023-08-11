@@ -1,5 +1,9 @@
 Release History
 ===============
+1.14.2
+---
+* Add arguments `--type` and `--git-sub-path` in `spring application-accelerator customized-accelerator create` and `spring application-accelerator customized-accelerator update` for accelerator fragment support.
+
 1.14.1
 ---
 * Support up to 1000 app instances in Enterprise tier.
