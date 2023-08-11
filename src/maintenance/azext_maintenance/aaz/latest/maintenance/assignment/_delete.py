@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete configuration for resource.
+
+    :example: ConfigurationAssignments_Delete
+        az maintenance assignment delete --name "workervmConfiguration" --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdtest1" --resource-type "virtualMachineScaleSets"
     """
 
     _aaz_info = {

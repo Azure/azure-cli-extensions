@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """Get Configuration records within a subscription
+
+    :example: ApplyUpdates_List
+        az maintenance applyupdate list
     """
 
     _aaz_info = {

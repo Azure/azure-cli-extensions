@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ShowParent(AAZCommand):
     """Track maintenance updates to resource with parent
+
+    :example: ApplyUpdates_GetParent
+        az maintenance applyupdate show-parent --name "e9b9685d-78e4-44c4-a81c-64a14f9b87b6"  --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdvm1" --resource-parent-name "smdtest1" --resource-parent-type "virtualMachineScaleSets"  --resource-type "virtualMachines"
     """
 
     _aaz_info = {

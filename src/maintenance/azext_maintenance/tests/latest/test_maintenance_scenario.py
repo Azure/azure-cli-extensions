@@ -26,8 +26,10 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 def setup_scenario(test):
     
+    test.cmd('az group show --resource-group "{rg}" ',checks=[])
+
     ## Dedicated host
-    test.cmd('az vm host group create --name clidhtesthostgroup --resource-group "{rg}" --platform-fault-domain-count 2 ',checks=[])
+    test.cmd('az vm host group create --name clidhtesthostgroup --resource-group "{rg}" --platform-fault-domain-count 1 ',checks=[])
 
     test.cmd('az vm host create --host-group clidhtesthostgroup --name clidhtesthost --resource-group "{rg}" --sku ESv3-Type2  --platform-fault-domain 0', checks=[])
     

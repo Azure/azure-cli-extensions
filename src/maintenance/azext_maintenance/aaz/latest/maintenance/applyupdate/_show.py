@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Track maintenance updates to resource
+
+    :example: ApplyUpdates_Get
+        az maintenance applyupdate show --name "e9b9685d-78e4-44c4-a81c-64a14f9b87b6" --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdtest1" --resource-type "virtualMachineScaleSets"
     """
 
     _aaz_info = {

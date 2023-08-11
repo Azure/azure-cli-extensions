@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class CreateOrUpdateParent(AAZCommand):
     """Apply maintenance updates to resource with parent
+
+    :example: ApplyUpdates_CreateOrUpdateParent
+        az maintenance applyupdate create-or-update-parent --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdvm1" --resource-parent-name "smdtest1" --resource-parent-type "virtualMachineScaleSets" --resource-type "virtualMachines"
     """
 
     _aaz_info = {
