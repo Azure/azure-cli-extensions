@@ -2,22 +2,19 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
-import unittest
-from unittest import mock
 import json
+from unittest import mock
+try:
+    import unittest.mock as mock
+except ImportError:
+    from unittest import mock
+from ...query import (create_query)
 
-from azext_acrquery.query import (
-    create_query
-)
-
+from azure.cli.core.mock import DummyCli
 from azure.cli.command_modules.acr._docker_utils import (
     EMPTY_GUID,
     get_authorization_header,
 )
-
-from azure.cli.core.mock import DummyCli
-
 
 class AcrQueryCommandsTests(unittest.TestCase):
 
