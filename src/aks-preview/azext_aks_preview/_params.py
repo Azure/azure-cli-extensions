@@ -904,11 +904,12 @@ def load_arguments(self, _):
                    arg_type=get_enum_type(ingress_gateway_types))
 
     with self.argument_context('aks mesh enable') as c:
-        c.argument('key_vault_id', required=False, help='The Azure Keyvault id with plugin CA info.',validator=validate_azure_service_mesh_pluginca)
+        c.argument('key_vault_id', required=False, help='The Azure Keyvault id with plugin CA info.', validator=validate_azure_service_mesh_pluginca)
         c.argument('ca_cert_object_name', required=False, help='Intermediate cert object name in the Azure Keyvault.', validator=validate_azure_service_mesh_pluginca)
         c.argument('ca_key_object_name', required=False, help='Intermediate key object name in the Azure Keyvault.', validator=validate_azure_service_mesh_pluginca)
         c.argument('root_cert_object_name', required=False, help='Root cert object name in the Azure Keyvault.', validator=validate_azure_service_mesh_pluginca)
         c.argument('cert_chain_object_name', required=False, help='Cert chain object name in the Azure Keyvault.', validator=validate_azure_service_mesh_pluginca)
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()

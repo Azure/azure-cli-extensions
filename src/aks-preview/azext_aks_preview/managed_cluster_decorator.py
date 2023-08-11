@@ -2196,11 +2196,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 new_profile.istio.certificate_authority = self.models.IstioCertificateAuthority()
             if new_profile.istio.certificate_authority.plugin is None:
                 new_profile.istio.certificate_authority.plugin = self.models.IstioPluginCertificateAuthority()
-            new_profile.istio.certificate_authority.plugin.key_vault_id=key_vault_id
-            new_profile.istio.certificate_authority.plugin.cert_object_name=ca_cert_object_name
-            new_profile.istio.certificate_authority.plugin.key_object_name=ca_key_object_name
-            new_profile.istio.certificate_authority.plugin.root_cert_object_name=root_cert_object_name
-            new_profile.istio.certificate_authority.plugin.cert_chain_object_name=cert_chain_object_name
+            new_profile.istio.certificate_authority.plugin.key_vault_id = key_vault_id
+            new_profile.istio.certificate_authority.plugin.cert_object_name = ca_cert_object_name
+            new_profile.istio.certificate_authority.plugin.key_object_name = ca_key_object_name
+            new_profile.istio.certificate_authority.plugin.root_cert_object_name = root_cert_object_name
+            new_profile.istio.certificate_authority.plugin.cert_chain_object_name = cert_chain_object_name
             updated = True
 
         if updated:

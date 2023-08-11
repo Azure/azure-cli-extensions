@@ -818,16 +818,17 @@ def validate_os_sku(namespace):
             CONST_OS_SKU_MARINER,
         )
 
+
 def validate_azure_service_mesh_pluginca(namespace):
     """ Validates plugin CA parameters for azure service mesh. """
     if namespace.key_vault_id is not None or namespace.ca_cert_object_name is not None or namespace.ca_key_object_name is not None or namespace.root_cert_object_name is not None or namespace.cert_chain_object_name is not None:
         if namespace.key_vault_id is None:
-            raise RequiredArgumentMissingError('--key-vault-id is required to use Azure Service Mesh plugin CA feature.')
+            raise InvalidArgumentValueError('--key-vault-id is required to use Azure Service Mesh plugin CA feature.')
         if namespace.ca_cert_object_name is None:
-            raise RequiredArgumentMissingError('--ca-cert-object-name is required to use Azure Service Mesh plugin CA feature.')
+            raise InvalidArgumentValueError('--ca-cert-object-name is required to use Azure Service Mesh plugin CA feature.')
         if namespace.ca_key_object_name is None:
-            raise RequiredArgumentMissingError('--ca-key-object-name is required to use Azure Service Mesh plugin CA feature.')
+            raise InvalidArgumentValueError('--ca-key-object-name is required to use Azure Service Mesh plugin CA feature.')
         if namespace.root_cert_object_name is None:
-            raise RequiredArgumentMissingError('--root-cert-object-name is required to use Azure Service Mesh plugin CA feature.')
+            raise InvalidArgumentValueError('--root-cert-object-name is required to use Azure Service Mesh plugin CA feature.')
         if namespace.cert_chain_object_name is None:
-            raise RequiredArgumentMissingError('--cert-chain-object-name is required to use Azure Service Mesh plugin CA feature.')
+            raise InvalidArgumentValueError('--cert-chain-object-name is required to use Azure Service Mesh plugin CA feature.')

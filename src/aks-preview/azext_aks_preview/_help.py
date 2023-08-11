@@ -2579,11 +2579,10 @@ helps['aks mesh enable'] = """
         short-summary: Root cert object name in the Azure Keyvault.
     examples:
       - name: Enable Azure Service Mesh with selfsigned CA.
-        text: az aks mesh enable
+        text: az aks mesh enable --resource-group MyResourceGroup --name MyManagedCluster
       - name: Enable Azure Service Mesh with plugin CA.
-        text: az aks mesh enable --key-vault-id my-akv-id --ca-cert-object-name my-ca-cert --ca-key-object-name my-ca-key --cert-chain-object-name my-cert-chain --root-cert-object-name my-root-cert
-      - name: Enable Azure Service Mesh with plugin CA.
-        text: az aks mesh enable --key-vault-id my-akv-id --ca-cert-object-name my-ca-cert --ca-key-object-name my-ca-key --cert-chain-object-name my-cert-chain --root-cert-object-name my-root-cert
+        text: az aks mesh enable --resource-group MyResourceGroup --name MyManagedCluster --key-vault-id my-akv-id --ca-cert-object-name my-ca-cert --ca-key-object-name my-ca-key --cert-chain-object-name my-cert-chain --root-cert-object-name my-root-cert
+
 """
 
 helps['aks mesh disable'] = """
