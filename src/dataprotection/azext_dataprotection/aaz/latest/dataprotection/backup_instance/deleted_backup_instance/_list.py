@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance deleted-backup-instance list",
+    is_experimental=True,
 )
 class List(AAZCommand):
     """List deleted backup instances belonging to a backup vault

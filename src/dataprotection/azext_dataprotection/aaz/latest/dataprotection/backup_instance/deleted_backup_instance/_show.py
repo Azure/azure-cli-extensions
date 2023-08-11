@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance deleted-backup-instance show",
+    is_experimental=True,
 )
 class Show(AAZCommand):
     """Get a deleted backup instance with name in a backup vault

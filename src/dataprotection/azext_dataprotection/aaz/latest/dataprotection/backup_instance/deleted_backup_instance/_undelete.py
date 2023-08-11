@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance deleted-backup-instance undelete",
+    is_experimental=True,
 )
 class Undelete(AAZCommand):
     """Undelete soft-deleted backup instances.
