@@ -50,13 +50,10 @@ def setup_scenario(test):
 
 
 # Env cleanup_scenario
-
 def cleanup_scenario(test):
     test.cmd('az vmss delete -n "clitestvmss" -g "{rg}"', checks=[])
     test.cmd('az vm host delete --yes -n "clitestvmss" -g "{rg}"  --host-group clidhtesthostgroup', checks=[])
     pass
-
-######### Autorest ###########
 
 ## applyupdate to dedicated host
 def step_applyupdate_create_or_update_parent(test):
@@ -141,8 +138,6 @@ def step_assignment_delete_parent(test):
              '--resource-type "hosts" '
              ' --yes ',
              checks=[])
-
-###################################
 
 def step__applyupdates_put_applyupdates_createorupdate(test):
     test.cmd('az maintenance applyupdate create '
@@ -431,16 +426,10 @@ def step__configurationassignments_put_configurationassignments_delete_resourceg
              '--name cli_dynamicscope_recording01  --resource-group "{rg}" --yes ',
              checks=[])
 
-
-########################################
-
 # Testcase: Scenario
 
 def call_scenario(test):
     setup_scenario(test)
-    
-
-    # New test
 
     # OS Image create/ vmss. CRUD maintenance config
     step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdateforresource(test)
