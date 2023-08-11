@@ -46,12 +46,14 @@ SYSTEM_PROMPT = {"role": "system", "content": AKS_EXPERT}
 if IS_MS_WINDOWS:
     # Windows system
     import msvcrt
+
     def getch():
         return msvcrt.getch().decode('utf-8')
 else:
     # Unix-based system
     import termios
     import tty
+
     def getch():
         fd = sys.stdin.fileno()
         old_settings = termios.tcgetattr(fd)
