@@ -8,15 +8,16 @@ try:
     import unittest.mock as mock
 except ImportError:
     from unittest import mock
-from ...query import (create_query)
 
+from ...query import (create_query)
+from azure.cli.testsdk import ScenarioTest
 from azure.cli.core.mock import DummyCli
 from azure.cli.command_modules.acr._docker_utils import (
     EMPTY_GUID,
     get_authorization_header,
 )
 
-class AcrQueryCommandsTests(unittest.TestCase):
+class AcrQueryCommandsTests(ScenarioTest):
 
     @mock.patch('azext_acrquery.query.get_access_credentials', autospec=True)
     @mock.patch('requests.request', autospec=True)
