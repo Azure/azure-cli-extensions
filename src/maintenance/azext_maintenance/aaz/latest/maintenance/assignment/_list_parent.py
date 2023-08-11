@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListParent(AAZCommand):
     """List configurationAssignments for resource.
+
+    :example: ConfigurationAssignments_ListParent
+        az maintenance assignment list-parent --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdtestvm1" --resource-parent-name "smdtest1" --resource-parent-type "virtualMachineScaleSets" --resource-type "virtualMachines"
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get Configuration record
+
+    :example: MaintenanceConfigurations_GetForResource
+        az maintenance configuration show --resource-group "examplerg" --resource-name "configuration1"
     """
 
     _aaz_info = {

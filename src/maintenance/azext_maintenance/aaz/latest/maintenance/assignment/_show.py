@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get configuration assignment for resource..
+
+    :example: ConfigurationAssignments_Get
+        az maintenance assignment show --name "workervmConfiguration" --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdtest1" --resource-type "virtualMachineScaleSets"
     """
 
     _aaz_info = {

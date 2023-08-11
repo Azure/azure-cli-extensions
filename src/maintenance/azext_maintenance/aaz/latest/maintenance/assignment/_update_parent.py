@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class UpdateParent(AAZCommand):
     """Update configuration for resource.
+
+    :example: ConfigurationAssignments_UpdateParent
+        az maintenance assignment update-parent --maintenance-configuration-id "/subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/resourcegroups/examplerg/providers/Microsoft.Maintenance/maintenanceConfigurations/policy1" --name "workervmPolicy" --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdvm1" --resource-parent-name "smdtest1" --resource-parent-type "virtualMachineScaleSets" --resource-type "virtualMachines"
     """
 
     _aaz_info = {

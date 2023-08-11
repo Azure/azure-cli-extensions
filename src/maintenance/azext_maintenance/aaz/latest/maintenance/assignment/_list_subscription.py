@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class ListSubscription(AAZCommand):
     """List configuration assignment within a subscription
+
+    :example: ConfigurationAssignments_List
+        az maintenance assignment list-subscription
     """
 
     _aaz_info = {

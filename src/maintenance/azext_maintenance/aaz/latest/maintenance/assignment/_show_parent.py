@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ShowParent(AAZCommand):
     """Get configuration assignment for resource..
+
+    :example: ConfigurationAssignments_GetParent
+        az maintenance assignment show-parent --name "workervmPolicy" --provider-name  "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdvm1" --resource-parent- name "smdtest1" --resource-parent-type "virtualMachineScaleSets" --resource-type "virtualMachines"
     """
 
     _aaz_info = {

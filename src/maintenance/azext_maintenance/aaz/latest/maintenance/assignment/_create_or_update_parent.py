@@ -18,7 +18,7 @@ class CreateOrUpdateParent(AAZCommand):
     """Apply maintenance updates to resource with parent
 
     :example: ConfigurationAssignments_CreateOrUpdateParent
-        az az maintenance assignment create-or-update-parent --maintenance-configuration-id "/subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/resourcegroups/examplerg/providers/Microsoft.Maintenance/maintenanceConfigurations/policy1" --name "workervmPolicy" --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdvm1" --resource-parent-name "smdtest1" --resource-parent-type "virtualMachineScaleSets" --resource-type "virtualMachines"
+        az maintenance assignment create-or-update-parent --maintenance-configuration-id "/subscriptions/00000000-0000-0000-0000-00000000/resourcegroups/examplerg/providers/Microsoft.Maintenance/maintenanceConfigurations/policy1" --name "workervmPolicy" --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdvm1" --resource-parent-name "test1" --resource-parent-type "virtualMachineScaleSets" --resource-type "virtualMachines"
     """
 
     _aaz_info = {

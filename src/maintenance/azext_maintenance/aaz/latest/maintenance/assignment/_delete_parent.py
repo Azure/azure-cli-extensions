@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class DeleteParent(AAZCommand):
     """Delete configuration for resource.
+
+    :example: ConfigurationAssignments_DeleteParent
+        az maintenance assignment delete-parent --name "workervmConfiguration" --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdvm1" --resource-parent-name "smdtest1" --resource-parent-type "virtualMachineScaleSets" --resource-type "virtualMachines"
     """
 
     _aaz_info = {

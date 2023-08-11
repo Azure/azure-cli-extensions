@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListParent(AAZCommand):
     """List updates to resources.
+
+    :example: Updates_ListParent
+        az maintenance update list-parent --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name "1" --resource-parent-name "smdtest1" --resource-parent-type "virtualMachineScaleSets" --resource-type "virtualMachines"
     """
 
     _aaz_info = {

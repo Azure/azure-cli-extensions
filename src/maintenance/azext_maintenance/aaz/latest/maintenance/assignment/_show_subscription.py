@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class ShowSubscription(AAZCommand):
     """Get configuration assignment for resource..
+
+    :example: ConfigurationAssignments_GetSubscription
+        az maintenance assignment show-subscription --name "example1"
     """
 
     _aaz_info = {

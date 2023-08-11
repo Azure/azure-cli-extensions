@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class DeleteSubscription(AAZCommand):
     """Delete configuration for resource.
+
+    :example: ConfigurationAssignments_DeleteSubscription
+        az maintenance assignment delete-subscription --name "example1"
     """
 
     _aaz_info = {

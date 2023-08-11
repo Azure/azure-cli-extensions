@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List Configuration records within a subscription and resource group
+
+    :example: MaintenanceConfigurations_List
+        az maintenance configuration list
     """
 
     _aaz_info = {

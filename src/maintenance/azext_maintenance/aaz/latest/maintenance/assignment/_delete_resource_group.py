@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class DeleteResourceGroup(AAZCommand):
     """Delete configuration for resource.
+
+    :example: ConfigurationAssignments_DeleteSubscription
+        az maintenance assignment delete-resource-group --resource-group "examplerg" --name "example1"
     """
 
     _aaz_info = {

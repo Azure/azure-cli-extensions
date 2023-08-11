@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List Public Maintenance Configuration records
+
+    :example: PublicMaintenanceConfigurations_List
+        az maintenance public-configuration list
     """
 
     _aaz_info = {

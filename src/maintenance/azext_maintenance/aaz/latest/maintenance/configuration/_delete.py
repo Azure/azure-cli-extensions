@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete Configuration record
+
+    :example: MaintenanceConfigurations_DeleteForResource
+        az maintenance configuration delete --resource-group "examplerg" --resource-name "example1"
     """
 
     _aaz_info = {
