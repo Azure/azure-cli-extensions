@@ -22,10 +22,8 @@
 |[az maintenance applyupdate list](#ApplyUpdatesList)|List|[Parameters](#ParametersApplyUpdatesList)|[Example](#ExamplesApplyUpdatesList)|
 |[az maintenance applyupdate show](#ApplyUpdatesGet)|Get|[Parameters](#ParametersApplyUpdatesGet)|[Example](#ExamplesApplyUpdatesGet)|
 |[az maintenance applyupdate create](#ApplyUpdatesCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersApplyUpdatesCreateOrUpdate#Create)|[Example](#ExamplesApplyUpdatesCreateOrUpdate#Create)|
-|[az maintenance applyupdate update](#ApplyUpdatesCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersApplyUpdatesCreateOrUpdate#Update)|Not Found|
 |[az maintenance applyupdate create-or-update-parent](#ApplyUpdatesCreateOrUpdateParent)|CreateOrUpdateParent|[Parameters](#ParametersApplyUpdatesCreateOrUpdateParent)|[Example](#ExamplesApplyUpdatesCreateOrUpdateParent)|
 |[az maintenance applyupdate show-parent](#ApplyUpdatesGetParent)|GetParent|[Parameters](#ParametersApplyUpdatesGetParent)|[Example](#ExamplesApplyUpdatesGetParent)|
-|[az maintenance applyupdate get-parent](#ApplyUpdatesGetParentAlias)|GetParent|[Parameters](#ParametersApplyUpdatesGetParentAlias)|[Example](#ExamplesApplyUpdatesGetParentAlias)|
 
 ### <a name="CommandsInConfigurationAssignments">Commands in `az maintenance assignment` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
