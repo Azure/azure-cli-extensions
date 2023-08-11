@@ -27,23 +27,23 @@ class ContainerServiceFleetMgmtClient:  # pylint: disable=client-accepts-api-ver
 
     :ivar operations: Operations operations
     :vartype operations:
-     azure.mgmt.containerservicefleet.v2023_03_15_preview.aio.operations.Operations
+     azure.mgmt.containerservicefleet.v2023_06_15_preview.aio.operations.Operations
     :ivar fleets: FleetsOperations operations
     :vartype fleets:
-     azure.mgmt.containerservicefleet.v2023_03_15_preview.aio.operations.FleetsOperations
+     azure.mgmt.containerservicefleet.v2023_06_15_preview.aio.operations.FleetsOperations
     :ivar fleet_members: FleetMembersOperations operations
     :vartype fleet_members:
-     azure.mgmt.containerservicefleet.v2023_03_15_preview.aio.operations.FleetMembersOperations
+     azure.mgmt.containerservicefleet.v2023_06_15_preview.aio.operations.FleetMembersOperations
     :ivar update_runs: UpdateRunsOperations operations
     :vartype update_runs:
-     azure.mgmt.containerservicefleet.v2023_03_15_preview.aio.operations.UpdateRunsOperations
+     azure.mgmt.containerservicefleet.v2023_06_15_preview.aio.operations.UpdateRunsOperations
     :param credential: Credential needed for the client to connect to Azure. Required.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The ID of the target subscription. Required.
     :type subscription_id: str
     :param base_url: Service URL. Default value is "https://management.azure.com".
     :type base_url: str
-    :keyword api_version: Api Version. Default value is "2023-03-15-preview". Note that overriding
+    :keyword api_version: Api Version. Default value is "2023-06-15-preview". Note that overriding
      this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
@@ -66,10 +66,18 @@ class ContainerServiceFleetMgmtClient:  # pylint: disable=client-accepts-api-ver
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
-        self.operations = Operations(self._client, self._config, self._serialize, self._deserialize)
-        self.fleets = FleetsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.fleet_members = FleetMembersOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.update_runs = UpdateRunsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.operations = Operations(
+            self._client, self._config, self._serialize, self._deserialize, "2023-06-15-preview"
+        )
+        self.fleets = FleetsOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2023-06-15-preview"
+        )
+        self.fleet_members = FleetMembersOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2023-06-15-preview"
+        )
+        self.update_runs = UpdateRunsOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2023-06-15-preview"
+        )
 
     def _send_request(self, request: HttpRequest, **kwargs: Any) -> Awaitable[AsyncHttpResponse]:
         """Runs the network request through the client's chained policies.

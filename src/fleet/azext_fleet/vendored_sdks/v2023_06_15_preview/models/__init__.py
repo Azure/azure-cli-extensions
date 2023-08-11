@@ -6,6 +6,8 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
+from ._models_py3 import APIServerAccessProfile
+from ._models_py3 import AgentProfile
 from ._models_py3 import ErrorAdditionalInfo
 from ._models_py3 import ErrorDetail
 from ._models_py3 import ErrorResponse
@@ -20,7 +22,11 @@ from ._models_py3 import FleetMemberUpdate
 from ._models_py3 import FleetPatch
 from ._models_py3 import ManagedClusterUpdate
 from ._models_py3 import ManagedClusterUpgradeSpec
+from ._models_py3 import ManagedServiceIdentity
 from ._models_py3 import MemberUpdateStatus
+from ._models_py3 import NodeImageSelection
+from ._models_py3 import NodeImageSelectionStatus
+from ._models_py3 import NodeImageVersion
 from ._models_py3 import Operation
 from ._models_py3 import OperationDisplay
 from ._models_py3 import OperationListResult
@@ -37,6 +43,7 @@ from ._models_py3 import UpdateRunStrategy
 from ._models_py3 import UpdateStage
 from ._models_py3 import UpdateStageStatus
 from ._models_py3 import UpdateStatus
+from ._models_py3 import UserAssignedIdentity
 from ._models_py3 import WaitStatus
 
 from ._container_service_fleet_mgmt_client_enums import ActionType
@@ -44,6 +51,8 @@ from ._container_service_fleet_mgmt_client_enums import CreatedByType
 from ._container_service_fleet_mgmt_client_enums import FleetMemberProvisioningState
 from ._container_service_fleet_mgmt_client_enums import FleetProvisioningState
 from ._container_service_fleet_mgmt_client_enums import ManagedClusterUpgradeType
+from ._container_service_fleet_mgmt_client_enums import ManagedServiceIdentityType
+from ._container_service_fleet_mgmt_client_enums import NodeImageSelectionType
 from ._container_service_fleet_mgmt_client_enums import Origin
 from ._container_service_fleet_mgmt_client_enums import UpdateRunProvisioningState
 from ._container_service_fleet_mgmt_client_enums import UpdateState
@@ -52,6 +61,8 @@ from ._patch import *  # pylint: disable=unused-wildcard-import
 from ._patch import patch_sdk as _patch_sdk
 
 __all__ = [
+    "APIServerAccessProfile",
+    "AgentProfile",
     "ErrorAdditionalInfo",
     "ErrorDetail",
     "ErrorResponse",
@@ -66,7 +77,11 @@ __all__ = [
     "FleetPatch",
     "ManagedClusterUpdate",
     "ManagedClusterUpgradeSpec",
+    "ManagedServiceIdentity",
     "MemberUpdateStatus",
+    "NodeImageSelection",
+    "NodeImageSelectionStatus",
+    "NodeImageVersion",
     "Operation",
     "OperationDisplay",
     "OperationListResult",
@@ -83,12 +98,15 @@ __all__ = [
     "UpdateStage",
     "UpdateStageStatus",
     "UpdateStatus",
+    "UserAssignedIdentity",
     "WaitStatus",
     "ActionType",
     "CreatedByType",
     "FleetMemberProvisioningState",
     "FleetProvisioningState",
     "ManagedClusterUpgradeType",
+    "ManagedServiceIdentityType",
+    "NodeImageSelectionType",
     "Origin",
     "UpdateRunProvisioningState",
     "UpdateState",
