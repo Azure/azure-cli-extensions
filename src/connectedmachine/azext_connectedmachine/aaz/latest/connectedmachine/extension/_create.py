@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "connectedmachine extension create",
 )
 class Create(AAZCommand):
-    """The operation to create the extension.
+    """Create the extension.
 
     :example: Sample command for extension create
         az connectedmachine extension create --name CustomScriptExtension --location eastus2euap --type CustomScriptExtension --publisher Microsoft.Compute --type-handler-version 1.10 --machine-name myMachine --resource-group myResourceGroup
