@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """The operation to delete the extension.
+    """Delete the extension.
 
     :example: Sample command for extension delete
         az connectedmachine extension delete --name myName --machine-name myMachine --resource-group myResourceGroup
