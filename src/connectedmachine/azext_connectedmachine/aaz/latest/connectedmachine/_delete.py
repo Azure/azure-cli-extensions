@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete operation to delete an Azure Arc-Enabled Server.
+    """Delete an Azure Arc-Enabled Server.
 
     :example: Sample command for delete
         az connectedmachine delete --name myMachine --resource-group myResourceGroup
