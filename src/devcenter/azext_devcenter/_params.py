@@ -98,131 +98,126 @@ def load_arguments(self, _):
             help="The name of a pool of " "dev boxes.",
         )
 
-    # with self.argument_context("devcenter dev schedule list") as c:
-    #     c.argument(
-    #         "dev_center",
-    #         arg_type=dev_center_type,
-    #     )
-    #     c.argument(
-    #         "project_name",
-    #         arg_type=project_type,
-    #     )
-    #     c.argument(
-    #         "endpoint",
-    #         arg_type=endpoint,
-    #     )
-    #     c.argument(
-    #         "pool_name",
-    #         options_list=["--pool-name", "--pool"],
-    #         type=str,
-    #         help="The name of a pool of dev boxes.",
-    #     )
+    with self.argument_context("devcenter dev schedule list") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "pool_name",
+            options_list=["--pool-name", "--pool"],
+            type=str,
+            help="The name of a pool of dev boxes.",
+        )
 
-    # with self.argument_context("devcenter dev schedule show") as c:
-    #     c.argument(
-    #         "dev_center",
-    #         arg_type=dev_center_type,
-    #     )
-    #     c.argument(
-    #         "project_name",
-    #         arg_type=project_type,
-    #     )
-    #     c.argument(
-    #         "endpoint",
-    #         arg_type=endpoint,
-    #     )
-    #     c.argument(
-    #         "pool_name",
-    #         options_list=["--pool-name", "--pool"],
-    #         type=str,
-    #         help="The name of a pool of dev boxes.",
-    #     )
+    with self.argument_context("devcenter dev schedule show") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "pool_name",
+            options_list=["--pool-name", "--pool"],
+            type=str,
+            help="The name of a pool of dev boxes.",
+        )
 
-    # with self.argument_context(
-    #     "devcenter dev dev-box list", validator=validate_dev_box_list
-    # ) as c:
-    #     c.argument(
-    #         "dev_center",
-    #         arg_type=dev_center_type,
-    #     )
-    #     c.argument(
-    #         "project_name",
-    #         arg_type=project_type,
-    #     )
-    #     c.argument(
-    #         "endpoint",
-    #         arg_type=endpoint,
-    #     )
-    #     c.argument(
-    #         "user_id",
-    #         type=str,
-    #         help="The AAD object id of the user. If value is 'me', the identity is taken from the "
-    #         "authentication context",
-    #     )
+    with self.argument_context(
+        "devcenter dev dev-box list", validator=validate_dev_box_list
+    ) as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
+            "authentication context",
+        )
 
-    # with self.argument_context("devcenter dev dev-box show") as c:
-    #     c.argument(
-    #         "dev_center",
-    #         arg_type=dev_center_type,
-    #     )
-    #     c.argument(
-    #         "project_name",
-    #         arg_type=project_type,
-    #     )
-    #     c.argument(
-    #         "endpoint",
-    #         arg_type=endpoint,
-    #     )
-    #     c.argument(
-    #         "user_id",
-    #         type=str,
-    #         help="The AAD object id of the user. If value is 'me', the identity is taken from the "
-    #         "authentication context",
-    #     )
-    #     c.argument(
-    #         "dev_box_name",
-    #         options_list=["--name", "-n", "--dev-box-name"],
-    #         type=str,
-    #         help="The name of a dev " "box.",
-    #     )
+    with self.argument_context("devcenter dev dev-box show") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
+            "authentication context",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--name", "-n", "--dev-box-name"],
+            type=str,
+            help="The name of a dev " "box.",
+        )
 
-    # with self.argument_context("devcenter dev dev-box create") as c:
-    #     c.argument(
-    #         "dev_center",
-    #         arg_type=dev_center_type,
-    #     )
-    #     c.argument(
-    #         "project_name",
-    #         arg_type=project_type,
-    #     )
-    #     c.argument(
-    #         "endpoint",
-    #         arg_type=endpoint,
-    #     )
-    #     c.argument(
-    #         "user_id",
-    #         type=str,
-    #         help="The AAD object id of the user. If value is 'me', the identity is taken from the "
-    #         "authentication context",
-    #     )
-    #     c.argument(
-    #         "dev_box_name",
-    #         options_list=["--name", "-n", "--dev-box-name"],
-    #         type=str,
-    #         help="The name of a dev " "box.",
-    #     )
-    #     c.argument(
-    #         "pool_name",
-    #         options_list=["--pool-name", "--pool"],
-    #         type=str,
-    #         help="The name of the dev box pool this machine belongs to.",
-    #     )
-    #     c.argument(
-    #         "local_administrator",
-    #         arg_type=get_enum_type(["Enabled", "Disabled"]),
-    #         help="Indicates whether the "
-    #         "owner of the dev box is a local administrator.",
-    #     )
+    with self.argument_context("devcenter dev dev-box create") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken from the "
+            "authentication context",
+        )
+        c.argument(
+            "dev_box_name",
+            options_list=["--name", "-n", "--dev-box-name"],
+            type=str,
+            help="The name of a dev " "box.",
+        )
+        c.argument(
+            "pool_name",
+            options_list=["--pool-name", "--pool"],
+            type=str,
+            help="The name of the dev box pool this machine belongs to.",
+        )
+
 
     # with self.argument_context("devcenter dev dev-box delete") as c:
     #     c.argument(

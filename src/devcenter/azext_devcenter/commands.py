@@ -243,27 +243,27 @@ def load_command_table(self, _):
         g.custom_command("list", "devcenter_pool_list_dp")
         g.custom_show_command("show", "devcenter_pool_show_dp")
 
-    # with self.command_group("devcenter dev dev-box", devcenter_dev_box_dp) as g:
-    #     g.custom_command("list", "devcenter_dev_box_list")
-    #     g.custom_show_command("show", "devcenter_dev_box_show")
-    #     g.custom_command("create", "devcenter_dev_box_create", supports_no_wait=True)
-    #     g.custom_command(
-    #         "delete",
-    #         "devcenter_dev_box_delete",
-    #         supports_no_wait=True,
-    #         confirmation=True,
-    #     )
-    #     g.custom_command(
-    #         "show-remote-connection", "devcenter_dev_box_get_remote_connection"
-    #     )
-    #     g.custom_command("start", "devcenter_dev_box_start", supports_no_wait=True)
-    #     g.custom_command("restart", "devcenter_dev_box_restart", supports_no_wait=True)
-    #     g.custom_command("stop", "devcenter_dev_box_stop", supports_no_wait=True)
-    #     g.custom_command("delay-action", "devcenter_dev_box_delay_action")
-    #     g.custom_command("delay-all-actions", "devcenter_dev_box_delay_all_actions")
-    #     g.custom_command("list-action", "devcenter_dev_box_list_action")
-    #     g.custom_command("show-action", "devcenter_dev_box_show_action")
-    #     g.custom_command("skip-action", "devcenter_dev_box_skip_action")
+    with self.command_group("devcenter dev dev-box") as g:
+        g.custom_command("list", "devcenter_dev_box_list")
+        g.custom_show_command("show", "devcenter_dev_box_show")
+        g.custom_command("create", "devcenter_dev_box_create", supports_no_wait=True)
+        # g.custom_command(
+        #     "delete",
+        #     "devcenter_dev_box_delete",
+        #     supports_no_wait=True,
+        #     confirmation=True,
+        # )
+        # g.custom_command(
+        #     "show-remote-connection", "devcenter_dev_box_get_remote_connection"
+        # )
+        # g.custom_command("start", "devcenter_dev_box_start", supports_no_wait=True)
+        # g.custom_command("restart", "devcenter_dev_box_restart", supports_no_wait=True)
+        # g.custom_command("stop", "devcenter_dev_box_stop", supports_no_wait=True)
+        # g.custom_command("delay-action", "devcenter_dev_box_delay_action")
+        # g.custom_command("delay-all-actions", "devcenter_dev_box_delay_all_actions")
+        # g.custom_command("list-action", "devcenter_dev_box_list_action")
+        # g.custom_command("show-action", "devcenter_dev_box_show_action")
+        # g.custom_command("skip-action", "devcenter_dev_box_skip_action")
 
     # with self.command_group("devcenter dev environment", devcenter_environment_dp) as g:
     #     g.custom_command("list", "devcenter_environment_list")
@@ -289,8 +289,9 @@ def load_command_table(self, _):
     # ) as g:
     #     g.custom_command("list", "devcenter_environment_type_list_dp")
 
-    # with self.command_group("devcenter dev schedule", devcenter_schedule_dp) as g:
-    #     g.custom_show_command("show", "devcenter_schedule_show_dp")
+    with self.command_group("devcenter dev schedule", dev_boxes_dp) as g:
+        g.custom_command("list", "devcenter_schedule_list_dp")
+        g.custom_show_command("show", "devcenter_schedule_show_dp")
 
     # with self.command_group("devcenter dev catalog", devcenter_catalog_dp) as g:
     #     g.custom_command("list", "devcenter_catalog_list_dp")

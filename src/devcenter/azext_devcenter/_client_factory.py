@@ -7,7 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-from .utils import get_project_data, DevCenterClientTokenCredential
+from .utils import get_project_data
 from ._validators import validate_endpoint
 
 # Data plane
@@ -25,16 +25,12 @@ def cf_devcenter_dataplane(cli_ctx, endpoint=None, dev_center=None, project_name
         project = get_project_data(cli_ctx, dev_center, project_name)
         endpoint = project["devCenterUri"]
 
-    token = Profile(
-        cli_ctx=cli_ctx
-    ).get_raw_token(resource="https://devcenter.azure.com")[0][2]
-    access_token = token['accessToken']
-    expires_on=token['expires_on']
+    profile = Profile(cli_ctx=cli_ctx)
 
-    credential = DevCenterClientTokenCredential(access_token, expires_on)
+    credential = profile.get_login_credentials(resource="https://devcenter.azure.com")
 
     cli_ctx.cloud.endpoints.active_directory_resource_id = "https://devcenter.azure.com"
-    return DevCenterClient(endpoint, credential)
+    return DevCenterClient(endpoint, credential[0])
 
 
 def cf_dev_center_dp(cli_ctx, dev_center, *_):
