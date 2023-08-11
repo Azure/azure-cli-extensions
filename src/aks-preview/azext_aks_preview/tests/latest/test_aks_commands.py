@@ -4442,6 +4442,45 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
+    def test_aks_migrate_cluster_to_cilium_dataplane(self, resource_group, resource_group_location):
+        _, create_version = self._get_versions(resource_group_location)
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'k8s_version': create_version,
+            'ssh_key_value': self.generate_ssh_keys(),
+        })
+
+        # create with Azure CNI overlay
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--network-plugin azure --ssh-key-value={ssh_key_value} --kubernetes-version {k8s_version} ' \
+                     '--network-plugin-mode=overlay'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.networkPlugin', 'azure'),
+            self.check('networkProfile.networkPluginMode', 'overlay'),
+            self.check('networkProfile.networkDataplane', 'azure'),
+        ])
+
+        # update to enable cilium dataplane
+        update_cmd = 'aks update -g {resource_group} -n {name} --network-dataplane=cilium'
+
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('networkProfile.networkPlugin', 'azure'),
+            self.check('networkProfile.networkPluginMode', 'overlay'),
+            self.check('networkProfile.networkDataplane', 'cilium'),
+            self.check('networkProfile.networkPolicy', 'cilium'),
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='centraluseuap', preserve_default_location=True)
     def test_aks_create_or_update_with_load_balancer_backend_pool_type(self, resource_group, resource_group_location):
         _, create_version = self._get_versions(resource_group_location)
@@ -6959,6 +6998,63 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check('provisioningState', 'Succeeded'),
                 self.check('networkProfile.nodePublicIpTags[0].ipTagType', "RoutingPreference"),
                 self.check('networkProfile.nodePublicIpTags[0].tag', "Internet"),
+            ],
+        )
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
+    def test_vms_agentpool_type(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        nodepool_name = self.create_random_name('n', 6)
+        nodepool_name_1 = self.create_random_name('n', 6)
+
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'node_pool_name': nodepool_name,
+            'node_vm_size': 'standard_d2a_v4',
+        })
+
+        self.cmd(
+            'aks create '
+            '--resource-group={resource_group} '
+            '--name={name} '
+            '--location={location} '
+            '--ssh-key-value={ssh_key_value} '
+            '--nodepool-name={node_pool_name} '
+            '--node-count=1 '
+            '--node-vm-size={node_vm_size} '
+            '--vm-set-type="VirtualMachines" '
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview',
+            checks=[
+                self.check('provisioningState', 'Succeeded'),
+                self.check('agentPoolProfiles[0].type', "VirtualMachines"),
+            ],
+        )
+
+        self.kwargs.update({
+            'node_pool_name': nodepool_name_1,
+        })
+
+        self.cmd(
+            'aks nodepool add '
+            '--resource-group={resource_group} '
+            '--cluster-name={name} '
+            '--name={node_pool_name} '
+            '--node-vm-size={node_vm_size} '
+            '--vm-set-type=VirtualMachines ' 
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview',
+            checks=[
+                self.check('provisioningState', 'Succeeded'),
+                self.check('typePropertiesType', "VirtualMachines"),
             ],
         )
 

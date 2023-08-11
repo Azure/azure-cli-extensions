@@ -15,4 +15,5 @@ from ._deprovision import *
 from ._list import *
 from ._provision import *
 from ._show import *
+from ._update import *
 from ._wait import *

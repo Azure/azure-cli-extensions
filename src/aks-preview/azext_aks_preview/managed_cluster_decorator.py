@@ -3028,6 +3028,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if network_plugin_mode:
             mc.network_profile.network_plugin_mode = network_plugin_mode
 
+        network_dataplane = self.context.get_network_dataplane()
+        if network_dataplane:
+            mc.network_profile.network_dataplane = network_dataplane
+
         pod_cidr = self.context.get_pod_cidr()
         if pod_cidr:
             mc.network_profile.pod_cidr = pod_cidr

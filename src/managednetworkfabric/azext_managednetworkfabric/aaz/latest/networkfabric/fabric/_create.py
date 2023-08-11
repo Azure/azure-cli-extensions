@@ -15,13 +15,13 @@ from azure.cli.core.aaz import *
     "networkfabric fabric create",
 )
 class Create(AAZCommand):
-    """Create a Network Fabric resource.
+    """Create a Network Fabric resource
 
     :example: Create a Network Fabric with option B Properties
-        az networkfabric fabric create --resource-group "example-rg" --location "westus3" --resource-name "example-fabric" --nf-sku "fab1" --nfc-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/example-NFC" --fabric-asn 20 --ipv4-prefix 10.1.0.0/19 --rack-count 3 --server-count-per-rack 7 --ts-config "{primaryIpv4Prefix:'172.31.0.0/30',secondaryIpv4Prefix:'172.31.0.20/30',username:'****',password:'*****',serialNumber:'1234'}" --managed-network-config "{infrastructureVpnConfiguration:{peeringOption:OptionB,optionBProperties:{importRouteTargets:['65541:2001','65542:2001'],exportRouteTargets:['65531:1002','65531:1002']}},workloadVpnConfiguration:{peeringOption:OptionB,optionBProperties:{importRouteTargets:['65541:2001','65542:2001'],exportRouteTargets:['65531:1002','65531:1002']}}}"
+        az networkfabric fabric create --resource-group "example-rg" --location "westus3" --resource-name "example-fabric" --nf-sku "fab1" --nfc-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/example-NFC" --fabric-asn 20 --ipv4-prefix 10.1.0.0/19 --rack-count 2 --server-count-per-rack 5 --ts-config "{primaryIpv4Prefix:'172.31.0.0/30',secondaryIpv4Prefix:'172.31.0.20/30',username:'****',password:'*****',serialNumber:'1234'}" --managed-network-config "{infrastructureVpnConfiguration:{networkToNetworkInterconnectId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric/networkToNetworkInterconnects/example-nni',peeringOption:OptionB,optionBProperties:{routeTargets:{exportIpv4RouteTargets:['65046:10039'],exportIpv6RouteTargets:['65046:10039'],importIpv4RouteTargets:['65046:10039'],importIpv6RouteTargets:['65046:10039']}}},workloadVpnConfiguration:{networkToNetworkInterconnectId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric/networkToNetworkInterconnects/example-nni',peeringOption:OptionB,optionBProperties:{routeTargets:{exportIpv4RouteTargets:['65046:10039'],exportIpv6RouteTargets:['65046:10039'],importIpv4RouteTargets:['65046:10039'],importIpv6RouteTargets:['65046:10039']}}}}"
 
     :example: Create a Network Fabric with option A Properties
-        az networkfabric fabric create --resource-group "example-rg" --location "westus3" --resource-name "example-fabric" --nf-sku "fab1" --nfc-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/example-NFC" --fabric-asn 20 --ipv4-prefix "10.1.0.0/19" --rack-count 3 --server-count-per-rack 7 --ts-config "{primaryIpv4Prefix:'172.31.0.0/30',secondaryIpv4Prefix:'172.31.0.20/30',username:'****',password:'*****',serialNumber:1234}" --managed-network-config "{infrastructureVpnConfiguration:{peeringOption:OptionA,optionAProperties:{mtu:1500,vlanId:520,peerASN:65133,primaryIpv4Prefix:'172.31.0.0/31',secondaryIpv4Prefix:'172.31.0.20/31'}},workloadVpnConfiguration:{peeringOption:OptionA,optionAProperties:{mtu:1500,vlanId:520,peerASN:65133,primaryIpv4Prefix:'172.31.0.0/31',secondaryIpv4Prefix:'172.31.0.20/31'}}}"
+        az networkfabric fabric create --resource-group "example-rg" --location "westus3" --resource-name "example-fabric" --nf-sku "fab1" --nfc-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabricControllers/example-NFC" --fabric-asn 20 --ipv4-prefix "10.1.0.0/19" --rack-count 2 --server-count-per-rack 5 --ts-config "{primaryIpv4Prefix:'172.31.0.0/30',secondaryIpv4Prefix:'172.31.0.20/30',username:'****',password:'*****',serialNumber:1234}" --managed-network-config "{infrastructureVpnConfiguration:{networkToNetworkInterconnectId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric/networkToNetworkInterconnects/example-nni',peeringOption:OptionA,optionAProperties:{bfdConfiguration:{multiplier:5,intervalInMilliSeconds:300},mtu:1500,vlanId:520,peerASN:65133,primaryIpv4Prefix:'172.31.0.0/31',secondaryIpv4Prefix:'172.31.0.20/31'}},workloadVpnConfiguration:{networkToNetworkInterconnectId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric/networkToNetworkInterconnects/example-nni',peeringOption:OptionA,optionAProperties:{bfdConfiguration:{multiplier:5,intervalInMilliSeconds:300},mtu:1500,vlanId:520,peerASN:65133,primaryIpv4Prefix:'172.31.0.0/31',secondaryIpv4Prefix:'172.31.0.20/31',primaryIpv6Prefix:'3FFE:FFFF:0:CD30::a0/127',secondaryIpv6Prefix:'3FFE:FFFF:0:CD30::a0/127'}}}"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
         az networkfabric fabric create --ts-config ??
@@ -30,9 +30,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}", "2023-06-15"],
         ]
     }
 
@@ -55,7 +55,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the Network Fabric",
+            help="Name of the Network Fabric.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -89,55 +89,70 @@ class Create(AAZCommand):
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
-            help="Switch configuration description.",
+            help="Description for underlying resource.",
         )
         _args_schema.fabric_asn = AAZIntArg(
             options=["--fabric-asn"],
             arg_group="Properties",
-            help="ASN of CE devices for CE/PE connectivity. The value should be between 1 to 65535. Example : 65123",
+            help="ASN of CE devices for CE/PE connectivity. The value should be between 1 to 4294967295. Example: 65123",
+            required=True,
             fmt=AAZIntArgFormat(
-                maximum=65535,
+                maximum=4294967295,
                 minimum=1,
             ),
         )
         _args_schema.ipv4_prefix = AAZStrArg(
             options=["--ipv4-prefix"],
             arg_group="Properties",
-            help="IPv4Prefix for Management Network. Example : 10.1.0.0/19.",
+            help="IPv4Prefix for Management Network. Example: 10.1.0.0/19.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.ipv6_prefix = AAZStrArg(
             options=["--ipv6-prefix"],
             arg_group="Properties",
-            help="IPv6Prefix for Management Network. Example : 3FFE:FFFF:0:CD40::/59.",
+            help="IPv6Prefix for Management Network. Example: 3FFE:FFFF:0:CD40::/59",
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.managed_network_config = AAZObjectArg(
             options=["--managed-network-config"],
             arg_group="Properties",
             help="Configuration to be used to setup the management network.",
+            required=True,
         )
-        _args_schema.nfc_id = AAZStrArg(
+        _args_schema.nfc_id = AAZResourceIdArg(
             options=["--nfc-id"],
             arg_group="Properties",
-            help="Network Fabric Controller ARM resource id",
+            help="Azure resource ID for the NetworkFabricController the NetworkFabric belongs.",
+            required=True,
         )
         _args_schema.nf_sku = AAZStrArg(
             options=["--nf-sku"],
             arg_group="Properties",
-            help="Fabric SKU id based on the SKU of the BoM that was ordered",
+            help="Supported Network Fabric SKU. The SKU determines whether it is a single / multi rack Network Fabric.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.rack_count = AAZIntArg(
             options=["--rack-count"],
             arg_group="Properties",
-            help="Number of racks associated to Network Fabric.Possible values are from 2-8.",
+            help="Number of compute racks associated to Network Fabric. Possible values are from 1-8.",
             fmt=AAZIntArgFormat(
                 maximum=8,
-                minimum=2,
+                minimum=1,
             ),
         )
         _args_schema.server_count_per_rack = AAZIntArg(
             options=["--server-count-per-rack"],
             arg_group="Properties",
             help="Number of servers.Possible values are from 1-16.",
+            required=True,
             fmt=AAZIntArgFormat(
                 maximum=16,
                 minimum=1,
@@ -147,206 +162,228 @@ class Create(AAZCommand):
             options=["--ts-config"],
             arg_group="Properties",
             help="Network and credentials configuration currently applied to terminal server.",
+            required=True,
         )
 
         managed_network_config = cls._args_schema.managed_network_config
         managed_network_config.infrastructure_vpn_configuration = AAZObjectArg(
             options=["infrastructure-vpn-configuration"],
-            help="Configuration for infrastructure vpn.",
+            help="VPN Configuration properties.",
             required=True,
         )
+        cls._build_args_vpn_configuration_properties_create(managed_network_config.infrastructure_vpn_configuration)
         managed_network_config.workload_vpn_configuration = AAZObjectArg(
             options=["workload-vpn-configuration"],
-            help="Configuration for workload vpn.",
+            help="VPN Configuration properties.",
             required=True,
         )
-
-        infrastructure_vpn_configuration = cls._args_schema.managed_network_config.infrastructure_vpn_configuration
-        infrastructure_vpn_configuration.option_a_properties = AAZObjectArg(
-            options=["option-a-properties"],
-            help="Peering option A properties.",
-        )
-        infrastructure_vpn_configuration.option_b_properties = AAZObjectArg(
-            options=["option-b-properties"],
-            help="Option B configuration to be used for management vpn.",
-        )
-        infrastructure_vpn_configuration.peering_option = AAZStrArg(
-            options=["peering-option"],
-            help="Peering option list.",
-            required=True,
-            enum={"OptionA": "OptionA", "OptionB": "OptionB"},
-        )
-
-        option_a_properties = cls._args_schema.managed_network_config.infrastructure_vpn_configuration.option_a_properties
-        option_a_properties.mtu = AAZIntArg(
-            options=["mtu"],
-            help="MTU to use for option A peering.",
-            fmt=AAZIntArgFormat(
-                maximum=9000,
-                minimum=1500,
-            ),
-        )
-        option_a_properties.peer_asn = AAZIntArg(
-            options=["peer-asn"],
-            help="Peer ASN number.Example : 28",
-            fmt=AAZIntArgFormat(
-                maximum=65535,
-                minimum=1,
-            ),
-        )
-        option_a_properties.primary_ipv4_prefix = AAZStrArg(
-            options=["primary-ipv4-prefix"],
-            help="IPv4 Address Prefix of CE-PE interconnect links. Example: 172.31.0.0/31. The values can be specified at the time of creation or can be updated afterwards. Any update to the values post-provisioning may disrupt traffic. The 1st and 3rd IPs are to be configured on CE1 and CE2 for Option B interfaces. The 2nd and 4th IPs are to be configured on PE1 and PE2 for Option B interfaces.",
-        )
-        option_a_properties.primary_ipv6_prefix = AAZStrArg(
-            options=["primary-ipv6-prefix"],
-            help="IPv6 Address Prefix of CE-PE interconnect links. Example: 3FFE:FFFF:0:CD30::a0/126. The values can be specified at the time of creation or can be updated afterwards. Any update to the values post-provisioning may disrupt traffic. The 1st and 3rd IPs are to be configured on CE1 and CE2 for Option B interfaces. The 2nd and 4th IPs are to be configured on PE1 and PE2 for Option B interfaces.",
-        )
-        option_a_properties.secondary_ipv4_prefix = AAZStrArg(
-            options=["secondary-ipv4-prefix"],
-            help="Secondary IPv4 Address Prefix of CE-PE interconnect links. Example: 172.31.0.20/31. The values can be specified at the time of creation or can be updated afterwards. Any update to the values post-provisioning may disrupt traffic. The 1st and 3rd IPs are to be configured on CE1 and CE2 for Option B interfaces. The 2nd and 4th IPs are to be configured on PE1 and PE2 for Option B interfaces.",
-        )
-        option_a_properties.secondary_ipv6_prefix = AAZStrArg(
-            options=["secondary-ipv6-prefix"],
-            help="Secondary IPv6 Address Prefix of CE-PE interconnect links. Example: 3FFE:FFFF:0:CD30::a4/126. The values can be specified at the time of creation or can be updated afterwards. Any update to the values post-provisioning may disrupt traffic. The 1st and 3rd IPs are to be configured on CE1 and CE2 for Option B interfaces. The 2nd and 4th IPs are to be configured on PE1 and PE2 for Option B interfaces.",
-        )
-        option_a_properties.vlan_id = AAZIntArg(
-            options=["vlan-id"],
-            help="Vlan identifier. Example : 501",
-            fmt=AAZIntArgFormat(
-                maximum=4095,
-                minimum=501,
-            ),
-        )
-
-        option_b_properties = cls._args_schema.managed_network_config.infrastructure_vpn_configuration.option_b_properties
-        option_b_properties.export_route_targets = AAZListArg(
-            options=["export-route-targets"],
-            help="Route Targets to be applied for outgoing routes from CE.",
-            required=True,
-        )
-        option_b_properties.import_route_targets = AAZListArg(
-            options=["import-route-targets"],
-            help="Route Targets to be applied for incoming routes into CE.",
-            required=True,
-        )
-
-        export_route_targets = cls._args_schema.managed_network_config.infrastructure_vpn_configuration.option_b_properties.export_route_targets
-        export_route_targets.Element = AAZStrArg()
-
-        import_route_targets = cls._args_schema.managed_network_config.infrastructure_vpn_configuration.option_b_properties.import_route_targets
-        import_route_targets.Element = AAZStrArg()
-
-        workload_vpn_configuration = cls._args_schema.managed_network_config.workload_vpn_configuration
-        workload_vpn_configuration.option_a_properties = AAZObjectArg(
-            options=["option-a-properties"],
-            help="Peering option A properties.",
-        )
-        workload_vpn_configuration.option_b_properties = AAZObjectArg(
-            options=["option-b-properties"],
-            help="Option B configuration to be used for management vpn.",
-        )
-        workload_vpn_configuration.peering_option = AAZStrArg(
-            options=["peering-option"],
-            help="Peering option list.",
-            required=True,
-            enum={"OptionA": "OptionA", "OptionB": "OptionB"},
-        )
-
-        option_a_properties = cls._args_schema.managed_network_config.workload_vpn_configuration.option_a_properties
-        option_a_properties.mtu = AAZIntArg(
-            options=["mtu"],
-            help="MTU to use for option A peering.",
-            fmt=AAZIntArgFormat(
-                maximum=9000,
-                minimum=1500,
-            ),
-        )
-        option_a_properties.peer_asn = AAZIntArg(
-            options=["peer-asn"],
-            help="Peer ASN number.Example : 28",
-            fmt=AAZIntArgFormat(
-                maximum=65535,
-                minimum=1,
-            ),
-        )
-        option_a_properties.primary_ipv4_prefix = AAZStrArg(
-            options=["primary-ipv4-prefix"],
-            help="IPv4 Address Prefix of CE-PE interconnect links. Example: 172.31.0.0/31. The values can be specified at the time of creation or can be updated afterwards. Any update to the values post-provisioning may disrupt traffic. The 1st and 3rd IPs are to be configured on CE1 and CE2 for Option B interfaces. The 2nd and 4th IPs are to be configured on PE1 and PE2 for Option B interfaces.",
-        )
-        option_a_properties.primary_ipv6_prefix = AAZStrArg(
-            options=["primary-ipv6-prefix"],
-            help="IPv6 Address Prefix of CE-PE interconnect links. Example: 3FFE:FFFF:0:CD30::a0/126. The values can be specified at the time of creation or can be updated afterwards. Any update to the values post-provisioning may disrupt traffic. The 1st and 3rd IPs are to be configured on CE1 and CE2 for Option B interfaces. The 2nd and 4th IPs are to be configured on PE1 and PE2 for Option B interfaces.",
-        )
-        option_a_properties.secondary_ipv4_prefix = AAZStrArg(
-            options=["secondary-ipv4-prefix"],
-            help="Secondary IPv4 Address Prefix of CE-PE interconnect links. Example: 172.31.0.20/31. The values can be specified at the time of creation or can be updated afterwards. Any update to the values post-provisioning may disrupt traffic. The 1st and 3rd IPs are to be configured on CE1 and CE2 for Option B interfaces. The 2nd and 4th IPs are to be configured on PE1 and PE2 for Option B interfaces.",
-        )
-        option_a_properties.secondary_ipv6_prefix = AAZStrArg(
-            options=["secondary-ipv6-prefix"],
-            help="Secondary IPv6 Address Prefix of CE-PE interconnect links. Example: 3FFE:FFFF:0:CD30::a4/126. The values can be specified at the time of creation or can be updated afterwards. Any update to the values post-provisioning may disrupt traffic. The 1st and 3rd IPs are to be configured on CE1 and CE2 for Option B interfaces. The 2nd and 4th IPs are to be configured on PE1 and PE2 for Option B interfaces.",
-        )
-        option_a_properties.vlan_id = AAZIntArg(
-            options=["vlan-id"],
-            help="Vlan identifier. Example : 501",
-            fmt=AAZIntArgFormat(
-                maximum=4095,
-                minimum=501,
-            ),
-        )
-
-        option_b_properties = cls._args_schema.managed_network_config.workload_vpn_configuration.option_b_properties
-        option_b_properties.export_route_targets = AAZListArg(
-            options=["export-route-targets"],
-            help="Route Targets to be applied for outgoing routes from CE.",
-            required=True,
-        )
-        option_b_properties.import_route_targets = AAZListArg(
-            options=["import-route-targets"],
-            help="Route Targets to be applied for incoming routes into CE.",
-            required=True,
-        )
-
-        export_route_targets = cls._args_schema.managed_network_config.workload_vpn_configuration.option_b_properties.export_route_targets
-        export_route_targets.Element = AAZStrArg()
-
-        import_route_targets = cls._args_schema.managed_network_config.workload_vpn_configuration.option_b_properties.import_route_targets
-        import_route_targets.Element = AAZStrArg()
+        cls._build_args_vpn_configuration_properties_create(managed_network_config.workload_vpn_configuration)
 
         ts_config = cls._args_schema.ts_config
         ts_config.password = AAZStrArg(
             options=["password"],
-            help="Password of terminal server.",
+            help="Password for the terminal server connection.",
             required=True,
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
         ts_config.primary_ipv4_prefix = AAZStrArg(
             options=["primary-ipv4-prefix"],
-            help="IPv4 Address Prefix of CE-PE interconnect links. Example : 172.31.0.0/31.",
+            help="IPv4 Address Prefix. Example:172.31.0.0/30.",
             required=True,
         )
         ts_config.primary_ipv6_prefix = AAZStrArg(
             options=["primary-ipv6-prefix"],
-            help="IPv6 Address Prefix of CE-PE interconnect links. Example : 3FFE:FFFF:0:CD30::a0/126.",
+            help="IPv6 Address Prefix. Example: 3FFE:FFFF:0:CD30::a0/127.",
         )
         ts_config.secondary_ipv4_prefix = AAZStrArg(
             options=["secondary-ipv4-prefix"],
-            help="Secondary IPv4 Address Prefix of CE-PE interconnect links. Example : 172.31.0.20/31.",
+            help="Secondary IPv4 Address Prefix. Example:172.31.0.20/30.",
             required=True,
         )
         ts_config.secondary_ipv6_prefix = AAZStrArg(
             options=["secondary-ipv6-prefix"],
-            help="Secondary IPv6 Address Prefix of CE-PE interconnect links. Example : 3FFE:FFFF:0:CD30::a4/126.",
+            help="Secondary IPv6 Address Prefix. Example: 3FFE:FFFF:0:CD30::a4/127.",
         )
         ts_config.serial_number = AAZStrArg(
             options=["serial-number"],
             help="Serial Number of Terminal server.",
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
         ts_config.username = AAZStrArg(
             options=["username"],
-            help="Username of terminal server.",
+            help="Username for the terminal server connection.",
             required=True,
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
         )
         return cls._args_schema
+
+    _args_vpn_configuration_properties_create = None
+
+    @classmethod
+    def _build_args_vpn_configuration_properties_create(cls, _schema):
+        if cls._args_vpn_configuration_properties_create is not None:
+            _schema.network_to_network_interconnect_id = cls._args_vpn_configuration_properties_create.network_to_network_interconnect_id
+            _schema.option_a_properties = cls._args_vpn_configuration_properties_create.option_a_properties
+            _schema.option_b_properties = cls._args_vpn_configuration_properties_create.option_b_properties
+            _schema.peering_option = cls._args_vpn_configuration_properties_create.peering_option
+            return
+
+        cls._args_vpn_configuration_properties_create = AAZObjectArg()
+
+        vpn_configuration_properties_create = cls._args_vpn_configuration_properties_create
+        vpn_configuration_properties_create.network_to_network_interconnect_id = AAZResourceIdArg(
+            options=["network-to-network-interconnect-id"],
+            help="ARM Resource ID of the Network To Network Interconnect.",
+        )
+        vpn_configuration_properties_create.option_a_properties = AAZObjectArg(
+            options=["option-a-properties"],
+            help="option A properties.",
+        )
+        vpn_configuration_properties_create.option_b_properties = AAZObjectArg(
+            options=["option-b-properties"],
+            help="option B properties.",
+        )
+        vpn_configuration_properties_create.peering_option = AAZStrArg(
+            options=["peering-option"],
+            help="Peering option list.",
+            required=True,
+            enum={"OptionA": "OptionA", "OptionB": "OptionB"},
+        )
+
+        option_a_properties = cls._args_vpn_configuration_properties_create.option_a_properties
+        option_a_properties.bfd_configuration = AAZObjectArg(
+            options=["bfd-configuration"],
+            help="BFD Configuration properties.",
+        )
+        option_a_properties.mtu = AAZIntArg(
+            options=["mtu"],
+            help="MTU to use for option A peering. The value should be between 64 to 9200. Default value is 1500. Example: 1500",
+            fmt=AAZIntArgFormat(
+                maximum=9200,
+                minimum=64,
+            ),
+        )
+        option_a_properties.peer_asn = AAZIntArg(
+            options=["peer-asn"],
+            help="Peer ASN number. The value should be between 1 to 4294967295. Example: 28.",
+            required=True,
+            fmt=AAZIntArgFormat(
+                maximum=4294967295,
+                minimum=1,
+            ),
+        )
+        option_a_properties.primary_ipv4_prefix = AAZStrArg(
+            options=["primary-ipv4-prefix"],
+            help="IPv4 Address Prefix. Example: 172.31.0.0/31.",
+        )
+        option_a_properties.primary_ipv6_prefix = AAZStrArg(
+            options=["primary-ipv6-prefix"],
+            help="IPv6 Address Prefix. Example: 3FFE:FFFF:0:CD30::a0/127.",
+        )
+        option_a_properties.secondary_ipv4_prefix = AAZStrArg(
+            options=["secondary-ipv4-prefix"],
+            help="Secondary IPv4 Address Prefix. Example: 172.31.0.20/31.",
+        )
+        option_a_properties.secondary_ipv6_prefix = AAZStrArg(
+            options=["secondary-ipv6-prefix"],
+            help="Secondary IPv6 Address Prefix. Example: 3FFE:FFFF:0:CD30::a4/127.",
+        )
+        option_a_properties.vlan_id = AAZIntArg(
+            options=["vlan-id"],
+            help="Vlan Id. The value should be between 501 to 4094. Example: 501",
+            required=True,
+            fmt=AAZIntArgFormat(
+                maximum=4094,
+                minimum=501,
+            ),
+        )
+
+        bfd_configuration = cls._args_vpn_configuration_properties_create.option_a_properties.bfd_configuration
+        bfd_configuration.interval_in_milli_seconds = AAZIntArg(
+            options=["interval-in-milli-seconds"],
+            help="Interval in milliseconds. Default Value is 300. Example: 300.",
+        )
+        bfd_configuration.multiplier = AAZIntArg(
+            options=["multiplier"],
+            help="Multiplier for the Bfd Configuration. Default Value is 5. Example: 5.",
+        )
+
+        option_b_properties = cls._args_vpn_configuration_properties_create.option_b_properties
+        option_b_properties.export_route_targets = AAZListArg(
+            options=["export-route-targets"],
+            help="Route Targets to be applied for outgoing routes from CE. This is for backward compatibility.",
+        )
+        option_b_properties.import_route_targets = AAZListArg(
+            options=["import-route-targets"],
+            help="Route Targets to be applied for incoming routes into CE. This is for backward compatibility.",
+        )
+        option_b_properties.route_targets = AAZObjectArg(
+            options=["route-targets"],
+            help="Route Targets to be applied.",
+        )
+
+        export_route_targets = cls._args_vpn_configuration_properties_create.option_b_properties.export_route_targets
+        export_route_targets.Element = AAZStrArg()
+
+        import_route_targets = cls._args_vpn_configuration_properties_create.option_b_properties.import_route_targets
+        import_route_targets.Element = AAZStrArg()
+
+        route_targets = cls._args_vpn_configuration_properties_create.option_b_properties.route_targets
+        route_targets.export_ipv4_route_targets = AAZListArg(
+            options=["export-ipv4-route-targets"],
+            help="Route Targets to be applied for outgoing routes into CE.",
+        )
+        route_targets.export_ipv6_route_targets = AAZListArg(
+            options=["export-ipv6-route-targets"],
+            help="Route Targets to be applied for outgoing routes from CE.",
+        )
+        route_targets.import_ipv4_route_targets = AAZListArg(
+            options=["import-ipv4-route-targets"],
+            help="Route Targets to be applied for incoming routes into CE.",
+        )
+        route_targets.import_ipv6_route_targets = AAZListArg(
+            options=["import-ipv6-route-targets"],
+            help="Route Targets to be applied for incoming routes from CE.",
+        )
+
+        export_ipv4_route_targets = cls._args_vpn_configuration_properties_create.option_b_properties.route_targets.export_ipv4_route_targets
+        export_ipv4_route_targets.Element = AAZStrArg(
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+
+        export_ipv6_route_targets = cls._args_vpn_configuration_properties_create.option_b_properties.route_targets.export_ipv6_route_targets
+        export_ipv6_route_targets.Element = AAZStrArg(
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+
+        import_ipv4_route_targets = cls._args_vpn_configuration_properties_create.option_b_properties.route_targets.import_ipv4_route_targets
+        import_ipv4_route_targets.Element = AAZStrArg(
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+
+        import_ipv6_route_targets = cls._args_vpn_configuration_properties_create.option_b_properties.route_targets.import_ipv6_route_targets
+        import_ipv6_route_targets.Element = AAZStrArg(
+            fmt=AAZStrArgFormat(
+                min_length=1,
+            ),
+        )
+
+        _schema.network_to_network_interconnect_id = cls._args_vpn_configuration_properties_create.network_to_network_interconnect_id
+        _schema.option_a_properties = cls._args_vpn_configuration_properties_create.option_a_properties
+        _schema.option_b_properties = cls._args_vpn_configuration_properties_create.option_b_properties
+        _schema.peering_option = cls._args_vpn_configuration_properties_create.peering_option
 
     def _execute_operations(self):
         self.pre_operations()
@@ -429,7 +466,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -455,84 +492,26 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("annotation", AAZStrType, ".annotation")
                 properties.set_prop("fabricASN", AAZIntType, ".fabric_asn", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("ipv4Prefix", AAZStrType, ".ipv4_prefix")
+                properties.set_prop("ipv4Prefix", AAZStrType, ".ipv4_prefix", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("ipv6Prefix", AAZStrType, ".ipv6_prefix")
                 properties.set_prop("managementNetworkConfiguration", AAZObjectType, ".managed_network_config", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkFabricControllerId", AAZStrType, ".nfc_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkFabricSku", AAZStrType, ".nf_sku", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("rackCount", AAZIntType, ".rack_count", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("rackCount", AAZIntType, ".rack_count")
                 properties.set_prop("serverCountPerRack", AAZIntType, ".server_count_per_rack", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("terminalServerConfiguration", AAZObjectType, ".ts_config", typ_kwargs={"flags": {"required": True}})
 
             management_network_configuration = _builder.get(".properties.managementNetworkConfiguration")
             if management_network_configuration is not None:
-                management_network_configuration.set_prop("infrastructureVpnConfiguration", AAZObjectType, ".infrastructure_vpn_configuration", typ_kwargs={"flags": {"required": True}})
-                management_network_configuration.set_prop("workloadVpnConfiguration", AAZObjectType, ".workload_vpn_configuration", typ_kwargs={"flags": {"required": True}})
-
-            infrastructure_vpn_configuration = _builder.get(".properties.managementNetworkConfiguration.infrastructureVpnConfiguration")
-            if infrastructure_vpn_configuration is not None:
-                infrastructure_vpn_configuration.set_prop("optionAProperties", AAZObjectType, ".option_a_properties")
-                infrastructure_vpn_configuration.set_prop("optionBProperties", AAZObjectType, ".option_b_properties")
-                infrastructure_vpn_configuration.set_prop("peeringOption", AAZStrType, ".peering_option", typ_kwargs={"flags": {"required": True}})
-
-            option_a_properties = _builder.get(".properties.managementNetworkConfiguration.infrastructureVpnConfiguration.optionAProperties")
-            if option_a_properties is not None:
-                option_a_properties.set_prop("mtu", AAZIntType, ".mtu")
-                option_a_properties.set_prop("peerASN", AAZIntType, ".peer_asn")
-                option_a_properties.set_prop("primaryIpv4Prefix", AAZStrType, ".primary_ipv4_prefix")
-                option_a_properties.set_prop("primaryIpv6Prefix", AAZStrType, ".primary_ipv6_prefix")
-                option_a_properties.set_prop("secondaryIpv4Prefix", AAZStrType, ".secondary_ipv4_prefix")
-                option_a_properties.set_prop("secondaryIpv6Prefix", AAZStrType, ".secondary_ipv6_prefix")
-                option_a_properties.set_prop("vlanId", AAZIntType, ".vlan_id")
-
-            option_b_properties = _builder.get(".properties.managementNetworkConfiguration.infrastructureVpnConfiguration.optionBProperties")
-            if option_b_properties is not None:
-                option_b_properties.set_prop("exportRouteTargets", AAZListType, ".export_route_targets", typ_kwargs={"flags": {"required": True}})
-                option_b_properties.set_prop("importRouteTargets", AAZListType, ".import_route_targets", typ_kwargs={"flags": {"required": True}})
-
-            export_route_targets = _builder.get(".properties.managementNetworkConfiguration.infrastructureVpnConfiguration.optionBProperties.exportRouteTargets")
-            if export_route_targets is not None:
-                export_route_targets.set_elements(AAZStrType, ".")
-
-            import_route_targets = _builder.get(".properties.managementNetworkConfiguration.infrastructureVpnConfiguration.optionBProperties.importRouteTargets")
-            if import_route_targets is not None:
-                import_route_targets.set_elements(AAZStrType, ".")
-
-            workload_vpn_configuration = _builder.get(".properties.managementNetworkConfiguration.workloadVpnConfiguration")
-            if workload_vpn_configuration is not None:
-                workload_vpn_configuration.set_prop("optionAProperties", AAZObjectType, ".option_a_properties")
-                workload_vpn_configuration.set_prop("optionBProperties", AAZObjectType, ".option_b_properties")
-                workload_vpn_configuration.set_prop("peeringOption", AAZStrType, ".peering_option", typ_kwargs={"flags": {"required": True}})
-
-            option_a_properties = _builder.get(".properties.managementNetworkConfiguration.workloadVpnConfiguration.optionAProperties")
-            if option_a_properties is not None:
-                option_a_properties.set_prop("mtu", AAZIntType, ".mtu")
-                option_a_properties.set_prop("peerASN", AAZIntType, ".peer_asn")
-                option_a_properties.set_prop("primaryIpv4Prefix", AAZStrType, ".primary_ipv4_prefix")
-                option_a_properties.set_prop("primaryIpv6Prefix", AAZStrType, ".primary_ipv6_prefix")
-                option_a_properties.set_prop("secondaryIpv4Prefix", AAZStrType, ".secondary_ipv4_prefix")
-                option_a_properties.set_prop("secondaryIpv6Prefix", AAZStrType, ".secondary_ipv6_prefix")
-                option_a_properties.set_prop("vlanId", AAZIntType, ".vlan_id")
-
-            option_b_properties = _builder.get(".properties.managementNetworkConfiguration.workloadVpnConfiguration.optionBProperties")
-            if option_b_properties is not None:
-                option_b_properties.set_prop("exportRouteTargets", AAZListType, ".export_route_targets", typ_kwargs={"flags": {"required": True}})
-                option_b_properties.set_prop("importRouteTargets", AAZListType, ".import_route_targets", typ_kwargs={"flags": {"required": True}})
-
-            export_route_targets = _builder.get(".properties.managementNetworkConfiguration.workloadVpnConfiguration.optionBProperties.exportRouteTargets")
-            if export_route_targets is not None:
-                export_route_targets.set_elements(AAZStrType, ".")
-
-            import_route_targets = _builder.get(".properties.managementNetworkConfiguration.workloadVpnConfiguration.optionBProperties.importRouteTargets")
-            if import_route_targets is not None:
-                import_route_targets.set_elements(AAZStrType, ".")
+                _CreateHelper._build_schema_vpn_configuration_properties_create(management_network_configuration.set_prop("infrastructureVpnConfiguration", AAZObjectType, ".infrastructure_vpn_configuration", typ_kwargs={"flags": {"required": True}}))
+                _CreateHelper._build_schema_vpn_configuration_properties_create(management_network_configuration.set_prop("workloadVpnConfiguration", AAZObjectType, ".workload_vpn_configuration", typ_kwargs={"flags": {"required": True}}))
 
             terminal_server_configuration = _builder.get(".properties.terminalServerConfiguration")
             if terminal_server_configuration is not None:
@@ -578,7 +557,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -590,13 +569,26 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
             properties.fabric_asn = AAZIntType(
                 serialized_name="fabricASN",
                 flags={"required": True},
             )
+            properties.fabric_version = AAZStrType(
+                serialized_name="fabricVersion",
+                flags={"read_only": True},
+            )
             properties.ipv4_prefix = AAZStrType(
                 serialized_name="ipv4Prefix",
+                flags={"required": True},
             )
             properties.ipv6_prefix = AAZStrType(
                 serialized_name="ipv6Prefix",
@@ -621,23 +613,18 @@ class Create(AAZCommand):
                 serialized_name="networkFabricSku",
                 flags={"required": True},
             )
-            properties.operational_state = AAZStrType(
-                serialized_name="operationalState",
-                flags={"read_only": True},
-            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.rack_count = AAZIntType(
                 serialized_name="rackCount",
-                flags={"required": True},
             )
             properties.racks = AAZListType(
                 flags={"read_only": True},
             )
-            properties.router_id = AAZStrType(
-                serialized_name="routerId",
+            properties.router_ids = AAZListType(
+                serialized_name="routerIds",
                 flags={"read_only": True},
             )
             properties.server_count_per_rack = AAZIntType(
@@ -669,6 +656,9 @@ class Create(AAZCommand):
 
             racks = cls._schema_on_200_201.properties.racks
             racks.Element = AAZStrType()
+
+            router_ids = cls._schema_on_200_201.properties.router_ids
+            router_ids.Element = AAZStrType()
 
             terminal_server_configuration = cls._schema_on_200_201.properties.terminal_server_configuration
             terminal_server_configuration.network_device_id = AAZStrType(
@@ -728,6 +718,68 @@ class Create(AAZCommand):
 class _CreateHelper:
     """Helper class for Create"""
 
+    @classmethod
+    def _build_schema_vpn_configuration_properties_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("networkToNetworkInterconnectId", AAZStrType, ".network_to_network_interconnect_id")
+        _builder.set_prop("optionAProperties", AAZObjectType, ".option_a_properties")
+        _builder.set_prop("optionBProperties", AAZObjectType, ".option_b_properties")
+        _builder.set_prop("peeringOption", AAZStrType, ".peering_option", typ_kwargs={"flags": {"required": True}})
+
+        option_a_properties = _builder.get(".optionAProperties")
+        if option_a_properties is not None:
+            option_a_properties.set_prop("bfdConfiguration", AAZObjectType, ".bfd_configuration")
+            option_a_properties.set_prop("mtu", AAZIntType, ".mtu")
+            option_a_properties.set_prop("peerASN", AAZIntType, ".peer_asn", typ_kwargs={"flags": {"required": True}})
+            option_a_properties.set_prop("primaryIpv4Prefix", AAZStrType, ".primary_ipv4_prefix")
+            option_a_properties.set_prop("primaryIpv6Prefix", AAZStrType, ".primary_ipv6_prefix")
+            option_a_properties.set_prop("secondaryIpv4Prefix", AAZStrType, ".secondary_ipv4_prefix")
+            option_a_properties.set_prop("secondaryIpv6Prefix", AAZStrType, ".secondary_ipv6_prefix")
+            option_a_properties.set_prop("vlanId", AAZIntType, ".vlan_id", typ_kwargs={"flags": {"required": True}})
+
+        bfd_configuration = _builder.get(".optionAProperties.bfdConfiguration")
+        if bfd_configuration is not None:
+            bfd_configuration.set_prop("intervalInMilliSeconds", AAZIntType, ".interval_in_milli_seconds")
+            bfd_configuration.set_prop("multiplier", AAZIntType, ".multiplier")
+
+        option_b_properties = _builder.get(".optionBProperties")
+        if option_b_properties is not None:
+            option_b_properties.set_prop("exportRouteTargets", AAZListType, ".export_route_targets")
+            option_b_properties.set_prop("importRouteTargets", AAZListType, ".import_route_targets")
+            option_b_properties.set_prop("routeTargets", AAZObjectType, ".route_targets")
+
+        export_route_targets = _builder.get(".optionBProperties.exportRouteTargets")
+        if export_route_targets is not None:
+            export_route_targets.set_elements(AAZStrType, ".")
+
+        import_route_targets = _builder.get(".optionBProperties.importRouteTargets")
+        if import_route_targets is not None:
+            import_route_targets.set_elements(AAZStrType, ".")
+
+        route_targets = _builder.get(".optionBProperties.routeTargets")
+        if route_targets is not None:
+            route_targets.set_prop("exportIpv4RouteTargets", AAZListType, ".export_ipv4_route_targets")
+            route_targets.set_prop("exportIpv6RouteTargets", AAZListType, ".export_ipv6_route_targets")
+            route_targets.set_prop("importIpv4RouteTargets", AAZListType, ".import_ipv4_route_targets")
+            route_targets.set_prop("importIpv6RouteTargets", AAZListType, ".import_ipv6_route_targets")
+
+        export_ipv4_route_targets = _builder.get(".optionBProperties.routeTargets.exportIpv4RouteTargets")
+        if export_ipv4_route_targets is not None:
+            export_ipv4_route_targets.set_elements(AAZStrType, ".")
+
+        export_ipv6_route_targets = _builder.get(".optionBProperties.routeTargets.exportIpv6RouteTargets")
+        if export_ipv6_route_targets is not None:
+            export_ipv6_route_targets.set_elements(AAZStrType, ".")
+
+        import_ipv4_route_targets = _builder.get(".optionBProperties.routeTargets.importIpv4RouteTargets")
+        if import_ipv4_route_targets is not None:
+            import_ipv4_route_targets.set_elements(AAZStrType, ".")
+
+        import_ipv6_route_targets = _builder.get(".optionBProperties.routeTargets.importIpv6RouteTargets")
+        if import_ipv6_route_targets is not None:
+            import_ipv6_route_targets.set_elements(AAZStrType, ".")
+
     _schema_vpn_configuration_properties_read = None
 
     @classmethod
@@ -749,7 +801,6 @@ class _CreateHelper:
         )
         vpn_configuration_properties_read.network_to_network_interconnect_id = AAZStrType(
             serialized_name="networkToNetworkInterconnectId",
-            flags={"read_only": True},
         )
         vpn_configuration_properties_read.option_a_properties = AAZObjectType(
             serialized_name="optionAProperties",
@@ -769,6 +820,7 @@ class _CreateHelper:
         option_a_properties.mtu = AAZIntType()
         option_a_properties.peer_asn = AAZIntType(
             serialized_name="peerASN",
+            flags={"required": True},
         )
         option_a_properties.primary_ipv4_prefix = AAZStrType(
             serialized_name="primaryIpv4Prefix",
@@ -784,24 +836,28 @@ class _CreateHelper:
         )
         option_a_properties.vlan_id = AAZIntType(
             serialized_name="vlanId",
+            flags={"required": True},
         )
 
         bfd_configuration = _schema_vpn_configuration_properties_read.option_a_properties.bfd_configuration
-        bfd_configuration.interval = AAZIntType(
+        bfd_configuration.administrative_state = AAZStrType(
+            serialized_name="administrativeState",
             flags={"read_only": True},
         )
-        bfd_configuration.multiplier = AAZIntType(
-            flags={"read_only": True},
+        bfd_configuration.interval_in_milli_seconds = AAZIntType(
+            serialized_name="intervalInMilliSeconds",
         )
+        bfd_configuration.multiplier = AAZIntType()
 
         option_b_properties = _schema_vpn_configuration_properties_read.option_b_properties
         option_b_properties.export_route_targets = AAZListType(
             serialized_name="exportRouteTargets",
-            flags={"required": True},
         )
         option_b_properties.import_route_targets = AAZListType(
             serialized_name="importRouteTargets",
-            flags={"required": True},
+        )
+        option_b_properties.route_targets = AAZObjectType(
+            serialized_name="routeTargets",
         )
 
         export_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.export_route_targets
@@ -809,6 +865,32 @@ class _CreateHelper:
 
         import_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.import_route_targets
         import_route_targets.Element = AAZStrType()
+
+        route_targets = _schema_vpn_configuration_properties_read.option_b_properties.route_targets
+        route_targets.export_ipv4_route_targets = AAZListType(
+            serialized_name="exportIpv4RouteTargets",
+        )
+        route_targets.export_ipv6_route_targets = AAZListType(
+            serialized_name="exportIpv6RouteTargets",
+        )
+        route_targets.import_ipv4_route_targets = AAZListType(
+            serialized_name="importIpv4RouteTargets",
+        )
+        route_targets.import_ipv6_route_targets = AAZListType(
+            serialized_name="importIpv6RouteTargets",
+        )
+
+        export_ipv4_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.route_targets.export_ipv4_route_targets
+        export_ipv4_route_targets.Element = AAZStrType()
+
+        export_ipv6_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.route_targets.export_ipv6_route_targets
+        export_ipv6_route_targets.Element = AAZStrType()
+
+        import_ipv4_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.route_targets.import_ipv4_route_targets
+        import_ipv4_route_targets.Element = AAZStrType()
+
+        import_ipv6_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.route_targets.import_ipv6_route_targets
+        import_ipv6_route_targets.Element = AAZStrType()
 
         _schema.administrative_state = cls._schema_vpn_configuration_properties_read.administrative_state
         _schema.network_to_network_interconnect_id = cls._schema_vpn_configuration_properties_read.network_to_network_interconnect_id
