@@ -81,13 +81,17 @@ def load_command_table(self, _):
         client_factory=cf_managementgroupconnection
     )
 
-    with self.command_group('network manager', network_networkmanager, client_factory=cf_networkmanager) as g:
+    with self.command_group('network manager') as g:
         g.custom_command('create', 'network_manager_create')
-        g.custom_command('list', 'network_manager_list')
-        g.custom_show_command('show', 'network_manager_show')
-        g.generic_update_command('update', custom_func_name='network_manager_update')
-        g.custom_command('delete', 'network_manager_delete',
-                         confirmation=True)
+        g.custom_command('update', 'network_manager_update')
+
+    with self.command_group('network manager', network_networkmanager, client_factory=cf_networkmanager) as g:
+        # g.custom_command('create', 'network_manager_create')
+        # g.custom_command('list', 'network_manager_list')
+        # g.custom_show_command('show', 'network_manager_show')
+        # g.generic_update_command('update', custom_func_name='network_manager_update')
+        # g.custom_command('delete', 'network_manager_delete',
+        #                  confirmation=True)
         g.custom_command('post-commit', 'network_manager_commit_post')
         g.custom_command('list-deploy-status', 'network_manager_deploy_status_list')
         # g.custom_command('list-effect-vnet', 'network_manager_effect_vnet_list_by_network_manager')

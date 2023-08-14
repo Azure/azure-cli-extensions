@@ -22,23 +22,23 @@ from ._client_factory import (
 )
 
 
-def network_manager_list(client,
-                         resource_group_name,
-                         top=None,
-                         skip_token=None):
-    return client.list(resource_group_name=resource_group_name,
-                       top=top,
-                       skip_token=skip_token)
+# def network_manager_list(client,
+#                          resource_group_name,
+#                          top=None,
+#                          skip_token=None):
+#     return client.list(resource_group_name=resource_group_name,
+#                        top=top,
+#                        skip_token=skip_token)
+#
+#
+# def network_manager_show(client,
+#                          resource_group_name,
+#                          network_manager_name):
+#     return client.get(resource_group_name=resource_group_name,
+#                       network_manager_name=network_manager_name)
 
 
-def network_manager_show(client,
-                         resource_group_name,
-                         network_manager_name):
-    return client.get(resource_group_name=resource_group_name,
-                      network_manager_name=network_manager_name)
-
-
-def network_manager_create(client,
+def network_manager_create(cmd,
                            resource_group_name,
                            network_manager_name,
                            location,
@@ -47,19 +47,21 @@ def network_manager_create(client,
                            id_=None,
                            tags=None,
                            description=None):
+    from .aaz.latest.network.manager import Create as _NetworkManagerCreate
+    Create = _NetworkManagerCreate(cmd.loader)
     parameters = {}
+    parameters['resource_group'] = resource_group_name
+    parameters['network_manager_name'] = network_manager_name
     parameters['id'] = id_
     parameters['location'] = location
     parameters['tags'] = tags
     parameters['description'] = description
     parameters['network_manager_scopes'] = network_manager_scopes
     parameters['network_manager_scope_accesses'] = network_manager_scope_accesses
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   network_manager_name=network_manager_name,
-                                   parameters=parameters)
+    return Create(parameters)
 
 
-def network_manager_update(instance,
+def network_manager_update(cmd,
                            resource_group_name,
                            network_manager_name,
                            id_=None,
@@ -68,32 +70,37 @@ def network_manager_update(instance,
                            description=None,
                            network_manager_scopes=None,
                            network_manager_scope_accesses=None):
+    from .aaz.latest.network.manager import Update as _NetworkManagerUpdate
+    Update = _NetworkManagerUpdate(cmd.loader)
+    parameters = {}
+    parameters['resource_group'] = resource_group_name
+    parameters['network_manager_name'] = network_manager_name
     if id_ is not None:
-        instance.id = id_
+        parameters['id'] = id_
     if location is not None:
-        instance.location = location
+        parameters['location'] = location
     if tags is not None:
-        instance.tags = tags
+        parameters['tags'] = tags
     if description is not None:
-        instance.description = description
+        parameters['description'] = description
     if network_manager_scopes is not None:
-        instance.network_manager_scopes = network_manager_scopes
+        parameters['network_manager_scopes'] = network_manager_scopes
     if network_manager_scope_accesses is not None:
-        instance.network_manager_scope_accesses = network_manager_scope_accesses
-    return instance
-
-
-def network_manager_delete(client,
-                           resource_group_name,
-                           network_manager_name,
-                           force=False):
-    if force is False:
-        print("The \'--force\' flag was not provided for the delete operation. "
-              "If this resource or any of its child resources are part of a deployed configuration, "
-              "this delete will fail.")
-    return client.begin_delete(resource_group_name=resource_group_name,
-                               network_manager_name=network_manager_name,
-                               force=force)
+        parameters['network_manager_scope_accesses'] = network_manager_scope_accesses
+    return Update(parameters)
+#
+#
+# def network_manager_delete(client,
+#                            resource_group_name,
+#                            network_manager_name,
+#                            force=False):
+#     if force is False:
+#         print("The \'--force\' flag was not provided for the delete operation. "
+#               "If this resource or any of its child resources are part of a deployed configuration, "
+#               "this delete will fail.")
+#     return client.begin_delete(resource_group_name=resource_group_name,
+#                                network_manager_name=network_manager_name,
+#                                force=force)
 
 
 def network_manager_commit_post(cmd,

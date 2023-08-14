@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network manager security-admin-config delete",
+    "network manager delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a network manager security admin configuration.
+    """Delete a network manager.
 
-    :example: Delete a network manager security admin configuration.
-        az network manager security-admin-config delete --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" --resource-group "rg1" --force
+    :example: Delete Azure Virtual Network Manager
+        az network manager delete --name "testNetworkManager" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-05-01",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}", "2022-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}", "2023-04-01"],
         ]
     }
 
@@ -46,15 +46,9 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_name = AAZStrArg(
-            options=["--configuration-name"],
-            help="Name of the network manager security configuration.",
-            required=True,
-            id_part="child_name_1",
-        )
         _args_schema.network_manager_name = AAZStrArg(
             options=["-n", "--name", "--network-manager-name"],
-            help="Name of the network manager.",
+            help="The name of the network manager.",
             required=True,
             id_part="name",
         )
@@ -63,14 +57,13 @@ class Delete(AAZCommand):
         )
         _args_schema.force = AAZBoolArg(
             options=["--force"],
-            help="Delete the resource even if it is part of a deployed configuration. If the configuration has been deployed, the service will do a cleanup deployment in the background, prior to the delete.",
-            default=False,
+            help="Deletes the resource even if it is part of a deployed configuration. If the configuration has been deployed, the service will do a cleanup deployment in the background, prior to the delete.",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.SecurityAdminConfigurationsDelete(ctx=self.ctx)()
+        yield self.NetworkManagersDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -81,7 +74,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class SecurityAdminConfigurationsDelete(AAZHttpOperation):
+    class NetworkManagersDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -120,7 +113,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityAdminConfigurations/{configurationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}",
                 **self.url_parameters
             )
 
@@ -135,10 +128,6 @@ class Delete(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "configurationName", self.ctx.args.configuration_name,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "networkManagerName", self.ctx.args.network_manager_name,
                     required=True,
@@ -161,7 +150,7 @@ class Delete(AAZCommand):
                     "force", self.ctx.args.force,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-05-01",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }

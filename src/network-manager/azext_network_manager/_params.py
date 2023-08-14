@@ -30,23 +30,23 @@ from azext_network_manager.action import (
 
 def load_arguments(self, _):
 
-    # region network manager
+    # # region network manager
     with self.argument_context('network manager') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', options_list=['--name', '-n', '--network-manager-name'], type=str,
                    help='The name of the network manager.', id_part='name')
-
-    with self.argument_context('network manager list') as c:
-        c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
-                   'be returned by the server.')
-        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
-                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
-                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
-
-    with self.argument_context('network manager show') as c:
-        c.argument('network_manager_name', options_list=['--name', '-n', '--network-manager-name'], type=str,
-                   help='The name of the network manager.', id_part='name')
-
+    #
+    # with self.argument_context('network manager list') as c:
+    #     c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
+    #                'be returned by the server.')
+    #     c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
+    #                'result. If a previous response contains a nextLink element, the value of the nextLink element will '
+    #                'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
+    #
+    # with self.argument_context('network manager show') as c:
+    #     c.argument('network_manager_name', options_list=['--name', '-n', '--network-manager-name'], type=str,
+    #                help='The name of the network manager.', id_part='name')
+    #
     with self.argument_context('network manager create') as c:
         c.argument('network_manager_name', options_list=['--name', '-n', '--network-manager-name'], type=str,
                    help='The name of the network manager.')
@@ -58,7 +58,7 @@ def load_arguments(self, _):
                    'Manager.')
         c.argument('network_manager_scope_accesses', options_list=['--scope-accesses'], nargs='+', help='Scope Access. Available value: SecurityAdmin, '
                    'Connectivity.')
-
+    #
     with self.argument_context('network manager update') as c:
         c.argument('network_manager_name', options_list=['--name', '-n', '--network-manager-name'], type=str,
                    help='The name of the network manager.', id_part='name')
@@ -71,13 +71,13 @@ def load_arguments(self, _):
         c.argument('network_manager_scope_accesses', options_list=['--scope-accesses'], nargs='+', help='Scope Access. Available value: SecurityAdmin, '
                    'Connectivity.')
         c.ignore('parameters')
-
-    with self.argument_context('network manager delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', options_list=['--name', '-n', '--network-manager-name'], type=str,
-                   help='The name of the network manager.', id_part='name')
-        c.argument('force', arg_type=get_three_state_flag(),
-                   help='Deletes the resource even if it is part of a deployed configuration.')
+    #
+    # with self.argument_context('network manager delete') as c:
+    #     c.argument('resource_group_name', resource_group_name_type)
+    #     c.argument('network_manager_name', options_list=['--name', '-n', '--network-manager-name'], type=str,
+    #                help='The name of the network manager.', id_part='name')
+    #     c.argument('force', arg_type=get_three_state_flag(),
+    #                help='Deletes the resource even if it is part of a deployed configuration.')
 
     # endregion
     with self.argument_context('network manager post-commit') as c:

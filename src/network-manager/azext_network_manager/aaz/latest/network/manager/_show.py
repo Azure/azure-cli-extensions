@@ -12,27 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network manager security-admin-config list",
+    "network manager show",
 )
-class List(AAZCommand):
-    """List all the network manager security admin configurations in a network manager, in a paginated format.
+class Show(AAZCommand):
+    """Get the specified Network Manager.
 
-    :example: List security admin configurations in a network manager.
-        az network manager security-admin-config list --network-manager-name "testNetworkManager" --resource-group "rg1"
+    :example: Get Azure Virtual Network Manager
+        az network manager show --name "testNetworkManager" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-05-01",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations", "2022-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}", "2023-04-01"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -47,29 +46,18 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.network_manager_name = AAZStrArg(
             options=["-n", "--name", "--network-manager-name"],
-            help="Name of the network manager.",
+            help="The name of the network manager.",
             required=True,
+            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
-        )
-        _args_schema.skip_token = AAZStrArg(
-            options=["--skip-token"],
-            help="Only used if a previous operation returned a partial result. If a previous response contains a nextLink element, the value of the nextLink element will include a skipToken parameter that specifies a starting point to use for subsequent calls.",
-        )
-        _args_schema.top = AAZIntArg(
-            options=["--top"],
-            help="Optional query parameter which specifies the maximum number of records to be returned by the server.",
-            fmt=AAZIntArgFormat(
-                maximum=20,
-                minimum=1,
-            ),
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SecurityAdminConfigurationsList(ctx=self.ctx)()
+        self.NetworkManagersGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -81,11 +69,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class SecurityAdminConfigurationsList(AAZHttpOperation):
+    class NetworkManagersGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -99,7 +86,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityAdminConfigurations",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}",
                 **self.url_parameters
             )
 
@@ -133,13 +120,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "$skipToken", self.ctx.args.skip_token,
-                ),
-                **self.serialize_query_param(
-                    "$top", self.ctx.args.top,
-                ),
-                **self.serialize_query_param(
-                    "api-version", "2022-05-01",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
@@ -172,49 +153,87 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.etag = AAZStrType(
+            _schema_on_200.etag = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.id = AAZStrType(
+            _schema_on_200.id = AAZStrType()
+            _schema_on_200.location = AAZStrType()
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _element.system_data = AAZObjectType(
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.type = AAZStrType(
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
-            properties.apply_on_network_intent_policy_based_services = AAZListType(
-                serialized_name="applyOnNetworkIntentPolicyBasedServices",
-            )
+            properties = cls._schema_on_200.properties
             properties.description = AAZStrType()
+            properties.network_manager_scope_accesses = AAZListType(
+                serialized_name="networkManagerScopeAccesses",
+                flags={"required": True},
+            )
+            properties.network_manager_scopes = AAZObjectType(
+                serialized_name="networkManagerScopes",
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.resource_guid = AAZStrType(
+                serialized_name="resourceGuid",
+                flags={"read_only": True},
+            )
 
-            apply_on_network_intent_policy_based_services = cls._schema_on_200.value.Element.properties.apply_on_network_intent_policy_based_services
-            apply_on_network_intent_policy_based_services.Element = AAZStrType()
+            network_manager_scope_accesses = cls._schema_on_200.properties.network_manager_scope_accesses
+            network_manager_scope_accesses.Element = AAZStrType()
 
-            system_data = cls._schema_on_200.value.Element.system_data
+            network_manager_scopes = cls._schema_on_200.properties.network_manager_scopes
+            network_manager_scopes.cross_tenant_scopes = AAZListType(
+                serialized_name="crossTenantScopes",
+                flags={"read_only": True},
+            )
+            network_manager_scopes.management_groups = AAZListType(
+                serialized_name="managementGroups",
+            )
+            network_manager_scopes.subscriptions = AAZListType()
+
+            cross_tenant_scopes = cls._schema_on_200.properties.network_manager_scopes.cross_tenant_scopes
+            cross_tenant_scopes.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.network_manager_scopes.cross_tenant_scopes.Element
+            _element.management_groups = AAZListType(
+                serialized_name="managementGroups",
+                flags={"read_only": True},
+            )
+            _element.subscriptions = AAZListType(
+                flags={"read_only": True},
+            )
+            _element.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+
+            management_groups = cls._schema_on_200.properties.network_manager_scopes.cross_tenant_scopes.Element.management_groups
+            management_groups.Element = AAZStrType()
+
+            subscriptions = cls._schema_on_200.properties.network_manager_scopes.cross_tenant_scopes.Element.subscriptions
+            subscriptions.Element = AAZStrType()
+
+            management_groups = cls._schema_on_200.properties.network_manager_scopes.management_groups
+            management_groups.Element = AAZStrType()
+
+            subscriptions = cls._schema_on_200.properties.network_manager_scopes.subscriptions
+            subscriptions.Element = AAZStrType()
+
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -234,11 +253,14 @@ class List(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
+
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["List"]
+__all__ = ["Show"]
