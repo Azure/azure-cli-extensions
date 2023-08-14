@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update configuration record
 
     :example: MaintenanceConfigurations_UpdateForResource
-        az az maintenance configuration update --location "westus2" --maintenance-scope "OSImage" --maintenance-window-duration "05:00" --maintenance-window-expiration-date-time "9999-12-31 00:00" --maintenance-window-recur-every "Month Third Sunday" --maintenance-window-start-date-time "2020-04-30 08:00" --maintenance-window-time-zone "Pacific Standard Time" --namespace "Microsoft.Maintenance" --visibility "Custom" --resource-group "examplerg" --resource-name "configuration1"
+        az maintenance configuration update --location "westus2" --maintenance-scope "OSImage" --maintenance-window-duration "05:00" --maintenance-window-expiration-date-time "9999-12-31 00:00" --maintenance-window-recur-every "Month Third Sunday" --maintenance-window-start-date-time "2020-04-30 08:00" --maintenance-window-time-zone "Pacific Standard Time" --namespace "Microsoft.Maintenance" --visibility "Custom" --resource-group "examplerg" --resource-name "configuration1"
     """
 
     _aaz_info = {
