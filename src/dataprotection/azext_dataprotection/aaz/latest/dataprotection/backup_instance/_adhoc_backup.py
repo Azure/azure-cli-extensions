@@ -18,7 +18,8 @@ from azure.cli.core.aaz import *
 class AdhocBackup(AAZCommand):
     """Trigger adhoc backup.
 
-    :example: Trigger Adhoc Backup
+    :example: Fetch Backup Policy details for rule name and Trigger Adhoc Backup
+        az dataprotection backup-policy show -g "000pikumar" --vault-name "PratikPrivatePreviewVault1" -n "backupPolicy"
         az dataprotection backup-instance adhoc-backup --name "testInstance1" --rule-name "BackupWeekly" --retention-tag-override "yearly" --resource-group "000pikumar" --vault-name "PratikPrivatePreviewVault1"
     """
 
