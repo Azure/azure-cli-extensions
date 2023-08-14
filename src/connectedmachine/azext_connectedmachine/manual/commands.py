@@ -63,9 +63,7 @@ connectedmachine_private_link_scope = CliCommandType(
 
 
 def load_command_table(self, _):
-
-    with self.command_group('connectedmachine', connectedmachine_machine, client_factory=cf_machine) as g:
-        g.custom_command('list', 'connectedmachine_list', table_transformer=transform_machine_list)
+    pass
 
 
 def transform_machine_list(result):
