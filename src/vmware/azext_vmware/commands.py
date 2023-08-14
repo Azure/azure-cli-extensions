@@ -70,12 +70,6 @@ def load_command_table(self, _):
     with self.command_group('vmware datastore', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'datastore_create', deprecate_info=g.deprecate(redirect='"az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create"', hide=True))
 
-    with self.command_group('vmware global-reach-connection', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'globalreachconnection_create')
-        g.custom_command('list', 'globalreachconnection_list')
-        g.custom_command('delete', 'globalreachconnection_delete')
-        g.custom_show_command('show', 'globalreachconnection_show')
-
     with self.command_group('vmware cloud-link', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'cloud_link_create')
         g.custom_command('list', 'cloud_link_list')

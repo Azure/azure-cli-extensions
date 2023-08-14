@@ -266,27 +266,6 @@ def addon_arc_delete(client: AVSClient, resource_group_name, private_cloud, yes=
     return client.addons.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="arc")
 
 
-def globalreachconnection_create(client: AVSClient, resource_group_name, private_cloud, name, authorization_key=None, peer_express_route_circuit=None, express_route_id=None):
-    from azext_vmware.vendored_sdks.avs_client.models import GlobalReachConnection
-    return client.global_reach_connections.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, global_reach_connection_name=name, global_reach_connection=GlobalReachConnection(authorization_key=authorization_key, peer_express_route_circuit=peer_express_route_circuit, express_route_id=express_route_id))
-
-
-def globalreachconnection_list(client: AVSClient, resource_group_name, private_cloud):
-    return client.global_reach_connections.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
-def globalreachconnection_show(client: AVSClient, resource_group_name, private_cloud, name):
-    return client.global_reach_connections.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, global_reach_connection_name=name)
-
-
-def globalreachconnection_delete(client: AVSClient, resource_group_name, private_cloud, name, yes=False):
-    from knack.prompting import prompt_y_n
-    msg = 'This will delete the global reach connection. Are you sure?'
-    if not yes and not prompt_y_n(msg, default="n"):
-        return None
-    return client.global_reach_connections.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, global_reach_connection_name=name)
-
-
 def cloud_link_create(client: AVSClient, resource_group_name, name, private_cloud, linked_cloud):
     from azext_vmware.vendored_sdks.avs_client.models import CloudLink
     return client.cloud_links.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cloud_link_name=name, cloud_link=CloudLink(linked_cloud=linked_cloud))
