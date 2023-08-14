@@ -536,6 +536,11 @@ def validate_assign_kubelet_identity(namespace):
                 "--assign-kubelet-identity is not a valid Azure resource ID.")
 
 
+def validate_prompt_input(text_input):
+    if not re.search(r'[a-zA-Z]', text_input):
+        raise InvalidArgumentValueError('--prompt does not contain any alphabet character')
+
+
 def validate_snapshot_name(namespace):
     """Validates a nodepool snapshot name to be alphanumeric and dashes."""
     rfc1123_regex = re.compile(

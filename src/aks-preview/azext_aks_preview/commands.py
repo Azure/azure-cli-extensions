@@ -148,7 +148,7 @@ def load_command_table(self, _):
 
     # AKS AI commands
     with self.command_group('aks') as g:
-        g.custom_command('ai', 'start_chat', supports_no_wait=True)
+        g.custom_command('ai', 'start_chat')
 
     # AKS maintenance configuration commands
     with self.command_group('aks maintenanceconfiguration', maintenance_configuration_sdk, client_factory=cf_maintenance_configurations) as g:

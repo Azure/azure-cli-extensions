@@ -210,9 +210,13 @@ def prompt_user_to_run_script(scripts):
 USER_INPUT_PROMPT = "Prompt: "
 
 
-def prompt_chat_gpt(messages, params, insist=True, scripts=''):
+def prompt_chat_gpt(messages, params, start_input=None, insist=True, scripts=''):
     while True:
-        text_input = str(input(USER_INPUT_PROMPT)).strip()
+        if launch_input:
+            text_input = start_input.strip()
+            launch_input = None
+        else:
+            text_input = str(input(USER_INPUT_PROMPT)).strip()
         if re.search(r'[a-zA-Z]', text_input):
             messages.append({"role": "user", "content": text_input})
             _, scripts, messages = chatgpt(messages, params)

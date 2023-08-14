@@ -2642,5 +2642,5 @@ helps['aks ai'] = """
     long-summary: This command initiates a chat assistant with expertise in Azure Kubernetes Service, offering guidance on troubleshooting issues using az commands.
     examples:
         - name: How to create a AKS private cluster.
-          text: az aks ai (Prompt how to create a private aks cluster)
+          text: az aks ai -p "How to create a private cluster"
 """
