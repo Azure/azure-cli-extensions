@@ -21,6 +21,7 @@ Pending
 * Vendor new SDK and bump API version to 2023-06-02-preview.
 * Add `--network-dataplane` to the `az aks update` command.
 * Support "VirtualMachines" agent pool type to `az aks create --vm-set-type` and `az aks nodepool add --vm-set-type`. This is internal use only, not for public preview.
+* Add plugin CA support for `az aks mesh enable` commands for Azure Service Mesh.
 
 0.5.149
 +++++++

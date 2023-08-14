@@ -150,7 +150,7 @@ from azext_aks_preview._validators import (
     validate_user,
     validate_utc_offset,
     validate_vm_set_type,
-    validate_vnet_subnet_id,
+    validate_vnet_subnet_id
 )
 from azure.cli.core.commands.parameters import (
     edge_zone_type,
@@ -902,6 +902,13 @@ def load_arguments(self, _):
     with self.argument_context('aks mesh disable-ingress-gateway') as c:
         c.argument('ingress_gateway_type',
                    arg_type=get_enum_type(ingress_gateway_types))
+
+    with self.argument_context('aks mesh enable') as c:
+        c.argument('key_vault_id')
+        c.argument('ca_cert_object_name')
+        c.argument('ca_key_object_name')
+        c.argument('root_cert_object_name')
+        c.argument('cert_chain_object_name')
 
 
 def _get_default_install_location(exe_name):
