@@ -173,46 +173,6 @@ def script_execution_logs(client: AVSClient, resource_group_name, private_cloud,
     return client.script_executions.get_execution_logs(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
 
 
-def workload_network_dhcp_server_create(client: AVSClient, resource_group_name, private_cloud, dhcp: str, display_name=None, revision=None, server_address=None, lease_time=None):
-    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDhcpServer, WorkloadNetworkDhcp
-    properties = WorkloadNetworkDhcp(properties=WorkloadNetworkDhcpServer(dhcp_type="SERVER", display_name=display_name, revision=revision, server_address=server_address, lease_time=lease_time))
-    return client.workload_networks.begin_create_dhcp(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dhcp_id=dhcp, workload_network_dhcp=properties)
-
-
-def workload_network_dhcp_relay_create(client: AVSClient, resource_group_name, private_cloud, dhcp: str, display_name=None, revision=None, server_addresses=None):
-    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDhcpRelay, WorkloadNetworkDhcp
-    properties = WorkloadNetworkDhcp(properties=WorkloadNetworkDhcpRelay(dhcp_type="RELAY", display_name=display_name, revision=revision, server_addresses=server_addresses))
-    return client.workload_networks.begin_create_dhcp(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dhcp_id=dhcp, workload_network_dhcp=properties)
-
-
-def workload_network_dhcp_server_update(client: AVSClient, resource_group_name, private_cloud, dhcp: str, display_name=None, revision=None, server_address=None, lease_time=None):
-    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDhcpServer, WorkloadNetworkDhcp
-    properties = WorkloadNetworkDhcp(properties=WorkloadNetworkDhcpServer(dhcp_type="SERVER", display_name=display_name, revision=revision, server_address=server_address, lease_time=lease_time))
-    return client.workload_networks.begin_update_dhcp(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dhcp_id=dhcp, workload_network_dhcp=properties)
-
-
-def workload_network_dhcp_relay_update(client: AVSClient, resource_group_name, private_cloud, dhcp: str, display_name=None, revision=None, server_addresses=None):
-    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDhcpRelay, WorkloadNetworkDhcp
-    properties = WorkloadNetworkDhcp(properties=WorkloadNetworkDhcpRelay(dhcp_type="RELAY", display_name=display_name, revision=revision, server_addresses=server_addresses))
-    return client.workload_networks.begin_update_dhcp(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dhcp_id=dhcp, workload_network_dhcp=properties)
-
-
-def workload_network_dhcp_delete(client: AVSClient, resource_group_name, private_cloud, dhcp: str, yes=False):
-    from knack.prompting import prompt_y_n
-    msg = 'This will delete the workload network DHCP. Are you sure?'
-    if not yes and not prompt_y_n(msg, default="n"):
-        return None
-    return client.workload_networks.begin_delete_dhcp(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dhcp_id=dhcp)
-
-
-def workload_network_dhcp_list(client: AVSClient, resource_group_name, private_cloud):
-    return client.workload_networks.list_dhcp(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
-def workload_network_dhcp_show(client: AVSClient, resource_group_name, private_cloud, dhcp: str):
-    return client.workload_networks.get_dhcp(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dhcp_id=dhcp)
-
-
 def workload_network_dns_services_list(client: AVSClient, resource_group_name, private_cloud):
     return client.workload_networks.list_dns_services(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 

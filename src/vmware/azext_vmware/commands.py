@@ -46,6 +46,16 @@ def load_command_table(self, _):
     self.command_table['vmware addon arc show'] = AddonArcShow(loader=self)
     self.command_table['vmware addon arc delete'] = AddonArcDelete(loader=self)
 
+    from .operations.workload_network import DHCPRelayCreate, DHCPRelayUpdate, DHCPRelayDelete
+    self.command_table['vmware workload-network dhcp relay create'] = DHCPRelayCreate(loader=self)
+    self.command_table['vmware workload-network dhcp relay update'] = DHCPRelayUpdate(loader=self)
+    self.command_table['vmware workload-network dhcp relay delete'] = DHCPRelayDelete(loader=self)
+
+    from .operations.workload_network import DHCPServerCreate, DHCPServerUpdate, DHCPServerDelete
+    self.command_table['vmware workload-network dhcp server create'] = DHCPServerCreate(loader=self)
+    self.command_table['vmware workload-network dhcp server update'] = DHCPServerUpdate(loader=self)
+    self.command_table['vmware workload-network dhcp server delete'] = DHCPServerDelete(loader=self)
+
     with self.command_group('vmware private-cloud', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('listadmincredentials', 'privatecloud_listadmincredentials', deprecate_info=g.deprecate(redirect='az vmware private-cloud list-admin-credentials', hide=True))
         g.custom_command('addidentitysource', 'privatecloud_addidentitysource', deprecate_info=g.deprecate(redirect='az vmware private-cloud add-identity-source', hide=True))
@@ -70,25 +80,12 @@ def load_command_table(self, _):
     with self.command_group('vmware datastore', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'datastore_create', deprecate_info=g.deprecate(redirect='"az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create"', hide=True))
 
+    # TODO:
     with self.command_group('vmware script-execution', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'script_execution_create')
         g.custom_command('list', 'script_execution_list')
         g.custom_command('delete', 'script_execution_delete')
         g.custom_show_command('show', 'script_execution_show')
-
-    with self.command_group('vmware workload-network dhcp', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('list', 'workload_network_dhcp_list')
-        g.custom_show_command('show', 'workload_network_dhcp_show')
-
-    with self.command_group('vmware workload-network dhcp server', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'workload_network_dhcp_server_create')
-        g.custom_command('delete', 'workload_network_dhcp_delete')
-        g.custom_command('update', 'workload_network_dhcp_server_update')
-
-    with self.command_group('vmware workload-network dhcp relay', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'workload_network_dhcp_relay_create')
-        g.custom_command('delete', 'workload_network_dhcp_delete')
-        g.custom_command('update', 'workload_network_dhcp_relay_update')
 
     with self.command_group('vmware workload-network dns-service', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('list', 'workload_network_dns_services_list')
