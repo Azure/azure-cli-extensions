@@ -70,12 +70,6 @@ def load_command_table(self, _):
     with self.command_group('vmware datastore', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'datastore_create', deprecate_info=g.deprecate(redirect='"az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create"', hide=True))
 
-    with self.command_group('vmware cloud-link', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'cloud_link_create')
-        g.custom_command('list', 'cloud_link_list')
-        g.custom_command('delete', 'cloud_link_delete')
-        g.custom_show_command('show', 'cloud_link_show')
-
     with self.command_group('vmware script-cmdlet', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('list', 'script_cmdlet_list')
         g.custom_show_command('show', 'script_cmdlet_show')
