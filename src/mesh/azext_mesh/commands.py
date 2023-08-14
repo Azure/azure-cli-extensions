@@ -225,53 +225,53 @@ def load_command_table(self, _):  # pylint: disable=too-many-statements
     with self.command_group('mesh generate', resource_deployment_sdk) as g:
         g.custom_command('armtemplate', 'generate_arm_template')
 
-    with self.command_group('mesh app', cmd_util) as g:
-        g.custom_command('list', 'list_application', client_factory=cf_mesh_application, table_transformer=transform_application_list, exception_handler=resource_exception_handler)
-        g.custom_show_command('show', 'show_application', client_factory=cf_mesh_application, table_transformer=transform_application, exception_handler=resource_exception_handler)
-        g.custom_command('delete', 'delete_application', client_factory=cf_mesh_application, confirmation=True)
+    # with self.command_group('mesh app', cmd_util) as g:
+        # g.custom_command('list', 'list_application', client_factory=cf_mesh_application, table_transformer=transform_application_list, exception_handler=resource_exception_handler)
+        # g.custom_show_command('show', 'show_application', client_factory=cf_mesh_application, table_transformer=transform_application, exception_handler=resource_exception_handler)
+        # g.custom_command('delete', 'delete_application', client_factory=cf_mesh_application, confirmation=True)
 
-    with self.command_group('mesh service', mesh_service_util, client_factory=cf_mesh_service) as g:
-        g.command('list', 'list', table_transformer=transform_service_list)
-        g.show_command('show', 'get', table_transformer=transform_service)
+    # with self.command_group('mesh service', mesh_service_util, client_factory=cf_mesh_service) as g:
+    #     g.command('list', 'list', table_transformer=transform_service_list)
+    #     g.show_command('show', 'get', table_transformer=transform_service)
 
-    with self.command_group('mesh service-replica', mesh_service_replica_util, client_factory=cf_mesh_service_replica) as g:
-        g.command('list', 'list', table_transformer=transform_service_replica_list)
-        g.show_command('show', 'get', table_transformer=transform_service_replica)
+    # with self.command_group('mesh service-replica', mesh_service_replica_util, client_factory=cf_mesh_service_replica) as g:
+    #     g.command('list', 'list', table_transformer=transform_service_replica_list)
+    #     g.show_command('show', 'get', table_transformer=transform_service_replica)
 
-    with self.command_group('mesh code-package-log', mesh_cp_util, client_factory=cf_mesh_code_package) as g:
-        g.command('get', 'get_container_logs', transform=transform_log_output)
+    # with self.command_group('mesh code-package-log', mesh_cp_util, client_factory=cf_mesh_code_package) as g:
+    #     g.command('get', 'get_container_logs', transform=transform_log_output)
 
-    with self.command_group('mesh network', mesh_network_util, client_factory=cf_mesh_network) as g:
-        g.show_command('show', 'get', table_transformer=transform_network)
-        g.command('delete', 'delete', confirmation=True)
+    # with self.command_group('mesh network', mesh_network_util, client_factory=cf_mesh_network) as g:
+    #     g.show_command('show', 'get', table_transformer=transform_network)
+    #     g.command('delete', 'delete', confirmation=True)
 
-    with self.command_group('mesh network', cmd_util) as g:
-        g.custom_command('list', 'list_networks', client_factory=cf_mesh_network, table_transformer=transform_network_list)
+    # with self.command_group('mesh network', cmd_util) as g:
+    #     g.custom_command('list', 'list_networks', client_factory=cf_mesh_network, table_transformer=transform_network_list)
 
     with self.command_group('mesh volume', cmd_util) as g:
         g.custom_command('create', 'create_volume', client_factory=cf_mesh_volume, table_transformer=transform_volume_list)
-        g.custom_command('list', 'list_volumes', client_factory=cf_mesh_volume, table_transformer=transform_volume_list)
-        g.custom_show_command('show', 'show_volume', client_factory=cf_mesh_volume, exception_handler=resource_exception_handler, table_transformer=transform_volume)
-        g.custom_command('delete', 'delete_volume', client_factory=cf_mesh_volume, confirmation=True)
+        # g.custom_command('list', 'list_volumes', client_factory=cf_mesh_volume, table_transformer=transform_volume_list)
+        # g.custom_show_command('show', 'show_volume', client_factory=cf_mesh_volume, exception_handler=resource_exception_handler, table_transformer=transform_volume)
+        # g.custom_command('delete', 'delete_volume', client_factory=cf_mesh_volume, confirmation=True)
 
-    with self.command_group('mesh secret', mesh_secret_util, client_factory=cf_mesh_secret) as g:
-        g.show_command('show', 'get')
-        g.command('delete', 'delete', confirmation=True)
-
-    with self.command_group('mesh secret', cmd_util) as g:
-        g.custom_command('list', 'list_secrets', client_factory=cf_mesh_secret, table_transformer=transform_secret_list)
+    # with self.command_group('mesh secret', mesh_secret_util, client_factory=cf_mesh_secret) as g:
+    #     g.show_command('show', 'get')
+    #     g.command('delete', 'delete', confirmation=True)
+    #
+    # with self.command_group('mesh secret', cmd_util) as g:
+    #     g.custom_command('list', 'list_secrets', client_factory=cf_mesh_secret, table_transformer=transform_secret_list)
 
     with self.command_group('mesh secretvalue', mesh_secret_value_util, client_factory=cf_mesh_secret_value) as g:
         g.show_command('show', 'get')
-        g.command('delete', 'delete', confirmation=True)
+        # g.command('delete', 'delete', confirmation=True)
 
     with self.command_group('mesh secretvalue', cmd_util, client_factory=cf_mesh_secret_value) as g:
         g.custom_show_command('show', 'secret_show')
-        g.custom_command('list', 'list_secret_values', table_transformer=transform_secretvalue_list)
+        # g.custom_command('list', 'list_secret_values', table_transformer=transform_secretvalue_list)
 
-    with self.command_group('mesh gateway', mesh_gateway_util, client_factory=cf_mesh_gateway) as g:
-        g.show_command('show', 'get', table_transformer=transform_gateway)
-        g.command('delete', 'delete', confirmation=True)
+    # with self.command_group('mesh gateway', mesh_gateway_util, client_factory=cf_mesh_gateway) as g:
+    #     g.show_command('show', 'get', table_transformer=transform_gateway)
+    #     g.command('delete', 'delete', confirmation=True)
 
-    with self.command_group('mesh gateway', cmd_util, client_factory=cf_mesh_gateway) as g:
-        g.command('list', 'list_secrets', table_transformer=transform_gateway_list)
+    # with self.command_group('mesh gateway', cmd_util, client_factory=cf_mesh_gateway) as g:
+    #     g.command('list', 'list_secrets', table_transformer=transform_gateway_list)
