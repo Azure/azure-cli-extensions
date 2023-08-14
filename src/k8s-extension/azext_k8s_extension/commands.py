@@ -41,3 +41,9 @@ def load_command_table(self, _):
 
         g.custom_command('list-versions-by-cluster', 'list_extension_type_versions_by_cluster', table_transformer=k8s_extension_type_versions_list_table_format)
         g.custom_command('show-version-by-cluster', 'show_extension_type_version_by_cluster', table_transformer=k8s_extension_type_version_show_table_format)
+
+        g.custom_show_command('show', 'show_extension_type_by_location', deprecate_info=g.deprecate(redirect='az k8s-extension extension-types show-by-cluster', hide=True), table_transformer=k8s_extension_type_show_table_format)
+
+        g.custom_command('list', 'list_extension_types_by_cluster', deprecate_info=g.deprecate(redirect='az k8s-extension extension-types list-by-cluster', hide=True), table_transformer=k8s_extension_types_list_table_format)
+
+        g.custom_command('list-versions', 'list_extension_type_versions_by_cluster', deprecate_info=g.deprecate(redirect='az k8s-extension extension-types list-versions-by-cluster', hide=True), table_transformer=k8s_extension_type_versions_list_table_format)
