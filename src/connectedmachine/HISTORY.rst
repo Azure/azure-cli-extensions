@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.6.0
++++++	
+* Add install-patches/assess-patches/Extensionimage API's. 2022/12/27 is used for aaz generation. Migrated to aaz.
 
 0.5.1
 +++++	
