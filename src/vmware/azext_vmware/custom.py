@@ -145,14 +145,6 @@ def datastore_create():
     print('Please use "az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create" instead.')
 
 
-def script_cmdlet_list(client: AVSClient, resource_group_name, private_cloud, script_package):
-    return client.script_cmdlets.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_package_name=script_package)
-
-
-def script_cmdlet_show(client: AVSClient, resource_group_name, private_cloud, script_package, name):
-    return client.script_cmdlets.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_package_name=script_package, script_cmdlet_name=name)
-
-
 def script_package_list(client: AVSClient, resource_group_name, private_cloud):
     return client.script_packages.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 
