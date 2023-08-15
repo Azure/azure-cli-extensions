@@ -43,7 +43,9 @@ from .repair_utils import (
     _unlock_encrypted_vm_run,
     _create_repair_vm,
     _check_n_start_vm,
-    _check_existing_rg
+    _check_existing_rg,
+    _fetch_architecture,
+    _select_distro_linux_Arm64
 )
 from .exceptions import AzCommandError, RunScriptNotFoundForIdError, SupportingResourceNotFoundError, CommandCanceledByUserError
 logger = get_logger(__name__)
@@ -70,6 +72,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         copy_disk_id = None
         resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
         created_resources = []
+        architecture_type = _fetch_architecture(source_vm)
 
         # Fetch OS image urn and set OS type for disk create
         if is_linux and _uses_managed_disk(source_vm):
@@ -77,8 +80,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             os_type = 'Linux'
             hyperV_generation_linux = _check_linux_hyperV_gen(source_vm)
             if hyperV_generation_linux == 'V2':
-                logger.info('Generation 2 VM detected, RHEL/Centos/Oracle 6 distros not available to be used for rescue VM ')
+                logger.info('Generation 2 VM detected')
                 os_image_urn = _select_distro_linux_gen2(distro)
+            if architecture_type == 'Arm64':
+                logger.info('ARM64 VM detected')
+                os_image_urn = _select_distro_linux_Arm64(distro)
             else:
                 os_image_urn = _select_distro_linux(distro)
         else:
@@ -690,7 +696,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     existing_rg = _check_existing_rg(repair_group_name)
 
     create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, yes=True)
-
+    
     # log create_out
     logger.info('create_out: %s', create_out)
 
@@ -732,3 +738,18 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     repair_vm_id = _call_az_command(show_vm_id)
 
     restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True)
+
+    command.message = 'fstab script has been applied to the source VM. A new repair VM \'{n}\' was created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
+                        'The repairs were complete using the fstab script and the repair VM was then deleted. ' \
+                        'The repair disk was restored to the source VM. ' \
+                        .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name)
+
+    command.set_status_success()
+    if command.error_stack_trace:
+        logger.debug(command.error_stack_trace)
+    # Generate return object and log errors if needed
+    return_dict = command.init_return_dict()
+
+    logger.info('\n%s\n', command.message)
+
+    return return_dict

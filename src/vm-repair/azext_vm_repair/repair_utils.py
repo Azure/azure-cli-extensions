@@ -542,9 +542,28 @@ def _select_distro_linux(distro):
     return os_image_urn
 
 
+def _select_distro_linux_Arm64(distro):
+    image_lookup = {
+        'rhel8': 'RedHat:rhel-arm64:8_8-arm64:latest',
+        'rhel9': 'RedHat:rhel-arm64:9_2-arm64:latest',
+        'ubuntu18': 'Canonical:UbuntuServer:18_04-lts-arm64:latest',
+        'ubuntu20': 'Canonical:0001-com-ubuntu-server-focal:20_04-lts-arm64:latest',
+        'centos7': 'OpenLogic:CentOS:7_9-arm64:latest',
+    }
+    if distro in image_lookup:
+        os_image_urn = image_lookup[distro]
+    else:
+        if distro.count(":") == 3:
+            logger.info('A custom URN was provided , will be used as distro for the recovery VM')
+            os_image_urn = distro
+        else:
+            logger.info('No specific distro was provided , using the default ARM64 Ubuntu distro')
+            os_image_urn = "Canonical:UbuntuServer:18_04-lts-arm64:latest"
+    return os_image_urn
+
+
 def _select_distro_linux_gen2(distro):
     # base on the document : https://docs.microsoft.com/en-us/azure/virtual-machines/generation-2#generation-2-vm-images-in-azure-marketplace
-    # RHEL/Centos/Oracle 6 are not supported for Gen 2
     image_lookup = {
         'rhel6': 'RedHat:rhel-raw:7-raw-gen2:latest',
         'rhel7': 'RedHat:rhel-raw:7-raw-gen2:latest',
@@ -720,3 +739,18 @@ def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, r
     _call_az_command(create_repair_vm_command + ' --validate', secure_params=[repair_password, repair_username])
     logger.info('Creating repair VM...')
     _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])
+
+
+def _fetch_architecture(source_vm):
+    """
+    Returns the architecture of the source VM.
+    """
+    location = source_vm.location
+    vm_size = source_vm.hardware_profile.vm_size
+    architecture_type_cmd = 'az vm list-skus -l {loc} --size {vm_size} --query "[].capabilities[?name==\'CpuArchitectureType\'].value" -o json' \
+                        .format(loc=location, vm_size=vm_size)
+
+    logger.info('Fetching architecture type of the source VM...')
+    architecture = loads(_call_az_command(architecture_type_cmd).strip('\n'))
+
+    return architecture[0][0]

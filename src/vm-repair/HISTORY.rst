@@ -2,6 +2,10 @@
 Release History
 ===============
 
+0.5.5
+++++++
+Adding ARM64 support.
+
 0.5.4
 ++++++
 Adding repair-and-restore command to create a one command flow for vm-repair with fstab scripts.
