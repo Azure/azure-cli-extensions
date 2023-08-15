@@ -927,195 +927,84 @@ class SiteRecoveryScenario(ScenarioTest):
         self.cmd('az site-recovery fabric delete -n {fabric_name} -g {rg} '
                  '--vault-name {vault_name} -y')
 
-    @record_only()
-    def test_siterecovery_H2A_B2A_scenarios(self):
-        self.kwargs.update({
-            'rg': 'h2asignoff',
-            'subscription': '7c943c1b-5122-4097-90c8-861411bdd574',
-            'cli_subscription': '0b1f6471-1bf0-4dda-aec3-cb9272f09590',
-            'vault_name': 'CLITerraFormH2ATesting',
-            # 'vm_name': 'CliVM2',
-            # 'vm_rg': 'CliTerraformVMRG',
-            'fabric1_name': 'cli-test-fabric-H2A-B2A-1',
-            # 'fabric2_name': 'cli-test-fabric-H2A-B2A-2',
-            # 'policy_name': 'cli-test-policy-H2A-B2A-1',
-            'policy_name': 'testpolicy',
-            'container1_name': 'cloud_7cf3ae4e-b364-5e95-9599-edafdb092b4a',
-            # 'container2_name': 'cli-test-container-A2A-2',
-            'container_mapping1_name': 'eac12c26-e856-4d4c-9975-841fd0b0031d',
-            # 'container_mapping1_name': 'cli-test-container-mapping-H2A-B2A-1',
-            # 'container_mapping2_name': 'cli-test-container-mapping-A2A-2',
-            # 'vnet1_name': 'cli-test-vnet-A2A-1',
-            # 'vnet2_name': 'cli-test-vnet-A2A-2',
-            # 'network_mapping1_name': 'cli-test-network-mapping-A2A-1',
-            # 'network_mapping2_name': 'cli-test-network-mapping-A2A-2',
-            'protected_item_name': 'cli-test-protected-item-H2A-B2A-1',
-            'protectable_item_name': 'dc96e7d5-1dae-4c8b-a79a-fda64e40888f',
-            # 'storage1_name': 'cliteststoragea2a1',
-            # 'storage2_name': 'cliteststoragea2a2',
-            # 'recovery_plan_name': 'cli-test-recovery-plan-A2A-1'
-        })
-        # set subscription
-        self.cmd('az account set -n {subscription}')
-        # create fabrics
-        # self.cmd('az site-recovery fabric create -n {fabric1_name} -g {rg} '
-        #          '--vault-name {vault_name} --custom-details {{hyper-v-site:{{}}}}')
-        # self.cmd('az site-recovery fabric create -n {fabric2_name} -g {rg} '
-        #          '--vault-name {vault_name} --custom-details {{hyper-v-site:{{}}}}')
-
-        # create a policy
-        # self.cmd('az site-recovery policy create -g {rg} '
-        #          '--vault-name {vault_name} -n {policy_name} '
-        #          '--provider-specific-input {{hyper-v-replica-azure:{{'
-        #          'application-consistent-snapshot-frequency-in-hours:1,'
-        #          'recovery-point-history-duration:2,replication-interval:300}}}}')
-        policy_id = self.cmd('az site-recovery policy show -g {rg} '
-                             '--vault-name {vault_name} -n {policy_name}').get_output_in_json()["id"]
-        self.kwargs.update({"policy_id": policy_id})
-        #
-        # # container is automatically created by server
-        #
-        # # container mapping
-        # self.cmd('az site-recovery protection-container mapping create -g {rg} '
-        #          '--fabric-name {fabric1_name} -n {container_mapping1_name} --protection-container {container1_name} '
-        #          '--vault-name {vault_name} --policy-id {policy_id} --target-container \"Microsoft Azure\" '
-        #          '--provider-input {{hyper-v-replica-azure:{{}}}}')
-
-        protectable_item_id = self.cmd('az site-recovery protectable-item show -n {protectable_item_name} '
-                                       '-g {rg} --fabric-name {fabric1_name} --protection-container {container1_name} '
-                                       '--vault-name {vault_name}').get_output_in_json()["id"]
-        self.kwargs.update({"protectable_item_id": protectable_item_id})
-
-        # # enable protection
-        # self.cmd('az site-recovery protected-item create -g {rg} '
-        #          '--fabric-name {fabric1_name} -n {protected_item_name} --protection-container {container1_name} '
-        #          '--vault-name {vault_name} --policy-id {policy_id} '
-        #          '--protectable-item-id {protectable_item_id} '
-        #          '--provider-details {{hyper-v-replica-azure:{{'
-        #          'disks-to-include:[1bec3e57-fdb6-42d0-924b-007af0fa1b12],'
-        #          'enable-rdp-on-target-option:Never,'
-        #          'os-type:Windows,'
-        #          'target-azure-network-id:/subscriptions/7c943c1b-5122-4097-90c8-861411bdd574/resourceGroups/CliTerraformVMRG/providers/Microsoft.Network/virtualNetworks/CliTerraformVMRG-vnet,'
-        #          'target-azure-subnet-id:default,'
-        #          'target-azure-v2-resource-group-id:/subscriptions/7c943c1b-5122-4097-90c8-861411bdd574/resourceGroups/ASRTesting,'
-        #          'target-azure-vm-name:clivm1,'
-        #          'target-storage-account-id:/subscriptions/7c943c1b-5122-4097-90c8-861411bdd574/resourceGroups/CliTeraformVaultRG/providers/Microsoft.Storage/storageAccounts/cliteststoragea2a1,'
-        #          'use-managed-disks:false,'
-        #          'vhd-id:1bec3e57-fdb6-42d0-924b-007af0fa1b12}}}}')
-        #
-        # wait for protection to fully enabled
-        # while True:
-        #     protected_item = self.cmd('az site-recovery protected-item show -g {rg} '
-        #                               '--fabric-name {fabric1_name} -n {protected_item_name} '
-        #                               '--protection-container {container1_name} '
-        #                               '--vault-name {vault_name}').get_output_in_json()
-        #     if protected_item["properties"]["protectionState"] == "Protected":
-        #         self.kwargs.update({"protected_item_id": protected_item["id"]})
-        #         break
-        #     time.sleep(300)
-
-        # failover
-        # self.cmd('az site-recovery protected-item unplanned-failover --fabric-name {fabric1_name} '
-        #          '--protection-container {container1_name} -n {protected_item_name} -g {rg} --vault-name {vault_name} '
-        #          '--failover-direction PrimaryToRecovery --provider-details {{hyper-v-replica-azure:{{}}}} '
-        #          '--source-site-operations NotRequired')
-
-        # commit
-        # self.cmd('az site-recovery protected-item failover-commit --fabric-name {fabric1_name} '
-        #          '--protection-container {container1_name} -n {protected_item_name} -g {rg} --vault-name {vault_name}')
-
-        # failback
-        self.cmd('az site-recovery protected-item unplanned-failover --fabric-name {fabric1_name} '
-                 '--protection-container {container1_name} -n {protected_item_name} -g {rg} --vault-name {vault_name} '
-                 '--failover-direction RecoveryToPrimary --provider-details {{hyper-v-replica-azure:{{}}}} '
-                 '--source-site-operations NotRequired')
-
-        #reset subscription
-        self.cmd('az account set -n {cli_subscription}')
-
-
     # @record_only()
     def test_siterecovery_H2A_E2A_scenarios(self):
         self.kwargs.update({
-            'rg': 'CliTeraformVaultRG',
-            'subscription': '7c943c1b-5122-4097-90c8-861411bdd574',
+            'rg': 'CliTerraformVaultRG',
+            'subscription': 'b364ed8d-4279-4bf8-8fd1-56f8fa0ae05c',
             'cli_subscription': '0b1f6471-1bf0-4dda-aec3-cb9272f09590',
             'vault_name': 'clitestingH2A',
-            # 'vm_name': 'CliVM2',
-            # 'vm_rg': 'CliTerraformVMRG',
-            'source_loc': 'centralus',
+            # 'vmm_name': 'CliVM2',
             'recovery_loc': 'centralus',
-            'fabric_source_name': 'b76fc1d0e0c3b667bd38d41f7ce113a878cd9fa29c3eab6642bd0b7698458a2d',
-            # 'fabric_recovery_name': 'cli-test-fabric-H2A-E2A-2',
+            # 'fabric_name': 'b76fc1d0e0c3b667bd38d41f7ce113a878cd9fa29c3eab6642bd0b7698458a2d',
             'policy_name': 'cli-test-policy-H2A-E2A-1',
-            'container_source_name': '28a7b9eb-c2f9-47e8-91ff-697d0d719963',
-            # 'container_recovery_name': 'cli-test-container-H2A-E2A-2',
-            'container_mapping_source_name': 'cli-test-container-mapping-H2A-E2A-1',
-            # 'container_mapping_recovery_name': 'cli-test-container-mapping-H2A-E2A-2',
-            'vnet_recovery_name': 'cli-test-vnet-H2A-E2A-1',
-            'network_mapping_src_to_recovery_name': 'cli-test-network-mapping-H2A-E2A-1',
-            # 'network_mapping_recovery_to_src_name': 'cli-test-network-mapping-H2A-E2A-2',
+            # 'container_name': '28a7b9eb-c2f9-47e8-91ff-697d0d719963',
+            'container_mapping_name': 'cli-test-container-mapping-H2A-E2A-1',
+            'vnet_name': 'cli-test-vnet-H2A-E2A-1',
+            'network_mapping_name': 'cli-test-network-mapping-H2A-E2A-1',
             'protectable_item_friendly_name': 'A409-ForAzure-Vm1',
             'protected_item_name': 'cli-test-protected-item-H2A-E2A-1',
-            'storage_recovery_name': 'cliteststorageh2ae2a1',
+            'storage_name': 'cliteststorageh2ae2a2',
             # 'recovery_plan_name': 'cli-test-recovery-plan-H2A-E2A-1'
         })
         # set subscription
         self.cmd('az account set -n {subscription}')
 
         # prepare vnet and storage account
-
         # create recovery vnet and network mappings
-        # self.cmd('az network vnet create -g {rg} -n {vnet_recovery_name} -l {recovery_loc} --subnet-name MySubnet '
-        #          '--subnet-prefix 10.0.0.0/24')
-        # self.cmd('az storage account create -g {rg} -n {storage_recovery_name} -l {recovery_loc}')
-        storage_recovery_id = self.cmd('az storage account show -g {rg} '
-                                       '-n {storage_recovery_name}').get_output_in_json()["id"]
+        self.cmd('az network vnet create -g {rg} -n {vnet_name} -l {recovery_loc} --subnet-name MySubnet '
+                 '--subnet-prefix 10.0.0.0/24')
+        self.cmd('az storage account create -g {rg} -n {storage_name} -l {recovery_loc}')
+        storage_id = self.cmd('az storage account show -g {rg} '
+                              '-n {storage_name}').get_output_in_json()["id"]
         rg_id = self.cmd('az group show -n {rg}').get_output_in_json()["id"]
-        self.kwargs.update({"storage_recovery_id": storage_recovery_id, "rg_id": rg_id})
+        self.kwargs.update({"storage_id": storage_id, "rg_id": rg_id})
 
 
         # # list fabrics
         fabrics = self.cmd('az site-recovery fabric list -g {rg} --vault-name {vault_name}').get_output_in_json()
         for fabric in fabrics:
             if fabric["properties"]["customDetails"]["instanceType"] == "VMM":
-                self.kwargs.update({'fabric_source_name': fabric["name"]})
+                self.kwargs.update({'fabric_name': fabric["name"]})
                 break
 
         # # create a policy
-        # self.cmd('az site-recovery policy create -g {rg} '
-        #          '--vault-name {vault_name} -n {policy_name} '
-        #          '--provider-specific-input {{hyper-v-replica-azure:{{'
-        #          'application-consistent-snapshot-frequency-in-hours:0,'
-        #          'recovery-point-history-duration:1,replication-interval:24}}}}')
+        self.cmd('az site-recovery policy create -g {rg} '
+                 '--vault-name {vault_name} -n {policy_name} '
+                 '--provider-specific-input {{hyper-v-replica-azure:{{'
+                 'application-consistent-snapshot-frequency-in-hours:0,'
+                 'recovery-point-history-duration:1,replication-interval:24}}}}')
         policy_id = self.cmd('az site-recovery policy show -g {rg} '
                              '--vault-name {vault_name} -n {policy_name}').get_output_in_json()["id"]
         self.kwargs.update({"policy_id": policy_id})
 
         # container is automatically created by server
+        container_name = self.cmd("az site-recovery protection-container list -g {rg} --vault-name {vault_name} "
+                                  "--fabric-name {fabric_name}").get_output_in_json()[0]["name"]
+        self.kwargs.update({"container_name": container_name})
 
         # create container mapping
-        # self.cmd('az site-recovery protection-container mapping create -g {rg} '
-        #          '--fabric-name {fabric_source_name} -n {container_mapping_source_name} '
-        #          '--protection-container {container_source_name} '
-        #          '--vault-name {vault_name} --policy-id {policy_id} --target-container \"Microsoft Azure\" '
-        #          '--provider-input {{hyper-v-replica-azure:{{}}}}')
+        self.cmd('az site-recovery protection-container mapping create -g {rg} '
+                 '--fabric-name {fabric_name} -n {container_mapping_name} '
+                 '--protection-container {container_name} '
+                 '--vault-name {vault_name} --policy-id {policy_id} --target-container \"Microsoft Azure\" '
+                 '--provider-input {{hyper-v-replica-azure:{{}}}}')
 
         # create network mapping
         vnet_source = self.cmd('az site-recovery network list -g {rg} --vault-name {vault_name} '
-                               '--fabric-name {fabric_source_name}').get_output_in_json()
-        vnet_recovery = self.cmd('az network vnet show -g {rg} -n {vnet_recovery_name}').get_output_in_json()
+                               '--fabric-name {fabric_name}').get_output_in_json()
+        vnet_recovery = self.cmd('az network vnet show -g {rg} -n {vnet_name}').get_output_in_json()
         self.kwargs.update({"vnet_source_name": vnet_source[0]["name"],
                             "vnet_recovery_id": vnet_recovery["id"]})
-        # self.cmd('az site-recovery network mapping create -g {rg} --fabric-name {fabric_source_name} '
-        #          '-n {network_mapping_src_to_recovery_name} --network-name {vnet_source_name} --vault-name {vault_name} '
-        #          '--recovery-network-id "{vnet_recovery_id}" '
-        #          '--fabric-details {{vmm-to-azure:{{}}}}')
+        self.cmd('az site-recovery network mapping create -g {rg} --fabric-name {fabric_name} '
+                 '-n {network_mapping_name} --network-name {vnet_source_name} --vault-name {vault_name} '
+                 '--recovery-network-id "{vnet_recovery_id}" '
+                 '--fabric-details {{vmm-to-azure:{{}}}}')
 
         # get protectable_item name
         protectable_item_list = self.cmd('az site-recovery protectable-item list -g {rg} '
-                 '--fabric-name {fabric_source_name} --protection-container {container_source_name} '
-                 '--vault-name {vault_name}').get_output_in_json()
+                                         '--fabric-name {fabric_name} --protection-container {container_name} '
+                                         '--vault-name {vault_name}').get_output_in_json()
 
         for protectable_item in protectable_item_list:
             if protectable_item["properties"]["friendlyName"] == self.kwargs.get('protectable_item_friendly_name'):
@@ -1123,21 +1012,21 @@ class SiteRecoveryScenario(ScenarioTest):
                 break
 
         protectable_item_id = self.cmd('az site-recovery protectable-item show '
-                                       '-n {protectable_item_name} -g {rg} --fabric-name {fabric_source_name} '
-                                       '--protection-container {container_source_name} '
+                                       '-n {protectable_item_name} -g {rg} --fabric-name {fabric_name} '
+                                       '--protection-container {container_name} '
                                        '--vault-name {vault_name}').get_output_in_json()["id"]
         self.kwargs.update({"protectable_item_id": protectable_item_id})
 
         # # enable protection
-        self.cmd('az site-recovery protected-item create -g {rg} '
-                 '--fabric-name {fabric_source_name} -n {protected_item_name} '
-                 '--protection-container {container_source_name} '
-                 '--vault-name {vault_name} --policy-id {policy_id} '
-                 '--protectable-item-id {protectable_item_id} '
-                 '--provider-details {{hyper-v-replica-azure:{{'
-                 'target-storage-account-id:{storage_recovery_id},'
-                 'target-azure-v2-resource-group-id:{rg_id},'
-                 'vm-name:{protectable_item_friendly_name}}}}}')
+        # self.cmd('az site-recovery protected-item create -g {rg} '
+        #          '--fabric-name {fabric_name} -n {protected_item_name} '
+        #          '--protection-container {container_name} '
+        #          '--vault-name {vault_name} --policy-id {policy_id} '
+        #          '--protectable-item-id {protectable_item_id} '
+        #          '--provider-details {{hyper-v-replica-azure:{{'
+        #          'target-storage-account-id:{storage_id},'
+        #          'target-azure-v2-resource-group-id:{rg_id},'
+        #          'vm-name:{protectable_item_friendly_name}}}}}')
 
         # wait for protection to fully enabled
         # while True:
