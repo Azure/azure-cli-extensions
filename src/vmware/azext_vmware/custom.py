@@ -173,34 +173,6 @@ def script_execution_logs(client: AVSClient, resource_group_name, private_cloud,
     return client.script_executions.get_execution_logs(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
 
 
-def workload_network_vm_group_list(client: AVSClient, resource_group_name, private_cloud):
-    return client.workload_networks.list_vm_groups(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
-def workload_network_vm_group_get(client: AVSClient, resource_group_name, private_cloud, vm_group):
-    return client.workload_networks.get_vm_group(resource_group_name=resource_group_name, private_cloud_name=private_cloud, vm_group_id=vm_group)
-
-
-def workload_network_vm_group_create(client: AVSClient, resource_group_name, private_cloud, vm_group, display_name=None, members=None, revision=None):
-    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkVMGroup
-    vmGroup = WorkloadNetworkVMGroup(display_name=display_name, members=members, revision=revision)
-    return client.workload_networks.begin_create_vm_group(resource_group_name=resource_group_name, private_cloud_name=private_cloud, vm_group_id=vm_group, workload_network_vm_group=vmGroup)
-
-
-def workload_network_vm_group_update(client: AVSClient, resource_group_name, private_cloud, vm_group, display_name=None, members=None, revision=None):
-    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkVMGroup
-    vmGroup = WorkloadNetworkVMGroup(display_name=display_name, members=members, revision=revision)
-    return client.workload_networks.begin_update_vm_group(resource_group_name=resource_group_name, private_cloud_name=private_cloud, vm_group_id=vm_group, workload_network_vm_group=vmGroup)
-
-
-def workload_network_vm_group_delete(client: AVSClient, resource_group_name, private_cloud, vm_group, yes=False):
-    from knack.prompting import prompt_y_n
-    msg = 'This will delete the workload network VM group. Are you sure?'
-    if not yes and not prompt_y_n(msg, default="n"):
-        return None
-    return client.workload_networks.begin_delete_vm_group(resource_group_name=resource_group_name, private_cloud_name=private_cloud, vm_group_id=vm_group)
-
-
 def workload_network_vm_list(client: AVSClient, resource_group_name, private_cloud):
     return client.workload_networks.list_virtual_machines(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 
