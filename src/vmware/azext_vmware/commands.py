@@ -87,12 +87,6 @@ def load_command_table(self, _):
         g.custom_command('delete', 'script_execution_delete')
         g.custom_show_command('show', 'script_execution_show')
 
-    with self.command_group('vmware workload-network public-ip', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('list', 'workload_network_public_ip_list')
-        g.custom_show_command('show', 'workload_network_public_ip_get')
-        g.custom_command('create', 'workload_network_public_ip_create')
-        g.custom_command('delete', 'workload_network_public_ip_delete')
-
     with self.command_group('vmware workload-network vm-group', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('list', 'workload_network_vm_group_list')
         g.custom_show_command('show', 'workload_network_vm_group_get')

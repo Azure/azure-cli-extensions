@@ -173,27 +173,6 @@ def script_execution_logs(client: AVSClient, resource_group_name, private_cloud,
     return client.script_executions.get_execution_logs(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
 
 
-def workload_network_public_ip_list(client: AVSClient, resource_group_name, private_cloud):
-    return client.workload_networks.list_public_i_ps(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
-def workload_network_public_ip_get(client: AVSClient, resource_group_name, private_cloud, public_ip):
-    return client.workload_networks.get_public_ip(resource_group_name=resource_group_name, private_cloud_name=private_cloud, public_ip_id=public_ip)
-
-
-def workload_network_public_ip_create(client: AVSClient, resource_group_name, private_cloud, public_ip, display_name=None, number_of_public_ips=None):
-    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkPublicIP
-    return client.workload_networks.begin_create_public_ip(resource_group_name=resource_group_name, private_cloud_name=private_cloud, public_ip_id=public_ip, workload_network_public_ip=WorkloadNetworkPublicIP(display_name=display_name, number_of_public_i_ps=number_of_public_ips))
-
-
-def workload_network_public_ip_delete(client: AVSClient, resource_group_name, private_cloud, public_ip, yes=False):
-    from knack.prompting import prompt_y_n
-    msg = 'This will delete the workload network public IP. Are you sure?'
-    if not yes and not prompt_y_n(msg, default="n"):
-        return None
-    return client.workload_networks.begin_delete_public_ip(resource_group_name=resource_group_name, private_cloud_name=private_cloud, public_ip_id=public_ip)
-
-
 def workload_network_vm_group_list(client: AVSClient, resource_group_name, private_cloud):
     return client.workload_networks.list_vm_groups(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 
