@@ -748,7 +748,7 @@ def _fetch_architecture(source_vm):
     location = source_vm.location
     vm_size = source_vm.hardware_profile.vm_size
     architecture_type_cmd = 'az vm list-skus -l {loc} --size {vm_size} --query "[].capabilities[?name==\'CpuArchitectureType\'].value" -o json' \
-                        .format(loc=location, vm_size=vm_size)
+                            .format(loc=location, vm_size=vm_size)
 
     logger.info('Fetching architecture type of the source VM...')
     architecture = loads(_call_az_command(architecture_type_cmd).strip('\n'))

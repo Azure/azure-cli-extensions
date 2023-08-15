@@ -696,7 +696,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     existing_rg = _check_existing_rg(repair_group_name)
 
     create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, yes=True)
-    
+
     # log create_out
     logger.info('create_out: %s', create_out)
 
@@ -740,9 +740,9 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True)
 
     command.message = 'fstab script has been applied to the source VM. A new repair VM \'{n}\' was created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
-                        'The repairs were complete using the fstab script and the repair VM was then deleted. ' \
-                        'The repair disk was restored to the source VM. ' \
-                        .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name)
+        'The repairs were complete using the fstab script and the repair VM was then deleted. ' \
+        'The repair disk was restored to the source VM. ' \
+        .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name)
 
     command.set_status_success()
     if command.error_stack_trace:
