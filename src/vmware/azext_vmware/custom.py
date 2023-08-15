@@ -171,16 +171,3 @@ def script_execution_delete(client: AVSClient, resource_group_name, private_clou
 
 def script_execution_logs(client: AVSClient, resource_group_name, private_cloud, name):
     return client.script_executions.get_execution_logs(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
-
-
-def virtual_machine_get(client: AVSClient, resource_group_name, private_cloud, cluster_name, virtual_machine):
-    return client.virtual_machines.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, virtual_machine_id=virtual_machine)
-
-
-def virtual_machine_list(client: AVSClient, resource_group_name, private_cloud, cluster_name):
-    return client.virtual_machines.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name)
-
-
-def virtual_machine_restrict(client: AVSClient, resource_group_name, private_cloud, cluster_name, virtual_machine, restrict_movement):
-    from azext_vmware.vendored_sdks.avs_client.models import VirtualMachineRestrictMovement
-    return client.virtual_machines.begin_restrict_movement(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, virtual_machine_id=virtual_machine, restrict_movement=VirtualMachineRestrictMovement(restrict_movement=restrict_movement))
