@@ -113,13 +113,13 @@ def load_command_table(self, _):
     #     g.custom_command('delete', 'network_manager_connect_config_delete',
     #                      confirmation=True)
 
-    with self.command_group('network manager group', network_networkgroup, client_factory=cf_networkgroup) as g:
-        g.custom_command('list', 'network_manager_group_list')
-        g.custom_show_command('show', 'network_manager_group_show')
-        g.custom_command('create', 'network_manager_group_create')
-        g.generic_update_command('update', custom_func_name='network_manager_group_update')
-        g.custom_command('delete', 'network_manager_group_delete',
-                         confirmation=True)
+    # with self.command_group('network manager group', network_networkgroup, client_factory=cf_networkgroup) as g:
+    #     g.custom_command('list', 'network_manager_group_list')
+    #     g.custom_show_command('show', 'network_manager_group_show')
+    #     g.custom_command('create', 'network_manager_group_create')
+    #     g.generic_update_command('update', custom_func_name='network_manager_group_update')
+    #     g.custom_command('delete', 'network_manager_group_delete',
+    #                      confirmation=True)
         # g.custom_command('list-effect-vnet', 'network_manager_effect_vnet_list_by_network_group')
 
     # with self.command_group('network manager security-user-config', network_securityuserconfiguration, client_factory=cf_securityuserconfiguration) as g:

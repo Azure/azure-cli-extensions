@@ -346,68 +346,68 @@ def network_manager_connect_config_update(cmd,
 #                                force=force)
 
 
-def network_manager_group_list(client,
-                               resource_group_name,
-                               network_manager_name,
-                               top=None,
-                               skip_token=None):
-    return client.list(resource_group_name=resource_group_name,
-                       network_manager_name=network_manager_name,
-                       top=top,
-                       skip_token=skip_token)
-
-
-def network_manager_group_show(client,
-                               resource_group_name,
-                               network_manager_name,
-                               network_group_name):
-    return client.get(resource_group_name=resource_group_name,
-                      network_manager_name=network_manager_name,
-                      network_group_name=network_group_name)
-
-
-def network_manager_group_create(client,
-                                 resource_group_name,
-                                 network_manager_name,
-                                 network_group_name,
-                                 if_match=None,
-                                 description=None):
-    parameters = {}
-    if description is not None:
-        parameters['description'] = description
-    else:
-        parameters['description'] = ""
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   network_manager_name=network_manager_name,
-                                   network_group_name=network_group_name,
-                                   if_match=if_match,
-                                   parameters=parameters)
-
-
-def network_manager_group_update(instance,
-                                 resource_group_name,
-                                 network_manager_name,
-                                 network_group_name,
-                                 if_match=None,
-                                 description=None):
-    if description is not None:
-        instance.description = description
-    return instance
-
-
-def network_manager_group_delete(client,
-                                 resource_group_name,
-                                 network_manager_name,
-                                 network_group_name,
-                                 force=False):
-    if force is False:
-        print("The \'--force\' flag was not provided for the delete operation. "
-              "If this resource or any of its child resources are part of a deployed configuration, "
-              "this delete will fail.")
-    return client.begin_delete(resource_group_name=resource_group_name,
-                               network_manager_name=network_manager_name,
-                               network_group_name=network_group_name,
-                               force=force)
+# def network_manager_group_list(client,
+#                                resource_group_name,
+#                                network_manager_name,
+#                                top=None,
+#                                skip_token=None):
+#     return client.list(resource_group_name=resource_group_name,
+#                        network_manager_name=network_manager_name,
+#                        top=top,
+#                        skip_token=skip_token)
+#
+#
+# def network_manager_group_show(client,
+#                                resource_group_name,
+#                                network_manager_name,
+#                                network_group_name):
+#     return client.get(resource_group_name=resource_group_name,
+#                       network_manager_name=network_manager_name,
+#                       network_group_name=network_group_name)
+#
+#
+# def network_manager_group_create(client,
+#                                  resource_group_name,
+#                                  network_manager_name,
+#                                  network_group_name,
+#                                  if_match=None,
+#                                  description=None):
+#     parameters = {}
+#     if description is not None:
+#         parameters['description'] = description
+#     else:
+#         parameters['description'] = ""
+#     return client.create_or_update(resource_group_name=resource_group_name,
+#                                    network_manager_name=network_manager_name,
+#                                    network_group_name=network_group_name,
+#                                    if_match=if_match,
+#                                    parameters=parameters)
+#
+#
+# def network_manager_group_update(instance,
+#                                  resource_group_name,
+#                                  network_manager_name,
+#                                  network_group_name,
+#                                  if_match=None,
+#                                  description=None):
+#     if description is not None:
+#         instance.description = description
+#     return instance
+#
+#
+# def network_manager_group_delete(client,
+#                                  resource_group_name,
+#                                  network_manager_name,
+#                                  network_group_name,
+#                                  force=False):
+#     if force is False:
+#         print("The \'--force\' flag was not provided for the delete operation. "
+#               "If this resource or any of its child resources are part of a deployed configuration, "
+#               "this delete will fail.")
+#     return client.begin_delete(resource_group_name=resource_group_name,
+#                                network_manager_name=network_manager_name,
+#                                network_group_name=network_group_name,
+#                                force=force)
 
 
 # def network_manager_security_user_config_list(client,
