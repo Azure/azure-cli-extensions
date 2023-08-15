@@ -5,7 +5,8 @@ Release History
 
 1.0.0
 ++++++
-* `az network firewall`: Migrate `threat-intel-allowlis` `policy intrusion-detection` `policy rule-collection-group` to AAZ command
+* [Fix] `az network firewall threat-intel-allowlist create/update/delete`: Remove the argument `--ids` as sub command should not support it.
+* Make extension from preview to stable.
 
 0.14.8
 ++++++
