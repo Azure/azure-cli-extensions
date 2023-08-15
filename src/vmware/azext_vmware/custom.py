@@ -173,42 +173,6 @@ def script_execution_logs(client: AVSClient, resource_group_name, private_cloud,
     return client.script_executions.get_execution_logs(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
 
 
-def workload_network_segment_list(client: AVSClient, resource_group_name, private_cloud):
-    return client.workload_networks.list_segments(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
-def workload_network_segment_get(client: AVSClient, resource_group_name, private_cloud, segment):
-    return client.workload_networks.get_segment(resource_group_name=resource_group_name, private_cloud_name=private_cloud, segment_id=segment)
-
-
-def workload_network_segment_create(client: AVSClient, resource_group_name, private_cloud, segment, display_name=None, connected_gateway=None, revision=None, dhcp_ranges=None, gateway_address=None, port_name=None):
-    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkSegmentPortVif
-    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkSegmentSubnet
-    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkSegment
-    portVif = WorkloadNetworkSegmentPortVif(port_name=port_name)
-    subnet = WorkloadNetworkSegmentSubnet(dhcp_ranges=dhcp_ranges, gateway_address=gateway_address)
-    segmentObj = WorkloadNetworkSegment(display_name=display_name, connected_gateway=connected_gateway, subnet=subnet, port_vif=portVif, revision=revision)
-    return client.workload_networks.begin_create_segments(resource_group_name=resource_group_name, private_cloud_name=private_cloud, segment_id=segment, workload_network_segment=segmentObj)
-
-
-def workload_network_segment_update(client: AVSClient, resource_group_name, private_cloud, segment, display_name=None, connected_gateway=None, revision=None, dhcp_ranges=None, gateway_address=None, port_name=None):
-    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkSegmentPortVif
-    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkSegmentSubnet
-    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkSegment
-    portVif = WorkloadNetworkSegmentPortVif(port_name=port_name)
-    subnet = WorkloadNetworkSegmentSubnet(dhcp_ranges=dhcp_ranges, gateway_address=gateway_address)
-    segmentObj = WorkloadNetworkSegment(display_name=display_name, connected_gateway=connected_gateway, subnet=subnet, port_vif=portVif, revision=revision)
-    return client.workload_networks.begin_update_segments(resource_group_name=resource_group_name, private_cloud_name=private_cloud, segment_id=segment, workload_network_segment=segmentObj)
-
-
-def workload_network_segment_delete(client: AVSClient, resource_group_name, private_cloud, segment, yes=False):
-    from knack.prompting import prompt_y_n
-    msg = 'This will delete the workload network segment. Are you sure?'
-    if not yes and not prompt_y_n(msg, default="n"):
-        return None
-    return client.workload_networks.begin_delete_segment(resource_group_name=resource_group_name, private_cloud_name=private_cloud, segment_id=segment)
-
-
 def workload_network_public_ip_list(client: AVSClient, resource_group_name, private_cloud):
     return client.workload_networks.list_public_i_ps(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 
