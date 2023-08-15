@@ -173,34 +173,6 @@ def script_execution_logs(client: AVSClient, resource_group_name, private_cloud,
     return client.script_executions.get_execution_logs(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
 
 
-def workload_network_dns_zone_list(client: AVSClient, resource_group_name, private_cloud):
-    return client.workload_networks.list_dns_zones(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
-def workload_network_dns_zone_get(client: AVSClient, resource_group_name, private_cloud, dns_zone):
-    return client.workload_networks.get_dns_zone(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_zone_id=dns_zone)
-
-
-def workload_network_dns_zone_create(client: AVSClient, resource_group_name, private_cloud, dns_zone, display_name=None, domain=None, dns_server_ips=None, source_ip=None, dns_services=None, revision=None):
-    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDnsZone
-    prop = WorkloadNetworkDnsZone(display_name=display_name, domain=domain, dns_server_ips=dns_server_ips, source_ip=source_ip, dns_services=dns_services, revision=revision)
-    return client.workload_networks.begin_create_dns_zone(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_zone_id=dns_zone, workload_network_dns_zone=prop)
-
-
-def workload_network_dns_zone_update(client: AVSClient, resource_group_name, private_cloud, dns_zone, display_name=None, domain=None, dns_server_ips=None, source_ip=None, dns_services=None, revision=None):
-    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkDnsZone
-    prop = WorkloadNetworkDnsZone(display_name=display_name, domain=domain, dns_server_ips=dns_server_ips, source_ip=source_ip, dns_services=dns_services, revision=revision)
-    return client.workload_networks.begin_update_dns_zone(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_zone_id=dns_zone, workload_network_dns_zone=prop)
-
-
-def workload_network_dns_zone_delete(client: AVSClient, resource_group_name, private_cloud, dns_zone, yes=False):
-    from knack.prompting import prompt_y_n
-    msg = 'This will delete the workload network DNS zone. Are you sure?'
-    if not yes and not prompt_y_n(msg, default="n"):
-        return None
-    return client.workload_networks.begin_delete_dns_zone(resource_group_name=resource_group_name, private_cloud_name=private_cloud, dns_zone_id=dns_zone)
-
-
 def workload_network_port_mirroring_list(client: AVSClient, resource_group_name, private_cloud):
     return client.workload_networks.list_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 
