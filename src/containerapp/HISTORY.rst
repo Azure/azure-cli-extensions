@@ -2,6 +2,9 @@
 
 Release History
 ===============
+upcoming
+++++++
+* Removed preview tag for some command groups and params (e.g. 'az containerapp job', 'az containerapp env storage', 'az containerapp env workload-profile')
 
 0.3.37
 ++++++
