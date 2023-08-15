@@ -173,40 +173,6 @@ def script_execution_logs(client: AVSClient, resource_group_name, private_cloud,
     return client.script_executions.get_execution_logs(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
 
 
-def placement_policy_list(client: AVSClient, resource_group_name, private_cloud, cluster_name):
-    return client.placement_policies.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name)
-
-
-def placement_policy_get(client: AVSClient, resource_group_name, private_cloud, cluster_name, placement_policy_name):
-    return client.placement_policies.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name)
-
-
-def placement_policy_vm_create(client: AVSClient, resource_group_name, private_cloud, cluster_name, placement_policy_name, vm_members, affinity_type, state=None, display_name=None):
-    from azext_vmware.vendored_sdks.avs_client.models import VmPlacementPolicyProperties, PlacementPolicy
-    vmProperties = PlacementPolicy(properties=VmPlacementPolicyProperties(type="VmVm", state=state, display_name=display_name, vm_members=vm_members, affinity_type=affinity_type))
-    return client.placement_policies.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name, placement_policy=vmProperties)
-
-
-def placement_policy_vm_host_create(client: AVSClient, resource_group_name, private_cloud, cluster_name, placement_policy_name, vm_members, host_members, affinity_type, state=None, display_name=None, affinity_strength=None, azure_hybrid_benefit=None):
-    from azext_vmware.vendored_sdks.avs_client.models import VmHostPlacementPolicyProperties, PlacementPolicy
-    vmHostProperties = PlacementPolicy(properties=VmHostPlacementPolicyProperties(type="VmHost", state=state, display_name=display_name, vm_members=vm_members, host_members=host_members, affinity_type=affinity_type, affinity_strength=affinity_strength, azure_hybrid_benefit_type=azure_hybrid_benefit))
-    return client.placement_policies.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name, placement_policy=vmHostProperties)
-
-
-def placement_policy_update(client: AVSClient, resource_group_name, private_cloud, cluster_name, placement_policy_name, state=None, vm_members=None, host_members=None, affinity_strength=None, azure_hybrid_benefit=None):
-    from azext_vmware.vendored_sdks.avs_client.models import PlacementPolicyUpdate
-    props = PlacementPolicyUpdate(state=state, vm_members=vm_members, host_members=host_members, affinity_strength=affinity_strength, azure_hybrid_benefit_type=azure_hybrid_benefit)
-    return client.placement_policies.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name, placement_policy_update=props)
-
-
-def placement_policy_delete(client: AVSClient, resource_group_name, private_cloud, cluster_name, placement_policy_name, yes=False):
-    from knack.prompting import prompt_y_n
-    msg = 'This will delete the placement policy. Are you sure?'
-    if not yes and not prompt_y_n(msg, default="n"):
-        return None
-    return client.placement_policies.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, placement_policy_name=placement_policy_name)
-
-
 def virtual_machine_get(client: AVSClient, resource_group_name, private_cloud, cluster_name, virtual_machine):
     return client.virtual_machines.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name, virtual_machine_id=virtual_machine)
 

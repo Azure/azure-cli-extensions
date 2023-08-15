@@ -56,6 +56,17 @@ def load_command_table(self, _):
     self.command_table['vmware workload-network dhcp server update'] = DHCPServerUpdate(loader=self)
     self.command_table['vmware workload-network dhcp server delete'] = DHCPServerDelete(loader=self)
 
+    from .operations.placement_policy import PlacementPolicyVMCreate, PlacementPolicyVMUpdate, PlacementPolicyVMDelete
+    self.command_table['vmware placement-policy vm create'] = PlacementPolicyVMCreate(loader=self)
+    self.command_table['vmware placement-policy vm update'] = PlacementPolicyVMUpdate(loader=self)
+    self.command_table['vmware placement-policy vm delete'] = PlacementPolicyVMDelete(loader=self)
+
+    from .operations.placement_policy import PlacementPolicyVMHostCreate, PlacementPolicyVMHostUpdate, \
+        PlacementPolicyVMHostDelete
+    self.command_table['vmware placement-policy vm-host create'] = PlacementPolicyVMHostCreate(loader=self)
+    self.command_table['vmware placement-policy vm-host update'] = PlacementPolicyVMHostUpdate(loader=self)
+    self.command_table['vmware placement-policy vm-host delete'] = PlacementPolicyVMHostDelete(loader=self)
+
     with self.command_group('vmware private-cloud', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('listadmincredentials', 'privatecloud_listadmincredentials', deprecate_info=g.deprecate(redirect='az vmware private-cloud list-admin-credentials', hide=True))
         g.custom_command('addidentitysource', 'privatecloud_addidentitysource', deprecate_info=g.deprecate(redirect='az vmware private-cloud add-identity-source', hide=True))
@@ -86,20 +97,6 @@ def load_command_table(self, _):
         g.custom_command('list', 'script_execution_list')
         g.custom_command('delete', 'script_execution_delete')
         g.custom_show_command('show', 'script_execution_show')
-
-    with self.command_group('vmware placement-policy', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('list', 'placement_policy_list')
-        g.custom_show_command('show', 'placement_policy_get')
-
-    with self.command_group('vmware placement-policy vm', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'placement_policy_vm_create')
-        g.custom_command('update', 'placement_policy_update')
-        g.custom_command('delete', 'placement_policy_delete')
-
-    with self.command_group('vmware placement-policy vm-host', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('create', 'placement_policy_vm_host_create')
-        g.custom_command('update', 'placement_policy_update')
-        g.custom_command('delete', 'placement_policy_delete')
 
     with self.command_group('vmware vm', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('list', 'virtual_machine_list')
