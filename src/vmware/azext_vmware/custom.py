@@ -173,14 +173,6 @@ def script_execution_logs(client: AVSClient, resource_group_name, private_cloud,
     return client.script_executions.get_execution_logs(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
 
 
-def workload_network_gateway_list(client: AVSClient, resource_group_name, private_cloud):
-    return client.workload_networks.list_gateways(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
-def workload_network_gateway_get(client: AVSClient, resource_group_name, private_cloud, gateway):
-    return client.workload_networks.get_gateway(resource_group_name=resource_group_name, private_cloud_name=private_cloud, gateway_id=gateway)
-
-
 def placement_policy_list(client: AVSClient, resource_group_name, private_cloud, cluster_name):
     return client.placement_policies.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster_name)
 
