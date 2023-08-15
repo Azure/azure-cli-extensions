@@ -87,13 +87,6 @@ def load_command_table(self, _):
         g.custom_command('delete', 'script_execution_delete')
         g.custom_show_command('show', 'script_execution_show')
 
-    with self.command_group('vmware workload-network port-mirroring', vmware_sdk, client_factory=cf_vmware) as g:
-        g.custom_command('list', 'workload_network_port_mirroring_list')
-        g.custom_show_command('show', 'workload_network_port_mirroring_get')
-        g.custom_command('create', 'workload_network_port_mirroring_create')
-        g.custom_command('update', 'workload_network_port_mirroring_update')
-        g.custom_command('delete', 'workload_network_port_mirroring_delete')
-
     with self.command_group('vmware workload-network segment', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('list', 'workload_network_segment_list')
         g.custom_show_command('show', 'workload_network_segment_get')

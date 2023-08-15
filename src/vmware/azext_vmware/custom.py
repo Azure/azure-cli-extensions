@@ -173,34 +173,6 @@ def script_execution_logs(client: AVSClient, resource_group_name, private_cloud,
     return client.script_executions.get_execution_logs(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
 
 
-def workload_network_port_mirroring_list(client: AVSClient, resource_group_name, private_cloud):
-    return client.workload_networks.list_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
-def workload_network_port_mirroring_get(client: AVSClient, resource_group_name, private_cloud, port_mirroring):
-    return client.workload_networks.get_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring)
-
-
-def workload_network_port_mirroring_create(client: AVSClient, resource_group_name, private_cloud, port_mirroring, display_name=None, direction=None, source=None, destination=None, revision=None):
-    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkPortMirroring
-    prop = WorkloadNetworkPortMirroring(display_name=display_name, direction=direction, source=source, destination=destination, revision=revision)
-    return client.workload_networks.begin_create_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring, workload_network_port_mirroring=prop)
-
-
-def workload_network_port_mirroring_update(client: AVSClient, resource_group_name, private_cloud, port_mirroring, display_name=None, direction=None, source=None, destination=None, revision=None):
-    from azext_vmware.vendored_sdks.avs_client.models import WorkloadNetworkPortMirroring
-    prop = WorkloadNetworkPortMirroring(display_name=display_name, direction=direction, source=source, destination=destination, revision=revision)
-    return client.workload_networks.begin_update_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring, workload_network_port_mirroring=prop)
-
-
-def workload_network_port_mirroring_delete(client: AVSClient, resource_group_name, private_cloud, port_mirroring, yes=False):
-    from knack.prompting import prompt_y_n
-    msg = 'This will delete the workload network port mirroring. Are you sure?'
-    if not yes and not prompt_y_n(msg, default="n"):
-        return None
-    return client.workload_networks.begin_delete_port_mirroring(resource_group_name=resource_group_name, private_cloud_name=private_cloud, port_mirroring_id=port_mirroring)
-
-
 def workload_network_segment_list(client: AVSClient, resource_group_name, private_cloud):
     return client.workload_networks.list_segments(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 
