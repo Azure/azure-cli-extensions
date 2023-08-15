@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class ListEffectiveConnectivityConfig(AAZCommand):
     """List all effective connectivity configurations applied on a virtual network.
 
-    :example: Get Azure Virtual Network Manager Effective Configuration
+    :example: List Azure Virtual Network Manager Effective Configuration
         az network manager list-effective-connectivity-config --virtual-network-name "myVirtualNetwork" --resource-group "myResourceGroup"
     """
 

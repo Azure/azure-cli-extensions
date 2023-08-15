@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class ListEffectiveSecurityAdminRule(AAZCommand):
     """List all effective security admin rules applied on a virtual network.
 
-    :example: Get Azure Virtual Network Manager Effective Security Admin Rule
+    :example: List Azure Virtual Network Manager Effective Security Admin Rule
         az network manager list-effective-security-admin-rule --virtual-network-name "myVirtualNetwork" --resource-group "myResourceGroup"
     """
 

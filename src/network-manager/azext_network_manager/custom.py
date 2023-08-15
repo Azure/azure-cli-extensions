@@ -103,38 +103,38 @@ def network_manager_update(cmd,
 #                                force=force)
 
 
-def network_manager_commit_post(cmd,
-                                client,
-                                resource_group_name,
-                                network_manager_name,
-                                target_locations,
-                                commit_type,
-                                configuration_ids=None):
-    client = cf_networkmanagercommit(cmd.cli_ctx)
-    parameters = {}
-    parameters['target_locations'] = target_locations
-    parameters['configuration_ids'] = configuration_ids
-    parameters['commit_type'] = commit_type
-    return client.begin_post(resource_group_name=resource_group_name,
-                             network_manager_name=network_manager_name,
-                             parameters=parameters)
-
-
-def network_manager_deploy_status_list(cmd,
-                                       client,
-                                       resource_group_name,
-                                       network_manager_name,
-                                       skip_token=None,
-                                       regions=None,
-                                       deployment_types=None):
-    client = cf_networkmanagerdeploymentstatus(cmd.cli_ctx)
-    parameters = {}
-    parameters['regions'] = regions
-    parameters['deployment_types'] = deployment_types
-    parameters['skip_token'] = skip_token
-    return client.list(resource_group_name=resource_group_name,
-                       network_manager_name=network_manager_name,
-                       parameters=parameters)
+# def network_manager_commit_post(cmd,
+#                                 client,
+#                                 resource_group_name,
+#                                 network_manager_name,
+#                                 target_locations,
+#                                 commit_type,
+#                                 configuration_ids=None):
+#     client = cf_networkmanagercommit(cmd.cli_ctx)
+#     parameters = {}
+#     parameters['target_locations'] = target_locations
+#     parameters['configuration_ids'] = configuration_ids
+#     parameters['commit_type'] = commit_type
+#     return client.begin_post(resource_group_name=resource_group_name,
+#                              network_manager_name=network_manager_name,
+#                              parameters=parameters)
+#
+#
+# def network_manager_deploy_status_list(cmd,
+#                                        client,
+#                                        resource_group_name,
+#                                        network_manager_name,
+#                                        skip_token=None,
+#                                        regions=None,
+#                                        deployment_types=None):
+#     client = cf_networkmanagerdeploymentstatus(cmd.cli_ctx)
+#     parameters = {}
+#     parameters['regions'] = regions
+#     parameters['deployment_types'] = deployment_types
+#     parameters['skip_token'] = skip_token
+#     return client.list(resource_group_name=resource_group_name,
+#                        network_manager_name=network_manager_name,
+#                        parameters=parameters)
 
 
 # def network_manager_effect_vnet_list_by_network_group(cmd,
@@ -170,60 +170,60 @@ def network_manager_deploy_status_list(cmd,
 #                                           parameters=parameters)
 
 
-def network_manager_active_config_list(cmd,
-                                       client,
-                                       resource_group_name,
-                                       network_manager_name,
-                                       skip_token=None,
-                                       regions=None):
-    client = cf_networkmanagementclient(cmd.cli_ctx)
-    parameters = {}
-    parameters['skip_token'] = skip_token
-    parameters['regions'] = regions
-    return client.list_active_connectivity_configurations(resource_group_name=resource_group_name,
-                                                          network_manager_name=network_manager_name,
-                                                          parameters=parameters)
+# def network_manager_active_config_list(cmd,
+#                                        client,
+#                                        resource_group_name,
+#                                        network_manager_name,
+#                                        skip_token=None,
+#                                        regions=None):
+#     client = cf_networkmanagementclient(cmd.cli_ctx)
+#     parameters = {}
+#     parameters['skip_token'] = skip_token
+#     parameters['regions'] = regions
+#     return client.list_active_connectivity_configurations(resource_group_name=resource_group_name,
+#                                                           network_manager_name=network_manager_name,
+#                                                           parameters=parameters)
 
 
-def network_manager_effective_config_list(cmd,
-                                          client,
-                                          resource_group_name,
-                                          virtual_network_name,
-                                          skip_token=None):
-    client = cf_networkmanagementclient(cmd.cli_ctx)
-    parameters = {}
-    parameters['skip_token'] = skip_token
-    return client.list_network_manager_effective_connectivity_configurations(resource_group_name=resource_group_name,
-                                                                             virtual_network_name=virtual_network_name,
-                                                                             parameters=parameters)
+# def network_manager_effective_config_list(cmd,
+#                                           client,
+#                                           resource_group_name,
+#                                           virtual_network_name,
+#                                           skip_token=None):
+#     client = cf_networkmanagementclient(cmd.cli_ctx)
+#     parameters = {}
+#     parameters['skip_token'] = skip_token
+#     return client.list_network_manager_effective_connectivity_configurations(resource_group_name=resource_group_name,
+#                                                                              virtual_network_name=virtual_network_name,
+#                                                                              parameters=parameters)
 
 
-def network_manager_effective_security_admin_rule_list(cmd,
-                                                       client,
-                                                       resource_group_name,
-                                                       virtual_network_name,
-                                                       skip_token=None):
-    client = cf_networkmanagementclient(cmd.cli_ctx)
-    parameters = {}
-    parameters['skip_token'] = skip_token
-    return client.list_network_manager_effective_security_admin_rules(resource_group_name=resource_group_name,
-                                                                      virtual_network_name=virtual_network_name,
-                                                                      parameters=parameters)
+# def network_manager_effective_security_admin_rule_list(cmd,
+#                                                        client,
+#                                                        resource_group_name,
+#                                                        virtual_network_name,
+#                                                        skip_token=None):
+#     client = cf_networkmanagementclient(cmd.cli_ctx)
+#     parameters = {}
+#     parameters['skip_token'] = skip_token
+#     return client.list_network_manager_effective_security_admin_rules(resource_group_name=resource_group_name,
+#                                                                       virtual_network_name=virtual_network_name,
+#                                                                       parameters=parameters)
 
 
-def network_manager_active_security_admin_rule_list(cmd,
-                                                    client,
-                                                    resource_group_name,
-                                                    network_manager_name,
-                                                    skip_token=None,
-                                                    regions=None):
-    client = cf_networkmanagementclient(cmd.cli_ctx)
-    parameters = {}
-    parameters['skip_token'] = skip_token
-    parameters['region'] = regions
-    return client.list_active_security_admin_rules(resource_group_name=resource_group_name,
-                                                   network_manager_name=network_manager_name,
-                                                   parameters=parameters)
+# def network_manager_active_security_admin_rule_list(cmd,
+#                                                     client,
+#                                                     resource_group_name,
+#                                                     network_manager_name,
+#                                                     skip_token=None,
+#                                                     regions=None):
+#     client = cf_networkmanagementclient(cmd.cli_ctx)
+#     parameters = {}
+#     parameters['skip_token'] = skip_token
+#     parameters['region'] = regions
+#     return client.list_active_security_admin_rules(resource_group_name=resource_group_name,
+#                                                    network_manager_name=network_manager_name,
+#                                                    parameters=parameters)
 
 
 # def network_manager_active_security_user_rule_list(cmd,
@@ -241,40 +241,40 @@ def network_manager_active_security_admin_rule_list(cmd,
 #                        parameters=parameters)
 
 
-def network_manager_effective_security_user_rule_list(client,
-                                                      resource_group_name,
-                                                      network_manager_name,
-                                                      top=None,
-                                                      skip_token=None):
-    parameters = {}
-    parameters['skip_token'] = skip_token
-    return client.list(resource_group_name=resource_group_name,
-                       network_manager_name=network_manager_name,
-                       parameters=parameters,
-                       top=top)
+# def network_manager_effective_security_user_rule_list(client,
+#                                                       resource_group_name,
+#                                                       network_manager_name,
+#                                                       top=None,
+#                                                       skip_token=None):
+#     parameters = {}
+#     parameters['skip_token'] = skip_token
+#     return client.list(resource_group_name=resource_group_name,
+#                        network_manager_name=network_manager_name,
+#                        parameters=parameters,
+#                        top=top)
+#
+#
+# def network_manager_connect_config_list(client,
+#                                         resource_group_name,
+#                                         network_manager_name,
+#                                         top=None,
+#                                         skip_token=None):
+#     return client.list(resource_group_name=resource_group_name,
+#                        network_manager_name=network_manager_name,
+#                        top=top,
+#                        skip_token=skip_token)
+#
+#
+# def network_manager_connect_config_show(client,
+#                                         resource_group_name,
+#                                         network_manager_name,
+#                                         configuration_name):
+#     return client.get(resource_group_name=resource_group_name,
+#                       network_manager_name=network_manager_name,
+#                       configuration_name=configuration_name)
 
 
-def network_manager_connect_config_list(client,
-                                        resource_group_name,
-                                        network_manager_name,
-                                        top=None,
-                                        skip_token=None):
-    return client.list(resource_group_name=resource_group_name,
-                       network_manager_name=network_manager_name,
-                       top=top,
-                       skip_token=skip_token)
-
-
-def network_manager_connect_config_show(client,
-                                        resource_group_name,
-                                        network_manager_name,
-                                        configuration_name):
-    return client.get(resource_group_name=resource_group_name,
-                      network_manager_name=network_manager_name,
-                      configuration_name=configuration_name)
-
-
-def network_manager_connect_config_create(client,
+def network_manager_connect_config_create(cmd,
                                           resource_group_name,
                                           network_manager_name,
                                           configuration_name,
@@ -286,20 +286,24 @@ def network_manager_connect_config_create(client,
                                           delete_existing_peering=None):
     if connectivity_topology == 'HubAndSpoke' and hub is None:
         raise CLIError("if 'HubAndSpoke' is the topolopy seleted,'--hub' is required")
+    from .aaz.latest.network.manager.connect_config import Create as _ConnectConfigCreate
+    Create = _ConnectConfigCreate(cmd.loader)
     connectivity_configuration = {}
+    connectivity_configuration['resource_group'] = resource_group_name
+    connectivity_configuration['network_manager_name'] = network_manager_name
+    connectivity_configuration['configuration_name'] = configuration_name
     connectivity_configuration['description'] = description
     connectivity_configuration['connectivity_topology'] = connectivity_topology
     connectivity_configuration['hubs'] = hub
-    connectivity_configuration['is_global'] = is_global
+    if is_global is not None:
+        connectivity_configuration['is_global'] = 'True' if is_global else 'False'
     connectivity_configuration['applies_to_groups'] = applies_to_groups
-    connectivity_configuration['delete_existing_peering'] = delete_existing_peering
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   network_manager_name=network_manager_name,
-                                   configuration_name=configuration_name,
-                                   connectivity_configuration=connectivity_configuration)
+    if delete_existing_peering is not None:
+        connectivity_configuration['delete_existing_peering'] = 'True' if delete_existing_peering else 'False'
+    return Create(connectivity_configuration)
 
 
-def network_manager_connect_config_update(instance,
+def network_manager_connect_config_update(cmd,
                                           resource_group_name,
                                           network_manager_name,
                                           configuration_name,
@@ -308,32 +312,38 @@ def network_manager_connect_config_update(instance,
                                           is_global=None,
                                           applies_to_groups=None,
                                           delete_existing_peering=None):
+    from .aaz.latest.network.manager.connect_config import Update as _ConnectConfigUpdate
+    Update = _ConnectConfigUpdate(cmd.loader)
+    connectivity_configuration = {}
+    connectivity_configuration['resource_group'] = resource_group_name
+    connectivity_configuration['network_manager_name'] = network_manager_name
+    connectivity_configuration['configuration_name'] = configuration_name
     if description is not None:
-        instance.description = description
+        connectivity_configuration['description'] = description
     if hub is not None:
-        instance.hubs = hub
+        connectivity_configuration['hubs'] = hub
     if is_global is not None:
-        instance.is_global = is_global
+        connectivity_configuration['is_global'] = 'True' if is_global else 'False'
     if applies_to_groups is not None:
-        instance.applies_to_groups = applies_to_groups
+        connectivity_configuration['applies_to_groups'] = applies_to_groups
     if delete_existing_peering is not None:
-        instance.delete_existing_peering = delete_existing_peering
-    return instance
+        connectivity_configuration['delete_existing_peering'] = 'True' if delete_existing_peering else 'False'
+    return Update(connectivity_configuration)
 
 
-def network_manager_connect_config_delete(client,
-                                          resource_group_name,
-                                          network_manager_name,
-                                          configuration_name,
-                                          force=False):
-    if force is False:
-        print("The \'--force\' flag was not provided for the delete operation. "
-              "If this resource or any of its child resources are part of a deployed configuration, "
-              "this delete will fail.")
-    return client.begin_delete(resource_group_name=resource_group_name,
-                               network_manager_name=network_manager_name,
-                               configuration_name=configuration_name,
-                               force=force)
+# def network_manager_connect_config_delete(client,
+#                                           resource_group_name,
+#                                           network_manager_name,
+#                                           configuration_name,
+#                                           force=False):
+#     if force is False:
+#         print("The \'--force\' flag was not provided for the delete operation. "
+#               "If this resource or any of its child resources are part of a deployed configuration, "
+#               "this delete will fail.")
+#     return client.begin_delete(resource_group_name=resource_group_name,
+#                                network_manager_name=network_manager_name,
+#                                configuration_name=configuration_name,
+#                                force=force)
 
 
 def network_manager_group_list(client,

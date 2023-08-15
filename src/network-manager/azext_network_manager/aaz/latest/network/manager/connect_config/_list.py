@@ -12,26 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network manager list-active-connectivity-config",
+    "network manager connect-config list",
 )
-class ListActiveConnectivityConfig(AAZCommand):
-    """Lists active connectivity configurations in a network manager.
+class List(AAZCommand):
+    """List all the network manager connectivity configuration in a specified network manager.
 
-    :example: List Azure Virtual Network Manager Active Configuration
-        az network manager list-active-connectivity-config --network-manager-name "testNetworkManager" --resource-group "myResourceGroup"
+    :example: List Azure Virtual Network Manager Connecitivity Configuration
+        az network manager connect-config list --network-manager-name "testNetworkManager" --resource-group "myResourceGroup"
     """
 
     _aaz_info = {
         "version": "2022-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/listactiveconnectivityconfigurations", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/connectivityconfigurations", "2022-01-01"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -48,33 +49,27 @@ class ListActiveConnectivityConfig(AAZCommand):
             options=["-n", "--name", "--network-manager-name"],
             help="The name of the network manager.",
             required=True,
-            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Parameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.regions = AAZListArg(
-            options=["--regions"],
-            arg_group="Parameters",
-            help="List of regions.",
-        )
         _args_schema.skip_token = AAZStrArg(
             options=["--skip-token"],
-            arg_group="Parameters",
-            help="When present, the value can be passed to a subsequent query call (together with the same query and scopes used in the current request) to retrieve the next page of data.",
+            help="SkipToken is only used if a previous operation returned a partial result. If a previous response contains a nextLink element, the value of the nextLink element will include a skipToken parameter that specifies a starting point to use for subsequent calls.",
         )
-
-        regions = cls._args_schema.regions
-        regions.Element = AAZStrArg()
+        _args_schema.top = AAZIntArg(
+            options=["--top"],
+            help="An optional query parameter which specifies the maximum number of records to be returned by the server.",
+            fmt=AAZIntArgFormat(
+                maximum=20,
+                minimum=1,
+            ),
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ListActiveConnectivityConfigurations(ctx=self.ctx)()
+        self.ConnectivityConfigurationsList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -86,10 +81,11 @@ class ListActiveConnectivityConfig(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class ListActiveConnectivityConfigurations(AAZHttpOperation):
+    class ConnectivityConfigurationsList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -103,13 +99,13 @@ class ListActiveConnectivityConfig(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/listActiveConnectivityConfigurations",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/connectivityConfigurations",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "GET"
 
         @property
         def error_format(self):
@@ -137,6 +133,12 @@ class ListActiveConnectivityConfig(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
+                    "$skipToken", self.ctx.args.skip_token,
+                ),
+                **self.serialize_query_param(
+                    "$top", self.ctx.args.top,
+                ),
+                **self.serialize_query_param(
                     "api-version", "2022-01-01",
                     required=True,
                 ),
@@ -147,29 +149,10 @@ class ListActiveConnectivityConfig(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("regions", AAZListType, ".regions")
-            _builder.set_prop("skipToken", AAZStrType, ".skip_token")
-
-            regions = _builder.get(".regions")
-            if regions is not None:
-                regions.set_elements(AAZStrType, ".")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -189,8 +172,8 @@ class ListActiveConnectivityConfig(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.skip_token = AAZStrType(
-                serialized_name="skipToken",
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
             )
             _schema_on_200.value = AAZListType()
 
@@ -198,31 +181,23 @@ class ListActiveConnectivityConfig(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
-            _element.commit_time = AAZStrType(
-                serialized_name="commitTime",
+            _element.etag = AAZStrType(
+                flags={"read_only": True},
             )
-            _element.configuration_groups = AAZListType(
-                serialized_name="configurationGroups",
+            _element.id = AAZStrType(
+                flags={"read_only": True},
             )
-            _element.id = AAZStrType()
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _element.region = AAZStrType()
-
-            configuration_groups = cls._schema_on_200.value.Element.configuration_groups
-            configuration_groups.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.configuration_groups.Element
-            _element.id = AAZStrType()
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
             )
-
-            properties = cls._schema_on_200.value.Element.configuration_groups.Element.properties
-            properties.description = AAZStrType()
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
@@ -278,11 +253,31 @@ class ListActiveConnectivityConfig(AAZCommand):
                 serialized_name="resourceType",
             )
 
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
             return cls._schema_on_200
 
 
-class _ListActiveConnectivityConfigHelper:
-    """Helper class for ListActiveConnectivityConfig"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["ListActiveConnectivityConfig"]
+__all__ = ["List"]

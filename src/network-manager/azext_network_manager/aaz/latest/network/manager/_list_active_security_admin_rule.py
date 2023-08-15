@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class ListActiveSecurityAdminRule(AAZCommand):
     """Lists active security admin rules in a network manager.
 
-    :example: Get Azure Virtual Network Manager Active Security Admin Rule
+    :example: List Azure Virtual Network Manager Active Security Admin Rule
         az network manager list-active-security-admin-rule --network-manager-name "testNetworkManager" --resource-group "myResourceGroup" --region "eastus2euap"
     """
 

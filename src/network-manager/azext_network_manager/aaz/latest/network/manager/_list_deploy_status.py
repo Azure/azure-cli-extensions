@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class ListDeployStatus(AAZCommand):
     """Post List of Network Manager Deployment Status.
 
-    :example: Post Azure Virtual Network Manager Deployment Status
+    :example: List Azure Virtual Network Manager Deployment Status
         az network manager list-deploy-status --network-manager-name "testNetworkManager" --deployment-types "Connectivity" "SecurityAdmin" --regions "eastus" "westus" --resource-group "resoureGroupSample"
     """
 

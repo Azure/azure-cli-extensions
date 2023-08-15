@@ -26,10 +26,10 @@ def load_command_table(self, _):
     #     client_factory=cf_networkmanager
     # )
 
-    network_connectivityconfiguration = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#ConnectivityConfigurationsOperations.{}',
-        client_factory=cf_connectivityconfiguration
-    )
+    # network_connectivityconfiguration = CliCommandType(
+    #     operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#ConnectivityConfigurationsOperations.{}',
+    #     client_factory=cf_connectivityconfiguration
+    # )
 
     network_networkgroup = CliCommandType(
         operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#NetworkGroupsOperations.{}',
@@ -101,13 +101,17 @@ def load_command_table(self, _):
         # g.custom_command('list-active-security-admin-rule', 'network_manager_active_security_admin_rule_list')
         # # g.custom_command('list-active-security-user-rule', 'network_manager_active_security_user_rule_list')
 
-    with self.command_group('network manager connect-config', network_connectivityconfiguration, client_factory=cf_connectivityconfiguration) as g:
-        g.custom_command('list', 'network_manager_connect_config_list')
-        g.custom_show_command('show', 'network_manager_connect_config_show')
+    with self.command_group('network manager connect-config') as g:
         g.custom_command('create', 'network_manager_connect_config_create')
-        g.generic_update_command('update', setter_arg_name='connectivity_configuration', custom_func_name='network_manager_connect_config_update')
-        g.custom_command('delete', 'network_manager_connect_config_delete',
-                         confirmation=True)
+        g.custom_command('update', 'network_manager_connect_config_update')
+
+    # with self.command_group('network manager connect-config', network_connectivityconfiguration, client_factory=cf_connectivityconfiguration) as g:
+    #     g.custom_command('list', 'network_manager_connect_config_list')
+    #     g.custom_show_command('show', 'network_manager_connect_config_show')
+    #     g.custom_command('create', 'network_manager_connect_config_create')
+    #     g.generic_update_command('update', setter_arg_name='connectivity_configuration', custom_func_name='network_manager_connect_config_update')
+    #     g.custom_command('delete', 'network_manager_connect_config_delete',
+    #                      confirmation=True)
 
     with self.command_group('network manager group', network_networkgroup, client_factory=cf_networkgroup) as g:
         g.custom_command('list', 'network_manager_group_list')
