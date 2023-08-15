@@ -1,4 +1,4 @@
-This file is a reference page for the [README](README.md) file. 
+This file is a reference page for the [README](README.md) file.
 
 Sample Policy Rego
 
@@ -78,7 +78,7 @@ containers := [
     }
 ]
 
-allow_properties_access := false
+allow_properties_access := true
 allow_dump_stacks := false
 allow_runtime_logging := false
 allow_environment_variable_dropping := true

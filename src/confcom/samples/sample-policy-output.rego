@@ -155,7 +155,7 @@ containers := [
 	},
 ]
 
-allow_properties_access := false
+allow_properties_access := true
 
 allow_dump_stacks := false
 

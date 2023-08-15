@@ -85,7 +85,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 "allowCapabilityDropping"
             )
         else:
-            self._allow_properties_access = False
+            self._allow_properties_access = True
             self._allow_dump_stacks = False
             self._allow_runtime_logging = False
             self._allow_environment_variable_dropping = True
