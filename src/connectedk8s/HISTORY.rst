@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+1.5.0
+++++++
+* Enforce valid custom locations service principal application object id passed in by the user for enabling custom locations feature.
+
 1.4.2
 ++++++
 * Fix reference error.
@@ -16,7 +21,6 @@ Release History
 
 1.3.20
 ++++++
-
 * Bug fix in parsing logs for outbound connectivity check for troubleshoot command
 
 1.3.19
