@@ -46,8 +46,8 @@ class Delete(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.secret_resource_name = AAZStrArg(
-            options=["--secret-resource-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="The name of the secret resource.",
             required=True,
             id_part="name",
@@ -105,7 +105,7 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "secretResourceName", self.ctx.args.secret_resource_name,
+                    "secretResourceName", self.ctx.args.name,
                     skip_quote=True,
                     required=True,
                 ),
