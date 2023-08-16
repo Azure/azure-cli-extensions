@@ -2602,4 +2602,7 @@ helps['aks check-network'] = """
       - name: --node-name
         type: string
         short-summary: Name of the node to perform the connectivity check. If not specified, a random node will be chosen.
+      - name: --custom-endpoints
+        type: string
+        short-summary: Additional endpoint(s) to perform the connectivity check, separated by comma.
 """

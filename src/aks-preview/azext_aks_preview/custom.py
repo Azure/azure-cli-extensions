@@ -2485,7 +2485,7 @@ def _aks_mesh_update(
 
     return aks_update_decorator.update_mc(mc)
 
-def aks_check_network(cmd, client, resource_group, cluster_name, node_name=None):
+def aks_check_network(cmd, client, resource_group, cluster_name, node_name=None, custom_endpoints=None):
     # Get a random node if node_name is not specified
     if not node_name:
         if not which("kubectl"):
@@ -2531,17 +2531,21 @@ def aks_check_network(cmd, client, resource_group, cluster_name, node_name=None)
         from azure.cli.command_modules.vm._client_factory import _compute_client_factory
 
         client = _compute_client_factory(cmd.cli_ctx)
-        script = ["bash /usr/local/bin/check-outbound-network.sh {0}".format(fqdn)]
+        command = "bash /usr/local/bin/check-outbound-network.sh {0}".format(fqdn)
+        if custom_endpoints:
+            endpoints = ''.join(custom_endpoints.split(" "))
+            command += " {0}".format(endpoints)
+        
         if instance_id:
             RunCommandInput = cmd.get_models('RunCommandInput', resource_type=ResourceType.MGMT_COMPUTE, operation_group="virtual_machine_scale_sets")
             command_result_poller = client.virtual_machine_scale_set_vms.begin_run_command(
                 node_resource_group, vmss_name, instance_id,
-                RunCommandInput(command_id="RunShellScript", script=script))
+                RunCommandInput(command_id="RunShellScript", script=[command]))
         else:
             RunCommandInput = cmd.get_models('RunCommandInput', resource_type=ResourceType.MGMT_COMPUTE, operation_group="virtual_machine_run_commands")
             command_result_poller = client.virtual_machines.begin_run_command(
                 node_resource_group, vmss_name,
-                RunCommandInput(command_id="RunShellScript", script=script))
+                RunCommandInput(command_id="RunShellScript", script=[command]))
         command_result = command_result_poller.result()
         display_status = command_result.value[0].display_status
         message = command_result.value[0].message
