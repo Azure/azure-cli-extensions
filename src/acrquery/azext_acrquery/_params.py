@@ -5,6 +5,7 @@
 
 from azure.cli.command_modules.acr._validators import validate_registry_name
 
+
 def load_arguments(self, _):
 
     with self.argument_context('acr query') as c:
