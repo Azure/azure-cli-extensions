@@ -2290,19 +2290,6 @@ networkfabric ipextendedcommunity create:
     ip_extended_community_rules:
       rule_exclusions:
       - option_length_too_long
-networkfabric taprule create:
-  parameters:
-    dynamic_match_configurations:
-      rule_exclusions:
-      - option_length_too_long
-    polling_interval_in_seconds:
-      rule_exclusions:
-      - option_length_too_long
-networkfabric taprule update:
-  parameters:
-    dynamic_match_configurations:
-      rule_exclusions:
-      - option_length_too_long
 notification-hub authorization-rule create:
   parameters:
     notification_hub_name:
