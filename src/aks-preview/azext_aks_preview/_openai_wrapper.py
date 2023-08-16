@@ -212,9 +212,9 @@ USER_INPUT_PROMPT = "Prompt: "
 
 def prompt_chat_gpt(messages, params, start_input=None, insist=True, scripts=''):
     while True:
-        if launch_input:
+        if start_input:
             text_input = start_input.strip()
-            launch_input = None
+            start_input = None
         else:
             text_input = str(input(USER_INPUT_PROMPT)).strip()
         if re.search(r'[a-zA-Z]', text_input):
