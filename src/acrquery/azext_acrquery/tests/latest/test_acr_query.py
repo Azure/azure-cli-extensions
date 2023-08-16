@@ -76,7 +76,7 @@ class AcrQueryCommandsTests(unittest.TestCase):
 
         # Request with skip token
         mock_get_access_credentials.return_value = 'testregistry.azurecr.io', EMPTY_GUID, 'password'
-        create_query(cmd, 'testregistry', 'get', skip_token='12345678')
+        create_query(cmd, 'testregistry', 'get', repository='repository', skip_token='12345678')
         mock_requests_get.assert_called_with(
             method='post',
             url='https://testregistry.azurecr.io/acr/v1/repository/_metadata/_query',
