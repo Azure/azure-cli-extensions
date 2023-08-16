@@ -971,57 +971,57 @@ def network_manager_connection_management_group_delete(client,
                          management_group_id=management_group_id)
 
 
-def network_manager_scope_connection_list(client,
-                                          resource_group_name,
-                                          network_manager_name,
-                                          top=None,
-                                          skip_token=None):
-    return client.list(resource_group_name=resource_group_name,
-                       network_manager_name=network_manager_name,
-                       top=top,
-                       skip_token=skip_token)
-
-
-def network_manager_scope_connection_create(client,
-                                            resource_group_name,
-                                            network_manager_name,
-                                            scope_connection_name,
-                                            tenant_id,
-                                            resource_id,
-                                            description=None):
-    parameters = {}
-    parameters['tenant_id'] = tenant_id
-    parameters['resource_id'] = resource_id
-    parameters['description'] = description
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   network_manager_name=network_manager_name,
-                                   scope_connection_name=scope_connection_name,
-                                   parameters=parameters)
-
-
-def network_manager_scope_connection_update(instance,
-                                            description=None):
-    if description is not None:
-        instance.description = description
-    return instance
-
-
-def network_manager_scope_connection_show(client,
-                                          resource_group_name,
-                                          network_manager_name,
-                                          scope_connection_name):
-    return client.get(resource_group_name=resource_group_name,
-                      network_manager_name=network_manager_name,
-                      scope_connection_name=scope_connection_name)
-
-
-def network_manager_scope_connection_delete(client,
-                                            resource_group_name,
-                                            network_manager_name,
-                                            scope_connection_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         network_manager_name=network_manager_name,
-                         scope_connection_name=scope_connection_name)
+# def network_manager_scope_connection_list(client,
+#                                           resource_group_name,
+#                                           network_manager_name,
+#                                           top=None,
+#                                           skip_token=None):
+#     return client.list(resource_group_name=resource_group_name,
+#                        network_manager_name=network_manager_name,
+#                        top=top,
+#                        skip_token=skip_token)
+#
+#
+# def network_manager_scope_connection_create(client,
+#                                             resource_group_name,
+#                                             network_manager_name,
+#                                             scope_connection_name,
+#                                             tenant_id,
+#                                             resource_id,
+#                                             description=None):
+#     parameters = {}
+#     parameters['tenant_id'] = tenant_id
+#     parameters['resource_id'] = resource_id
+#     parameters['description'] = description
+#     return client.create_or_update(resource_group_name=resource_group_name,
+#                                    network_manager_name=network_manager_name,
+#                                    scope_connection_name=scope_connection_name,
+#                                    parameters=parameters)
+#
+#
+# def network_manager_scope_connection_update(instance,
+#                                             description=None):
+#     if description is not None:
+#         instance.description = description
+#     return instance
+#
+#
+# def network_manager_scope_connection_show(client,
+#                                           resource_group_name,
+#                                           network_manager_name,
+#                                           scope_connection_name):
+#     return client.get(resource_group_name=resource_group_name,
+#                       network_manager_name=network_manager_name,
+#                       scope_connection_name=scope_connection_name)
+#
+#
+# def network_manager_scope_connection_delete(client,
+#                                             resource_group_name,
+#                                             network_manager_name,
+#                                             scope_connection_name):
+#     return client.delete(resource_group_name=resource_group_name,
+#                          network_manager_name=network_manager_name,
+#                          scope_connection_name=scope_connection_name)
 
 
 # def network_manager_group_static_member_list(client,
