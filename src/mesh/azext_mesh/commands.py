@@ -226,7 +226,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-statements
 
     with self.command_group('mesh secret'):
         from .aaz.latest.mesh.secret import List
-        self.command_table['mesh secret show'] = List(loader=self, table_transformer=transform_secret_list)
+        self.command_table['mesh secret list'] = List(loader=self, table_transformer=transform_secret_list)
 
     with self.command_group('mesh secretvalue', mesh_secret_value_util, client_factory=cf_mesh_secret_value) as g:
         g.show_command('show', 'get')
