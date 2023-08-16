@@ -95,12 +95,12 @@ class Create(AAZCommand):
         _args_schema.annotation = AAZStrArg(
             options=["--annotation"],
             arg_group="Properties",
-            help="Switch configuration description.",
+            help="Description for underlying resource.",
         )
         _args_schema.configuration_type = AAZStrArg(
             options=["--configuration-type"],
             arg_group="Properties",
-            help="Input method to configure Access Control List.",
+            help="Input method to configure Access Control List. Example: File.",
             required=True,
             enum={"File": "File", "Inline": "Inline"},
         )
@@ -144,7 +144,7 @@ class Create(AAZCommand):
         _element = cls._args_schema.dynamic_match_configurations.Element.ip_groups.Element
         _element.ip_address_type = AAZStrArg(
             options=["ip-address-type"],
-            help="IP Address type.",
+            help="IP Address type. Example: IPv4.",
             enum={"IPv4": "IPv4", "IPv6": "IPv6"},
             fmt=AAZStrArgFormat(
                 min_length=1,
@@ -225,7 +225,7 @@ class Create(AAZCommand):
         )
         _element.ip_address_type = AAZStrArg(
             options=["ip-address-type"],
-            help="Type of IP Address. IPv4 or IPv6",
+            help="Type of IP Address. Example: IPv4.",
             enum={"IPv4": "IPv4", "IPv6": "IPv6"},
             fmt=AAZStrArgFormat(
                 min_length=1,
@@ -344,7 +344,7 @@ class Create(AAZCommand):
         )
         ip_condition.prefix_type = AAZStrArg(
             options=["prefix-type"],
-            help="IP Prefix Type that needs to be matched.",
+            help="IP Prefix Type that needs to be matched. Example: Prefix.",
             enum={"LongestPrefix": "LongestPrefix", "Prefix": "Prefix"},
             fmt=AAZStrArgFormat(
                 min_length=1,
@@ -352,7 +352,7 @@ class Create(AAZCommand):
         )
         ip_condition.type = AAZStrArg(
             options=["type"],
-            help="IP Address type that needs to be matched.",
+            help="IP Address type that needs to be matched. Example: SourceIP.",
             enum={"DestinationIP": "DestinationIP", "SourceIP": "SourceIP"},
             fmt=AAZStrArgFormat(
                 min_length=1,
@@ -383,11 +383,11 @@ class Create(AAZCommand):
         port_condition = cls._args_schema.match_configurations.Element.match_conditions.Element.port_condition
         port_condition.flags = AAZListArg(
             options=["flags"],
-            help="List of protocol flags that need to be matched.",
+            help="List of protocol flags that need to be matched. Example: established | initial | <List-of-TCP-flags>. List of eligible TCP Flags are \"ack, fin, not-ack, not-fin, not-psh, not-rst, not-syn, not-urg, psh, rst, syn, urg\"",
         )
         port_condition.layer4_protocol = AAZStrArg(
             options=["layer4-protocol"],
-            help="Layer4 protocol type that needs to be matched.",
+            help="Layer4 protocol type that needs to be matched. Example: UDP.",
             required=True,
             enum={"TCP": "TCP", "UDP": "UDP"},
             fmt=AAZStrArgFormat(
@@ -400,7 +400,7 @@ class Create(AAZCommand):
         )
         port_condition.port_type = AAZStrArg(
             options=["port-type"],
-            help="Port type that needs to be matched.",
+            help="Port type that needs to be matched. Example: SourceIP.",
             enum={"DestinationPort": "DestinationPort", "SourcePort": "SourcePort"},
             fmt=AAZStrArgFormat(
                 min_length=1,
