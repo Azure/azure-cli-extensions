@@ -6,9 +6,6 @@ Release History
 3.2.0
 ++++++
 * Supported ACL
-* Supported NeighborGroup
-* Supported Tap
-* Supported TapRule
 * Added new parameter "defaultAction" in RoutePolicies and ACL
 
 3.1.0

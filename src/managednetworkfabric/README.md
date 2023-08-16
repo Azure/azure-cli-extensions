@@ -35,10 +35,6 @@ Below is a high-level overview of managednetworkfabric commands.
 | az networkfabric ipprefix | Manage Ip Prefix Resource. |
 | az networkfabric l2domain | Manage L2 Isolation Domain Resource. |
 | az networkfabric l3domain | Manage L3 Isolation Domain Resource. |
-| az networkfabric neighborgroup | Manage Neighbor Group Resource. |
 | az networkfabric nni | Manage Network To Network Interconnect Resource. |
-| az networkfabric npb | Manage Network Packet Broker Resource. |
 | az networkfabric rack | Manage Network Rack Resource. |
 | az networkfabric routepolicy | Manage Route Policy Resource. |
-| az networkfabric tap | Manage Network Tap Resource. |
-| az networkfabric taprule | Manage Network Tap Rule Resource. |
