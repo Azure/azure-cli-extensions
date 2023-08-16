@@ -1024,61 +1024,61 @@ def network_manager_scope_connection_delete(client,
                          scope_connection_name=scope_connection_name)
 
 
-def network_manager_group_static_member_list(client,
-                                             resource_group_name,
-                                             network_manager_name,
-                                             network_group_name,
-                                             top=None,
-                                             skip_token=None):
-    return client.list(resource_group_name=resource_group_name,
-                       network_manager_name=network_manager_name,
-                       network_group_name=network_group_name,
-                       top=top,
-                       skip_token=skip_token)
-
-
-def network_manager_group_static_member_create(cmd,
-                                               client,
-                                               resource_group_name,
-                                               network_manager_name,
-                                               network_group_name,
-                                               static_member_name,
-                                               resource_id):
-    from azure.mgmt.core.tools import parse_resource_id
-    parameters = {}
-    parameters['resource_id'] = resource_id
-    aux_subscription = parse_resource_id(resource_id)['subscription']
-    ncf = cf_network_cl(cmd.cli_ctx, aux_subscriptions=[aux_subscription])
-    return ncf.static_members.create_or_update(resource_group_name=resource_group_name,
-                                               network_manager_name=network_manager_name,
-                                               network_group_name=network_group_name,
-                                               static_member_name=static_member_name,
-                                               parameters=parameters)
-
-
-# def network_manager_group_static_member_update(instance, resource_id):
-#     if resource_id is not None:
-#         instance.resource_id = resource_id
-#     return instance
-
-
-def network_manager_group_static_member_show(client,
-                                             resource_group_name,
-                                             network_manager_name,
-                                             network_group_name,
-                                             static_member_name):
-    return client.get(resource_group_name=resource_group_name,
-                      network_manager_name=network_manager_name,
-                      network_group_name=network_group_name,
-                      static_member_name=static_member_name)
-
-
-def network_manager_group_static_member_delete(client,
-                                               resource_group_name,
-                                               network_manager_name,
-                                               network_group_name,
-                                               static_member_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         network_manager_name=network_manager_name,
-                         network_group_name=network_group_name,
-                         static_member_name=static_member_name)
+# def network_manager_group_static_member_list(client,
+#                                              resource_group_name,
+#                                              network_manager_name,
+#                                              network_group_name,
+#                                              top=None,
+#                                              skip_token=None):
+#     return client.list(resource_group_name=resource_group_name,
+#                        network_manager_name=network_manager_name,
+#                        network_group_name=network_group_name,
+#                        top=top,
+#                        skip_token=skip_token)
+#
+#
+# def network_manager_group_static_member_create(cmd,
+#                                                client,
+#                                                resource_group_name,
+#                                                network_manager_name,
+#                                                network_group_name,
+#                                                static_member_name,
+#                                                resource_id):
+#     from azure.mgmt.core.tools import parse_resource_id
+#     parameters = {}
+#     parameters['resource_id'] = resource_id
+#     aux_subscription = parse_resource_id(resource_id)['subscription']
+#     ncf = cf_network_cl(cmd.cli_ctx, aux_subscriptions=[aux_subscription])
+#     return ncf.static_members.create_or_update(resource_group_name=resource_group_name,
+#                                                network_manager_name=network_manager_name,
+#                                                network_group_name=network_group_name,
+#                                                static_member_name=static_member_name,
+#                                                parameters=parameters)
+#
+#
+# # def network_manager_group_static_member_update(instance, resource_id):
+# #     if resource_id is not None:
+# #         instance.resource_id = resource_id
+# #     return instance
+#
+#
+# def network_manager_group_static_member_show(client,
+#                                              resource_group_name,
+#                                              network_manager_name,
+#                                              network_group_name,
+#                                              static_member_name):
+#     return client.get(resource_group_name=resource_group_name,
+#                       network_manager_name=network_manager_name,
+#                       network_group_name=network_group_name,
+#                       static_member_name=static_member_name)
+#
+#
+# def network_manager_group_static_member_delete(client,
+#                                                resource_group_name,
+#                                                network_manager_name,
+#                                                network_group_name,
+#                                                static_member_name):
+#     return client.delete(resource_group_name=resource_group_name,
+#                          network_manager_name=network_manager_name,
+#                          network_group_name=network_group_name,
+#                          static_member_name=static_member_name)

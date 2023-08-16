@@ -66,10 +66,10 @@ def load_command_table(self, _):
         client_factory=cf_scopeconnection
     )
 
-    network_staticmembers = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._static_members_operations#StaticMembersOperations.{}',
-        client_factory=cf_staticmembers
-    )
+    # network_staticmembers = CliCommandType(
+    #     operations_tmpl='azext_network_manager.vendored_sdks.operations._static_members_operations#StaticMembersOperations.{}',
+    #     client_factory=cf_staticmembers
+    # )
 
     network_subscriptionconnection = CliCommandType(
         operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#SubscriptionNetworkManagerConnectionsOperations.{}',
@@ -180,10 +180,10 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'network_manager_scope_connection_show')
         g.custom_command('delete', 'network_manager_scope_connection_delete', confirmation=True)
 
-    with self.command_group('network manager group static-member', network_staticmembers, client_factory=cf_staticmembers) as g:
-        g.custom_command('create', 'network_manager_group_static_member_create')
-        # g.generic_update_command('update', custom_func_name='network_manager_group_static_member_update')
-        g.custom_command('list', 'network_manager_group_static_member_list')
-        g.custom_show_command('show', 'network_manager_group_static_member_show')
-        # network_manager_group_static_member_show
-        g.custom_command('delete', 'network_manager_group_static_member_delete', confirmation=True)
+    # with self.command_group('network manager group static-member', network_staticmembers, client_factory=cf_staticmembers) as g:
+    #     g.custom_command('create', 'network_manager_group_static_member_create')
+    #     # g.generic_update_command('update', custom_func_name='network_manager_group_static_member_update')
+    #     g.custom_command('list', 'network_manager_group_static_member_list')
+    #     g.custom_show_command('show', 'network_manager_group_static_member_show')
+    #     # network_manager_group_static_member_show
+    #     g.custom_command('delete', 'network_manager_group_static_member_delete', confirmation=True)
