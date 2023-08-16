@@ -64,7 +64,7 @@ def update_fleet(cmd,
         operation_group="fleets"
     )
     fleet_patch = fleet_patch_model(tags=tags)
-    return client.update(resource_group_name, name, fleet_patch, None)
+    return client.update(resource_group_name, name, fleet_patch)
 
 
 def show_fleet(cmd,  # pylint: disable=unused-argument
