@@ -59,7 +59,7 @@ class NFApplicationConfiguration:
     dependsOnProfile: List[str]
     registryValuesPaths: List[str]
     imagePullSecretsValuesPaths: List[str]
-    valueMappingsPath: Path
+    valueMappingsFile: str
 
 
 @dataclass
@@ -295,7 +295,6 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             )
 
         bicep_contents: str = template.render(
-            deployParametersPath=Path(SCHEMAS_DIR_NAME, DEPLOYMENT_PARAMETERS_FILENAME),
             nf_application_configurations=self.nf_application_configurations,
         )
 
@@ -382,7 +381,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             dependsOnProfile=helm_package.depends_on,
             registryValuesPaths=list(registry_values_paths),
             imagePullSecretsValuesPaths=list(image_pull_secrets_values_paths),
-            valueMappingsPath=self._jsonify_value_mappings(helm_package),
+            valueMappingsFile=self._jsonify_value_mappings(helm_package),
         )
 
     @staticmethod
@@ -768,8 +767,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
         return (chart_name, chart_version)
 
-    def _jsonify_value_mappings(self, helm_package: HelmPackageConfig) -> Path:
-        """Yaml->JSON values mapping file, then return path to it."""
+    def _jsonify_value_mappings(self, helm_package: HelmPackageConfig) -> str:
+        """Yaml->JSON values mapping file, then return the filename."""
         assert self._tmp_dir
         mappings_yaml_file = helm_package.path_to_mappings
         mappings_dir = self._tmp_dir / CONFIG_MAPPINGS_DIR_NAME
@@ -784,4 +783,4 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             json.dump(data, file, indent=4)
 
         logger.debug("Generated parameter mappings for %s", helm_package.name)
-        return Path(CONFIG_MAPPINGS_DIR_NAME, f"{helm_package.name}-mappings.json")
+        return f"{helm_package.name}-mappings.json"

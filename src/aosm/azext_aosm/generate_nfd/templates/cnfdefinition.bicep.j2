@@ -36,7 +36,10 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
   properties: {
     // versionState should be changed to 'Active' once it is finalized.
     versionState: 'Preview'
-    deployParameters: string(loadJsonContent('{{ deployParametersPath }}'))
+    {#- Note that all paths in bicep must be specified using the forward slash #}
+    {#-  (/) character even if running on Windows. #}
+    {#- See https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/modules#local-file #}
+    deployParameters: string(loadJsonContent('schemas/deploymentParameters.json'))
     networkFunctionType: 'ContainerizedNetworkFunction'
     networkFunctionTemplate: {
       nfviType: 'AzureArcKubernetes'
@@ -65,7 +68,7 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
               releaseNamespace: '{{ configuration.chartName }}'
               releaseName: '{{ configuration.chartName }}'
               helmPackageVersion: '{{ configuration.chartVersion }}'
-              values: string(loadJsonContent('{{ configuration.valueMappingsPath }}'))
+              values: string(loadJsonContent('configMappings/{{ configuration.valueMappingsFile }}'))
             }
           }
         }
