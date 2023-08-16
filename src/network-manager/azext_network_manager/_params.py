@@ -482,73 +482,73 @@ def load_arguments(self, _):
     #     c.argument('kind', type=str, help='Required. Whether the rule is custom or default.Constant filled by server.', arg_type=get_enum_type(['Custom', 'Default']))
     #     c.ignore('user_rule')
 
-    with self.argument_context('network manager connection subscription create') as c:
-        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'],
-                   type=str, help='The name of the network manager connection.')
-        c.argument('network_manager_id', options_list=['--network-manager', '--network-manager-id'], type=str,
-                   help='the id of the network manager.')
-        c.argument('description', type=str, help='A description of the scope connection.')
-
-    with self.argument_context('network manager connection subscription update') as c:
-        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'],
-                   type=str, help='The name of the network manager connection.', id_part='name')
-        c.argument('description', type=str, help='A description of the scope connection.')
-        c.ignore('parameters')
-
-    with self.argument_context('network manager connection subscription list') as c:
-        c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
-                   'be returned by the server.')
-        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
-                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
-                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
-
-    with self.argument_context('network manager connection subscription show') as c:
-        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'],
-                   type=str, help='The name of the network manager connection.', id_part='name')
-
-    with self.argument_context('network manager connection subscription delete') as c:
-        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'],
-                   type=str, help='The name of the network manager connection.', id_part='name')
-
-    with self.argument_context('network manager connection management-group create') as c:
-        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'], type=str,
-                   help='The name of the network manager connection.')
-        c.argument('management_group_id', type=str,
-                   help='The management group id which uniquely identify the microsoft azure management group')
-        c.argument('network_manager_id', options_list=['--network-manager', '--network-manager-id'], type=str,
-                   help='the name or id of the network manager.')
-        c.argument('description', type=str, help='A description of the scope connection.')
-
-    with self.argument_context('network manager connection management-group update') as c:
-        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'], type=str,
-                   help='The name of the network manager connection.', id_part='child_name_1')
-        c.argument('management_group_id', type=str, help='The management group id which uniquely identify '
-                   'the microsoft azure management group', required=True, id_part='name')
-        c.argument('network_manager_id', options_list=['--network-manager', '--network-manager-id'], type=str,
-                   help='the name or id of the network manager.')
-        c.argument('description', type=str, help='A description of the scope connection.')
-        c.ignore('parameters')
-
-    with self.argument_context('network manager connection management-group list') as c:
-        c.argument('management_group_id', type=str,
-                   help='The management group id which uniquely identify the microsoft azure management group')
-        c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
-                   'be returned by the server.')
-        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
-                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
-                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
-
-    with self.argument_context('network manager connection management-group show') as c:
-        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'], type=str,
-                   help='The name of the network manager connection.', id_part='name')
-        c.argument('management_group_id', type=str,
-                   help='The management group id which uniquely identify the microsoft azure management group')
-
-    with self.argument_context('network manager connection management-group delete') as c:
-        c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'], type=str,
-                   help='The name of the network manager connection.', id_part='name')
-        c.argument('management_group_id', type=str,
-                   help='The management group id which uniquely identify the microsoft azure management group')
+    # with self.argument_context('network manager connection subscription create') as c:
+    #     c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'],
+    #                type=str, help='The name of the network manager connection.')
+    #     c.argument('network_manager_id', options_list=['--network-manager', '--network-manager-id'], type=str,
+    #                help='the id of the network manager.')
+    #     c.argument('description', type=str, help='A description of the scope connection.')
+    #
+    # with self.argument_context('network manager connection subscription update') as c:
+    #     c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'],
+    #                type=str, help='The name of the network manager connection.', id_part='name')
+    #     c.argument('description', type=str, help='A description of the scope connection.')
+    #     c.ignore('parameters')
+    #
+    # with self.argument_context('network manager connection subscription list') as c:
+    #     c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
+    #                'be returned by the server.')
+    #     c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
+    #                'result. If a previous response contains a nextLink element, the value of the nextLink element will '
+    #                'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
+    #
+    # with self.argument_context('network manager connection subscription show') as c:
+    #     c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'],
+    #                type=str, help='The name of the network manager connection.', id_part='name')
+    #
+    # with self.argument_context('network manager connection subscription delete') as c:
+    #     c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'],
+    #                type=str, help='The name of the network manager connection.', id_part='name')
+    #
+    # with self.argument_context('network manager connection management-group create') as c:
+    #     c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'], type=str,
+    #                help='The name of the network manager connection.')
+    #     c.argument('management_group_id', type=str,
+    #                help='The management group id which uniquely identify the microsoft azure management group')
+    #     c.argument('network_manager_id', options_list=['--network-manager', '--network-manager-id'], type=str,
+    #                help='the name or id of the network manager.')
+    #     c.argument('description', type=str, help='A description of the scope connection.')
+    #
+    # with self.argument_context('network manager connection management-group update') as c:
+    #     c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'], type=str,
+    #                help='The name of the network manager connection.', id_part='child_name_1')
+    #     c.argument('management_group_id', type=str, help='The management group id which uniquely identify '
+    #                'the microsoft azure management group', required=True, id_part='name')
+    #     c.argument('network_manager_id', options_list=['--network-manager', '--network-manager-id'], type=str,
+    #                help='the name or id of the network manager.')
+    #     c.argument('description', type=str, help='A description of the scope connection.')
+    #     c.ignore('parameters')
+    #
+    # with self.argument_context('network manager connection management-group list') as c:
+    #     c.argument('management_group_id', type=str,
+    #                help='The management group id which uniquely identify the microsoft azure management group')
+    #     c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
+    #                'be returned by the server.')
+    #     c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
+    #                'result. If a previous response contains a nextLink element, the value of the nextLink element will '
+    #                'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
+    #
+    # with self.argument_context('network manager connection management-group show') as c:
+    #     c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'], type=str,
+    #                help='The name of the network manager connection.', id_part='name')
+    #     c.argument('management_group_id', type=str,
+    #                help='The management group id which uniquely identify the microsoft azure management group')
+    #
+    # with self.argument_context('network manager connection management-group delete') as c:
+    #     c.argument('network_manager_connection_name', options_list=['--name', '-n', '--connection-name'], type=str,
+    #                help='The name of the network manager connection.', id_part='name')
+    #     c.argument('management_group_id', type=str,
+    #                help='The management group id which uniquely identify the microsoft azure management group')
 
     # with self.argument_context('network manager scope-connection create') as c:
     #     c.argument('resource_group_name', resource_group_name_type)

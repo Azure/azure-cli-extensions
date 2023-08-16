@@ -891,84 +891,84 @@ def network_manager_perimeter_associable_resource_type_list(client,
     return client.get(location=location)
 
 
-def network_manager_connection_subscription_list(client,
-                                                 top=None,
-                                                 skip_token=None):
-    return client.list(top=top,
-                       skip_token=skip_token)
-
-
-def network_manager_connection_subscription_create(client,
-                                                   network_manager_connection_name,
-                                                   network_manager_id,
-                                                   description=None):
-    parameters = {}
-    parameters['network_manager_id'] = network_manager_id
-    parameters['description'] = description
-    return client.create_or_update(network_manager_connection_name=network_manager_connection_name,
-                                   parameters=parameters)
-
-
-def network_manager_connection_subscription_update(instance,
-                                                   description=None):
-    if description is not None:
-        instance.description = description
-    return instance
-
-
-def network_manager_connection_subscription_show(client,
-                                                 network_manager_connection_name):
-    return client.get(network_manager_connection_name=network_manager_connection_name)
-
-
-def network_manager_connection_subscription_delete(client,
-                                                   network_manager_connection_name):
-    return client.delete(network_manager_connection_name=network_manager_connection_name)
-
-
-def network_manager_connection_management_group_list(client,
-                                                     management_group_id,
-                                                     top=None,
-                                                     skip_token=None):
-    return client.list(management_group_id=management_group_id,
-                       top=top,
-                       skip_token=skip_token)
-
-
-def network_manager_connection_management_group_create(client,
-                                                       network_manager_connection_name,
-                                                       management_group_id,
-                                                       network_manager_id,
-                                                       description=None):
-    parameters = {}
-    parameters['description'] = description
-    parameters['network_manager_id'] = network_manager_id
-    return client.create_or_update(network_manager_connection_name=network_manager_connection_name,
-                                   management_group_id=management_group_id,
-                                   parameters=parameters)
-
-
-def network_manager_connection_management_group_update(instance,
-                                                       management_group_id,
-                                                       network_manager_connection_name,
-                                                       description=None):
-    if description is not None:
-        instance.description = description
-    return instance
-
-
-def network_manager_connection_management_group_show(client,
-                                                     network_manager_connection_name,
-                                                     management_group_id):
-    return client.get(network_manager_connection_name=network_manager_connection_name,
-                      management_group_id=management_group_id)
-
-
-def network_manager_connection_management_group_delete(client,
-                                                       network_manager_connection_name,
-                                                       management_group_id):
-    return client.delete(network_manager_connection_name=network_manager_connection_name,
-                         management_group_id=management_group_id)
+# def network_manager_connection_subscription_list(client,
+#                                                  top=None,
+#                                                  skip_token=None):
+#     return client.list(top=top,
+#                        skip_token=skip_token)
+#
+#
+# def network_manager_connection_subscription_create(client,
+#                                                    network_manager_connection_name,
+#                                                    network_manager_id,
+#                                                    description=None):
+#     parameters = {}
+#     parameters['network_manager_id'] = network_manager_id
+#     parameters['description'] = description
+#     return client.create_or_update(network_manager_connection_name=network_manager_connection_name,
+#                                    parameters=parameters)
+#
+#
+# def network_manager_connection_subscription_update(instance,
+#                                                    description=None):
+#     if description is not None:
+#         instance.description = description
+#     return instance
+#
+#
+# def network_manager_connection_subscription_show(client,
+#                                                  network_manager_connection_name):
+#     return client.get(network_manager_connection_name=network_manager_connection_name)
+#
+#
+# def network_manager_connection_subscription_delete(client,
+#                                                    network_manager_connection_name):
+#     return client.delete(network_manager_connection_name=network_manager_connection_name)
+#
+#
+# def network_manager_connection_management_group_list(client,
+#                                                      management_group_id,
+#                                                      top=None,
+#                                                      skip_token=None):
+#     return client.list(management_group_id=management_group_id,
+#                        top=top,
+#                        skip_token=skip_token)
+#
+#
+# def network_manager_connection_management_group_create(client,
+#                                                        network_manager_connection_name,
+#                                                        management_group_id,
+#                                                        network_manager_id,
+#                                                        description=None):
+#     parameters = {}
+#     parameters['description'] = description
+#     parameters['network_manager_id'] = network_manager_id
+#     return client.create_or_update(network_manager_connection_name=network_manager_connection_name,
+#                                    management_group_id=management_group_id,
+#                                    parameters=parameters)
+#
+#
+# def network_manager_connection_management_group_update(instance,
+#                                                        management_group_id,
+#                                                        network_manager_connection_name,
+#                                                        description=None):
+#     if description is not None:
+#         instance.description = description
+#     return instance
+#
+#
+# def network_manager_connection_management_group_show(client,
+#                                                      network_manager_connection_name,
+#                                                      management_group_id):
+#     return client.get(network_manager_connection_name=network_manager_connection_name,
+#                       management_group_id=management_group_id)
+#
+#
+# def network_manager_connection_management_group_delete(client,
+#                                                        network_manager_connection_name,
+#                                                        management_group_id):
+#     return client.delete(network_manager_connection_name=network_manager_connection_name,
+#                          management_group_id=management_group_id)
 
 
 # def network_manager_scope_connection_list(client,
