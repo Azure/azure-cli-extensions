@@ -21,7 +21,7 @@ class Create(AAZCommand):
         az networkfabric neighborgroup create --resource-group "example-rg" --location "westus3" --resource-name "example-neighborgroup" --destination "{ipv4Addresses:['10.10.10.10']}"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
-        az networkfabric neighborgroup create --destination ??
+        az networkfabric neighborgroup create --destination "??"
     """
 
     _aaz_info = {

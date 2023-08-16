@@ -21,7 +21,7 @@ class Update(AAZCommand):
         az networkfabric neighborgroup update --resource-group "example-rg" --resource-name "example-neighborgroup" --destination "{ipv4Addresses:['10.10.10.10'],ipv6Addresses:['2F::/100']}"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
-        az networkfabric neighborgroup update --destination ??
+        az networkfabric neighborgroup update --destination "??"
     """
 
     _aaz_info = {
