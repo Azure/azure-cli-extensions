@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.command_modules.acs._validators import validate_registry_name
+from azure.cli.command_modules.acr._validators import validate_registry_name
 
 def load_arguments(self, _):
 
