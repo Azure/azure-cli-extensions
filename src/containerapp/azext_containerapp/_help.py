@@ -493,6 +493,15 @@ helps['containerapp env dapr-component'] = """
     short-summary: Commands to manage Dapr components for the Container Apps environment.
 """
 
+helps['containerapp env dapr-component init'] = """
+    type: command
+    short-summary: Initializes Dapr component specifications and their underlying resources.
+    examples:
+    - name: Initialize components for development.
+      text: |
+          az containerapp env dapr-component init -g MyResourceGroup --name MyEnvironment
+"""
+
 helps['containerapp env dapr-component list'] = """
     type: command
     short-summary: List Dapr components for an environment.

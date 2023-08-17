@@ -1341,6 +1341,16 @@ class DaprComponentClient():
 
         return app_list
 
+    @classmethod
+    def init(cls, cmd, resource_group_name, environment_name):
+        """
+        Initializes Dapr component specifications and their underlying resources
+        in the containerapp environment.
+
+        Usage: init [--statestore {true, false} (default true)] [--pubsub {true, false} (default true)] [--secretstore {true, false} (default true)] [--dev | --cloud (default dev)]
+        """
+        pass
+
 
 class StorageClient():
     api_version = CURRENT_API_VERSION
