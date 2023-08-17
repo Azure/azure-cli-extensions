@@ -476,38 +476,38 @@ helps['network manager security-admin-config rule-collection update'] = """
 #     type: group
 #     short-summary: Manage adminrule with network
 # """
-#
-# helps['network manager security-admin-config rule-collection rule create'] = """
-#     type: command
-#     short-summary: "Create a network manager security configuration admin rule."
-#     parameters:
-#       - name: --sources
-#         short-summary: "The CIDR or source IP ranges."
-#         long-summary: |
-#             Usage: --sources address-prefix=XX address-prefix-type=XX
-#
-#             address-prefix: Address prefix.
-#             address-prefix-type: Address prefix type. Address prefix type is an enum with values IPPrefix or ServiceTag.
-#
-#             Multiple actions can be specified by using more than one --sources argument.
-#       - name: --destinations
-#         short-summary: "The destination address prefixes. CIDR or destination IP ranges."
-#         long-summary: |
-#             Usage: --destination address-prefix=XX address-prefix-type=XX
-#
-#             address-prefix: Address prefix.
-#             address-prefix-type: Address prefix type. Address prefix type is an enum with values IPPrefix or ServiceTag.
-#
-#             Multiple actions can be specified by using more than one --destination argument.
-#     examples:
-#       - name: Create security admin rules
-#         text: |-
-#                az network manager security-admin-config rule-collection rule create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" \
-# --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleAdminRule" \
-# --kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound" \
-# --destinations address-prefix="*" address-prefix-type="IPPrefix"  --dest-port-ranges 22
-# """
-#
+
+helps['network manager security-admin-config rule-collection rule create'] = """
+    type: command
+    short-summary: "Create a network manager security configuration admin rule."
+    parameters:
+      - name: --sources
+        short-summary: "The CIDR or source IP ranges."
+        long-summary: |
+            Usage: --sources address-prefix=XX address-prefix-type=XX
+
+            address-prefix: Address prefix.
+            address-prefix-type: Address prefix type. Address prefix type is an enum with values IPPrefix or ServiceTag.
+
+            Multiple actions can be specified by using more than one --sources argument.
+      - name: --destinations
+        short-summary: "The destination address prefixes. CIDR or destination IP ranges."
+        long-summary: |
+            Usage: --destination address-prefix=XX address-prefix-type=XX
+
+            address-prefix: Address prefix.
+            address-prefix-type: Address prefix type. Address prefix type is an enum with values IPPrefix or ServiceTag.
+
+            Multiple actions can be specified by using more than one --destination argument.
+    examples:
+      - name: Create security admin rules
+        text: |-
+               az network manager security-admin-config rule-collection rule create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" \
+--resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleAdminRule" \
+--kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound" \
+--destinations address-prefix="*" address-prefix-type="IPPrefix"  --dest-port-ranges 22
+"""
+
 # helps['network manager security-admin-config rule-collection rule list'] = """
 #     type: command
 #     short-summary: "Retrieves a network manager security configuration admin rule."
@@ -517,35 +517,35 @@ helps['network manager security-admin-config rule-collection update'] = """
 #                az network manager security-admin-config rule-collection rule list --configuration-name "myTestSecurityConfig" --network-manager-name \
 # "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection"
 # """
-#
-# helps['network manager security-admin-config rule-collection rule update'] = """
-#     type: command
-#     short-summary: "Update a network manager security configuration admin rule in a subscription."
-#     parameters:
-#       - name: --sources
-#         short-summary: "The CIDR or source IP ranges."
-#         long-summary: |
-#             Usage: --sources address-prefix=XX address-prefix-type=XX
-#
-#             address-prefix: Address prefix.
-#             address-prefix-type: Address prefix type.
-#
-#             Multiple actions can be specified by using more than one --sources argument.
-#       - name: --destinations
-#         short-summary: "The destination address prefixes. CIDR or destination IP ranges."
-#         long-summary: |
-#             Usage: --destination address-prefix=XX address-prefix-type=XX
-#
-#             address-prefix: Address prefix.
-#             address-prefix-type: Address prefix type.
-#
-#             Multiple actions can be specified by using more than one --destination argument.
-#     examples:
-#       - name: Update security admin rule
-#         text: |-
-#                az network manager security-admin-config rule-collection rule update --configuration-name "myTestSecurityConfig" --network-manager-name \
-# "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleAdminRule" --access "Deny"
-# """
+
+helps['network manager security-admin-config rule-collection rule update'] = """
+    type: command
+    short-summary: "Update a network manager security configuration admin rule in a subscription."
+    parameters:
+      - name: --sources
+        short-summary: "The CIDR or source IP ranges."
+        long-summary: |
+            Usage: --sources address-prefix=XX address-prefix-type=XX
+
+            address-prefix: Address prefix.
+            address-prefix-type: Address prefix type.
+
+            Multiple actions can be specified by using more than one --sources argument.
+      - name: --destinations
+        short-summary: "The destination address prefixes. CIDR or destination IP ranges."
+        long-summary: |
+            Usage: --destination address-prefix=XX address-prefix-type=XX
+
+            address-prefix: Address prefix.
+            address-prefix-type: Address prefix type.
+
+            Multiple actions can be specified by using more than one --destination argument.
+    examples:
+      - name: Update security admin rule
+        text: |-
+               az network manager security-admin-config rule-collection rule update --configuration-name "myTestSecurityConfig" --network-manager-name \
+"testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleAdminRule" --access "Deny"
+"""
 #
 # helps['network manager security-admin-config rule-collection rule show'] = """
 #     type: command

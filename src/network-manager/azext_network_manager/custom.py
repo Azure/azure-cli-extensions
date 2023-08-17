@@ -867,52 +867,52 @@ def network_manager_admin_rule_update(cmd,
 #                          rule_name=rule_name)
 
 
-def network_manager_vnet_security_perimeter_list(client,
-                                                 resource_group_name,
-                                                 top=None,
-                                                 skip_token=None):
-    return client.list(resource_group_name=resource_group_name,
-                       top=top,
-                       skip_token=skip_token)
-
-
-def network_manager_vnet_security_perimeter_create(client,
-                                                   resource_group_name,
-                                                   network_security_perimeter_name,
-                                                   description=None):
-    parameters = {}
-    parameters['description'] = description
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   network_security_perimeter_name=network_security_perimeter_name,
-                                   parameters=parameters)
-
-
-def network_manager_vnet_security_perimeter_update(instance,
-                                                   resource_group_name,
-                                                   network_security_perimeter_name,
-                                                   description=None):
-    if description is not None:
-        instance.description = description
-    return instance
-
-
-def network_manager_vnet_security_perimeter_show(client,
-                                                 resource_group_name,
-                                                 network_security_perimeter_name):
-    return client.get(resource_group_name=resource_group_name,
-                      network_security_perimeter_name=network_security_perimeter_name)
-
-
-def network_manager_vnet_security_perimeter_delete(client,
-                                                   resource_group_name,
-                                                   network_security_perimeter_name):
-    return client.begin_delete(resource_group_name=resource_group_name,
-                               network_security_perimeter_name=network_security_perimeter_name)
-
-
-def network_manager_perimeter_associable_resource_type_list(client,
-                                                            location):
-    return client.get(location=location)
+# def network_manager_vnet_security_perimeter_list(client,
+#                                                  resource_group_name,
+#                                                  top=None,
+#                                                  skip_token=None):
+#     return client.list(resource_group_name=resource_group_name,
+#                        top=top,
+#                        skip_token=skip_token)
+#
+#
+# def network_manager_vnet_security_perimeter_create(client,
+#                                                    resource_group_name,
+#                                                    network_security_perimeter_name,
+#                                                    description=None):
+#     parameters = {}
+#     parameters['description'] = description
+#     return client.create_or_update(resource_group_name=resource_group_name,
+#                                    network_security_perimeter_name=network_security_perimeter_name,
+#                                    parameters=parameters)
+#
+#
+# def network_manager_vnet_security_perimeter_update(instance,
+#                                                    resource_group_name,
+#                                                    network_security_perimeter_name,
+#                                                    description=None):
+#     if description is not None:
+#         instance.description = description
+#     return instance
+#
+#
+# def network_manager_vnet_security_perimeter_show(client,
+#                                                  resource_group_name,
+#                                                  network_security_perimeter_name):
+#     return client.get(resource_group_name=resource_group_name,
+#                       network_security_perimeter_name=network_security_perimeter_name)
+#
+#
+# def network_manager_vnet_security_perimeter_delete(client,
+#                                                    resource_group_name,
+#                                                    network_security_perimeter_name):
+#     return client.begin_delete(resource_group_name=resource_group_name,
+#                                network_security_perimeter_name=network_security_perimeter_name)
+#
+#
+# def network_manager_perimeter_associable_resource_type_list(client,
+#                                                             location):
+#     return client.get(location=location)
 
 
 # def network_manager_connection_subscription_list(client,
