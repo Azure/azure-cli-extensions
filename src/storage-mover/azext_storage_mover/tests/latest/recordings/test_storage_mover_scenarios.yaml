@@ -1,7 +1,7 @@
 interactions:
 - request:
-    body: '{"location": "eastus2", "properties": {"description": "ExampleDesc"}, "tags":
-      {"key1": "value1"}}'
+    body: '{"location": "eastus2euap", "properties": {"description": "ExampleDesc"},
+      "tags": {"key1": "value1"}}'
     headers:
       Accept:
       - application/json
@@ -12,33 +12,33 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '97'
+      - '101'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n -l --tags --description
       User-Agent:
-      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002?api-version=2023-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002?api-version=2023-07-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","name":"storage-mover000002","type":"microsoft.storagemover/storagemovers","location":"eastus2","tags":{"key1":"value1"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-21T06:51:57.7497652Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-21T06:51:57.7497652Z"},"properties":{"description":"ExampleDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","name":"storage-mover000002","type":"microsoft.storagemover/storagemovers","location":"eastus2euap","tags":{"key1":"value1"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-08T06:28:21.7137071Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-08T06:28:21.7137071Z"},"properties":{"description":"ExampleDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '595'
+      - '599'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Feb 2023 06:52:01 GMT
+      - Tue, 08 Aug 2023 06:28:22 GMT
       etag:
-      - '"04000563-0000-0100-0000-63f46a0e0000"'
+      - '"0000e68c-0000-3400-0000-64d1e0860000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - ce4f54e4-ab7f-46ef-abe8-747b8f42f77b
+      - 153abf8a-eee9-44a8-86a4-b81d0005b084
       pragma:
       - no-cache
       strict-transport-security:
@@ -49,6 +49,8 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/1dbfa208-5d47-4bdd-ac63-e9ebab82ffc3
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
@@ -70,23 +72,23 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002?api-version=2023-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002?api-version=2023-07-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","name":"storage-mover000002","type":"microsoft.storagemover/storagemovers","location":"eastus2","tags":{"key1":"value1"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-21T06:51:57.7497652Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-21T06:51:57.7497652Z"},"properties":{"description":"ExampleDesc","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","name":"storage-mover000002","type":"microsoft.storagemover/storagemovers","location":"eastus2euap","tags":{"key1":"value1"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-08T06:28:21.7137071Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-08T06:28:21.7137071Z"},"properties":{"description":"ExampleDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '595'
+      - '599'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Feb 2023 06:52:01 GMT
+      - Tue, 08 Aug 2023 06:28:23 GMT
       etag:
-      - '"04000563-0000-0100-0000-63f46a0e0000"'
+      - '"0000e68c-0000-3400-0000-64d1e0860000"'
       expires:
       - '-1'
       pragma:
@@ -118,21 +120,21 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers?api-version=2023-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers?api-version=2023-07-01-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","name":"storage-mover000002","type":"microsoft.storagemover/storagemovers","location":"eastus2","tags":{"key1":"value1"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-21T06:51:57.7497652Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-21T06:51:57.7497652Z"},"properties":{"description":"ExampleDesc","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","name":"storage-mover000002","type":"microsoft.storagemover/storagemovers","location":"eastus2euap","tags":{"key1":"value1"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-08T06:28:21.7137071Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-08T06:28:21.7137071Z"},"properties":{"description":"ExampleDesc","provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '607'
+      - '611'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Feb 2023 06:52:03 GMT
+      - Tue, 08 Aug 2023 06:28:24 GMT
       expires:
       - '-1'
       pragma:
@@ -144,16 +146,17 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 83fa22d5-bc65-476b-aa03-e90ef024fa53
-      - c9d94b9c-b182-4ce8-a18e-d9d91e0030e9
-      - 48463766-23ab-454a-bd0a-0ab4ecafc3c2
-      - 14f6883d-3679-443e-bb55-7dd6c759ffc7
-      - fd639395-efec-4212-a88a-d530f3156b2a
+      - 952e0f82-9236-4718-8672-dd02343ccab6
+      - 2fc323c7-ab2c-484a-8e55-17ac77d7a922
+      - 89eaf4b2-9db8-4fa7-a899-d05092457911
+      - 0ef82bab-963f-4052-aa62-5578ccc63d7c
+      - 508fa2fe-7f94-4671-9962-ac6aa1ee8882
+      - 1f08c370-b122-4cfd-8bc7-8bbdbd657eb9
     status:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"description": "ExampleDesc2"}, "tags": {"key2": "value2"}}'
+    body: null
     headers:
       Accept:
       - application/json
@@ -163,34 +166,28 @@ interactions:
       - storage-mover update
       Connection:
       - keep-alive
-      Content-Length:
-      - '75'
-      Content-Type:
-      - application/json
       ParameterSetName:
       - -g -n --tags --description
       User-Agent:
-      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
-    method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002?api-version=2023-03-01
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002?api-version=2023-07-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","name":"storage-mover000002","type":"microsoft.storagemover/storagemovers","location":"eastus2","tags":{"key2":"value2"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-02-21T06:51:57.7497652Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-21T06:52:04.9285362Z"},"properties":{"description":"ExampleDesc2","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","name":"storage-mover000002","type":"microsoft.storagemover/storagemovers","location":"eastus2euap","tags":{"key1":"value1"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-08T06:28:21.7137071Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-08T06:28:21.7137071Z"},"properties":{"description":"ExampleDesc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '596'
+      - '599'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Feb 2023 06:52:08 GMT
+      - Tue, 08 Aug 2023 06:28:26 GMT
       etag:
-      - '"04000763-0000-0100-0000-63f46a150000"'
+      - '"0000e68c-0000-3400-0000-64d1e0860000"'
       expires:
       - '-1'
-      mise-correlation-id:
-      - 1a7343ae-d618-4c01-a300-3e50b10af40b
       pragma:
       - no-cache
       strict-transport-security:
@@ -201,6 +198,63 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "properties": {"description": "ExampleDesc2"},
+      "tags": {"key2": "value2"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '102'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --tags --description
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002?api-version=2023-07-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","name":"storage-mover000002","type":"microsoft.storagemover/storagemovers","location":"eastus2euap","tags":{"key2":"value2"},"systemData":{"createdBy":"zhiyihuang@microsoft.com","createdByType":"User","createdAt":"2023-08-08T06:28:21.7137071Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-08T06:28:27.4800634Z"},"properties":{"description":"ExampleDesc2","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '600'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 08 Aug 2023 06:28:27 GMT
+      etag:
+      - '"0000e88c-0000-3400-0000-64d1e08b0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 464c6b5d-fe59-4eac-b626-425999e81fdd
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/a1f35428-8219-4adf-8636-d825ad43c6f6
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
@@ -224,15 +278,15 @@ interactions:
       ParameterSetName:
       - -g -n -y
       User-Agent:
-      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002?api-version=2023-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002?api-version=2023-07-01-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2/operationStatuses/705aa74b-d9ec-4b95-adfc-0d2c7dd08a8d*1B19B3AD7BD3298B3A9F08898AFBE68EFEE83BEAC4BB31F4F4E1F857A07F01A0?api-version=2023-03-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2EUAP/operationStatuses/ccb2ea80-2006-4af4-ae74-3df17233a0ff*D32B3260D56E26AA5FBF08CC4F358A49202AC6BFB35B84DAD202FD1D2F4A1AF3?api-version=2023-07-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -240,13 +294,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Feb 2023 06:52:12 GMT
+      - Tue, 08 Aug 2023 06:28:28 GMT
       etag:
-      - '"04000a63-0000-0100-0000-63f46a1c0000"'
+      - '"0000e98c-0000-3400-0000-64d1e08d0000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2/operationStatuses/705aa74b-d9ec-4b95-adfc-0d2c7dd08a8d*1B19B3AD7BD3298B3A9F08898AFBE68EFEE83BEAC4BB31F4F4E1F857A07F01A0?api-version=2023-03-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2EUAP/operationStatuses/ccb2ea80-2006-4af4-ae74-3df17233a0ff*D32B3260D56E26AA5FBF08CC4F358A49202AC6BFB35B84DAD202FD1D2F4A1AF3?api-version=2023-07-01-preview
       pragma:
       - no-cache
       strict-transport-security:
@@ -274,23 +328,69 @@ interactions:
       ParameterSetName:
       - -g -n -y
       User-Agent:
-      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2/operationStatuses/705aa74b-d9ec-4b95-adfc-0d2c7dd08a8d*1B19B3AD7BD3298B3A9F08898AFBE68EFEE83BEAC4BB31F4F4E1F857A07F01A0?api-version=2023-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2EUAP/operationStatuses/ccb2ea80-2006-4af4-ae74-3df17233a0ff*D32B3260D56E26AA5FBF08CC4F358A49202AC6BFB35B84DAD202FD1D2F4A1AF3?api-version=2023-07-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2/operationStatuses/705aa74b-d9ec-4b95-adfc-0d2c7dd08a8d*1B19B3AD7BD3298B3A9F08898AFBE68EFEE83BEAC4BB31F4F4E1F857A07F01A0","name":"705aa74b-d9ec-4b95-adfc-0d2c7dd08a8d*1B19B3AD7BD3298B3A9F08898AFBE68EFEE83BEAC4BB31F4F4E1F857A07F01A0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","status":"Succeeded","startTime":"2023-02-21T06:52:11.774029Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2EUAP/operationStatuses/ccb2ea80-2006-4af4-ae74-3df17233a0ff*D32B3260D56E26AA5FBF08CC4F358A49202AC6BFB35B84DAD202FD1D2F4A1AF3","name":"ccb2ea80-2006-4af4-ae74-3df17233a0ff*D32B3260D56E26AA5FBF08CC4F358A49202AC6BFB35B84DAD202FD1D2F4A1AF3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","status":"Deleting","startTime":"2023-08-08T06:28:29.2591751Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/eastus2euap/operationStatuses/ccb2ea80-2006-4af4-ae74-3df17233a0ff*D32B3260D56E26AA5FBF08CC4F358A49202AC6BFB35B84DAD202FD1D2F4A1AF3?api-version=2023-07-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '575'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 08 Aug 2023 06:28:28 GMT
+      etag:
+      - '"06002f8a-0000-3400-0000-64d1e08d0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/eastus2euap/operationStatuses/ccb2ea80-2006-4af4-ae74-3df17233a0ff*D32B3260D56E26AA5FBF08CC4F358A49202AC6BFB35B84DAD202FD1D2F4A1AF3?api-version=2023-07-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage-mover delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2EUAP/operationStatuses/ccb2ea80-2006-4af4-ae74-3df17233a0ff*D32B3260D56E26AA5FBF08CC4F358A49202AC6BFB35B84DAD202FD1D2F4A1AF3?api-version=2023-07-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2EUAP/operationStatuses/ccb2ea80-2006-4af4-ae74-3df17233a0ff*D32B3260D56E26AA5FBF08CC4F358A49202AC6BFB35B84DAD202FD1D2F4A1AF3","name":"ccb2ea80-2006-4af4-ae74-3df17233a0ff*D32B3260D56E26AA5FBF08CC4F358A49202AC6BFB35B84DAD202FD1D2F4A1AF3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","status":"Succeeded","startTime":"2023-08-08T06:28:29.2591751Z","properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '589'
+      - '594'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Feb 2023 06:52:42 GMT
+      - Tue, 08 Aug 2023 06:28:59 GMT
       etag:
-      - '"0600b6f0-0000-0100-0000-63f46a310000"'
+      - '"0600668a-0000-3400-0000-64d1e0a20000"'
       expires:
       - '-1'
       pragma:
@@ -320,23 +420,23 @@ interactions:
       ParameterSetName:
       - -g -n -y
       User-Agent:
-      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2/operationStatuses/705aa74b-d9ec-4b95-adfc-0d2c7dd08a8d*1B19B3AD7BD3298B3A9F08898AFBE68EFEE83BEAC4BB31F4F4E1F857A07F01A0?api-version=2023-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2EUAP/operationStatuses/ccb2ea80-2006-4af4-ae74-3df17233a0ff*D32B3260D56E26AA5FBF08CC4F358A49202AC6BFB35B84DAD202FD1D2F4A1AF3?api-version=2023-07-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2/operationStatuses/705aa74b-d9ec-4b95-adfc-0d2c7dd08a8d*1B19B3AD7BD3298B3A9F08898AFBE68EFEE83BEAC4BB31F4F4E1F857A07F01A0","name":"705aa74b-d9ec-4b95-adfc-0d2c7dd08a8d*1B19B3AD7BD3298B3A9F08898AFBE68EFEE83BEAC4BB31F4F4E1F857A07F01A0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","status":"Succeeded","startTime":"2023-02-21T06:52:11.774029Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageMover/locations/EASTUS2EUAP/operationStatuses/ccb2ea80-2006-4af4-ae74-3df17233a0ff*D32B3260D56E26AA5FBF08CC4F358A49202AC6BFB35B84DAD202FD1D2F4A1AF3","name":"ccb2ea80-2006-4af4-ae74-3df17233a0ff*D32B3260D56E26AA5FBF08CC4F358A49202AC6BFB35B84DAD202FD1D2F4A1AF3","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers/storage-mover000002","status":"Succeeded","startTime":"2023-08-08T06:28:29.2591751Z","properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '589'
+      - '594'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Feb 2023 06:52:42 GMT
+      - Tue, 08 Aug 2023 06:29:00 GMT
       etag:
-      - '"0600b6f0-0000-0100-0000-63f46a310000"'
+      - '"0600668a-0000-3400-0000-64d1e0a20000"'
       expires:
       - '-1'
       pragma:
@@ -366,9 +466,9 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.45.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers?api-version=2023-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.StorageMover/storageMovers?api-version=2023-07-01-preview
   response:
     body:
       string: '{"value":[]}'
@@ -380,7 +480,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 21 Feb 2023 06:52:44 GMT
+      - Tue, 08 Aug 2023 06:29:01 GMT
       expires:
       - '-1'
       pragma:
@@ -392,11 +492,12 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - cd4b0d90-7772-420d-bb5e-9b763755e964
-      - c9948962-5fc3-4aa8-acb1-13baaa2080f0
-      - f49d0c49-8e5d-4d1d-b3a5-11f66aecc7b5
-      - 603383b3-4599-4c59-8683-31ac5a05040b
-      - 03a9a675-5954-4a9b-8143-a919fb3af14e
+      - 79ae79dc-4d27-4c79-bc7d-0e4e01f09ebd
+      - 0bb2849c-4a0e-45ce-b58b-e67cefc40345
+      - d58ef6db-ad2f-4717-a16b-e5ebfd27f280
+      - 0f21cc8c-dc1d-477d-b4d2-0b674512a2ee
+      - 8a224f2d-6936-4c97-8863-e2e94782b743
+      - 81b2539f-7087-4f1e-996c-bae6387f6c82
     status:
       code: 200
       message: OK

@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "networkfabric routepolicy show",
 )
 class Show(AAZCommand):
-    """Show details of the provided Route Policy resource.
+    """Show details of the provided Route Policy resource
 
     :example: Show the Route Policy
         az networkfabric routepolicy show --resource-group "example-rg" --resource-name "example-routepolicy"
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies/{}", "2023-06-15"],
         ]
     }
 
@@ -50,7 +50,7 @@ class Show(AAZCommand):
         )
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the Route Policy",
+            help="Name of the Route Policy.",
             required=True,
             id_part="name",
         )
@@ -121,7 +121,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -176,7 +176,22 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.address_family_type = AAZStrType(
+                serialized_name="addressFamilyType",
+            )
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            properties.network_fabric_id = AAZStrType(
+                serialized_name="networkFabricId",
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -242,6 +257,7 @@ class Show(AAZCommand):
             condition.ip_prefix_id = AAZStrType(
                 serialized_name="ipPrefixId",
             )
+            condition.type = AAZStrType()
 
             ip_community_ids = cls._schema_on_200.properties.statements.Element.condition.ip_community_ids
             ip_community_ids.Element = AAZStrType()

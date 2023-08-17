@@ -169,6 +169,7 @@ Ingress = {
     "targetPort": None,
     "transport": None,  # 'auto', 'http', 'http2', 'tcp'
     "exposedPort": None,
+    "allowInsecure": False,
     "traffic": None,  # TrafficWeight
     "customDomains": None,  # [CustomDomain]
     "ipSecurityRestrictions": None,  # [IPSecurityRestrictions]
@@ -206,10 +207,8 @@ JobTemplate = {
 
 # Added template for starting job executions
 JobExecutionTemplate = {
-    "template": {
-        "containers": None,  # [Container]
-        "initContainers": None  # [Container]
-    }
+    "containers": None,  # [Container]
+    "initContainers": None  # [Container]
 }
 
 JobConfiguration = {

@@ -323,7 +323,6 @@ class ContainerAppsJob(Resource):  # pylint: disable=too-many-instance-attribute
             resource_group_name=self.resource_group.name,
             image=self.image,
             managed_env=self.env.get_rid(),
-            target_port=self.target_port,
             registry_server=None if no_registry else self.registry_server,
             registry_pass=None if no_registry else self.registry_pass,
             registry_user=None if no_registry else self.registry_user,

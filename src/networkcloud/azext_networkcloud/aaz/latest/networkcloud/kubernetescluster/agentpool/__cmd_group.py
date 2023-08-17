@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "networkcloud kubernetescluster agentpool",
-    is_experimental=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Kubernetes cluster's agent pool

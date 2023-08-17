@@ -14,9 +14,7 @@ from azext_networkcloud.aaz.latest.networkcloud.baremetalmachine import (
     RunReadCommand as _RunReadCommand,
 )
 from azext_networkcloud.operations.custom_properties import CustomActionProperties
-from azext_networkcloud.operations.baremetalmachine._run_command import (
-    RunCommandOptions,
-)
+from azext_networkcloud.operations.run_command_options import RunCommandOptions
 from azure.cli.core.aaz import AAZObjectType, AAZStrArg, AAZStrArgFormat
 
 

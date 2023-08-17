@@ -34,9 +34,10 @@ def step_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az networkfabric nni create --resource-group {rg} --resource-name {name} --fabric {fabric}'
-             ' --is-management-type {isManagementType} --use-option-b {useOptionB}'
+             ' --nni-type {nniType} --is-management-type {isManagementType} --use-option-b {useOptionB}'
              ' --layer2-configuration {layer2Configuration}'
-             ' --layer3-configuration {layer3Configuration}', checks=checks)
+             ' --option-b-layer3-configuration {optionBLayer3Configuration} --import-route-policy {importRoutePolicy}'
+             ' --export-route-policy {exportRoutePolicy}', checks=checks)
 
 def step_show(test, checks=None):
     '''nni show operation'''
@@ -44,13 +45,6 @@ def step_show(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric nni show --resource-name {name} --resource-group {rg} --fabric {fabric}')
-    
-def step_delete(test, checks=None):
-    '''nni delete operation'''
-    if checks is None:
-        checks = []
-    test.cmd(
-        'az networkfabric nni delete --resource-name {name} --resource-group {rg} --fabric {fabric}')
 
 def step_list_resource_group(test, checks=None):
     '''nni list by resource group operation'''
@@ -58,7 +52,14 @@ def step_list_resource_group(test, checks=None):
         checks = []
     test.cmd('az networkfabric nni list --resource-group {rg} --fabric {fabric}')
 
-class NNIScenarioTest1(ScenarioTest):
+def step_delete(test, checks=None):
+    '''nni delete operation'''
+    if checks is None:
+        checks = []
+    test.cmd(
+        'az networkfabric nni delete --resource-name {name} --resource-group {rg} --fabric {fabric}')
+
+class GA_NNIScenarioTest1(ScenarioTest):
     ''' NNIScenario test'''
 
     def __init__(self, *args, **kwargs):
@@ -67,12 +68,15 @@ class NNIScenarioTest1(ScenarioTest):
             'name': CONFIG.get('NETWORK_TO_NETWORK_INTERCONNECT', 'name'),
             'rg': CONFIG.get('NETWORK_TO_NETWORK_INTERCONNECT', 'resource_group'),
             'fabric': CONFIG.get('NETWORK_TO_NETWORK_INTERCONNECT', 'fabric'),
+            'nniType': CONFIG.get('NETWORK_TO_NETWORK_INTERCONNECT', 'nni_type'),
             'isManagementType': CONFIG.get('NETWORK_TO_NETWORK_INTERCONNECT', 'is_management_type'),
             'useOptionB': CONFIG.get('NETWORK_TO_NETWORK_INTERCONNECT', 'use_option_b'),
             'layer2Configuration': CONFIG.get('NETWORK_TO_NETWORK_INTERCONNECT', 'layer2_Configuration'),
-            'layer3Configuration': CONFIG.get('NETWORK_TO_NETWORK_INTERCONNECT', 'layer3_Configuration')
+            'optionBLayer3Configuration': CONFIG.get('NETWORK_TO_NETWORK_INTERCONNECT', 'option_b_layer3_configuration'),
+            'importRoutePolicy': CONFIG.get('NETWORK_TO_NETWORK_INTERCONNECT', 'import_route_policy'),
+            'exportRoutePolicy': CONFIG.get('NETWORK_TO_NETWORK_INTERCONNECT', 'export_route_policy')
         })
 
-    def test_nni_scenario1(self):
+    def test_GA_nni_scenario1(self):
         ''' test scenario for NNI CRUD operations'''
         call_scenario1(self)

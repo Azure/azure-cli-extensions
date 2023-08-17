@@ -12,7 +12,8 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
 
 from ._validators import (validate_memory, validate_cpu, validate_managed_env_name_or_id, validate_registry_server,
                           validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress,
-                          validate_storage_name_or_id, validate_cors_max_age)
+                          validate_storage_name_or_id, validate_cors_max_age, validate_env_name_or_id,
+                          validate_allow_insecure)
 from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION, MAXIMUM_CONTAINER_APP_NAME_LENGTH, LOG_TYPE_CONSOLE, LOG_TYPE_SYSTEM
 
 
@@ -115,12 +116,13 @@ def load_arguments(self, _):
         c.argument('target_port', type=int, validator=validate_target_port, help="The application port used for ingress traffic.")
         c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2', 'tcp']), help="The transport protocol used for ingress traffic.")
         c.argument('exposed_port', type=int, help="Additional exposed port. Only supported by tcp transport protocol. Must be unique per environment if the app ingress is external.")
+        c.argument('allow_insecure', validator=validate_allow_insecure, arg_type=get_three_state_flag(), help='Allow insecure connections for ingress traffic.')
 
     with self.argument_context('containerapp create') as c:
         c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
-        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="Name of the workload profile to run the app on.", is_preview=True)
-        c.argument('secret_volume_mount', help="Path to mount all secrets e.g. mnt/secrets", is_preview=True)
-        c.argument('termination_grace_period', type=int, options_list=['--termination-grace-period', '--tgp'], help="Duration in seconds a replica is given to gracefully shut down before it is forcefully terminated. (Default: 30)", is_preview=True)
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="Name of the workload profile to run the app on.")
+        c.argument('secret_volume_mount', help="Path to mount all secrets e.g. mnt/secrets")
+        c.argument('termination_grace_period', type=int, options_list=['--termination-grace-period', '--tgp'], help="Duration in seconds a replica is given to gracefully shut down before it is forcefully terminated. (Default: 30)")
         c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md.")
 
     with self.argument_context('containerapp create', arg_group='Identity') as c:
@@ -154,9 +156,9 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp update', arg_group='Container') as c:
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
-        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile', is_preview=True)
-        c.argument('secret_volume_mount', help="Path to mount all secrets e.g. mnt/secrets", is_preview=True)
-        c.argument('termination_grace_period', type=int, options_list=['--termination-grace-period', '--tgp'], help="Duration in seconds a replica is given to gracefully shut down before it is forcefully terminated. (Default: 30)", is_preview=True)
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
+        c.argument('secret_volume_mount', help="Path to mount all secrets e.g. mnt/secrets")
+        c.argument('termination_grace_period', type=int, options_list=['--termination-grace-period', '--tgp'], help="Duration in seconds a replica is given to gracefully shut down before it is forcefully terminated. (Default: 30)")
 
     # Springboard
     with self.argument_context('containerapp update', arg_group='Service Binding') as c:
@@ -204,7 +206,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env create') as c:
         c.argument('zone_redundant', options_list=["--zone-redundant", "-z"], help="Enable zone redundancy on the environment. Cannot be used without --infrastructure-subnet-resource-id. If used with --location, the subnet's location must match")
-        c.argument('enable_workload_profiles', action='store_true', options_list=["--enable-workload-profiles", "-w"], help="Allow this environment to have workload profiles", is_preview=True)
+        c.argument('enable_workload_profiles', arg_type=get_three_state_flag(), options_list=["--enable-workload-profiles", "-w"], help="Boolean indicating if the environment is enabled to have workload profiles", is_preview=True)
 
     with self.argument_context('containerapp env update') as c:
         c.argument('name', name_type, help='Name of the Container Apps environment.')
@@ -284,7 +286,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp revision copy') as c:
         c.argument('from_revision', help='Revision to copy from. Default: latest revision.')
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
-        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile', is_preview=True)
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
 
     with self.argument_context('containerapp revision label') as c:
         c.argument('name', id_part=None)
@@ -431,7 +433,7 @@ def load_arguments(self, _):
         c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
         c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
         c.argument('environment', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
-        c.argument('validation_method', options_list=['--validation-method', '-v'], help='Validation method of custom domain ownership.', is_preview=True)
+        c.argument('validation_method', options_list=['--validation-method', '-v'], help='Validation method of custom domain ownership.')
 
     with self.argument_context('containerapp hostname add') as c:
         c.argument('hostname', help='The custom domain name.')
@@ -522,3 +524,8 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp job identity remove') as c:
         c.argument('user_assigned', nargs='*', help="Space-separated user identities. If no user identities are specified, all user identities will be removed.")
+
+    # params for preview
+    with self.argument_context('containerapp') as c:
+        c.argument('managed_env', validator=validate_env_name_or_id, options_list=['--environment'], help="Name or resource ID of the container app's environment.")
+        c.argument('environment_type', arg_type=get_enum_type(["managed", "connected"]), help="Type of environment.", is_preview=True)
