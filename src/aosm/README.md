@@ -22,7 +22,7 @@ https://github.com/jddarby/azure-cli-extensions/releases/download/aosm-extension
 To install, download this wheel and run:
 `az extension add --source path/to/aosm-0.2.0-py2.py3-none-any.whl`
 
-You must also have helm installed, instructions can be found here: https://helm.sh/docs/intro/install/#through-package-managers
+For CNFs you will also need helm and docker installed. See [CNFs](#cnfs) below for details.
 
 ## Updating 
 
@@ -91,6 +91,10 @@ For NSDs, you will need to have a Resource Group with a deployed Publisher, Arti
 
 
 ### Command examples
+
+#### Before you start
+`az login` to login to the Azure CLI.
+`az account set --subscription <subscription>` to choose the subscription you will work on.
 
 #### NFDs
 

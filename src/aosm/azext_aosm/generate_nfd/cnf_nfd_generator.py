@@ -43,9 +43,7 @@ logger = get_logger(__name__)
 
 @dataclass
 class Artifact:
-    """
-    Information about an artifact.
-    """
+    """Information about an artifact."""
 
     name: str
     version: str
@@ -319,8 +317,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         """
         Copy files from the temp directory to the output directory.
 
-        Files are the config mappings, schema and bicep templates (artifact manifest
-        and NFDV).
+        Files are the config mappings, schema and bicep templates (artifact manifest and
+        NFDV).
         """
         assert self._tmp_dir
 

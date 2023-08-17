@@ -134,9 +134,7 @@ mock_cmd = FakeCmd()
 
 
 def validate_schema_against_metaschema(schema_data):
-    """
-    Validate that the schema produced by the CLI matches the AOSM metaschema.
-    """
+    """Validate that the schema produced by the CLI matches the AOSM metaschema."""
 
     # There is a bug in the jsonschema module that means that it hits an error in with
     # the "$id" bit of the metaschema.  Here we use a modified version of the metaschema
@@ -151,9 +149,7 @@ def validate_schema_against_metaschema(schema_data):
 
 
 def validate_json_against_schema(json_data, schema_file):
-    """
-    Validate some test data against the schema produced by the CLI.
-    """
+    """Validate some test data against the schema produced by the CLI."""
     with open(schema_file, "r", encoding="utf8") as f:
         schema = json.load(f)
 
@@ -183,7 +179,7 @@ def build_bicep(bicep_template_path):
 
 def compare_to_expected_output(expected_folder_name: str):
     """
-    Compares nsd-bicep-templates to the supplied folder name
+    Compares nsd-bicep-templates to the supplied folder name.
 
     :param expected_folder_name: The name of the folder within nsd_output to compare
     with.
@@ -213,9 +209,7 @@ def compare_to_expected_output(expected_folder_name: str):
 
 class TestNSDGenerator:
     def test_generate_config(self):
-        """
-        Test generating a config file for a VNF.
-        """
+        """Test generating a config file for a VNF."""
         starting_directory = os.getcwd()
         with TemporaryDirectory() as test_dir:
             os.chdir(test_dir)
@@ -228,9 +222,7 @@ class TestNSDGenerator:
 
     @patch("azext_aosm.custom.cf_resources")
     def test_build(self, cf_resources):
-        """
-        Test building the NSD bicep templates.
-        """
+        """Test building the NSD bicep templates."""
         starting_directory = os.getcwd()
         with TemporaryDirectory() as test_dir:
             os.chdir(test_dir)
@@ -254,9 +246,7 @@ class TestNSDGenerator:
 
     @patch("azext_aosm.custom.cf_resources")
     def test_build_multiple_instances(self, cf_resources):
-        """
-        Test building the NSD bicep templates with multiple NFs allowed.
-        """
+        """Test building the NSD bicep templates with multiple NFs allowed."""
         starting_directory = os.getcwd()
         with TemporaryDirectory() as test_dir:
             os.chdir(test_dir)
@@ -280,9 +270,7 @@ class TestNSDGenerator:
 
     @patch("azext_aosm.custom.cf_resources")
     def test_build_multiple_nfs(self, cf_resources):
-        """
-        Test building the NSD bicep templates with multiple NFs allowed.
-        """
+        """Test building the NSD bicep templates with multiple NFs allowed."""
         starting_directory = os.getcwd()
         with TemporaryDirectory() as test_dir:
             os.chdir(test_dir)

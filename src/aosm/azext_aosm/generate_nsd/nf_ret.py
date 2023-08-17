@@ -19,9 +19,7 @@ logger = get_logger(__name__)
 
 
 class NFRETGenerator:
-    """
-    Represents a single network function resource element template withing an NSD.
-    """
+    """Represents a single network function resource element template withing an NSD."""
 
     def __init__(
         self, api_clients: ApiClients, config: NFDRETConfiguration, cg_schema_name: str
@@ -63,7 +61,7 @@ class NFRETGenerator:
     @property
     def config_mappings(self) -> Dict[str, Any]:
         """
-                Return the contents of the config mapping file for this RET.
+        Return the contents of the config mapping file for this RET.
 
                 Output will look something like:
         {
@@ -129,9 +127,7 @@ class NFRETGenerator:
 
     @property
     def config_schema_snippet(self) -> Dict[str, Any]:
-        """
-        Return the CGS snippet for this NF.
-        """
+        """Return the CGS snippet for this NF."""
         nfdv_version_description_string = (
             f"The version of the {self.config.name} "
             "NFD to use.  This version must be compatible with (have the same "

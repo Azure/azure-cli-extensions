@@ -15,9 +15,7 @@ mock_vnf_folder = ((Path(__file__).parent) / "mock_vnf").resolve()
 
 class TestVNF(unittest.TestCase):
     def test_generate_config(self):
-        """
-        Test generating a config file for a VNF.
-        """
+        """Test generating a config file for a VNF."""
         starting_directory = os.getcwd()
         with TemporaryDirectory() as test_dir:
             os.chdir(test_dir)
@@ -29,9 +27,7 @@ class TestVNF(unittest.TestCase):
                 os.chdir(starting_directory)
 
     def test_build(self):
-        """
-        Test building an NFDV for a VNF.
-        """
+        """Test building an NFDV for a VNF."""
         starting_directory = os.getcwd()
         with TemporaryDirectory() as test_dir:
             os.chdir(test_dir)
@@ -52,9 +48,7 @@ class TestVNF(unittest.TestCase):
                 os.chdir(starting_directory)
 
     def test_build_with_ordered_params(self):
-        """
-        Test building an NFDV for a VNF.
-        """
+        """Test building an NFDV for a VNF."""
         starting_directory = os.getcwd()
         with TemporaryDirectory() as test_dir:
             os.chdir(test_dir)

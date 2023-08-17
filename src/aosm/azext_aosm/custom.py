@@ -103,7 +103,11 @@ def _get_config_from_file(config_file: str, configuration_type: str) -> Configur
 
 
 def _generate_nfd(
-    definition_type: str, config: NFConfiguration, order_params: bool, interactive: bool, force: bool = False
+    definition_type: str,
+    config: NFConfiguration,
+    order_params: bool,
+    interactive: bool,
+    force: bool = False,
 ):
     """Generate a Network Function Definition for the given type and config."""
     nfd_generator: NFDGenerator
@@ -199,7 +203,7 @@ def delete_published_definition(
     definition_type,
     config_file,
     clean=False,
-    force=False
+    force=False,
 ):
     """
     Delete a published definition.
@@ -277,7 +281,9 @@ def _generate_config(configuration_type: str, output_file: str = "input.json"):
         )
 
 
-def build_design(cmd, client: HybridNetworkManagementClient, config_file: str, force: bool = False):
+def build_design(
+    cmd, client: HybridNetworkManagementClient, config_file: str, force: bool = False
+):
     """
     Build a Network Service Design.
 
@@ -386,7 +392,9 @@ def publish_design(
     deployer.deploy_nsd_from_bicep()
 
 
-def _generate_nsd(config: NSConfiguration, api_clients: ApiClients, force: bool = False):
+def _generate_nsd(
+    config: NSConfiguration, api_clients: ApiClients, force: bool = False
+):
     """Generate a Network Service Design for the given config."""
     if config:
         nsd_generator = NSDGenerator(config=config, api_clients=api_clients)

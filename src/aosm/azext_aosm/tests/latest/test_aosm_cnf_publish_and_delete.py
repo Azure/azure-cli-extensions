@@ -53,7 +53,7 @@
 # class CnfNsdTest(ScenarioTest):
 #     @ResourceGroupPreparer()
 #     def test_cnf_nsd_publish_and_delete(self, resource_group):
-#         # We are overriding a resource group name here because we need to have some 
+#         # We are overriding a resource group name here because we need to have some
 #         # resources predeployed in order to get around the timeout bug in the testing framework.
 #         resource_group = "patrykkulik-test"
 

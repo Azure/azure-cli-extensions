@@ -15,9 +15,7 @@ mock_cnf_folder = ((Path(__file__).parent) / "mock_cnf").resolve()
 
 class TestCNF(unittest.TestCase):
     def test_generate_config(self):
-        """
-        Test generating a config file for a VNF.
-        """
+        """Test generating a config file for a VNF."""
         starting_directory = os.getcwd()
         with TemporaryDirectory() as test_dir:
             os.chdir(test_dir)
@@ -29,9 +27,7 @@ class TestCNF(unittest.TestCase):
                 os.chdir(starting_directory)
 
     def test_build(self):
-        """
-        Test the build command for CNFs.
-        """
+        """Test the build command for CNFs."""
         starting_directory = os.getcwd()
         with TemporaryDirectory() as test_dir:
             os.chdir(test_dir)

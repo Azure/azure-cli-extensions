@@ -142,9 +142,7 @@ class NSDGenerator:  # pylint: disable=too-few-public-methods
         logger.debug("%s created", schema_path)
 
     def _write_config_mapping_files(self, output_directory) -> None:
-        """
-        Write out a config mapping file for each NF.
-        """
+        """Write out a config mapping file for each NF."""
         temp_mappings_folder_path = os.path.join(
             output_directory, CONFIG_MAPPINGS_DIR_NAME
         )

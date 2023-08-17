@@ -103,7 +103,9 @@ class ResourceDeleter:
                 f" {self.config.cg_schema_name}?"
             )
             if clean:
-                print(f"Because of the --clean flag, the NSDG {self.config.nsdg_name} will also be deleted.")
+                print(
+                    f"Because of the --clean flag, the NSDG {self.config.nsdg_name} will also be deleted."
+                )
             print("There is no undo. Type 'delete' to confirm")
             if not input_ack("delete", "Confirm delete:"):
                 print("Not proceeding with delete")

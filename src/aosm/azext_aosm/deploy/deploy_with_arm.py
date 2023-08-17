@@ -146,9 +146,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         print("Done")
 
     def _vnfd_artifact_upload(self) -> None:
-        """
-        Uploads the VHD and ARM template artifacts
-        """
+        """Uploads the VHD and ARM template artifacts."""
         assert isinstance(self.config, VNFConfiguration)
         storage_account_manifest = ArtifactManifestOperator(
             self.config,
@@ -176,9 +174,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         arm_template_artifact.upload(self.config.arm_template)
 
     def _cnfd_artifact_upload(self) -> None:
-        """
-        Uploads the Helm chart and any additional images.
-        """
+        """Uploads the Helm chart and any additional images."""
         assert isinstance(self.config, CNFConfiguration)
         acr_properties = self.api_clients.aosm_client.artifact_stores.get(
             resource_group_name=self.config.publisher_resource_group_name,
@@ -291,7 +287,9 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
 
     def construct_parameters(self) -> Dict[str, Any]:
         """
-        Create the parmeters dictionary for vnfdefinitions.bicep. VNF specific.
+        Create the parmeters dictionary for vnfdefinitions.bicep.
+
+        VNF specific.
         """
         if self.resource_type == VNF:
             assert isinstance(self.config, VNFConfiguration)
@@ -448,9 +446,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
             print("Done")
 
     def deploy_manifest_template(self) -> None:
-        """
-        Deploy the bicep template defining the manifest.
-        """
+        """Deploy the bicep template defining the manifest."""
         print("Deploy bicep template for Artifact manifests")
         logger.debug("Deploy manifest bicep")
 

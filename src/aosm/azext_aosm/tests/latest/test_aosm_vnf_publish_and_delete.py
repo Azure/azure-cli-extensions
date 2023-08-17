@@ -98,7 +98,7 @@
 #             f'az aosm nfd build -f "{nfd_input_file_path}" --definition-type vnf --force'
 #         )
 
-#         # There is currently a bug in the CLI testing framework that causes the command 
+#         # There is currently a bug in the CLI testing framework that causes the command
 #         # to fail on timeout. This is a workaround to retry the command if it fails.
 #         retry_attempts = 0
 #         while retry_attempts < 2:

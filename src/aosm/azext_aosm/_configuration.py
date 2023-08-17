@@ -48,7 +48,8 @@ DESCRIPTION_MAP: Dict[str, str] = {
     "artifact_name": "Name of the artifact",
     "file_path": (
         "Optional. File path of the artifact you wish to upload from your local disk. "
-        "Delete if not required."
+        "Delete if not required. Relative paths are relative to the configuration file."
+        "On Windows escape any backslash with another backslash."
     ),
     "blob_sas_url": (
         "Optional. SAS URL of the blob artifact you wish to copy to your Artifact"
@@ -68,7 +69,8 @@ DESCRIPTION_MAP: Dict[str, str] = {
     ),
     "helm_package_name": "Name of the Helm package",
     "path_to_chart": (
-        "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz"
+        "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz."
+        " Use Linux slash (/) file separator even if running on Windows."
     ),
     "path_to_mappings": (
         "File path of value mappings on local disk where chosen values are replaced "
@@ -86,7 +88,7 @@ DESCRIPTION_MAP: Dict[str, str] = {
         "image to use for the VM."
     ),
     "source_registry_id": (
-        "Resource ID of the source acr registry from which to pull the image"
+        "Resource ID of the source acr registry from which to pull the image."
     ),
     "source_registry_namespace": (
         "Optional. Namespace of the repository of the source acr registry from which "
@@ -153,9 +155,7 @@ class Configuration(abc.ABC):
 
     @property
     def acr_manifest_names(self) -> List[str]:
-        """
-        The list of ACR manifest names.
-        """
+        """The list of ACR manifest names."""
         raise NotImplementedError("Subclass must define property")
 
 
@@ -343,9 +343,7 @@ MULTIPLE_INSTANCES = (
 
 @dataclass
 class NFDRETConfiguration:
-    """
-    The configuration required for an NFDV that you want to include in an NSDV.
-    """
+    """The configuration required for an NFDV that you want to include in an NSDV."""
 
     publisher: str = PUBLISHER_NAME
     publisher_resource_group: str = PUBLISHER_RESOURCE_GROUP
@@ -406,10 +404,8 @@ class NFDRETConfiguration:
 
     @property
     def arm_template(self) -> ArtifactConfig:
-        """
-        Return the parameters of the ARM template for this RET to be uploaded as part of
-        the NSDV.
-        """
+        """Return the parameters of the ARM template for this RET to be uploaded as part of
+        the NSDV."""
         artifact = ArtifactConfig()
         artifact.artifact_name = f"{self.name.lower()}_nf_artifact"
 
@@ -452,9 +448,7 @@ class NSConfiguration(Configuration):
     nsdv_description: str = DESCRIPTION_MAP["nsdv_description"]
 
     def __post_init__(self):
-        """
-        Covert things to the correct format.
-        """
+        """Covert things to the correct format."""
         if self.network_functions and isinstance(self.network_functions[0], dict):
             nf_ret_list = [
                 NFDRETConfiguration(**config) for config in self.network_functions
@@ -506,9 +500,7 @@ class NSConfiguration(Configuration):
 
     @property
     def acr_manifest_names(self) -> List[str]:
-        """
-        The list of ACR manifest names for all the NF ARM templates.
-        """
+        """The list of ACR manifest names for all the NF ARM templates."""
         return [nf.acr_manifest_name(self.nsd_version) for nf in self.network_functions]
 
 

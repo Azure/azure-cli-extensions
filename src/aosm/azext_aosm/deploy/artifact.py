@@ -4,6 +4,7 @@
 # pylint: disable=unidiomatic-typecheck
 """A module to handle interacting with artifacts."""
 import subprocess
+import shutil
 from dataclasses import dataclass
 from typing import List, Union
 
@@ -88,20 +89,35 @@ class Artifact:
         registry_name = registry.replace(".azurecr.io", "")
 
         # az acr login --name "registry_name"
-        login_command = ["az", "acr", "login", "--name", registry_name]
+        # Note that this uses the user running the CLI's AZ login credentials, not the
+        # manifest credentials retrieved from the ACR. This isn't ideal, but using the
+        # manifest credentials caused problems so we are doing this for now.
+        logger.debug("Logging into %s", registry_name)
+        login_command = [
+            str(shutil.which("az")),
+            "acr",
+            "login",
+            "--name",
+            registry_name,
+        ]
         subprocess.run(login_command, check=True)
 
         try:
             logger.debug("Uploading %s to %s", chart_path, target_registry)
 
             # helm push "$chart_path" "$target_registry"
-            push_command = ["helm", "push", chart_path, target_registry]
+            push_command = [
+                str(shutil.which("helm")),
+                "push",
+                chart_path,
+                target_registry,
+            ]
             subprocess.run(push_command, check=True)
         finally:
             # If we don't logout from the registry, future Artifact uploads to this ACR
             # will fail with an UNAUTHORIZED error. There is no az acr logout command,
             # but it is a wrapper around docker, so a call to docker logout will work.
-            logout_command = ["docker", "logout", registry]
+            logout_command = [str(shutil.which("docker")), "logout", registry]
             subprocess.run(logout_command, check=True)
 
     def _upload_to_storage_account(self, artifact_config: ArtifactConfig) -> None:

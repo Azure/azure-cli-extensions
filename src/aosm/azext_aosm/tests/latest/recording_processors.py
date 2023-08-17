@@ -7,9 +7,7 @@
 # the recordings so that we can avoid checking in secrets to the repo.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.testsdk.scenario_tests import (
-    RecordingProcessor
-)
+from azure.cli.testsdk.scenario_tests import RecordingProcessor
 from azure.cli.testsdk.scenario_tests.utilities import is_text_payload
 import json
 
