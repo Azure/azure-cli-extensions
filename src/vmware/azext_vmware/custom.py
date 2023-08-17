@@ -151,19 +151,3 @@ def script_execution_create(client: AVSClient, resource_group_name, private_clou
         named_outputs = dict(named_outputs)
     script_execution = ScriptExecution(timeout=timeout, script_cmdlet_id=script_cmdlet_id, parameters=parameters, hidden_parameters=hidden_parameters, failure_reason=failure_reason, retention=retention, output=out, named_outputs=named_outputs)
     return client.script_executions.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name, script_execution=script_execution)
-
-
-def script_execution_list(client: AVSClient, resource_group_name, private_cloud):
-    return client.script_executions.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
-def script_execution_show(client: AVSClient, resource_group_name, private_cloud, name):
-    return client.script_executions.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
-
-
-def script_execution_delete(client: AVSClient, resource_group_name, private_cloud, name, yes=False):
-    from knack.prompting import prompt_y_n
-    msg = 'This will delete the script execution. Are you sure?'
-    if not yes and not prompt_y_n(msg, default="n"):
-        return None
-    return client.script_executions.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
