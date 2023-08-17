@@ -4,8 +4,8 @@ Release History
 ===============
 0.10.0
 ++++++
-* Added complete support for Soft Delete
-* `az dataprotection backup-instance deleted-backup-instance`: Adds support to list, show, and undelete soft deleted backed up instances
+* Add complete support for Soft Delete
+* `az dataprotection backup-instance deleted-backup-instance`: Add support to list, show, and undelete soft deleted backed up instances
 
 0.9.2
 ++++++
