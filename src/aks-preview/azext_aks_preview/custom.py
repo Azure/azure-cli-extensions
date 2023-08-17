@@ -2485,12 +2485,13 @@ def _aks_mesh_update(
 
     return aks_update_decorator.update_mc(mc)
 
+
 def aks_check_network(cmd, client, resource_group, cluster_name, node_name=None, custom_endpoints=None):
     # Get a random node if node_name is not specified
     if not node_name:
         if not which("kubectl"):
             raise ValidationError("Can not find kubectl executable in PATH")
-        
+
         fd, browse_path = tempfile.mkstemp()
         try:
             aks_get_credentials(cmd, client, resource_group, cluster_name, admin=False, path=browse_path)
@@ -2498,7 +2499,7 @@ def aks_check_network(cmd, client, resource_group, cluster_name, node_name=None,
             output = subprocess.check_output(["kubectl", "--kubeconfig", browse_path, "get", "nodes", "-o", "json"], universal_newlines=True, stderr=subprocess.STDOUT)
             if output:
                 cluster_info = json.loads(output)
-                index = random.randint(0, len(cluster_info["items"])-1)
+                index = random.randint(0, len(cluster_info["items"]) - 1)
                 node_name = str(cluster_info["items"][index]["metadata"]["name"])
             else:
                 raise ValidationError("Failed to get node name from cluster")
@@ -2507,7 +2508,7 @@ def aks_check_network(cmd, client, resource_group, cluster_name, node_name=None,
         finally:
             os.close(fd)
             os.remove(browse_path)
-    
+
     cluster = aks_show(cmd, client, resource_group, cluster_name, None)
     if not cluster:
         raise ValidationError("Can not get cluster information")
@@ -2520,8 +2521,8 @@ def aks_check_network(cmd, client, resource_group, cluster_name, node_name=None,
     instance_id = None
     index = node_name.find("vmss")
     if index != -1:
-        vmss_name = node_name[0:index+4]
-        instance_id = node_name[index+4:]
+        vmss_name = node_name[0:index + 4]
+        instance_id = node_name[index + 4:]
     location = get_rg_location(cmd.cli_ctx, resource_group)
     node_resource_group = "MC_{0}_{1}_{2}".format(resource_group, cluster_name, location)
     print("Start checking network for node: {0}, instance_id: {1}, node_resource_group: {2}".format(vmss_name, instance_id, node_resource_group))
@@ -2535,7 +2536,7 @@ def aks_check_network(cmd, client, resource_group, cluster_name, node_name=None,
         if custom_endpoints:
             endpoints = ''.join(custom_endpoints.split(" "))
             command += " {0}".format(endpoints)
-        
+
         if instance_id:
             RunCommandInput = cmd.get_models('RunCommandInput', resource_type=ResourceType.MGMT_COMPUTE, operation_group="virtual_machine_scale_sets")
             command_result_poller = client.virtual_machine_scale_set_vms.begin_run_command(
