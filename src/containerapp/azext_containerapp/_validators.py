@@ -14,7 +14,7 @@ from ._clients import ContainerAppClient
 from ._ssh_utils import ping_container_app
 from ._utils import safe_get, is_registry_msi_system
 from ._constants import ACR_IMAGE_SUFFIX, LOG_TYPE_SYSTEM, CONNECTED_ENVIRONMENT_RESOURCE_TYPE, \
-    CONNECTED_ENVIRONMENT_TYPE, MANAGED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_TYPE, CONTAINER_APPS_RP
+    CONNECTED_ENVIRONMENT_TYPE, MANAGED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_TYPE, CONTAINER_APPS_RP, MAXIMUM_SECRET_LENGTH
 from urllib.parse import urlparse
 
 logger = get_logger(__name__)
