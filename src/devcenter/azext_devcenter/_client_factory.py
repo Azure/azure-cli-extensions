@@ -28,8 +28,8 @@ def cf_devcenter_dataplane(cli_ctx, endpoint=None, dev_center=None, project_name
     profile = Profile(cli_ctx=cli_ctx)
 
     credential = profile.get_login_credentials(resource="https://devcenter.azure.com")
-
     cli_ctx.cloud.endpoints.active_directory_resource_id = "https://devcenter.azure.com"
+
     return DevCenterClient(endpoint, credential[0])
 
 

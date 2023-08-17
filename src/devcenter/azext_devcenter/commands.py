@@ -10,9 +10,7 @@ from azure.cli.core.commands import CliCommandType
 from azext_devcenter._client_factory import (
     cf_dev_center_dp,
     cf_dev_boxes_dp,
-    cf_dev_box_operations_dp,
     cf_environments_dp,
-    cf_environment_operations_dp
 )
 from .custom import (
     AttachedNetworkCreate,
@@ -210,23 +208,11 @@ def load_command_table(self, _):
         client_factory=cf_dev_boxes_dp,
     )
 
-    dev_box_operations_dp = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._operations#DevBoxOperationsOperations.{}"
-        ),
-        client_factory=cf_dev_box_operations_dp,
-    )
-
     environments_dp = CliCommandType(
         operations_tmpl=(
             "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._operations#EnvironmentsOperations.{}"
         ),
         client_factory=cf_environments_dp,
-    )
-
-    environment_operations_dp = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter_dataplane.operations._operations#EnvironmentOperationsOperations.{}",
-        client_factory=cf_environment_operations_dp,
     )
 
     with self.command_group("devcenter"):
@@ -243,62 +229,67 @@ def load_command_table(self, _):
         g.custom_command("list", "devcenter_pool_list_dp")
         g.custom_show_command("show", "devcenter_pool_show_dp")
 
-    with self.command_group("devcenter dev dev-box") as g:
-        g.custom_command("list", "devcenter_dev_box_list")
-        g.custom_show_command("show", "devcenter_dev_box_show")
-        g.custom_command("create", "devcenter_dev_box_create", supports_no_wait=True)
-        # g.custom_command(
-        #     "delete",
-        #     "devcenter_dev_box_delete",
-        #     supports_no_wait=True,
-        #     confirmation=True,
-        # )
-        # g.custom_command(
-        #     "show-remote-connection", "devcenter_dev_box_get_remote_connection"
-        # )
-        # g.custom_command("start", "devcenter_dev_box_start", supports_no_wait=True)
-        # g.custom_command("restart", "devcenter_dev_box_restart", supports_no_wait=True)
-        # g.custom_command("stop", "devcenter_dev_box_stop", supports_no_wait=True)
-        # g.custom_command("delay-action", "devcenter_dev_box_delay_action")
-        # g.custom_command("delay-all-actions", "devcenter_dev_box_delay_all_actions")
-        # g.custom_command("list-action", "devcenter_dev_box_list_action")
-        # g.custom_command("show-action", "devcenter_dev_box_show_action")
-        # g.custom_command("skip-action", "devcenter_dev_box_skip_action")
-
-    # with self.command_group("devcenter dev environment", devcenter_environment_dp) as g:
-    #     g.custom_command("list", "devcenter_environment_list")
-    #     g.custom_show_command("show", "devcenter_environment_show")
-    #     g.custom_command(
-    #         "create", "devcenter_environment_create", supports_no_wait=True
-    #     )
-    #     g.custom_command(
-    #         "update", "devcenter_environment_update", supports_no_wait=True
-    #     )
-    #     g.custom_command(
-    #         "deploy", "devcenter_environment_update", supports_no_wait=True
-    #     )
-    #     g.custom_command(
-    #         "delete",
-    #         "devcenter_environment_delete",
-    #         supports_no_wait=True,
-    #         confirmation=True,
-    #     )
-
-    # with self.command_group(
-    #     "devcenter dev environment-type", devcenter_environment_type_dp
-    # ) as g:
-    #     g.custom_command("list", "devcenter_environment_type_list_dp")
-
     with self.command_group("devcenter dev schedule", dev_boxes_dp) as g:
         g.custom_command("list", "devcenter_schedule_list_dp")
         g.custom_show_command("show", "devcenter_schedule_show_dp")
 
-    # with self.command_group("devcenter dev catalog", devcenter_catalog_dp) as g:
-    #     g.custom_command("list", "devcenter_catalog_list_dp")
-    #     g.custom_show_command("show", "devcenter_catalog_show_dp")
+    with self.command_group("devcenter dev dev-box") as g:
+        g.custom_command("list", "devcenter_dev_box_list")
+        g.custom_show_command("show", "devcenter_dev_box_show")
+        g.custom_command("create", "devcenter_dev_box_create", supports_no_wait=True)
+        g.custom_command(
+            "delete",
+            "devcenter_dev_box_delete",
+            supports_no_wait=True,
+            confirmation=True,
+        )
+        g.custom_command("start", "devcenter_dev_box_start", supports_no_wait=True)
+        g.custom_command("stop", "devcenter_dev_box_stop", supports_no_wait=True)
+        g.custom_command("restart", "devcenter_dev_box_restart", supports_no_wait=True)
+        g.custom_command("repair", "devcenter_dev_box_repair", supports_no_wait=True)
+        g.custom_command(
+            "show-remote-connection", "devcenter_dev_box_get_remote_connection"
+        )
+        g.custom_command("list-action", "devcenter_dev_box_list_action")
+        g.custom_command("show-action", "devcenter_dev_box_show_action")
+        g.custom_command("skip-action", "devcenter_dev_box_skip_action")
+        g.custom_command("delay-action", "devcenter_dev_box_delay_action")
+        g.custom_command("delay-all-actions", "devcenter_dev_box_delay_all_actions")
+        g.custom_command("list-operation", "devcenter_dev_box_list_operation")
+        g.custom_command("show-operation", "devcenter_dev_box_show_operation")
 
-    # with self.command_group(
-    #     "devcenter dev environment-definition", devcenter_environment_definition_dp
-    # ) as g:
-    #     g.custom_command("list", "devcenter_environment_definition_list_dp")
-    #     g.custom_show_command("show", "devcenter_environment_definition_show_dp")
+    with self.command_group("devcenter dev environment") as g:
+        g.custom_command("list", "devcenter_environment_list")
+        g.custom_show_command("show", "devcenter_environment_show")
+        g.custom_command(
+            "create", "devcenter_environment_create", supports_no_wait=True
+        )
+        g.custom_command(
+            "update", "devcenter_environment_update", supports_no_wait=True
+        )
+        g.custom_command(
+            "deploy", "devcenter_environment_update", supports_no_wait=True
+        )
+        g.custom_command(
+            "delete",
+            "devcenter_environment_delete",
+            supports_no_wait=True,
+            confirmation=True,
+        )
+        g.custom_command("list-operation", "devcenter_environment_operation_list")
+        g.custom_command("show-operation", "devcenter_environment_operation_show")
+
+    with self.command_group("devcenter dev catalog", environments_dp) as g:
+        g.custom_command("list", "devcenter_catalog_list_dp")
+        g.custom_show_command("show", "devcenter_catalog_show_dp")
+
+    with self.command_group(
+        "devcenter dev environment-definition", environments_dp
+    ) as g:
+        g.custom_command("list", "devcenter_environment_definition_list_dp")
+        g.custom_show_command("show", "devcenter_environment_definition_show_dp")
+
+    with self.command_group(
+        "devcenter dev environment-type", environments_dp
+    ) as g:
+        g.custom_command("list", "devcenter_environment_type_list_dp")

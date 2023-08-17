@@ -76,9 +76,9 @@ or dev-center (--dev-center --dev-center-name -d) should be set."""
 
 def validate_env_name_already_exists(env_iterator, name, user_id, project):
     for env in env_iterator:
-        if env.name.casefold() == name.casefold():
+        if env["name"].casefold() == name.casefold():
             if user_id == "me":
-                user_id = env.user
+                user_id = env["user"]
             error_message = f"""An environment with the name '{name}' \
 already exists for the user-id '{user_id}' in this project '{project}'."""
             raise InvalidArgumentValueError(error_message)
