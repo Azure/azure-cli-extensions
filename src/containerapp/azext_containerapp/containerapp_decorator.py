@@ -21,7 +21,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from .base_resource import BaseResource
-from ._clients import ManagedEnvironmentClient
+from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient
 from ._client_factory import handle_raw_exception, handle_non_404_exception
 
 from ._models import (
@@ -61,7 +61,11 @@ from ._utils import (_ensure_location_allowed,
 from ._validators import validate_create, validate_revision_suffix
 
 from ._constants import (CONTAINER_APPS_RP,
-                         HELLO_WORLD_IMAGE)
+                         HELLO_WORLD_IMAGE,
+                         CONNECTED_ENVIRONMENT_TYPE,
+                         CONNECTED_ENVIRONMENT_RESOURCE_TYPE,
+                         MANAGED_ENVIRONMENT_TYPE,
+                         MANAGED_ENVIRONMENT_RESOURCE_TYPE)
 
 logger = get_logger(__name__)
 
@@ -219,6 +223,9 @@ class BaseContainerAppDecorator(BaseResource):
     def get_argument_ingress(self):
         return self.get_param("ingress")
 
+    def get_argument_allow_insecure(self):
+        return self.get_param("allow_insecure")
+
     def get_argument_revisions_mode(self):
         return self.get_param("revisions_mode")
 
@@ -334,7 +341,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait())
         validate_revision_suffix(self.get_argument_revision_suffix())
 
-    def construct_containerapp(self):
+    def construct_payload(self):
         if self.get_argument_registry_identity() and not is_registry_msi_system(self.get_argument_registry_identity()):
             logger.info("Creating an acrpull role assignment for the registry identity")
             create_acrpull_role_assignment(self.cmd, self.get_argument_registry_server(), self.get_argument_registry_identity(), skip_error=True)
@@ -388,6 +395,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             ingress_def["targetPort"] = self.get_argument_target_port()
             ingress_def["transport"] = self.get_argument_transport()
             ingress_def["exposedPort"] = self.get_argument_exposed_port() if self.get_argument_transport() == "tcp" else None
+            ingress_def["allowInsecure"] = self.get_argument_allow_insecure()
 
         secrets_def = None
         if self.get_argument_secrets() is not None:
@@ -541,7 +549,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             else:
                 set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.containerapp_def, user_assigned=[self.get_argument_registry_identity()])
 
-    def create_containerapp(self):
+    def create(self):
         try:
             r = self.client.create_or_update(
                 cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name(), container_app_envelope=self.containerapp_def,
@@ -551,7 +559,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         except Exception as e:
             handle_raw_exception(e)
 
-    def construct_containerapp_for_post_process(self, r):
+    def construct_for_post_process(self, r):
         if is_registry_msi_system(self.get_argument_registry_identity()):
             while r["properties"]["provisioningState"] == "InProgress":
                 r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
@@ -569,9 +577,9 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             registries_def["identity"] = self.get_argument_registry_identity()
             safe_set(self.containerapp_def, "properties", "configuration", "registries", value=[registries_def])
 
-    def post_process_containerapp(self, r):
+    def post_process(self, r):
         if is_registry_msi_system(self.get_argument_registry_identity()):
-            r = self.create_containerapp()
+            r = self.create()
 
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not self.get_argument_no_wait():
             not self.get_argument_disable_warnings() and logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(self.get_argument_name(), self.get_argument_resource_group_name()))
@@ -721,3 +729,94 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             scale_def["rules"] = [scale_rule_def]
 
         return scale_def
+
+
+# decorator for preview create
+class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
+    def __init__(
+        self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
+    ):
+        super().__init__(cmd, client, raw_parameters, models)
+
+    def construct_payload(self):
+        super().construct_payload()
+        self.set_up_extended_location()
+
+    def set_up_extended_location(self):
+        if self.get_argument_environment_type() == CONNECTED_ENVIRONMENT_TYPE:
+            if not self.containerapp_def.get('extendedLocation'):
+                parsed_env = parse_resource_id(self.get_argument_managed_env())  # custom_location check here perhaps
+                env_name = parsed_env['name']
+                env_rg = parsed_env['resource_group']
+                env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
+                self.containerapp_def["extendedLocation"] = env_info["extendedLocation"]
+
+    def get_environment_client(self):
+        if self.get_argument_yaml():
+            env = safe_get(self.containerapp_def, "properties", "environmentId")
+        else:
+            env = self.get_argument_managed_env()
+
+        environment_type = self.get_argument_environment_type()
+        if not env and not environment_type:
+            return ManagedEnvironmentClient
+
+        parsed_env = parse_resource_id(env)
+
+        # Validate environment type
+        if parsed_env.get('resource_type').lower() == CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower():
+            if environment_type == MANAGED_ENVIRONMENT_TYPE:
+                logger.warning("User passed a connectedEnvironment resource id but did not specify --environment-type connected. Using environment type connected.")
+            environment_type = CONNECTED_ENVIRONMENT_TYPE
+        else:
+            if environment_type == CONNECTED_ENVIRONMENT_TYPE:
+                logger.warning("User passed a managedEnvironment resource id but specified --environment-type connected. Using environment type managed.")
+            environment_type = MANAGED_ENVIRONMENT_TYPE
+
+        self.set_argument_environment_type(environment_type)
+        self.set_argument_managed_env(env)
+
+        if environment_type == CONNECTED_ENVIRONMENT_TYPE:
+            return ConnectedEnvironmentClient
+        else:
+            return ManagedEnvironmentPreviewClient
+
+    def get_argument_environment_type(self):
+        return self.get_param("environment_type")
+
+    def set_argument_environment_type(self, environment_type):
+        self.set_param("environment_type", environment_type)
+
+
+# decorator for preview list
+class ContainerAppPreviewListDecorator(BaseContainerAppDecorator):
+    def __init__(
+        self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
+    ):
+        super().__init__(cmd, client, raw_parameters, models)
+
+    def list(self):
+        containerapps = super().list()
+        if self.get_argument_environment_type() == CONNECTED_ENVIRONMENT_TYPE:
+            containerapps = [c for c in containerapps if CONNECTED_ENVIRONMENT_RESOURCE_TYPE in c["properties"]["environmentId"]]
+        if self.get_argument_environment_type() == MANAGED_ENVIRONMENT_TYPE:
+            containerapps = [c for c in containerapps if MANAGED_ENVIRONMENT_RESOURCE_TYPE in c["properties"]["environmentId"]]
+        return containerapps
+
+    def get_environment_client(self):
+        env = self.get_argument_managed_env()
+
+        if is_valid_resource_id(env):
+            parsed_env = parse_resource_id(env)
+            if parsed_env.get('resource_type').lower() == CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower():
+                return ConnectedEnvironmentClient
+            else:
+                return ManagedEnvironmentPreviewClient
+
+        if self.get_argument_environment_type() == CONNECTED_ENVIRONMENT_TYPE:
+            return ConnectedEnvironmentClient
+        else:
+            return ManagedEnvironmentPreviewClient
+
+    def get_argument_environment_type(self):
+        return self.get_param("environment_type")

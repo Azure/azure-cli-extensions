@@ -64,6 +64,9 @@ helps['webpubsub create'] = """
       - name: Create a WebPubSub Service with Standard SKU and unit 2.
         text: >
           az webpubsub create -n MyWebPubSub -g MyResourceGroup --sku Standard_S1 --unit-count 2
+      - name: Create a Web PubSub for Socket.IO with Premium SKU and unit 1.
+        text: >
+          az webpubsub create -n MyWebPubSub -g MyResourceGroup --sku Premium_P1 --unit-count 1 --kind SocketIO
 """
 
 helps['webpubsub list'] = """

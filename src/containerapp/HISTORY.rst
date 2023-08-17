@@ -2,10 +2,20 @@
 
 Release History
 ===============
+upcoming
+++++++
+* Removed preview tag for some command groups and params (e.g. 'az containerapp job', 'az containerapp env storage', 'az containerapp env workload-profile')
+* 'az containerapp env': --enable-workload-profiles allowed values:true, false
 
-Upcoming
+0.3.37
 ++++++
 * 'az containerapp job start': update start execution payload format to exlude template property from API version 2023-05-01 onwards
+* 'az containerapp service': add support for creation and deletion of MariaDB
+* 'az containerapp create/list': support --environment-type parameter
+* 'az containerapp logs show': fix raising error for response status code is not OK
+* 'az containerapp auth show/update': support api-version 2023-05-02-preview
+* 'az containerapp create': --yaml support property additionalPortMappings for api-version 2023-05-02-preview
+* 'az containerapp create': add support for insecure ingress with flag --allow-insecure
 
 0.3.36
 ++++++

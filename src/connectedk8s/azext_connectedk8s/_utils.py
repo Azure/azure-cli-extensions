@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import sys
 import os
 import shutil
 import subprocess
@@ -377,21 +378,21 @@ def add_helm_repo(kube_config, kube_context, helm_client_location):
         raise CLIInternalError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
 
-def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release_train_dogfood=None):
+def get_helm_registry(cmd, config_dp_endpoint, release_train_custom=None):
     # Setting uri
-    get_chart_location_url = "{}/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(config_dp_endpoint, 'azure-arc-k8sagents')
+    api_version = "2019-11-01-preview"
+    chart_location_url_segment = "azure-arc-k8sagents/GetLatestHelmPackagePath?api-version={}".format(api_version)
     release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
-    if dp_endpoint_dogfood:
-        get_chart_location_url = "{}/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(dp_endpoint_dogfood)
-        if release_train_dogfood:
-            release_train = release_train_dogfood
+    chart_location_url = "{}/{}".format(config_dp_endpoint, chart_location_url_segment)
+    if release_train_custom:
+        release_train = release_train_custom
     uri_parameters = ["releaseTrain={}".format(release_train)]
     resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
     headers = None
     if os.getenv('AZURE_ACCESS_TOKEN'):
         headers = ["Authorization=Bearer {}".format(os.getenv('AZURE_ACCESS_TOKEN'))]
     # Sending request with retries
-    r = send_request_with_retries(cmd.cli_ctx, 'post', get_chart_location_url, headers=headers, fault_type=consts.Get_HelmRegistery_Path_Fault_Type, summary='Error while fetching helm chart registry path', uri_parameters=uri_parameters, resource=resource)
+    r = send_request_with_retries(cmd.cli_ctx, 'post', chart_location_url, headers=headers, fault_type=consts.Get_HelmRegistery_Path_Fault_Type, summary='Error while fetching helm chart registry path', uri_parameters=uri_parameters, resource=resource)
     if r.content:
         try:
             return r.json().get('repositoryPath')
@@ -490,18 +491,16 @@ def validate_infrastructure_type(infra):
 
 
 def get_values_file():
-    values_file_provided = False
     values_file = os.getenv('HELMVALUESPATH')
     if (values_file is not None) and (os.path.isfile(values_file)):
-        values_file_provided = True
         logger.warning("Values files detected. Reading additional helm parameters from same.")
         # trimming required for windows os
         if (values_file.startswith("'") or values_file.startswith('"')):
             values_file = values_file[1:]
         if (values_file.endswith("'") or values_file.endswith('"')):
             values_file = values_file[:-1]
-
-    return values_file_provided, values_file
+        return values_file
+    return None
 
 
 def ensure_namespace_cleanup():
@@ -568,11 +567,12 @@ def cleanup_release_install_namespace_if_exists():
 
 
 # DO NOT use this method for re-put scenarios. This method involves new NS creation for helm release. For re-put scenarios, brownfield scenario needs to be handled where helm release still stays in default NS
-def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
-                         location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade,
-                         enable_custom_locations, custom_locations_oid, helm_client_location, enable_private_link, onboarding_timeout="600",
+def helm_install_release(resource_manager, chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name,
+                         cluster_name, location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
+                         kube_config, kube_context, no_wait, values_file, cloud_name, disable_auto_upgrade, enable_custom_locations,
+                         custom_locations_oid, helm_client_location, enable_private_link, arm_metadata, onboarding_timeout="600",
                          container_log_path=None):
+
     cmd_helm_install = [helm_client_location, "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -588,6 +588,28 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
                         "--namespace", "{}".format(consts.Release_Install_Namespace),
                         "--create-namespace",
                         "--output", "json"]
+
+    # Special configurations from 2022-09-01 ARM metadata.
+    if "dataplaneEndpoints" in arm_metadata:
+        notification_endpoint = arm_metadata["dataplaneEndpoints"]["arcGlobalNotificationServiceEndpoint"]
+        config_endpoint = arm_metadata["dataplaneEndpoints"]["arcConfigEndpoint"]
+        his_endpoint = arm_metadata["dataplaneEndpoints"]["arcHybridIdentityServiceEndpoint"]
+        if his_endpoint[-1] != "/":
+            his_endpoint = his_endpoint + "/"
+        his_endpoint = his_endpoint + f"discovery?location={location}&api-version=1.0-preview"
+        relay_endpoint = arm_metadata["suffixes"]["relayEndpointSuffix"]
+        active_directory = arm_metadata["authentication"]["loginEndpoint"]
+        cmd_helm_install.extend(
+            [
+                "--set", "systemDefaultValues.azureResourceManagerEndpoint={}".format(resource_manager),
+                "--set", "systemDefaultValues.azureArcAgents.config_dp_endpoint_override={}".format(config_endpoint),
+                "--set", "systemDefaultValues.clusterconnect-agent.notification_dp_endpoint_override={}".format(notification_endpoint),
+                "--set", "systemDefaultValues.clusterconnect-agent.relay_endpoint_suffix_override={}".format(relay_endpoint),
+                "--set", "systemDefaultValues.clusteridentityoperator.his_endpoint_override={}".format(his_endpoint),
+                "--set", "systemDefaultValues.activeDirectoryEndpoint={}".format(active_directory)
+            ]
+        )
+
     # Add custom-locations related params
     if enable_custom_locations and not enable_private_link:
         cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.enabled=true"])
@@ -596,7 +618,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
     if enable_private_link is True:
         cmd_helm_install.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=false"])
     # To set some other helm parameters through file
-    if values_file_provided:
+    if values_file:
         cmd_helm_install.extend(["-f", values_file])
     if disable_auto_upgrade:
         cmd_helm_install.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}".format("false")])
@@ -795,3 +817,24 @@ def is_cli_using_msal_auth():
             continue
         return i > j
     return len(v1.split(".")) == len(v2.split("."))
+
+
+def get_metadata(arm_endpoint, api_version="2022-09-01"):
+    metadata_url_suffix = f"/metadata/endpoints?api-version={api_version}"
+    metadata_endpoint = None
+    try:
+        import requests
+        session = requests.Session()
+        metadata_endpoint = arm_endpoint + metadata_url_suffix
+        print(f"Retrieving ARM metadata from: {metadata_endpoint}")
+        response = session.get(metadata_endpoint)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            msg = f"ARM metadata endpoint '{metadata_endpoint}' returned status code {response.status_code}."
+            raise HttpResponseError(msg)
+    except Exception as err:
+        msg = f"Failed to request ARM metadata {metadata_endpoint}."
+        print(msg, file=sys.stderr)
+        print(f"Please ensure you have network connection. Error: {str(err)}", file=sys.stderr)
+        arm_exception_handler(err, msg)

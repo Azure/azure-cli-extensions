@@ -165,3 +165,4 @@ class ContainerAppMountAzureFileTest(ScenarioTest):
             JMESPathCheck('[1].properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
             JMESPathCheck('[1].properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume'),
         ])
+        clean_up_test_file(containerapp_file_name)
