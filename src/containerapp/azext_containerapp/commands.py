@@ -68,7 +68,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'show_managed_identity_job')
 
     with self.command_group('containerapp env dapr-component') as g:
-        g.custom_command('init', 'init_dapr_component')
+        g.custom_command('init', 'init_dapr_component', is_preview=True)
         g.custom_command('list', 'list_dapr_components')
         g.custom_show_command('show', 'show_dapr_component')
         g.custom_command('set', 'create_or_update_dapr_component')
