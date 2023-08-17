@@ -24,38 +24,38 @@ from ._validators import (
 )
 
 vmmservers_cmd_type = CliCommandType(
-    operations_tmpl='azext_scvmm.vendored_sdks.operations.'
+    operations_tmpl='azext_scvmm.vendored_sdks.scvmm.operations.'
     '_vmm_servers_operations#VmmServersOperations.{}',
     client_factory=cf_vmmserver,
 )
 
 clouds_cmd_type = CliCommandType(
-    operations_tmpl='azext_scvmm.vendored_sdks.operations.'
+    operations_tmpl='azext_scvmm.vendored_sdks.scvmm.operations.'
     '_clouds_operations#CloudsOperations.{}',
     client_factory=cf_cloud,
 )
 
 virtual_networks_cmd_type = CliCommandType(
-    operations_tmpl='azext_scvmm.vendored_sdks.operations.'
+    operations_tmpl='azext_scvmm.vendored_sdks.scvmm.operations.'
     '_virtual_networks_operations#VirtualNetworksOperations.{}',
     client_factory=cf_virtual_network,
 )
 
 virtual_machine_templates_cmd_type = CliCommandType(
-    operations_tmpl='azext_scvmm.vendored_sdks.operations.'
+    operations_tmpl='azext_scvmm.vendored_sdks.scvmm.operations.'
     '_virtual_machine_templates_operations#VirtualMachineTemplatesOperations.{}',
     client_factory=cf_virtual_machine_template,
 )
 
 virtual_machines_cmd_type = CliCommandType(
-    operations_tmpl='azext_scvmm.vendored_sdks.operations.'
+    operations_tmpl='azext_scvmm.vendored_sdks.scvmm.operations.'
     '_virtual_machines_operations#VirtualMachinesOperations.{}',
     client_factory=cf_virtual_machine,
 )
 
 
 availability_sets_cmd_type = CliCommandType(
-    operations_tmpl='azext_scvmm.vendored_sdks.operations.'
+    operations_tmpl='azext_scvmm.vendored_sdks.scvmm.operations.'
     '_availability_sets_operations#AvailabilitySetsOperations.{}',
     client_factory=cf_availability_sets,
 )

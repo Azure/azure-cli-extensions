@@ -6,7 +6,7 @@
 
 from knack.arguments import CLIArgumentType
 from azure.cli.core import AzCommandsLoader
-from .vendored_sdks.models import AllocationMethod
+from .vendored_sdks.scvmm.models import AllocationMethod
 from .scvmm_constants import BusType, VHDType
 from ._actions import VmNicAddAction, VmDiskAddAction
 

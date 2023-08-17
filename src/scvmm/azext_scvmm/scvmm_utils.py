@@ -9,7 +9,7 @@ from msrestazure.tools import is_valid_resource_id, resource_id
 from azext_scvmm.scvmm_constants import (
     EXTENDED_LOCATION_TYPE,
 )
-from .vendored_sdks.models import (
+from .vendored_sdks.scvmm.models import (
     ExtendedLocation,
 )
 

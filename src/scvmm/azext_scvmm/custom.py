@@ -37,7 +37,7 @@ from .scvmm_constants import (
     BusType,
     VHDType,
 )
-from .vendored_sdks.models import (
+from .vendored_sdks.scvmm.models import (
     Cloud,
     HardwareProfile,
     HardwareProfileUpdate,
@@ -67,7 +67,7 @@ from .vendored_sdks.models import (
     AvailabilitySetListItem,
     AvailabilitySet,
 )
-from .vendored_sdks.operations import (
+from .vendored_sdks.scvmm.operations import (
     VmmServersOperations,
     CloudsOperations,
     VirtualNetworksOperations,
