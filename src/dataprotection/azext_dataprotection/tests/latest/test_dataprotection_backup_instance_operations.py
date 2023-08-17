@@ -9,6 +9,20 @@
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
+def reset_softdelete_base_state(test):
+    # Ensure backup instance is deleted from the secondary vault. If instance is already deleted, it will return instantly. As soft delete is disabled
+    # on this vault, it should not show up in the soft-deleted items there
+    test.cmd('az dataprotection backup-instance delete -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName2}" --yes')
+    test.cmd('az dataprotection backup-instance deleted-backup-instance list -g "{rg}" --vault-name "{vaultName}"', checks=[
+        test.check('length([])', 0)
+    ])
+
+    # Ensure that backup instance is protected in the primary soft delete vault
+    test.cmd('az dataprotection backup-instance resume-protection -g "{rg}" --vault-name "{softDeleteVault}" --name "{backupInstanceName1}"')
+    test.cmd('az dataprotection backup-instance show -g "{rg}" --vault-name "{softDeleteVault}" --name "{backupInstanceName1}"', checks=[
+        test.check('properties.protectionStatus.status', "ProtectionConfigured")
+    ])
+
 # Uses a persistent vault and persistent DSes
 class BackupInstanceOperationsScenarioTest(ScenarioTest):
 
@@ -45,6 +59,7 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
         test.cmd('az dataprotection backup-instance show -n "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}"', checks=[
             test.check('properties.currentProtectionState','BackupsSuspended')
         ])
+
 
     @AllowLargeResponse()
     def test_dataprotection_backup_instance_update_policy(test):
@@ -83,16 +98,17 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
             test.exists("[?name == '{backupInstanceName}']")
         ])
 
+
     @AllowLargeResponse()
     def test_dataprotection_backup_instance_softdelete(test):
         test.kwargs.update({
             'diskName': 'clitest-disk-sd-donotdelete',
             'diskId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Compute/disks/clitest-disk-sd-donotdelete',
             'dataSourceType': "AzureDisk",
-            'backupInstanceName1': "",
-            'backupInstanceName2': "",
+            'backupInstanceName1': "clitest-disk-sd-donotdelete-clitest-disk-sd-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1",
+            'backupInstanceName2': "clitest-disk-sd-donotdelete-clitest-disk-sd-donotdelete-b7e6f082-b310-11eb-8f55-9cfce85d4fa1",
             'policyId2': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupPolicies/diskpolicy',
-            'policyRuleName': "BackupHourly"
+            'policyRuleName': "BackupHourly",
             'permissionsScope': "Resource",
         })
         # Setup
@@ -107,12 +123,7 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
         # Validations
             # BI is not listed in vault 2
             # BI is listed in vault 1, with protection enabled
-        # Ensure backup-instance deletion from prev run. If instance is already deleted, it will return instantly.
-        test.cmd('az dataprotection backup-instance delete -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName2}" --yes')
-
-        test.cmd('az dataprotection backup-instance show -g "{rg}" --vault-name "{softDeleteVault}" --backup-instance-name "{backupInstanceName1}"', checks=[
-            test.check('properties.protectionStatus.status', "ProtectionConfigured")
-        ])
+        reset_softdelete_base_state(test)
 
         # Checks
         # On deleting the BI from a soft-delete-enabled vault, we should still see it under soft deleted items
@@ -145,6 +156,7 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
 
         # A soft deleted BI can be undeleted anytime, but protection cannot be resumed if it's protected anywhere else
         test.cmd('az dataprotection backup-instance deleted-backup-instance undelete -g "{rg}" --vault-name "{softDeleteVault}" --name "{backupInstanceName1}"')
+
         test.cmd('az dataprotection backup-instance show -g "{rg}" --vault-name "{softDeleteVault}" --name "{backupInstanceName1}"', checks=[
             test.check('properties.protectionStatus.status', "ProtectionStopped")
         ])
@@ -152,12 +164,4 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
         test.cmd('az dataprotection backup-instance resume-protection -g "{rg}" --vault-name "{softDeleteVault}" --name "{backupInstanceName1}"', expect_failure=True)
 
         # Once protection elsewhere is stopped, we can resume protection on the undeleted BI
-        test.cmd('az dataprotection backup-instance delete -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName2}" --yes')
-        test.cmd('az dataprotection backup-instance deleted-backup-instance list -g "{rg}" --vault-name "{vaultName}"', checks=[
-            test.check('length([])', 0)
-        ])
-
-        test.cmd('az dataprotection backup-instance resume-protection -g "{rg}" --vault-name "{softDeleteVault}" --name "{backupInstanceName1}"')
-        test.cmd('az dataprotection backup-instance show -g "{rg}" --vault-name "{softDeleteVault}" --name "{backupInstanceName1}"', checks=[
-            test.check('properties.protectionStatus.status', "ProtectionConfigured")
-        ])
+        reset_softdelete_base_state(test)
