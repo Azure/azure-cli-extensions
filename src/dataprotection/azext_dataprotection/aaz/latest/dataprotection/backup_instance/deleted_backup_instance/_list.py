@@ -12,20 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dataprotection backup-instance list",
+    "dataprotection backup-instance deleted-backup-instance list",
     is_experimental=True,
 )
 class List(AAZCommand):
-    """Gets backup instances belonging to a backup vault.
-
-    :example: List backup instances in a vault
-        az dataprotection backup-instance list --resource-group "000pikumar" --vault-name "PratikPrivatePreviewVault1"
+    """List deleted backup instances belonging to a backup vault
     """
 
     _aaz_info = {
         "version": "2023-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/deletedbackupinstances", "2023-05-01"],
         ]
     }
 
@@ -58,7 +55,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.BackupInstancesList(ctx=self.ctx)()
+        self.DeletedBackupInstancesList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,7 +71,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class BackupInstancesList(AAZHttpOperation):
+    class DeletedBackupInstancesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -88,7 +85,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/deletedBackupInstances",
                 **self.url_parameters
             )
 
@@ -175,7 +172,6 @@ class List(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -194,6 +190,9 @@ class List(AAZCommand):
             )
             properties.datasource_auth_credentials = AAZObjectType(
                 serialized_name="datasourceAuthCredentials",
+            )
+            properties.deletion_info = AAZObjectType(
+                serialized_name="deletionInfo",
             )
             properties.friendly_name = AAZStrType(
                 serialized_name="friendlyName",
@@ -298,6 +297,24 @@ class List(AAZCommand):
             )
             secret_store_resource.uri = AAZStrType()
             secret_store_resource.value = AAZStrType()
+
+            deletion_info = cls._schema_on_200.value.Element.properties.deletion_info
+            deletion_info.billing_end_date = AAZStrType(
+                serialized_name="billingEndDate",
+                flags={"read_only": True},
+            )
+            deletion_info.delete_activity_id = AAZStrType(
+                serialized_name="deleteActivityID",
+                flags={"read_only": True},
+            )
+            deletion_info.deletion_time = AAZStrType(
+                serialized_name="deletionTime",
+                flags={"read_only": True},
+            )
+            deletion_info.scheduled_purge_time = AAZStrType(
+                serialized_name="scheduledPurgeTime",
+                flags={"read_only": True},
+            )
 
             identity_details = cls._schema_on_200.value.Element.properties.identity_details
             identity_details.use_system_assigned_identity = AAZBoolType(
@@ -440,9 +457,6 @@ class List(AAZCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
-
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 

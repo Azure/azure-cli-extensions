@@ -12,11 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "dataprotection backup-instance",
+    "dataprotection backup-instance deleted-backup-instance",
     is_experimental=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage backup instance with dataprotection.
+    """Perform operations on soft-deleted backup instances.
     """
     pass
 

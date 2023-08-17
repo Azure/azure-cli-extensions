@@ -12,28 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dataprotection backup-instance list",
+    "dataprotection backup-instance deleted-backup-instance show",
     is_experimental=True,
 )
-class List(AAZCommand):
-    """Gets backup instances belonging to a backup vault.
-
-    :example: List backup instances in a vault
-        az dataprotection backup-instance list --resource-group "000pikumar" --vault-name "PratikPrivatePreviewVault1"
+class Show(AAZCommand):
+    """Get a deleted backup instance with name in a backup vault
     """
 
     _aaz_info = {
         "version": "2023-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/deletedbackupinstances/{}", "2023-05-01"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -46,6 +42,12 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.backup_instance_name = AAZStrArg(
+            options=["-n", "--name", "--backup-instance-name"],
+            help="The name of the deleted backup instance",
+            required=True,
+            id_part="child_name_1",
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -53,12 +55,13 @@ class List(AAZCommand):
             options=["--vault-name"],
             help="The name of the backup vault.",
             required=True,
+            id_part="name",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.BackupInstancesList(ctx=self.ctx)()
+        self.DeletedBackupInstancesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,11 +73,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class BackupInstancesList(AAZHttpOperation):
+    class DeletedBackupInstancesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -88,7 +90,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/deletedBackupInstances/{backupInstanceName}",
                 **self.url_parameters
             )
 
@@ -103,6 +105,10 @@ class List(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "backupInstanceName", self.ctx.args.backup_instance_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
@@ -155,32 +161,22 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
-            _element.system_data = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
+            properties = cls._schema_on_200.properties
             properties.current_protection_state = AAZStrType(
                 serialized_name="currentProtectionState",
                 flags={"read_only": True},
@@ -194,6 +190,9 @@ class List(AAZCommand):
             )
             properties.datasource_auth_credentials = AAZObjectType(
                 serialized_name="datasourceAuthCredentials",
+            )
+            properties.deletion_info = AAZObjectType(
+                serialized_name="deletionInfo",
             )
             properties.friendly_name = AAZStrType(
                 serialized_name="friendlyName",
@@ -212,7 +211,7 @@ class List(AAZCommand):
             properties.protection_error_details = AAZObjectType(
                 serialized_name="protectionErrorDetails",
             )
-            _ListHelper._build_schema_user_facing_error_read(properties.protection_error_details)
+            _ShowHelper._build_schema_user_facing_error_read(properties.protection_error_details)
             properties.protection_status = AAZObjectType(
                 serialized_name="protectionStatus",
             )
@@ -224,7 +223,7 @@ class List(AAZCommand):
                 serialized_name="validationType",
             )
 
-            data_source_info = cls._schema_on_200.value.Element.properties.data_source_info
+            data_source_info = cls._schema_on_200.properties.data_source_info
             data_source_info.datasource_type = AAZStrType(
                 serialized_name="datasourceType",
             )
@@ -244,7 +243,7 @@ class List(AAZCommand):
             data_source_info.resource_properties = AAZObjectType(
                 serialized_name="resourceProperties",
             )
-            _ListHelper._build_schema_base_resource_properties_read(data_source_info.resource_properties)
+            _ShowHelper._build_schema_base_resource_properties_read(data_source_info.resource_properties)
             data_source_info.resource_type = AAZStrType(
                 serialized_name="resourceType",
             )
@@ -252,7 +251,7 @@ class List(AAZCommand):
                 serialized_name="resourceUri",
             )
 
-            data_source_set_info = cls._schema_on_200.value.Element.properties.data_source_set_info
+            data_source_set_info = cls._schema_on_200.properties.data_source_set_info
             data_source_set_info.datasource_type = AAZStrType(
                 serialized_name="datasourceType",
             )
@@ -272,7 +271,7 @@ class List(AAZCommand):
             data_source_set_info.resource_properties = AAZObjectType(
                 serialized_name="resourceProperties",
             )
-            _ListHelper._build_schema_base_resource_properties_read(data_source_set_info.resource_properties)
+            _ShowHelper._build_schema_base_resource_properties_read(data_source_set_info.resource_properties)
             data_source_set_info.resource_type = AAZStrType(
                 serialized_name="resourceType",
             )
@@ -280,18 +279,18 @@ class List(AAZCommand):
                 serialized_name="resourceUri",
             )
 
-            datasource_auth_credentials = cls._schema_on_200.value.Element.properties.datasource_auth_credentials
+            datasource_auth_credentials = cls._schema_on_200.properties.datasource_auth_credentials
             datasource_auth_credentials.object_type = AAZStrType(
                 serialized_name="objectType",
                 flags={"required": True},
             )
 
-            disc_secret_store_based_auth_credentials = cls._schema_on_200.value.Element.properties.datasource_auth_credentials.discriminate_by("object_type", "SecretStoreBasedAuthCredentials")
+            disc_secret_store_based_auth_credentials = cls._schema_on_200.properties.datasource_auth_credentials.discriminate_by("object_type", "SecretStoreBasedAuthCredentials")
             disc_secret_store_based_auth_credentials.secret_store_resource = AAZObjectType(
                 serialized_name="secretStoreResource",
             )
 
-            secret_store_resource = cls._schema_on_200.value.Element.properties.datasource_auth_credentials.discriminate_by("object_type", "SecretStoreBasedAuthCredentials").secret_store_resource
+            secret_store_resource = cls._schema_on_200.properties.datasource_auth_credentials.discriminate_by("object_type", "SecretStoreBasedAuthCredentials").secret_store_resource
             secret_store_resource.secret_store_type = AAZStrType(
                 serialized_name="secretStoreType",
                 flags={"required": True},
@@ -299,7 +298,25 @@ class List(AAZCommand):
             secret_store_resource.uri = AAZStrType()
             secret_store_resource.value = AAZStrType()
 
-            identity_details = cls._schema_on_200.value.Element.properties.identity_details
+            deletion_info = cls._schema_on_200.properties.deletion_info
+            deletion_info.billing_end_date = AAZStrType(
+                serialized_name="billingEndDate",
+                flags={"read_only": True},
+            )
+            deletion_info.delete_activity_id = AAZStrType(
+                serialized_name="deleteActivityID",
+                flags={"read_only": True},
+            )
+            deletion_info.deletion_time = AAZStrType(
+                serialized_name="deletionTime",
+                flags={"read_only": True},
+            )
+            deletion_info.scheduled_purge_time = AAZStrType(
+                serialized_name="scheduledPurgeTime",
+                flags={"read_only": True},
+            )
+
+            identity_details = cls._schema_on_200.properties.identity_details
             identity_details.use_system_assigned_identity = AAZBoolType(
                 serialized_name="useSystemAssignedIdentity",
             )
@@ -307,7 +324,7 @@ class List(AAZCommand):
                 serialized_name="userAssignedIdentityArmUrl",
             )
 
-            policy_info = cls._schema_on_200.value.Element.properties.policy_info
+            policy_info = cls._schema_on_200.properties.policy_info
             policy_info.policy_id = AAZStrType(
                 serialized_name="policyId",
                 flags={"required": True},
@@ -320,7 +337,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            policy_parameters = cls._schema_on_200.value.Element.properties.policy_info.policy_parameters
+            policy_parameters = cls._schema_on_200.properties.policy_info.policy_parameters
             policy_parameters.backup_datasource_parameters_list = AAZListType(
                 serialized_name="backupDatasourceParametersList",
             )
@@ -328,25 +345,25 @@ class List(AAZCommand):
                 serialized_name="dataStoreParametersList",
             )
 
-            backup_datasource_parameters_list = cls._schema_on_200.value.Element.properties.policy_info.policy_parameters.backup_datasource_parameters_list
+            backup_datasource_parameters_list = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list
             backup_datasource_parameters_list.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element
+            _element = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element
             _element.object_type = AAZStrType(
                 serialized_name="objectType",
                 flags={"required": True},
             )
 
-            disc_blob_backup_datasource_parameters = cls._schema_on_200.value.Element.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "BlobBackupDatasourceParameters")
+            disc_blob_backup_datasource_parameters = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "BlobBackupDatasourceParameters")
             disc_blob_backup_datasource_parameters.containers_list = AAZListType(
                 serialized_name="containersList",
                 flags={"required": True},
             )
 
-            containers_list = cls._schema_on_200.value.Element.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "BlobBackupDatasourceParameters").containers_list
+            containers_list = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "BlobBackupDatasourceParameters").containers_list
             containers_list.Element = AAZStrType()
 
-            disc_kubernetes_cluster_backup_datasource_parameters = cls._schema_on_200.value.Element.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters")
+            disc_kubernetes_cluster_backup_datasource_parameters = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters")
             disc_kubernetes_cluster_backup_datasource_parameters.backup_hook_references = AAZListType(
                 serialized_name="backupHookReferences",
             )
@@ -374,32 +391,32 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            backup_hook_references = cls._schema_on_200.value.Element.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").backup_hook_references
+            backup_hook_references = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").backup_hook_references
             backup_hook_references.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").backup_hook_references.Element
+            _element = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").backup_hook_references.Element
             _element.name = AAZStrType()
             _element.namespace = AAZStrType()
 
-            excluded_namespaces = cls._schema_on_200.value.Element.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").excluded_namespaces
+            excluded_namespaces = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").excluded_namespaces
             excluded_namespaces.Element = AAZStrType()
 
-            excluded_resource_types = cls._schema_on_200.value.Element.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").excluded_resource_types
+            excluded_resource_types = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").excluded_resource_types
             excluded_resource_types.Element = AAZStrType()
 
-            included_namespaces = cls._schema_on_200.value.Element.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").included_namespaces
+            included_namespaces = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").included_namespaces
             included_namespaces.Element = AAZStrType()
 
-            included_resource_types = cls._schema_on_200.value.Element.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").included_resource_types
+            included_resource_types = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").included_resource_types
             included_resource_types.Element = AAZStrType()
 
-            label_selectors = cls._schema_on_200.value.Element.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").label_selectors
+            label_selectors = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").label_selectors
             label_selectors.Element = AAZStrType()
 
-            data_store_parameters_list = cls._schema_on_200.value.Element.properties.policy_info.policy_parameters.data_store_parameters_list
+            data_store_parameters_list = cls._schema_on_200.properties.policy_info.policy_parameters.data_store_parameters_list
             data_store_parameters_list.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.policy_info.policy_parameters.data_store_parameters_list.Element
+            _element = cls._schema_on_200.properties.policy_info.policy_parameters.data_store_parameters_list.Element
             _element.data_store_type = AAZStrType(
                 serialized_name="dataStoreType",
                 flags={"required": True},
@@ -409,19 +426,19 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            disc_azure_operational_store_parameters = cls._schema_on_200.value.Element.properties.policy_info.policy_parameters.data_store_parameters_list.Element.discriminate_by("object_type", "AzureOperationalStoreParameters")
+            disc_azure_operational_store_parameters = cls._schema_on_200.properties.policy_info.policy_parameters.data_store_parameters_list.Element.discriminate_by("object_type", "AzureOperationalStoreParameters")
             disc_azure_operational_store_parameters.resource_group_id = AAZStrType(
                 serialized_name="resourceGroupId",
             )
 
-            protection_status = cls._schema_on_200.value.Element.properties.protection_status
+            protection_status = cls._schema_on_200.properties.protection_status
             protection_status.error_details = AAZObjectType(
                 serialized_name="errorDetails",
             )
-            _ListHelper._build_schema_user_facing_error_read(protection_status.error_details)
+            _ShowHelper._build_schema_user_facing_error_read(protection_status.error_details)
             protection_status.status = AAZStrType()
 
-            system_data = cls._schema_on_200.value.Element.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -441,14 +458,11 @@ class List(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
-
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ShowHelper:
+    """Helper class for Show"""
 
     _schema_base_resource_properties_read = None
 
@@ -556,4 +570,4 @@ class _ListHelper:
         _schema.target = cls._schema_user_facing_error_read.target
 
 
-__all__ = ["List"]
+__all__ = ["Show"]
