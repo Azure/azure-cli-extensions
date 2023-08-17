@@ -165,7 +165,6 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         self.cmd('containerapp env create -g {} -n {} --logs-destination none --enable-workload-profiles'.format(
             resource_group, env2), expect_failure=False, checks=[
             JMESPathCheck("name", env2),
-            JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("length(properties.workloadProfiles)", 1),
             JMESPathCheck('properties.workloadProfiles[0].name', "Consumption", case_sensitive=False),
             JMESPathCheck('properties.workloadProfiles[0].workloadProfileType', "Consumption", case_sensitive=False),
@@ -175,6 +174,16 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         self.cmd('containerapp env create -g {} -n {} --logs-destination none --enable-workload-profiles true'.format(
             resource_group, env3), expect_failure=False, checks=[
             JMESPathCheck("name", env3),
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("length(properties.workloadProfiles)", 1),
+            JMESPathCheck('properties.workloadProfiles[0].name', "Consumption", case_sensitive=False),
+            JMESPathCheck('properties.workloadProfiles[0].workloadProfileType', "Consumption", case_sensitive=False),
+        ])
+        # default enable workload profiles
+        env4 = self.create_random_name(prefix='env4', length=24)
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none'.format(
+            resource_group, env4), expect_failure=False, checks=[
+            JMESPathCheck("name", env4),
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("length(properties.workloadProfiles)", 1),
             JMESPathCheck('properties.workloadProfiles[0].name', "Consumption", case_sensitive=False),
@@ -377,6 +386,38 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.workloadProfiles", None),
         ])
+
+    @live_only()
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus")
+    def test_containerapp_create_enable_dedicated_gpu(self, resource_group):
+        self.cmd('configure --defaults location={}'.format("westus3"))
+        env = self.create_random_name(prefix='env', length=24)
+        gpu_default_name = "gpu"
+        gpu_default_type = "NC_A100_24"
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none --enable-dedicated-gpu'.format(
+            resource_group, env), expect_failure=False, checks=[
+            JMESPathCheck("name", env),
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("length(properties.workloadProfiles)", 2),
+            JMESPathCheck('properties.workloadProfiles[0].name', "Consumption", case_sensitive=False),
+            JMESPathCheck('properties.workloadProfiles[0].workloadProfileType', "Consumption", case_sensitive=False),
+            JMESPathCheck('properties.workloadProfiles[1].name', gpu_default_name, case_sensitive=False),
+            JMESPathCheck('properties.workloadProfiles[1].workloadProfileType', gpu_default_type, case_sensitive=False),
+            JMESPathCheck('properties.workloadProfiles[1].maximumCount', 1),
+            JMESPathCheck('properties.workloadProfiles[1].minimumCount', 0),
+        ])
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+        app1 = self.create_random_name(prefix='app1', length=24)
+        self.cmd(f'containerapp create -n {app1} -g {resource_group} --image mcr.microsoft.com/azuredocs/samples-tf-mnist-demo:gpu --environment {env} -w {gpu_default_name} --min-replicas 1', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.workloadProfileName", gpu_default_name),
+        ])
+        self.cmd(f'containerapp logs show -n {app1} -g {resource_group}', expect_failure=False)
 
     def assertContainerappProperties(self, containerapp_env, rg, app, workload_profile_name, revision, cpu, mem):
         self.cmd(f'containerapp show -g {rg} -n {app}', checks=[

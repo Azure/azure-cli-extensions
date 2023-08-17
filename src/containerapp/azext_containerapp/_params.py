@@ -55,9 +55,30 @@ def load_arguments(self, _):
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
 
     with self.argument_context('containerapp env create') as c:
+<<<<<<< HEAD
         c.argument('enable_workload_profiles', arg_type=get_three_state_flag(), options_list=["--enable-workload-profiles", "-w"], help="Boolean indicating if the environment is enabled to have workload profiles")
         c.argument('enable_dedicated_gpu', arg_type=get_three_state_flag(), options_list=["--enable-dedicated-gpu"],
                    help="Boolean indicating if the environment is enabled to have dedicated gpu", is_preview=True)
+=======
+        c.argument('zone_redundant', options_list=["--zone-redundant", "-z"], help="Enable zone redundancy on the environment. Cannot be used without --infrastructure-subnet-resource-id. If used with --location, the subnet's location must match")
+        c.argument('enable_workload_profiles', arg_type=get_three_state_flag(), default=True, options_list=["--enable-workload-profiles", "-w"], help="Boolean indicating if the environment is enabled to have workload profiles", is_preview=True)
+        c.argument('enable_dedicated_gpu', arg_type=get_three_state_flag(), options_list=["--enable-dedicated-gpu"], help="Boolean indicating if the environment is enabled to have dedicated gpu", is_preview=True)
+
+    with self.argument_context('containerapp env update') as c:
+        c.argument('name', name_type, help='Name of the Container Apps environment.')
+        c.argument('tags', arg_type=tags_type)
+        # c.argument('plan', help="The sku of the containerapp environment. Downgrading from premium to consumption is not supported. Environment must have a subnet to be upgraded to premium sku.", arg_type=get_enum_type(['consumption', 'premium', None], default=None))
+        c.argument('workload_profile_type', help='The type of workload profile to add or update in this environment, --workload-profile-name required')
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
+        c.argument('min_nodes', help='The minimum nodes for this workload profile, --workload-profile-name required')
+        c.argument('max_nodes', help='The maximum nodes for this workload profile, --workload-profile-name required')
+
+    with self.argument_context('containerapp env delete') as c:
+        c.argument('name', name_type, help='Name of the Container Apps Environment.')
+
+    with self.argument_context('containerapp env show') as c:
+        c.argument('name', name_type, help='Name of the Container Apps Environment.')
+>>>>>>> e95f99066 (add tests and set default value as true)
 
     with self.argument_context('containerapp env certificate create') as c:
         c.argument('hostname', options_list=['--hostname'], help='The custom domain name.')
