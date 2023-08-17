@@ -137,13 +137,17 @@ def load_command_table(self, _):
         g.custom_command('delete', 'network_manager_admin_rule_delete',
                          confirmation=True)
 
-    with self.command_group('network manager security-admin-config rule-collection', network_adminrulecollection, client_factory=cf_adminrulecollection) as g:
+    with self.command_group('network manager security-admin-config rule-collection') as g:
         g.custom_command('create', 'network_manager_admin_rule_collection_create')
-        g.generic_update_command('update', setter_arg_name='rule_collection', custom_func_name='network_manager_admin_rule_collection_update')
-        g.custom_command('list', 'network_manager_admin_rule_collection_list')
-        g.custom_show_command('show', 'network_manager_admin_rule_collection_show')
-        g.custom_command('delete', 'network_manager_admin_rule_collection_delete',
-                         confirmation=True)
+        g.custom_command('update', 'network_manager_admin_rule_collection_update')
+
+    # with self.command_group('network manager security-admin-config rule-collection', network_adminrulecollection, client_factory=cf_adminrulecollection) as g:
+    #     g.custom_command('create', 'network_manager_admin_rule_collection_create')
+    #     g.generic_update_command('update', setter_arg_name='rule_collection', custom_func_name='network_manager_admin_rule_collection_update')
+    #     g.custom_command('list', 'network_manager_admin_rule_collection_list')
+    #     g.custom_show_command('show', 'network_manager_admin_rule_collection_show')
+    #     g.custom_command('delete', 'network_manager_admin_rule_collection_delete',
+    #                      confirmation=True)
 
     # with self.command_group('network manager security-user-config rule-collection rule', network_userrule, client_factory=cf_userrule) as g:
     #     g.custom_command('list', 'network_manager_user_rule_list')

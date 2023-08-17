@@ -293,16 +293,6 @@ def load_arguments(self, _):
     #     c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
     #                id_part='child_name_1')
 
-    with self.argument_context('network manager security-admin-config rule-collection rule list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.')
-        c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
-                   'be returned by the server.')
-        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
-                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
-                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
-
     with self.argument_context('network manager security-admin-config rule-collection create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
@@ -323,32 +313,32 @@ def load_arguments(self, _):
         c.argument('applies_to_groups', action=AddConnectivityconfigurationsAppliesToGroups, nargs='+', help='Groups '
                    'for configuration')
 
-    with self.argument_context('network manager security-admin-config rule-collection list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
-                   id_part='child_name_1')
-        c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
-                   'be returned by the server.')
-        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
-                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
-                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
-
-    with self.argument_context('network manager security-admin-config rule-collection show') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
-                   id_part='child_name_1')
-        c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
-
-    with self.argument_context('network manager security-admin-config rule-collection delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
-        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
-                   id_part='child_name_1')
-        c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
-        c.argument('force', arg_type=get_three_state_flag(),
-                   help='Deletes the resource even if it is part of a deployed configuration.')
+    # with self.argument_context('network manager security-admin-config rule-collection list') as c:
+    #     c.argument('resource_group_name', resource_group_name_type)
+    #     c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
+    #     c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
+    #                id_part='child_name_1')
+    #     c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
+    #                'be returned by the server.')
+    #     c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
+    #                'result. If a previous response contains a nextLink element, the value of the nextLink element will '
+    #                'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
+    #
+    # with self.argument_context('network manager security-admin-config rule-collection show') as c:
+    #     c.argument('resource_group_name', resource_group_name_type)
+    #     c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
+    #     c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
+    #                id_part='child_name_1')
+    #     c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
+    #
+    # with self.argument_context('network manager security-admin-config rule-collection delete') as c:
+    #     c.argument('resource_group_name', resource_group_name_type)
+    #     c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')
+    #     c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.',
+    #                id_part='child_name_1')
+    #     c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
+    #     c.argument('force', arg_type=get_three_state_flag(),
+    #                help='Deletes the resource even if it is part of a deployed configuration.')
 
     with self.argument_context('network manager security-admin-config rule-collection rule') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -357,6 +347,16 @@ def load_arguments(self, _):
                    id_part='child_name_1')
         c.argument('rule_name', type=str, help='The name of the rule.', id_part='child_name_2')
         c.argument('rule_collection_name', type=str, help='The name of the admin rule collection.')
+
+    with self.argument_context('network manager security-admin-config rule-collection rule list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part=None)
+        c.argument('configuration_name', type=str, help='The name of the network manager security Configuration.')
+        c.argument('top', type=int, help='An optional query parameter which specifies the maximum number of records to '
+                   'be returned by the server.')
+        c.argument('skip_token', type=str, help='SkipToken is only used if a previous operation returned a partial '
+                   'result. If a previous response contains a nextLink element, the value of the nextLink element will '
+                   'include a skipToken parameter that specifies a starting point to use for subsequent calls.')
 
     with self.argument_context('network manager security-admin-config rule-collection rule create') as c:
         c.argument('access', type=str, help='Indicates the access allowed for this particular rule.', arg_type=get_enum_type(['Allow', 'Deny', 'AlwaysAllow']))
@@ -393,6 +393,7 @@ def load_arguments(self, _):
     with self.argument_context('network manager security-admin-config rule-collection rule delete') as c:
         c.argument('force', arg_type=get_three_state_flag(),
                    help='Deletes the resource even if it is part of a deployed configuration.')
+
     # with self.argument_context('network manager security-user-config rule-collection create') as c:
     #     c.argument('resource_group_name', resource_group_name_type)
     #     c.argument('network_manager_name', type=str, help='The name of the network manager.', id_part='name')

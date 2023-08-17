@@ -468,76 +468,85 @@ def network_manager_connect_config_update(cmd,
 #                                configuration_name=configuration_name)
 
 
-def network_manager_admin_rule_collection_list(client,
-                                               resource_group_name,
-                                               network_manager_name,
-                                               configuration_name,
-                                               top=None,
-                                               skip_token=None):
-    return client.list(resource_group_name=resource_group_name,
-                       network_manager_name=network_manager_name,
-                       configuration_name=configuration_name,
-                       top=top,
-                       skip_token=skip_token)
+# def network_manager_admin_rule_collection_list(client,
+#                                                resource_group_name,
+#                                                network_manager_name,
+#                                                configuration_name,
+#                                                top=None,
+#                                                skip_token=None):
+#     return client.list(resource_group_name=resource_group_name,
+#                        network_manager_name=network_manager_name,
+#                        configuration_name=configuration_name,
+#                        top=top,
+#                        skip_token=skip_token)
 
 
-def network_manager_admin_rule_collection_create(client,
+def network_manager_admin_rule_collection_create(cmd,
                                                  resource_group_name,
                                                  network_manager_name,
                                                  configuration_name,
                                                  rule_collection_name,
                                                  applies_to_groups,
                                                  description=None):
+    from .aaz.latest.network.manager.security_admin_config.rule_collection import Create as _RuleCollectionCreate
+    Create = _RuleCollectionCreate(cmd.loader)
     rule_collection = {}
+    rule_collection['resource_group'] = resource_group_name
+    rule_collection['network_manager_name'] = network_manager_name
+    rule_collection['configuration_name'] = configuration_name
+    rule_collection['rule_collection_name'] = rule_collection_name
     rule_collection['description'] = description
     rule_collection['applies_to_groups'] = applies_to_groups
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   network_manager_name=network_manager_name,
-                                   configuration_name=configuration_name,
-                                   rule_collection_name=rule_collection_name,
-                                   rule_collection=rule_collection)
+    return Create(rule_collection)
 
 
-def network_manager_admin_rule_collection_update(instance,
+def network_manager_admin_rule_collection_update(cmd,
                                                  resource_group_name,
                                                  network_manager_name,
                                                  configuration_name,
                                                  rule_collection_name,
                                                  description=None,
                                                  applies_to_groups=None):
+    from .aaz.latest.network.manager.security_admin_config.rule_collection import Update as _RuleCollectionUpdate
+    Update = _RuleCollectionUpdate(cmd.loader)
+    rule_collection = {}
+    rule_collection['resource_group'] = resource_group_name
+    rule_collection['network_manager_name'] = network_manager_name
+    rule_collection['configuration_name'] = configuration_name
+    rule_collection['rule_collection_name'] = rule_collection_name
     if description is not None:
-        instance.description = description
+        rule_collection["description"] = description
     if applies_to_groups is not None:
-        instance.applies_to_groups = applies_to_groups
-    return instance
+        rule_collection["applies_to_groups"] = applies_to_groups
+    return Update(rule_collection)
 
 
-def network_manager_admin_rule_collection_show(client,
-                                               resource_group_name,
-                                               network_manager_name,
-                                               configuration_name,
-                                               rule_collection_name):
-    return client.get(resource_group_name=resource_group_name,
-                      network_manager_name=network_manager_name,
-                      configuration_name=configuration_name,
-                      rule_collection_name=rule_collection_name)
-
-
-def network_manager_admin_rule_collection_delete(client,
-                                                 resource_group_name,
-                                                 network_manager_name,
-                                                 configuration_name,
-                                                 rule_collection_name,
-                                                 force=False):
-    if force is False:
-        print("The \'--force\' flag was not provided for the delete operation. "
-              "If this resource or any of its child resources are part of a deployed configuration, "
-              "this delete will fail.")
-    return client.begin_delete(resource_group_name=resource_group_name,
-                               network_manager_name=network_manager_name,
-                               configuration_name=configuration_name,
-                               rule_collection_name=rule_collection_name,
-                               force=force)
+# def network_manager_admin_rule_collection_show(client,
+#                                                resource_group_name,
+#                                                network_manager_name,
+#                                                configuration_name,
+#                                                rule_collection_name):
+#     return client.get(resource_group_name=resource_group_name,
+#                       network_manager_name=network_manager_name,
+#                       configuration_name=configuration_name,
+#                       rule_collection_name=rule_collection_name)
+#
+#
+# def network_manager_admin_rule_collection_delete(client,
+#                                                  resource_group_name,
+#                                                  network_manager_name,
+#                                                  configuration_name,
+#                                                  rule_collection_name,
+#                                                  force=False):
+#     if force is False:
+#         print("The \'--force\' flag was not provided for the delete operation. "
+#               "If this resource or any of its child resources are part of a deployed configuration, "
+#               "this delete will fail.")
+#     return client.begin_delete(resource_group_name=resource_group_name,
+#                                network_manager_name=network_manager_name,
+#                                configuration_name=configuration_name,
+#                                rule_collection_name=rule_collection_name,
+#                                force=force)
 
 
 def network_manager_admin_rule_create(client,

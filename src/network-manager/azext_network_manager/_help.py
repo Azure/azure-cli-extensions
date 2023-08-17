@@ -419,17 +419,17 @@ helps['network manager connect-config update'] = """
 #     type: group
 #     short-summary: Manage admin rule collection with network
 # """
-#
-# helps['network manager security-admin-config rule-collection create'] = """
-#     type: command
-#     short-summary: "Create a network manager security configuration admin rule collection."
-#     examples:
-#       - name: Create security admin rule collections
-#         text: |-
-#                az network manager security-admin-config rule-collection create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager"  -g "rg1" \
-# --rule-collection-name "myTestCollection" --description "A sample description" \
-# --applies-to-groups  network-group-id="/subscriptions/sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"
-# """
+
+helps['network manager security-admin-config rule-collection create'] = """
+    type: command
+    short-summary: "Create a network manager security configuration admin rule collection."
+    examples:
+      - name: Create security admin rule collections
+        text: |-
+               az network manager security-admin-config rule-collection create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager"  -g "rg1" \
+--rule-collection-name "myTestCollection" --description "A sample description" \
+--applies-to-groups  network-group-id="/subscriptions/sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"
+"""
 #
 # helps['network manager security-admin-config rule-collection list'] = """
 #     type: command
@@ -441,15 +441,15 @@ helps['network manager connect-config update'] = """
 # "testNetworkManager" --resource-group "rg1"
 # """
 #
-# helps['network manager security-admin-config rule-collection update'] = """
-#     type: command
-#     short-summary: "Update a network manager security configuration admin rule collection in a subscription."
-#     examples:
-#       - name: Update security admin rule collection
-#         text: |-
-#                az network manager security-admin-config rule-collection update --configuration-name "myTestSecurityConfig" --network-manager-name \
-# "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection"
-# """
+helps['network manager security-admin-config rule-collection update'] = """
+    type: command
+    short-summary: "Update a network manager security configuration admin rule collection in a subscription."
+    examples:
+      - name: Update security admin rule collection
+        text: |-
+               az network manager security-admin-config rule-collection update --configuration-name "myTestSecurityConfig" --network-manager-name \
+"testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection"
+"""
 #
 # helps['network manager security-admin-config rule-collection show'] = """
 #     type: command
