@@ -549,7 +549,7 @@ def network_manager_admin_rule_collection_update(cmd,
 #                                force=force)
 
 
-def network_manager_admin_rule_create(client,
+def network_manager_admin_rule_create(cmd,
                                       resource_group_name,
                                       network_manager_name,
                                       configuration_name,
@@ -566,27 +566,32 @@ def network_manager_admin_rule_create(client,
                                       source_port_ranges=None,
                                       destination_port_ranges=None,
                                       flag=None):
+    from .aaz.latest.network.manager.security_admin_config.rule_collection.rule import Create as _RuleCreate
+    Create = _RuleCreate(cmd.loader)
     rule = {}
-    rule['kind'] = kind
-    rule['description'] = description
-    rule['protocol'] = protocol
-    rule['sources'] = sources
-    rule['destinations'] = destinations
-    rule['source_port_ranges'] = source_port_ranges
-    rule['destination_port_ranges'] = destination_port_ranges
-    rule['access'] = access
-    rule['priority'] = priority
-    rule['direction'] = direction
-    rule['flag'] = flag
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   network_manager_name=network_manager_name,
-                                   configuration_name=configuration_name,
-                                   rule_collection_name=rule_collection_name,
-                                   rule_name=rule_name,
-                                   admin_rule=rule)
+    rule['resource_group'] = resource_group_name
+    rule['network_manager_name'] = network_manager_name
+    rule['configuration_name'] = configuration_name
+    rule['rule_collection_name'] = rule_collection_name
+    rule['rule_name'] = rule_name
+    if kind == "Default":
+        rule['default'] = {}
+        rule['default']['flag'] = flag
+    elif kind == "Custom":
+        rule['custom'] = {}
+        rule['custom']['description'] = description
+        rule['custom']['protocol'] = protocol
+        rule['custom']['sources'] = sources
+        rule['custom']['destinations'] = destinations
+        rule['custom']['source_port_ranges'] = source_port_ranges
+        rule['custom']['destination_port_ranges'] = destination_port_ranges
+        rule['custom']['access'] = access
+        rule['custom']['priority'] = priority
+        rule['custom']['direction'] = direction
+    return Create(rule)
 
 
-def network_manager_admin_rule_update(instance,
+def network_manager_admin_rule_update(cmd,
                                       resource_group_name,
                                       network_manager_name,
                                       configuration_name,
@@ -603,76 +608,86 @@ def network_manager_admin_rule_update(instance,
                                       priority=None,
                                       direction=None,
                                       flag=None):
-    if kind == 'DefaultAdminRule':
+    from .aaz.latest.network.manager.security_admin_config.rule_collection.rule import Update as _RuleUpdate
+    Update = _RuleUpdate(cmd.loader)
+    rule = {}
+    rule['resource_group'] = resource_group_name
+    rule['network_manager_name'] = network_manager_name
+    rule['configuration_name'] = configuration_name
+    rule['rule_collection_name'] = rule_collection_name
+    rule['rule_name'] = rule_name
+    if kind == "Default":
+        rule['default'] = {}
         if flag is not None:
-            instance.flag = flag
-    else:
+            rule['default']['flag'] = flag
+    elif kind == "Custom":
+        rule['custom'] = {}
         if description is not None:
-            instance.description = description
+            rule['custom']['description'] = description
         if protocol is not None:
-            instance.protocol = protocol
+            rule['custom']['protocol'] = protocol
         if sources is not None:
-            instance.sources = sources
+            rule['custom']['sources'] = sources
         if destinations is not None:
-            instance.destinations = destinations
+            rule['custom']['destinations'] = destinations
         if source_port_ranges is not None:
-            instance.source_port_ranges = source_port_ranges
+            rule['custom']['source_port_ranges'] = source_port_ranges
         if destination_port_ranges is not None:
-            instance.destination_port_ranges = destination_port_ranges
+            rule['custom']['destination_port_ranges'] = destination_port_ranges
         if access is not None:
-            instance.access = access
+            rule['custom']['access'] = access
         if priority is not None:
-            instance.priority = priority
+            rule['custom']['priority'] = priority
         if direction is not None:
-            instance.direction = direction
-    return instance
+            rule['custom']['direction'] = direction
+    return Update(rule)
 
 
-def network_manager_admin_rule_list(client,
-                                    resource_group_name,
-                                    network_manager_name,
-                                    configuration_name,
-                                    rule_collection_name,
-                                    top=None,
-                                    skip_token=None):
-    return client.list(resource_group_name=resource_group_name,
-                       network_manager_name=network_manager_name,
-                       configuration_name=configuration_name,
-                       rule_collection_name=rule_collection_name,
-                       top=top,
-                       skip_token=skip_token)
-
-
-def network_manager_admin_rule_show(client,
-                                    resource_group_name,
-                                    network_manager_name,
-                                    configuration_name,
-                                    rule_collection_name,
-                                    rule_name):
-    return client.get(resource_group_name=resource_group_name,
-                      network_manager_name=network_manager_name,
-                      configuration_name=configuration_name,
-                      rule_collection_name=rule_collection_name,
-                      rule_name=rule_name)
-
-
-def network_manager_admin_rule_delete(client,
-                                      resource_group_name,
-                                      network_manager_name,
-                                      configuration_name,
-                                      rule_collection_name,
-                                      rule_name,
-                                      force=False):
-    if force is False:
-        print("The \'--force\' flag was not provided for the delete operation. "
-              "If this resource or any of its child resources are part of a deployed configuration, "
-              "this delete will fail.")
-    return client.begin_delete(resource_group_name=resource_group_name,
-                               network_manager_name=network_manager_name,
-                               configuration_name=configuration_name,
-                               rule_collection_name=rule_collection_name,
-                               rule_name=rule_name,
-                               force=force)
+# def network_manager_admin_rule_list(client,
+#                                     resource_group_name,
+#                                     network_manager_name,
+#                                     configuration_name,
+#                                     rule_collection_name,
+#                                     top=None,
+#                                     skip_token=None):
+#     return client.list(resource_group_name=resource_group_name,
+#                        network_manager_name=network_manager_name,
+#                        configuration_name=configuration_name,
+#                        rule_collection_name=rule_collection_name,
+#                        top=top,
+#                        skip_token=skip_token)
+#
+#
+# def network_manager_admin_rule_show(client,
+#                                     resource_group_name,
+#                                     network_manager_name,
+#                                     configuration_name,
+#                                     rule_collection_name,
+#                                     rule_name):
+#     return client.get(resource_group_name=resource_group_name,
+#                       network_manager_name=network_manager_name,
+#                       configuration_name=configuration_name,
+#                       rule_collection_name=rule_collection_name,
+#                       rule_name=rule_name)
+#
+#
+# def network_manager_admin_rule_delete(client,
+#                                       resource_group_name,
+#                                       network_manager_name,
+#                                       configuration_name,
+#                                       rule_collection_name,
+#                                       rule_name,
+#                                       force=False):
+#     if force is False:
+#         print("The \'--force\' flag was not provided for the delete operation. "
+#               "If this resource or any of its child resources are part of a deployed configuration, "
+#               "this delete will fail.")
+#     return client.begin_delete(resource_group_name=resource_group_name,
+#                                network_manager_name=network_manager_name,
+#                                configuration_name=configuration_name,
+#                                rule_collection_name=rule_collection_name,
+#                                rule_name=rule_name,
+#                                force=force)
 
 
 # def network_manager_user_rule_collection_list(client,

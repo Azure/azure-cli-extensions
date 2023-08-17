@@ -31,25 +31,25 @@ def load_command_table(self, _):
     #     client_factory=cf_connectivityconfiguration
     # )
 
-    network_networkgroup = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#NetworkGroupsOperations.{}',
-        client_factory=cf_networkgroup
-    )
+    # network_networkgroup = CliCommandType(
+    #     operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#NetworkGroupsOperations.{}',
+    #     client_factory=cf_networkgroup
+    # )
 
     # network_securityuserconfiguration = CliCommandType(
     #     operations_tmpl='azext_network_manager.vendored_sdks.operations._security_user_configurations_operations#SecurityUserConfigurationsOperations.{}',
     #     client_factory=cf_securityuserconfiguration
     # )
 
-    network_adminrule = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#AdminRulesOperations.{}',
-        client_factory=cf_adminrule
-    )
-
-    network_adminrulecollection = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#AdminRuleCollectionsOperations.{}',
-        client_factory=cf_adminrulecollection
-    )
+    # network_adminrule = CliCommandType(
+    #     operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#AdminRulesOperations.{}',
+    #     client_factory=cf_adminrule
+    # )
+    #
+    # network_adminrulecollection = CliCommandType(
+    #     operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#AdminRuleCollectionsOperations.{}',
+    #     client_factory=cf_adminrulecollection
+    # )
 
     # network_userrule = CliCommandType(
     #     operations_tmpl='azext_network_manager.vendored_sdks.operations._user_rules_operations#UserRulesOperations.{}',
@@ -61,25 +61,25 @@ def load_command_table(self, _):
     #     client_factory=cf_userrulecollection
     # )
 
-    network_scopeconnection = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#ScopeConnectionsOperations.{}',
-        client_factory=cf_scopeconnection
-    )
+    # network_scopeconnection = CliCommandType(
+    #     operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#ScopeConnectionsOperations.{}',
+    #     client_factory=cf_scopeconnection
+    # )
 
     # network_staticmembers = CliCommandType(
     #     operations_tmpl='azext_network_manager.vendored_sdks.operations._static_members_operations#StaticMembersOperations.{}',
     #     client_factory=cf_staticmembers
     # )
 
-    network_subscriptionconnection = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#SubscriptionNetworkManagerConnectionsOperations.{}',
-        client_factory=cf_subscriptionconnection
-    )
-
-    network_managementgroupconnection = CliCommandType(
-        operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#ManagementGroupNetworkManagerConnectionsOperations.{}',
-        client_factory=cf_managementgroupconnection
-    )
+    # network_subscriptionconnection = CliCommandType(
+    #     operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#SubscriptionNetworkManagerConnectionsOperations.{}',
+    #     client_factory=cf_subscriptionconnection
+    # )
+    #
+    # network_managementgroupconnection = CliCommandType(
+    #     operations_tmpl='azext_network_manager.vendored_sdks.operations._operations#ManagementGroupNetworkManagerConnectionsOperations.{}',
+    #     client_factory=cf_managementgroupconnection
+    # )
 
     with self.command_group('network manager') as g:
         g.custom_command('create', 'network_manager_create')
@@ -129,13 +129,17 @@ def load_command_table(self, _):
     #     g.generic_update_command('update', setter_arg_name='security_user_configuration', custom_func_name='network_manager_security_user_config_update')
     #     g.custom_command('delete', 'network_manager_security_user_config_delete', confirmation=True)
 
-    with self.command_group('network manager security-admin-config rule-collection rule', network_adminrule, client_factory=cf_adminrule) as g:
+    with self.command_group('network manager security-admin-config rule-collection rule') as g:
         g.custom_command('create', 'network_manager_admin_rule_create')
-        g.generic_update_command('update', setter_arg_name='admin_rule', custom_func_name='network_manager_admin_rule_update')
-        g.custom_command('list', 'network_manager_admin_rule_list')
-        g.custom_show_command('show', 'network_manager_admin_rule_show')
-        g.custom_command('delete', 'network_manager_admin_rule_delete',
-                         confirmation=True)
+        g.custom_command('update', 'network_manager_admin_rule_update')
+
+    # with self.command_group('network manager security-admin-config rule-collection rule', network_adminrule, client_factory=cf_adminrule) as g:
+    #     g.custom_command('create', 'network_manager_admin_rule_create')
+    #     g.generic_update_command('update', setter_arg_name='admin_rule', custom_func_name='network_manager_admin_rule_update')
+    #     g.custom_command('list', 'network_manager_admin_rule_list')
+    #     g.custom_show_command('show', 'network_manager_admin_rule_show')
+    #     g.custom_command('delete', 'network_manager_admin_rule_delete',
+    #                      confirmation=True)
 
     with self.command_group('network manager security-admin-config rule-collection') as g:
         g.custom_command('create', 'network_manager_admin_rule_collection_create')
