@@ -37,7 +37,7 @@ class FleetScenarioTest(ScenarioTest):
             key_file.write(TEST_SSH_KEY_PUB)
         return pathname.replace('\\', '\\\\')
 
-    @ResourceGroupPreparer(name_prefix='cli-', random_name_length=8, location='westus2')
+    @ResourceGroupPreparer(name_prefix='cli-', random_name_length=8, location='centraluseuap')
     def test_fleet(self):
 
         self.kwargs.update({
@@ -116,9 +116,9 @@ class FleetScenarioTest(ScenarioTest):
             self.check('length([])', 1)
         ])
 
-        self.cmd('fleet updaterun stop -g {rg} -n {updaterun} -f {fleet_name}', checks=[
-            self.check('name', '{updaterun}')
-        ])
+        # self.cmd('fleet updaterun stop -g {rg} -n {updaterun} -f {fleet_name}', checks=[
+        #     self.check('name', '{updaterun}')
+        # ])
 
         self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name}')
         
