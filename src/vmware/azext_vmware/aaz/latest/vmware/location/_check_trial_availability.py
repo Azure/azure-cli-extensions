@@ -49,8 +49,8 @@ class CheckTrialAvailability(AAZCommand):
         # define Arg Group "Sku"
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["--name"],
+        _args_schema.sku = AAZStrArg(
+            options=["--sku"],
             arg_group="Sku",
             help="The name of the SKU.",
         )
@@ -142,7 +142,7 @@ class CheckTrialAvailability(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
-            _builder.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("name", AAZStrType, ".sku", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 

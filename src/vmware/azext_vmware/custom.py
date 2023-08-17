@@ -38,28 +38,37 @@ Press any key to continue
 '''
 
 
-def privatecloud_addidentitysource(client: AVSClient, resource_group_name, name, private_cloud, alias, domain, base_user_dn, base_group_dn, primary_server, username, password, secondary_server=None, ssl="Disabled"):
-    from azext_vmware.vendored_sdks.avs_client.models import IdentitySource
-    pc = client.private_clouds.get(resource_group_name, private_cloud)
-    identitysource = IdentitySource(name=name, alias=alias, domain=domain, base_user_dn=base_user_dn, base_group_dn=base_group_dn, primary_server=primary_server, ssl=ssl, username=username, password=password)
+def privatecloud_addidentitysource(cmd, resource_group_name, name, private_cloud, alias, domain, base_user_dn, base_group_dn, primary_server, username, password, secondary_server=None, ssl="Disabled"):
+    from aaz.latest.vmware.private_cloud.identity_source import Create
+    command_args = {
+        "private_cloud": private_cloud,
+        "resource_group": resource_group_name,
+        "name": name,
+        "alias": alias,
+        "domain": domain,
+        "base_user_dn": base_user_dn,
+        "base_group_dn": base_group_dn,
+        "primary_server": primary_server,
+        "username": username,
+        "password": password,
+        "ssl": ssl,
+    }
     if secondary_server is not None:
-        identitysource.secondary_server = secondary_server
-    pc.identity_sources.append(identitysource)
-    return client.private_clouds.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud=pc)
+        command_args["secondary_server"] = secondary_server
+    return Create(cli_ctx=cmd.cli_ctx)(command_args=command_args)
 
 
-def privatecloud_deleteidentitysource(client: AVSClient, resource_group_name, name, private_cloud, alias, domain, yes=False):
+def privatecloud_deleteidentitysource(cmd, resource_group_name, name, private_cloud, alias, domain, yes=False):
+    from aaz.latest.vmware.private_cloud.identity_source import Delete
     from knack.prompting import prompt_y_n
     msg = 'This will delete the identity source. Are you sure?'
     if not yes and not prompt_y_n(msg, default="n"):
         return None
-    pc = client.private_clouds.get(resource_group_name, private_cloud)
-    found = next((ids for ids in pc.identity_sources
-                 if ids.name == name and ids.alias == alias and ids.domain == domain), None)
-    if found:
-        pc.identity_sources.remove(found)
-        return client.private_clouds.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud=pc)
-    return pc
+    return Delete(cli_ctx=cmd.cli_ctx)(command_args={
+        "private_cloud": private_cloud,
+        "resource_group": resource_group_name,
+        "name": name,
+    })
 
 
 def privatecloud_addcmkencryption(cmd, resource_group_name, private_cloud, enc_kv_key_name=None, enc_kv_key_version=None, enc_kv_url=None):
@@ -68,7 +77,7 @@ def privatecloud_addcmkencryption(cmd, resource_group_name, private_cloud, enc_k
         "private_cloud_name": private_cloud,
         "resource_group": resource_group_name,
         "encryption": {
-            "statue": "Enabled",
+            "status": "Enabled",
             "key_vault_properties": {
                 "key_name": enc_kv_key_name,
                 "key_version": enc_kv_key_version,
@@ -88,7 +97,7 @@ def privatecloud_deletecmkenryption(cmd, resource_group_name, private_cloud, yes
         "private_cloud_name": private_cloud,
         "resource_group": resource_group_name,
         "encryption": {
-            "statue": "Disabled",
+            "status": "Disabled",
         }
     })
 
@@ -132,15 +141,6 @@ def privatecloud_rotate_nsxt_password():
     # return client.private_clouds.begin_rotate_nsxt_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 
 
-def check_quota_availability(client: AVSClient, location):
-    return client.locations.check_quota_availability(location)
-
-
-def check_trial_availability(client: AVSClient, location, sku=None):
-    from azext_vmware.vendored_sdks.avs_client.models import Sku
-    return client.locations.check_trial_availability(location=location, sku=Sku(name=sku))
-
-
 def datastore_create():
     print('Please use "az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create" instead.')
 
@@ -167,7 +167,3 @@ def script_execution_delete(client: AVSClient, resource_group_name, private_clou
     if not yes and not prompt_y_n(msg, default="n"):
         return None
     return client.script_executions.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)
-
-
-def script_execution_logs(client: AVSClient, resource_group_name, private_cloud, name):
-    return client.script_executions.get_execution_logs(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name)

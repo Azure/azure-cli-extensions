@@ -69,10 +69,10 @@ def load_command_table(self, _):
 
     with self.command_group('vmware private-cloud', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('listadmincredentials', 'privatecloud_listadmincredentials', deprecate_info=g.deprecate(redirect='az vmware private-cloud list-admin-credentials', hide=True))
-        g.custom_command('addidentitysource', 'privatecloud_addidentitysource', deprecate_info=g.deprecate(redirect='az vmware private-cloud add-identity-source', hide=True))
-        g.custom_command('add-identity-source', 'privatecloud_addidentitysource')
+        g.custom_command('addidentitysource', 'privatecloud_addidentitysource', deprecate_info=g.deprecate(redirect='az vmware private-cloud identity-source create', hide=True))
+        g.custom_command('add-identity-source', 'privatecloud_addidentitysource', deprecate_info=g.deprecate(redirect='az vmware private-cloud identity-source create', hide=True))
         g.custom_command('deleteidentitysource', 'privatecloud_deleteidentitysource', deprecate_info=g.deprecate(redirect='az vmware private-cloud delete-identity-source', hide=True))
-        g.custom_command('delete-identity-source', 'privatecloud_deleteidentitysource')
+        g.custom_command('delete-identity-source', 'privatecloud_deleteidentitysource', deprecate_info=g.deprecate(redirect='az vmware private-cloud identity-source delete', hide=True))
         g.custom_command('add-cmk-encryption', 'privatecloud_addcmkencryption', deprecate_info=g.deprecate(redirect='az vmware private-cloud enable-cmk-encryption', hide=True))
         g.custom_command('delete-cmk-encryption', 'privatecloud_deletecmkenryption', deprecate_info=g.deprecate(redirect='az vmware private-cloud disable-cmk-encryption', hide=True))
         g.custom_command('enable-cmk-encryption', 'privatecloud_addcmkencryption')

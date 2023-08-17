@@ -12,25 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "vmware private-cloud update",
+    "vmware private-cloud identity-source create",
 )
-class Update(AAZCommand):
-    """Update a private cloud
+class Create(AAZCommand):
+    """Create a vCenter Single Sign On Identity Source to a private cloud.
     """
 
     _aaz_info = {
         "version": "2022-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2022-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2022-05-01", "properties.identitySources[]"],
         ]
     }
 
     AZ_SUPPORT_NO_WAIT = True
 
-    AZ_SUPPORT_GENERIC_UPDATE = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
+        self.SubresourceSelector(ctx=self.ctx, name="subresource")
         return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
@@ -44,185 +43,85 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.private_cloud_name = AAZStrArg(
-            options=["-n", "--name", "--private-cloud-name"],
+        _args_schema.private_cloud = AAZStrArg(
+            options=["-c", "--private-cloud"],
             help="Name of the private cloud",
             required=True,
-            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "ManagementCluster"
-
-        _args_schema = cls._args_schema
-        _args_schema.cluster_size = AAZIntArg(
-            options=["--cluster-size"],
-            arg_group="ManagementCluster",
-            help="The cluster size",
-        )
-
-        # define Arg Group "PrivateCloud"
-
-        _args_schema = cls._args_schema
-        _args_schema.identity = AAZObjectArg(
-            options=["--identity"],
-            arg_group="PrivateCloud",
-            help="The identity of the private cloud, if configured.",
-            nullable=True,
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="PrivateCloud",
-            help="Resource tags",
-            nullable=True,
-        )
-
-        identity = cls._args_schema.identity
-        identity.type = AAZStrArg(
-            options=["type"],
-            help="The type of identity used for the private cloud. The type 'SystemAssigned' refers to an implicitly created identity. The type 'None' will remove any identities from the Private Cloud.",
-            nullable=True,
-            enum={"None": "None", "SystemAssigned": "SystemAssigned"},
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.encryption = AAZObjectArg(
-            options=["--encryption"],
-            arg_group="Properties",
-            help="Customer managed key encryption, can be enabled or disabled",
-            nullable=True,
-        )
-        _args_schema.identity_sources = AAZListArg(
-            options=["--identity-sources"],
-            arg_group="Properties",
-            help="vCenter Single Sign On Identity Sources",
-            nullable=True,
-        )
-        _args_schema.internet = AAZStrArg(
-            options=["--internet"],
-            arg_group="Properties",
-            help="Connectivity to internet is enabled or disabled",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-        _args_schema.nsxt_password = AAZPasswordArg(
-            options=["--nsxt-password"],
-            arg_group="Properties",
-            help="Optionally, set the NSX-T Manager password when the private cloud is created",
-            nullable=True,
-            blank=AAZPromptPasswordInput(
-                msg="Password:",
-            ),
-        )
-        _args_schema.vcenter_password = AAZPasswordArg(
-            options=["--vcenter-password"],
-            arg_group="Properties",
-            help="Optionally, set the vCenter admin password when the private cloud is created",
-            nullable=True,
-            blank=AAZPromptPasswordInput(
-                msg="Password:",
-            ),
-        )
-
-        encryption = cls._args_schema.encryption
-        encryption.key_vault_properties = AAZObjectArg(
-            options=["key-vault-properties"],
-            help="The key vault where the encryption key is stored",
-            nullable=True,
-        )
-        encryption.status = AAZStrArg(
-            options=["status"],
-            help="Status of customer managed encryption key",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-
-        key_vault_properties = cls._args_schema.encryption.key_vault_properties
-        key_vault_properties.key_name = AAZStrArg(
-            options=["key-name"],
-            help="The name of the key.",
-            nullable=True,
-        )
-        key_vault_properties.key_vault_url = AAZStrArg(
-            options=["key-vault-url"],
-            help="The URL of the vault.",
-            nullable=True,
-        )
-        key_vault_properties.key_version = AAZStrArg(
-            options=["key-version"],
-            help="The version of the key.",
-            nullable=True,
-        )
-
-        identity_sources = cls._args_schema.identity_sources
-        identity_sources.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.identity_sources.Element
-        _element.alias = AAZStrArg(
-            options=["alias"],
-            help="The domain's NetBIOS name",
-        )
-        _element.base_group_dn = AAZStrArg(
-            options=["base-group-dn"],
-            help="The base distinguished name for groups",
-        )
-        _element.base_user_dn = AAZStrArg(
-            options=["base-user-dn"],
-            help="The base distinguished name for users",
-        )
-        _element.domain = AAZStrArg(
-            options=["domain"],
-            help="The domain's dns name",
-        )
-        _element.name = AAZStrArg(
-            options=["name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="The name of the identity source",
-        )
-        _element.password = AAZStrArg(
-            options=["password"],
-            help="The password of the Active Directory user with a minimum of read-only access to Base DN for users and groups.",
-        )
-        _element.primary_server = AAZStrArg(
-            options=["primary-server"],
-            help="Primary server URL",
-        )
-        _element.secondary_server = AAZStrArg(
-            options=["secondary-server"],
-            help="Secondary server URL",
-            nullable=True,
-        )
-        _element.ssl = AAZStrArg(
-            options=["ssl"],
-            help="Protect LDAP communication using SSL certificate (LDAPS)",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-        _element.username = AAZStrArg(
-            options=["username"],
-            help="The ID of an Active Directory user with a minimum of read-only access to Base DN for users and group",
+            required=True,
         )
 
-        # define Arg Group "Sku"
+        # define Arg Group "PrivateCloud.properties.identitySources[]"
+
+        _args_schema = cls._args_schema
+        _args_schema.alias = AAZStrArg(
+            options=["--alias"],
+            arg_group="PrivateCloud.properties.identitySources[]",
+            help="The domain's NetBIOS name",
+            required=True,
+        )
+        _args_schema.base_group_dn = AAZStrArg(
+            options=["--base-group-dn"],
+            arg_group="PrivateCloud.properties.identitySources[]",
+            help="The base distinguished name for groups",
+            required=True,
+        )
+        _args_schema.base_user_dn = AAZStrArg(
+            options=["--base-user-dn"],
+            arg_group="PrivateCloud.properties.identitySources[]",
+            help="The base distinguished name for users",
+            required=True,
+        )
+        _args_schema.domain = AAZStrArg(
+            options=["--domain"],
+            arg_group="PrivateCloud.properties.identitySources[]",
+            help="The domain's dns name",
+            required=True,
+        )
+        _args_schema.password = AAZStrArg(
+            options=["--password"],
+            arg_group="PrivateCloud.properties.identitySources[]",
+            help="The password of the Active Directory user with a minimum of read-only access to Base DN for users and groups.",
+            required=True,
+        )
+        _args_schema.primary_server = AAZStrArg(
+            options=["--primary-server"],
+            arg_group="PrivateCloud.properties.identitySources[]",
+            help="Primary server URL",
+            required=True,
+        )
+        _args_schema.secondary_server = AAZStrArg(
+            options=["--secondary-server"],
+            arg_group="PrivateCloud.properties.identitySources[]",
+            help="Secondary server URL",
+        )
+        _args_schema.ssl = AAZStrArg(
+            options=["--ssl"],
+            arg_group="PrivateCloud.properties.identitySources[]",
+            help="Protect LDAP communication using SSL certificate (LDAPS)",
+            default="Disabled",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.username = AAZStrArg(
+            options=["--username"],
+            arg_group="PrivateCloud.properties.identitySources[]",
+            help="The ID of an Active Directory user with a minimum of read-only access to Base DN for users and group",
+            required=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
         self.PrivateCloudsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
+        self.pre_instance_create()
+        self.InstanceCreateByJson(ctx=self.ctx)()
+        self.post_instance_create(self.ctx.selectors.subresource.required())
         yield self.PrivateCloudsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
@@ -235,16 +134,41 @@ class Update(AAZCommand):
         pass
 
     @register_callback
-    def pre_instance_update(self, instance):
+    def pre_instance_create(self):
         pass
 
     @register_callback
-    def post_instance_update(self, instance):
+    def post_instance_create(self, instance):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.selectors.subresource.required(), client_flatten=True)
         return result
+
+    class SubresourceSelector(AAZJsonSelector):
+
+        def _get(self):
+            result = self.ctx.vars.instance
+            result = result.properties.identitySources
+            filters = enumerate(result)
+            filters = filter(
+                lambda e: e[1].name == self.ctx.args.name,
+                filters
+            )
+            idx = next(filters)[0]
+            return result[idx]
+
+        def _set(self, value):
+            result = self.ctx.vars.instance
+            result = result.properties.identitySources
+            filters = enumerate(result)
+            filters = filter(
+                lambda e: e[1].name == self.ctx.args.name,
+                filters
+            )
+            idx = next(filters, [len(result)])[0]
+            result[idx] = value
+            return
 
     class PrivateCloudsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -276,7 +200,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "privateCloudName", self.ctx.args.private_cloud_name,
+                    "privateCloudName", self.ctx.args.private_cloud,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -325,7 +249,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_private_cloud_read(cls._schema_on_200)
+            _CreateHelper._build_schema_private_cloud_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -375,7 +299,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "privateCloudName", self.ctx.args.private_cloud_name,
+                    "privateCloudName", self.ctx.args.private_cloud,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -436,88 +360,36 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_private_cloud_read(cls._schema_on_200_201)
+            _CreateHelper._build_schema_private_cloud_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
+    class InstanceCreateByJson(AAZJsonInstanceCreateOperation):
 
         def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
+            self.ctx.selectors.subresource.set(self._create_instance())
 
-        def _update_instance(self, instance):
+        def _create_instance(self):
             _instance_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
-            _builder.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")
-
-            identity = _builder.get(".identity")
-            if identity is not None:
-                identity.set_prop("type", AAZStrType, ".type")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("encryption", AAZObjectType, ".encryption")
-                properties.set_prop("identitySources", AAZListType, ".identity_sources")
-                properties.set_prop("internet", AAZStrType, ".internet")
-                properties.set_prop("managementCluster", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("nsxtPassword", AAZStrType, ".nsxt_password", typ_kwargs={"flags": {"secret": True}})
-                properties.set_prop("vcenterPassword", AAZStrType, ".vcenter_password", typ_kwargs={"flags": {"secret": True}})
-
-            encryption = _builder.get(".properties.encryption")
-            if encryption is not None:
-                encryption.set_prop("keyVaultProperties", AAZObjectType, ".key_vault_properties")
-                encryption.set_prop("status", AAZStrType, ".status")
-
-            key_vault_properties = _builder.get(".properties.encryption.keyVaultProperties")
-            if key_vault_properties is not None:
-                key_vault_properties.set_prop("keyName", AAZStrType, ".key_name")
-                key_vault_properties.set_prop("keyVaultUrl", AAZStrType, ".key_vault_url")
-                key_vault_properties.set_prop("keyVersion", AAZStrType, ".key_version")
-
-            identity_sources = _builder.get(".properties.identitySources")
-            if identity_sources is not None:
-                identity_sources.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.identitySources[]")
-            if _elements is not None:
-                _elements.set_prop("alias", AAZStrType, ".alias", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("baseGroupDN", AAZStrType, ".base_group_dn", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("baseUserDN", AAZStrType, ".base_user_dn", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("domain", AAZStrType, ".domain", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"required": True, "secret": True}})
-                _elements.set_prop("primaryServer", AAZStrType, ".primary_server", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("secondaryServer", AAZStrType, ".secondary_server")
-                _elements.set_prop("ssl", AAZStrType, ".ssl")
-                _elements.set_prop("username", AAZStrType, ".username", typ_kwargs={"flags": {"required": True}})
-
-            management_cluster = _builder.get(".properties.managementCluster")
-            if management_cluster is not None:
-                management_cluster.set_prop("clusterSize", AAZIntType, ".cluster_size", typ_kwargs={"flags": {"required": True}})
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
+            _builder.set_prop("alias", AAZStrType, ".alias", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("baseGroupDN", AAZStrType, ".base_group_dn", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("baseUserDN", AAZStrType, ".base_user_dn", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("domain", AAZStrType, ".domain", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"required": True, "secret": True}})
+            _builder.set_prop("primaryServer", AAZStrType, ".primary_server", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("secondaryServer", AAZStrType, ".secondary_server")
+            _builder.set_prop("ssl", AAZStrType, ".ssl")
+            _builder.set_prop("username", AAZStrType, ".username", typ_kwargs={"flags": {"required": True}})
 
             return _instance_value
 
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
 
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
-            )
-
-
-class _UpdateHelper:
-    """Helper class for Update"""
+class _CreateHelper:
+    """Helper class for Create"""
 
     _schema_circuit_read = None
 
@@ -792,4 +664,4 @@ class _UpdateHelper:
         _schema.type = cls._schema_private_cloud_read.type
 
 
-__all__ = ["Update"]
+__all__ = ["Create"]
