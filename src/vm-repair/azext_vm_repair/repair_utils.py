@@ -538,7 +538,7 @@ def _select_distro_linux(distro):
             os_image_urn = distro
         else:
             logger.info('No specific distro was provided , using the default Ubuntu distro')
-            os_image_urn = "UbuntuLTS"
+            os_image_urn = "Ubuntu2204"
     return os_image_urn
 
 
