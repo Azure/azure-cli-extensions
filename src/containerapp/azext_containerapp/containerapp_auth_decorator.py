@@ -11,6 +11,8 @@ from .base_resource import BaseResource
 from ._constants import BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME
 from ._utils import safe_set
 from knack.prompting import prompt_y_n
+from azure.cli.core.azclierror import ArgumentUsageError
+
 
 class ContainerAppAuthDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
@@ -123,8 +125,8 @@ class ContainerAppPreviewAuthDecorator(ContainerAppAuthDecorator):
     def set_up_token_store(self):
         if self.get_argument_token_store_enabled() is None:
             return
-        
-        if self.get_argument_token_store_enabled() == False:
+
+        if self.get_argument_token_store_enabled() is False:
             safe_set(self.existing_auth, "login", "tokenStore", "enabled", value=False)
             return
 
@@ -137,8 +139,7 @@ class ContainerAppPreviewAuthDecorator(ContainerAppAuthDecorator):
         if self.get_argument_sas_url_secret() is not None and not self.get_argument_yes():
             msg = 'Configuring --sas-url-secret will add a secret to the containerapp. Are you sure you want to continue?'
             if not prompt_y_n(msg, default="n"):
-                raise ArgumentUsageError('Usage Error: --sas-url-secret cannot be used without agreeing to add secret '
-                                        'to the containerapp.')
+                raise ArgumentUsageError('Usage Error: --sas-url-secret cannot be used without agreeing to add secret to the containerapp.')
 
         sasUrlSettingName = BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME
         if self.get_argument_sas_url_secret_name() is not None:
