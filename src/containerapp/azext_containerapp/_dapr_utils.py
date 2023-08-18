@@ -14,6 +14,7 @@ from .custom import create_redis_service, _get_existing_secrets, safe_get
 
 logger = get_logger(__name__)
 
+
 class DaprUtils:
     """Utility class for Dapr related operations."""
 

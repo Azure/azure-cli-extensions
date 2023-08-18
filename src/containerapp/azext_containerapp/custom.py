@@ -115,7 +115,7 @@ from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, F
                          MANAGED_CERTIFICATE_RT, PRIVATE_CERTIFICATE_RT, PENDING_STATUS, SUCCEEDED_STATUS, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
                          DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
                          DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_SERVICE_LIST,
-                         DAPR_REDIS_SERVICE_NAME, DAPR_REDIS_CONFIG_PASSWORD_KEY, DAPR_REDIS_CONFIG_PORT_KEY, 
+                         DAPR_REDIS_SERVICE_NAME, DAPR_REDIS_CONFIG_PASSWORD_KEY, DAPR_REDIS_CONFIG_PORT_KEY,
                          DAPR_COMPONENT_REDIS_STATESTORE_NAME, DAPR_COMPONENT_REDIS_PUBSUB_NAME, DAPR_REDIS_SECRET_NAME, CONTAINER_APPS_SDK_MODELS)
 
 logger = get_logger(__name__)
@@ -3657,6 +3657,7 @@ def disable_dapr(cmd, name, resource_group_name, no_wait=False):
     except Exception as e:
         handle_raw_exception(e)
 
+
 def init_dapr_component(cmd, resource_group_name, environment_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
@@ -3700,10 +3701,11 @@ def init_dapr_component(cmd, resource_group_name, environment_name):
     return {
         "message": "Successfully initialized components!",
         "resources": {
-            "devServices":[redis_capp_def],
+            "devServices": [redis_capp_def],
             "daprComponents": [dapr_statestore_def, dapr_pubsub_def]
         }
     }
+
 
 def list_dapr_components(cmd, resource_group_name, environment_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
