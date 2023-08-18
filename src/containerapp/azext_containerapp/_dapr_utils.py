@@ -27,23 +27,23 @@ class DaprUtils:
         redis_capp_def = None
         try:
             redis_capp_def = ContainerAppClient.show(cmd, resource_group_name, service_name)
-        except:
+        except Exception:
             pass
 
         if redis_capp_def is not None:
             logger.warning("Redis service '%s' already exists, skipping creation.", service_name)
             return redis_capp_def, False
-        
+
         # Create Redis service
         logger.info("Creating Redis service '%s'...", service_name)
         try:
             redis_capp_def = create_redis_service(cmd, service_name, environment_name, resource_group_name)
         except Exception as e:
-            raise ValidationError("Failed to create Redis service, error: {}".format(e)) from e
-        
+            raise ValidationError(f"Failed to create Redis service, error: {e}") from e
+
         if redis_capp_def is None:
             raise ValidationError("Failed to create Redis service, did not receive a response.")
-        
+
         logger.info("Redis service '%s' created.", service_name)
         return redis_capp_def, True
 
@@ -63,8 +63,9 @@ class DaprUtils:
                 break
 
         if redis_secret_value is None:
-            raise ValidationError(f"Failed to read redis configuration, {DAPR_REDIS_SECRET_NAME} secret not found for Redis service.")
-                
+            raise ValidationError(f"Failed to read redis configuration,\
+                                  {DAPR_REDIS_SECRET_NAME} secret not found for Redis service.")
+
         # Parse the secret value into key-value pairs. It is in the below format:
         # requirepass mypassword\ndir /mnt/data\nport 6379\nprotected-mode yes\nappendonly yes\n
         redis_config = {}

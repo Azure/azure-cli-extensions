@@ -3662,7 +3662,7 @@ def init_dapr_component(cmd, resource_group_name, environment_name):
 
     from ._dapr_utils import DaprUtils
 
-    redis_capp_def, _is_redis_created = DaprUtils.create_redis_service_if_not_exists(cmd, resource_group_name, environment_name, DAPR_REDIS_SERVICE_NAME)    
+    redis_capp_def, _is_redis_created = DaprUtils.create_redis_service_if_not_exists(cmd, resource_group_name, environment_name, DAPR_REDIS_SERVICE_NAME)
     redis_config = DaprUtils.get_redis_configuration(cmd, resource_group_name, DAPR_REDIS_SERVICE_NAME, redis_capp_def)
 
     redis_password = safe_get(redis_config, DAPR_REDIS_CONFIG_PASSWORD_KEY)
@@ -3678,7 +3678,7 @@ def init_dapr_component(cmd, resource_group_name, environment_name):
 
     logger.info("Creating the statestore component...")
     statestore_component = DaprUtils.get_dapr_redis_statestore_component(redis_host, redis_password)
-    
+
     try:
         _ = DaprComponentClient.create_or_update(cmd, resource_group_name=resource_group_name, environment_name=environment_name, dapr_component_envelope=statestore_component, name=DAPR_COMPONENT_REDIS_STATESTORE_NAME)
     except Exception as e:
@@ -3692,7 +3692,7 @@ def init_dapr_component(cmd, resource_group_name, environment_name):
     except Exception as e:
         raise ValidationError("Failed to create pubsub component, error: {}.".format(e)) from e
 
-    return { 
+    return {
         "message": "Successfully initialized components!",
         "resources": {
             "dev-services":[{
