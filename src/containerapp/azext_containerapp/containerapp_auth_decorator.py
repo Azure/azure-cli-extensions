@@ -123,10 +123,10 @@ class ContainerAppPreviewAuthDecorator(ContainerAppAuthDecorator):
         self.set_up_token_store()
 
     def set_up_token_store(self):
-        if self.get_argument_token_store_enabled() is None:
+        if self.get_argument_token_store() is None:
             return
 
-        if self.get_argument_token_store_enabled() is False:
+        if self.get_argument_token_store() is False:
             safe_set(self.existing_auth, "login", "tokenStore", "enabled", value=False)
             return
 
@@ -141,14 +141,14 @@ class ContainerAppPreviewAuthDecorator(ContainerAppAuthDecorator):
             if not prompt_y_n(msg, default="n"):
                 raise ArgumentUsageError('Usage Error: --sas-url-secret cannot be used without agreeing to add secret to the containerapp.')
 
-        sasUrlSettingName = BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME
+        sas_url_setting_name = BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME
         if self.get_argument_sas_url_secret_name() is not None:
-            sasUrlSettingName = self.get_argument_sas_url_secret_name()
-        safe_set(self.existing_auth, "login", "tokenStore", "azureBlobStorage", "sasUrlSettingName", value=sasUrlSettingName)
+            sas_url_setting_name = self.get_argument_sas_url_secret_name()
+        safe_set(self.existing_auth, "login", "tokenStore", "azureBlobStorage", "sasUrlSettingName", value=sas_url_setting_name)
 
-    def get_argument_token_store_enabled(self):
+    def get_argument_token_store(self):
         return self.get_param("token_store")
-    
+
     def get_argument_sas_url_secret(self):
         return self.get_param("sas_url_secret")
 
