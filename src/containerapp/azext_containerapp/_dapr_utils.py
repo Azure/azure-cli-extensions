@@ -79,7 +79,7 @@ class DaprUtils:
     @staticmethod
     def get_dapr_redis_statestore_component(redis_host, redis_password):
         """Get Dapr Redis statestore component with given host and password."""
-        component = DaprComponentModel
+        component = DaprComponentModel.copy()
         component["properties"]["componentType"] = "state.redis"
         component["properties"]["version"] = "v1"
         component["properties"]["ignoreErrors"] = False
@@ -92,7 +92,7 @@ class DaprUtils:
     @staticmethod
     def get_dapr_redis_pubsub_component(redis_host, redis_password):
         """Get Dapr Redis pubsub component with given host and password."""
-        component = DaprComponentModel
+        component = DaprComponentModel.copy()
         component["properties"]["componentType"] = "pubsub.redis"
         component["properties"]["version"] = "v1"
         component["properties"]["ignoreErrors"] = False
@@ -105,7 +105,7 @@ class DaprUtils:
     @staticmethod
     def _get_dapr_metadata_from_value(name, value):
         """Get a Dapr metadata object with given name and value."""
-        metadata = DaprMetadataModel
+        metadata = DaprMetadataModel.copy()
         metadata["name"] = name
         metadata["value"] = value
         return metadata
