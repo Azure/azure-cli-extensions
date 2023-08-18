@@ -6,6 +6,7 @@ upcoming
 ++++++
 * Removed preview tag for some command groups and params (e.g. 'az containerapp job', 'az containerapp env storage', 'az containerapp env workload-profile')
 * 'az containerapp env': --enable-workload-profiles allowed values:true, false
+* Support 'az containerapp env dapr-component init' to initialize a Dapr components for development
 
 0.3.37
 ++++++
