@@ -2083,37 +2083,3 @@ def parse_oryx_mariner_tag(tag: str) -> OryxMarinerRunImgTagProperty:
     else:
         tag_obj = None
     return tag_obj
-
-def get_dapr_redis_statestore_component(redis_host, redis_password):
-    return {
-        "properties": {
-            "componentType": "state.redis",
-            "version": "v1",
-            "ignoreErrors": False,
-            "metadata": [{
-                "name": "redisHost",
-                "value": redis_host
-            },
-            {
-                "name": "redisPassword",
-                "value": redis_password
-            }]
-        }
-    }
-
-def get_dapr_redis_pubsub_component(redis_host, redis_password):
-    return {
-        "properties": {
-            "componentType": "pubsub.redis",
-            "version": "v1",
-            "ignoreErrors": False,
-            "metadata": [{
-                "name": "redisHost",
-                "value": redis_host
-            },
-            {
-                "name": "redisPassword",
-                "value": redis_password
-            }]
-        }
-    }

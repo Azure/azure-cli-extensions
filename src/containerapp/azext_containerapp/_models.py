@@ -311,9 +311,9 @@ DaprComponent = {
 }
 
 DaprMetadata = {
-    "key": None,  # str
+    "name": None,  # str
     "value": None,  # str
-    "secret_ref": None  # str
+    "secretRef": None  # str
 }
 
 SourceControl = {

@@ -4,8 +4,6 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement, expression-not-assigned, unbalanced-tuple-unpacking, unsupported-assignment-operation
 
-import random
-import string
 import threading
 import sys
 import time
@@ -107,8 +105,7 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      check_managed_cert_name_availability, prepare_managed_certificate_envelop,
                      get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported, _generate_secret_volume_name,
                      parse_service_bindings, get_linker_client, check_unique_bindings,
-                     get_current_mariner_tags, patchable_check, get_pack_exec_path, is_docker_running, trigger_workflow, AppType,
-                     format_location, get_dapr_redis_statestore_component, get_dapr_redis_pubsub_component)
+                     get_current_mariner_tags, patchable_check, get_pack_exec_path, is_docker_running, trigger_workflow, AppType, format_location)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -118,7 +115,7 @@ from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, F
                          MANAGED_CERTIFICATE_RT, PRIVATE_CERTIFICATE_RT, PENDING_STATUS, SUCCEEDED_STATUS, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
                          DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
                          DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_SERVICE_LIST,
-                         DAPR_REDIS_SERVICE_NAME, DAPR_REDIS_SECRET_NAME, DAPR_REDIS_CONFIG_PASSWORD_KEY, DAPR_REDIS_CONFIG_PORT_KEY, 
+                         DAPR_REDIS_SERVICE_NAME, DAPR_REDIS_CONFIG_PASSWORD_KEY, DAPR_REDIS_CONFIG_PORT_KEY, 
                          DAPR_COMPONENT_REDIS_STATESTORE_NAME, DAPR_COMPONENT_REDIS_PUBSUB_NAME, CONTAINER_APPS_SDK_MODELS)
 
 logger = get_logger(__name__)
@@ -3663,83 +3660,44 @@ def disable_dapr(cmd, name, resource_group_name, no_wait=False):
 def init_dapr_component(cmd, resource_group_name, environment_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    # Get the Redis service if it exists
-    logger.info("Looking up Redis service '%s'...", DAPR_REDIS_SERVICE_NAME)
-    redis_capp_def = None
-    try:
-        redis_capp_def = ContainerAppClient.show(cmd, resource_group_name, DAPR_REDIS_SERVICE_NAME)
-    except:
-        pass
+    from ._dapr_utils import DaprUtils
 
-    if redis_capp_def is None:
-        # Create the Redis service
-        logger.info("Creating Redis service '%s'...", DAPR_REDIS_SERVICE_NAME)
-        try:
-            redis_capp_def = create_redis_service(cmd, DAPR_REDIS_SERVICE_NAME, environment_name, resource_group_name)
-        except Exception as e:
-            raise ValidationError("Failed to create Redis service.") from e
-        
-        if redis_capp_def is None:
-            raise ValidationError("Failed to create Redis service, did not receive a response.")
-    else:
-        logger.warning("Redis service '%s' already exists, skipping creation.", DAPR_REDIS_SERVICE_NAME)
+    redis_capp_def, _is_redis_created = DaprUtils.create_redis_service_if_not_exists(cmd, resource_group_name, environment_name, DAPR_REDIS_SERVICE_NAME)    
+    redis_config = DaprUtils.get_redis_configuration(cmd, resource_group_name, DAPR_REDIS_SERVICE_NAME, redis_capp_def)
 
-    # Look up the Redis secret
-    _get_existing_secrets(cmd, resource_group_name, DAPR_REDIS_SERVICE_NAME, redis_capp_def)
-    redis_secrets = safe_get(redis_capp_def, "properties", "configuration", "secrets", default=[])
-    if len(redis_secrets) == 0:
-        raise ValidationError("Failed to setup Dapr components, no secrets found for Redis service.")
-    
-    redis_secret_value = None
-    for secret in redis_secrets:
-        if safe_get(secret, "name") == DAPR_REDIS_SECRET_NAME:
-            redis_secret_value = safe_get(secret, "value")
-            break
-
-    if redis_secret_value is None:
-        raise ValidationError(f"Failed to setup Dapr components, {DAPR_REDIS_SECRET_NAME} secret not found for Redis service.")
-    
-    # The Redis secret is in the format:
-    # requirepass mypassword\ndir /mnt/data\nport 6379\nprotected-mode yes\nappendonly yes\n
-    redis_port = None
-    redis_password = None
-    for line in redis_secret_value.splitlines():
-        if line.startswith(DAPR_REDIS_CONFIG_PASSWORD_KEY):
-            redis_password = line.split(" ")[1]
-            break
-        if line.startswith(DAPR_REDIS_CONFIG_PORT_KEY):
-            redis_port = line.split(" ")[1]
-            break
-
+    redis_password = safe_get(redis_config, DAPR_REDIS_CONFIG_PASSWORD_KEY)
     if redis_password is None:
-        raise ValidationError(f"Failed to setup Dapr components, {DAPR_REDIS_SECRET_NAME} secret does not contain a password for Redis service.")
-    
+        raise ValidationError(f"Redis password not found in redis configuration, please check the redis configuration in redis service {DAPR_REDIS_SERVICE_NAME}.")
+
+    redis_port = safe_get(redis_config, DAPR_REDIS_CONFIG_PORT_KEY)
     if redis_port is None:
-        raise ValidationError(f"Failed to setup Dapr components, {DAPR_REDIS_SECRET_NAME} secret does not contain a port for Redis service.")
-    
+        raise ValidationError(f"Redis port not found in redis configuration, please check the redis configuration in redis service {DAPR_REDIS_SERVICE_NAME}.")
+
     # Create the Dapr components
     redis_host = f"{DAPR_REDIS_SERVICE_NAME}:{redis_port}"
 
     logger.info("Creating the statestore component...")
-    statestore_component = get_dapr_redis_statestore_component(redis_host, redis_password)
-
+    statestore_component = DaprUtils.get_dapr_redis_statestore_component(redis_host, redis_password)
+    
     try:
         _ = DaprComponentClient.create_or_update(cmd, resource_group_name=resource_group_name, environment_name=environment_name, dapr_component_envelope=statestore_component, name=DAPR_COMPONENT_REDIS_STATESTORE_NAME)
     except Exception as e:
-        raise ValidationError("Failed to create statestore component.") from e
-    
+        raise ValidationError("Failed to create statestore component, error: {}.".format(e)) from e
+
     logger.info("Creating the pubsub component...")
-    pubsub_component = get_dapr_redis_pubsub_component(redis_host, redis_password)
+    pubsub_component = DaprUtils.get_dapr_redis_pubsub_component(redis_host, redis_password)
 
     try:
         _ = DaprComponentClient.create_or_update(cmd, resource_group_name=resource_group_name, environment_name=environment_name, dapr_component_envelope=pubsub_component, name=DAPR_COMPONENT_REDIS_PUBSUB_NAME)
     except Exception as e:
-        raise ValidationError("Failed to create pubsub component.") from e
-    
+        raise ValidationError("Failed to create pubsub component, error: {}.".format(e)) from e
+
     return { 
         "message": "Successfully initialized components!",
         "resources": {
-            "dev-services":[DAPR_REDIS_SERVICE_NAME],
+            "dev-services":[{
+                "name": DAPR_REDIS_SERVICE_NAME,
+            }],
             "dapr-components": [DAPR_COMPONENT_REDIS_STATESTORE_NAME, DAPR_COMPONENT_REDIS_PUBSUB_NAME]
         }
     }
