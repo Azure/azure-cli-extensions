@@ -118,7 +118,7 @@ from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, F
                          MANAGED_CERTIFICATE_RT, PRIVATE_CERTIFICATE_RT, PENDING_STATUS, SUCCEEDED_STATUS, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
                          DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
                          DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_SERVICE_LIST,
-                         DAPR_REDIS_PREFIX, DAPR_REDIS_SECRET_NAME, DAPR_REDIS_CONFIG_PASSWORD_KEY, DAPR_REDIS_PORT, 
+                         DAPR_REDIS_SERVICE_NAME, DAPR_REDIS_SECRET_NAME, DAPR_REDIS_CONFIG_PASSWORD_KEY, DAPR_REDIS_CONFIG_PORT_KEY, 
                          DAPR_COMPONENT_REDIS_STATESTORE_NAME, DAPR_COMPONENT_REDIS_PUBSUB_NAME, CONTAINER_APPS_SDK_MODELS)
 
 logger = get_logger(__name__)
@@ -3663,19 +3663,29 @@ def disable_dapr(cmd, name, resource_group_name, no_wait=False):
 def init_dapr_component(cmd, resource_group_name, environment_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    # Create the Redis service
-    redis_capp_name = DAPR_REDIS_PREFIX +'-' + ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(5))
-    logger.info("Creating Redis service '%s'...", redis_capp_name)
+    # Get the Redis service if it exists
+    logger.info("Looking up Redis service '%s'...", DAPR_REDIS_SERVICE_NAME)
+    redis_capp_def = None
     try:
-        redis_capp_def = create_redis_service(cmd, redis_capp_name, environment_name, resource_group_name)
-    except Exception as e:
-        raise ValidationError("Failed to create Redis service.") from e
-    
+        redis_capp_def = ContainerAppClient.show(cmd, resource_group_name, DAPR_REDIS_SERVICE_NAME)
+    except:
+        pass
+
     if redis_capp_def is None:
-        raise ValidationError("Failed to create Redis service, did not receive a response.")
+        # Create the Redis service
+        logger.info("Creating Redis service '%s'...", DAPR_REDIS_SERVICE_NAME)
+        try:
+            redis_capp_def = create_redis_service(cmd, DAPR_REDIS_SERVICE_NAME, environment_name, resource_group_name)
+        except Exception as e:
+            raise ValidationError("Failed to create Redis service.") from e
+        
+        if redis_capp_def is None:
+            raise ValidationError("Failed to create Redis service, did not receive a response.")
+    else:
+        logger.warning("Redis service '%s' already exists, skipping creation.", DAPR_REDIS_SERVICE_NAME)
 
     # Look up the Redis secret
-    _get_existing_secrets(cmd, resource_group_name, redis_capp_name, redis_capp_def)
+    _get_existing_secrets(cmd, resource_group_name, DAPR_REDIS_SERVICE_NAME, redis_capp_def)
     redis_secrets = safe_get(redis_capp_def, "properties", "configuration", "secrets", default=[])
     if len(redis_secrets) == 0:
         raise ValidationError("Failed to setup Dapr components, no secrets found for Redis service.")
@@ -3691,17 +3701,24 @@ def init_dapr_component(cmd, resource_group_name, environment_name):
     
     # The Redis secret is in the format:
     # requirepass mypassword\ndir /mnt/data\nport 6379\nprotected-mode yes\nappendonly yes\n
+    redis_port = None
     redis_password = None
     for line in redis_secret_value.splitlines():
         if line.startswith(DAPR_REDIS_CONFIG_PASSWORD_KEY):
             redis_password = line.split(" ")[1]
             break
+        if line.startswith(DAPR_REDIS_CONFIG_PORT_KEY):
+            redis_port = line.split(" ")[1]
+            break
 
     if redis_password is None:
         raise ValidationError(f"Failed to setup Dapr components, {DAPR_REDIS_SECRET_NAME} secret does not contain a password for Redis service.")
     
+    if redis_port is None:
+        raise ValidationError(f"Failed to setup Dapr components, {DAPR_REDIS_SECRET_NAME} secret does not contain a port for Redis service.")
+    
     # Create the Dapr components
-    redis_host = f"{redis_capp_name}:{DAPR_REDIS_PORT}"
+    redis_host = f"{DAPR_REDIS_SERVICE_NAME}:{redis_port}"
 
     logger.info("Creating the statestore component...")
     statestore_component = get_dapr_redis_statestore_component(redis_host, redis_password)
@@ -3722,7 +3739,7 @@ def init_dapr_component(cmd, resource_group_name, environment_name):
     return { 
         "message": "Successfully initialized components!",
         "resources": {
-            "dev-services":[redis_capp_name],
+            "dev-services":[DAPR_REDIS_SERVICE_NAME],
             "dapr-components": [DAPR_COMPONENT_REDIS_STATESTORE_NAME, DAPR_COMPONENT_REDIS_PUBSUB_NAME]
         }
     }

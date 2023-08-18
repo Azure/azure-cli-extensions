@@ -78,9 +78,9 @@ HELLO_WORLD_IMAGE = "mcr.microsoft.com/k8se/quickstart:latest"
 
 LOGS_STRING = '[{"category":"ContainerAppConsoleLogs","categoryGroup":null,"enabled":true,"retentionPolicy":{"days":0,"enabled":false}},{"category":"ContainerAppSystemLogs","categoryGroup":null,"enabled":true,"retentionPolicy":{"days":0,"enabled":false}}]'  # pylint: disable=line-too-long
 
-DAPR_REDIS_PREFIX = "dapr-redis"
+DAPR_REDIS_SERVICE_NAME = "dapr-redis"
 DAPR_REDIS_SECRET_NAME = "redis-config"
 DAPR_REDIS_CONFIG_PASSWORD_KEY = "requirepass"
-DAPR_REDIS_PORT = 6379
-DAPR_COMPONENT_REDIS_STATESTORE_NAME = "redis-statestore"
-DAPR_COMPONENT_REDIS_PUBSUB_NAME = "redis-pubsub"
+DAPR_REDIS_CONFIG_PORT_KEY = "port"
+DAPR_COMPONENT_REDIS_STATESTORE_NAME = "statestore"
+DAPR_COMPONENT_REDIS_PUBSUB_NAME = "pubsub"
