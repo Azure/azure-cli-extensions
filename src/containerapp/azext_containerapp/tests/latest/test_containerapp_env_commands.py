@@ -199,11 +199,14 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         ])
 
         self.cmd('containerapp env dapr-component init -n {} -g {}'.format(env_name, resource_group), checks=[
-            JMESPathCheck('resources.dapr-components.length(@)', 2),
-            JMESPathCheck('resources.dapr-components[0]', 'statestore'),
-            JMESPathCheck('resources.dapr-components[1]', 'pubsub'),
-            JMESPathCheck('resources.dev-services.length(@)', 1),
-            JMESPathCheck('resources.dev-services[0]', 'redis'),
+            JMESPathCheck('resources.daprComponents.length(@)', 2),
+            JMESPathCheck('resources.daprComponents[0].name', 'statestore'),
+            JMESPathCheck('resources.daprComponents[0].type', 'Microsoft.App/managedEnvironments/daprComponents'),
+            JMESPathCheck('resources.daprComponents[1].name', 'pubsub'),
+            JMESPathCheck('resources.daprComponents[1].type', 'Microsoft.App/managedEnvironments/daprComponents'),
+            JMESPathCheck('resources.devServices.length(@)', 1),
+            JMESPathCheck('resources.devServices[0].name', 'dapr-redis'),
+            JMESPathCheck('resources.devServices[0].type', 'Microsoft.App/containerApps'),
         ])
 
     @AllowLargeResponse(8192)
