@@ -110,3 +110,10 @@ class DaprUtils:
         metadata["name"] = name
         metadata["value"] = value
         return metadata
+
+    @staticmethod
+    def remove_dapr_metadata_values(component_def):
+        """Removes values from Dapr metadata by setting them to empty."""
+        metadata = safe_get(component_def, "properties", "metadata", default=[])
+        for m in metadata:
+            m["value"] = ""

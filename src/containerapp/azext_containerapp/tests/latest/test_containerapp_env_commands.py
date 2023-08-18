@@ -198,6 +198,14 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ])
 
+        self.cmd('containerapp env dapr-component init -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('resources.dapr-components.length(@)', 2),
+            JMESPathCheck('resources.dapr-components[0]', 'statestore'),
+            JMESPathCheck('resources.dapr-components[1]', 'pubsub'),
+            JMESPathCheck('resources.dev-services.length(@)', 1),
+            JMESPathCheck('resources.dev-services[0]', 'redis'),
+        ])
+
     @AllowLargeResponse(8192)
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     @ResourceGroupPreparer(location="northeurope")
