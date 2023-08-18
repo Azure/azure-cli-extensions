@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.3.0
+++++++
+* Allow to pass `ssh_args` as positional parameter in command `az network bastion ssh`
+
 0.2.5
 ++++++
 * Fixing the command `az network bastion rdp` to avoid the `java.lang.NullPointerException` while calling `get_auth_token` function
