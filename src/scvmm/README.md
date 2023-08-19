@@ -79,9 +79,9 @@ az scvmm avset create \
     --name resourceName
 ```
 
-##### Create Virtual Machine Resource
+##### Create Virtual Machine Instance Resource
 
-###### Onboard exisitng Virtual Machine to azure
+###### Onboard existing Virtual Machine Instance to azure
 
 ```
 az scvmm vm create \
@@ -94,7 +94,7 @@ az scvmm vm create \
     --name resourceName
 ```
 
-###### Create new Virtual Machine
+###### Create new Virtual Machine Instance
 
 ```
 az scvmm vm create \

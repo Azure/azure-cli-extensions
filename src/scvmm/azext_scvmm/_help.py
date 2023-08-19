@@ -914,3 +914,101 @@ helps[
 """
 
 # endregion
+
+# region vm guest-agent
+
+helps[
+    'scvmm vm guest-agent'
+] = """
+    type: group
+    short-summary: vm guest agent.
+"""
+
+helps[
+    'scvmm vm guest-agent enable'
+] = """
+    type: command
+    short-summary: "Enable guest agent on the vm"
+    examples:
+      - name: Enable guest agent on the vm
+        text: |-
+               az scvmm vm guest-agent enable --username "vm user name" --password "vm password" \
+               --resource-group "resource group name" --subscription "Name or ID of subscription" \
+               --vm-name "vm name"
+"""
+
+helps[
+    'scvmm vm guest-agent show'
+] = """
+    type: command
+    short-summary: "Get details of a guest agent by guest agent name, resource-group and vm name."
+    examples:
+      - name: Get details of a guest agent
+        text: |-
+               az scvmm vm guest-agent show --resource-group "resource group name" \
+               --vm-name "name of the vm"
+"""
+
+# endregion
+
+# region vm extension
+
+helps['scvmm vm extension'] = """
+    type: group
+    short-summary: Manage vm extension with scvmm
+"""
+
+helps['scvmm vm extension list'] = """
+    type: command
+    short-summary: "The operation to get all extensions of a non-Azure vm."
+    examples:
+      - name: Get all VM Extensions
+        text: |-
+               az scvmm vm extension list --vm-name "vm name" --resource-group "myResourceGroup"
+"""
+
+helps['scvmm vm extension show'] = """
+    type: command
+    short-summary: "The operation to get the extension."
+    examples:
+      - name: Get VM Extension
+        text: |-
+               az scvmm vm extension show --name "CustomScriptExtension" --vm-name "vm name" \
+--resource-group "myResourceGroup"
+"""
+
+helps['scvmm vm extension create'] = """
+    type: command
+    short-summary: "The operation to create the extension."
+    examples:
+      - name: Create a VM Extension
+        text: |-
+               az scvmm vm extension create --name "CustomScriptExtension" --location "eastus2euap" --type \
+"CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe -c \
+\\\\\\"Get-Process | Where-Object { $_.CPU -gt 10000 }\\\\\\"\\"}" --type-handler-version "1.10" --vm-name \
+"vm name" --resource-group "myResourceGroup"
+"""
+
+helps['scvmm vm extension update'] = """
+    type: command
+    short-summary: "The operation to update the extension."
+    examples:
+      - name: Update a VM Extension
+        text: |-
+               az scvmm vm extension update --name "CustomScriptExtension" --type "CustomScriptExtension" \
+--publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe -c \\\\\\"Get-Process | \
+Where-Object { $_.CPU -lt 100 }\\\\\\"\\"}" --type-handler-version "1.10" --vm-name "vm name" --resource-group \
+"myResourceGroup"
+"""
+
+helps['scvmm vm extension delete'] = """
+    type: command
+    short-summary: "The operation to delete the extension."
+    examples:
+      - name: Delete a VM Extension
+        text: |-
+               az scvmm vm extension delete --name "vm extension name" --vm-name "vm name" --resource-group \
+"myResourceGroup"
+"""
+
+# endregion

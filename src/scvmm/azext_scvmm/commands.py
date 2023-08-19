@@ -11,9 +11,11 @@ from ._client_factory import (
     cf_cloud,
     cf_virtual_network,
     cf_virtual_machine_template,
-    cf_virtual_machine,
+    cf_virtual_machine_instance,
     cf_availability_sets,
     cf_inventory_items,
+    cf_vminstance_guest_agent,
+    cf_machine_extension,
 )
 
 from ._validators import (
@@ -89,7 +91,7 @@ def load_command_table(self: AzCommandsLoader, _):
         g.wait_command('wait')
 
     with self.command_group(
-        'scvmm vm', client_factory=cf_virtual_machine
+        'scvmm vm', client_factory=cf_virtual_machine_instance
     ) as g:
         g.custom_command(
             'create',
@@ -102,7 +104,8 @@ def load_command_table(self: AzCommandsLoader, _):
         )
         g.custom_command('update', 'update_vm', supports_no_wait=True)
         g.custom_show_command('show', 'show_vm')
-        g.custom_command('list', 'list_vm')
+        g.custom_command('list', 'list_vm',
+                         deprecate_info=g.deprecate(redirect='az scvmm vm show', hide=True))
         g.custom_command('start', 'start_vm', supports_no_wait=True)
         g.custom_command('stop', 'stop_vm', supports_no_wait=True)
         g.custom_command('restart', 'restart_vm', supports_no_wait=True)
@@ -112,7 +115,7 @@ def load_command_table(self: AzCommandsLoader, _):
         g.wait_command('wait')
 
     with self.command_group(
-        'scvmm vm nic', client_factory=cf_virtual_machine
+        'scvmm vm nic', client_factory=cf_virtual_machine_instance
     ) as g:
         g.custom_command('add', 'add_nic', supports_no_wait=True)
         g.custom_command('update', 'update_nic', supports_no_wait=True)
@@ -124,7 +127,7 @@ def load_command_table(self: AzCommandsLoader, _):
         g.wait_command('wait')
 
     with self.command_group(
-        'scvmm vm disk', client_factory=cf_virtual_machine
+        'scvmm vm disk', client_factory=cf_virtual_machine_instance
     ) as g:
         g.custom_command('add', 'add_disk', supports_no_wait=True)
         g.custom_command('update', 'update_disk', supports_no_wait=True)
@@ -157,6 +160,21 @@ def load_command_table(self: AzCommandsLoader, _):
     ) as g:
         g.custom_show_command('show', 'show_inventory_item')
         g.custom_command('list', 'list_inventory_items')
+
+    with self.command_group(
+        'scvmm vm guest-agent', client_factory=cf_vminstance_guest_agent
+    ) as g:
+        g.custom_command('enable', 'enable_guest_agent', supports_no_wait=True)
+        g.custom_show_command('show', 'show_guest_agent')
+
+    with self.command_group(
+        'scvmm vm extension', client_factory=cf_machine_extension
+    ) as g:
+        g.custom_command('list', 'scvmm_extension_list')
+        g.custom_show_command('show', 'scvmm_extension_show')
+        g.custom_command('create', 'scvmm_extension_create', supports_no_wait=True)
+        g.custom_command('update', 'scvmm_extension_update', supports_no_wait=True)
+        g.custom_command('delete', 'scvmm_extension_delete', supports_no_wait=True, confirmation=True)
 
     with self.command_group('scvmm', is_preview=True):
         pass
