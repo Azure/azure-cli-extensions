@@ -1812,7 +1812,7 @@ def show_guest_agent(
 # region Extenstion
 
 
-def connectedvmware_extension_list(
+def scvmm_extension_list(
     client: MachineExtensionsOperations,
     resource_group_name,
     vm_name,
@@ -1827,7 +1827,7 @@ def connectedvmware_extension_list(
                        expand=expand)
 
 
-def connectedvmware_extension_show(
+def scvmm_extension_show(
     client: MachineExtensionsOperations,
     resource_group_name,
     vm_name,
@@ -1842,7 +1842,7 @@ def connectedvmware_extension_show(
                       extension_name=name)
 
 
-def connectedvmware_extension_create(
+def scvmm_extension_create(
     cmd,
     client: MachineExtensionsOperations,
     resource_group_name,
@@ -1897,7 +1897,7 @@ def connectedvmware_extension_create(
                        extension_parameters=machine_extension)
 
 
-def connectedvmware_extension_update(
+def scvmm_extension_update(
     client: MachineExtensionsOperations,
     resource_group_name,
     vm_name,
@@ -1937,7 +1937,7 @@ def connectedvmware_extension_update(
                        extension_parameters=machine_extension)
 
 
-def connectedvmware_extension_delete(
+def scvmm_extension_delete(
     client: MachineExtensionsOperations,
     resource_group_name,
     vm_name,

@@ -5,6 +5,7 @@
 # pylint: disable=too-many-statements
 
 from azure.cli.core import AzCommandsLoader
+from azure.cli.core.commands import CliCommandType
 
 from ._client_factory import (
     cf_vmmserver,
@@ -25,10 +26,64 @@ from ._validators import (
 )
 
 
+vmmservers_cmd_type = CliCommandType(
+    operations_tmpl='azext_scvmm.vendored_sdks.scvmm.operations.'
+    '_vmm_servers_operations#VmmServersOperations.{}',
+    client_factory=cf_vmmserver,
+)
+
+clouds_cmd_type = CliCommandType(
+    operations_tmpl='azext_scvmm.vendored_sdks.scvmm.operations.'
+    '_clouds_operations#CloudsOperations.{}',
+    client_factory=cf_cloud,
+)
+
+virtual_networks_cmd_type = CliCommandType(
+    operations_tmpl='azext_scvmm.vendored_sdks.scvmm.operations.'
+    '_virtual_networks_operations#VirtualNetworksOperations.{}',
+    client_factory=cf_virtual_network,
+)
+
+virtual_machine_templates_cmd_type = CliCommandType(
+    operations_tmpl='azext_scvmm.vendored_sdks.scvmm.operations.'
+    '_virtual_machine_templates_operations#VirtualMachineTemplatesOperations.{}',
+    client_factory=cf_virtual_machine_template,
+)
+
+virtual_machine_instances_cmd_type = CliCommandType(
+    operations_tmpl='azext_scvmm.vendored_sdks.scvmm.operations.'
+    '_virtual_machine_instances_operations#VirtualMachineInstancesOperations.{}',
+    client_factory=cf_virtual_machine_instance,
+)
+
+
+availability_sets_cmd_type = CliCommandType(
+    operations_tmpl='azext_scvmm.vendored_sdks.scvmm.operations.'
+    '_availability_sets_operations#AvailabilitySetsOperations.{}',
+    client_factory=cf_availability_sets,
+)
+
+
+guest_agents_cmd_type = CliCommandType(
+    operations_tmpl='azext_scvmm.vendored_sdks.scvmm.operations.'
+    '_vm_instance_guest_agents_operations#VMInstanceGuestAgentsOperations.{}',
+    client_factory=cf_vminstance_guest_agent,
+)
+
+
+machine_extensions_cmd_type = CliCommandType(
+    operations_tmpl='azext_scvmm.vendored_sdks.hybridcompute.operations.'
+    '_machine_extensions_operations#MachineExtensionsOperations.{}',
+    client_factory=cf_machine_extension,
+)
+
+
 def load_command_table(self: AzCommandsLoader, _):
 
     with self.command_group(
-        'scvmm vmmserver', client_factory=cf_vmmserver
+        'scvmm vmmserver',
+        vmmservers_cmd_type,
+        client_factory=cf_vmmserver
     ) as g:
         g.custom_command('connect', 'connect_vmmserver', supports_no_wait=True)
         g.custom_command('update', 'update_vmmserver', supports_no_wait=True)
@@ -38,7 +93,9 @@ def load_command_table(self: AzCommandsLoader, _):
         g.wait_command('wait')
 
     with self.command_group(
-        'scvmm cloud', client_factory=cf_cloud
+        'scvmm cloud',
+        clouds_cmd_type,
+        client_factory=cf_cloud
     ) as g:
         g.custom_command(
             'create',
@@ -56,6 +113,7 @@ def load_command_table(self: AzCommandsLoader, _):
 
     with self.command_group(
         'scvmm virtual-network',
+        virtual_networks_cmd_type,
         client_factory=cf_virtual_network,
     ) as g:
         g.custom_command(
@@ -74,6 +132,7 @@ def load_command_table(self: AzCommandsLoader, _):
 
     with self.command_group(
         'scvmm vm-template',
+        virtual_machine_templates_cmd_type,
         client_factory=cf_virtual_machine_template,
     ) as g:
         g.custom_command(
@@ -91,7 +150,9 @@ def load_command_table(self: AzCommandsLoader, _):
         g.wait_command('wait')
 
     with self.command_group(
-        'scvmm vm', client_factory=cf_virtual_machine_instance
+        'scvmm vm',
+        virtual_machine_instances_cmd_type,
+        client_factory=cf_virtual_machine_instance
     ) as g:
         g.custom_command(
             'create',
@@ -115,7 +176,9 @@ def load_command_table(self: AzCommandsLoader, _):
         g.wait_command('wait')
 
     with self.command_group(
-        'scvmm vm nic', client_factory=cf_virtual_machine_instance
+        'scvmm vm nic',
+        virtual_machine_instances_cmd_type,
+        client_factory=cf_virtual_machine_instance
     ) as g:
         g.custom_command('add', 'add_nic', supports_no_wait=True)
         g.custom_command('update', 'update_nic', supports_no_wait=True)
@@ -127,7 +190,9 @@ def load_command_table(self: AzCommandsLoader, _):
         g.wait_command('wait')
 
     with self.command_group(
-        'scvmm vm disk', client_factory=cf_virtual_machine_instance
+        'scvmm vm disk',
+        virtual_machine_instances_cmd_type,
+        client_factory=cf_virtual_machine_instance
     ) as g:
         g.custom_command('add', 'add_disk', supports_no_wait=True)
         g.custom_command('update', 'update_disk', supports_no_wait=True)
@@ -139,7 +204,9 @@ def load_command_table(self: AzCommandsLoader, _):
         g.wait_command('wait')
 
     with self.command_group(
-        'scvmm avset', client_factory=cf_availability_sets
+        'scvmm avset',
+        availability_sets_cmd_type,
+        client_factory=cf_availability_sets
     ) as g:
         g.custom_command(
             'create',
@@ -162,13 +229,17 @@ def load_command_table(self: AzCommandsLoader, _):
         g.custom_command('list', 'list_inventory_items')
 
     with self.command_group(
-        'scvmm vm guest-agent', client_factory=cf_vminstance_guest_agent
+        'scvmm vm guest-agent',
+        guest_agents_cmd_type,
+        client_factory=cf_vminstance_guest_agent
     ) as g:
         g.custom_command('enable', 'enable_guest_agent', supports_no_wait=True)
         g.custom_show_command('show', 'show_guest_agent')
 
     with self.command_group(
-        'scvmm vm extension', client_factory=cf_machine_extension
+        'scvmm vm extension',
+        machine_extensions_cmd_type,
+        client_factory=cf_machine_extension
     ) as g:
         g.custom_command('list', 'scvmm_extension_list')
         g.custom_show_command('show', 'scvmm_extension_show')

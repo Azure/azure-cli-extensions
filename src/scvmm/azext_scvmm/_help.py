@@ -932,9 +932,9 @@ helps[
     examples:
       - name: Enable guest agent on the vm
         text: |-
-               az scvmm vm guest-agent enable --username "vm user name" --password "vm password" \
-               --resource-group "resource group name" --subscription "Name or ID of subscription" \
-               --vm-name "vm name"
+               az scvmm vm guest-agent enable --username contoso-user --password contoso-pass \
+               --resource-group contoso-rg --subscription contoso-sub \
+               --vm-name contoso-vm
 """
 
 helps[
@@ -945,8 +945,8 @@ helps[
     examples:
       - name: Get details of a guest agent
         text: |-
-               az scvmm vm guest-agent show --resource-group "resource group name" \
-               --vm-name "name of the vm"
+               az scvmm vm guest-agent show --resource-group contoso-rg \
+               --vm-name contoso-vm
 """
 
 # endregion
@@ -964,7 +964,7 @@ helps['scvmm vm extension list'] = """
     examples:
       - name: Get all VM Extensions
         text: |-
-               az scvmm vm extension list --vm-name "vm name" --resource-group "myResourceGroup"
+               az scvmm vm extension list --vm-name contoso-vm --resource-group contoso-rg
 """
 
 helps['scvmm vm extension show'] = """
@@ -973,8 +973,8 @@ helps['scvmm vm extension show'] = """
     examples:
       - name: Get VM Extension
         text: |-
-               az scvmm vm extension show --name "CustomScriptExtension" --vm-name "vm name" \
---resource-group "myResourceGroup"
+               az scvmm vm extension show --name contoso-extension --vm-name contoso-vm \
+--resource-group contoso-rg
 """
 
 helps['scvmm vm extension create'] = """
@@ -983,10 +983,10 @@ helps['scvmm vm extension create'] = """
     examples:
       - name: Create a VM Extension
         text: |-
-               az scvmm vm extension create --name "CustomScriptExtension" --location "eastus2euap" --type \
-"CustomScriptExtension" --publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe -c \
-\\\\\\"Get-Process | Where-Object { $_.CPU -gt 10000 }\\\\\\"\\"}" --type-handler-version "1.10" --vm-name \
-"vm name" --resource-group "myResourceGroup"
+               az scvmm vm extension create --name contoso-extension --location eastus2euap --type \
+CustomScriptExtension --publisher Microsoft.Compute --settings "{\\"commandToExecute\\":\\"powershell.exe -c \
+\\\\\\"Get-Process | Where-Object { $_.CPU -gt 10000 }\\\\\\"\\"}" --type-handler-version 1.10 --vm-name \
+contoso-vm --resource-group contoso-rg
 """
 
 helps['scvmm vm extension update'] = """
@@ -995,10 +995,10 @@ helps['scvmm vm extension update'] = """
     examples:
       - name: Update a VM Extension
         text: |-
-               az scvmm vm extension update --name "CustomScriptExtension" --type "CustomScriptExtension" \
---publisher "Microsoft.Compute" --settings "{\\"commandToExecute\\":\\"powershell.exe -c \\\\\\"Get-Process | \
-Where-Object { $_.CPU -lt 100 }\\\\\\"\\"}" --type-handler-version "1.10" --vm-name "vm name" --resource-group \
-"myResourceGroup"
+               az scvmm vm extension update --name contoso-extension --type CustomScriptExtension \
+--publisher Microsoft.Compute --settings "{\\"commandToExecute\\":\\"powershell.exe -c \\\\\\"Get-Process | \
+Where-Object { $_.CPU -lt 100 }\\\\\\"\\"}" --type-handler-version 1.10 --vm-name contoso-vm --resource-group \
+contoso-rg
 """
 
 helps['scvmm vm extension delete'] = """
@@ -1007,8 +1007,8 @@ helps['scvmm vm extension delete'] = """
     examples:
       - name: Delete a VM Extension
         text: |-
-               az scvmm vm extension delete --name "vm extension name" --vm-name "vm name" --resource-group \
-"myResourceGroup"
+               az scvmm vm extension delete --name contoso-extension --vm-name contoso-vm --resource-group \
+contoso-rg
 """
 
 # endregion
