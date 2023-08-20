@@ -12,9 +12,8 @@ class TestGetResourceId(unittest.TestCase):
     def _get_test_cmd():
         cli_ctx = DummyCli()
         cli_ctx.data["subscription_id"] = "00000000-0000-0000-0000-000000000000"  # type: ignore
-        loader = AzCommandsLoader(cli_ctx, resource_type="Microsoft.AppPlatform")
+        loader = AzCommandsLoader(cli_ctx)
         cmd = AzCliCommand(loader, "test", None)
-        cmd.command_kwargs = {"resource_type": "Microsoft.AppPlatform"}
         cmd.cli_ctx = cli_ctx
         return cmd
 
@@ -64,9 +63,11 @@ class TestGetResourceId(unittest.TestCase):
     def test_get_resource_id_with_child2_id_and_diff_sub_id(self):
         cmd = self._get_test_cmd()
 
-        res_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg"
-        "/providers/Microsoft.HybridCompute/Machines/contoso-machine"
-        "/providers/Microsoft.SCVMM/VirtualMachineInstances/default/guestagents/default"
+        res_id = (
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg"
+            "/providers/Microsoft.HybridCompute/Machines/contoso-machine"
+            "/providers/Microsoft.SCVMM/VirtualMachineInstances/default/guestagents/default"
+        )
 
         result = get_resource_id(
             cmd,
@@ -88,9 +89,11 @@ class TestGetResourceId(unittest.TestCase):
     def test_get_resource_id_with_intermediate_id_and_diff_sub_id(self):
         cmd = self._get_test_cmd()
 
-        inter_res_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg"
-        "/providers/Microsoft.HybridCompute/Machines/contoso-machine"
-        "/providers/Microsoft.SCVMM/VirtualMachineInstances/default"
+        inter_res_id = (
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg"
+            "/providers/Microsoft.HybridCompute/Machines/contoso-machine"
+            "/providers/Microsoft.SCVMM/VirtualMachineInstances/default"
+        )
 
         result = get_resource_id(
             cmd,
@@ -111,9 +114,11 @@ class TestGetResourceId(unittest.TestCase):
     def test_get_resource_id_with_invalid_child_type(self):
         cmd = self._get_test_cmd()
 
-        inter_res_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg"
-        "/providers/Microsoft.HybridCompute/Machines/contoso-machine"
-        "/providers/Microsoft.SCVMM/VirtualMachines/default"
+        inter_res_id = (
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg"
+            "/providers/Microsoft.HybridCompute/Machines/contoso-machine"
+            "/providers/Microsoft.SCVMM/VirtualMachines/default"
+        )
 
         with self.assertRaises(InvalidArgumentValueError):
             get_resource_id(
