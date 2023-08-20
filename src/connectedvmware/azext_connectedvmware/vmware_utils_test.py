@@ -44,7 +44,7 @@ class TestGetResourceId(unittest.TestCase):
         res_id = (
             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg"
             "/providers/Microsoft.HybridCompute/Machines/contoso-machine"
-            "/providers/Microsoft.SCVMM/VirtualMachineInstances/default"
+            "/providers/Microsoft.ConnectedVMwarevSphere/VirtualMachineInstances/default"
         )
         result = get_resource_id(
             cmd,
@@ -66,7 +66,7 @@ class TestGetResourceId(unittest.TestCase):
         res_id = (
             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg"
             "/providers/Microsoft.HybridCompute/Machines/contoso-machine"
-            "/providers/Microsoft.SCVMM/VirtualMachineInstances/default/guestagents/default"
+            "/providers/Microsoft.ConnectedVMwarevSphere/VirtualMachineInstances/default/guestagents/default"
         )
 
         result = get_resource_id(
@@ -75,7 +75,7 @@ class TestGetResourceId(unittest.TestCase):
             "Microsoft.HybridCompute",
             "Machines",
             "contoso-machine",
-            child_namespace_1="Microsoft.SCVMM",
+            child_namespace_1="Microsoft.ConnectedVMwarevSphere",
             child_type_1="VirtualMachineInstances",
             child_name_1="default",
             child_type_2="guestagents",
@@ -92,7 +92,7 @@ class TestGetResourceId(unittest.TestCase):
         inter_res_id = (
             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg"
             "/providers/Microsoft.HybridCompute/Machines/contoso-machine"
-            "/providers/Microsoft.SCVMM/VirtualMachineInstances/default"
+            "/providers/Microsoft.ConnectedVMwarevSphere/VirtualMachineInstances/default"
         )
 
         result = get_resource_id(
@@ -117,7 +117,7 @@ class TestGetResourceId(unittest.TestCase):
         inter_res_id = (
             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg"
             "/providers/Microsoft.HybridCompute/Machines/contoso-machine"
-            "/providers/Microsoft.SCVMM/VirtualMachines/default"
+            "/providers/Microsoft.ConnectedVMwarevSphere/VirtualMachines/default"
         )
 
         with self.assertRaises(InvalidArgumentValueError):
@@ -157,7 +157,7 @@ class TestGetResourceId(unittest.TestCase):
                 "Microsoft.HybridCompute",
                 "Machines",
                 "contoso-machine",
-                child_namespace_1="Microsoft.SCVMM",
+                child_namespace_1="Microsoft.ConnectedVMwarevSphere",
             )
 
     def test_get_resource_id_with_namespace_none(self):

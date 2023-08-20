@@ -732,13 +732,15 @@ def get_hcrp_machine_id(
     resource_group_name,
     resource_name,
 ):
-    return get_resource_id(
+    machine_id = get_resource_id(
         cmd,
         resource_group_name,
         HCRP_NAMESPACE,
         MACHINES_RESOURCE_TYPE,
         resource_name,
     )
+    assert machine_id is not None
+    return machine_id
 
 
 def create_vm(
@@ -864,6 +866,7 @@ def create_vm(
             child_type_1=INVENTORY_ITEM_TYPE,
             child_name_1=inventory_item,
         )
+        assert inventory_item_id is not None
 
         vcenter_id = "/".join(inventory_item_id.rstrip("/").split("/")[:-2])
 
@@ -944,6 +947,8 @@ def create_vm(
         storage_profile=storage_profile,
         infrastructure_profile=infrastructure_profile,
     )
+
+    assert vcenter_id is not None
 
     # The subscription of the vCenter can be different from the machine resource.
     # There was no straightforward way to change the subscription for vcenter client factory.
