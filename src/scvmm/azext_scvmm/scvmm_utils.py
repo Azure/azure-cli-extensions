@@ -57,47 +57,49 @@ def get_resource_id(
     if name is None and not kwargs:
         return None
 
-    subscription = get_subscription_id(cmd.cli_ctx)
-
     removed_keys_from_parsed_resource_id = [
-        "last_child_num", "resource_parent", "resource_namespace", "resource_type", "resource_name"
+        "last_child_num",
+        "resource_parent",
+        "resource_namespace",
+        "resource_type",
+        "resource_name",
     ]
 
     def process_resource_name(
-        current_rid_parts: dict[str, str],
-        resource_key_in_rid: str,
+        rid_parts: dict[str, str],
+        resource_name_key: str,
         resource_name: Optional[str],
     ):
         if resource_name is None:
             raise CLIInternalError(
-                f'resource_name could not be processed since it is None;'
-                f'resource_key_in_rid = {resource_key_in_rid}, '
-                f'current_rid_parts = {current_rid_parts}'
+                f"resource_name could not be processed since it is None; "
+                f"resource_name_key = {resource_name_key}, "
+                f"current_rid_parts = {rid_parts}"
             )
         if not is_valid_resource_id(resource_name):
             if "/" in resource_name:
                 raise InvalidArgumentValueError(
-                    f'"{resource_name}" is not a valid resource name or id'
+                    f"'{resource_name}' is not a valid resource name or id"
                 )
-            current_rid_parts[resource_key_in_rid] = resource_name
-        new_rid_parts = parse_resource_id(resource_name)
+            rid_parts[resource_name_key] = resource_name
+            return
+        child_rid_parts = parse_resource_id(resource_name)
         for key in removed_keys_from_parsed_resource_id:
-            new_rid_parts.pop(key, None)
-        superset = {k.lower(): v.lower()
-                    for k, v in current_rid_parts.items()
-                    if v is not None}
-        subset = {k.lower(): v.lower()
-                  for k, v in new_rid_parts.items()
-                  if v is not None}
-        if not superset.items() <= subset.items():
+            child_rid_parts.pop(key, None)
+        child_set = {
+            k.lower(): v.lower() for k, v in child_rid_parts.items() if v is not None
+        }
+        parent_set = {
+            k.lower(): v.lower() for k, v in rid_parts.items() if v is not None
+        }
+        if not parent_set.items() <= child_set.items():
             raise InvalidArgumentValueError(
-                f'"{resource_id}" is not a valid resource id for {superset}'
+                f'"{resource_name}" is not a valid child resource id in the parent context: {parent_set}'
             )
-        current_rid_parts.update(new_rid_parts)
+        rid_parts.update(child_rid_parts)
 
     rid_parts: dict[str, str] = {}
     rid_parts.update(
-        subscription=subscription,
         resource_group=resource_group,
         namespace=namespace,
         type=_type,
@@ -111,9 +113,9 @@ def get_resource_id(
     max_child_level = 0
     while True:
         next_level = max_child_level + 1
-        child_type_key = f'child_type_{next_level}'
-        child_name_key = f'child_name_{next_level}'
-        child_namespace_key = f'child_namespace_{next_level}'
+        child_type_key = f"child_type_{next_level}"
+        child_name_key = f"child_name_{next_level}"
+        child_namespace_key = f"child_namespace_{next_level}"
         has_child_type = child_type_key in kwargs
         has_child_name = child_name_key in kwargs
         has_child_namespace = child_namespace_key in kwargs
@@ -126,9 +128,9 @@ def get_resource_id(
             break
         if not all([has_child_name, has_child_type]):
             raise CLIInternalError(
-                f'unexpected error: "{child_type_key}" must be '
-                f'specified with "{child_name_key}"; '
-                f'type cannot be None, value can be None: kwargs = {kwargs}'
+                f"unexpected error: '{child_type_key}' must be "
+                f"specified with '{child_name_key}'; "
+                f"type cannot be None, value can be None: kwargs = {kwargs}"
             )
         max_child_level = next_level
         child_type = kwargs.get(child_type_key)
@@ -138,13 +140,13 @@ def get_resource_id(
             if child_namespace is None:
                 raise CLIInternalError(
                     f'unexpected error: "{child_namespace_key}", if provided,'
-                    f' should not be None: kwargs = {kwargs}'
+                    f" should not be None: kwargs = {kwargs}"
                 )
             rid_parts[child_namespace_key] = child_namespace
         if child_type is None:
             raise CLIInternalError(
-                f'unexpected error: "{child_type_key}" must be provided '
-                f'and should not be None: kwargs = {kwargs}'
+                f"unexpected error: '{child_type_key}' must be provided "
+                f"and should not be None: kwargs = {kwargs}"
             )
         rid_parts[child_type_key] = child_type
         if child_name is None:
@@ -157,9 +159,12 @@ def get_resource_id(
     for null_key in null_keys:
         if null_key not in rid_parts:
             raise CLIInternalError(
-                f'unexpected error: "{null_key}" could not be populated '
-                f'in rid_parts: rid_parts = {rid_parts}'
+                f"unexpected error: '{null_key}' could not be populated "
+                f"in rid_parts: rid_parts = {rid_parts}"
             )
+
+    if "subscription" not in rid_parts:
+        rid_parts["subscription"] = get_subscription_id(cmd.cli_ctx)
 
     return resource_id(**rid_parts)
 
@@ -171,11 +176,11 @@ def create_dictionary_from_arg_string(values, option_string=None):
     params_dict = {}
     for item in values:
         try:
-            key, value = item.split('=', 1)
+            key, value = item.split("=", 1)
             params_dict[key.lower()] = value
         except ValueError as err:
             raise InvalidArgumentValueError(
-                f'usage error: {option_string} KEY=VALUE [KEY=VALUE ...]'
+                f"usage error: {option_string} KEY=VALUE [KEY=VALUE ...]"
             ) from err
     return params_dict
 
