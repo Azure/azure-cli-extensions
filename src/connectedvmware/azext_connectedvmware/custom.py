@@ -277,8 +277,8 @@ def create_resource_pool(
         VMWARE_NAMESPACE,
         VCENTER_RESOURCE_TYPE,
         vcenter,
-        INVENTORY_ITEM_TYPE,
-        inventory_item,
+        child_type_1=INVENTORY_ITEM_TYPE,
+        child_name_1=inventory_item,
     )
 
     resource_pool = ResourcePool(
@@ -356,8 +356,8 @@ def create_cluster(
         VMWARE_NAMESPACE,
         VCENTER_RESOURCE_TYPE,
         vcenter,
-        INVENTORY_ITEM_TYPE,
-        inventory_item,
+        child_type_1=INVENTORY_ITEM_TYPE,
+        child_name_1=inventory_item,
     )
 
     cluster = Cluster(
@@ -435,8 +435,8 @@ def create_datastore(
         VMWARE_NAMESPACE,
         VCENTER_RESOURCE_TYPE,
         vcenter,
-        INVENTORY_ITEM_TYPE,
-        inventory_item,
+        child_type_1=INVENTORY_ITEM_TYPE,
+        child_name_1=inventory_item,
     )
 
     datastore = Datastore(
@@ -514,8 +514,8 @@ def create_host(
         VMWARE_NAMESPACE,
         VCENTER_RESOURCE_TYPE,
         vcenter,
-        INVENTORY_ITEM_TYPE,
-        inventory_item,
+        child_type_1=INVENTORY_ITEM_TYPE,
+        child_name_1=inventory_item,
     )
 
     host = Host(
@@ -593,8 +593,8 @@ def create_virtual_network(
         VMWARE_NAMESPACE,
         VCENTER_RESOURCE_TYPE,
         vcenter,
-        INVENTORY_ITEM_TYPE,
-        inventory_item,
+        child_type_1=INVENTORY_ITEM_TYPE,
+        child_name_1=inventory_item,
     )
 
     virtual_network = VirtualNetwork(
@@ -678,8 +678,8 @@ def create_vm_template(
         VMWARE_NAMESPACE,
         VCENTER_RESOURCE_TYPE,
         vcenter,
-        INVENTORY_ITEM_TYPE,
-        inventory_item,
+        child_type_1=INVENTORY_ITEM_TYPE,
+        child_name_1=inventory_item,
     )
 
     vm_template = VirtualMachineTemplate(
@@ -861,8 +861,8 @@ def create_vm(
             VMWARE_NAMESPACE,
             VCENTER_RESOURCE_TYPE,
             vcenter,
-            INVENTORY_ITEM_TYPE,
-            inventory_item,
+            child_type_1=INVENTORY_ITEM_TYPE,
+            child_name_1=inventory_item,
         )
 
         vcenter_id = "/".join(inventory_item_id.rstrip("/").split("/")[:-2])
@@ -1936,8 +1936,8 @@ def connectedvmware_extension_create(
         HCRP_NAMESPACE,
         MACHINES_RESOURCE_TYPE,
         vm_name,
-        EXTENSIONS_RESOURCE_TYPE,
-        name
+        child_type_1=EXTENSIONS_RESOURCE_TYPE,
+        child_name_1=name
     )
 
     machine_extension = MachineExtension(
