@@ -111,6 +111,33 @@ class TestGetResourceId(unittest.TestCase):
         assert result is not None
         self.assertEqual(result.lower(), expected_result.lower())
 
+    def test_get_resource_id_with_multiple_id(self):
+        cmd = self._get_test_cmd()
+
+        inter_res_id = (
+            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/contoso-rg"
+            "/providers/Microsoft.HybridCompute/Machines/contoso-machine"
+            "/providers/Microsoft.ConnectedVMwarevSphere/VirtualMachineInstances/default"
+        )
+
+        res_id = f"{inter_res_id}/guestagents/default"
+
+        result = get_resource_id(
+            cmd,
+            "contoso-rg",
+            "Microsoft.HybridCompute",
+            "Machines",
+            None,
+            child_type_1="VirtualMachineInstances",
+            child_name_1=inter_res_id,
+            child_type_2="guestagents",
+            child_name_2=res_id,
+        )
+
+        expected_result = res_id
+        assert result is not None
+        self.assertEqual(result.lower(), expected_result.lower())
+
     def test_get_resource_id_with_invalid_child_type(self):
         cmd = self._get_test_cmd()
 

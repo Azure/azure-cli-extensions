@@ -52,13 +52,14 @@ def get_resource_id(
     if name is None and not kwargs:
         return None
 
-    removed_keys_from_parsed_resource_id = [
-        "last_child_num",
-        "resource_parent",
-        "resource_namespace",
-        "resource_type",
-        "resource_name",
-    ]
+    selected_keys = {
+        "subscription", "resource_group", "namespace", "type", "name"
+    }
+    selected_key_prefixes = {
+        "child_type_",
+        "child_name_",
+        "child_namespace_",
+    }
 
     def process_resource_name(
         rid_parts: dict[str, str],
@@ -79,8 +80,13 @@ def get_resource_id(
             rid_parts[resource_name_key] = resource_name
             return
         child_rid_parts = parse_resource_id(resource_name)
-        for key in removed_keys_from_parsed_resource_id:
-            child_rid_parts.pop(key, None)
+        child_rid_parts_keys = list(child_rid_parts.keys())
+        for key in child_rid_parts_keys:
+            if key in selected_keys:
+                continue
+            if any([key.startswith(prefix) for prefix in selected_key_prefixes]):
+                continue
+            child_rid_parts.pop(key)
         child_set = {
             k.lower(): v.lower() for k, v in child_rid_parts.items() if v is not None
         }
