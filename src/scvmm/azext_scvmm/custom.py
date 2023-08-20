@@ -602,12 +602,6 @@ def create_vm(
             inventory_item_id=inventory_item_id,
         )
     else:
-        if vmmserver is None:
-            raise RequiredArgumentMissingError(
-                "VMMServer name or ID is required when "
-                "VM is not created from an inventory item."
-            )
-
         vmmserver_id = get_resource_id(
             cmd,
             resource_group_name,
@@ -648,7 +642,6 @@ def create_vm(
     extended_location = get_extended_location(custom_location_id)
 
     vm = VirtualMachineInstance(
-        location=location,
         extended_location=extended_location,
         hardware_profile=hardware_profile,
         os_profile=os_profile,
@@ -663,7 +656,7 @@ def create_vm(
     machine = None
     try:
         machine = machine_client.get(resource_group_name, resource_name)
-        if machine.kind != MACHINE_KIND_SCVMM:
+        if machine.kind and machine.kind.lower() != MACHINE_KIND_SCVMM.lower():
             raise InvalidArgumentValueError(
                 f"A machine already exists with kind {machine.kind} "
                 f"Machine kind cannot be updated to {MACHINE_KIND_SCVMM}"
@@ -754,6 +747,9 @@ def update_vm(
             dynamic_memory_min_mb=dynamic_memory_min,
             dynamic_memory_max_mb=dynamic_memory_max,
         )
+
+    if hardware_profile is None and availability_sets is None:
+        return client.get(machine_id)
 
     vm_update = VirtualMachineInstanceUpdate(
         hardware_profile=hardware_profile,

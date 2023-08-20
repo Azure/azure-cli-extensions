@@ -30,7 +30,7 @@ def get_resource_id(
     name can be resource name, resource id or None.
     If name is None, it can be inferred from
     child_name_X where X > 0 and child_name_X is a resource id.
-    If name is None, and there are no child resources, None is returned.
+    If name is None, and the name of all child resources in also None, None is returned.
 
     kwargs can contain multiple child_type_N, child_name_N, child_namespace_N, where N > 0.
     child_type_N, child_name_N are mandatory fields for each N > 0.
@@ -53,9 +53,6 @@ def get_resource_id(
     For any unexpected error, a CLIInternalError is raised, which should be
     treated as a bug.
     """
-
-    if name is None and not kwargs:
-        return None
 
     selected_keys = {
         "subscription", "resource_group", "namespace", "type", "name"
@@ -110,7 +107,7 @@ def get_resource_id(
         namespace=namespace,
         type=_type,
     )
-    null_keys = set()
+    null_keys: set[str] = set()
     if name is not None:
         process_resource_name(rid_parts, "name", name)
     else:
@@ -161,6 +158,10 @@ def get_resource_id(
             null_keys.add(child_name_key)
             continue
         process_resource_name(rid_parts, child_name_key, child_name)
+
+    if null_keys and all(
+            [key == "name" or key.startswith("child_name_") for key in null_keys]):
+        return None
 
     for null_key in null_keys:
         if null_key not in rid_parts:
