@@ -547,7 +547,7 @@ def create_vm(
     if inventory_item is not None:
         if not is_valid_resource_id(inventory_item) and not vmmserver:
             raise RequiredArgumentMissingError(
-                "Cannot determine inventory item ID. " +
+                "Cannot determine inventory item ID. "
                 "VMMServer name or ID is required when inventory item name is specified."
             )
 
@@ -670,8 +670,8 @@ def create_vm(
             )
         if location is not None and machine.location != location:
             raise InvalidArgumentValueError(
-                "The location of the existing Machine cannot be updated. " +
-                "Either specify the existing location or keep the location unspecified. " +
+                "The location of the existing Machine cannot be updated. "
+                "Either specify the existing location or keep the location unspecified. "
                 f"Existing location: {machine.location}, Provided location: {location}"
             )
         if tags is not None:
@@ -682,7 +682,7 @@ def create_vm(
     except ResourceNotFoundError as e:
         if location is None:
             raise InvalidArgumentValueError(
-                "The parent Machine resource does not exist, " +
+                "The parent Machine resource does not exist, "
                 "location is required while creating a new machine."
             ) from e
         m = Machine(
@@ -785,7 +785,7 @@ def delete_vm(
 
     if retain and delete_from_host:
         raise MutuallyExclusiveArgumentError(
-            "Arguments --retain and --delete-from-host cannot be used together." +
+            "Arguments --retain and --delete-from-host cannot be used together. "
             "VM is retained in SCVMM by default, it is deleted when --delete-from-host is provided."
         )
 
