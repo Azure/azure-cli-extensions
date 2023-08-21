@@ -96,6 +96,9 @@ class Create(AAZCommand):
         provider_specific_input.hyper_v_replica_azure = AAZObjectArg(
             options=["hyper-v-replica-azure"],
         )
+        provider_specific_input.in_mage_rcm = AAZObjectArg(
+            options=["in-mage-rcm"],
+        )
         provider_specific_input.vmware_cbt = AAZObjectArg(
             options=["vmware-cbt"],
             help="vmware-cbt",
@@ -122,6 +125,13 @@ class Create(AAZCommand):
         hyper_v_replica_azure.location = AAZStrArg(
             options=["location"],
             help="The Location.",
+        )
+
+        in_mage_rcm = cls._args_schema.provider_specific_input.in_mage_rcm
+        in_mage_rcm.enable_agent_auto_upgrade = AAZStrArg(
+            options=["enable-agent-auto-upgrade"],
+            help="A value indicating whether agent auto upgrade has to be enabled.",
+            required=True,
         )
 
         vmware_cbt = cls._args_schema.provider_specific_input.vmware_cbt
@@ -283,9 +293,11 @@ class Create(AAZCommand):
             if provider_specific_input is not None:
                 provider_specific_input.set_const("instanceType", "A2A", AAZStrType, ".a2a", typ_kwargs={"flags": {"required": True}})
                 provider_specific_input.set_const("instanceType", "HyperVReplicaAzure", AAZStrType, ".hyper_v_replica_azure", typ_kwargs={"flags": {"required": True}})
+                provider_specific_input.set_const("instanceType", "InMageRcm", AAZStrType, ".in_mage_rcm", typ_kwargs={"flags": {"required": True}})
                 provider_specific_input.set_const("instanceType", "VMwareCbt", AAZStrType, ".vmware_cbt", typ_kwargs={"flags": {"required": True}})
                 provider_specific_input.discriminate_by("instanceType", "A2A")
                 provider_specific_input.discriminate_by("instanceType", "HyperVReplicaAzure")
+                provider_specific_input.discriminate_by("instanceType", "InMageRcm")
                 provider_specific_input.discriminate_by("instanceType", "VMwareCbt")
 
             disc_a2_a = _builder.get(".properties.providerSpecificInput{instanceType:A2A}")
@@ -297,6 +309,10 @@ class Create(AAZCommand):
             disc_hyper_v_replica_azure = _builder.get(".properties.providerSpecificInput{instanceType:HyperVReplicaAzure}")
             if disc_hyper_v_replica_azure is not None:
                 disc_hyper_v_replica_azure.set_prop("location", AAZStrType, ".hyper_v_replica_azure.location")
+
+            disc_in_mage_rcm = _builder.get(".properties.providerSpecificInput{instanceType:InMageRcm}")
+            if disc_in_mage_rcm is not None:
+                disc_in_mage_rcm.set_prop("enableAgentAutoUpgrade", AAZStrType, ".in_mage_rcm.enable_agent_auto_upgrade", typ_kwargs={"flags": {"required": True}})
 
             disc_v_mware_cbt = _builder.get(".properties.providerSpecificInput{instanceType:VMwareCbt}")
             if disc_v_mware_cbt is not None:
