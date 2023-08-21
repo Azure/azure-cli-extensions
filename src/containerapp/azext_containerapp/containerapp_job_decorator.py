@@ -462,13 +462,12 @@ class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
         # Validate managed environment
         env_id = self.containerappjob_def["properties"]['environmentId']
         env_info = None
-        if env_id is None and self.get_argument_managed_env():
-            if not self.get_argument_disable_warnings() and env_id != self.get_argument_managed_env():
-                logger.warning(
-                    'The environmentId was passed along with --yaml. The value entered with --environment will be ignored, and the configuration defined in the yaml will be used instead')
-
-            env_id = self.get_argument_managed_env()
-            safe_set(self.containerappjob_def, "properties", "environmentId", value=env_id)
+        if self.get_argument_managed_env():
+            if not self.get_argument_disable_warnings() and env_id is not None and env_id != self.get_argument_managed_env():
+                logger.warning('The environmentId was passed along with --yaml. The value entered with --environment will be ignored, and the configuration defined in the yaml will be used instead')
+            if env_id is None:
+                env_id = self.get_argument_managed_env()
+                safe_set(self.containerappjob_def, "properties", "environmentId", value=env_id)
 
         if not self.containerappjob_def["properties"].get('environmentId'):
             raise RequiredArgumentMissingError(
