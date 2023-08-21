@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from typing import Optional
+from typing import Optional, Dict, Set
 from azure.cli.core.azclierror import InvalidArgumentValueError, CLIInternalError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from msrestazure.tools import is_valid_resource_id, parse_resource_id, resource_id
@@ -62,7 +62,7 @@ def get_resource_id(
     }
 
     def process_resource_name(
-        rid_parts: dict[str, str],
+        rid_parts: Dict[str, str],
         resource_name_key: str,
         resource_name: Optional[str],
     ):
@@ -105,7 +105,7 @@ def get_resource_id(
         namespace=namespace,
         type=_type,
     )
-    null_keys: set[str] = set()
+    null_keys: Set[str] = set()
     if name is not None:
         process_resource_name(rid_parts, "name", name)
     else:
