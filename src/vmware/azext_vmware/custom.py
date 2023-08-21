@@ -39,7 +39,7 @@ Press any key to continue
 
 
 def privatecloud_addidentitysource(cmd, resource_group_name, name, private_cloud, alias, domain, base_user_dn, base_group_dn, primary_server, username, password, secondary_server=None, ssl="Disabled"):
-    from aaz.latest.vmware.private_cloud.identity_source import Create
+    from .aaz.latest.vmware.private_cloud.identity_source import Create
     command_args = {
         "private_cloud": private_cloud,
         "resource_group": resource_group_name,
@@ -59,7 +59,7 @@ def privatecloud_addidentitysource(cmd, resource_group_name, name, private_cloud
 
 
 def privatecloud_deleteidentitysource(cmd, resource_group_name, name, private_cloud, alias, domain, yes=False):
-    from aaz.latest.vmware.private_cloud.identity_source import Delete
+    from .aaz.latest.vmware.private_cloud.identity_source import Delete
     from knack.prompting import prompt_y_n
     msg = 'This will delete the identity source. Are you sure?'
     if not yes and not prompt_y_n(msg, default="n"):
