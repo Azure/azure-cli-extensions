@@ -8,6 +8,7 @@
 
 from typing import Any, Dict, List, Optional, Union
 
+from azure.core.exceptions import HttpResponseError
 import msrest.serialization
 
 from ._avs_client_enums import *
@@ -1027,8 +1028,8 @@ class ErrorAdditionalInfo(msrest.serialization.Model):
         self.info = None
 
 
-class ErrorResponse(msrest.serialization.Model):
-    """Common error response for all Azure Resource Manager APIs to return error details for failed operations. (This also follows the OData error response format.).
+class ErrorDetail(msrest.serialization.Model):
+    """The error detail.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -1039,7 +1040,7 @@ class ErrorResponse(msrest.serialization.Model):
     :ivar target: The error target.
     :vartype target: str
     :ivar details: The error details.
-    :vartype details: list[~avs_client.models.ErrorResponse]
+    :vartype details: list[~avs_client.models.ErrorDetail]
     :ivar additional_info: The error additional info.
     :vartype additional_info: list[~avs_client.models.ErrorAdditionalInfo]
     """
@@ -1056,7 +1057,7 @@ class ErrorResponse(msrest.serialization.Model):
         'code': {'key': 'code', 'type': 'str'},
         'message': {'key': 'message', 'type': 'str'},
         'target': {'key': 'target', 'type': 'str'},
-        'details': {'key': 'details', 'type': '[ErrorResponse]'},
+        'details': {'key': 'details', 'type': '[ErrorDetail]'},
         'additional_info': {'key': 'additionalInfo', 'type': '[ErrorAdditionalInfo]'},
     }
 
@@ -1064,12 +1065,33 @@ class ErrorResponse(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        super(ErrorResponse, self).__init__(**kwargs)
+        super(ErrorDetail, self).__init__(**kwargs)
         self.code = None
         self.message = None
         self.target = None
         self.details = None
         self.additional_info = None
+
+
+class ErrorResponse(msrest.serialization.Model):
+    """Common error response for all Azure Resource Manager APIs to return error details for failed operations. (This also follows the OData error response format.).
+
+    :param error: The error object.
+    :type error: ~avs_client.models.ErrorDetail
+    """
+
+    _attribute_map = {
+        'error': {'key': 'error', 'type': 'ErrorDetail'},
+    }
+
+    def __init__(
+        self,
+        *,
+        error: Optional["ErrorDetail"] = None,
+        **kwargs
+    ):
+        super(ErrorResponse, self).__init__(**kwargs)
+        self.error = error
 
 
 class ExpressRouteAuthorization(Resource):
@@ -1994,6 +2016,10 @@ class PrivateCloud(TrackedResource):
     :type availability: ~avs_client.models.AvailabilityProperties
     :param encryption: Customer managed key encryption, can be enabled or disabled.
     :type encryption: ~avs_client.models.Encryption
+    :param extended_network_blocks: Array of additional networks noncontiguous with networkBlock.
+     Networks must be unique and non-overlapping across VNet in your subscription, on-premise, and
+     this privateCloud networkBlock attribute. Make sure the CIDR format conforms to (A.B.C.D/X).
+    :type extended_network_blocks: list[str]
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
      "Failed", "Cancelled", "Pending", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.PrivateCloudProvisioningState
@@ -2062,6 +2088,7 @@ class PrivateCloud(TrackedResource):
         'identity_sources': {'key': 'properties.identitySources', 'type': '[IdentitySource]'},
         'availability': {'key': 'properties.availability', 'type': 'AvailabilityProperties'},
         'encryption': {'key': 'properties.encryption', 'type': 'Encryption'},
+        'extended_network_blocks': {'key': 'properties.extendedNetworkBlocks', 'type': '[str]'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'circuit': {'key': 'properties.circuit', 'type': 'Circuit'},
         'endpoints': {'key': 'properties.endpoints', 'type': 'Endpoints'},
@@ -2090,6 +2117,7 @@ class PrivateCloud(TrackedResource):
         identity_sources: Optional[List["IdentitySource"]] = None,
         availability: Optional["AvailabilityProperties"] = None,
         encryption: Optional["Encryption"] = None,
+        extended_network_blocks: Optional[List[str]] = None,
         circuit: Optional["Circuit"] = None,
         network_block: Optional[str] = None,
         vcenter_password: Optional[str] = None,
@@ -2105,6 +2133,7 @@ class PrivateCloud(TrackedResource):
         self.identity_sources = identity_sources
         self.availability = availability
         self.encryption = encryption
+        self.extended_network_blocks = extended_network_blocks
         self.provisioning_state = None
         self.circuit = circuit
         self.endpoints = None
@@ -2206,6 +2235,10 @@ class PrivateCloudUpdateProperties(msrest.serialization.Model):
     :type availability: ~avs_client.models.AvailabilityProperties
     :param encryption: Customer managed key encryption, can be enabled or disabled.
     :type encryption: ~avs_client.models.Encryption
+    :param extended_network_blocks: Array of additional networks noncontiguous with networkBlock.
+     Networks must be unique and non-overlapping across VNet in your subscription, on-premise, and
+     this privateCloud networkBlock attribute. Make sure the CIDR format conforms to (A.B.C.D/X).
+    :type extended_network_blocks: list[str]
     """
 
     _attribute_map = {
@@ -2214,6 +2247,7 @@ class PrivateCloudUpdateProperties(msrest.serialization.Model):
         'identity_sources': {'key': 'identitySources', 'type': '[IdentitySource]'},
         'availability': {'key': 'availability', 'type': 'AvailabilityProperties'},
         'encryption': {'key': 'encryption', 'type': 'Encryption'},
+        'extended_network_blocks': {'key': 'extendedNetworkBlocks', 'type': '[str]'},
     }
 
     def __init__(
@@ -2224,6 +2258,7 @@ class PrivateCloudUpdateProperties(msrest.serialization.Model):
         identity_sources: Optional[List["IdentitySource"]] = None,
         availability: Optional["AvailabilityProperties"] = None,
         encryption: Optional["Encryption"] = None,
+        extended_network_blocks: Optional[List[str]] = None,
         **kwargs
     ):
         super(PrivateCloudUpdateProperties, self).__init__(**kwargs)
@@ -2232,6 +2267,7 @@ class PrivateCloudUpdateProperties(msrest.serialization.Model):
         self.identity_sources = identity_sources
         self.availability = availability
         self.encryption = encryption
+        self.extended_network_blocks = extended_network_blocks
 
 
 class PrivateCloudProperties(PrivateCloudUpdateProperties):
@@ -2253,6 +2289,10 @@ class PrivateCloudProperties(PrivateCloudUpdateProperties):
     :type availability: ~avs_client.models.AvailabilityProperties
     :param encryption: Customer managed key encryption, can be enabled or disabled.
     :type encryption: ~avs_client.models.Encryption
+    :param extended_network_blocks: Array of additional networks noncontiguous with networkBlock.
+     Networks must be unique and non-overlapping across VNet in your subscription, on-premise, and
+     this privateCloud networkBlock attribute. Make sure the CIDR format conforms to (A.B.C.D/X).
+    :type extended_network_blocks: list[str]
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
      "Failed", "Cancelled", "Pending", "Building", "Deleting", "Updating", "Canceled".
     :vartype provisioning_state: str or ~avs_client.models.PrivateCloudProvisioningState
@@ -2311,6 +2351,7 @@ class PrivateCloudProperties(PrivateCloudUpdateProperties):
         'identity_sources': {'key': 'identitySources', 'type': '[IdentitySource]'},
         'availability': {'key': 'availability', 'type': 'AvailabilityProperties'},
         'encryption': {'key': 'encryption', 'type': 'Encryption'},
+        'extended_network_blocks': {'key': 'extendedNetworkBlocks', 'type': '[str]'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'circuit': {'key': 'circuit', 'type': 'Circuit'},
         'endpoints': {'key': 'endpoints', 'type': 'Endpoints'},
@@ -2336,13 +2377,14 @@ class PrivateCloudProperties(PrivateCloudUpdateProperties):
         identity_sources: Optional[List["IdentitySource"]] = None,
         availability: Optional["AvailabilityProperties"] = None,
         encryption: Optional["Encryption"] = None,
+        extended_network_blocks: Optional[List[str]] = None,
         circuit: Optional["Circuit"] = None,
         vcenter_password: Optional[str] = None,
         nsxt_password: Optional[str] = None,
         secondary_circuit: Optional["Circuit"] = None,
         **kwargs
     ):
-        super(PrivateCloudProperties, self).__init__(management_cluster=management_cluster, internet=internet, identity_sources=identity_sources, availability=availability, encryption=encryption, **kwargs)
+        super(PrivateCloudProperties, self).__init__(management_cluster=management_cluster, internet=internet, identity_sources=identity_sources, availability=availability, encryption=encryption, extended_network_blocks=extended_network_blocks, **kwargs)
         self.provisioning_state = None
         self.circuit = circuit
         self.endpoints = None
@@ -2378,6 +2420,10 @@ class PrivateCloudUpdate(msrest.serialization.Model):
     :type availability: ~avs_client.models.AvailabilityProperties
     :param encryption: Customer managed key encryption, can be enabled or disabled.
     :type encryption: ~avs_client.models.Encryption
+    :param extended_network_blocks: Array of additional networks noncontiguous with networkBlock.
+     Networks must be unique and non-overlapping across VNet in your subscription, on-premise, and
+     this privateCloud networkBlock attribute. Make sure the CIDR format conforms to (A.B.C.D/X).
+    :type extended_network_blocks: list[str]
     """
 
     _attribute_map = {
@@ -2388,6 +2434,7 @@ class PrivateCloudUpdate(msrest.serialization.Model):
         'identity_sources': {'key': 'properties.identitySources', 'type': '[IdentitySource]'},
         'availability': {'key': 'properties.availability', 'type': 'AvailabilityProperties'},
         'encryption': {'key': 'properties.encryption', 'type': 'Encryption'},
+        'extended_network_blocks': {'key': 'properties.extendedNetworkBlocks', 'type': '[str]'},
     }
 
     def __init__(
@@ -2400,6 +2447,7 @@ class PrivateCloudUpdate(msrest.serialization.Model):
         identity_sources: Optional[List["IdentitySource"]] = None,
         availability: Optional["AvailabilityProperties"] = None,
         encryption: Optional["Encryption"] = None,
+        extended_network_blocks: Optional[List[str]] = None,
         **kwargs
     ):
         super(PrivateCloudUpdate, self).__init__(**kwargs)
@@ -2410,6 +2458,7 @@ class PrivateCloudUpdate(msrest.serialization.Model):
         self.identity_sources = identity_sources
         self.availability = availability
         self.encryption = encryption
+        self.extended_network_blocks = extended_network_blocks
 
 
 class ProxyResource(Resource):

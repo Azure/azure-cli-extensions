@@ -52,9 +52,9 @@ class HcxEnterpriseSitesOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> Iterable["_models.HcxEnterpriseSiteList"]
-        """List HCX Enterprise Sites in a private cloud.
+        """List HCX on-premises key in a private cloud.
 
-        List HCX Enterprise Sites in a private cloud.
+        List HCX on-premises key in a private cloud.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -70,7 +70,7 @@ class HcxEnterpriseSitesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -84,7 +84,7 @@ class HcxEnterpriseSitesOperations(object):
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -112,8 +112,9 @@ class HcxEnterpriseSitesOperations(object):
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -130,9 +131,9 @@ class HcxEnterpriseSitesOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> "_models.HcxEnterpriseSite"
-        """Get an HCX Enterprise Site by name in a private cloud.
+        """Get an HCX on-premises key by name in a private cloud.
 
-        Get an HCX Enterprise Site by name in a private cloud.
+        Get an HCX on-premises key by name in a private cloud.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -150,7 +151,7 @@ class HcxEnterpriseSitesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -158,8 +159,8 @@ class HcxEnterpriseSitesOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'hcxEnterpriseSiteName': self._serialize.url("hcx_enterprise_site_name", hcx_enterprise_site_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
+            'hcxEnterpriseSiteName': self._serialize.url("hcx_enterprise_site_name", hcx_enterprise_site_name, 'str', pattern=r'^[-\w\._]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -177,7 +178,8 @@ class HcxEnterpriseSitesOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('HcxEnterpriseSite', pipeline_response)
 
@@ -196,9 +198,9 @@ class HcxEnterpriseSitesOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> "_models.HcxEnterpriseSite"
-        """Create or update an HCX Enterprise Site in a private cloud.
+        """Create or update an activation key for on-premises HCX site.
 
-        Create or update an HCX Enterprise Site in a private cloud.
+        Create or update an activation key for on-premises HCX site.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -218,7 +220,7 @@ class HcxEnterpriseSitesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -228,7 +230,7 @@ class HcxEnterpriseSitesOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'hcxEnterpriseSiteName': self._serialize.url("hcx_enterprise_site_name", hcx_enterprise_site_name, 'str'),
+            'hcxEnterpriseSiteName': self._serialize.url("hcx_enterprise_site_name", hcx_enterprise_site_name, 'str', pattern=r'^[-\w\._]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -250,7 +252,8 @@ class HcxEnterpriseSitesOperations(object):
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
             deserialized = self._deserialize('HcxEnterpriseSite', pipeline_response)
@@ -272,9 +275,9 @@ class HcxEnterpriseSitesOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> None
-        """Delete an HCX Enterprise Site in a private cloud.
+        """Delete HCX on-premises key in a private cloud.
 
-        Delete an HCX Enterprise Site in a private cloud.
+        Delete HCX on-premises key in a private cloud.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -292,7 +295,7 @@ class HcxEnterpriseSitesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -300,8 +303,8 @@ class HcxEnterpriseSitesOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'hcxEnterpriseSiteName': self._serialize.url("hcx_enterprise_site_name", hcx_enterprise_site_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
+            'hcxEnterpriseSiteName': self._serialize.url("hcx_enterprise_site_name", hcx_enterprise_site_name, 'str', pattern=r'^[-\w\._]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -319,7 +322,8 @@ class HcxEnterpriseSitesOperations(object):
 
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})

@@ -33,6 +33,7 @@ try:
     from ._models_py3 import EncryptionKeyVaultProperties
     from ._models_py3 import Endpoints
     from ._models_py3 import ErrorAdditionalInfo
+    from ._models_py3 import ErrorDetail
     from ._models_py3 import ErrorResponse
     from ._models_py3 import ExpressRouteAuthorization
     from ._models_py3 import ExpressRouteAuthorizationList
@@ -135,6 +136,7 @@ except (SyntaxError, ImportError):
     from ._models import EncryptionKeyVaultProperties  # type: ignore
     from ._models import Endpoints  # type: ignore
     from ._models import ErrorAdditionalInfo  # type: ignore
+    from ._models import ErrorDetail  # type: ignore
     from ._models import ErrorResponse  # type: ignore
     from ._models import ExpressRouteAuthorization  # type: ignore
     from ._models import ExpressRouteAuthorizationList  # type: ignore
@@ -292,6 +294,7 @@ __all__ = [
     'EncryptionKeyVaultProperties',
     'Endpoints',
     'ErrorAdditionalInfo',
+    'ErrorDetail',
     'ErrorResponse',
     'ExpressRouteAuthorization',
     'ExpressRouteAuthorizationList',

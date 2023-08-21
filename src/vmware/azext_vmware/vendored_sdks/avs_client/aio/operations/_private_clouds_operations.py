@@ -64,7 +64,7 @@ class PrivateCloudsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -105,8 +105,9 @@ class PrivateCloudsOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -133,7 +134,7 @@ class PrivateCloudsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -173,8 +174,9 @@ class PrivateCloudsOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -207,7 +209,7 @@ class PrivateCloudsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -215,7 +217,7 @@ class PrivateCloudsOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -233,7 +235,8 @@ class PrivateCloudsOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('PrivateCloud', pipeline_response)
 
@@ -255,7 +258,7 @@ class PrivateCloudsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -264,7 +267,7 @@ class PrivateCloudsOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -286,7 +289,8 @@ class PrivateCloudsOperations:
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
             deserialized = self._deserialize('PrivateCloud', pipeline_response)
@@ -356,7 +360,7 @@ class PrivateCloudsOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -385,7 +389,7 @@ class PrivateCloudsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -394,7 +398,7 @@ class PrivateCloudsOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -416,7 +420,8 @@ class PrivateCloudsOperations:
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
             deserialized = self._deserialize('PrivateCloud', pipeline_response)
@@ -486,7 +491,7 @@ class PrivateCloudsOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -514,7 +519,7 @@ class PrivateCloudsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -522,7 +527,7 @@ class PrivateCloudsOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -540,7 +545,8 @@ class PrivateCloudsOperations:
 
         if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
@@ -596,7 +602,7 @@ class PrivateCloudsOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -624,7 +630,7 @@ class PrivateCloudsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -632,7 +638,7 @@ class PrivateCloudsOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -650,7 +656,8 @@ class PrivateCloudsOperations:
 
         if response.status_code not in [202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
@@ -706,7 +713,7 @@ class PrivateCloudsOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -734,7 +741,7 @@ class PrivateCloudsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -742,7 +749,7 @@ class PrivateCloudsOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -760,7 +767,8 @@ class PrivateCloudsOperations:
 
         if response.status_code not in [202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
@@ -816,7 +824,7 @@ class PrivateCloudsOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -857,7 +865,7 @@ class PrivateCloudsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -865,7 +873,7 @@ class PrivateCloudsOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -883,7 +891,8 @@ class PrivateCloudsOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('AdminCredentials', pipeline_response)
 

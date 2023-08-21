@@ -70,7 +70,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -78,7 +78,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'workloadNetworkName': self._serialize.url("workload_network_name", workload_network_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -97,7 +97,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkloadNetwork', pipeline_response)
 
@@ -131,7 +132,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -145,7 +146,7 @@ class WorkloadNetworksOperations:
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -173,8 +174,9 @@ class WorkloadNetworksOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -207,7 +209,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -221,7 +223,7 @@ class WorkloadNetworksOperations:
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -249,8 +251,9 @@ class WorkloadNetworksOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -286,7 +289,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -294,7 +297,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'segmentId': self._serialize.url("segment_id", segment_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -313,7 +316,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkloadNetworkSegment', pipeline_response)
 
@@ -336,7 +340,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -345,7 +349,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'segmentId': self._serialize.url("segment_id", segment_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -368,7 +372,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
             deserialized = self._deserialize('WorkloadNetworkSegment', pipeline_response)
@@ -442,7 +447,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'segmentId': self._serialize.url("segment_id", segment_id, 'str'),
         }
 
@@ -473,7 +478,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -482,7 +487,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'segmentId': self._serialize.url("segment_id", segment_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -505,7 +510,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -577,7 +583,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'segmentId': self._serialize.url("segment_id", segment_id, 'str'),
         }
 
@@ -607,7 +613,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -615,7 +621,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'segmentId': self._serialize.url("segment_id", segment_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -634,7 +640,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
@@ -694,7 +701,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'segmentId': self._serialize.url("segment_id", segment_id, 'str'),
         }
 
@@ -736,7 +743,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -750,7 +757,7 @@ class WorkloadNetworksOperations:
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -778,8 +785,9 @@ class WorkloadNetworksOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -815,7 +823,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -824,7 +832,7 @@ class WorkloadNetworksOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'dhcpId': self._serialize.url("dhcp_id", dhcp_id, 'str'),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -842,7 +850,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkloadNetworkDhcp', pipeline_response)
 
@@ -865,7 +874,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -874,7 +883,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'dhcpId': self._serialize.url("dhcp_id", dhcp_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -897,7 +906,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
             deserialized = self._deserialize('WorkloadNetworkDhcp', pipeline_response)
@@ -971,7 +981,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'dhcpId': self._serialize.url("dhcp_id", dhcp_id, 'str'),
         }
 
@@ -1002,7 +1012,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -1011,7 +1021,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'dhcpId': self._serialize.url("dhcp_id", dhcp_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -1034,7 +1044,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -1106,7 +1117,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'dhcpId': self._serialize.url("dhcp_id", dhcp_id, 'str'),
         }
 
@@ -1136,7 +1147,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -1144,7 +1155,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'dhcpId': self._serialize.url("dhcp_id", dhcp_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -1163,7 +1174,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
@@ -1223,7 +1235,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'dhcpId': self._serialize.url("dhcp_id", dhcp_id, 'str'),
         }
 
@@ -1265,7 +1277,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -1279,7 +1291,7 @@ class WorkloadNetworksOperations:
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -1307,8 +1319,9 @@ class WorkloadNetworksOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -1344,7 +1357,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -1352,7 +1365,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'gatewayId': self._serialize.url("gateway_id", gateway_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -1371,7 +1384,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkloadNetworkGateway', pipeline_response)
 
@@ -1405,7 +1419,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -1419,7 +1433,7 @@ class WorkloadNetworksOperations:
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -1447,8 +1461,9 @@ class WorkloadNetworksOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -1485,7 +1500,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -1493,7 +1508,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'portMirroringId': self._serialize.url("port_mirroring_id", port_mirroring_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -1512,7 +1527,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkloadNetworkPortMirroring', pipeline_response)
 
@@ -1535,7 +1551,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -1544,7 +1560,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'portMirroringId': self._serialize.url("port_mirroring_id", port_mirroring_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -1567,7 +1583,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
             deserialized = self._deserialize('WorkloadNetworkPortMirroring', pipeline_response)
@@ -1642,7 +1659,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'portMirroringId': self._serialize.url("port_mirroring_id", port_mirroring_id, 'str'),
         }
 
@@ -1673,7 +1690,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -1682,7 +1699,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'portMirroringId': self._serialize.url("port_mirroring_id", port_mirroring_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -1705,7 +1722,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -1778,7 +1796,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'portMirroringId': self._serialize.url("port_mirroring_id", port_mirroring_id, 'str'),
         }
 
@@ -1808,7 +1826,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -1817,7 +1835,7 @@ class WorkloadNetworksOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'portMirroringId': self._serialize.url("port_mirroring_id", port_mirroring_id, 'str'),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -1835,7 +1853,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
@@ -1897,7 +1916,7 @@ class WorkloadNetworksOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'portMirroringId': self._serialize.url("port_mirroring_id", port_mirroring_id, 'str'),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -1938,7 +1957,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -1952,7 +1971,7 @@ class WorkloadNetworksOperations:
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -1980,8 +1999,9 @@ class WorkloadNetworksOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -2017,7 +2037,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -2025,7 +2045,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'vmGroupId': self._serialize.url("vm_group_id", vm_group_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -2044,7 +2064,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkloadNetworkVMGroup', pipeline_response)
 
@@ -2067,7 +2088,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -2076,7 +2097,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'vmGroupId': self._serialize.url("vm_group_id", vm_group_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -2099,7 +2120,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
             deserialized = self._deserialize('WorkloadNetworkVMGroup', pipeline_response)
@@ -2173,7 +2195,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'vmGroupId': self._serialize.url("vm_group_id", vm_group_id, 'str'),
         }
 
@@ -2204,7 +2226,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -2213,7 +2235,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'vmGroupId': self._serialize.url("vm_group_id", vm_group_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -2236,7 +2258,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -2308,7 +2331,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'vmGroupId': self._serialize.url("vm_group_id", vm_group_id, 'str'),
         }
 
@@ -2338,7 +2361,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -2347,7 +2370,7 @@ class WorkloadNetworksOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'vmGroupId': self._serialize.url("vm_group_id", vm_group_id, 'str'),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -2365,7 +2388,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
@@ -2426,7 +2450,7 @@ class WorkloadNetworksOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'vmGroupId': self._serialize.url("vm_group_id", vm_group_id, 'str'),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -2467,7 +2491,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -2481,7 +2505,7 @@ class WorkloadNetworksOperations:
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -2509,8 +2533,9 @@ class WorkloadNetworksOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -2546,7 +2571,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -2554,7 +2579,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'virtualMachineId': self._serialize.url("virtual_machine_id", virtual_machine_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -2573,7 +2598,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkloadNetworkVirtualMachine', pipeline_response)
 
@@ -2607,7 +2633,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -2621,7 +2647,7 @@ class WorkloadNetworksOperations:
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -2649,8 +2675,9 @@ class WorkloadNetworksOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -2687,7 +2714,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -2695,7 +2722,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'dnsServiceId': self._serialize.url("dns_service_id", dns_service_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -2714,7 +2741,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkloadNetworkDnsService', pipeline_response)
 
@@ -2737,7 +2765,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -2746,7 +2774,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'dnsServiceId': self._serialize.url("dns_service_id", dns_service_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -2769,7 +2797,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
             deserialized = self._deserialize('WorkloadNetworkDnsService', pipeline_response)
@@ -2844,7 +2873,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'dnsServiceId': self._serialize.url("dns_service_id", dns_service_id, 'str'),
         }
 
@@ -2875,7 +2904,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -2884,7 +2913,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'dnsServiceId': self._serialize.url("dns_service_id", dns_service_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -2907,7 +2936,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -2980,7 +3010,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'dnsServiceId': self._serialize.url("dns_service_id", dns_service_id, 'str'),
         }
 
@@ -3010,7 +3040,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -3019,7 +3049,7 @@ class WorkloadNetworksOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'dnsServiceId': self._serialize.url("dns_service_id", dns_service_id, 'str'),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -3037,7 +3067,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
@@ -3099,7 +3130,7 @@ class WorkloadNetworksOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'dnsServiceId': self._serialize.url("dns_service_id", dns_service_id, 'str'),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -3140,7 +3171,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -3154,7 +3185,7 @@ class WorkloadNetworksOperations:
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -3182,8 +3213,9 @@ class WorkloadNetworksOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -3219,7 +3251,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -3227,7 +3259,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'dnsZoneId': self._serialize.url("dns_zone_id", dns_zone_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -3246,7 +3278,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkloadNetworkDnsZone', pipeline_response)
 
@@ -3269,7 +3302,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -3278,7 +3311,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'dnsZoneId': self._serialize.url("dns_zone_id", dns_zone_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -3301,7 +3334,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
             deserialized = self._deserialize('WorkloadNetworkDnsZone', pipeline_response)
@@ -3375,7 +3409,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'dnsZoneId': self._serialize.url("dns_zone_id", dns_zone_id, 'str'),
         }
 
@@ -3406,7 +3440,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -3415,7 +3449,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'dnsZoneId': self._serialize.url("dns_zone_id", dns_zone_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -3438,7 +3472,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
@@ -3510,7 +3545,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'dnsZoneId': self._serialize.url("dns_zone_id", dns_zone_id, 'str'),
         }
 
@@ -3540,7 +3575,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -3549,7 +3584,7 @@ class WorkloadNetworksOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'dnsZoneId': self._serialize.url("dns_zone_id", dns_zone_id, 'str'),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -3567,7 +3602,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
@@ -3628,7 +3664,7 @@ class WorkloadNetworksOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'dnsZoneId': self._serialize.url("dns_zone_id", dns_zone_id, 'str'),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -3669,7 +3705,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -3683,7 +3719,7 @@ class WorkloadNetworksOperations:
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+                    'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -3711,8 +3747,9 @@ class WorkloadNetworksOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -3749,7 +3786,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -3757,7 +3794,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'publicIPId': self._serialize.url("public_ip_id", public_ip_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -3776,7 +3813,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('WorkloadNetworkPublicIP', pipeline_response)
 
@@ -3799,7 +3837,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -3808,7 +3846,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'publicIPId': self._serialize.url("public_ip_id", public_ip_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -3831,7 +3869,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
             deserialized = self._deserialize('WorkloadNetworkPublicIP', pipeline_response)
@@ -3906,7 +3945,7 @@ class WorkloadNetworksOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
             'publicIPId': self._serialize.url("public_ip_id", public_ip_id, 'str'),
         }
 
@@ -3936,7 +3975,7 @@ class WorkloadNetworksOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-05-01"
+        api_version = "2023-03-01"
         accept = "application/json"
 
         # Construct URL
@@ -3945,7 +3984,7 @@ class WorkloadNetworksOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'publicIPId': self._serialize.url("public_ip_id", public_ip_id, 'str'),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -3963,7 +4002,8 @@ class WorkloadNetworksOperations:
 
         if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
@@ -4025,7 +4065,7 @@ class WorkloadNetworksOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'publicIPId': self._serialize.url("public_ip_id", public_ip_id, 'str'),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str', pattern=r'^[-\w\._]+$'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
