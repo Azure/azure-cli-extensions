@@ -6,7 +6,7 @@ upcoming
 ++++++
 * Removed preview tag for some command groups and params (e.g. 'az containerapp job', 'az containerapp env storage', 'az containerapp env workload-profile')
 * 'az containerapp env': --enable-workload-profiles allowed values:true, false
-* 'az containerapp create', 'az containerapp job create': When --environment is provided and environmentId value not existed with --yaml, the value in --environment is used
+* 'az containerapp create', 'az containerapp job create': When --environment is provided and the environmentId value does not exist in --yaml, the value in --environment is used
 
 0.3.37
 ++++++
