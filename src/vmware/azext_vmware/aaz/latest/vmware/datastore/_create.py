@@ -83,7 +83,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.net_app_volumn = AAZStrArg(
-            options=["--volumn-id", "--net-app-volumn"],
+            options=["--volume-id", "--net-app-volumn"],
             arg_group="NetAppVolume",
             help="Azure resource ID of the NetApp volume",
         )

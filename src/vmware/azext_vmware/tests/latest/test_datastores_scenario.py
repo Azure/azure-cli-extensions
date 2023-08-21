@@ -51,4 +51,3 @@ class VmwareDatastoresScenarioTest(ScenarioTest):
 
         # Create a new iSCSI based datastore with --mount-option as ATTACH
         self.cmd('az vmware datastore disk-pool-volume create --name iSCSIDatastore1 --resource-group {rg} --private-cloud {privatecloud} --cluster {cluster} --target-id {target_id} --lun-name lun0 --mount-option ATTACH')
-        

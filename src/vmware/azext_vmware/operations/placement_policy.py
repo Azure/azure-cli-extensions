@@ -21,6 +21,7 @@ class PlacementPolicyVMCreate(_Create):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg, AAZListArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.affinity_type = AAZStrArg(
             options=["--affinity-type"],
@@ -58,6 +59,7 @@ class PlacementPolicyVMUpdate(_Update):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg, AAZListArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.vm_members = AAZListArg(
             options=["--vm-members"],
@@ -104,6 +106,7 @@ class PlacementPolicyVMHostCreate(_Create):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg, AAZListArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.affinity_strength = AAZStrArg(
             options=["--affinity-strength"],
@@ -163,6 +166,7 @@ class PlacementPolicyVMHostUpdate(_Update):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg, AAZListArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.affinity_strength = AAZStrArg(
             options=["--affinity-strength"],
@@ -185,12 +189,12 @@ class PlacementPolicyVMHostUpdate(_Update):
             help="Virtual machine members list",
         )
 
-        host_members = cls._args_schema.vm_host.host_members
+        host_members = args_schema.host_members
         host_members.Element = AAZStrArg(
             nullable=True,
         )
 
-        vm_members = cls._args_schema.vm_host.vm_members
+        vm_members = args_schema.vm_members
         vm_members.Element = AAZStrArg(
             nullable=True,
         )
