@@ -6,48 +6,60 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._configuration_group_schemas_operations import ConfigurationGroupSchemasOperations
-from ._configuration_group_values_operations import ConfigurationGroupValuesOperations
-from ._network_functions_operations import NetworkFunctionsOperations
-from ._components_operations import ComponentsOperations
-from ._network_function_definition_groups_operations import NetworkFunctionDefinitionGroupsOperations
-from ._preview_subscriptions_operations import PreviewSubscriptionsOperations
-from ._network_function_definition_versions_operations import NetworkFunctionDefinitionVersionsOperations
-from ._network_function_ready_k8_s_operations import NetworkFunctionReadyK8SOperations
-from ._network_service_design_groups_operations import NetworkServiceDesignGroupsOperations
-from ._network_service_design_versions_operations import NetworkServiceDesignVersionsOperations
+from ._operations import ConfigurationGroupSchemasOperations
+from ._operations import ConfigurationGroupValuesOperations
+from ._operations import NetworkFunctionsOperations
+from ._operations import ComponentsOperations
+from ._operations import NetworkFunctionDefinitionGroupsOperations
+from ._operations import PreviewSubscriptionsOperations
+from ._operations import NetworkFunctionDefinitionVersionsOperations
+from ._operations import NetworkFunctionReadyK8SOperations
+from ._operations import NetworkServiceDesignGroupsOperations
+from ._operations import NetworkServiceDesignVersionsOperations
 from ._operations import Operations
-from ._proxy_publisher_operations import ProxyPublisherOperations
-from ._proxy_network_function_definition_groups_operations import ProxyNetworkFunctionDefinitionGroupsOperations
-from ._proxy_network_function_definition_versions_operations import ProxyNetworkFunctionDefinitionVersionsOperations
-from ._publishers_operations import PublishersOperations
-from ._artifact_stores_operations import ArtifactStoresOperations
-from ._artifact_manifests_operations import ArtifactManifestsOperations
-from ._proxy_artifact_operations import ProxyArtifactOperations
-from ._hybrid_network_management_client_operations import HybridNetworkManagementClientOperationsMixin
-from ._sites_operations import SitesOperations
-from ._site_network_services_operations import SiteNetworkServicesOperations
+from ._operations import ProxyPublisherOperations
+from ._operations import ProxyNetworkFunctionDefinitionGroupsOperations
+from ._operations import ProxyNetworkFunctionDefinitionVersionsOperations
+from ._operations import ProxyNetworkServiceDesignGroupsOperations
+from ._operations import ProxyNetworkServiceDesignVersionsOperations
+from ._operations import ProxyConfigurationGroupSchemasOperations
+from ._operations import PublishersOperations
+from ._operations import ArtifactStoresOperations
+from ._operations import ArtifactManifestsOperations
+from ._operations import ProxyArtifactOperations
+from ._operations import HybridNetworkManagementClientOperationsMixin
+from ._operations import SitesOperations
+from ._operations import SiteNetworkServicesOperations
+
+from ._patch import __all__ as _patch_all
+from ._patch import *  # pylint: disable=unused-wildcard-import
+from ._patch import patch_sdk as _patch_sdk
 
 __all__ = [
-    'ConfigurationGroupSchemasOperations',
-    'ConfigurationGroupValuesOperations',
-    'NetworkFunctionsOperations',
-    'ComponentsOperations',
-    'NetworkFunctionDefinitionGroupsOperations',
-    'PreviewSubscriptionsOperations',
-    'NetworkFunctionDefinitionVersionsOperations',
-    'NetworkFunctionReadyK8SOperations',
-    'NetworkServiceDesignGroupsOperations',
-    'NetworkServiceDesignVersionsOperations',
-    'Operations',
-    'ProxyPublisherOperations',
-    'ProxyNetworkFunctionDefinitionGroupsOperations',
-    'ProxyNetworkFunctionDefinitionVersionsOperations',
-    'PublishersOperations',
-    'ArtifactStoresOperations',
-    'ArtifactManifestsOperations',
-    'ProxyArtifactOperations',
-    'HybridNetworkManagementClientOperationsMixin',
-    'SitesOperations',
-    'SiteNetworkServicesOperations',
+    "ConfigurationGroupSchemasOperations",
+    "ConfigurationGroupValuesOperations",
+    "NetworkFunctionsOperations",
+    "ComponentsOperations",
+    "NetworkFunctionDefinitionGroupsOperations",
+    "PreviewSubscriptionsOperations",
+    "NetworkFunctionDefinitionVersionsOperations",
+    "NetworkFunctionReadyK8SOperations",
+    "NetworkServiceDesignGroupsOperations",
+    "NetworkServiceDesignVersionsOperations",
+    "Operations",
+    "ProxyPublisherOperations",
+    "ProxyNetworkFunctionDefinitionGroupsOperations",
+    "ProxyNetworkFunctionDefinitionVersionsOperations",
+    "ProxyNetworkServiceDesignGroupsOperations",
+    "ProxyNetworkServiceDesignVersionsOperations",
+    "ProxyConfigurationGroupSchemasOperations",
+    "PublishersOperations",
+    "ArtifactStoresOperations",
+    "ArtifactManifestsOperations",
+    "ProxyArtifactOperations",
+    "HybridNetworkManagementClientOperationsMixin",
+    "SitesOperations",
+    "SiteNetworkServicesOperations",
 ]
+__all__.extend([p for p in _patch_all if p not in __all__])
+_patch_sdk()

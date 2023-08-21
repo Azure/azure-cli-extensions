@@ -7,24 +7,49 @@
 # --------------------------------------------------------------------------
 
 from copy import deepcopy
-from typing import TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 
-from msrest import Deserializer, Serializer
-
+from azure.core.rest import HttpRequest, HttpResponse
 from azure.mgmt.core import ARMPipelineClient
 
-from . import models
+from . import models as _models
 from ._configuration import HybridNetworkManagementClientConfiguration
-from .operations import ArtifactManifestsOperations, ArtifactStoresOperations, ComponentsOperations, ConfigurationGroupSchemasOperations, ConfigurationGroupValuesOperations, HybridNetworkManagementClientOperationsMixin, NetworkFunctionDefinitionGroupsOperations, NetworkFunctionDefinitionVersionsOperations, NetworkFunctionReadyK8SOperations, NetworkFunctionsOperations, NetworkServiceDesignGroupsOperations, NetworkServiceDesignVersionsOperations, Operations, PreviewSubscriptionsOperations, ProxyArtifactOperations, ProxyNetworkFunctionDefinitionGroupsOperations, ProxyNetworkFunctionDefinitionVersionsOperations, ProxyPublisherOperations, PublishersOperations, SiteNetworkServicesOperations, SitesOperations
+from ._serialization import Deserializer, Serializer
+from .operations import (
+    ArtifactManifestsOperations,
+    ArtifactStoresOperations,
+    ComponentsOperations,
+    ConfigurationGroupSchemasOperations,
+    ConfigurationGroupValuesOperations,
+    HybridNetworkManagementClientOperationsMixin,
+    NetworkFunctionDefinitionGroupsOperations,
+    NetworkFunctionDefinitionVersionsOperations,
+    NetworkFunctionReadyK8SOperations,
+    NetworkFunctionsOperations,
+    NetworkServiceDesignGroupsOperations,
+    NetworkServiceDesignVersionsOperations,
+    Operations,
+    PreviewSubscriptionsOperations,
+    ProxyArtifactOperations,
+    ProxyConfigurationGroupSchemasOperations,
+    ProxyNetworkFunctionDefinitionGroupsOperations,
+    ProxyNetworkFunctionDefinitionVersionsOperations,
+    ProxyNetworkServiceDesignGroupsOperations,
+    ProxyNetworkServiceDesignVersionsOperations,
+    ProxyPublisherOperations,
+    PublishersOperations,
+    SiteNetworkServicesOperations,
+    SitesOperations,
+)
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any
-
     from azure.core.credentials import TokenCredential
-    from azure.core.rest import HttpRequest, HttpResponse
 
-class HybridNetworkManagementClient(HybridNetworkManagementClientOperationsMixin):    # pylint: disable=too-many-instance-attributes
+
+class HybridNetworkManagementClient(
+    HybridNetworkManagementClientOperationsMixin
+):  # pylint: disable=client-accepts-api-version-keyword,too-many-instance-attributes
     """The definitions in this swagger specification will be used to manage the Hybrid Network
     resources.
 
@@ -69,6 +94,16 @@ class HybridNetworkManagementClient(HybridNetworkManagementClientOperationsMixin
      ProxyNetworkFunctionDefinitionVersionsOperations operations
     :vartype proxy_network_function_definition_versions:
      Microsoft.HybridNetwork.operations.ProxyNetworkFunctionDefinitionVersionsOperations
+    :ivar proxy_network_service_design_groups: ProxyNetworkServiceDesignGroupsOperations operations
+    :vartype proxy_network_service_design_groups:
+     Microsoft.HybridNetwork.operations.ProxyNetworkServiceDesignGroupsOperations
+    :ivar proxy_network_service_design_versions: ProxyNetworkServiceDesignVersionsOperations
+     operations
+    :vartype proxy_network_service_design_versions:
+     Microsoft.HybridNetwork.operations.ProxyNetworkServiceDesignVersionsOperations
+    :ivar proxy_configuration_group_schemas: ProxyConfigurationGroupSchemasOperations operations
+    :vartype proxy_configuration_group_schemas:
+     Microsoft.HybridNetwork.operations.ProxyConfigurationGroupSchemasOperations
     :ivar publishers: PublishersOperations operations
     :vartype publishers: Microsoft.HybridNetwork.operations.PublishersOperations
     :ivar artifact_stores: ArtifactStoresOperations operations
@@ -82,14 +117,14 @@ class HybridNetworkManagementClient(HybridNetworkManagementClientOperationsMixin
     :ivar site_network_services: SiteNetworkServicesOperations operations
     :vartype site_network_services:
      Microsoft.HybridNetwork.operations.SiteNetworkServicesOperations
-    :param credential: Credential needed for the client to connect to Azure.
-    :type credential: ~azure.core.credentials.TokenCredential
-    :param subscription_id: The ID of the target subscription.
+    :param subscription_id: The ID of the target subscription. Required.
     :type subscription_id: str
-    :param base_url: Service URL. Default value is 'https://management.azure.com'.
-    :type base_url: str
-    :keyword api_version: Api Version. The default value is "2023-04-01-preview". Note that
-     overriding this default value may result in unsupported behavior.
+    :param credential: Credential needed for the client to connect to Azure. Required.
+    :type credential: ~azure.core.credentials.TokenCredential
+    :keyword endpoint: Service URL. Default value is "https://management.azure.com".
+    :paramtype endpoint: str
+    :keyword api_version: Api Version. Default value is "2023-04-01-preview". Note that overriding
+     this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
      Retry-After header is present.
@@ -97,56 +132,88 @@ class HybridNetworkManagementClient(HybridNetworkManagementClientOperationsMixin
 
     def __init__(
         self,
-        credential,  # type: "TokenCredential"
-        subscription_id,  # type: str
-        base_url="https://management.azure.com",  # type: str
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> None
-        self._config = HybridNetworkManagementClientConfiguration(credential=credential, subscription_id=subscription_id, **kwargs)
-        self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        subscription_id: str,
+        credential: "TokenCredential",
+        *,
+        endpoint: str = "https://management.azure.com",
+        **kwargs: Any
+    ) -> None:
+        self._config = HybridNetworkManagementClientConfiguration(
+            subscription_id=subscription_id, credential=credential, **kwargs
+        )
+        self._client: ARMPipelineClient = ARMPipelineClient(base_url=endpoint, config=self._config, **kwargs)
 
-        client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
+        client_models = {k: v for k, v in _models._models.__dict__.items() if isinstance(v, type)}
+        client_models.update({k: v for k, v in _models.__dict__.items() if isinstance(v, type)})
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
-        self.configuration_group_schemas = ConfigurationGroupSchemasOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.configuration_group_values = ConfigurationGroupValuesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.network_functions = NetworkFunctionsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.configuration_group_schemas = ConfigurationGroupSchemasOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.configuration_group_values = ConfigurationGroupValuesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.network_functions = NetworkFunctionsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
         self.components = ComponentsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.network_function_definition_groups = NetworkFunctionDefinitionGroupsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.preview_subscriptions = PreviewSubscriptionsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.network_function_definition_versions = NetworkFunctionDefinitionVersionsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.network_function_ready_k8_s = NetworkFunctionReadyK8SOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.network_service_design_groups = NetworkServiceDesignGroupsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.network_service_design_versions = NetworkServiceDesignVersionsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.network_function_definition_groups = NetworkFunctionDefinitionGroupsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.preview_subscriptions = PreviewSubscriptionsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.network_function_definition_versions = NetworkFunctionDefinitionVersionsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.network_function_ready_k8_s = NetworkFunctionReadyK8SOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.network_service_design_groups = NetworkServiceDesignGroupsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.network_service_design_versions = NetworkServiceDesignVersionsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
         self.operations = Operations(self._client, self._config, self._serialize, self._deserialize)
         self.proxy_publisher = ProxyPublisherOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.proxy_network_function_definition_groups = ProxyNetworkFunctionDefinitionGroupsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.proxy_network_function_definition_versions = ProxyNetworkFunctionDefinitionVersionsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.proxy_network_function_definition_groups = ProxyNetworkFunctionDefinitionGroupsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.proxy_network_function_definition_versions = ProxyNetworkFunctionDefinitionVersionsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.proxy_network_service_design_groups = ProxyNetworkServiceDesignGroupsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.proxy_network_service_design_versions = ProxyNetworkServiceDesignVersionsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.proxy_configuration_group_schemas = ProxyConfigurationGroupSchemasOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
         self.publishers = PublishersOperations(self._client, self._config, self._serialize, self._deserialize)
         self.artifact_stores = ArtifactStoresOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.artifact_manifests = ArtifactManifestsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.artifact_manifests = ArtifactManifestsOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
         self.proxy_artifact = ProxyArtifactOperations(self._client, self._config, self._serialize, self._deserialize)
         self.sites = SitesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.site_network_services = SiteNetworkServicesOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.site_network_services = SiteNetworkServicesOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
 
-
-    def _send_request(
-        self,
-        request,  # type: HttpRequest
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> HttpResponse
+    def send_request(self, request: HttpRequest, **kwargs: Any) -> HttpResponse:
         """Runs the network request through the client's chained policies.
 
         >>> from azure.core.rest import HttpRequest
         >>> request = HttpRequest("GET", "https://www.example.org/")
         <HttpRequest [GET], url: 'https://www.example.org/'>
-        >>> response = client._send_request(request)
+        >>> response = client.send_request(request)
         <HttpResponse: 200 OK>
 
-        For more information on this code flow, see https://aka.ms/azsdk/python/protocol/quickstart
+        For more information on this code flow, see https://aka.ms/azsdk/dpcodegen/python/send_request
 
         :param request: The network request you want to make. Required.
         :type request: ~azure.core.rest.HttpRequest
@@ -159,15 +226,12 @@ class HybridNetworkManagementClient(HybridNetworkManagementClientOperationsMixin
         request_copy.url = self._client.format_url(request_copy.url)
         return self._client.send_request(request_copy, **kwargs)
 
-    def close(self):
-        # type: () -> None
+    def close(self) -> None:
         self._client.close()
 
-    def __enter__(self):
-        # type: () -> HybridNetworkManagementClient
+    def __enter__(self) -> "HybridNetworkManagementClient":
         self._client.__enter__()
         return self
 
-    def __exit__(self, *exc_details):
-        # type: (Any) -> None
+    def __exit__(self, *exc_details: Any) -> None:
         self._client.__exit__(*exc_details)

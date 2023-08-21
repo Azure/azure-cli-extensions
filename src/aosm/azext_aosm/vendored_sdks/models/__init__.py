@@ -6,479 +6,372 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-try:
-    from ._models_py3 import ArcConnectedK8SNetworkFunctionReadyK8S
-    from ._models_py3 import ArmResourceDefinitionResourceElementTemplate
-    from ._models_py3 import ArmResourceDefinitionResourceElementTemplateDetails
-    from ._models_py3 import ArmTemplateApplicationOverview
-    from ._models_py3 import ArmTemplateArtifactProfile
-    from ._models_py3 import ArmTemplateMappingRuleProfile
-    from ._models_py3 import ArtifactAccessCredential
-    from ._models_py3 import ArtifactChangeState
-    from ._models_py3 import ArtifactChangeStateProperties
-    from ._models_py3 import ArtifactManifest
-    from ._models_py3 import ArtifactManifestListResult
-    from ._models_py3 import ArtifactManifestUpdateState
-    from ._models_py3 import ArtifactProfile
-    from ._models_py3 import ArtifactStore
-    from ._models_py3 import ArtifactStoreListResult
-    from ._models_py3 import ArtifactStorePropertiesFormatManagedResourceGroupConfiguration
-    from ._models_py3 import AzureArcK8SClusterNFVIDetails
-    from ._models_py3 import AzureArcKubernetesArtifactProfile
-    from ._models_py3 import AzureArcKubernetesDeployMappingRuleProfile
-    from ._models_py3 import AzureArcKubernetesHelmApplication
-    from ._models_py3 import AzureArcKubernetesNetworkFunctionApplication
-    from ._models_py3 import AzureArcKubernetesNetworkFunctionTemplate
-    from ._models_py3 import AzureContainerRegistryScopedTokenCredential
-    from ._models_py3 import AzureCoreArmTemplateArtifactProfile
-    from ._models_py3 import AzureCoreArmTemplateDeployMappingRuleProfile
-    from ._models_py3 import AzureCoreDelegatedImageArtifactProfile
-    from ._models_py3 import AzureCoreDelegatedImageDeployMappingRuleProfile
-    from ._models_py3 import AzureCoreDelegatedNetworkFunctionApplication
-    from ._models_py3 import AzureCoreDelegatedNetworkFunctionImageApplication
-    from ._models_py3 import AzureCoreDelegatedNetworkFunctionTemplate
-    from ._models_py3 import AzureCoreNFVIDetails
-    from ._models_py3 import AzureCoreNetworkFunctionApplication
-    from ._models_py3 import AzureCoreNetworkFunctionArmTemplateApplication
-    from ._models_py3 import AzureCoreNetworkFunctionTemplate
-    from ._models_py3 import AzureCoreNetworkFunctionVhdApplication
-    from ._models_py3 import AzureCoreVhdImageArtifactProfile
-    from ._models_py3 import AzureCoreVhdImageDeployMappingRuleProfile
-    from ._models_py3 import AzureKubernetesServiceNetworkFunctionReadyK8S
-    from ._models_py3 import AzureOperatorNexusArmTemplateArtifactProfile
-    from ._models_py3 import AzureOperatorNexusArmTemplateDeployMappingRuleProfile
-    from ._models_py3 import AzureOperatorNexusClusterNFVIDetails
-    from ._models_py3 import AzureOperatorNexusImageArtifactProfile
-    from ._models_py3 import AzureOperatorNexusImageDeployMappingRuleProfile
-    from ._models_py3 import AzureOperatorNexusNetworkFunctionApplication
-    from ._models_py3 import AzureOperatorNexusNetworkFunctionArmTemplateApplication
-    from ._models_py3 import AzureOperatorNexusNetworkFunctionImageApplication
-    from ._models_py3 import AzureOperatorNexusNetworkFunctionTemplate
-    from ._models_py3 import AzureStorageAccountContainerCredential
-    from ._models_py3 import AzureStorageAccountCredential
-    from ._models_py3 import Component
-    from ._models_py3 import ComponentListResult
-    from ._models_py3 import ConfigurationDefinitionResourceElementTemplate
-    from ._models_py3 import ConfigurationDefinitionResourceElementTemplateDetails
-    from ._models_py3 import ConfigurationGroupSchema
-    from ._models_py3 import ConfigurationGroupSchemaListResult
-    from ._models_py3 import ConfigurationGroupSchemaVersionUpdateState
-    from ._models_py3 import ConfigurationGroupValue
-    from ._models_py3 import ConfigurationGroupValueListResult
-    from ._models_py3 import ContainerizedNetworkFunctionDefinitionVersion
-    from ._models_py3 import ContainerizedNetworkFunctionTemplate
-    from ._models_py3 import CustomLocationResourceId
-    from ._models_py3 import DelegatedNetworkFunctionDefinitionVersion
-    from ._models_py3 import DelegatedNetworkFunctionTemplate
-    from ._models_py3 import DependsOnProfile
-    from ._models_py3 import ErrorAdditionalInfo
-    from ._models_py3 import ErrorDetail
-    from ._models_py3 import ErrorResponse
-    from ._models_py3 import ExecuteRequestParameters
-    from ._models_py3 import HelmArtifactProfile
-    from ._models_py3 import HelmMappingRuleProfile
-    from ._models_py3 import HelmPackageApplicationOverview
-    from ._models_py3 import HybridAKSNetworkFunctionReadyK8S
-    from ._models_py3 import ImageArtifactProfile
-    from ._models_py3 import ImageFileApplicationOverview
-    from ._models_py3 import ImageMappingRuleProfile
-    from ._models_py3 import ManagedResourceGroupConfiguration
-    from ._models_py3 import ManagedServiceIdentity
-    from ._models_py3 import ManifestArtifactFormat
-    from ._models_py3 import MappingRuleProfile
-    from ._models_py3 import NFVIs
-    from ._models_py3 import NSDArtifactProfile
-    from ._models_py3 import NetworkFunction
-    from ._models_py3 import NetworkFunctionApplication
-    from ._models_py3 import NetworkFunctionDefinitionApplicationOverview
-    from ._models_py3 import NetworkFunctionDefinitionGroup
-    from ._models_py3 import NetworkFunctionDefinitionGroupListResult
-    from ._models_py3 import NetworkFunctionDefinitionGroupOverview
-    from ._models_py3 import NetworkFunctionDefinitionGroupOverviewListResult
-    from ._models_py3 import NetworkFunctionDefinitionResourceElementTemplateDetails
-    from ._models_py3 import NetworkFunctionDefinitionVersion
-    from ._models_py3 import NetworkFunctionDefinitionVersionListResult
-    from ._models_py3 import NetworkFunctionDefinitionVersionOverview
-    from ._models_py3 import NetworkFunctionDefinitionVersionOverviewListResult
-    from ._models_py3 import NetworkFunctionDefinitionVersionPropertiesFormat
-    from ._models_py3 import NetworkFunctionDefinitionVersionUpdateState
-    from ._models_py3 import NetworkFunctionListResult
-    from ._models_py3 import NetworkFunctionReadyK8S
-    from ._models_py3 import NetworkFunctionReadyK8SListResult
-    from ._models_py3 import NetworkFunctionReadyK8SPropertiesFormat
-    from ._models_py3 import NetworkServiceDesignGroup
-    from ._models_py3 import NetworkServiceDesignGroupListResult
-    from ._models_py3 import NetworkServiceDesignVersion
-    from ._models_py3 import NetworkServiceDesignVersionListResult
-    from ._models_py3 import NetworkServiceDesignVersionUpdateState
-    from ._models_py3 import NfviDetails
-    from ._models_py3 import Operation
-    from ._models_py3 import OperationDisplay
-    from ._models_py3 import OperationList
-    from ._models_py3 import PreviewSubscription
-    from ._models_py3 import PreviewSubscriptionsList
-    from ._models_py3 import ProxyArtifactListOverview
-    from ._models_py3 import ProxyArtifactOverview
-    from ._models_py3 import ProxyArtifactOverviewListResult
-    from ._models_py3 import ProxyArtifactOverviewPropertiesValue
-    from ._models_py3 import ProxyArtifactVersionsListOverview
-    from ._models_py3 import ProxyArtifactVersionsOverviewListResult
-    from ._models_py3 import ProxyPublisherOverview
-    from ._models_py3 import ProxyPublisherOverviewListResult
-    from ._models_py3 import ProxyResource
-    from ._models_py3 import Publisher
-    from ._models_py3 import PublisherListResult
-    from ._models_py3 import ReferencedResource
-    from ._models_py3 import RequestMetadata
-    from ._models_py3 import Resource
-    from ._models_py3 import ResourceElementTemplate
-    from ._models_py3 import Site
-    from ._models_py3 import SiteListResult
-    from ._models_py3 import SiteNetworkService
-    from ._models_py3 import SiteNetworkServiceListResult
-    from ._models_py3 import SystemData
-    from ._models_py3 import TagsObject
-    from ._models_py3 import TrackedResource
-    from ._models_py3 import UserAssignedIdentity
-    from ._models_py3 import VhdImageArtifactProfile
-    from ._models_py3 import VhdImageFileApplicationOverview
-    from ._models_py3 import VhdImageMappingRuleProfile
-    from ._models_py3 import VirtualNetworkFunctionDefinitionVersion
-    from ._models_py3 import VirtualNetworkFunctionTemplate
-except (SyntaxError, ImportError):
-    from ._models import ArcConnectedK8SNetworkFunctionReadyK8S  # type: ignore
-    from ._models import ArmResourceDefinitionResourceElementTemplate  # type: ignore
-    from ._models import ArmResourceDefinitionResourceElementTemplateDetails  # type: ignore
-    from ._models import ArmTemplateApplicationOverview  # type: ignore
-    from ._models import ArmTemplateArtifactProfile  # type: ignore
-    from ._models import ArmTemplateMappingRuleProfile  # type: ignore
-    from ._models import ArtifactAccessCredential  # type: ignore
-    from ._models import ArtifactChangeState  # type: ignore
-    from ._models import ArtifactChangeStateProperties  # type: ignore
-    from ._models import ArtifactManifest  # type: ignore
-    from ._models import ArtifactManifestListResult  # type: ignore
-    from ._models import ArtifactManifestUpdateState  # type: ignore
-    from ._models import ArtifactProfile  # type: ignore
-    from ._models import ArtifactStore  # type: ignore
-    from ._models import ArtifactStoreListResult  # type: ignore
-    from ._models import ArtifactStorePropertiesFormatManagedResourceGroupConfiguration  # type: ignore
-    from ._models import AzureArcK8SClusterNFVIDetails  # type: ignore
-    from ._models import AzureArcKubernetesArtifactProfile  # type: ignore
-    from ._models import AzureArcKubernetesDeployMappingRuleProfile  # type: ignore
-    from ._models import AzureArcKubernetesHelmApplication  # type: ignore
-    from ._models import AzureArcKubernetesNetworkFunctionApplication  # type: ignore
-    from ._models import AzureArcKubernetesNetworkFunctionTemplate  # type: ignore
-    from ._models import AzureContainerRegistryScopedTokenCredential  # type: ignore
-    from ._models import AzureCoreArmTemplateArtifactProfile  # type: ignore
-    from ._models import AzureCoreArmTemplateDeployMappingRuleProfile  # type: ignore
-    from ._models import AzureCoreDelegatedImageArtifactProfile  # type: ignore
-    from ._models import AzureCoreDelegatedImageDeployMappingRuleProfile  # type: ignore
-    from ._models import AzureCoreDelegatedNetworkFunctionApplication  # type: ignore
-    from ._models import AzureCoreDelegatedNetworkFunctionImageApplication  # type: ignore
-    from ._models import AzureCoreDelegatedNetworkFunctionTemplate  # type: ignore
-    from ._models import AzureCoreNFVIDetails  # type: ignore
-    from ._models import AzureCoreNetworkFunctionApplication  # type: ignore
-    from ._models import AzureCoreNetworkFunctionArmTemplateApplication  # type: ignore
-    from ._models import AzureCoreNetworkFunctionTemplate  # type: ignore
-    from ._models import AzureCoreNetworkFunctionVhdApplication  # type: ignore
-    from ._models import AzureCoreVhdImageArtifactProfile  # type: ignore
-    from ._models import AzureCoreVhdImageDeployMappingRuleProfile  # type: ignore
-    from ._models import AzureKubernetesServiceNetworkFunctionReadyK8S  # type: ignore
-    from ._models import AzureOperatorNexusArmTemplateArtifactProfile  # type: ignore
-    from ._models import AzureOperatorNexusArmTemplateDeployMappingRuleProfile  # type: ignore
-    from ._models import AzureOperatorNexusClusterNFVIDetails  # type: ignore
-    from ._models import AzureOperatorNexusImageArtifactProfile  # type: ignore
-    from ._models import AzureOperatorNexusImageDeployMappingRuleProfile  # type: ignore
-    from ._models import AzureOperatorNexusNetworkFunctionApplication  # type: ignore
-    from ._models import AzureOperatorNexusNetworkFunctionArmTemplateApplication  # type: ignore
-    from ._models import AzureOperatorNexusNetworkFunctionImageApplication  # type: ignore
-    from ._models import AzureOperatorNexusNetworkFunctionTemplate  # type: ignore
-    from ._models import AzureStorageAccountContainerCredential  # type: ignore
-    from ._models import AzureStorageAccountCredential  # type: ignore
-    from ._models import Component  # type: ignore
-    from ._models import ComponentListResult  # type: ignore
-    from ._models import ConfigurationDefinitionResourceElementTemplate  # type: ignore
-    from ._models import ConfigurationDefinitionResourceElementTemplateDetails  # type: ignore
-    from ._models import ConfigurationGroupSchema  # type: ignore
-    from ._models import ConfigurationGroupSchemaListResult  # type: ignore
-    from ._models import ConfigurationGroupSchemaVersionUpdateState  # type: ignore
-    from ._models import ConfigurationGroupValue  # type: ignore
-    from ._models import ConfigurationGroupValueListResult  # type: ignore
-    from ._models import ContainerizedNetworkFunctionDefinitionVersion  # type: ignore
-    from ._models import ContainerizedNetworkFunctionTemplate  # type: ignore
-    from ._models import CustomLocationResourceId  # type: ignore
-    from ._models import DelegatedNetworkFunctionDefinitionVersion  # type: ignore
-    from ._models import DelegatedNetworkFunctionTemplate  # type: ignore
-    from ._models import DependsOnProfile  # type: ignore
-    from ._models import ErrorAdditionalInfo  # type: ignore
-    from ._models import ErrorDetail  # type: ignore
-    from ._models import ErrorResponse  # type: ignore
-    from ._models import ExecuteRequestParameters  # type: ignore
-    from ._models import HelmArtifactProfile  # type: ignore
-    from ._models import HelmMappingRuleProfile  # type: ignore
-    from ._models import HelmPackageApplicationOverview  # type: ignore
-    from ._models import HybridAKSNetworkFunctionReadyK8S  # type: ignore
-    from ._models import ImageArtifactProfile  # type: ignore
-    from ._models import ImageFileApplicationOverview  # type: ignore
-    from ._models import ImageMappingRuleProfile  # type: ignore
-    from ._models import ManagedResourceGroupConfiguration  # type: ignore
-    from ._models import ManagedServiceIdentity  # type: ignore
-    from ._models import ManifestArtifactFormat  # type: ignore
-    from ._models import MappingRuleProfile  # type: ignore
-    from ._models import NFVIs  # type: ignore
-    from ._models import NSDArtifactProfile  # type: ignore
-    from ._models import NetworkFunction  # type: ignore
-    from ._models import NetworkFunctionApplication  # type: ignore
-    from ._models import NetworkFunctionDefinitionApplicationOverview  # type: ignore
-    from ._models import NetworkFunctionDefinitionGroup  # type: ignore
-    from ._models import NetworkFunctionDefinitionGroupListResult  # type: ignore
-    from ._models import NetworkFunctionDefinitionGroupOverview  # type: ignore
-    from ._models import NetworkFunctionDefinitionGroupOverviewListResult  # type: ignore
-    from ._models import NetworkFunctionDefinitionResourceElementTemplateDetails  # type: ignore
-    from ._models import NetworkFunctionDefinitionVersion  # type: ignore
-    from ._models import NetworkFunctionDefinitionVersionListResult  # type: ignore
-    from ._models import NetworkFunctionDefinitionVersionOverview  # type: ignore
-    from ._models import NetworkFunctionDefinitionVersionOverviewListResult  # type: ignore
-    from ._models import NetworkFunctionDefinitionVersionPropertiesFormat  # type: ignore
-    from ._models import NetworkFunctionDefinitionVersionUpdateState  # type: ignore
-    from ._models import NetworkFunctionListResult  # type: ignore
-    from ._models import NetworkFunctionReadyK8S  # type: ignore
-    from ._models import NetworkFunctionReadyK8SListResult  # type: ignore
-    from ._models import NetworkFunctionReadyK8SPropertiesFormat  # type: ignore
-    from ._models import NetworkServiceDesignGroup  # type: ignore
-    from ._models import NetworkServiceDesignGroupListResult  # type: ignore
-    from ._models import NetworkServiceDesignVersion  # type: ignore
-    from ._models import NetworkServiceDesignVersionListResult  # type: ignore
-    from ._models import NetworkServiceDesignVersionUpdateState  # type: ignore
-    from ._models import NfviDetails  # type: ignore
-    from ._models import Operation  # type: ignore
-    from ._models import OperationDisplay  # type: ignore
-    from ._models import OperationList  # type: ignore
-    from ._models import PreviewSubscription  # type: ignore
-    from ._models import PreviewSubscriptionsList  # type: ignore
-    from ._models import ProxyArtifactListOverview  # type: ignore
-    from ._models import ProxyArtifactOverview  # type: ignore
-    from ._models import ProxyArtifactOverviewListResult  # type: ignore
-    from ._models import ProxyArtifactOverviewPropertiesValue  # type: ignore
-    from ._models import ProxyArtifactVersionsListOverview  # type: ignore
-    from ._models import ProxyArtifactVersionsOverviewListResult  # type: ignore
-    from ._models import ProxyPublisherOverview  # type: ignore
-    from ._models import ProxyPublisherOverviewListResult  # type: ignore
-    from ._models import ProxyResource  # type: ignore
-    from ._models import Publisher  # type: ignore
-    from ._models import PublisherListResult  # type: ignore
-    from ._models import ReferencedResource  # type: ignore
-    from ._models import RequestMetadata  # type: ignore
-    from ._models import Resource  # type: ignore
-    from ._models import ResourceElementTemplate  # type: ignore
-    from ._models import Site  # type: ignore
-    from ._models import SiteListResult  # type: ignore
-    from ._models import SiteNetworkService  # type: ignore
-    from ._models import SiteNetworkServiceListResult  # type: ignore
-    from ._models import SystemData  # type: ignore
-    from ._models import TagsObject  # type: ignore
-    from ._models import TrackedResource  # type: ignore
-    from ._models import UserAssignedIdentity  # type: ignore
-    from ._models import VhdImageArtifactProfile  # type: ignore
-    from ._models import VhdImageFileApplicationOverview  # type: ignore
-    from ._models import VhdImageMappingRuleProfile  # type: ignore
-    from ._models import VirtualNetworkFunctionDefinitionVersion  # type: ignore
-    from ._models import VirtualNetworkFunctionTemplate  # type: ignore
+from ._models import ArcConnectedK8SNetworkFunctionReadyK8S
+from ._models import ArmResourceDefinitionResourceElementTemplate
+from ._models import ArmResourceDefinitionResourceElementTemplateDetails
+from ._models import ArmTemplateApplicationOverview
+from ._models import ArmTemplateArtifactProfile
+from ._models import ArmTemplateMappingRuleProfile
+from ._models import ArtifactAccessCredential
+from ._models import ArtifactChangeState
+from ._models import ArtifactChangeStateProperties
+from ._models import ArtifactManifest
+from ._models import ArtifactManifestPropertiesFormat
+from ._models import ArtifactManifestUpdateState
+from ._models import ArtifactProfile
+from ._models import ArtifactStore
+from ._models import ArtifactStorePropertiesFormat
+from ._models import ArtifactStorePropertiesFormatManagedResourceGroupConfiguration
+from ._models import AzureArcK8SClusterNFVIDetails
+from ._models import AzureArcKubernetesArtifactProfile
+from ._models import AzureArcKubernetesDeployMappingRuleProfile
+from ._models import AzureArcKubernetesHelmApplication
+from ._models import AzureArcKubernetesNetworkFunctionApplication
+from ._models import AzureArcKubernetesNetworkFunctionTemplate
+from ._models import AzureContainerRegistryScopedTokenCredential
+from ._models import AzureCoreArmTemplateArtifactProfile
+from ._models import AzureCoreArmTemplateDeployMappingRuleProfile
+from ._models import AzureCoreDelegatedImageArtifactProfile
+from ._models import AzureCoreDelegatedImageDeployMappingRuleProfile
+from ._models import AzureCoreDelegatedNetworkFunctionApplication
+from ._models import AzureCoreDelegatedNetworkFunctionImageApplication
+from ._models import AzureCoreDelegatedNetworkFunctionTemplate
+from ._models import AzureCoreNFVIDetails
+from ._models import AzureCoreNetworkFunctionApplication
+from ._models import AzureCoreNetworkFunctionArmTemplateApplication
+from ._models import AzureCoreNetworkFunctionTemplate
+from ._models import AzureCoreNetworkFunctionVhdApplication
+from ._models import AzureCoreVhdImageArtifactProfile
+from ._models import AzureCoreVhdImageDeployMappingRuleProfile
+from ._models import AzureKubernetesServiceNetworkFunctionReadyK8S
+from ._models import AzureOperatorNexusArmTemplateArtifactProfile
+from ._models import AzureOperatorNexusArmTemplateDeployMappingRuleProfile
+from ._models import AzureOperatorNexusClusterNFVIDetails
+from ._models import AzureOperatorNexusImageArtifactProfile
+from ._models import AzureOperatorNexusImageDeployMappingRuleProfile
+from ._models import AzureOperatorNexusNetworkFunctionApplication
+from ._models import AzureOperatorNexusNetworkFunctionArmTemplateApplication
+from ._models import AzureOperatorNexusNetworkFunctionImageApplication
+from ._models import AzureOperatorNexusNetworkFunctionTemplate
+from ._models import AzureStorageAccountContainerCredential
+from ._models import AzureStorageAccountCredential
+from ._models import Component
+from ._models import ComponentProperties
+from ._models import ConfigurationDefinitionResourceElementTemplate
+from ._models import ConfigurationDefinitionResourceElementTemplateDetails
+from ._models import ConfigurationGroupSchema
+from ._models import ConfigurationGroupSchemaOverviewPropertiesFormat
+from ._models import ConfigurationGroupSchemaPropertiesFormat
+from ._models import ConfigurationGroupSchemaReferences
+from ._models import ConfigurationGroupSchemaVersionUpdateState
+from ._models import ConfigurationGroupSchemasOverview
+from ._models import ConfigurationGroupValue
+from ._models import ConfigurationGroupValuePropertiesFormat
+from ._models import ContainerizedNetworkFunctionDefinitionVersionProperties
+from ._models import ContainerizedNetworkFunctionTemplate
+from ._models import CustomLocationResourceId
+from ._models import DaemonSet
+from ._models import DelegatedNetworkFunctionDefinitionVersionProperties
+from ._models import DelegatedNetworkFunctionTemplate
+from ._models import DependsOnProfile
+from ._models import Deployment
+from ._models import DeploymentStatusProperties
+from ._models import ErrorAdditionalInfo
+from ._models import ErrorDetail
+from ._models import ErrorResponse
+from ._models import ExecuteRequestParameters
+from ._models import FindConfigurationGroupSchemaParameters
+from ._models import HelmArtifactProfile
+from ._models import HelmMappingRuleProfile
+from ._models import HelmPackageApplicationOverview
+from ._models import HybridAKSNetworkFunctionReadyK8S
+from ._models import ImageArtifactProfile
+from ._models import ImageFileApplicationOverview
+from ._models import ImageMappingRuleProfile
+from ._models import ManagedResourceGroupConfiguration
+from ._models import ManagedServiceIdentity
+from ._models import ManifestArtifactFormat
+from ._models import MappingRuleProfile
+from ._models import NFVIs
+from ._models import NSDArtifactProfile
+from ._models import NetworkFunction
+from ._models import NetworkFunctionApplication
+from ._models import NetworkFunctionDefinitionApplicationOverview
+from ._models import NetworkFunctionDefinitionGroup
+from ._models import NetworkFunctionDefinitionGroupOverview
+from ._models import NetworkFunctionDefinitionGroupOverviewPropertiesFormat
+from ._models import NetworkFunctionDefinitionGroupPropertiesFormat
+from ._models import NetworkFunctionDefinitionResourceElementTemplate
+from ._models import NetworkFunctionDefinitionVersion
+from ._models import NetworkFunctionDefinitionVersionOverview
+from ._models import NetworkFunctionDefinitionVersionOverviewPropertiesFormat
+from ._models import NetworkFunctionDefinitionVersionPropertiesFormat
+from ._models import NetworkFunctionDefinitionVersionUpdateState
+from ._models import NetworkFunctionPropertiesFormat
+from ._models import NetworkFunctionReadyK8S
+from ._models import NetworkFunctionReadyK8SPropertiesFormat
+from ._models import NetworkServiceDesignGroup
+from ._models import NetworkServiceDesignGroupOverview
+from ._models import NetworkServiceDesignGroupOverviewPropertiesFormat
+from ._models import NetworkServiceDesignGroupPropertiesFormat
+from ._models import NetworkServiceDesignVersion
+from ._models import NetworkServiceDesignVersionOverview
+from ._models import NetworkServiceDesignVersionOverviewPropertiesFormat
+from ._models import NetworkServiceDesignVersionPropertiesFormat
+from ._models import NetworkServiceDesignVersionUpdateState
+from ._models import NfviDetails
+from ._models import Operation
+from ._models import OperationDisplay
+from ._models import Pod
+from ._models import PodEvent
+from ._models import PreviewSubscription
+from ._models import PreviewSubscriptionPropertiesFormat
+from ._models import ProxyArtifactListOverview
+from ._models import ProxyArtifactOverview
+from ._models import ProxyArtifactOverviewPropertiesFormat
+from ._models import ProxyArtifactOverviewPropertiesValue
+from ._models import ProxyArtifactVersionsListOverview
+from ._models import ProxyPublisherFindConfigurationGroupSchema
+from ._models import ProxyPublisherOverview
+from ._models import ProxyResource
+from ._models import Publisher
+from ._models import PublisherPropertiesFormat
+from ._models import ReferencedResource
+from ._models import ReplicaSet
+from ._models import RequestMetadata
+from ._models import Resource
+from ._models import ResourceElementTemplate
+from ._models import Resources
+from ._models import Site
+from ._models import SiteNetworkService
+from ._models import SiteNetworkServicePropertiesFormat
+from ._models import SitePropertiesFormat
+from ._models import StatefulSet
+from ._models import SystemData
+from ._models import TagsObject
+from ._models import TrackedResource
+from ._models import UserAssignedIdentity
+from ._models import VhdImageArtifactProfile
+from ._models import VhdImageFileApplicationOverview
+from ._models import VhdImageMappingRuleProfile
+from ._models import VirtualNetworkFunctionDefinitionVersionProperties
+from ._models import VirtualNetworkFunctionTemplate
 
-from ._hybrid_network_management_client_enums import (
-    ApplicationEnablement,
-    ArtifactManifestState,
-    ArtifactReplicationStrategy,
-    ArtifactState,
-    ArtifactStoreType,
-    ArtifactType,
-    AzureArcKubernetesArtifactType,
-    AzureCoreArtifactType,
-    AzureCoreDelegatedArtifactType,
-    AzureOperatorNexusArtifactType,
-    ClusterType,
-    ConfigurationGenerationType,
-    ContainerizedNetworkFunctionNFVIType,
-    CreatedByType,
-    CredentialType,
-    DelegatedNetworkFunctionNFVIType,
-    HttpMethod,
-    ManagedServiceIdentityType,
-    NFVIType,
-    NetworkFunctionPublisherArtifactType,
-    NetworkFunctionType,
-    ProvisioningState,
-    PublisherScope,
-    TemplateType,
-    Type,
-    VersionState,
-    VirtualNetworkFunctionNFVIType,
-)
+from ._enums import ApplicationEnablement
+from ._enums import ArtifactManifestState
+from ._enums import ArtifactReplicationStrategy
+from ._enums import ArtifactState
+from ._enums import ArtifactStoreType
+from ._enums import ArtifactType
+from ._enums import AzureArcKubernetesArtifactType
+from ._enums import AzureCoreArtifactType
+from ._enums import AzureCoreDelegatedArtifactType
+from ._enums import AzureOperatorNexusArtifactType
+from ._enums import ClusterType
+from ._enums import ConfigurationGenerationType
+from ._enums import ContainerizedNetworkFunctionNFVIType
+from ._enums import CreatedByType
+from ._enums import CredentialType
+from ._enums import DelegatedNetworkFunctionNFVIType
+from ._enums import HttpMethod
+from ._enums import ManagedServiceIdentityType
+from ._enums import NFVIType
+from ._enums import NetworkFunctionPublisherArtifactType
+from ._enums import NetworkFunctionType
+from ._enums import PodEventType
+from ._enums import PodStatus
+from ._enums import ProvisioningState
+from ._enums import PublisherScope
+from ._enums import Status
+from ._enums import TemplateType
+from ._enums import Type
+from ._enums import VersionState
+from ._enums import VirtualNetworkFunctionNFVIType
+from ._patch import __all__ as _patch_all
+from ._patch import *  # pylint: disable=unused-wildcard-import
+from ._patch import patch_sdk as _patch_sdk
 
 __all__ = [
-    'ArcConnectedK8SNetworkFunctionReadyK8S',
-    'ArmResourceDefinitionResourceElementTemplate',
-    'ArmResourceDefinitionResourceElementTemplateDetails',
-    'ArmTemplateApplicationOverview',
-    'ArmTemplateArtifactProfile',
-    'ArmTemplateMappingRuleProfile',
-    'ArtifactAccessCredential',
-    'ArtifactChangeState',
-    'ArtifactChangeStateProperties',
-    'ArtifactManifest',
-    'ArtifactManifestListResult',
-    'ArtifactManifestUpdateState',
-    'ArtifactProfile',
-    'ArtifactStore',
-    'ArtifactStoreListResult',
-    'ArtifactStorePropertiesFormatManagedResourceGroupConfiguration',
-    'AzureArcK8SClusterNFVIDetails',
-    'AzureArcKubernetesArtifactProfile',
-    'AzureArcKubernetesDeployMappingRuleProfile',
-    'AzureArcKubernetesHelmApplication',
-    'AzureArcKubernetesNetworkFunctionApplication',
-    'AzureArcKubernetesNetworkFunctionTemplate',
-    'AzureContainerRegistryScopedTokenCredential',
-    'AzureCoreArmTemplateArtifactProfile',
-    'AzureCoreArmTemplateDeployMappingRuleProfile',
-    'AzureCoreDelegatedImageArtifactProfile',
-    'AzureCoreDelegatedImageDeployMappingRuleProfile',
-    'AzureCoreDelegatedNetworkFunctionApplication',
-    'AzureCoreDelegatedNetworkFunctionImageApplication',
-    'AzureCoreDelegatedNetworkFunctionTemplate',
-    'AzureCoreNFVIDetails',
-    'AzureCoreNetworkFunctionApplication',
-    'AzureCoreNetworkFunctionArmTemplateApplication',
-    'AzureCoreNetworkFunctionTemplate',
-    'AzureCoreNetworkFunctionVhdApplication',
-    'AzureCoreVhdImageArtifactProfile',
-    'AzureCoreVhdImageDeployMappingRuleProfile',
-    'AzureKubernetesServiceNetworkFunctionReadyK8S',
-    'AzureOperatorNexusArmTemplateArtifactProfile',
-    'AzureOperatorNexusArmTemplateDeployMappingRuleProfile',
-    'AzureOperatorNexusClusterNFVIDetails',
-    'AzureOperatorNexusImageArtifactProfile',
-    'AzureOperatorNexusImageDeployMappingRuleProfile',
-    'AzureOperatorNexusNetworkFunctionApplication',
-    'AzureOperatorNexusNetworkFunctionArmTemplateApplication',
-    'AzureOperatorNexusNetworkFunctionImageApplication',
-    'AzureOperatorNexusNetworkFunctionTemplate',
-    'AzureStorageAccountContainerCredential',
-    'AzureStorageAccountCredential',
-    'Component',
-    'ComponentListResult',
-    'ConfigurationDefinitionResourceElementTemplate',
-    'ConfigurationDefinitionResourceElementTemplateDetails',
-    'ConfigurationGroupSchema',
-    'ConfigurationGroupSchemaListResult',
-    'ConfigurationGroupSchemaVersionUpdateState',
-    'ConfigurationGroupValue',
-    'ConfigurationGroupValueListResult',
-    'ContainerizedNetworkFunctionDefinitionVersion',
-    'ContainerizedNetworkFunctionTemplate',
-    'CustomLocationResourceId',
-    'DelegatedNetworkFunctionDefinitionVersion',
-    'DelegatedNetworkFunctionTemplate',
-    'DependsOnProfile',
-    'ErrorAdditionalInfo',
-    'ErrorDetail',
-    'ErrorResponse',
-    'ExecuteRequestParameters',
-    'HelmArtifactProfile',
-    'HelmMappingRuleProfile',
-    'HelmPackageApplicationOverview',
-    'HybridAKSNetworkFunctionReadyK8S',
-    'ImageArtifactProfile',
-    'ImageFileApplicationOverview',
-    'ImageMappingRuleProfile',
-    'ManagedResourceGroupConfiguration',
-    'ManagedServiceIdentity',
-    'ManifestArtifactFormat',
-    'MappingRuleProfile',
-    'NFVIs',
-    'NSDArtifactProfile',
-    'NetworkFunction',
-    'NetworkFunctionApplication',
-    'NetworkFunctionDefinitionApplicationOverview',
-    'NetworkFunctionDefinitionGroup',
-    'NetworkFunctionDefinitionGroupListResult',
-    'NetworkFunctionDefinitionGroupOverview',
-    'NetworkFunctionDefinitionGroupOverviewListResult',
-    'NetworkFunctionDefinitionResourceElementTemplateDetails',
-    'NetworkFunctionDefinitionVersion',
-    'NetworkFunctionDefinitionVersionListResult',
-    'NetworkFunctionDefinitionVersionOverview',
-    'NetworkFunctionDefinitionVersionOverviewListResult',
-    'NetworkFunctionDefinitionVersionPropertiesFormat',
-    'NetworkFunctionDefinitionVersionUpdateState',
-    'NetworkFunctionListResult',
-    'NetworkFunctionReadyK8S',
-    'NetworkFunctionReadyK8SListResult',
-    'NetworkFunctionReadyK8SPropertiesFormat',
-    'NetworkServiceDesignGroup',
-    'NetworkServiceDesignGroupListResult',
-    'NetworkServiceDesignVersion',
-    'NetworkServiceDesignVersionListResult',
-    'NetworkServiceDesignVersionUpdateState',
-    'NfviDetails',
-    'Operation',
-    'OperationDisplay',
-    'OperationList',
-    'PreviewSubscription',
-    'PreviewSubscriptionsList',
-    'ProxyArtifactListOverview',
-    'ProxyArtifactOverview',
-    'ProxyArtifactOverviewListResult',
-    'ProxyArtifactOverviewPropertiesValue',
-    'ProxyArtifactVersionsListOverview',
-    'ProxyArtifactVersionsOverviewListResult',
-    'ProxyPublisherOverview',
-    'ProxyPublisherOverviewListResult',
-    'ProxyResource',
-    'Publisher',
-    'PublisherListResult',
-    'ReferencedResource',
-    'RequestMetadata',
-    'Resource',
-    'ResourceElementTemplate',
-    'Site',
-    'SiteListResult',
-    'SiteNetworkService',
-    'SiteNetworkServiceListResult',
-    'SystemData',
-    'TagsObject',
-    'TrackedResource',
-    'UserAssignedIdentity',
-    'VhdImageArtifactProfile',
-    'VhdImageFileApplicationOverview',
-    'VhdImageMappingRuleProfile',
-    'VirtualNetworkFunctionDefinitionVersion',
-    'VirtualNetworkFunctionTemplate',
-    'ApplicationEnablement',
-    'ArtifactManifestState',
-    'ArtifactReplicationStrategy',
-    'ArtifactState',
-    'ArtifactStoreType',
-    'ArtifactType',
-    'AzureArcKubernetesArtifactType',
-    'AzureCoreArtifactType',
-    'AzureCoreDelegatedArtifactType',
-    'AzureOperatorNexusArtifactType',
-    'ClusterType',
-    'ConfigurationGenerationType',
-    'ContainerizedNetworkFunctionNFVIType',
-    'CreatedByType',
-    'CredentialType',
-    'DelegatedNetworkFunctionNFVIType',
-    'HttpMethod',
-    'ManagedServiceIdentityType',
-    'NFVIType',
-    'NetworkFunctionPublisherArtifactType',
-    'NetworkFunctionType',
-    'ProvisioningState',
-    'PublisherScope',
-    'TemplateType',
-    'Type',
-    'VersionState',
-    'VirtualNetworkFunctionNFVIType',
+    "ArcConnectedK8SNetworkFunctionReadyK8S",
+    "ArmResourceDefinitionResourceElementTemplate",
+    "ArmResourceDefinitionResourceElementTemplateDetails",
+    "ArmTemplateApplicationOverview",
+    "ArmTemplateArtifactProfile",
+    "ArmTemplateMappingRuleProfile",
+    "ArtifactAccessCredential",
+    "ArtifactChangeState",
+    "ArtifactChangeStateProperties",
+    "ArtifactManifest",
+    "ArtifactManifestPropertiesFormat",
+    "ArtifactManifestUpdateState",
+    "ArtifactProfile",
+    "ArtifactStore",
+    "ArtifactStorePropertiesFormat",
+    "ArtifactStorePropertiesFormatManagedResourceGroupConfiguration",
+    "AzureArcK8SClusterNFVIDetails",
+    "AzureArcKubernetesArtifactProfile",
+    "AzureArcKubernetesDeployMappingRuleProfile",
+    "AzureArcKubernetesHelmApplication",
+    "AzureArcKubernetesNetworkFunctionApplication",
+    "AzureArcKubernetesNetworkFunctionTemplate",
+    "AzureContainerRegistryScopedTokenCredential",
+    "AzureCoreArmTemplateArtifactProfile",
+    "AzureCoreArmTemplateDeployMappingRuleProfile",
+    "AzureCoreDelegatedImageArtifactProfile",
+    "AzureCoreDelegatedImageDeployMappingRuleProfile",
+    "AzureCoreDelegatedNetworkFunctionApplication",
+    "AzureCoreDelegatedNetworkFunctionImageApplication",
+    "AzureCoreDelegatedNetworkFunctionTemplate",
+    "AzureCoreNFVIDetails",
+    "AzureCoreNetworkFunctionApplication",
+    "AzureCoreNetworkFunctionArmTemplateApplication",
+    "AzureCoreNetworkFunctionTemplate",
+    "AzureCoreNetworkFunctionVhdApplication",
+    "AzureCoreVhdImageArtifactProfile",
+    "AzureCoreVhdImageDeployMappingRuleProfile",
+    "AzureKubernetesServiceNetworkFunctionReadyK8S",
+    "AzureOperatorNexusArmTemplateArtifactProfile",
+    "AzureOperatorNexusArmTemplateDeployMappingRuleProfile",
+    "AzureOperatorNexusClusterNFVIDetails",
+    "AzureOperatorNexusImageArtifactProfile",
+    "AzureOperatorNexusImageDeployMappingRuleProfile",
+    "AzureOperatorNexusNetworkFunctionApplication",
+    "AzureOperatorNexusNetworkFunctionArmTemplateApplication",
+    "AzureOperatorNexusNetworkFunctionImageApplication",
+    "AzureOperatorNexusNetworkFunctionTemplate",
+    "AzureStorageAccountContainerCredential",
+    "AzureStorageAccountCredential",
+    "Component",
+    "ComponentProperties",
+    "ConfigurationDefinitionResourceElementTemplate",
+    "ConfigurationDefinitionResourceElementTemplateDetails",
+    "ConfigurationGroupSchema",
+    "ConfigurationGroupSchemaOverviewPropertiesFormat",
+    "ConfigurationGroupSchemaPropertiesFormat",
+    "ConfigurationGroupSchemaReferences",
+    "ConfigurationGroupSchemaVersionUpdateState",
+    "ConfigurationGroupSchemasOverview",
+    "ConfigurationGroupValue",
+    "ConfigurationGroupValuePropertiesFormat",
+    "ContainerizedNetworkFunctionDefinitionVersionProperties",
+    "ContainerizedNetworkFunctionTemplate",
+    "CustomLocationResourceId",
+    "DaemonSet",
+    "DelegatedNetworkFunctionDefinitionVersionProperties",
+    "DelegatedNetworkFunctionTemplate",
+    "DependsOnProfile",
+    "Deployment",
+    "DeploymentStatusProperties",
+    "ErrorAdditionalInfo",
+    "ErrorDetail",
+    "ErrorResponse",
+    "ExecuteRequestParameters",
+    "FindConfigurationGroupSchemaParameters",
+    "HelmArtifactProfile",
+    "HelmMappingRuleProfile",
+    "HelmPackageApplicationOverview",
+    "HybridAKSNetworkFunctionReadyK8S",
+    "ImageArtifactProfile",
+    "ImageFileApplicationOverview",
+    "ImageMappingRuleProfile",
+    "ManagedResourceGroupConfiguration",
+    "ManagedServiceIdentity",
+    "ManifestArtifactFormat",
+    "MappingRuleProfile",
+    "NFVIs",
+    "NSDArtifactProfile",
+    "NetworkFunction",
+    "NetworkFunctionApplication",
+    "NetworkFunctionDefinitionApplicationOverview",
+    "NetworkFunctionDefinitionGroup",
+    "NetworkFunctionDefinitionGroupOverview",
+    "NetworkFunctionDefinitionGroupOverviewPropertiesFormat",
+    "NetworkFunctionDefinitionGroupPropertiesFormat",
+    "NetworkFunctionDefinitionResourceElementTemplate",
+    "NetworkFunctionDefinitionVersion",
+    "NetworkFunctionDefinitionVersionOverview",
+    "NetworkFunctionDefinitionVersionOverviewPropertiesFormat",
+    "NetworkFunctionDefinitionVersionPropertiesFormat",
+    "NetworkFunctionDefinitionVersionUpdateState",
+    "NetworkFunctionPropertiesFormat",
+    "NetworkFunctionReadyK8S",
+    "NetworkFunctionReadyK8SPropertiesFormat",
+    "NetworkServiceDesignGroup",
+    "NetworkServiceDesignGroupOverview",
+    "NetworkServiceDesignGroupOverviewPropertiesFormat",
+    "NetworkServiceDesignGroupPropertiesFormat",
+    "NetworkServiceDesignVersion",
+    "NetworkServiceDesignVersionOverview",
+    "NetworkServiceDesignVersionOverviewPropertiesFormat",
+    "NetworkServiceDesignVersionPropertiesFormat",
+    "NetworkServiceDesignVersionUpdateState",
+    "NfviDetails",
+    "Operation",
+    "OperationDisplay",
+    "Pod",
+    "PodEvent",
+    "PreviewSubscription",
+    "PreviewSubscriptionPropertiesFormat",
+    "ProxyArtifactListOverview",
+    "ProxyArtifactOverview",
+    "ProxyArtifactOverviewPropertiesFormat",
+    "ProxyArtifactOverviewPropertiesValue",
+    "ProxyArtifactVersionsListOverview",
+    "ProxyPublisherFindConfigurationGroupSchema",
+    "ProxyPublisherOverview",
+    "ProxyResource",
+    "Publisher",
+    "PublisherPropertiesFormat",
+    "ReferencedResource",
+    "ReplicaSet",
+    "RequestMetadata",
+    "Resource",
+    "ResourceElementTemplate",
+    "Resources",
+    "Site",
+    "SiteNetworkService",
+    "SiteNetworkServicePropertiesFormat",
+    "SitePropertiesFormat",
+    "StatefulSet",
+    "SystemData",
+    "TagsObject",
+    "TrackedResource",
+    "UserAssignedIdentity",
+    "VhdImageArtifactProfile",
+    "VhdImageFileApplicationOverview",
+    "VhdImageMappingRuleProfile",
+    "VirtualNetworkFunctionDefinitionVersionProperties",
+    "VirtualNetworkFunctionTemplate",
+    "ApplicationEnablement",
+    "ArtifactManifestState",
+    "ArtifactReplicationStrategy",
+    "ArtifactState",
+    "ArtifactStoreType",
+    "ArtifactType",
+    "AzureArcKubernetesArtifactType",
+    "AzureCoreArtifactType",
+    "AzureCoreDelegatedArtifactType",
+    "AzureOperatorNexusArtifactType",
+    "ClusterType",
+    "ConfigurationGenerationType",
+    "ContainerizedNetworkFunctionNFVIType",
+    "CreatedByType",
+    "CredentialType",
+    "DelegatedNetworkFunctionNFVIType",
+    "HttpMethod",
+    "ManagedServiceIdentityType",
+    "NFVIType",
+    "NetworkFunctionPublisherArtifactType",
+    "NetworkFunctionType",
+    "PodEventType",
+    "PodStatus",
+    "ProvisioningState",
+    "PublisherScope",
+    "Status",
+    "TemplateType",
+    "Type",
+    "VersionState",
+    "VirtualNetworkFunctionNFVIType",
 ]
+__all__.extend([p for p in _patch_all if p not in __all__])
+_patch_sdk()
