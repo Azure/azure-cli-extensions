@@ -89,12 +89,19 @@ class VmwareScenarioTest(ScenarioTest):
         # remove managed identity
         self.cmd('vmware private-cloud identity remove -g {rg} -c {privatecloud}')
 
+    def test_vmware_delete_private_cloud(self):
+        self.kwargs.update({
+            'rg': "cli_test_vmwarepc",
+            'privatecloud': 'cloud1',
+            'sku': 'av36',
+            'loc': "brazilsouth"
+        })
         # delete the private cloud
-        # self.cmd('vmware private-cloud delete -g {rg} -n {privatecloud} --yes')
-        # self.cmd('vmware private-cloud list -g {rg}', checks=[
-        #     self.check('length(@)', 0)
-        # ])
-        # self.cmd('group delete --name {rg} --yes --no-wait')
+        self.cmd('vmware private-cloud delete -g {rg} -n {privatecloud} --yes')
+        self.cmd('vmware private-cloud list -g {rg}', checks=[
+            self.check('length(@)', 0)
+        ])
+        self.cmd('group delete --name {rg} --yes --no-wait')
 
     # @ResourceGroupPreparer(name_prefix='cli_test_vmwarepc_is', location='brazilsouth')
     # def test_vmware_private_cloud_identity_source(self, resource_group):
