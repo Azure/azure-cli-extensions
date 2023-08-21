@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 from typing import Optional
-from knack.util import CLIError
 from azure.cli.core.azclierror import InvalidArgumentValueError, CLIInternalError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from msrestazure.tools import is_valid_resource_id, parse_resource_id, resource_id
@@ -25,7 +24,8 @@ def get_resource_id(
     name can be resource name, resource id or None.
     If name is None, it can be inferred from
     child_name_X where X > 0 and child_name_X is a resource id.
-    If name is None, and there are no child resources, None is returned.
+    If name is None, and there is no child, None is returned.
+    If the name of the final child is None, None is returned.
 
     kwargs can contain multiple child_type_N, child_name_N, child_namespace_N, where N > 0.
     child_type_N, child_name_N are mandatory fields for each N > 0.
@@ -84,7 +84,7 @@ def get_resource_id(
         for key in child_rid_parts_keys:
             if key in selected_keys:
                 continue
-            if any([key.startswith(prefix) for prefix in selected_key_prefixes]):
+            if any(key.startswith(prefix) for prefix in selected_key_prefixes):
                 continue
             child_rid_parts.pop(key)
         child_set = {
@@ -105,7 +105,7 @@ def get_resource_id(
         namespace=namespace,
         type=_type,
     )
-    null_keys = set()
+    null_keys: set[str] = set()
     if name is not None:
         process_resource_name(rid_parts, "name", name)
     else:
@@ -157,6 +157,9 @@ def get_resource_id(
             continue
         process_resource_name(rid_parts, child_name_key, child_name)
 
+    if f"child_name_{max_child_level}" in null_keys:
+        return None
+
     for null_key in null_keys:
         if null_key not in rid_parts:
             raise CLIInternalError(
@@ -180,7 +183,7 @@ def create_dictionary_from_arg_string(values, option_string=None):
             key, value = item.split('=', 1)
             params_dict[key.lower()] = value
         except ValueError as item_no_exist:
-            raise CLIError(
+            raise InvalidArgumentValueError(
                 f'usage error: {option_string} KEY=VALUE [KEY=VALUE ...]'
             ) from item_no_exist
     return params_dict
