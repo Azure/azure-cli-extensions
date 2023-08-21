@@ -56,7 +56,7 @@ def privatecloud_addavailabilityzone(client: AVSClient, resource_group_name, pri
 
 
 # pylint: disable=too-many-locals
-def privatecloud_create(client: AVSClient, resource_group_name, name, sku, cluster_size, network_block, location=None, internet=None, vcenter_password=None, nsxt_password=None, strategy=None, zone=None, secondary_zone=None, tags=None, accept_eula=False, mi_system_assigned=False, yes=False):
+def privatecloud_create(client: AVSClient, resource_group_name, name, sku, cluster_size, network_block, location=None, internet=None, vcenter_password=None, nsxt_password=None, strategy=None, zone=None, secondary_zone=None, tags=None, ext_nw_blocks=None, accept_eula=False, mi_system_assigned=False, yes=False):
     from knack.prompting import prompt_y_n
     if not accept_eula:
         print(LEGAL_TERMS)
@@ -83,6 +83,8 @@ def privatecloud_create(client: AVSClient, resource_group_name, name, sku, clust
         cloud.availability = AvailabilityProperties(strategy=AvailabilityStrategy.SINGLE_ZONE, zone=zone, secondary_zone=secondary_zone)
     if strategy == AvailabilityStrategy.DUAL_ZONE:
         cloud.availability = AvailabilityProperties(strategy=AvailabilityStrategy.DUAL_ZONE, zone=zone, secondary_zone=secondary_zone)
+    if ext_nw_blocks is not None:
+        cloud.extended_network_blocks = ext_nw_blocks
     return client.private_clouds.begin_create_or_update(resource_group_name, name, cloud)
 
 

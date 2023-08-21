@@ -4,6 +4,7 @@
 - Update to AVS 2023-03-01 API
 - Add `az vmware private-cloud add-extended-network-blocks`
 - Add `az vmware private-cloud delete-extended-network-blocks`
+- Updated `az vmware private-cloud create` with new `ext_nw_blocks` parameter
 
 ## 5.0.3 (2023-07)
 

@@ -46,6 +46,7 @@ def load_arguments(self, _):
         c.argument('strategy', arg_type=get_enum_type(['SingleZone', 'DualZone']), help='The availability strategy for the private cloud.')
         c.argument('zone', help='The primary availability zone for the private cloud')
         c.argument('secondary_zone', help='The secondary availability zone for the private cloud.')
+        c.argument('ext_nw_blocks', nargs='*', help='Array of additional networks noncontiguous with networkBlock. Networks must be unique and non-overlapping across VNet in your subscription, on-premise, and this privateCloud networkBlock attribute. Make sure the CIDR format conforms to (A.B.C.D/X).')
 
     with self.argument_context('vmware private-cloud show') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
