@@ -32,7 +32,7 @@ class Artifact:
 
     def upload(self, artifact_config: Union[ArtifactConfig, HelmPackageConfig]) -> None:
         """
-        Upload aritfact.
+        Upload artifact.
 
         :param artifact_config: configuration for the artifact being uploaded
         """
@@ -88,22 +88,39 @@ class Artifact:
         target_registry = f"oci://{registry}"
         registry_name = registry.replace(".azurecr.io", "")
 
-        # az acr login --name "registry_name"
         # Note that this uses the user running the CLI's AZ login credentials, not the
         # manifest credentials retrieved from the ACR. This isn't ideal, but using the
         # manifest credentials caused problems so we are doing this for now.
+        # This logs in to the registry by retrieving an access token, which allows use
+        # of this command in environments without docker.
         logger.debug("Logging into %s", registry_name)
-        login_command = [
+        acr_login_with_token_cmd = [
             str(shutil.which("az")),
             "acr",
             "login",
             "--name",
             registry_name,
+            "--expose-token",
+            "--output",
+            "tsv",
+            "--query",
+            "accessToken",
         ]
-        subprocess.run(login_command, check=True)
+        acr_token = subprocess.check_output(acr_login_with_token_cmd, encoding="utf-8").strip()
 
         try:
             logger.debug("Uploading %s to %s", chart_path, target_registry)
+            helm_login_cmd = [
+                str(shutil.which("helm")),
+                "registry",
+                "login",
+                registry,
+                "--username",
+                "00000000-0000-0000-0000-000000000000",
+                "--password",
+                acr_token,
+            ]
+            subprocess.run(helm_login_cmd, check=True)
 
             # helm push "$chart_path" "$target_registry"
             push_command = [
@@ -114,11 +131,8 @@ class Artifact:
             ]
             subprocess.run(push_command, check=True)
         finally:
-            # If we don't logout from the registry, future Artifact uploads to this ACR
-            # will fail with an UNAUTHORIZED error. There is no az acr logout command,
-            # but it is a wrapper around docker, so a call to docker logout will work.
-            logout_command = [str(shutil.which("docker")), "logout", registry]
-            subprocess.run(logout_command, check=True)
+            helm_logout_cmd = [str(shutil.which("helm")), "registry", "logout", registry]
+            subprocess.run(helm_logout_cmd, check=True)
 
     def _upload_to_storage_account(self, artifact_config: ArtifactConfig) -> None:
         """
