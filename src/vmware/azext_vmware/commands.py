@@ -30,6 +30,8 @@ def load_command_table(self, _):
         g.custom_command('delete-cmk-encryption', 'privatecloud_deletecmkenryption', deprecate_info=g.deprecate(redirect='az vmware private-cloud disable-cmk-encryption', hide=True))
         g.custom_command('enable-cmk-encryption', 'privatecloud_addcmkencryption')
         g.custom_command('disable-cmk-encryption', 'privatecloud_deletecmkenryption')
+        g.custom_command('add-extended-network-blocks', 'privatecloud_addextendednetworkblocks')
+        g.custom_command('delete-extended-network-blocks', 'privatecloud_deleteextendednetworkblocks')
         g.custom_command('rotate-vcenter-password', 'privatecloud_rotate_vcenter_password')
         g.custom_command('rotate-nsxt-password', 'privatecloud_rotate_nsxt_password')
 

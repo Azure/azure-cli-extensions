@@ -71,6 +71,9 @@ def load_arguments(self, _):
         c.argument('enc_kv_url', help='The URL of the encryption key vault.')
         c.argument('enc_kv_key_version', help='The version of the encryption key vault key.')
 
+    with self.argument_context('vmware private-cloud add-extended-network-blocks') as c:
+        c.argument('ext_nw_blocks', nargs='+', help='Array of additional networks noncontiguous with networkBlock. Networks must be unique and non-overlapping across VNet in your subscription, on-premise, and this privateCloud networkBlock attribute. Make sure the CIDR format conforms to (A.B.C.D/X).')
+
     with self.argument_context('vmware private-cloud add-identity-source') as c:
         c.argument('alias', help='The domain\'s NetBIOS name.')
         c.argument('base_group_dn', help='The base distinguished name for groups.')

@@ -152,6 +152,22 @@ def privatecloud_deletecmkenryption(client: AVSClient, resource_group_name, priv
     return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
 
 
+def privatecloud_addextendednetworkblocks(client: AVSClient, resource_group_name, private_cloud, ext_nw_blocks):
+    pc = client.private_clouds.get(resource_group_name, private_cloud)
+    pc.extended_network_blocks = ext_nw_blocks
+    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+
+
+def privatecloud_deleteextendednetworkblocks(client: AVSClient, resource_group_name, private_cloud, yes=False):
+    from knack.prompting import prompt_y_n
+    msg = 'This will delete the extended network blocks. Are you sure?'
+    if not yes and not prompt_y_n(msg, default="n"):
+        return None
+    pc = client.private_clouds.get(resource_group_name, private_cloud)
+    pc.extended_network_blocks = []
+    return client.private_clouds.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, private_cloud_update=pc)
+
+
 def privatecloud_identity_assign(client: AVSClient, resource_group_name, private_cloud, system_assigned=False):
     from azext_vmware.vendored_sdks.avs_client.models import PrivateCloudIdentity, ResourceIdentityType
     pc = client.private_clouds.get(resource_group_name, private_cloud)
