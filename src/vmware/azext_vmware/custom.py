@@ -38,6 +38,14 @@ Press any key to continue
 '''
 
 
+def privatecloud_listadmincredentials(cmd, resource_group_name, private_cloud):
+    from .aaz.latest.vmware.private_cloud import ListAdminCredential
+    return ListAdminCredential(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "private_cloud": private_cloud
+    })
+
+
 def privatecloud_addidentitysource(cmd, resource_group_name, name, private_cloud, alias, domain, base_user_dn, base_group_dn, primary_server, username, password, secondary_server=None, ssl="Disabled"):
     from .aaz.latest.vmware.private_cloud.identity_source import Create
     command_args = {

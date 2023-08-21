@@ -7,6 +7,7 @@ from azure.cli.core.aaz import register_command
 
 # dhcp relay
 
+
 @register_command(
     "vmware workload-network dhcp relay create",
 )
@@ -84,8 +85,8 @@ class DHCPRelayUpdate(_DHCPUpdate):
         args.relay.server_addresses = args.server_addresses
 
 
-
 # dhcp server
+
 
 @register_command(
     "vmware workload-network dhcp server create",
