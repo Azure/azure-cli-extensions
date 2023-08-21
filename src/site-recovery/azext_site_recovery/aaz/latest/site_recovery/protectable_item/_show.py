@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get operation to get the details of a protectable item.
+
+    :example: protectable-item show
+        az site-recovery protectable-item show --fabric-name "fabric" --protection-container "container_name" -g "rg_name" --vault-name "vault_name" -n "protectable_item_name"
     """
 
     _aaz_info = {

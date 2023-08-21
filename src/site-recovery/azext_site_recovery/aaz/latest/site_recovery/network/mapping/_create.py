@@ -19,6 +19,9 @@ class Create(AAZCommand):
 
     :example: network mapping create for A2A fabric
         az site-recovery network mapping create -g rg --fabric-name fabric1_name -n network_mapping1_name --network-name azureNetwork --vault-name vault_name --recovery-network-id vnet2_id --fabric-details '{azure-to-azure:{primary-network-id:vnetvm_id}}' --recovery-fabric-name fabric2_name
+
+    :example: network mapping create for H2A E2A (VMM)
+        az site-recovery network mapping create -g "rg" --fabric-name "fabric_name" -n "network_mapping_name" --network-name "vnet_source_name" --vault-name "vault_name" --recovery-network-id "vnet_recovery_id" --fabric-details '{vmm-to-azure:""}'
     """
 
     _aaz_info = {

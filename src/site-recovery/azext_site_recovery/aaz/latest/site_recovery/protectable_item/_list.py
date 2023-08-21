@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the protectable items in a protection container.
+
+    :example: protectable-item list
+        az site-recovery protectable-item list --fabric-name "fabric" --protection-container "container_name" -g "rg_name" --vault-name "vault_name"
     """
 
     _aaz_info = {
