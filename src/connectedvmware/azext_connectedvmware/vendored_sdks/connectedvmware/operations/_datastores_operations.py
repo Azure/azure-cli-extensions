@@ -265,7 +265,7 @@ class DatastoresOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure_arc_vmware_management_service_api.models
+    :type models: ~azure.mgmt.connectedvmware.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -357,7 +357,7 @@ class DatastoresOperations(object):
         :param datastore_name: Name of the datastore.
         :type datastore_name: str
         :param body: Request payload.
-        :type body: ~azure_arc_vmware_management_service_api.models.Datastore
+        :type body: ~azure.mgmt.connectedvmware.models.Datastore
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -367,8 +367,7 @@ class DatastoresOperations(object):
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
         :return: An instance of LROPoller that returns either Datastore or the result of cls(response)
-        :rtype:
-         ~azure.core.polling.LROPoller[~azure_arc_vmware_management_service_api.models.Datastore]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.connectedvmware.models.Datastore]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
@@ -432,7 +431,7 @@ class DatastoresOperations(object):
         :type datastore_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Datastore, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.Datastore
+        :rtype: ~azure.mgmt.connectedvmware.models.Datastore
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Datastore"]
@@ -494,10 +493,10 @@ class DatastoresOperations(object):
         :param datastore_name: Name of the datastore.
         :type datastore_name: str
         :param body: Resource properties to update.
-        :type body: ~azure_arc_vmware_management_service_api.models.ResourcePatch
+        :type body: ~azure.mgmt.connectedvmware.models.ResourcePatch
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Datastore, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.Datastore
+        :rtype: ~azure.mgmt.connectedvmware.models.Datastore
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Datastore"]
@@ -587,8 +586,13 @@ class DatastoresOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _delete_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/datastores/{datastoreName}"}  # type: ignore
 
@@ -674,8 +678,7 @@ class DatastoresOperations(object):
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DatastoresList or the result of cls(response)
-        :rtype:
-         ~azure.core.paging.ItemPaged[~azure_arc_vmware_management_service_api.models.DatastoresList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.DatastoresList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
@@ -753,8 +756,7 @@ class DatastoresOperations(object):
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DatastoresList or the result of cls(response)
-        :rtype:
-         ~azure.core.paging.ItemPaged[~azure_arc_vmware_management_service_api.models.DatastoresList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.DatastoresList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
