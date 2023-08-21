@@ -196,7 +196,7 @@ class List(AAZCommand):
             properties.information = AAZListType(
                 flags={"read_only": True},
             )
-            properties.named_outputs = AAZDictType(
+            properties.named_outputs = AAZFreeFormDictType(
                 serialized_name="namedOutputs",
             )
             properties.output = AAZListType()
@@ -233,9 +233,6 @@ class List(AAZCommand):
 
             information = cls._schema_on_200.value.Element.properties.information
             information.Element = AAZStrType()
-
-            named_outputs = cls._schema_on_200.value.Element.properties.named_outputs
-            named_outputs.Element = AAZFreeFormDictType()
 
             output = cls._schema_on_200.value.Element.properties.output
             output.Element = AAZStrType()

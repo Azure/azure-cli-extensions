@@ -31,10 +31,6 @@ class VmwareScenarioTest(ScenarioTest):
         # check trial availability
         self.cmd('vmware location check-trial-availability --location {loc} --sku sku')
 
-        # show should throw ResourceNotFound
-        # with self.assertRaisesRegexp(CloudError, 'ResourceNotFound'):
-        #     self.cmd('vmware private-cloud show -g {rg} -n {privatecloud}')
-
         count = len(self.cmd('vmware private-cloud list -g {rg}').get_output_in_json())
         self.assertEqual(count, 1, 'private cloud count expected to be 1')
 
@@ -58,11 +54,11 @@ class VmwareScenarioTest(ScenarioTest):
         # self.cmd('vmware private-cloud rotate-vcenter-password -g {rg} -c {privatecloud}')
         # self.cmd('vmware private-cloud rotate-nsxt-password -g {rg} -c {privatecloud}')
 
-        # # update private cloud to changed default cluster size
-        # self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --cluster-size 4')
-        #
-        # # update private cloud to enable internet
-        # self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --internet Enabled')
+        # update private cloud to changed default cluster size
+        self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --cluster-size 4')
+
+        # update private cloud to enable internet
+        self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --internet Enabled')
 
         # create authorization
         self.cmd('vmware authorization create -g {rg} -c {privatecloud} -n myauthname --express-route-id id')
@@ -70,13 +66,13 @@ class VmwareScenarioTest(ScenarioTest):
         # delete authorization
         self.cmd('vmware authorization delete -g {rg} -c {privatecloud} -n myauthname --yes')
 
-        # # add identity source
-        # self.cmd(
-        #     'vmware private-cloud add-identity-source -g {rg} -c {privatecloud} -n groupName --alias groupAlias --domain domain --base-user-dn "ou=baseUser" --base-group-dn "ou=baseGroup" --primary-server ldaps://1.1.1.1:636 --username someone --password something')
+        # add identity source
+        self.cmd(
+            'vmware private-cloud add-identity-source -g {rg} -c {privatecloud} -n groupName --alias groupAlias --domain domain --base-user-dn "ou=baseUser" --base-group-dn "ou=baseGroup" --primary-server ldaps://1.1.1.1:636 --username someone --password something')
 
-        # # delete identity source
-        # self.cmd(
-        #     'vmware private-cloud delete-identity-source -g {rg} -c {privatecloud} -n groupName --alias groupAlias --domain domain --yes')
+        # delete identity source
+        self.cmd(
+            'vmware private-cloud delete-identity-source -g {rg} -c {privatecloud} -n group1 --alias groupAlias --domain domain1 --yes')
 
         # cluster list should report 0
         count = len(self.cmd('vmware cluster list -g {rg} -c {privatecloud}').get_output_in_json())
@@ -104,7 +100,7 @@ class VmwareScenarioTest(ScenarioTest):
         # delete the private cloud
         self.cmd('vmware private-cloud delete -g {rg} -n {privatecloud} --yes')
 
-    # @record_only()
+    @record_only()
     def test_vmware_private_cloud(self):
         self.kwargs.update({
             'rg': "cli_test_vmwarepc",

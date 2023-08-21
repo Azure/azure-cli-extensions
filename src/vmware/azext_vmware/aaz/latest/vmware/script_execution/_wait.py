@@ -189,7 +189,7 @@ class Wait(AAZWaitCommand):
             properties.information = AAZListType(
                 flags={"read_only": True},
             )
-            properties.named_outputs = AAZDictType(
+            properties.named_outputs = AAZFreeFormDictType(
                 serialized_name="namedOutputs",
             )
             properties.output = AAZListType()
@@ -226,9 +226,6 @@ class Wait(AAZWaitCommand):
 
             information = cls._schema_on_200.properties.information
             information.Element = AAZStrType()
-
-            named_outputs = cls._schema_on_200.properties.named_outputs
-            named_outputs.Element = AAZFreeFormDictType()
 
             output = cls._schema_on_200.properties.output
             output.Element = AAZStrType()

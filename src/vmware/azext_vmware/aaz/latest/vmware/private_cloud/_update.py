@@ -491,11 +491,11 @@ class Update(AAZCommand):
                 _elements.set_prop("baseUserDN", AAZStrType, ".base_user_dn", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("domain", AAZStrType, ".domain", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"required": True, "secret": True}})
+                _elements.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"secret": True}})
                 _elements.set_prop("primaryServer", AAZStrType, ".primary_server", typ_kwargs={"flags": {"required": True}})
                 _elements.set_prop("secondaryServer", AAZStrType, ".secondary_server")
                 _elements.set_prop("ssl", AAZStrType, ".ssl")
-                _elements.set_prop("username", AAZStrType, ".username", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("username", AAZStrType, ".username", typ_kwargs={"flags": {"secret": True}})
 
             management_cluster = _builder.get(".properties.managementCluster")
             if management_cluster is not None:
@@ -742,7 +742,7 @@ class _UpdateHelper:
             flags={"required": True},
         )
         _element.password = AAZStrType(
-            flags={"required": True, "secret": True},
+            flags={"secret": True},
         )
         _element.primary_server = AAZStrType(
             serialized_name="primaryServer",
@@ -753,7 +753,7 @@ class _UpdateHelper:
         )
         _element.ssl = AAZStrType()
         _element.username = AAZStrType(
-            flags={"required": True},
+            flags={"secret": True},
         )
 
         management_cluster = _schema_private_cloud_read.properties.management_cluster

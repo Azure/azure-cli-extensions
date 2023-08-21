@@ -535,7 +535,7 @@ class _DeleteHelper:
             flags={"required": True},
         )
         _element.password = AAZStrType(
-            flags={"required": True, "secret": True},
+            flags={"secret": True},
         )
         _element.primary_server = AAZStrType(
             serialized_name="primaryServer",
@@ -546,7 +546,7 @@ class _DeleteHelper:
         )
         _element.ssl = AAZStrType()
         _element.username = AAZStrType(
-            flags={"required": True},
+            flags={"secret": True},
         )
 
         management_cluster = _schema_private_cloud_read.properties.management_cluster

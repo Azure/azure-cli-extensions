@@ -319,7 +319,7 @@ class Show(AAZCommand):
                 flags={"required": True},
             )
             _element.password = AAZStrType(
-                flags={"required": True, "secret": True},
+                flags={"secret": True},
             )
             _element.primary_server = AAZStrType(
                 serialized_name="primaryServer",
@@ -330,7 +330,7 @@ class Show(AAZCommand):
             )
             _element.ssl = AAZStrType()
             _element.username = AAZStrType(
-                flags={"required": True},
+                flags={"secret": True},
             )
 
             management_cluster = cls._schema_on_200.properties.management_cluster
