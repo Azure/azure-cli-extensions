@@ -110,6 +110,21 @@ def privatecloud_deletecmkenryption(cmd, resource_group_name, private_cloud, yes
     })
 
 
+def check_quota_availability(cmd, location):
+    from .aaz.latest.vmware.location import CheckQuotaAvailability
+    return CheckQuotaAvailability(cli_ctx=cmd.cli_ctx)(command_args={
+        "location": location
+    })
+
+
+def check_trial_availability(cmd, location, sku=None):
+    from .aaz.latest.vmware.location import CheckTrialAvailability
+    return CheckTrialAvailability(cli_ctx=cmd.cli_ctx)(command_args={
+        "location": location,
+        "sku": sku
+    })
+
+
 def privatecloud_identity_assign(cmd, resource_group_name, private_cloud, system_assigned=False):
     from .operations.private_cloud import PrivateCloudUpdate
     if system_assigned:
