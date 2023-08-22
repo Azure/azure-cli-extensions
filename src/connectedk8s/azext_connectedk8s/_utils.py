@@ -92,11 +92,11 @@ def validate_custom_token(cmd, resource_group_name, location):
 
 
 def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, chart_folder_name='AzureArcCharts', chart_name='azure-arc-k8sagents'):
-    # Pulling helm chart from registry
-    os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
-    pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_name)
+    # # Pulling helm chart from registry
+    # os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
+    # pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_name)
 
-    # Exporting helm chart after cleanup
+    # # Exporting helm chart after cleanup
     chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', chart_folder_name)
     try:
         if os.path.isdir(chart_export_path):
@@ -104,7 +104,8 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
     except:
         logger.warning("Unable to cleanup the {} already present on the machine. In case of failure, please cleanup the directory '{}' and try again.".format(chart_folder_name, chart_export_path))
 
-    export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name)
+    pull_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name)
+    # export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name)
 
     # Returning helm chart path
     helm_chart_path = os.path.join(chart_export_path, chart_name)
@@ -116,8 +117,12 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
     return chart_path
 
 
-def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc-k8sagents', retry_count=5, retry_delay=3):
-    cmd_helm_chart_pull = [helm_client_location, "chart", "pull", registry_path]
+# def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc-k8sagents', retry_count=5, retry_delay=3):
+#     cmd_helm_chart_pull = [helm_client_location, "chart", "pull", registry_path]
+def pull_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc-k8sagents', retry_count=5, retry_delay=3):
+    chart_url = registry_path.split(':')[0]
+    chart_version = registry_path.split(':')[1]
+    cmd_helm_chart_pull = [helm_client_location, "pull", "oci://" + chart_url, "--untar", "--untardir", chart_export_path, "--version", chart_version]
     if kube_config:
         cmd_helm_chart_pull.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -135,18 +140,18 @@ def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_locati
             break
 
 
-def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc-k8sagents'):
-    cmd_helm_chart_export = [helm_client_location, "chart", "export", registry_path, "--destination", chart_export_path]
-    if kube_config:
-        cmd_helm_chart_export.extend(["--kubeconfig", kube_config])
-    if kube_context:
-        cmd_helm_chart_export.extend(["--kube-context", kube_context])
-    response_helm_chart_export = subprocess.Popen(cmd_helm_chart_export, stdout=PIPE, stderr=PIPE)
-    _, error_helm_chart_export = response_helm_chart_export.communicate()
-    if response_helm_chart_export.returncode != 0:
-        telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Export_HelmChart_Fault_Type,
-                                summary='Unable to export {} helm chart from the registry'.format(chart_name))
-        raise CLIInternalError("Unable to export {} helm chart from the registry '{}': ".format(chart_name, registry_path) + error_helm_chart_export.decode("ascii"))
+# def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc-k8sagents'):
+#     cmd_helm_chart_export = [helm_client_location, "chart", "export", registry_path, "--destination", chart_export_path]
+#     if kube_config:
+#         cmd_helm_chart_export.extend(["--kubeconfig", kube_config])
+#     if kube_context:
+#         cmd_helm_chart_export.extend(["--kube-context", kube_context])
+#     response_helm_chart_export = subprocess.Popen(cmd_helm_chart_export, stdout=PIPE, stderr=PIPE)
+#     _, error_helm_chart_export = response_helm_chart_export.communicate()
+#     if response_helm_chart_export.returncode != 0:
+#         telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Export_HelmChart_Fault_Type,
+#                                 summary='Unable to export {} helm chart from the registry'.format(chart_name))
+#         raise CLIInternalError("Unable to export {} helm chart from the registry '{}': ".format(chart_name, registry_path) + error_helm_chart_export.decode("ascii"))
 
 
 def save_cluster_diagnostic_checks_pod_description(corev1_api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available):
@@ -376,7 +381,7 @@ def add_helm_repo(kube_config, kube_context, helm_client_location):
                                 summary='Failed to add helm repository')
         raise CLIInternalError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
-
+# TODO: [Kit] Update this
 def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release_train_dogfood=None):
     # Setting uri
     get_chart_location_url = "{}/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(config_dp_endpoint, 'azure-arc-k8sagents')

@@ -133,6 +133,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_connect(self,resource_group):
+        # TODO: [Kit] Remove this
+        os.environ.setdefault('HELMREGISTRY', 'kitregistrywestus2.azurecr.io/oras-arc-k8sagents/azure-arc-k8sagents:1.12.5')
         
         managed_cluster_name = self.create_random_name(prefix='test-connect', length=24)
         kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
@@ -289,7 +291,8 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_connectedk8s_list(self,resource_group):
-
+        # TODO: [Kit] Remove this
+        os.environ.setdefault('HELMREGISTRY', 'kitregistrywestus2.azurecr.io/azure-arc-k8sagents/azure-arc-k8sagents:1.12.5')
         managed_cluster_name = self.create_random_name(prefix='first', length=24)
         managed_cluster_name_second = self.create_random_name(prefix='second', length=24)
         kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 

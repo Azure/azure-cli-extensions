@@ -485,11 +485,13 @@ def install_helm_client():
     if(operating_system == 'windows'):
         download_location_string = f'.azure\\helm\\{consts.HELM_VERSION}\\helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip'
         install_location_string = f'.azure\\helm\\{consts.HELM_VERSION}\\{operating_system}-amd64\\helm.exe'
-        requestUri = f'{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip'
+        # requestUri = f'{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip'
+        requestUri = f'https://get.helm.sh/helm-{consts.HELM_VERSION}-{operating_system}-amd64.zip'
     elif(operating_system == 'linux' or operating_system == 'darwin'):
         download_location_string = f'.azure/helm/{consts.HELM_VERSION}/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz'
         install_location_string = f'.azure/helm/{consts.HELM_VERSION}/{operating_system}-amd64/helm'
-        requestUri = f'{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz'
+        # requestUri = f'{consts.HELM_STORAGE_URL}/helm/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz'
+        requestUri = f'https://get.helm.sh/helm-{consts.HELM_VERSION}-{operating_system}-amd64.tar.gz'
     else:
         telemetry.set_exception(exception='Unsupported OS for installing helm client', fault_type=consts.Helm_Unsupported_OS_Fault_Type,
                                 summary=f'{operating_system} is not supported for installing helm client')
@@ -1062,6 +1064,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
                                     summary='Error while doing helm get values azure-arc')
             raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_get_values.decode("ascii")))
 
+    #TODO: Upgrade Helm here
     cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "-f",
                         user_values_location, "--wait", "--output", "json"]
@@ -1243,6 +1246,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
                                 summary='Problem loading the helm existing user supplied values')
         raise CLIInternalError("Problem loading the helm existing user supplied values: " + str(e))
 
+    #TODO: Upgrade Helm here
     # Change --timeout format for helm client to understand
     upgrade_timeout = upgrade_timeout + "s"
     cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,

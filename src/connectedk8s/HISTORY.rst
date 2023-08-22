@@ -2,6 +2,11 @@
 
 Release History
 
+1.3.21
+++++++
+
+* Updated Helm from 3.6.3 to 3.12.2
+
 1.3.20
 ++++++
 
