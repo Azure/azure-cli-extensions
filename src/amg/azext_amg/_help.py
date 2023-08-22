@@ -9,7 +9,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['grafana'] = """
     type: group
-    short-summary: Commands to manage Azure Grafana instanced.
+    short-summary: Commands to manage Azure Grafana instances.
     long-summary: For optimized experience, not all data plane Apis, documented at https://grafana.com/docs/grafana/latest/http_api/, are exposed. On coverage gap, please reach out to ad4g@microsoft.com
 """
 
@@ -36,11 +36,23 @@ helps['grafana show'] = """
 helps['grafana backup'] = """
     type: command
     short-summary: Backup an Azure Managed Grafana instance's content to an achive.
+    examples:
+        - name: backup dashboards under 2 folders (data sources are included to enable name remapping when restore dashboards to another worksapce)
+          text: |
+            az grafana backup -g MyResourceGroup -n MyGrafana -d c:\\temp --folders-to-include "Prod" "Compute Gateway" --components datasources dashboards folders
+        - name: backup dashboards and skip a few folders
+          text: |
+            az grafana backup -g MyResourceGroup -n MyGrafana -d c:\\temp  --folders-to-exclude General "Azure Monitor" --components datasources dashboards folders
+
 """
 
 helps['grafana restore'] = """
     type: command
     short-summary: Restore an Azure Managed Grafana instance from an achive.
+    examples:
+       - name: Restore dashboards. If they are under folders, include "folders" in the components list; use "--remap-data-sources" so CLI will update dashboards to point to same data sourceses at target workspace
+         text: |
+           az grafana restore -g MyResourceGroup -n MyGrafana --archive-file backup\\dashboards\\ServiceHealth-202307051036.tar.gz --components dashboards folders --remap-data-sources
 """
 
 helps['grafana update'] = """
@@ -64,6 +76,91 @@ helps['grafana data-source create'] = """
     type: command
     short-summary: Create a data source.
     examples:
+        - name: create a data source of Azure Monitor using Managed Identity
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "access": "proxy",
+              "jsonData": {
+                "azureAuthType": "msi",
+                "subscriptionId": "3a7edf7d-1488-4017-a908-111111111111"
+              },
+              "name": "Azure Monitor-3",
+              "type": "grafana-azure-monitor-datasource"
+            }'
+        - name: create a data source of Azure Monitor using App Registration
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "name": "Azure Monitor-2",
+              "type": "grafana-azure-monitor-datasource",
+              "access": "proxy",
+              "jsonData": {
+                "subscriptionId": "3a7edf7d-1488-4017-a908-111111111111",
+                "azureAuthType": "clientsecret",
+                "cloudName": "azuremonitor",
+                "tenantId": "72f988bf-86f1-41af-91ab-111111111111",
+                "clientId": "fb31a2f5-9122-4be9-9705-111111111111"
+              },
+              "secureJsonData": { "clientSecret": "verySecret" }
+            }'
+        - name: create a data source of Azure Data Explorer using Managed Identity
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "name": "Azure Data Explorer Datasource-2",
+              "type": "grafana-azure-data-explorer-datasource",
+              "access": "proxy",
+              "jsonData": {
+                "dataConsistency": "strongconsistency",
+                "clusterUrl": "https://mykusto.westcentralus.kusto.windows.net"
+              }
+            }'
+        - name: create a data source of Azure Data Explorer using App Registration
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "name": "Azure Data Explorer Datasource-1",
+              "type": "grafana-azure-data-explorer-datasource",
+              "access": "proxy",
+              "jsonData": {
+                "clusterUrl": "https://mykusto.westcentralus.kusto.windows.net",
+                "azureCredentials": {
+                  "authType": "clientsecret",
+                  "azureCloud": "AzureCloud",
+                  "tenantId": "72f988bf-86f1-41af-91ab-111111111111",
+                  "clientId": "fb31a2f5-9122-4be9-9705-111111111111"
+                }
+              },
+              "secureJsonData": { "azureClientSecret": "verySecret" }
+            }'
+        - name: create a data source of Azure Managed Prometheus using App Registration
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "name": "Azure Managed Prometheus-1",
+              "type": "prometheus",
+              "access": "proxy",
+              "url": "https://myprom-abcd.westcentralus.prometheus.monitor.azure.com",
+              "jsonData": {
+                "httpMethod": "POST",
+                "azureCredentials": {
+                  "authType": "clientsecret",
+                  "azureCloud": "AzureCloud",
+                  "tenantId": "72f988bf-86f1-41af-91ab-111111111111",
+                  "clientId": "fb31a2f5-9122-4be9-9705-111111111111"
+                },
+                "timeInterval": "30s"
+              },
+              "secureJsonData": { "azureClientSecret": "verySecret" }
+            }'
+        - name: create a data source of Azure Managed Prometheus using managed identity
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "name": "Azure Managed Prometheus-1",
+              "type": "prometheus",
+              "access": "proxy",
+              "url": "https://myprom-jryu.westcentralus.prometheus.monitor.azure.com",
+              "jsonData": {
+                "httpMethod": "POST",
+                "azureCredentials": { "authType": "msi" }
+              }
+            }'
         - name: create a data source of Azure SQL
           text: |
             az grafana data-source create -n MyGrafana --definition '{

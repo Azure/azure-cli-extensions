@@ -17,12 +17,15 @@ from azure.cli.core.aaz import *
 )
 class ValidateForRestore(AAZCommand):
     """Validates if Restore can be triggered for a DataSource
+
+    :example: Validate Restore
+        az dataprotection backup-instance validate-for-restore-g sample_rg --vault-name sample_backupvault --backup-instance-name sample_biname-fd53a211-3f3e-4c7e-ba45-81050e27c0be --restore-request-object restorerequestobject.json
     """
 
     _aaz_info = {
-        "version": "2023-01-01",
+        "version": "2023-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/validaterestore", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/validaterestore", "2023-05-01"],
         ]
     }
 
@@ -44,7 +47,7 @@ class ValidateForRestore(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.backup_instance_name = AAZStrArg(
-            options=["--backup-instance-name"],
+            options=["-n", "--name", "--backup-instance-name"],
             help="The name of the backup instance.",
             required=True,
             id_part="child_name_1",
@@ -78,6 +81,10 @@ class ValidateForRestore(AAZCommand):
         )
         restore_request_object.azure_backup_restore_with_rehydration_request = AAZObjectArg(
             options=["azure-backup-restore-with-rehydration-request"],
+        )
+        restore_request_object.identity_details = AAZObjectArg(
+            options=["identity-details"],
+            help="Contains information of the Identity Details for the BI. If it is null, default will be considered as System Assigned.",
         )
         restore_request_object.restore_target_info = AAZObjectArg(
             options=["restore-target-info"],
@@ -123,6 +130,16 @@ class ValidateForRestore(AAZCommand):
             options=["rehydration-retention-duration"],
             help="Retention duration in ISO 8601 format i.e P10D .",
             required=True,
+        )
+
+        identity_details = cls._args_schema.restore_request_object.identity_details
+        identity_details.use_system_assigned_identity = AAZBoolArg(
+            options=["use-system-assigned-identity"],
+            help="Specifies if the BI is protected by System Identity.",
+        )
+        identity_details.user_assigned_identity_arm_url = AAZStrArg(
+            options=["user-assigned-identity-arm-url"],
+            help="ARM URL for User Assigned Identity.",
         )
 
         restore_target_info = cls._args_schema.restore_request_object.restore_target_info
@@ -248,6 +265,10 @@ class ValidateForRestore(AAZCommand):
             help="Gets or sets the PV (Persistent Volume) Restore Mode property. This property sets whether volumes needs to be restored.",
             enum={"RestoreWithVolumeData": "RestoreWithVolumeData", "RestoreWithoutVolumeData": "RestoreWithoutVolumeData"},
         )
+        kubernetes_cluster_restore_criteria.restore_hook_references = AAZListArg(
+            options=["restore-hook-references"],
+            help="Gets or sets the restore hook references. This property sets the hook reference to be executed during restore.",
+        )
 
         excluded_namespaces = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.excluded_namespaces
         excluded_namespaces.Element = AAZStrArg()
@@ -266,6 +287,19 @@ class ValidateForRestore(AAZCommand):
 
         namespace_mappings = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.namespace_mappings
         namespace_mappings.Element = AAZStrArg()
+
+        restore_hook_references = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.restore_hook_references
+        restore_hook_references.Element = AAZObjectArg()
+
+        _element = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.restore_hook_references.Element
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="Name of the resource",
+        )
+        _element.namespace = AAZStrArg(
+            options=["namespace"],
+            help="Namespace in which the resource exists",
+        )
 
         kubernetes_pv_restore_criteria = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_pv_restore_criteria
         kubernetes_pv_restore_criteria.name = AAZStrArg(
@@ -384,6 +418,25 @@ class ValidateForRestore(AAZCommand):
 
         _schema.secret_store_based_auth_credentials = cls._args_auth_credentials_create.secret_store_based_auth_credentials
 
+    _args_base_resource_properties_create = None
+
+    @classmethod
+    def _build_args_base_resource_properties_create(cls, _schema):
+        if cls._args_base_resource_properties_create is not None:
+            _schema.object_type = cls._args_base_resource_properties_create.object_type
+            return
+
+        cls._args_base_resource_properties_create = AAZObjectArg()
+
+        base_resource_properties_create = cls._args_base_resource_properties_create
+        base_resource_properties_create.object_type = AAZStrArg(
+            options=["object-type"],
+            help="Type of the specific object - used for deserializing",
+            required=True,
+        )
+
+        _schema.object_type = cls._args_base_resource_properties_create.object_type
+
     _args_datasource_set_create = None
 
     @classmethod
@@ -394,6 +447,7 @@ class ValidateForRestore(AAZCommand):
             _schema.resource_id = cls._args_datasource_set_create.resource_id
             _schema.resource_location = cls._args_datasource_set_create.resource_location
             _schema.resource_name = cls._args_datasource_set_create.resource_name
+            _schema.resource_properties = cls._args_datasource_set_create.resource_properties
             _schema.resource_type = cls._args_datasource_set_create.resource_type
             _schema.resource_uri = cls._args_datasource_set_create.resource_uri
             return
@@ -422,6 +476,11 @@ class ValidateForRestore(AAZCommand):
             options=["resource-name"],
             help="Unique identifier of the resource in the context of parent.",
         )
+        datasource_set_create.resource_properties = AAZObjectArg(
+            options=["resource-properties"],
+            help="Properties specific to data source set",
+        )
+        cls._build_args_base_resource_properties_create(datasource_set_create.resource_properties)
         datasource_set_create.resource_type = AAZStrArg(
             options=["resource-type"],
             help="Resource Type of Datasource.",
@@ -436,6 +495,7 @@ class ValidateForRestore(AAZCommand):
         _schema.resource_id = cls._args_datasource_set_create.resource_id
         _schema.resource_location = cls._args_datasource_set_create.resource_location
         _schema.resource_name = cls._args_datasource_set_create.resource_name
+        _schema.resource_properties = cls._args_datasource_set_create.resource_properties
         _schema.resource_type = cls._args_datasource_set_create.resource_type
         _schema.resource_uri = cls._args_datasource_set_create.resource_uri
 
@@ -449,6 +509,7 @@ class ValidateForRestore(AAZCommand):
             _schema.resource_id = cls._args_datasource_create.resource_id
             _schema.resource_location = cls._args_datasource_create.resource_location
             _schema.resource_name = cls._args_datasource_create.resource_name
+            _schema.resource_properties = cls._args_datasource_create.resource_properties
             _schema.resource_type = cls._args_datasource_create.resource_type
             _schema.resource_uri = cls._args_datasource_create.resource_uri
             return
@@ -477,6 +538,11 @@ class ValidateForRestore(AAZCommand):
             options=["resource-name"],
             help="Unique identifier of the resource in the context of parent.",
         )
+        datasource_create.resource_properties = AAZObjectArg(
+            options=["resource-properties"],
+            help="Properties specific to data source",
+        )
+        cls._build_args_base_resource_properties_create(datasource_create.resource_properties)
         datasource_create.resource_type = AAZStrArg(
             options=["resource-type"],
             help="Resource Type of Datasource.",
@@ -491,6 +557,7 @@ class ValidateForRestore(AAZCommand):
         _schema.resource_id = cls._args_datasource_create.resource_id
         _schema.resource_location = cls._args_datasource_create.resource_location
         _schema.resource_name = cls._args_datasource_create.resource_name
+        _schema.resource_properties = cls._args_datasource_create.resource_properties
         _schema.resource_type = cls._args_datasource_create.resource_type
         _schema.resource_uri = cls._args_datasource_create.resource_uri
 
@@ -523,7 +590,7 @@ class ValidateForRestore(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -532,7 +599,7 @@ class ValidateForRestore(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -579,7 +646,7 @@ class ValidateForRestore(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01",
+                    "api-version", "2023-05-01",
                     required=True,
                 ),
             }
@@ -608,6 +675,7 @@ class ValidateForRestore(AAZCommand):
 
             restore_request_object = _builder.get(".restoreRequestObject")
             if restore_request_object is not None:
+                restore_request_object.set_prop("identityDetails", AAZObjectType, ".identity_details")
                 restore_request_object.set_const("objectType", "AzureBackupRecoveryPointBasedRestoreRequest", AAZStrType, ".azure_backup_recovery_point_based_restore_request", typ_kwargs={"flags": {"required": True}})
                 restore_request_object.set_const("objectType", "AzureBackupRecoveryTimeBasedRestoreRequest", AAZStrType, ".azure_backup_recovery_time_based_restore_request", typ_kwargs={"flags": {"required": True}})
                 restore_request_object.set_const("objectType", "AzureBackupRestoreWithRehydrationRequest", AAZStrType, ".azure_backup_restore_with_rehydration_request", typ_kwargs={"flags": {"required": True}})
@@ -617,6 +685,11 @@ class ValidateForRestore(AAZCommand):
                 restore_request_object.discriminate_by("objectType", "AzureBackupRecoveryPointBasedRestoreRequest")
                 restore_request_object.discriminate_by("objectType", "AzureBackupRecoveryTimeBasedRestoreRequest")
                 restore_request_object.discriminate_by("objectType", "AzureBackupRestoreWithRehydrationRequest")
+
+            identity_details = _builder.get(".restoreRequestObject.identityDetails")
+            if identity_details is not None:
+                identity_details.set_prop("useSystemAssignedIdentity", AAZBoolType, ".use_system_assigned_identity")
+                identity_details.set_prop("userAssignedIdentityArmUrl", AAZStrType, ".user_assigned_identity_arm_url")
 
             restore_target_info = _builder.get(".restoreRequestObject.restoreTargetInfo")
             if restore_target_info is not None:
@@ -674,6 +747,7 @@ class ValidateForRestore(AAZCommand):
                 disc_kubernetes_cluster_restore_criteria.set_prop("labelSelectors", AAZListType, ".kubernetes_cluster_restore_criteria.label_selectors")
                 disc_kubernetes_cluster_restore_criteria.set_prop("namespaceMappings", AAZDictType, ".kubernetes_cluster_restore_criteria.namespace_mappings")
                 disc_kubernetes_cluster_restore_criteria.set_prop("persistentVolumeRestoreMode", AAZStrType, ".kubernetes_cluster_restore_criteria.persistent_volume_restore_mode")
+                disc_kubernetes_cluster_restore_criteria.set_prop("restoreHookReferences", AAZListType, ".kubernetes_cluster_restore_criteria.restore_hook_references")
 
             excluded_namespaces = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.excludedNamespaces")
             if excluded_namespaces is not None:
@@ -698,6 +772,15 @@ class ValidateForRestore(AAZCommand):
             namespace_mappings = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.namespaceMappings")
             if namespace_mappings is not None:
                 namespace_mappings.set_elements(AAZStrType, ".")
+
+            restore_hook_references = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.restoreHookReferences")
+            if restore_hook_references is not None:
+                restore_hook_references.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.restoreHookReferences[]")
+            if _elements is not None:
+                _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_prop("namespace", AAZStrType, ".namespace")
 
             disc_kubernetes_pv_restore_criteria = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesPVRestoreCriteria}")
             if disc_kubernetes_pv_restore_criteria is not None:
@@ -797,6 +880,12 @@ class _ValidateForRestoreHelper:
             secret_store_resource.set_prop("value", AAZStrType, ".value")
 
     @classmethod
+    def _build_schema_base_resource_properties_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("objectType", AAZStrType, ".object_type", typ_kwargs={"flags": {"required": True}})
+
+    @classmethod
     def _build_schema_datasource_set_create(cls, _builder):
         if _builder is None:
             return
@@ -805,6 +894,7 @@ class _ValidateForRestoreHelper:
         _builder.set_prop("resourceID", AAZStrType, ".resource_id", typ_kwargs={"flags": {"required": True}})
         _builder.set_prop("resourceLocation", AAZStrType, ".resource_location")
         _builder.set_prop("resourceName", AAZStrType, ".resource_name")
+        cls._build_schema_base_resource_properties_create(_builder.set_prop("resourceProperties", AAZObjectType, ".resource_properties"))
         _builder.set_prop("resourceType", AAZStrType, ".resource_type")
         _builder.set_prop("resourceUri", AAZStrType, ".resource_uri")
 
@@ -817,6 +907,7 @@ class _ValidateForRestoreHelper:
         _builder.set_prop("resourceID", AAZStrType, ".resource_id", typ_kwargs={"flags": {"required": True}})
         _builder.set_prop("resourceLocation", AAZStrType, ".resource_location")
         _builder.set_prop("resourceName", AAZStrType, ".resource_name")
+        cls._build_schema_base_resource_properties_create(_builder.set_prop("resourceProperties", AAZObjectType, ".resource_properties"))
         _builder.set_prop("resourceType", AAZStrType, ".resource_type")
         _builder.set_prop("resourceUri", AAZStrType, ".resource_uri")
 

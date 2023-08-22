@@ -8,51 +8,12 @@
 # from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from azext_containerapp._client_factory import ex_handler_factory
 from ._validators import validate_ssh
-
-
-def transform_containerapp_output(app):
-    props = ['name', 'location', 'resourceGroup', 'provisioningState']
-    result = {k: app[k] for k in app if k in props}
-
-    try:
-        result['fqdn'] = app['properties']['configuration']['ingress']['fqdn']
-    except:
-        result['fqdn'] = None
-
-    return result
-
-
-def transform_containerapp_list_output(apps):
-    return [transform_containerapp_output(a) for a in apps]
-
-
-def transform_revision_output(rev):
-    props = ['name', 'active', 'createdTime', 'trafficWeight', 'healthState', 'provisioningState', 'replicas']
-    result = {k: rev['properties'][k] for k in rev['properties'] if k in props}
-
-    if 'name' in rev:
-        result['name'] = rev['name']
-
-    if 'fqdn' in rev['properties']['template']:
-        result['fqdn'] = rev['properties']['template']['fqdn']
-
-    return result
-
-
-def transform_revision_list_output(revs):
-    return [transform_revision_output(r) for r in revs]
-
-
-def transform_job_execution_show_output(execution):
-    return {
-        'name': execution['name'],
-        'startTime': execution['properties']['startTime'],
-        'status': execution['properties']['status']
-    }
-
-
-def transform_job_execution_list_output(executions):
-    return [transform_job_execution_show_output(e) for e in executions]
+from ._transformers import (transform_containerapp_output,
+                            transform_containerapp_list_output,
+                            transform_job_execution_list_output,
+                            transform_job_execution_show_output,
+                            transform_revision_list_output,
+                            transform_revision_output)
 
 
 def load_command_table(self, _):
@@ -82,7 +43,7 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_managed_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
         g.custom_command('update', 'update_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
 
-    with self.command_group('containerapp job', is_preview=True) as g:
+    with self.command_group('containerapp job') as g:
         g.custom_show_command('show', 'show_containerappsjob')
         g.custom_command('list', 'list_containerappsjob')
         g.custom_command('create', 'create_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
@@ -118,7 +79,7 @@ def load_command_table(self, _):
         g.custom_command('upload', 'upload_certificate')
         g.custom_command('delete', 'delete_certificate', confirmation=True, exception_handler=ex_handler_factory(), is_preview=True)
 
-    with self.command_group('containerapp env storage', is_preview=True) as g:
+    with self.command_group('containerapp env storage') as g:
         g.custom_show_command('show', 'show_storage')
         g.custom_command('list', 'list_storage')
         g.custom_command('set', 'create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
@@ -138,6 +99,10 @@ def load_command_table(self, _):
     with self.command_group('containerapp service kafka') as g:
         g.custom_command('create', 'create_kafka_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_kafka_service', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp service mariadb') as g:
+        g.custom_command('create', 'create_mariadb_service', supports_no_wait=True)
+        g.custom_command('delete', 'delete_mariadb_service', confirmation=True, supports_no_wait=True)
 
     with self.command_group('containerapp identity') as g:
         g.custom_command('assign', 'assign_managed_identity', supports_no_wait=True, exception_handler=ex_handler_factory())
@@ -181,6 +146,12 @@ def load_command_table(self, _):
         g.custom_command('set', 'set_ip_restriction', exception_handler=ex_handler_factory())
         g.custom_command('remove', 'remove_ip_restriction')
         g.custom_show_command('list', 'show_ip_restrictions')
+
+    with self.command_group('containerapp ingress cors') as g:
+        g.custom_command('enable', 'enable_cors_policy', exception_handler=ex_handler_factory())
+        g.custom_command('disable', 'disable_cors_policy', exception_handler=ex_handler_factory())
+        g.custom_command('update', 'update_cors_policy', exception_handler=ex_handler_factory())
+        g.custom_show_command('show', 'show_cors_policy')
 
     with self.command_group('containerapp registry') as g:
         g.custom_command('set', 'set_registry', exception_handler=ex_handler_factory())
@@ -236,7 +207,7 @@ def load_command_table(self, _):
         g.custom_command('upload', 'upload_ssl', exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp hostname') as g:
-        g.custom_command('add', 'add_hostname', exception_handler=ex_handler_factory(), is_preview=True)
+        g.custom_command('add', 'add_hostname', exception_handler=ex_handler_factory())
         g.custom_command('bind', 'bind_hostname', exception_handler=ex_handler_factory())
         g.custom_command('list', 'list_hostname')
         g.custom_command('delete', 'delete_hostname', confirmation=True, exception_handler=ex_handler_factory())
@@ -244,7 +215,7 @@ def load_command_table(self, _):
     with self.command_group('containerapp compose') as g:
         g.custom_command('create', 'create_containerapps_from_compose')
 
-    with self.command_group('containerapp env workload-profile', is_preview=True) as g:
+    with self.command_group('containerapp env workload-profile') as g:
         g.custom_command('list-supported', 'list_supported_workload_profiles')
         g.custom_command('list', 'list_workload_profiles')
         g.custom_show_command('show', 'show_workload_profile')

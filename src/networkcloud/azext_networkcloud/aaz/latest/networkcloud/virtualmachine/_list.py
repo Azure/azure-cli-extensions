@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine list",
-    is_experimental=True,
 )
 class List(AAZCommand):
     """List virtual machines in the provided resource group or subscription.
@@ -26,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-12-preview",
+        "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/virtualmachines", "2022-12-12-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.networkcloud/virtualmachines", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines", "2023-07-01"],
         ]
     }
 
@@ -118,7 +117,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }
@@ -197,6 +196,10 @@ class List(AAZCommand):
             properties.admin_username = AAZStrType(
                 serialized_name="adminUsername",
                 flags={"required": True},
+            )
+            properties.availability_zone = AAZStrType(
+                serialized_name="availabilityZone",
+                flags={"read_only": True},
             )
             properties.bare_metal_machine_id = AAZStrType(
                 serialized_name="bareMetalMachineId",
@@ -464,7 +467,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }
@@ -543,6 +546,10 @@ class List(AAZCommand):
             properties.admin_username = AAZStrType(
                 serialized_name="adminUsername",
                 flags={"required": True},
+            )
+            properties.availability_zone = AAZStrType(
+                serialized_name="availabilityZone",
+                flags={"read_only": True},
             )
             properties.bare_metal_machine_id = AAZStrType(
                 serialized_name="bareMetalMachineId",

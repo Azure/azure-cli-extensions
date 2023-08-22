@@ -45,7 +45,6 @@ from ._utils import (
     repo_url_to_name,
     get_container_app_if_exists,
     get_containerapps_job_if_exists,
-    trigger_workflow,
     _ensure_location_allowed,
     register_provider_if_needed,
     validate_environment_location,
@@ -325,7 +324,6 @@ class ContainerAppsJob(Resource):  # pylint: disable=too-many-instance-attribute
             resource_group_name=self.resource_group.name,
             image=self.image,
             managed_env=self.env.get_rid(),
-            target_port=self.target_port,
             registry_server=None if no_registry else self.registry_server,
             registry_pass=None if no_registry else self.registry_pass,
             registry_user=None if no_registry else self.registry_user,
@@ -1041,14 +1039,6 @@ def _create_github_action(
         service_principal_tenant_id,
     ) = sp
 
-    # need to trigger the workflow manually if it already exists (performing an update)
-    try:
-        action = GitHubActionClient.show(cmd=app.cmd, resource_group_name=app.resource_group.name, name=app.name)
-        if action:
-            trigger_workflow(token, repo, action["properties"]["githubActionConfiguration"]["workflowName"], branch)
-    except:  # pylint: disable=bare-except
-        pass
-
     create_or_update_github_action(
         cmd=app.cmd,
         name=app.name,
@@ -1065,6 +1055,7 @@ def _create_github_action(
         service_principal_tenant_id=service_principal_tenant_id,
         image=app.image,
         context_path=context_path,
+        trigger_existing_workflow=True,
     )
 
 

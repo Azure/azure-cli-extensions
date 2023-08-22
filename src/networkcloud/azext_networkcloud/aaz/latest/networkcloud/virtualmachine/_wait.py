@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2023-07-01"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }
@@ -189,6 +189,10 @@ class Wait(AAZWaitCommand):
             properties.admin_username = AAZStrType(
                 serialized_name="adminUsername",
                 flags={"required": True},
+            )
+            properties.availability_zone = AAZStrType(
+                serialized_name="availabilityZone",
+                flags={"read_only": True},
             )
             properties.bare_metal_machine_id = AAZStrType(
                 serialized_name="bareMetalMachineId",

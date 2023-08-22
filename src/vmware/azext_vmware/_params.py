@@ -32,7 +32,7 @@ def load_arguments(self, _):
         c.argument('name', options_list=['--name', '-n'], help='Name of the cluster.')
         c.argument('sku', help='The product SKU.')
         c.argument('size', help='Number of hosts for the cluster. Minimum of 3 and a maximum of 16.')
-        c.argument('hosts', nargs='+', help='A cluster\'s hosts in the private cloud.')
+        c.argument('hosts', nargs='*', help='A cluster\'s hosts in the private cloud.')
         c.argument('yes', help='Delete without confirmation.')
 
     with self.argument_context('vmware private-cloud create') as c:

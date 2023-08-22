@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}", "2023-06-15"],
         ]
     }
 
@@ -42,7 +42,7 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the Network Fabric",
+            help="Name of the Network Fabric.",
             required=True,
             id_part="name",
         )
@@ -117,7 +117,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -160,7 +160,7 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -172,13 +172,26 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
             properties.fabric_asn = AAZIntType(
                 serialized_name="fabricASN",
                 flags={"required": True},
             )
+            properties.fabric_version = AAZStrType(
+                serialized_name="fabricVersion",
+                flags={"read_only": True},
+            )
             properties.ipv4_prefix = AAZStrType(
                 serialized_name="ipv4Prefix",
+                flags={"required": True},
             )
             properties.ipv6_prefix = AAZStrType(
                 serialized_name="ipv6Prefix",
@@ -203,23 +216,18 @@ class Wait(AAZWaitCommand):
                 serialized_name="networkFabricSku",
                 flags={"required": True},
             )
-            properties.operational_state = AAZStrType(
-                serialized_name="operationalState",
-                flags={"read_only": True},
-            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.rack_count = AAZIntType(
                 serialized_name="rackCount",
-                flags={"required": True},
             )
             properties.racks = AAZListType(
                 flags={"read_only": True},
             )
-            properties.router_id = AAZStrType(
-                serialized_name="routerId",
+            properties.router_ids = AAZListType(
+                serialized_name="routerIds",
                 flags={"read_only": True},
             )
             properties.server_count_per_rack = AAZIntType(
@@ -242,57 +250,18 @@ class Wait(AAZWaitCommand):
                 serialized_name="infrastructureVpnConfiguration",
                 flags={"required": True},
             )
+            _WaitHelper._build_schema_vpn_configuration_properties_read(management_network_configuration.infrastructure_vpn_configuration)
             management_network_configuration.workload_vpn_configuration = AAZObjectType(
                 serialized_name="workloadVpnConfiguration",
                 flags={"required": True},
             )
-
-            infrastructure_vpn_configuration = cls._schema_on_200.properties.management_network_configuration.infrastructure_vpn_configuration
-            infrastructure_vpn_configuration.administrative_state = AAZStrType(
-                serialized_name="administrativeState",
-                flags={"read_only": True},
-            )
-            infrastructure_vpn_configuration.network_to_network_interconnect_id = AAZStrType(
-                serialized_name="networkToNetworkInterconnectId",
-                flags={"read_only": True},
-            )
-            infrastructure_vpn_configuration.option_a_properties = AAZObjectType(
-                serialized_name="optionAProperties",
-            )
-            _WaitHelper._build_schema_option_a_properties_read(infrastructure_vpn_configuration.option_a_properties)
-            infrastructure_vpn_configuration.option_b_properties = AAZObjectType(
-                serialized_name="optionBProperties",
-            )
-            _WaitHelper._build_schema_option_b_properties_read(infrastructure_vpn_configuration.option_b_properties)
-            infrastructure_vpn_configuration.peering_option = AAZStrType(
-                serialized_name="peeringOption",
-                flags={"required": True},
-            )
-
-            workload_vpn_configuration = cls._schema_on_200.properties.management_network_configuration.workload_vpn_configuration
-            workload_vpn_configuration.administrative_state = AAZStrType(
-                serialized_name="administrativeState",
-                flags={"read_only": True},
-            )
-            workload_vpn_configuration.network_to_network_interconnect_id = AAZStrType(
-                serialized_name="networkToNetworkInterconnectId",
-                flags={"read_only": True},
-            )
-            workload_vpn_configuration.option_a_properties = AAZObjectType(
-                serialized_name="optionAProperties",
-            )
-            _WaitHelper._build_schema_option_a_properties_read(workload_vpn_configuration.option_a_properties)
-            workload_vpn_configuration.option_b_properties = AAZObjectType(
-                serialized_name="optionBProperties",
-            )
-            _WaitHelper._build_schema_option_b_properties_read(workload_vpn_configuration.option_b_properties)
-            workload_vpn_configuration.peering_option = AAZStrType(
-                serialized_name="peeringOption",
-                flags={"required": True},
-            )
+            _WaitHelper._build_schema_vpn_configuration_properties_read(management_network_configuration.workload_vpn_configuration)
 
             racks = cls._schema_on_200.properties.racks
             racks.Element = AAZStrType()
+
+            router_ids = cls._schema_on_200.properties.router_ids
+            router_ids.Element = AAZStrType()
 
             terminal_server_configuration = cls._schema_on_200.properties.terminal_server_configuration
             terminal_server_configuration.network_device_id = AAZStrType(
@@ -352,93 +321,123 @@ class Wait(AAZWaitCommand):
 class _WaitHelper:
     """Helper class for Wait"""
 
-    _schema_option_a_properties_read = None
+    _schema_vpn_configuration_properties_read = None
 
     @classmethod
-    def _build_schema_option_a_properties_read(cls, _schema):
-        if cls._schema_option_a_properties_read is not None:
-            _schema.bfd_configuration = cls._schema_option_a_properties_read.bfd_configuration
-            _schema.mtu = cls._schema_option_a_properties_read.mtu
-            _schema.peer_asn = cls._schema_option_a_properties_read.peer_asn
-            _schema.primary_ipv4_prefix = cls._schema_option_a_properties_read.primary_ipv4_prefix
-            _schema.primary_ipv6_prefix = cls._schema_option_a_properties_read.primary_ipv6_prefix
-            _schema.secondary_ipv4_prefix = cls._schema_option_a_properties_read.secondary_ipv4_prefix
-            _schema.secondary_ipv6_prefix = cls._schema_option_a_properties_read.secondary_ipv6_prefix
-            _schema.vlan_id = cls._schema_option_a_properties_read.vlan_id
+    def _build_schema_vpn_configuration_properties_read(cls, _schema):
+        if cls._schema_vpn_configuration_properties_read is not None:
+            _schema.administrative_state = cls._schema_vpn_configuration_properties_read.administrative_state
+            _schema.network_to_network_interconnect_id = cls._schema_vpn_configuration_properties_read.network_to_network_interconnect_id
+            _schema.option_a_properties = cls._schema_vpn_configuration_properties_read.option_a_properties
+            _schema.option_b_properties = cls._schema_vpn_configuration_properties_read.option_b_properties
+            _schema.peering_option = cls._schema_vpn_configuration_properties_read.peering_option
             return
 
-        cls._schema_option_a_properties_read = _schema_option_a_properties_read = AAZObjectType()
+        cls._schema_vpn_configuration_properties_read = _schema_vpn_configuration_properties_read = AAZObjectType()
 
-        option_a_properties_read = _schema_option_a_properties_read
-        option_a_properties_read.bfd_configuration = AAZObjectType(
+        vpn_configuration_properties_read = _schema_vpn_configuration_properties_read
+        vpn_configuration_properties_read.administrative_state = AAZStrType(
+            serialized_name="administrativeState",
+            flags={"read_only": True},
+        )
+        vpn_configuration_properties_read.network_to_network_interconnect_id = AAZStrType(
+            serialized_name="networkToNetworkInterconnectId",
+        )
+        vpn_configuration_properties_read.option_a_properties = AAZObjectType(
+            serialized_name="optionAProperties",
+        )
+        vpn_configuration_properties_read.option_b_properties = AAZObjectType(
+            serialized_name="optionBProperties",
+        )
+        vpn_configuration_properties_read.peering_option = AAZStrType(
+            serialized_name="peeringOption",
+            flags={"required": True},
+        )
+
+        option_a_properties = _schema_vpn_configuration_properties_read.option_a_properties
+        option_a_properties.bfd_configuration = AAZObjectType(
             serialized_name="bfdConfiguration",
         )
-        option_a_properties_read.mtu = AAZIntType()
-        option_a_properties_read.peer_asn = AAZIntType(
+        option_a_properties.mtu = AAZIntType()
+        option_a_properties.peer_asn = AAZIntType(
             serialized_name="peerASN",
+            flags={"required": True},
         )
-        option_a_properties_read.primary_ipv4_prefix = AAZStrType(
+        option_a_properties.primary_ipv4_prefix = AAZStrType(
             serialized_name="primaryIpv4Prefix",
         )
-        option_a_properties_read.primary_ipv6_prefix = AAZStrType(
+        option_a_properties.primary_ipv6_prefix = AAZStrType(
             serialized_name="primaryIpv6Prefix",
         )
-        option_a_properties_read.secondary_ipv4_prefix = AAZStrType(
+        option_a_properties.secondary_ipv4_prefix = AAZStrType(
             serialized_name="secondaryIpv4Prefix",
         )
-        option_a_properties_read.secondary_ipv6_prefix = AAZStrType(
+        option_a_properties.secondary_ipv6_prefix = AAZStrType(
             serialized_name="secondaryIpv6Prefix",
         )
-        option_a_properties_read.vlan_id = AAZIntType(
+        option_a_properties.vlan_id = AAZIntType(
             serialized_name="vlanId",
+            flags={"required": True},
         )
 
-        bfd_configuration = _schema_option_a_properties_read.bfd_configuration
-        bfd_configuration.interval = AAZIntType(
+        bfd_configuration = _schema_vpn_configuration_properties_read.option_a_properties.bfd_configuration
+        bfd_configuration.administrative_state = AAZStrType(
+            serialized_name="administrativeState",
             flags={"read_only": True},
         )
-        bfd_configuration.multiplier = AAZIntType(
-            flags={"read_only": True},
+        bfd_configuration.interval_in_milli_seconds = AAZIntType(
+            serialized_name="intervalInMilliSeconds",
         )
+        bfd_configuration.multiplier = AAZIntType()
 
-        _schema.bfd_configuration = cls._schema_option_a_properties_read.bfd_configuration
-        _schema.mtu = cls._schema_option_a_properties_read.mtu
-        _schema.peer_asn = cls._schema_option_a_properties_read.peer_asn
-        _schema.primary_ipv4_prefix = cls._schema_option_a_properties_read.primary_ipv4_prefix
-        _schema.primary_ipv6_prefix = cls._schema_option_a_properties_read.primary_ipv6_prefix
-        _schema.secondary_ipv4_prefix = cls._schema_option_a_properties_read.secondary_ipv4_prefix
-        _schema.secondary_ipv6_prefix = cls._schema_option_a_properties_read.secondary_ipv6_prefix
-        _schema.vlan_id = cls._schema_option_a_properties_read.vlan_id
-
-    _schema_option_b_properties_read = None
-
-    @classmethod
-    def _build_schema_option_b_properties_read(cls, _schema):
-        if cls._schema_option_b_properties_read is not None:
-            _schema.export_route_targets = cls._schema_option_b_properties_read.export_route_targets
-            _schema.import_route_targets = cls._schema_option_b_properties_read.import_route_targets
-            return
-
-        cls._schema_option_b_properties_read = _schema_option_b_properties_read = AAZObjectType()
-
-        option_b_properties_read = _schema_option_b_properties_read
-        option_b_properties_read.export_route_targets = AAZListType(
+        option_b_properties = _schema_vpn_configuration_properties_read.option_b_properties
+        option_b_properties.export_route_targets = AAZListType(
             serialized_name="exportRouteTargets",
-            flags={"required": True},
         )
-        option_b_properties_read.import_route_targets = AAZListType(
+        option_b_properties.import_route_targets = AAZListType(
             serialized_name="importRouteTargets",
-            flags={"required": True},
+        )
+        option_b_properties.route_targets = AAZObjectType(
+            serialized_name="routeTargets",
         )
 
-        export_route_targets = _schema_option_b_properties_read.export_route_targets
+        export_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.export_route_targets
         export_route_targets.Element = AAZStrType()
 
-        import_route_targets = _schema_option_b_properties_read.import_route_targets
+        import_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.import_route_targets
         import_route_targets.Element = AAZStrType()
 
-        _schema.export_route_targets = cls._schema_option_b_properties_read.export_route_targets
-        _schema.import_route_targets = cls._schema_option_b_properties_read.import_route_targets
+        route_targets = _schema_vpn_configuration_properties_read.option_b_properties.route_targets
+        route_targets.export_ipv4_route_targets = AAZListType(
+            serialized_name="exportIpv4RouteTargets",
+        )
+        route_targets.export_ipv6_route_targets = AAZListType(
+            serialized_name="exportIpv6RouteTargets",
+        )
+        route_targets.import_ipv4_route_targets = AAZListType(
+            serialized_name="importIpv4RouteTargets",
+        )
+        route_targets.import_ipv6_route_targets = AAZListType(
+            serialized_name="importIpv6RouteTargets",
+        )
+
+        export_ipv4_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.route_targets.export_ipv4_route_targets
+        export_ipv4_route_targets.Element = AAZStrType()
+
+        export_ipv6_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.route_targets.export_ipv6_route_targets
+        export_ipv6_route_targets.Element = AAZStrType()
+
+        import_ipv4_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.route_targets.import_ipv4_route_targets
+        import_ipv4_route_targets.Element = AAZStrType()
+
+        import_ipv6_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.route_targets.import_ipv6_route_targets
+        import_ipv6_route_targets.Element = AAZStrType()
+
+        _schema.administrative_state = cls._schema_vpn_configuration_properties_read.administrative_state
+        _schema.network_to_network_interconnect_id = cls._schema_vpn_configuration_properties_read.network_to_network_interconnect_id
+        _schema.option_a_properties = cls._schema_vpn_configuration_properties_read.option_a_properties
+        _schema.option_b_properties = cls._schema_vpn_configuration_properties_read.option_b_properties
+        _schema.peering_option = cls._schema_vpn_configuration_properties_read.peering_option
 
 
 __all__ = ["Wait"]

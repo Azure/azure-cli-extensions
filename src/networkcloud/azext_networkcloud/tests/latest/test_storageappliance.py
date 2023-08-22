@@ -9,17 +9,20 @@
 StorageAppliance tests scenarios
 """
 
+from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import ScenarioTest
+
 from .config import CONFIG
 
 
 def setup_scenario1(test):
     """Env setup_scenario1"""
+    pass
 
 
 def cleanup_scenario1(test):
     """Env cleanup_scenario1"""
+    pass
 
 
 def call_scenario1(test):
@@ -51,7 +54,7 @@ def step_enable_remote_vendor_management(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud storageappliance enable-remote-vendor-management --resource-group {rg} --storage-appliance-name {name}",
+        "az networkcloud storageappliance enable-remote-vendor-management --resource-group {resourceGroup} --storage-appliance-name {name}",
         checks=checks,
     )
 
@@ -61,7 +64,7 @@ def step_disable_remote_vendor_management(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud storageappliance disable-remote-vendor-management --resource-group {rg} --storage-appliance-name {name}",
+        "az networkcloud storageappliance disable-remote-vendor-management --resource-group {resourceGroup} --storage-appliance-name {name}",
         checks=checks,
     )
 
@@ -71,7 +74,7 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud storageappliance show --resource-group {rg} --storage-appliance-name {name}"
+        "az networkcloud storageappliance show --resource-group {resourceGroup} --storage-appliance-name {name}"
     )
 
 
@@ -79,7 +82,7 @@ def step_list_resource_group(test, checks=None):
     """StorageAppliance list by resource group operation"""
     if checks is None:
         checks = []
-    test.cmd("az networkcloud storageappliance list --resource-group {rg}")
+    test.cmd("az networkcloud storageappliance list --resource-group {resourceGroup}")
 
 
 def step_list_subscription(test, checks=None):
@@ -98,7 +101,7 @@ def step_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        "az networkcloud storageappliance update --resource-group {rg} --storage-appliance-name {name} --serial-number {serialNumber} --tags {tagsUpdate}"
+        "az networkcloud storageappliance update --resource-group {resourceGroup} --storage-appliance-name {name} --serial-number {serialNumber} --tags {tagsUpdate}"
     )
 
 
@@ -112,7 +115,7 @@ class StorageApplianceScenarioTest(ScenarioTest):
         self.kwargs.update(
             {
                 "name": CONFIG.get("STORAGE_APPLIANCE", "name"),
-                "rg": CONFIG.get("STORAGE_APPLIANCE", "rg"),
+                "resourceGroup": CONFIG.get("STORAGE_APPLIANCE", "resource_group"),
                 "tagsUpdate": CONFIG.get("STORAGE_APPLIANCE", "tags_update"),
                 "serialNumber": CONFIG.get("STORAGE_APPLIANCE", "serial_number"),
             }

@@ -13,22 +13,21 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster create",
-    is_experimental=True,
 )
 class Create(AAZCommand):
     """Create a new cluster or update the properties of the cluster if it exists.
 
     :example: Create or update single rack cluster
-        az networkcloud cluster create --name "clusterName" -g "resourceGroupName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterManagerExtendedLocationName" type="CustomLocation" --location "eastus" --analytics-workspace-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/microsoft.operationalInsights/workspaces/logAnalyticsWorkspaceName" --cluster-location "Foo Street, 3rd Floor, row 9" --cluster-service-principal application-id="12345678-1234-1234-1234-123456789012" password="password" principal-id="00000008-0004-0004-0004-000000000012" tenant-id="80000000-4000-4000-4000-120000000000" --cluster-type "SingleRack" --cluster-version "3.0.0" --compute-deployment-threshold type="PercentSuccess" grouping="PerCluster" value=90  --network-fabric-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/default" --aggregator-or-single-rack-definition "{networkRackId:'/subscriptions/subscriptionId/resourceGroups/rgName/providers/Microsoft.Network/virtualNetworks/cmName/subnets/ClusterManagerSubnet',rackSkuId:'/subscriptions/subscriptionId/providers/Microsoft.NetworkCloud/rackSkus/VLab_Single_DellR750_8C2M_x70r3_9',rackSerialNumber:b99m99r1,rackLocation:b99m99r1,availabilityZone:1,storageApplianceConfigurationData:[{rackSlot:1,adminCredentials:{username:'adminuser',password:'password'},storageApplianceName:name,serialNumber:serial}],bareMetalMachineConfigurationData:[{bmcCredentials:{password:'bmcPassword',username:'root'},bmcMacAddress:'AA:BB:CC:DD:E7:08',bootMacAddress:'AA:BB:CC:F8:71:2E',machineName:lab00r750wkr1,rackSlot:2,serialNumber:5HS7PK3},{bmcCredentials:{password:'bmcPassword',username:'root'},bmcMacAddress:'AA:BB:CC:FD:DC:76',bootMacAddress:'AA:BB:CC:F8:50:CA',machineName:lab00r750wkr8,rackSlot:11,serialNumber:9M56PK3}]}" --tags key1="myvalue1" key2="myvalue2"
+        az networkcloud cluster create --name "clusterName" -g "resourceGroupName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterManagerExtendedLocationName" type="CustomLocation" --location "eastus" --analytics-workspace-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/microsoft.operationalInsights/workspaces/logAnalyticsWorkspaceName" --cluster-location "Foo Street, 3rd Floor, row 9" --cluster-service-principal application-id="12345678-1234-1234-1234-123456789012" password="password" principal-id="00000008-0004-0004-0004-000000000012" tenant-id="80000000-4000-4000-4000-120000000000" --cluster-type "SingleRack" --cluster-version "3.0.0" --compute-deployment-threshold type="PercentSuccess" grouping="PerCluster" value=90  --network-fabric-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/default" --aggregator-or-single-rack-definition network-rack-id="/subscriptions/subscriptionId/resourceGroups/rgName/providers/Microsoft.Network/virtualNetworks/cmName/subnets/ClusterManagerSubnet" rack-sku-id="/subscriptions/subscriptionId/providers/Microsoft.NetworkCloud/rackSkus/VLab_Single_DellR750_8C2M_x70r3_9" rack-serial-number=b99m99r1 rack-location='b99m99r1' availability-zone=1 storage-appliance-configuration-data="[{rackSlot:1,adminCredentials:{username:'adminuser',password:'password'},storageApplianceName:name,serialNumber:serial}]" bare-metal-machine-configuration-data="[{bmcCredentials:{password:'bmcPassword',username:'root'},bmcMacAddress:'AA:BB:CC:DD:E7:08',bootMacAddress:'AA:BB:CC:F8:71:2E',machineName:lab00r750wkr1,rackSlot:2,serialNumber:5HS7PK3},{bmcCredentials:{password:'bmcPassword',username:'root'},bmcMacAddress:'AA:BB:CC:FD:DC:76',bootMacAddress:'AA:BB:CC:F8:50:CA',machineName:lab00r750wkr8,rackSlot:11,serialNumber:9M56PK3}]" --tags key1="myvalue1" key2="myvalue2"
 
     :example: Create or update single rack cluster using json file input
-        az networkcloud cluster create --name "clusterName" -g "resourceGroupName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterManagerExtendedLocationName" type="CustomLocation" --location "eastus" --analytics-workspace-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/microsoft.operationalInsights/workspaces/logAnalyticsWorkspaceName" --cluster-location "Foo Street, 3rd Floor, row 9" --cluster-service-principal application-id="12345678-1234-1234-1234-123456789012" password="password" principal-id="00000008-0004-0004-0004-000000000012" tenant-id="80000000-4000-4000-4000-120000000000" --cluster-type "SingleRack" --cluster-version "3.0.0" --compute-deployment-threshold type="PercentSuccess" grouping="PerCluster" value=90  --network-fabric-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/default" --aggregator-or-single-rack-definition ./aggregator-or-single-rack-definition.json --tags key1="myvalue1" key2="myvalue2"
+        az networkcloud cluster create --name "clusterName" -g "resourceGroupName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterManagerExtendedLocationName" type="CustomLocation" --location "eastus" --analytics-workspace-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/microsoft.operationalInsights/workspaces/logAnalyticsWorkspaceName" --cluster-location "Foo Street, 3rd Floor, row 9" --cluster-service-principal application-id="12345678-1234-1234-1234-123456789012" password="password" principal-id="00000008-0004-0004-0004-000000000012" tenant-id="80000000-4000-4000-4000-120000000000" --cluster-type "SingleRack" --cluster-version "3.0.0" --compute-deployment-threshold type="PercentSuccess" grouping="PerCluster" value=90  --network-fabric-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/default" --aggregator-or-single-rack-definition ./aggregator-or-single-rack-definition.json --tags key1="myvalue1" key2="myvalue2
     """
 
     _aaz_info = {
-        "version": "2022-12-12-preview",
+        "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2023-07-01"],
         ]
     }
 
@@ -113,7 +112,6 @@ class Create(AAZCommand):
             options=["--analytics-workspace-id"],
             arg_group="Properties",
             help="The resource ID of the Log Analytics Workspace that will be used for storing relevant logs.",
-            required=True,
         )
         _args_schema.cluster_location = AAZStrArg(
             options=["--cluster-location"],
@@ -495,7 +493,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }
@@ -533,7 +531,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 _CreateHelper._build_schema_rack_definition_create(properties.set_prop("aggregatorOrSingleRackDefinition", AAZObjectType, ".aggregator_or_single_rack_definition", typ_kwargs={"flags": {"required": True}}))
-                properties.set_prop("analyticsWorkspaceId", AAZStrType, ".analytics_workspace_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("analyticsWorkspaceId", AAZStrType, ".analytics_workspace_id")
                 properties.set_prop("clusterLocation", AAZStrType, ".cluster_location")
                 properties.set_prop("clusterServicePrincipal", AAZObjectType, ".cluster_service_principal")
                 properties.set_prop("clusterType", AAZStrType, ".cluster_type", typ_kwargs={"flags": {"required": True}})
@@ -623,7 +621,6 @@ class Create(AAZCommand):
             _CreateHelper._build_schema_rack_definition_read(properties.aggregator_or_single_rack_definition)
             properties.analytics_workspace_id = AAZStrType(
                 serialized_name="analyticsWorkspaceId",
-                flags={"required": True},
             )
             properties.available_upgrade_versions = AAZListType(
                 serialized_name="availableUpgradeVersions",

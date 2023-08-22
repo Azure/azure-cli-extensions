@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/networkinterfaces/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/networkinterfaces/{}", "2023-06-15"],
         ]
     }
 
@@ -42,13 +42,13 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.network_device_name = AAZStrArg(
             options=["--device", "--network-device-name"],
-            help="Name of the Network Device",
+            help="Name of the Network Device.",
             required=True,
             id_part="name",
         )
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the NetworkInterfaceName",
+            help="Name of the Network Interface.",
             required=True,
             id_part="child_name_1",
         )
@@ -127,7 +127,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }

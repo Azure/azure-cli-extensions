@@ -9,17 +9,20 @@
 Cluster tests scenarios
 """
 
+from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+
 from .config import CONFIG
 
 
 def setup_scenario1(test):
     """Env setup_scenario1"""
+    pass
 
 
 def cleanup_scenario1(test):
     """Env cleanup_scenario1"""
+    pass
 
 
 def call_scenario1(test):
@@ -51,10 +54,12 @@ def call_scenario1(test):
 
 def setup_scenario2(test):
     """Env setup_scenario2"""
+    pass
 
 
 def cleanup_scenario2(test):
     """Env cleanup_scenario2"""
+    pass
 
 
 def call_scenario2(test):
@@ -66,10 +71,12 @@ def call_scenario2(test):
 
 def setup_scenario3(test):
     """Env setup_scenario3"""
+    pass
 
 
 def cleanup_scenario3(test):
     """Env cleanup_scenario3"""
+    pass
 
 
 def call_scenario3(test):
@@ -81,10 +88,12 @@ def call_scenario3(test):
 
 def setup_scenario4(test):
     """Env setup_scenario4"""
+    pass
 
 
 def cleanup_scenario4(test):
     """Env cleanup_scenario4"""
+    pass
 
 
 def call_scenario4(test):
@@ -105,7 +114,14 @@ def step_create(test, checks=None):
         "--cluster-service-principal application-id={applicationId} password={password} principal-id={principalId} "
         "tenant-id={tenantId} --cluster-type {clusterType} --cluster-version {clusterVersion} "
         "--compute-deployment-threshold type={thresholdType} grouping={thresholdGrouping} value={thresholdValue} "
-        "--network-fabric-id {networkFabricId} --aggregator-or-single-rack-definition {aggregatorOrSingleRackDefinition} "
+        "--network-fabric-id {networkFabricId} "
+        "--aggregator-or-single-rack-definition network-rack-id={networkRackId}"
+        " rack-sku-id={rackSkuId}"
+        " rack-serial-number={rackSerialNumber}"
+        " rack-location={rackLocation}"
+        " availability-zone={availabilityZone}"
+        " storage-appliance-configuration-data={storageApplianceConfigurationData}"
+        " bare-metal-machine-configuration-data={bareMetalMachineConfigurationData} "
         "--tags {tags}",
         checks=checks,
     )
@@ -144,16 +160,14 @@ def step_show(test, checks=None):
     """cluster show operation"""
     if checks is None:
         checks = []
-    test.cmd(
-        "az networkcloud cluster show --name {name} --resource-group {rg}")
+    test.cmd("az networkcloud cluster show --name {name} --resource-group {rg}")
 
 
 def step_delete(test, checks=None):
     """cluster delete operation"""
     if checks is None:
         checks = []
-    test.cmd(
-        "az networkcloud cluster delete --name {name} --resource-group {rg} -y")
+    test.cmd("az networkcloud cluster delete --name {name} --resource-group {rg} -y")
 
 
 def step_delete_sim(test, checks=None):
@@ -190,7 +204,7 @@ def step_update(test, checks=None):
 
 
 # Cluster update-version action will take hours to complete.
-# The current test will execute the command in async mode.
+# The current test will execute the cluster update-version command in async mode.
 def step_update_version_sim(test, checks=None):
     """cluster update-version operation"""
     if checks is None:
@@ -226,8 +240,16 @@ class ClusterScenarioTest(ScenarioTest):
                 "thresholdGrouping": CONFIG.get("CLUSTER", "threshold_grouping"),
                 "thresholdValue": CONFIG.get("CLUSTER", "threshold_value"),
                 "networkFabricId": CONFIG.get("CLUSTER", "network_fabric_id"),
-                "aggregatorOrSingleRackDefinition": CONFIG.get(
-                    "CLUSTER", "aggregator_or_single_rack_definition"
+                "networkRackId": CONFIG.get("CLUSTER", "network_rack_id"),
+                "rackSkuId": CONFIG.get("CLUSTER", "rack_sku_id"),
+                "rackSerialNumber": CONFIG.get("CLUSTER", "rack_serial_number"),
+                "rackLocation": CONFIG.get("CLUSTER", "rack_location"),
+                "availabilityZone": CONFIG.get("CLUSTER", "availability_zone"),
+                "storageApplianceConfigurationData": CONFIG.get(
+                    "CLUSTER", "storage_appliance_configuration_data"
+                ),
+                "bareMetalMachineConfigurationData": CONFIG.get(
+                    "CLUSTER", "bare_metal_machine_configuration_data"
                 ),
                 "aggregatorOrSingleRackDefinitionDirectory": CONFIG.get(
                     "CLUSTER", "aggregator_or_single_rack_definition_directory"

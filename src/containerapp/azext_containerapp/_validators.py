@@ -13,8 +13,8 @@ from knack.log import get_logger
 from ._clients import ContainerAppClient
 from ._ssh_utils import ping_container_app
 from ._utils import safe_get, is_registry_msi_system
-from ._constants import ACR_IMAGE_SUFFIX, LOG_TYPE_SYSTEM
-
+from ._constants import ACR_IMAGE_SUFFIX, LOG_TYPE_SYSTEM, CONNECTED_ENVIRONMENT_RESOURCE_TYPE, \
+    CONNECTED_ENVIRONMENT_TYPE, MANAGED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_TYPE, CONTAINER_APPS_RP
 
 logger = get_logger(__name__)
 
@@ -41,9 +41,13 @@ def _is_number(s):
 
 def validate_revision_suffix(value):
     if value is not None:
-        matched = re.match(r"^[a-z](?!.*-{2})([-a-z0-9]*[a-z0-9])?$", value)
+        # what does the following regex check?
+        # 1. ^[a-z0-9] - starts with a letter or number
+        # 2. (?!.*-{2}) - does not contain '--'
+        # 3. ([-a-z0-9]*[a-z0-9])? - ends with a letter or number and can contain '-' in between
+        matched = re.match(r"^[a-z0-9](?!.*-{2})([-a-z0-9]*[a-z0-9])?$", value)
         if not matched:
-            raise ValidationError(f"Invalid Container App revision name '{value}'. A revision name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character and cannot have '--'.")
+            raise ValidationError(f"Invalid Container App revision suffix '{value}'. A revision suffix must consist of lower case alphanumeric characters or '-', start with a letter or number, end with an alphanumeric character and cannot have '--'.")
 
 
 def validate_memory(namespace):
@@ -135,6 +139,15 @@ def validate_ingress(namespace):
                 raise ValidationError("Usage error: must specify --target-port with --ingress")
 
 
+def validate_allow_insecure(namespace):
+    if "create" in namespace.command.lower():
+        if namespace.allow_insecure:
+            if not namespace.ingress or not namespace.target_port:
+                raise ValidationError("Usage error: must specify --ingress and --target-port with --allow-insecure")
+            if namespace.transport == "tcp":
+                raise ValidationError("Usage error: --allow-insecure is not supported for TCP ingress")
+
+
 def _set_ssh_defaults(cmd, namespace):
     app = ContainerAppClient.show(cmd, namespace.resource_group_name, namespace.name)
     if not app:
@@ -201,3 +214,60 @@ def validate_ssh(cmd, namespace):
         _validate_revision_exists(cmd, namespace)
         _validate_replica_exists(cmd, namespace)
         _validate_container_exists(cmd, namespace)
+
+
+def validate_cors_max_age(cmd, namespace):
+    if namespace.max_age:
+        try:
+            if namespace.max_age == "":
+                return
+
+            max_age = int(namespace.max_age)
+            if max_age < 0:
+                raise InvalidArgumentValueError("max-age must be a positive integer.")
+        except ValueError:
+            raise InvalidArgumentValueError("max-age must be an integer.")
+
+
+# validate for preview
+def validate_env_name_or_id(cmd, namespace):
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    from msrestazure.tools import is_valid_resource_id, resource_id, parse_resource_id
+
+    if not namespace.managed_env:
+        return
+
+    # Set environment type
+    environment_type = None
+
+    if namespace.__dict__.get("environment_type"):
+        environment_type = namespace.environment_type
+
+    if is_valid_resource_id(namespace.managed_env):
+        env_dict = parse_resource_id(namespace.managed_env)
+        resource_type = env_dict.get("resource_type")
+        if resource_type:
+            if CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower() == resource_type.lower():
+                environment_type = CONNECTED_ENVIRONMENT_TYPE
+            if MANAGED_ENVIRONMENT_RESOURCE_TYPE.lower() == resource_type.lower():
+                environment_type = MANAGED_ENVIRONMENT_TYPE
+
+    # Validate resource id / format resource id
+    if environment_type == CONNECTED_ENVIRONMENT_TYPE:
+        if not is_valid_resource_id(namespace.managed_env):
+            namespace.managed_env = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=namespace.resource_group_name,
+                namespace=CONTAINER_APPS_RP,
+                type=CONNECTED_ENVIRONMENT_RESOURCE_TYPE,
+                name=namespace.managed_env
+            )
+    else:
+        if not is_valid_resource_id(namespace.managed_env):
+            namespace.managed_env = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=namespace.resource_group_name,
+                namespace=CONTAINER_APPS_RP,
+                type=MANAGED_ENVIRONMENT_RESOURCE_TYPE,
+                name=namespace.managed_env
+            )

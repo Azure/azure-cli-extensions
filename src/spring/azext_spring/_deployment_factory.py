@@ -6,7 +6,7 @@
 # pylint: disable=wrong-import-order
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.util import get_file_json
-from .vendored_sdks.appplatform.v2023_05_01_preview import models
+from .vendored_sdks.appplatform.v2023_09_01_preview import models
 from ._deployment_source_factory import source_selector
 from .custom import format_scale
 
@@ -207,6 +207,10 @@ class EnterpriseDeployment(DefaultDeployment):
         if jvm_options is None or env is not None:
             return {}
         return {'env': deployment_resource.properties.deployment_settings.environment_variables}
+
+    def validate_instance_count(self, instance_count):
+        if instance_count < 1 or instance_count > 1000:
+            raise InvalidArgumentValueError('Invalid --instance-count, should be in range [1, 1000]')
 
 
 class BasicTierDeployment(DefaultDeployment):

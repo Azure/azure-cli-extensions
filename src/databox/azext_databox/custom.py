@@ -20,7 +20,7 @@ logger = get_logger(__name__)
 class JobCreate(_JobCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZResourceIdArg, AAZResourceIdArgFormat, AAZListArg, AAZStrArg, AAZArgEnum, AAZFreeFormDictArg, AAZFreeFormDictArgFormat
+        from azure.cli.core.aaz import AAZResourceIdArg, AAZResourceIdArgFormat, AAZListArg, AAZStrArg, AAZArgEnum, AAZFreeFormDictArg, AAZFreeFormDictArgFormat, AAZBoolArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.storage_accounts = AAZListArg(
             options=["--storage-account"],
@@ -50,6 +50,16 @@ class JobCreate(_JobCreate):
             options=["--transfer-filter-details"],
             help="Path to the map of filter type and the details to filter.",
             fmt=AAZFreeFormDictArgFormat()
+        )
+        args_schema.transfer_all_blobs = AAZBoolArg(
+            options=["--transfer-all-blobs"],
+            help="To indicate if all Azure blobs have to be transferred",
+            default=False
+        )
+        args_schema.transfer_all_files = AAZBoolArg(
+            options=["--transfer-all-files"],
+            help="To indicate if all Azure files have to be transferred",
+            default=False
         )
         args_schema.data_box._registered = False
         args_schema.data_box_disk._registered = False
@@ -108,8 +118,8 @@ class JobCreate(_JobCreate):
                         'transfer_all_details': {
                             'include': {
                                 'data_account_type': data_account_type,
-                                'transfer_all_blobs': True,
-                                'transfer_all_files': True
+                                'transfer_all_blobs': args.transfer_all_blobs,
+                                'transfer_all_files': args.transfer_all_files
                             }
                         }
                     }

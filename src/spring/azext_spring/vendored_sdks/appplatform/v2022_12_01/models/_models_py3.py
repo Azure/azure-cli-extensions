@@ -2259,7 +2259,7 @@ class ClusterResourceProperties(_serialization.Model):
     :vartype vnet_addons: ~azure.mgmt.appplatform.v2022_12_01.models.ServiceVNetAddons
     :ivar version: Version of the Service.
     :vartype version: int
-    :ivar service_id: ServiceInstanceEntity GUID which uniquely identifies a created resource.
+    :ivar service_id: ServiceInstanceEntity Id which uniquely identifies a created resource.
     :vartype service_id: str
     :ivar power_state: Power state of the Service. Known values are: "Running" and "Stopped".
     :vartype power_state: str or ~azure.mgmt.appplatform.v2022_12_01.models.PowerState
@@ -3088,7 +3088,8 @@ class CustomContainer(_serialization.Model):
     :ivar image_registry_credential: Credential of the image registry.
     :vartype image_registry_credential:
      ~azure.mgmt.appplatform.v2022_12_01.models.ImageRegistryCredential
-    :ivar language_framework: Language framework of the container image uploaded.
+    :ivar language_framework: Language framework of the container image uploaded. Supported values:
+     "springboot", "", null.
     :vartype language_framework: str
     """
 
@@ -3127,7 +3128,8 @@ class CustomContainer(_serialization.Model):
         :keyword image_registry_credential: Credential of the image registry.
         :paramtype image_registry_credential:
          ~azure.mgmt.appplatform.v2022_12_01.models.ImageRegistryCredential
-        :keyword language_framework: Language framework of the container image uploaded.
+        :keyword language_framework: Language framework of the container image uploaded. Supported
+         values: "springboot", "", null.
         :paramtype language_framework: str
         """
         super().__init__(**kwargs)

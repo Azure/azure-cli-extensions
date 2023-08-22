@@ -4775,6 +4775,8 @@ class Ingress(_serialization.Model):  # pylint: disable=too-many-instance-attrib
      ~azure.mgmt.appcontainers.models.IngressClientCertificateMode
     :ivar cors_policy: CORS policy for container app.
     :vartype cors_policy: ~azure.mgmt.appcontainers.models.CorsPolicy
+    :ivar additional_port_mappings: Additional exposed ports for Container Apps.
+    :vartype additional_port_mappings: ~azure.mgmt.appcontainers.models.IngressAdditionalPortMapping
     """
 
     _validation = {
@@ -4794,6 +4796,7 @@ class Ingress(_serialization.Model):  # pylint: disable=too-many-instance-attrib
         "sticky_sessions": {"key": "stickySessions", "type": "IngressStickySessions"},
         "client_certificate_mode": {"key": "clientCertificateMode", "type": "str"},
         "cors_policy": {"key": "corsPolicy", "type": "CorsPolicy"},
+        "additional_port_mappings": {"key": "additionalPortMappings", "type": "[IngressAdditionalPortMapping]"},
     }
 
     def __init__(
@@ -4810,6 +4813,7 @@ class Ingress(_serialization.Model):  # pylint: disable=too-many-instance-attrib
         sticky_sessions: Optional["_models.IngressStickySessions"] = None,
         client_certificate_mode: Optional[Union[str, "_models.IngressClientCertificateMode"]] = None,
         cors_policy: Optional["_models.CorsPolicy"] = None,
+        additional_port_mappings: Optional[List["_models.IngressAdditionalPortMapping"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -4842,6 +4846,8 @@ class Ingress(_serialization.Model):  # pylint: disable=too-many-instance-attrib
          ~azure.mgmt.appcontainers.models.IngressClientCertificateMode
         :keyword cors_policy: CORS policy for container app.
         :paramtype cors_policy: ~azure.mgmt.appcontainers.models.CorsPolicy
+        :keyword additional_port_mappings: Additional exposed ports for Container Apps.
+        :paramtype additional_port_mappings: list[~azure.mgmt.appcontainers.models.IngressAdditionalPortMapping]
         """
         super().__init__(**kwargs)
         self.fqdn = None
@@ -4856,6 +4862,7 @@ class Ingress(_serialization.Model):  # pylint: disable=too-many-instance-attrib
         self.sticky_sessions = sticky_sessions
         self.client_certificate_mode = client_certificate_mode
         self.cors_policy = cors_policy
+        self.additional_port_mappings = additional_port_mappings
 
 
 class IngressStickySessions(_serialization.Model):
@@ -7808,6 +7815,8 @@ class Template(_serialization.Model):
 
     :ivar revision_suffix: User friendly suffix that is appended to the revision name.
     :vartype revision_suffix: str
+    :ivar termination_grace_period_seconds: Gracefully shut down periods in seconds for the revision
+    :vartype termination_grace_period_seconds: int
     :ivar init_containers: List of specialized containers that run before app containers.
     :vartype init_containers: list[~azure.mgmt.appcontainers.models.InitContainer]
     :ivar containers: List of container definitions for the Container App.
@@ -7822,6 +7831,7 @@ class Template(_serialization.Model):
 
     _attribute_map = {
         "revision_suffix": {"key": "revisionSuffix", "type": "str"},
+        "termination_grace_period_seconds": {"key": "terminationGracePeriodSeconds", "type": "int"},
         "init_containers": {"key": "initContainers", "type": "[InitContainer]"},
         "containers": {"key": "containers", "type": "[Container]"},
         "scale": {"key": "scale", "type": "Scale"},
@@ -7833,6 +7843,7 @@ class Template(_serialization.Model):
         self,
         *,
         revision_suffix: Optional[str] = None,
+        termination_grace_period_seconds: Optional[int] = None,
         init_containers: Optional[List["_models.InitContainer"]] = None,
         containers: Optional[List["_models.Container"]] = None,
         scale: Optional["_models.Scale"] = None,
@@ -7843,6 +7854,8 @@ class Template(_serialization.Model):
         """
         :keyword revision_suffix: User friendly suffix that is appended to the revision name.
         :paramtype revision_suffix: str
+        :keyword termination_grace_period_seconds: Gracefully shut down periods in seconds for the revision
+        :paramtype termination_grace_period_seconds: int
         :keyword init_containers: List of specialized containers that run before app containers.
         :paramtype init_containers: list[~azure.mgmt.appcontainers.models.InitContainer]
         :keyword containers: List of container definitions for the Container App.
@@ -7856,6 +7869,7 @@ class Template(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.revision_suffix = revision_suffix
+        self.termination_grace_period_seconds = termination_grace_period_seconds
         self.init_containers = init_containers
         self.containers = containers
         self.scale = scale
@@ -8343,3 +8357,48 @@ class WorkloadProfileStatesProperties(_serialization.Model):
         self.minimum_count = minimum_count
         self.maximum_count = maximum_count
         self.current_count = current_count
+
+
+class IngressAdditionalPortMapping(_serialization.Model):
+    """Port mapping for Container App Ingress.
+        All required parameters must be populated in order to send to Azure.
+        :ivar external: Specifies whether the app port is accessible outside of the environment.
+        :vartype external: bool
+        :ivar target_port: Specifies the port user's container listens on.
+        :vartype target_port: int
+        :ivar exposed_port: Specifies the exposed port for the target port. If not specified, it defaults to target port.
+        :vartype exposed_port: int
+        """
+
+    _validation = {
+        "external": {"required": True},
+        "target_port": {"required": True},
+    }
+
+    _attribute_map = {
+        "external": {"key": "external", "type": "bool"},
+        "target_port": {"key": "targetPort", "type": "int"},
+        "exposed_port": {"key": "exposedPort", "type": "int"},
+    }
+
+    def __init__(
+            self,
+            *,
+            external: bool,
+            target_port: int,
+            exposed_port: Optional[int] = None,
+            **kwargs: Any
+    ) -> None:
+        """
+        :keyword external: Specifies whether the app port is accessible outside of the environment.
+         Required.
+        :paramtype external: bool
+        :keyword target_port: Specifies the port user's container listens on.
+        :paramtype target_port: int
+        :keyword exposed_port: Specifies the exposed port for the target port. If not specified, it defaults to target port.
+        :paramtype exposed_port: int
+        """
+        super().__init__(**kwargs)
+        self.external = external
+        self.target_port = target_port
+        self.exposed_port = exposed_port
