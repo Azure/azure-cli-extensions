@@ -9,29 +9,38 @@
 BaremetalMachineKeyset tests scenarios
 """
 
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
+
 from .config import CONFIG
 
 
 def setup_scenario1(test):
-    ''' Env setup_scenario1 '''
+    """Env setup_scenario1"""
+    pass
 
 
 def cleanup_scenario1(test):
-    '''Env cleanup_scenario1 '''
+    """Env cleanup_scenario1"""
+    pass
 
 
 def call_scenario1(test):
-    ''' # Testcase: scenario1'''
+    """# Testcase: scenario1"""
     setup_scenario1(test)
-    step_create(test, checks=[
-        test.check('name', '{name}'),
-        test.check('provisioningState', 'Succeeded')
-    ])
-    step_update(test, checks=[
-        test.check('tags', '{tagsUpdate}'),
-        test.check('provisioningState', 'Succeeded')
-    ])
+    step_create(
+        test,
+        checks=[
+            test.check("name", "{name}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_update(
+        test,
+        checks=[
+            test.check("tags", "{tagsUpdate}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
     step_show(test, checks=[])
     step_list_resource_group(test, checks=[])
     step_delete(test, checks=[])
@@ -39,81 +48,100 @@ def call_scenario1(test):
 
 
 def step_create(test, checks=None):
-    '''BaremetalMachineKeyset create operation'''
+    """BaremetalMachineKeyset create operation"""
     if checks is None:
         checks = []
-    test.cmd('az networkcloud cluster baremetalmachinekeyset create --name {name} '
-             '--extended-location name={extendedLocation} type="CustomLocation" '
-             '--location {location} --azure-group-id {azureGroupId} --expiration {expiration} '
-             '--jump-hosts-allowed {jumpHostsAllowed} --os-group-name {osGroupName} '
-             '--privilege-level {privilegeLevel} --user-list {userList} '
-             '--tags key1="myvalue1" key2="myvalue2" --cluster-name {clusterName} '
-             '--resource-group {rg}', checks=checks)
+    test.cmd(
+        "az networkcloud cluster baremetalmachinekeyset create --name {name} "
+        '--extended-location name={extendedLocation} type="CustomLocation" '
+        "--location {location} --azure-group-id {azureGroupId} --expiration {expiration} "
+        "--jump-hosts-allowed {jumpHostsAllowed} --os-group-name {osGroupName} "
+        "--privilege-level {privilegeLevel} --user-list {userList} "
+        '--tags key1="myvalue1" key2="myvalue2" --cluster-name {clusterName} '
+        "--resource-group {rg}",
+        checks=checks,
+    )
 
 
 def step_show(test, checks=None):
-    '''BaremetalMachineKeyset show operation'''
+    """BaremetalMachineKeyset show operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkcloud cluster baremetalmachinekeyset show --name {name} '
-        '--cluster-name {clusterName} --resource-group {rg}')
+        "az networkcloud cluster baremetalmachinekeyset show --name {name} "
+        "--cluster-name {clusterName} --resource-group {rg}"
+    )
 
 
 def step_delete(test, checks=None):
-    '''BaremetalMachineKeyset delete operation'''
+    """BaremetalMachineKeyset delete operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkcloud cluster baremetalmachinekeyset delete --name {name} '
-        '--cluster-name {clusterName} --resource-group {rg} -y')
+        "az networkcloud cluster baremetalmachinekeyset delete --name {name} "
+        "--cluster-name {clusterName} --resource-group {rg} -y"
+    )
 
 
 def step_list_resource_group(test, checks=None):
-    '''BaremetalMachineKeyset list by resource group operation'''
+    """BaremetalMachineKeyset list by resource group operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkcloud cluster baremetalmachinekeyset list '
-        '--cluster-name {clusterName} --resource-group {rg}')
+        "az networkcloud cluster baremetalmachinekeyset list "
+        "--cluster-name {clusterName} --resource-group {rg}"
+    )
 
 
 def step_update(test, checks=None):
-    '''BaremetalMachineKeyset update operation'''
+    """BaremetalMachineKeyset update operation"""
     if checks is None:
         checks = []
     test.cmd(
-        'az networkcloud cluster baremetalmachinekeyset update '
-        '--name {name} --tags {tagsUpdate} --cluster-name {clusterName} '
-        '--jump-hosts-allowed {jumpHostsAllowedUpdate} '
-        '--user-list {userListUpdate} --resource-group {rg}')
+        "az networkcloud cluster baremetalmachinekeyset update "
+        "--name {name} --tags {tagsUpdate} --cluster-name {clusterName} "
+        "--jump-hosts-allowed {jumpHostsAllowedUpdate} "
+        "--user-list {userListUpdate} --resource-group {rg}"
+    )
 
 
 class BaremetalMachineKeysetScenarioTest(ScenarioTest):
-    ''' BaremetalMachineKeyset scenario test'''
+    """BaremetalMachineKeyset scenario test"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.kwargs.update({
-            # Autogenerated resource group is not used in this scenario as it depeneds on the
-            # parent resource cluster to be present in the RG
-            'rg': CONFIG.get('BAREMETALMACHINE_KEYSET', 'resource_group'),
-            'name': self.create_random_name(prefix="cli-test-bmmks-", length=24),
-            'location': CONFIG.get('BAREMETALMACHINE_KEYSET', 'location'),
-            'extendedLocation': CONFIG.get('BAREMETALMACHINE_KEYSET', 'extended_location'),
-            'tags': CONFIG.get('BAREMETALMACHINE_KEYSET', 'tags'),
-            'tagsUpdate': CONFIG.get('BAREMETALMACHINE_KEYSET', 'tags_update'),
-            "azureGroupId": CONFIG.get('BAREMETALMACHINE_KEYSET', 'azure_group_id'),
-            'expiration': CONFIG.get('BAREMETALMACHINE_KEYSET', 'expiration'),
-            "jumpHostsAllowed": CONFIG.get('BAREMETALMACHINE_KEYSET', 'jump_hosts_allowed'),
-            "jumpHostsAllowedUpdate": CONFIG.get('BAREMETALMACHINE_KEYSET', 'jump_hosts_allowed_update'),
-            "osGroupName": CONFIG.get('BAREMETALMACHINE_KEYSET', 'os_group_name'),
-            "privilegeLevel": CONFIG.get('BAREMETALMACHINE_KEYSET', 'privilege_level'),
-            "userList": CONFIG.get('BAREMETALMACHINE_KEYSET', 'user_list'),
-            "userListUpdate": CONFIG.get('BAREMETALMACHINE_KEYSET', 'user_list_update'),
-            "clusterName": CONFIG.get('BAREMETALMACHINE_KEYSET', 'cluster_name'),
-        })
+        self.kwargs.update(
+            {
+                # Autogenerated resource group is not used in this scenario as it depeneds on the
+                # parent resource cluster to be present in the RG
+                "rg": CONFIG.get("BAREMETALMACHINE_KEYSET", "resource_group"),
+                "name": self.create_random_name(prefix="cli-test-bmmks-", length=24),
+                "location": CONFIG.get("BAREMETALMACHINE_KEYSET", "location"),
+                "extendedLocation": CONFIG.get(
+                    "BAREMETALMACHINE_KEYSET", "extended_location"
+                ),
+                "tags": CONFIG.get("BAREMETALMACHINE_KEYSET", "tags"),
+                "tagsUpdate": CONFIG.get("BAREMETALMACHINE_KEYSET", "tags_update"),
+                "azureGroupId": CONFIG.get("BAREMETALMACHINE_KEYSET", "azure_group_id"),
+                "expiration": CONFIG.get("BAREMETALMACHINE_KEYSET", "expiration"),
+                "jumpHostsAllowed": CONFIG.get(
+                    "BAREMETALMACHINE_KEYSET", "jump_hosts_allowed"
+                ),
+                "jumpHostsAllowedUpdate": CONFIG.get(
+                    "BAREMETALMACHINE_KEYSET", "jump_hosts_allowed_update"
+                ),
+                "osGroupName": CONFIG.get("BAREMETALMACHINE_KEYSET", "os_group_name"),
+                "privilegeLevel": CONFIG.get(
+                    "BAREMETALMACHINE_KEYSET", "privilege_level"
+                ),
+                "userList": CONFIG.get("BAREMETALMACHINE_KEYSET", "user_list"),
+                "userListUpdate": CONFIG.get(
+                    "BAREMETALMACHINE_KEYSET", "user_list_update"
+                ),
+                "clusterName": CONFIG.get("BAREMETALMACHINE_KEYSET", "cluster_name"),
+            }
+        )
 
     def test_baremetalmachinekeyset_scenario1(self):
-        ''' test scenario for BaremetalMachineKeyset CRUD operations'''
+        """test scenario for BaremetalMachineKeyset CRUD operations"""
         call_scenario1(self)

@@ -13,36 +13,36 @@ interactions:
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - Fri, 26 May 2023 04:09:13 GMT
+      - Wed, 19 Jul 2023 21:09:39 GMT
       Repeatability-Request-ID:
-      - 130d1416-fb7b-11ed-9d62-8cf8c5abc371
+      - 92e25404-2678-11ee-9d01-8cf8c5abc371
       User-Agent:
-      - AzureCli/1.6 azsdk-python-communication-rooms/1.0.0b3 Python/3.8.0 (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.7.1b1 azsdk-python-communication-rooms/1.0.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
       - vBTkhrLFogng0nIWoP6/XqO3xl87GjFK9aShkzc8E3g=
       x-ms-date:
-      - Fri, 26 May 2023 04:09:13 GMT
+      - Wed, 19 Jul 2023 21:09:39 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/rooms?api-version=2023-03-31-preview
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2023-06-14
   response:
     body:
-      string: '{"id": "sanitized", "createdAt": "2023-05-26T04:09:14.434594+00:00",
-        "validFrom": "2023-05-26T04:09:14.3786081+00:00", "validUntil": "2023-11-22T04:09:14.3786081+00:00"}'
+      string: '{"id": "sanitized", "createdAt": "2023-07-19T21:09:41.9846054+00:00",
+        "validFrom": "2023-07-19T21:09:41.2998083+00:00", "validUntil": "2024-01-15T21:09:41.2998083+00:00"}'
     headers:
       api-deprecated-versions:
-      - '2021-04-07'
+      - 2021-04-07, 2022-02-01
       api-supported-versions:
-      - 2022-02-01, 2023-03-31-preview
+      - 2023-03-31-preview, 2023-06-14
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 26 May 2023 04:09:14 GMT
+      - Wed, 19 Jul 2023 21:09:41 GMT
       location:
-      - '99464694112212247'
+      - '99439417689810246'
       ms-cv:
-      - yX1HvRlDW0aGE11AVfiDMw.0
+      - d31L5jNaTU2GwPUm9IfaKg.0
       repeatability-result:
       - accepted
       request-context:
@@ -50,14 +50,14 @@ interactions:
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 06jBwZAAAAAAoPI/T3F1oRKZbxsQLrTIZWVZSMzExMDAwMTE1MDUxADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 0FFG4ZAAAAAB7BrKX1/cnS6X1zSJyd3NvWVZSMzExMDAwMTE1MDA5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
     status:
       code: 201
       message: Created
 - request:
-    body: '{"participants": {"sanitized": {"role": "Consumer"}}}'
+    body: '{"participants": {"8:acs:123456c": {"role": "Consumer"}}}'
     headers:
       Accept:
       - application/json
@@ -70,34 +70,36 @@ interactions:
       Content-Type:
       - application/merge-patch+json
       User-Agent:
-      - AzureCli/1.6 azsdk-python-communication-rooms/1.0.0b3 Python/3.8.0 (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.7.1b1 azsdk-python-communication-rooms/1.0.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
       - GGeywqkmwEbmvIr+M7fYvPtgLYHCAoJWqoApBN7ZlcA=
       x-ms-date:
-      - Fri, 26 May 2023 04:09:14 GMT
+      - Wed, 19 Jul 2023 21:09:41 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: PATCH
-    uri: https://sanitized.communication.azure.com/rooms/sanitized/participants?api-version=2023-03-31-preview
+    uri: https://sanitized.communication.azure.com/rooms/sanitized/participants?api-version=2023-06-14
   response:
     body:
       string: '{"error": {"code": "BadRequest", "message": "Invalid value for the
         Participants."}}'
     headers:
+      api-deprecated-versions:
+      - '2022-02-01'
       api-supported-versions:
-      - 2022-02-01, 2023-03-31-preview
+      - 2023-03-31-preview, 2023-06-14
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 26 May 2023 04:09:14 GMT
+      - Wed, 19 Jul 2023 21:09:42 GMT
       ms-cv:
-      - 4bo/XzFbtEW0Fbo/azBO/Q.0
+      - 6OLlxKXrpUWqhwuJkyEdwQ.0
       request-context:
       - appId=
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 06zBwZAAAAAAy9kkbHs4kQqeeYbR3uTEcWVZSMzExMDAwMTE1MDA5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 0FlG4ZAAAAACJYT+FnN3sSYDi9IjNpQAaWVZSMzExMDAwMTE1MDIxADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
       x-ms-error-code:

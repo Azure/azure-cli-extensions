@@ -47,6 +47,7 @@ from azext_aks_preview._consts import (
     CONST_SPOT_EVICTION_POLICY_DELETE,
     CONST_VIRTUAL_NODE_ADDON_NAME,
     CONST_VIRTUAL_NODE_SUBNET_NAME,
+    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
 )
 from azext_aks_preview._helpers import (
     get_cluster_snapshot_by_snapshot_id,
@@ -526,6 +527,7 @@ def aks_create(
     node_count=3,
     nodepool_tags=None,
     nodepool_labels=None,
+    nodepool_taints=None,
     node_osdisk_type=None,
     node_osdisk_size=0,
     vm_set_type=None,
@@ -701,6 +703,7 @@ def aks_update(
     min_count=None,
     max_count=None,
     nodepool_labels=None,
+    nodepool_taints=None,
     # misc
     yes=False,
     no_wait=False,
@@ -711,6 +714,7 @@ def aks_update(
     load_balancer_managed_outbound_ipv6_count=None,
     outbound_type=None,
     network_plugin_mode=None,
+    network_dataplane=None,
     pod_cidr=None,
     enable_pod_security_policy=False,
     disable_pod_security_policy=False,
@@ -721,6 +725,7 @@ def aks_update(
     enable_image_cleaner=False,
     disable_image_cleaner=False,
     image_cleaner_interval_hours=None,
+    disable_image_integrity=False,
     enable_apiserver_vnet_integration=False,
     apiserver_subnet_id=None,
     enable_keda=False,
@@ -773,8 +778,9 @@ def aks_update(
 
 
 # pylint: disable=unused-argument
-def aks_show(cmd, client, resource_group_name, name):
-    mc = client.get(resource_group_name, name)
+def aks_show(cmd, client, resource_group_name, name, aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
+    mc = client.get(resource_group_name, name, headers=headers)
     return _remove_nulls([mc])[0]
 
 
@@ -825,7 +831,9 @@ def aks_get_credentials(
     context_name=None,
     public_fqdn=False,
     credential_format=None,
+    aks_custom_headers=None,
 ):
+    headers = get_aks_custom_headers(aks_custom_headers)
     credentialResults = None
     serverType = None
     if public_fqdn:
@@ -836,14 +844,14 @@ def aks_get_credentials(
             raise InvalidArgumentValueError("--format can only be specified when requesting clusterUser credential.")
     if admin:
         credentialResults = client.list_cluster_admin_credentials(
-            resource_group_name, name, serverType)
+            resource_group_name, name, serverType, headers=headers)
     else:
         if user.lower() == 'clusteruser':
             credentialResults = client.list_cluster_user_credentials(
-                resource_group_name, name, serverType, credential_format)
+                resource_group_name, name, serverType, credential_format, headers=headers)
         elif user.lower() == 'clustermonitoringuser':
             credentialResults = client.list_cluster_monitoring_user_credentials(
-                resource_group_name, name, serverType)
+                resource_group_name, name, serverType, headers=headers)
         else:
             raise InvalidArgumentValueError("The value of option --user is invalid.")
 
@@ -876,7 +884,9 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
               name,
               node_count,
               nodepool_name="",
-              no_wait=False):
+              no_wait=False,
+              aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
     instance = client.get(resource_group_name, name)
     _fill_defaults_for_pod_identity_profile(instance.pod_identity_profile)
 
@@ -893,7 +903,7 @@ def aks_scale(cmd,  # pylint: disable=unused-argument
             agent_profile.count = int(node_count)  # pylint: disable=no-member
             # null out the SP profile because otherwise validation complains
             instance.service_principal_profile = None
-            return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance)
+            return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, instance, headers=headers)
     raise CLIError('The nodepool "{}" was not found.'.format(nodepool_name))
 
 
@@ -1059,6 +1069,7 @@ def aks_agentpool_add(
     max_pods=0,
     zones=None,
     ppg=None,
+    vm_set_type=None,
     enable_encryption_at_host=False,
     enable_ultra_ssd=False,
     enable_fips_image=False,
@@ -1157,7 +1168,9 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
                         cluster_name,
                         nodepool_name,
                         node_count=3,
-                        no_wait=False):
+                        no_wait=False,
+                        aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     new_node_count = int(node_count)
     if instance.enable_auto_scaling:
@@ -1166,7 +1179,7 @@ def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
         raise CLIError(
             "The new node count is the same as the current node count.")
     instance.count = new_node_count  # pylint: disable=no-member
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, nodepool_name, instance, headers=headers)
 
 
 def aks_agentpool_upgrade(cmd,
@@ -1512,7 +1525,7 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
         if (instance.ingress_profile is None) or (instance.ingress_profile.web_app_routing is None) or not instance.ingress_profile.web_app_routing.enabled:
             raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
 
-    if addon == "monitoring" and enable_msi_auth_for_monitoring is None:
+    elif addon == "monitoring" and enable_msi_auth_for_monitoring is None:
         enable_msi_auth_for_monitoring = True
 
     else:
@@ -1576,8 +1589,8 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
                       subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None, appgw_subnet_id=None,
                       appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None, no_wait=False, enable_msi_auth_for_monitoring=True,
-                      dns_zone_resource_id=None, enable_syslog=False, data_collection_settings=None):
-
+                      dns_zone_resource_id=None, enable_syslog=False, data_collection_settings=None, aks_custom_headers=None):
+    headers = get_aks_custom_headers(aks_custom_headers)
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here
     msi_auth = False
@@ -1661,7 +1674,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
 
     else:
         result = sdk_no_wait(no_wait, client.begin_create_or_update,
-                             resource_group_name, name, instance)
+                             resource_group_name, name, instance, headers=headers)
     return result
 
 
@@ -1856,7 +1869,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
 
 def aks_get_versions(cmd, client, location):    # pylint: disable=unused-argument
-    return client.list_orchestrators(location, resource_type='managedClusters')
+    return client.list_kubernetes_versions(location)
 
 
 def aks_get_os_options(cmd, client, location):    # pylint: disable=unused-argument
@@ -2295,6 +2308,20 @@ def aks_nodepool_snapshot_create(cmd,    # pylint: disable=too-many-locals,too-m
     return client.create_or_update(resource_group_name, snapshot_name, snapshot, headers=headers)
 
 
+def aks_nodepool_snapshot_update(cmd, client, resource_group_name, snapshot_name, tags):   # pylint: disable=unused-argument
+    TagsObject = cmd.get_models(
+        "TagsObject",
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+        operation_group="snapshots",
+    )
+    tagsObject = TagsObject(
+        tags=tags
+    )
+
+    snapshot = client.update_tags(resource_group_name, snapshot_name, tagsObject)
+    return snapshot
+
+
 def aks_nodepool_snapshot_show(cmd, client, resource_group_name, snapshot_name):   # pylint: disable=unused-argument
     snapshot = client.get(resource_group_name, snapshot_name)
     return snapshot
@@ -2378,8 +2405,28 @@ def aks_mesh_enable(
         client,
         resource_group_name,
         name,
+        key_vault_id=None,
+        ca_cert_object_name=None,
+        ca_key_object_name=None,
+        root_cert_object_name=None,
+        cert_chain_object_name=None
 ):
-    return _aks_mesh_update(cmd, client, resource_group_name, name, enable_azure_service_mesh=True)
+    instance = client.get(resource_group_name, name)
+    addon_profiles = instance.addon_profiles
+    if key_vault_id is not None and ca_cert_object_name is not None and ca_key_object_name is not None and root_cert_object_name is not None and cert_chain_object_name is not None:
+        if not addon_profiles or not addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME] or not addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME].enabled:
+            raise CLIError('AzureKeyvaultSecretsProvider addon is required for Azure Service Mesh plugin certificate authority feature.')
+
+    return _aks_mesh_update(cmd,
+                            client,
+                            resource_group_name,
+                            name,
+                            key_vault_id,
+                            ca_cert_object_name,
+                            ca_key_object_name,
+                            root_cert_object_name,
+                            cert_chain_object_name,
+                            enable_azure_service_mesh=True)
 
 
 def aks_mesh_disable(
@@ -2429,6 +2476,11 @@ def _aks_mesh_update(
         client,
         resource_group_name,
         name,
+        key_vault_id=None,
+        ca_cert_object_name=None,
+        ca_key_object_name=None,
+        root_cert_object_name=None,
+        cert_chain_object_name=None,
         enable_azure_service_mesh=None,
         disable_azure_service_mesh=None,
         enable_ingress_gateway=None,

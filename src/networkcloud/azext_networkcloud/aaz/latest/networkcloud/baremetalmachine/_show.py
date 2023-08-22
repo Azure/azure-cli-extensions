@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine show",
-    is_experimental=True,
 )
 class Show(AAZCommand):
     """Get properties of the provided bare metal machine.
@@ -23,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-12-preview",
+        "version": "2023-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}", "2023-07-01"],
         ]
     }
 
@@ -124,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-07-01",
                     required=True,
                 ),
             }
@@ -191,6 +190,10 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.associated_resource_ids = AAZListType(
+                serialized_name="associatedResourceIds",
+                flags={"read_only": True},
+            )
             properties.bmc_connection_string = AAZStrType(
                 serialized_name="bmcConnectionString",
                 flags={"required": True},
@@ -297,6 +300,9 @@ class Show(AAZCommand):
                 serialized_name="virtualMachinesAssociatedIds",
                 flags={"read_only": True},
             )
+
+            associated_resource_ids = cls._schema_on_200.properties.associated_resource_ids
+            associated_resource_ids.Element = AAZStrType()
 
             bmc_credentials = cls._schema_on_200.properties.bmc_credentials
             bmc_credentials.password = AAZStrType(

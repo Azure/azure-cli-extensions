@@ -8,7 +8,7 @@ import time
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, VirtualNetworkPreparer, record_only)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.core.exceptions import HttpResponseError
+from azure.core.exceptions import HttpResponseError, ResourceNotFoundError
 from .credential_replacer import VpnClientGeneratedURLReplacer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -658,7 +658,7 @@ class AzureVWanVHubScenario(ScenarioTest):
                  '-y',
                  checks=[])
 
-        with self.assertRaisesRegexp(SystemExit, '3'):
+        with self.assertRaises(ResourceNotFoundError):
             self.cmd('network vhub connection show '
                      '-g {rg} '
                      '-n {connection} '

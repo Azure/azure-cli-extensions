@@ -17,12 +17,15 @@ from azure.cli.core.aaz import *
 )
 class ValidateForBackup(AAZCommand):
     """Validate whether adhoc backup will be successful or not
+
+    :example: Validate Backup
+        az dataprotection backup-instance validate-for-backup -g sample_rg --vault-name sample_backupvault --backup-instance backup_instance.json
     """
 
     _aaz_info = {
-        "version": "2023-01-01",
+        "version": "2023-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/validateforbackup", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/validateforbackup", "2023-05-01"],
         ]
     }
 
@@ -81,6 +84,10 @@ class ValidateForBackup(AAZCommand):
             options=["friendly-name"],
             help="Gets or sets the Backup Instance friendly name.",
         )
+        backup_instance.identity_details = AAZObjectArg(
+            options=["identity-details"],
+            help="Contains information of the Identity Details for the BI. If it is null, default will be considered as System Assigned.",
+        )
         backup_instance.object_type = AAZStrArg(
             options=["object-type"],
             required=True,
@@ -118,6 +125,11 @@ class ValidateForBackup(AAZCommand):
             options=["resource-name"],
             help="Unique identifier of the resource in the context of parent.",
         )
+        data_source_info.resource_properties = AAZObjectArg(
+            options=["resource-properties"],
+            help="Properties specific to data source",
+        )
+        cls._build_args_base_resource_properties_create(data_source_info.resource_properties)
         data_source_info.resource_type = AAZStrArg(
             options=["resource-type"],
             help="Resource Type of Datasource.",
@@ -149,6 +161,11 @@ class ValidateForBackup(AAZCommand):
             options=["resource-name"],
             help="Unique identifier of the resource in the context of parent.",
         )
+        data_source_set_info.resource_properties = AAZObjectArg(
+            options=["resource-properties"],
+            help="Properties specific to data source set",
+        )
+        cls._build_args_base_resource_properties_create(data_source_set_info.resource_properties)
         data_source_set_info.resource_type = AAZStrArg(
             options=["resource-type"],
             help="Resource Type of Datasource.",
@@ -183,6 +200,16 @@ class ValidateForBackup(AAZCommand):
         secret_store_resource.value = AAZStrArg(
             options=["value"],
             help="Gets or sets value stored in secret store resource",
+        )
+
+        identity_details = cls._args_schema.backup_instance.identity_details
+        identity_details.use_system_assigned_identity = AAZBoolArg(
+            options=["use-system-assigned-identity"],
+            help="Specifies if the BI is protected by System Identity.",
+        )
+        identity_details.user_assigned_identity_arm_url = AAZStrArg(
+            options=["user-assigned-identity-arm-url"],
+            help="ARM URL for User Assigned Identity.",
         )
 
         policy_info = cls._args_schema.backup_instance.policy_info
@@ -227,6 +254,10 @@ class ValidateForBackup(AAZCommand):
         containers_list.Element = AAZStrArg()
 
         kubernetes_cluster_backup_datasource_parameters = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.kubernetes_cluster_backup_datasource_parameters
+        kubernetes_cluster_backup_datasource_parameters.backup_hook_references = AAZListArg(
+            options=["backup-hook-references"],
+            help="Gets or sets the backup hook references. This property sets the hook reference to be executed during backup.",
+        )
         kubernetes_cluster_backup_datasource_parameters.excluded_namespaces = AAZListArg(
             options=["excluded-namespaces"],
             help="Gets or sets the exclude namespaces property. This property sets the namespaces to be excluded during restore.",
@@ -256,6 +287,19 @@ class ValidateForBackup(AAZCommand):
             options=["snapshot-volumes"],
             help="Gets or sets the volume snapshot property. This property if enabled will take volume snapshots during restore.",
             required=True,
+        )
+
+        backup_hook_references = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.kubernetes_cluster_backup_datasource_parameters.backup_hook_references
+        backup_hook_references.Element = AAZObjectArg()
+
+        _element = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.kubernetes_cluster_backup_datasource_parameters.backup_hook_references.Element
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="Name of the resource",
+        )
+        _element.namespace = AAZStrArg(
+            options=["namespace"],
+            help="Namespace in which the resource exists",
         )
 
         excluded_namespaces = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.kubernetes_cluster_backup_datasource_parameters.excluded_namespaces
@@ -294,6 +338,25 @@ class ValidateForBackup(AAZCommand):
         )
         return cls._args_schema
 
+    _args_base_resource_properties_create = None
+
+    @classmethod
+    def _build_args_base_resource_properties_create(cls, _schema):
+        if cls._args_base_resource_properties_create is not None:
+            _schema.object_type = cls._args_base_resource_properties_create.object_type
+            return
+
+        cls._args_base_resource_properties_create = AAZObjectArg()
+
+        base_resource_properties_create = cls._args_base_resource_properties_create
+        base_resource_properties_create.object_type = AAZStrArg(
+            options=["object-type"],
+            help="Type of the specific object - used for deserializing",
+            required=True,
+        )
+
+        _schema.object_type = cls._args_base_resource_properties_create.object_type
+
     def _execute_operations(self):
         self.pre_operations()
         yield self.BackupInstancesValidateForBackup(ctx=self.ctx)()
@@ -323,7 +386,7 @@ class ValidateForBackup(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -332,7 +395,7 @@ class ValidateForBackup(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -375,7 +438,7 @@ class ValidateForBackup(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01",
+                    "api-version", "2023-05-01",
                     required=True,
                 ),
             }
@@ -408,6 +471,7 @@ class ValidateForBackup(AAZCommand):
                 backup_instance.set_prop("dataSourceSetInfo", AAZObjectType, ".data_source_set_info")
                 backup_instance.set_prop("datasourceAuthCredentials", AAZObjectType, ".datasource_auth_credentials")
                 backup_instance.set_prop("friendlyName", AAZStrType, ".friendly_name")
+                backup_instance.set_prop("identityDetails", AAZObjectType, ".identity_details")
                 backup_instance.set_prop("objectType", AAZStrType, ".object_type", typ_kwargs={"flags": {"required": True}})
                 backup_instance.set_prop("policyInfo", AAZObjectType, ".policy_info", typ_kwargs={"flags": {"required": True}})
                 backup_instance.set_prop("validationType", AAZStrType, ".validation_type")
@@ -419,6 +483,7 @@ class ValidateForBackup(AAZCommand):
                 data_source_info.set_prop("resourceID", AAZStrType, ".resource_id", typ_kwargs={"flags": {"required": True}})
                 data_source_info.set_prop("resourceLocation", AAZStrType, ".resource_location")
                 data_source_info.set_prop("resourceName", AAZStrType, ".resource_name")
+                _ValidateForBackupHelper._build_schema_base_resource_properties_create(data_source_info.set_prop("resourceProperties", AAZObjectType, ".resource_properties"))
                 data_source_info.set_prop("resourceType", AAZStrType, ".resource_type")
                 data_source_info.set_prop("resourceUri", AAZStrType, ".resource_uri")
 
@@ -429,6 +494,7 @@ class ValidateForBackup(AAZCommand):
                 data_source_set_info.set_prop("resourceID", AAZStrType, ".resource_id", typ_kwargs={"flags": {"required": True}})
                 data_source_set_info.set_prop("resourceLocation", AAZStrType, ".resource_location")
                 data_source_set_info.set_prop("resourceName", AAZStrType, ".resource_name")
+                _ValidateForBackupHelper._build_schema_base_resource_properties_create(data_source_set_info.set_prop("resourceProperties", AAZObjectType, ".resource_properties"))
                 data_source_set_info.set_prop("resourceType", AAZStrType, ".resource_type")
                 data_source_set_info.set_prop("resourceUri", AAZStrType, ".resource_uri")
 
@@ -446,6 +512,11 @@ class ValidateForBackup(AAZCommand):
                 secret_store_resource.set_prop("secretStoreType", AAZStrType, ".secret_store_type", typ_kwargs={"flags": {"required": True}})
                 secret_store_resource.set_prop("uri", AAZStrType, ".uri")
                 secret_store_resource.set_prop("value", AAZStrType, ".value")
+
+            identity_details = _builder.get(".backupInstance.identityDetails")
+            if identity_details is not None:
+                identity_details.set_prop("useSystemAssignedIdentity", AAZBoolType, ".use_system_assigned_identity")
+                identity_details.set_prop("userAssignedIdentityArmUrl", AAZStrType, ".user_assigned_identity_arm_url")
 
             policy_info = _builder.get(".backupInstance.policyInfo")
             if policy_info is not None:
@@ -478,6 +549,7 @@ class ValidateForBackup(AAZCommand):
 
             disc_kubernetes_cluster_backup_datasource_parameters = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:KubernetesClusterBackupDatasourceParameters}")
             if disc_kubernetes_cluster_backup_datasource_parameters is not None:
+                disc_kubernetes_cluster_backup_datasource_parameters.set_prop("backupHookReferences", AAZListType, ".kubernetes_cluster_backup_datasource_parameters.backup_hook_references")
                 disc_kubernetes_cluster_backup_datasource_parameters.set_prop("excludedNamespaces", AAZListType, ".kubernetes_cluster_backup_datasource_parameters.excluded_namespaces")
                 disc_kubernetes_cluster_backup_datasource_parameters.set_prop("excludedResourceTypes", AAZListType, ".kubernetes_cluster_backup_datasource_parameters.excluded_resource_types")
                 disc_kubernetes_cluster_backup_datasource_parameters.set_prop("includeClusterScopeResources", AAZBoolType, ".kubernetes_cluster_backup_datasource_parameters.include_cluster_scope_resources", typ_kwargs={"flags": {"required": True}})
@@ -485,6 +557,15 @@ class ValidateForBackup(AAZCommand):
                 disc_kubernetes_cluster_backup_datasource_parameters.set_prop("includedResourceTypes", AAZListType, ".kubernetes_cluster_backup_datasource_parameters.included_resource_types")
                 disc_kubernetes_cluster_backup_datasource_parameters.set_prop("labelSelectors", AAZListType, ".kubernetes_cluster_backup_datasource_parameters.label_selectors")
                 disc_kubernetes_cluster_backup_datasource_parameters.set_prop("snapshotVolumes", AAZBoolType, ".kubernetes_cluster_backup_datasource_parameters.snapshot_volumes", typ_kwargs={"flags": {"required": True}})
+
+            backup_hook_references = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:KubernetesClusterBackupDatasourceParameters}.backupHookReferences")
+            if backup_hook_references is not None:
+                backup_hook_references.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:KubernetesClusterBackupDatasourceParameters}.backupHookReferences[]")
+            if _elements is not None:
+                _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_prop("namespace", AAZStrType, ".namespace")
 
             excluded_namespaces = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:KubernetesClusterBackupDatasourceParameters}.excludedNamespaces")
             if excluded_namespaces is not None:
@@ -553,6 +634,12 @@ class ValidateForBackup(AAZCommand):
 
 class _ValidateForBackupHelper:
     """Helper class for ValidateForBackup"""
+
+    @classmethod
+    def _build_schema_base_resource_properties_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("objectType", AAZStrType, ".object_type", typ_kwargs={"flags": {"required": True}})
 
 
 __all__ = ["ValidateForBackup"]

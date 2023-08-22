@@ -7,205 +7,208 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
+# pylint: disable=protected-access, consider-using-f-string
 
-from azure.cli.core.util import sdk_no_wait
-
-
-DEFAULT_APNS_ENDPOINT = "gateway.push.apple.com"
-
-
-def create_notificationhubs_namespace(cmd, client,
-                                      resource_group_name,
-                                      namespace_name,
-                                      sku_name,
-                                      location=None,
-                                      tags=None):
-    from knack.util import CLIError
-    check_result = client.check_availability(parameters={"name": namespace_name})
-    if check_result and not check_result.is_availiable:  # misspell inherited from swagger
-        raise CLIError("A Notification Hub Namespace with the name: {} already exists.".format(namespace_name))
-    body = {}
-    body['location'] = location  # str
-    body['tags'] = tags  # dictionary
-    body.setdefault('sku', {})['name'] = sku_name  # str
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   namespace_name=namespace_name,
-                                   parameters=body)
+from azure.cli.core.aaz import has_value, register_command
+from azext_notification_hub.aaz.latest.notification_hub import Create as _CreateNotificationHub
+from azext_notification_hub.aaz.latest.notification_hub import Update as _UpdateNotificationHub
+from azext_notification_hub.aaz.latest.notification_hub.credential.apns import Create as _ApnsUpdate
+from azext_notification_hub.aaz.latest.notification_hub.credential.mpns import Create as _MpnsUpdate
+from azext_notification_hub.aaz.latest.notification_hub.credential.baidu import Create as _BaiduUpdate
+from azext_notification_hub.aaz.latest.notification_hub.credential.adm import Create as _AdmUpdate
+from azext_notification_hub.aaz.latest.notification_hub.credential.wns import Create as _WnsUpdate
+from azext_notification_hub.aaz.latest.notification_hub.credential.gcm import Create as _GcmUpdate
+from azext_notification_hub.aaz.latest.notification_hub.authorization_rule import RegenerateKeys as _RegenerateKeys
+from azext_notification_hub.aaz.latest.notification_hub.namespace import Create as _NamespaceCreate
+from azext_notification_hub.aaz.latest.notification_hub.namespace.authorization_rule import Create as _NamespaceRuleCreate
+from azext_notification_hub.aaz.latest.notification_hub.namespace.authorization_rule import RegenerateKeys as _NamespaceRuleRegenerateKeys
 
 
-def update_notificationhubs_namespace(cmd, client,
-                                      resource_group_name,
-                                      namespace_name,
-                                      tags=None,
-                                      sku_name=None):
-    body = client.get(resource_group_name=resource_group_name, namespace_name=namespace_name).as_dict()
-    if tags is not None:
-        body['tags'] = tags  # dictionary
-    if sku_name is not None:
-        body.setdefault('sku', {})['name'] = sku_name  # str
-    return client.create_or_update(resource_group_name=resource_group_name, namespace_name=namespace_name, parameters=body)
+class NotificationHubCreate(_CreateNotificationHub):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.location._required = True
+        return args_schema
 
 
-def delete_notificationhubs_namespace(cmd, client,
-                                      resource_group_name,
-                                      namespace_name,
-                                      no_wait=False):
-    return sdk_no_wait(no_wait, client.delete, resource_group_name=resource_group_name, namespace_name=namespace_name)
+class NotificationHubUpdate(_UpdateNotificationHub):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.adm_credential._registered = False
+        args_schema.apns_credential._registered = False
+        args_schema.baidu_credential._registered = False
+        args_schema.gcm_credential._registered = False
+        args_schema.mpns_credential._registered = False
+        args_schema.wns_credential._registered = False
+        return args_schema
 
 
-def get_notificationhubs_namespace(cmd, client,
-                                   resource_group_name,
-                                   namespace_name):
-    return client.get(resource_group_name=resource_group_name, namespace_name=namespace_name)
+@register_command(
+    "notification-hub credential apns update",
+    is_experimental=True,
+)
+class ApnsUpdate(_ApnsUpdate):
+    """Update credential for Apple(APNS).
+
+    :example: Update APNS certificate
+        az notification-hub credential apns update --namespace-name my-namespace --notification-hub-name my-hub --apns-certificate "/path/to/certificate" --certificate-key "xxxxxx" --resource-group MyResourceGroup
+    """
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZFileArg, AAZFileArgBase64EncodeFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.apns_certificate = AAZFileArg(
+            options=['--apns-certificate'],
+            help='The APNS certificate.',
+            fmt=AAZFileArgBase64EncodeFormat()
+        )
+        args_schema.apns_certificate_org._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if has_value(args.apns_certificate):
+            args.apns_certificate_org = args.apns_certificate
 
 
-def list_notificationhubs_namespace(cmd, client,
-                                    resource_group_name=None):
-    if resource_group_name:
-        return client.list(resource_group_name=resource_group_name)
-    return client.list_all()
+@register_command(
+    "notification-hub credential adm update",
+    is_experimental=True,
+)
+class AdmUpdate(_AdmUpdate):
+    """Update credential for Amazon(ADM).
+    """
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.client_id._required = True
+        args_schema.client_secret._required = True
+        return args_schema
 
 
-def check_availability_notificationhubs_namespace(cmd, client, name):
-    body = {"name": name}
-    return client.check_availability(parameters=body)
+@register_command(
+    "notification-hub credential wns update",
+    is_experimental=True,
+)
+class WnsUpdate(_WnsUpdate):
+    """Update credential for Windows(WNS).
+    """
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.package_sid._required = True
+        args_schema.secret_key._required = True
+        return args_schema
 
 
-def list_keys_notificationhubs_namespace(cmd, client,
-                                         resource_group_name,
-                                         namespace_name,
-                                         rule_name):
-    return client.list_keys(resource_group_name=resource_group_name, namespace_name=namespace_name, authorization_rule_name=rule_name)
+@register_command(
+    "notification-hub credential gcm update",
+    is_experimental=True,
+)
+class GcmUpdate(_GcmUpdate):
+    """Update the Google GCM/FCM API key.
+
+        :example: Update Android push API key
+            az notification-hub credential gcm update --resource-group groupName --namespace-name spaceName --notification-hub-name hubName --google-api-key keyValue
+        """
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.google_api_key._required = True
+        return args_schema
 
 
-def regenerate_keys_notificationhubs_namespace(cmd, client,
-                                               resource_group_name,
-                                               namespace_name,
-                                               rule_name,
-                                               policy_key):
-    return client.regenerate_keys(resource_group_name=resource_group_name, namespace_name=namespace_name, authorization_rule_name=rule_name, policy_key=policy_key)
+@register_command(
+    "notification-hub credential mpns update",
+    is_experimental=True,
+)
+class MpnsUpdate(_MpnsUpdate):
+    """Update credential for Windows Phone(MPNS).
+    """
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZFileArg, AAZFileArgBase64EncodeFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.mpns_certificate = AAZFileArg(
+            options=['--mpns-certificate'],
+            help='The MPNS certificate.',
+            fmt=AAZFileArgBase64EncodeFormat(),
+            required=True
+        )
+        args_schema.certificate_key._required = True
+        args_schema.mpns_certificate_org._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.mpns_certificate_org = args.mpns_certificate
 
 
-def get_authorization_rule_notificationhubs_namespace(cmd, client,
-                                                      resource_group_name,
-                                                      namespace_name,
-                                                      rule_name):
-    return client.get_authorization_rule(resource_group_name=resource_group_name, namespace_name=namespace_name, authorization_rule_name=rule_name)
+@register_command(
+    "notification-hub credential baidu update",
+    is_experimental=True,
+)
+class BaiduUpdate(_BaiduUpdate):
+    """Update credential for Baidu(Andrioid China).
+    """
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.api_key = AAZStrArg(
+            options=['--api-key'],
+            help='Baidu API key.',
+            required=True
+        )
+        args_schema.secret_key = AAZStrArg(
+            options=['--secret-key'],
+            help='Baidu secret key.',
+            required=True
+        )
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.baidu_api_key = args.api_key
+        args.baidu_secret_key = args.secret_key
 
 
-def list_authorization_rules_notificationhubs_namespace(cmd, client,
-                                                        resource_group_name,
-                                                        namespace_name):
-    return client.list_authorization_rules(resource_group_name=resource_group_name, namespace_name=namespace_name)
+class RuleRegenerateKeys(_RegenerateKeys):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZArgEnum
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.policy_key._required = True
+        args_schema.policy_key.enum = AAZArgEnum({'Primary Key': 'Primary Key', 'Secondary Key': 'Secondary Key'})
+        return args_schema
 
 
-def create_or_update_authorization_rule_notificationhubs_namespace(cmd, client,
-                                                                   resource_group_name,
-                                                                   namespace_name,
-                                                                   rule_name,
-                                                                   rights):
-    body = {}
-    body['rights'] = rights
-    return client.create_or_update_authorization_rule(resource_group_name=resource_group_name, namespace_name=namespace_name, authorization_rule_name=rule_name, properties=body)
+class NamespaceCreate(_NamespaceCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.sku._required = True
+        return args_schema
 
 
-def delete_authorization_rule_notificationhubs_namespace(cmd, client,
-                                                         resource_group_name,
-                                                         namespace_name,
-                                                         rule_name):
-    return client.delete_authorization_rule(resource_group_name=resource_group_name, namespace_name=namespace_name, authorization_rule_name=rule_name)
+class NamespaceRuleCreate(_NamespaceRuleCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.rights._required = True
+        return args_schema
 
 
-def create_notificationhubs_hub(cmd, client,
-                                resource_group_name,
-                                namespace_name,
-                                notification_hub_name,
-                                location,
-                                tags=None,
-                                registration_ttl=None):
-    from knack.util import CLIError
-    check_result = client.check_notification_hub_availability(resource_group_name=resource_group_name,
-                                                              namespace_name=namespace_name,
-                                                              parameters={"name": notification_hub_name})
-    if check_result and not check_result.is_availiable:  # misspell inherited from swagger
-        raise CLIError("A Notification Hub with the name: {} already exists in {}.".format(notification_hub_name, namespace_name))
-
-    body = {}
-    body['location'] = location  # str
-    body['tags'] = tags  # dictionary
-
-    # sku is actually a property of namespace, current service ignores it. The swagger added it as required in notification hub(a bug?).
-    # Here we fetch the sku from the namespace.
-    from ._client_factory import cf_namespaces
-    namespace_client = cf_namespaces(cmd.cli_ctx)
-    namespace = namespace_client.get(resource_group_name=resource_group_name, namespace_name=namespace_name)
-    body.setdefault('sku', {})['name'] = namespace.sku.name
-
-    body['registration_ttl'] = registration_ttl  # str
-    return client.create_or_update(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
-
-
-def update_notificationhubs_hub(cmd, client,
-                                resource_group_name,
-                                namespace_name,
-                                notification_hub_name,
-                                tags=None):
-    body = client.get(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
-    if tags is not None:
-        body['tags'] = tags  # dictionary
-    return client.create_or_update(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
-
-
-def delete_notificationhubs_hub(cmd, client,
-                                resource_group_name,
-                                namespace_name,
-                                notification_hub_name):
-    return client.delete(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name)
-
-
-def get_notificationhubs_hub(cmd, client,
-                             resource_group_name,
-                             namespace_name,
-                             notification_hub_name):
-    return client.get(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name)
-
-
-def list_notificationhubs_hub(cmd, client,
-                              resource_group_name,
-                              namespace_name):
-    return client.list(resource_group_name=resource_group_name, namespace_name=namespace_name)
-
-
-def check_notification_hub_availability_notificationhubs_hub(cmd, client,
-                                                             resource_group_name,
-                                                             namespace_name,
-                                                             notification_hub_name):
-    body = {"name": notification_hub_name}
-    return client.check_notification_hub_availability(resource_group_name=resource_group_name, namespace_name=namespace_name, parameters=body)
-
-
-def regenerate_keys_notificationhubs_hub(cmd, client,
-                                         resource_group_name,
-                                         namespace_name,
-                                         notification_hub_name,
-                                         rule_name,
-                                         policy_key):
-    return client.regenerate_keys(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=rule_name, policy_key=policy_key)
-
-
-def get_pns_credentials_notificationhubs_hub(cmd, client,
-                                             resource_group_name,
-                                             namespace_name,
-                                             notification_hub_name):
-    return client.get_pns_credentials(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name)
-
-
-def list_keys_notificationhubs_hub(cmd, client,
-                                   resource_group_name,
-                                   namespace_name,
-                                   notification_hub_name,
-                                   rule_name):
-    return client.list_keys(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=rule_name)
+class NamespaceRuleRegenerateKeys(_NamespaceRuleRegenerateKeys):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZArgEnum
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.policy_key._required = True
+        args_schema.policy_key.enum = AAZArgEnum({'Primary Key': 'Primary Key', 'Secondary Key': 'Secondary Key'})
+        return args_schema
 
 
 def debug_send_notificationhubs_hub(cmd, client,
@@ -247,133 +250,3 @@ def debug_send_notificationhubs_hub(cmd, client,
         custom_headers['servicebusnotification-tags'] = tag
 
     return client.debug_send(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=parameters, custom_headers=custom_headers)
-
-
-def list_authorization_rules_notificationhubs_hub(cmd, client,
-                                                  resource_group_name,
-                                                  namespace_name,
-                                                  notification_hub_name):
-    return client.list_authorization_rules(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name)
-
-
-def get_authorization_rule_notificationhubs_hub(cmd, client,
-                                                resource_group_name,
-                                                namespace_name,
-                                                notification_hub_name,
-                                                rule_name):
-    return client.get_authorization_rule(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=rule_name)
-
-
-def create_or_update_authorization_rule_notificationhubs_hub(cmd, client,
-                                                             resource_group_name,
-                                                             namespace_name,
-                                                             notification_hub_name,
-                                                             rule_name,
-                                                             rights):
-    body = {}
-    body['rights'] = rights
-    return client.create_or_update_authorization_rule(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=rule_name, properties=body)
-
-
-def delete_authorization_rule_notificationhubs_hub(cmd, client,
-                                                   resource_group_name,
-                                                   namespace_name,
-                                                   notification_hub_name,
-                                                   rule_name):
-    return client.delete_authorization_rule(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=rule_name)
-
-
-def update_gcm_credential(cmd, client,
-                          resource_group_name,
-                          namespace_name,
-                          notification_hub_name,
-                          google_api_key):
-    body = {}
-    body.setdefault('gcm_credential', {})['google_api_key'] = google_api_key
-    return client.patch(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
-
-
-def update_adm_credential(cmd, client,
-                          resource_group_name,
-                          namespace_name,
-                          notification_hub_name,
-                          client_id,
-                          client_secret):
-    body = {}
-    body.setdefault('adm_credential', {})['client_id'] = client_id
-    body.setdefault('adm_credential', {})['client_secret'] = client_secret
-    return client.patch(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
-
-
-def update_apns_credential(cmd, client,
-                           resource_group_name,
-                           namespace_name,
-                           notification_hub_name,
-                           apns_certificate=None,
-                           certificate_key=None,
-                           endpoint=DEFAULT_APNS_ENDPOINT,
-                           key_id=None,
-                           app_name=None,
-                           app_id=None,
-                           token=None):
-    import base64
-    body = {}
-    if apns_certificate is not None:
-        with open(apns_certificate, "rb") as f:
-            data_bytes = f.read()
-            cert_data = base64.b64encode(data_bytes).decode('utf-8')
-            body.setdefault('apns_credential', {})['apns_certificate'] = cert_data
-    if certificate_key is not None:
-        body.setdefault('apns_credential', {})['certificate_key'] = certificate_key
-    if endpoint is not None:
-        body.setdefault('apns_credential', {})['endpoint'] = endpoint
-    if key_id is not None:
-        body.setdefault('apns_credential', {})['key_id'] = key_id
-    if app_name is not None:
-        body.setdefault('apns_credential', {})['app_name'] = app_name
-    if app_id is not None:
-        body.setdefault('apns_credential', {})['app_id'] = app_id
-    if token is not None:
-        body.setdefault('apns_credential', {})['token'] = token
-    return client.patch(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
-
-
-def update_baidu_credential(cmd, client,
-                            resource_group_name,
-                            namespace_name,
-                            notification_hub_name,
-                            api_key,
-                            secret_key):
-    body = {}
-    body.setdefault('baidu_credential', {})['baidu_api_key'] = api_key
-    body.setdefault('baidu_credential', {})['baidu_secret_key'] = secret_key
-    return client.patch(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
-
-
-def update_mpns_credential(cmd, client,
-                           resource_group_name,
-                           namespace_name,
-                           notification_hub_name,
-                           mpns_certificate,
-                           certificate_key):
-    import base64
-    body = {}
-    if mpns_certificate is not None:
-        with open(mpns_certificate, "rb") as f:
-            data_bytes = f.read()
-            cert_data = base64.b64encode(data_bytes).decode('utf-8')
-            body.setdefault('mpns_credential', {})['mpns_certificate'] = cert_data
-    body.setdefault('mpns_credential', {})['certificate_key'] = certificate_key
-    return client.patch(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
-
-
-def update_wns_credential(cmd, client,
-                          resource_group_name,
-                          namespace_name,
-                          notification_hub_name,
-                          package_sid,
-                          secret_key):
-    body = {}
-    body.setdefault('wns_credential', {})['package_sid'] = package_sid
-    body.setdefault('wns_credential', {})['secret_key'] = secret_key
-    return client.patch(resource_group_name=resource_group_name, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)

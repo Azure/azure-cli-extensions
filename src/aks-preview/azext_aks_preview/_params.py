@@ -14,6 +14,20 @@ from azext_aks_preview._completers import (
     get_k8s_versions_completion_list,
     get_vm_size_completion_list,
 )
+from azure.cli.command_modules.acs._consts import (
+    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+)
+from azure.cli.command_modules.acs._validators import (
+    validate_load_balancer_idle_timeout,
+    validate_load_balancer_outbound_ip_prefixes,
+    validate_load_balancer_outbound_ips,
+    validate_load_balancer_outbound_ports,
+    validate_nat_gateway_idle_timeout,
+    validate_nat_gateway_managed_outbound_ip_count,
+)
 from azext_aks_preview._consts import (
     CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
@@ -58,10 +72,6 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
-    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
-    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
-    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
-    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
     CONST_PATCH_UPGRADE_CHANNEL,
     CONST_RAPID_UPGRADE_CHANNEL,
     CONST_RELATIVEMONTHLY_MAINTENANCE_SCHEDULE,
@@ -117,18 +127,13 @@ from azext_aks_preview._validators import (
     validate_k8s_version,
     validate_linux_host_name,
     validate_load_balancer_backend_pool_type,
-    validate_load_balancer_idle_timeout,
-    validate_load_balancer_outbound_ip_prefixes,
-    validate_load_balancer_outbound_ips,
-    validate_load_balancer_outbound_ports,
     validate_load_balancer_sku,
     validate_max_surge,
     validate_message_of_the_day,
-    validate_nat_gateway_idle_timeout,
-    validate_nat_gateway_managed_outbound_ip_count,
     validate_node_public_ip_tags,
     validate_nodepool_id,
     validate_nodepool_labels,
+    validate_nodepool_taints,
     validate_nodepool_name,
     validate_nodepool_tags,
     validate_nodes_count,
@@ -146,11 +151,10 @@ from azext_aks_preview._validators import (
     validate_ssh_key_for_update,
     validate_start_date,
     validate_start_time,
-    validate_taints,
     validate_user,
     validate_utc_offset,
     validate_vm_set_type,
-    validate_vnet_subnet_id,
+    validate_vnet_subnet_id
 )
 from azure.cli.core.commands.parameters import (
     edge_zone_type,
@@ -376,6 +380,7 @@ def load_arguments(self, _):
                    help='space-separated tags: key[=value] [key[=value] ...]. Use "" to clear existing tags.')
         c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels,
                    help='space-separated labels: key[=value] [key[=value] ...]. See https://aka.ms/node-labels for syntax of labels.')
+        c.argument('nodepool_taints', validator=validate_nodepool_taints)
         c.argument('node_osdisk_type', arg_type=get_enum_type(node_os_disk_types))
         c.argument('node_osdisk_size', type=int)
         c.argument('max_pods', type=int, options_list=['--max-pods', '-m'])
@@ -456,6 +461,7 @@ def load_arguments(self, _):
         c.argument('nrg_lockdown_restriction_level', arg_type=get_enum_type(nrg_lockdown_restriction_levels))
         c.argument('nat_gateway_managed_outbound_ip_count', type=int, validator=validate_nat_gateway_managed_outbound_ip_count)
         c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
+        c.argument('network_dataplane', arg_type=get_enum_type(network_dataplanes))
         c.argument('kube_proxy_config')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
         c.argument('node_os_upgrade_channel', arg_type=get_enum_type(node_os_upgrade_channels))
@@ -519,6 +525,7 @@ def load_arguments(self, _):
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels,
                    help='space-separated labels: key[=value] [key[=value] ...]. See https://aka.ms/node-labels for syntax of labels.')
+        c.argument('nodepool_taints', validator=validate_nodepool_taints)
         # misc
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('aks_custom_headers')
@@ -536,6 +543,7 @@ def load_arguments(self, _):
         c.argument('enable_image_cleaner', action='store_true', is_preview=True)
         c.argument('disable_image_cleaner', action='store_true', validator=validate_image_cleaner_enable_disable_mutually_exclusive, is_preview=True)
         c.argument('image_cleaner_interval_hours', type=int, is_preview=True)
+        c.argument('disable_image_integrity', action='store_true', is_preview=True)
         c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
         c.argument('enable_keda', action='store_true', is_preview=True)
@@ -597,7 +605,7 @@ def load_arguments(self, _):
         c.argument('spot_max_price', type=float, validator=validate_spot_max_price)
         c.argument('labels', nargs='*', validator=validate_nodepool_labels)
         c.argument('tags', tags_type)
-        c.argument('node_taints', validator=validate_taints)
+        c.argument('node_taints', validator=validate_nodepool_taints)
         c.argument('node_osdisk_type', arg_type=get_enum_type(node_os_disk_types))
         c.argument('node_osdisk_size', type=int)
         c.argument('max_surge', validator=validate_max_surge)
@@ -606,6 +614,7 @@ def load_arguments(self, _):
         c.argument('max_pods', type=int, options_list=['--max-pods', '-m'])
         c.argument('zones', zones_type, options_list=['--zones', '-z'], help='Space-separated list of availability zones where agent nodes will be placed.')
         c.argument('ppg')
+        c.argument('vm_set_type', validator=validate_vm_set_type)
         c.argument('enable_encryption_at_host', action='store_true')
         c.argument('enable_ultra_ssd', action='store_true')
         c.argument('enable_fips_image', action='store_true')
@@ -637,7 +646,7 @@ def load_arguments(self, _):
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('labels', nargs='*', validator=validate_nodepool_labels)
         c.argument('tags', tags_type)
-        c.argument('node_taints', validator=validate_taints)
+        c.argument('node_taints', validator=validate_nodepool_taints)
         c.argument('max_surge', validator=validate_max_surge)
         c.argument('mode', arg_type=get_enum_type(node_mode_types))
         c.argument('scale_down_mode', arg_type=get_enum_type(scale_down_modes))
@@ -847,6 +856,10 @@ def load_arguments(self, _):
                        help='The nodepool id.', validator=validate_nodepool_id)
             c.argument('aks_custom_headers')
 
+    with self.argument_context('aks nodepool snapshot update') as c:
+        c.argument('snapshot_name', options_list=['--name', '-n'], help='The nodepool snapshot name.', validator=validate_snapshot_name)
+        c.argument('tags', tags_type, help='The tags to set to the snapshot.')
+
     for scope in ['aks nodepool snapshot show', 'aks nodepool snapshot delete']:
         with self.argument_context(scope) as c:
             c.argument('snapshot_name', options_list=[
@@ -893,6 +906,13 @@ def load_arguments(self, _):
     with self.argument_context('aks mesh disable-ingress-gateway') as c:
         c.argument('ingress_gateway_type',
                    arg_type=get_enum_type(ingress_gateway_types))
+
+    with self.argument_context('aks mesh enable') as c:
+        c.argument('key_vault_id')
+        c.argument('ca_cert_object_name')
+        c.argument('ca_key_object_name')
+        c.argument('root_cert_object_name')
+        c.argument('cert_chain_object_name')
 
 
 def _get_default_install_location(exe_name):

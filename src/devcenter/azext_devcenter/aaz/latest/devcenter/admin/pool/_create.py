@@ -84,7 +84,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.dev_box_definition_name = AAZStrArg(
-            options=["-d", "--dev-box-definition-name"],
+            options=["-d", "--devbox-definition-name"],
             arg_group="Properties",
             help="Name of a dev box definition in parent project of this pool.",
         )

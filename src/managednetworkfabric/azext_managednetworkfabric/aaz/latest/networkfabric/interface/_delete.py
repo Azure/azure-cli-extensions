@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "networkfabric interface delete",
 )
 class Delete(AAZCommand):
-    """Delete the Network Interface resource.
+    """Delete the Network Interface resource
 
     :example: Delete the Network Interface
         az networkfabric interface delete -g "example-rg" --network-device-name "example-device" --resource-name "example-interface"
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/networkinterfaces/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices/{}/networkinterfaces/{}", "2023-06-15"],
         ]
     }
 
@@ -47,13 +47,13 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.network_device_name = AAZStrArg(
             options=["--device", "--network-device-name"],
-            help="Name of the Network Device",
+            help="Name of the Network Device.",
             required=True,
             id_part="name",
         )
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the NetworkInterfaceName",
+            help="Name of the Network Interface.",
             required=True,
             id_part="child_name_1",
         )
@@ -153,7 +153,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }

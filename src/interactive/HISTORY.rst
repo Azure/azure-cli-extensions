@@ -3,6 +3,16 @@
 Release History
 ===============
 
+0.5.3
++++++
+* Optimize the visualization of help text when the window is reduced horizontally
+
+0.5.2
++++++
+* Add command skipped message in Scenario Execution Mode
+* Fix Scenario Idx out of bound when selecting recommended scenario
+* Fix `KeyError` when entering param not in sample in scenario mode
+
 0.5.1
 +++++
 * Fix bugs to prevent users from exiting the entire az interactive by using Ctrl+C during command execution

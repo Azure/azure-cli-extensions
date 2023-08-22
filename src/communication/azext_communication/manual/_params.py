@@ -10,7 +10,8 @@ def load_arguments(self, _):
     with self.argument_context('communication update') as c:
         c.argument('location', validator=None)
 
-    _load_identity_arguments(self)
+    _load_user_identity_arguments(self)
+    _load_legacy_identity_arguments(self)
     _load_sms_arguments(self)
     _load_phonenumber_arguments(self)
     _load_chat_arguments(self)
@@ -18,16 +19,38 @@ def load_arguments(self, _):
     _load_email_arguments(self)
 
 
-def _load_identity_arguments(self):
+def _load_user_identity_arguments(self):
+    self.argument_context('communication user-identity user create')
+
+    with self.argument_context('communication user-identity user delete') as c:
+        c.argument('user_id', options_list=['--user'], type=str, help='ACS identifier')
+
+    with self.argument_context('communication user-identity issue-access-token') as c:
+        c.argument('user_id', options_list=['--userid', '-u'], type=str, help='ACS identifier')
+        c.argument('scopes', options_list=['--scope', '-s'],
+                   nargs='+', help='list of scopes for an access token ex: chat/voip')
+
+    with self.argument_context('communication user-identity token issue') as c:
+        c.argument('user_id', options_list=['--user'], type=str, help='ACS identifier')
+        c.argument('scopes', options_list=['--scope'], nargs='+',
+                   help='list of scopes for an access token ex: chat/voip')
+
+    with self.argument_context('communication user-identity token revoke') as c:
+        c.argument('user_id', options_list=['--user'], type=str, help='ACS identifier')
+
+    with self.argument_context('communication user-identity token get-for-teams-user') as c:
+        c.argument('aad_token', options_list=['--aad-token'], type=str, help='Azure AD access token of a Teams User')
+        c.argument('client_id', options_list=['--client'], type=str, help='Client ID of an Azure AD application'
+                   'to be verified against the appId claim in the Azure AD access token')
+        c.argument('user_object_id', options_list=['--aad-user'], type=str, help='Object ID of an Azure AD user'
+                   '(Teams User) to be verified against the OID claim in the Azure AD access token')
+
+
+def _load_legacy_identity_arguments(self):
     self.argument_context('communication identity user create')
 
     with self.argument_context('communication identity user delete') as c:
         c.argument('user_id', options_list=['--user'], type=str, help='ACS identifier')
-
-    with self.argument_context('communication identity issue-access-token') as c:
-        c.argument('user_id', options_list=['--userid', '-u'], type=str, help='ACS identifier')
-        c.argument('scopes', options_list=['--scope', '-s'],
-                   nargs='+', help='list of scopes for an access token ex: chat/voip')
 
     with self.argument_context('communication identity token issue') as c:
         c.argument('user_id', options_list=['--user'], type=str, help='ACS identifier')
@@ -232,16 +255,16 @@ def _load_email_arguments(self):
         c.argument('subject', options_list=['--subject'], type=str, help='Subject of the email message.')
         c.argument('text', options_list=['--text'], type=str, help='Plain text version of the email message. Optional.')
         c.argument('html', options_list=['--html'], type=str, help='Html version of the email message. Optional.')
+        c.argument('recipients_to', options_list=['--to'], nargs='+', help='Recepients email addresses.')
         c.argument('importance', options_list=['--importance'], arg_type=get_enum_type(['normal', 'low', 'high']),
                    help='The importance type for the email. Known values are: high,'
                    ' normal, and low. Default is normal. Optional')
-        c.argument('recipients_to', options_list=['--to'], nargs='+', help='Recepients email addresses.')
         c.argument('recipients_cc', options_list=['--cc'], nargs='+', help='Carbon copy email addresses.')
         c.argument('recipients_bcc', options_list=['--bcc'], nargs='+', help='Blind carbon copy email addresses.')
         c.argument('reply_to', options_list=['--reply-to'], type=str, help='Reply-to email address. Optional.')
         c.argument('disable_tracking', options_list=['--disable-tracking'], arg_type=get_three_state_flag(),
-                   help='Indicates whether user engagement tracking should be disabled for this request if'
-                   'the resource-level user engagement tracking setting was already enabled. Optional.')
+                   help='Indicates whether user engagement tracking should be disabled for this specific request. '
+                   'This is only applicable if the resource-level user engagement tracking setting was already enabled in control plane. Optional.')
         c.argument('attachments', options_list=['--attachments'], nargs='+',
                    help='List of email attachments. Optional.')
         c.argument('attachment_types', options_list=['--attachment-types'], nargs='+',
@@ -249,7 +272,3 @@ def _load_email_arguments(self):
                    ' Required for each attachment. Known values are: avi, bmp, doc, docm,'
                    ' docx, gif, jpeg, mp3, one, pdf, png, ppsm, ppsx, ppt, pptm, pptx,'
                    ' pub, rpmsg, rtf, tif, txt, vsd, wav, wma, xls, xlsb, xlsm, and xlsx')
-
-    with self.argument_context('communication email status get') as c:
-        c.argument('message_id', options_list=['--message-id'], type=str,
-                   help='System generated message id (GUID) returned from a previous call to send email')
