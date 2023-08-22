@@ -174,8 +174,11 @@ class AzInteractiveShell(object):
                 "\nA new Recommender is added which can make the completion ability more intelligent and provide the scenario completion!\n"
                 "If you want to disable this feature, you can use 'az config set interactive.enable_recommender=False' to disable it.\n")
 
+        self.cli_ctx.config.set_value("interactive", "error_assistance", 'True')
+
         self.cli_ctx.data["az_interactive_active"] = True
         self.run()
+        self.cli_ctx.config.set_value("interactive", "error_assistance", 'False')
         self.cli_ctx.data["az_interactive_active"] = False
 
     @property
