@@ -99,9 +99,9 @@ class BaseContainerAppDecorator(BaseResource):
         except CLIError as e:
             handle_raw_exception(e)
     
-    def show_customdomainverificationid(self):
+    def show_custom_domain_verification_id(self):
         try:
-            r = self.client.show_customdomainverificationid(cmd=self.cmd)
+            r = self.client.show_custom_domain_verification_id(cmd=self.cmd)
             return r
         except CLIError as e:
             handle_raw_exception(e)

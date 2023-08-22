@@ -1047,7 +1047,8 @@ def list_containerapp(cmd, resource_group_name=None, managed_env=None, environme
 
     return containerapp_list_decorator.list()
 
-def show_customdomainverificationid(cmd):
+
+def show_custom_domain_verification_id(cmd):
     raw_parameters = locals()
     containerapp_base_decorator = BaseContainerAppDecorator(
         cmd=cmd,
@@ -1057,7 +1058,7 @@ def show_customdomainverificationid(cmd):
     )
     containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    return containerapp_base_decorator.show_customdomainverificationid()
+    return containerapp_base_decorator.show_custom_domain_verification_id()
 
 
 def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
