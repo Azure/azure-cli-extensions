@@ -824,3 +824,37 @@ class ContainerAppPreviewListDecorator(BaseContainerAppDecorator):
 
     def get_argument_environment_type(self):
         return self.get_param("environment_type")
+
+
+# decorator for preview show-custom-domain-verification-id
+class ContainerAppPreviewShowVerificationIdDecorator(BaseContainerAppDecorator):
+    def __init__(
+        self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
+    ):
+        super().__init__(cmd, client, raw_parameters, models)
+
+    def show_customdomainverificationid(self):
+        containerapps = super().list()
+        if self.get_argument_environment_type() == CONNECTED_ENVIRONMENT_TYPE:
+            containerapps = [c for c in containerapps if CONNECTED_ENVIRONMENT_RESOURCE_TYPE in c["properties"]["environmentId"]]
+        if self.get_argument_environment_type() == MANAGED_ENVIRONMENT_TYPE:
+            containerapps = [c for c in containerapps if MANAGED_ENVIRONMENT_RESOURCE_TYPE in c["properties"]["environmentId"]]
+        return containerapps
+
+    def get_environment_client(self):
+        env = self.get_argument_managed_env()
+
+        if is_valid_resource_id(env):
+            parsed_env = parse_resource_id(env)
+            if parsed_env.get('resource_type').lower() == CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower():
+                return ConnectedEnvironmentClient
+            else:
+                return ManagedEnvironmentPreviewClient
+
+        if self.get_argument_environment_type() == CONNECTED_ENVIRONMENT_TYPE:
+            return ConnectedEnvironmentClient
+        else:
+            return ManagedEnvironmentPreviewClient
+
+    def get_argument_environment_type(self):
+        return self.get_param("environment_type")

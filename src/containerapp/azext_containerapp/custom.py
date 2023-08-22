@@ -36,7 +36,7 @@ from msrest.exceptions import DeserializationError
 from .containerapp_job_decorator import ContainerAppJobDecorator, ContainerAppJobCreateDecorator
 from .containerapp_env_decorator import ContainerAppEnvDecorator, ContainerAppEnvCreateDecorator, ContainerAppEnvUpdateDecorator
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
-from .containerapp_decorator import BaseContainerAppDecorator, ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator
+from .containerapp_decorator import BaseContainerAppDecorator, ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewShowVerificationIdDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_exception
 from ._clients import (
     ManagedEnvironmentClient,
@@ -1046,6 +1046,18 @@ def list_containerapp(cmd, resource_group_name=None, managed_env=None, environme
     containerapp_list_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
     return containerapp_list_decorator.list()
+
+def show_customdomainverificationid(cmd):
+    raw_parameters = locals()
+    containerapp_base_decorator = ContainerAppPreviewShowVerificationIdDecorator(
+        cmd=cmd,
+        client=ContainerAppPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+
+    return containerapp_base_decorator.show_customdomainverificationid()
 
 
 def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
