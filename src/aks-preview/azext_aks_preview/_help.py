@@ -297,7 +297,7 @@ helps['aks create'] = """
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000].
         - name: --vm-set-type
           type: string
-          short-summary: Agent pool vm set type. VirtualMachineScaleSets or AvailabilitySet.
+          short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only).
         - name: --enable-pod-security-policy
           type: bool
           short-summary: Enable pod security policy.
@@ -561,6 +561,12 @@ helps['aks create'] = """
         - name: --enable-windows-recording-rules
           type: bool
           short-summary: Enable Windows Recording Rules when enabling the Azure Monitor Metrics addon
+        - name: --nodepool-labels
+          type: string
+          short-summary: The node labels for all node pools in this cluster. See https://aka.ms/node-labels for syntax of labels.
+        - name: --nodepool-taints
+          type: string
+          short-summary: The node taints for all node pools in this cluster.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -644,6 +650,9 @@ helps['aks scale'] = """
         - name: --node-count -c
           type: int
           short-summary: Number of nodes in the Kubernetes node pool.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 """
 
 helps['aks upgrade'] = """
@@ -837,6 +846,12 @@ helps['aks update'] = """
           long-summary: |
               Used to control the mode the network plugin should operate in. For example, "overlay" used with
               --network-plugin=azure will use an overlay network (non-VNET IPs) for pods in the cluster.
+        - name: --network-dataplane
+          type: string
+          short-summary: The network dataplane to use.
+          long-summary: |
+              Network dataplane used in the Kubernetes cluster.
+              Specify "azure" to use the Azure dataplane (default) or "cilium" to enable Cilium dataplane.
         - name: --disk-driver-version
           type: string
           short-summary: Specify AzureDisk CSI Driver version.
@@ -945,6 +960,9 @@ helps['aks update'] = """
         - name: --image-cleaner-interval-hours
           type: int
           short-summary: ImageCleaner scanning interval.
+        - name: --disable-image-integrity
+          type: bool
+          short-summary: Disable ImageIntegrity Service.
         - name: --enable-apiserver-vnet-integration
           type: bool
           short-summary: Enable integration of user vnet with control plane apiserver pods.
@@ -1034,6 +1052,12 @@ helps['aks update'] = """
         - name: --guardrails-excluded-ns
           type: string
           short-summary: Comma-separated list of Kubernetes namespaces to exclude from Guardrails. Use "" to clear a previously non-empty list
+        - name: --nodepool-taints
+          type: string
+          short-summary: The node taints for all node pool.
+        - name: --nodepool-labels
+          type: string
+          short-summary: The node labels for all node pool. See https://aka.ms/node-labels for syntax of labels.
         - name: --enable-network-observability
           type: bool
           short-summary: Enable network observability on a cluster.
@@ -1545,6 +1569,9 @@ helps['aks nodepool add'] = """
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
+        - name: --vm-set-type
+          type: string
+          short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only).
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
@@ -1620,6 +1647,9 @@ helps['aks nodepool scale'] = """
         - name: --node-count -c
           type: int
           short-summary: Number of nodes in the Kubernetes node pool.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 """
 
 helps['aks nodepool upgrade'] = """
@@ -2023,6 +2053,9 @@ parameters:
   - name: --dns-zone-resource-id
     type: string
     short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+  - name: --aks-custom-headers
+    type: string
+    short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 examples:
   - name: Enable Kubernetes addons. (autogenerated)
     text: az aks enable-addons --addons virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
@@ -2032,6 +2065,19 @@ examples:
     crafted: true
   - name: Enable open-service-mesh addon.
     text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons open-service-mesh
+    crafted: true
+"""
+
+helps['aks show'] = """
+type: command
+short-summary: Show the details for a managed Kubernetes cluster.
+parameters:
+  - name: --aks-custom-headers
+    type: string
+    short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+examples:
+  - name: Show the details for a managed Kubernetes cluster
+    text: az aks show -g MyResourceGroup -n MyManagedCluster
     crafted: true
 """
 
@@ -2079,6 +2125,9 @@ parameters:
     type: string
     short-summary: Specify the format of the returned credential. Available values are ["exec", "azure"].
                   Only take effect when requesting clusterUser credential of AAD clusters.
+  - name: --aks-custom-headers
+    type: string
+    short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 examples:
   - name: Get access credentials for a managed Kubernetes cluster. (autogenerated)
     text: az aks get-credentials --name MyManagedCluster --resource-group MyResourceGroup
@@ -2203,6 +2252,17 @@ helps['aks nodepool snapshot show'] = """
 helps['aks nodepool snapshot list'] = """
     type: command
     short-summary: List nodepool snapshots.
+"""
+
+helps['aks nodepool snapshot update'] = """
+    type: command
+    short-summary: Update tags on a snapshot of a nodepool.
+
+    examples:
+        - name: Update tags on a nodepool snapshot.
+          text: az aks nodepool snapshot update -g MyResourceGroup -n snapshot1 --tags "foo=bar" "key1=val1"
+        - name: Clear tags on a nodepool snapshot.
+          text: az aks nodepool snapshot update -g MyResourceGroup -n snapshot1 --tags ""
 """
 
 helps['aks nodepool snapshot create'] = """
@@ -2504,6 +2564,28 @@ helps['aks mesh enable'] = """
     type: command
     short-summary: Enable Azure Service Mesh.
     long-summary: This command enables Azure Service Mesh in given cluster.
+    parameters:
+      - name: --key-vault-id
+        type: string
+        short-summary: The Azure Keyvault id with plugin CA info.
+      - name: --ca-cert-object-name
+        type: string
+        short-summary: Intermediate cert object name in the Azure Keyvault.
+      - name: --ca-key-object-name
+        type: string
+        short-summary: Intermediate key object name in the Azure Keyvault.
+      - name: --cert-chain-object-name
+        type: string
+        short-summary: Cert chain object name in the Azure Keyvault.
+      - name: --root-cert-object-name
+        type: string
+        short-summary: Root cert object name in the Azure Keyvault.
+    examples:
+      - name: Enable Azure Service Mesh with selfsigned CA.
+        text: az aks mesh enable --resource-group MyResourceGroup --name MyManagedCluster
+      - name: Enable Azure Service Mesh with plugin CA.
+        text: az aks mesh enable --resource-group MyResourceGroup --name MyManagedCluster --key-vault-id my-akv-id --ca-cert-object-name my-ca-cert --ca-key-object-name my-ca-key --cert-chain-object-name my-cert-chain --root-cert-object-name my-root-cert
+
 """
 
 helps['aks mesh disable'] = """

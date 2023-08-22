@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/routepolicies/{}", "2023-06-15"],
         ]
     }
 
@@ -46,7 +46,7 @@ class Wait(AAZWaitCommand):
         )
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the Route Policy",
+            help="Name of the Route Policy.",
             required=True,
             id_part="name",
         )
@@ -117,7 +117,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -172,7 +172,25 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.address_family_type = AAZStrType(
+                serialized_name="addressFamilyType",
+            )
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            properties.default_action = AAZStrType(
+                serialized_name="defaultAction",
+            )
+            properties.network_fabric_id = AAZStrType(
+                serialized_name="networkFabricId",
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -214,61 +232,19 @@ class Wait(AAZWaitCommand):
 
             ip_community_properties = cls._schema_on_200.properties.statements.Element.action.ip_community_properties
             ip_community_properties.add = AAZObjectType()
+            _WaitHelper._build_schema_ip_community_id_list_read(ip_community_properties.add)
             ip_community_properties.delete = AAZObjectType()
+            _WaitHelper._build_schema_ip_community_id_list_read(ip_community_properties.delete)
             ip_community_properties.set = AAZObjectType()
-
-            add = cls._schema_on_200.properties.statements.Element.action.ip_community_properties.add
-            add.ip_community_ids = AAZListType(
-                serialized_name="ipCommunityIds",
-            )
-
-            ip_community_ids = cls._schema_on_200.properties.statements.Element.action.ip_community_properties.add.ip_community_ids
-            ip_community_ids.Element = AAZStrType()
-
-            delete = cls._schema_on_200.properties.statements.Element.action.ip_community_properties.delete
-            delete.ip_community_ids = AAZListType(
-                serialized_name="ipCommunityIds",
-            )
-
-            ip_community_ids = cls._schema_on_200.properties.statements.Element.action.ip_community_properties.delete.ip_community_ids
-            ip_community_ids.Element = AAZStrType()
-
-            set = cls._schema_on_200.properties.statements.Element.action.ip_community_properties.set
-            set.ip_community_ids = AAZListType(
-                serialized_name="ipCommunityIds",
-            )
-
-            ip_community_ids = cls._schema_on_200.properties.statements.Element.action.ip_community_properties.set.ip_community_ids
-            ip_community_ids.Element = AAZStrType()
+            _WaitHelper._build_schema_ip_community_id_list_read(ip_community_properties.set)
 
             ip_extended_community_properties = cls._schema_on_200.properties.statements.Element.action.ip_extended_community_properties
             ip_extended_community_properties.add = AAZObjectType()
+            _WaitHelper._build_schema_ip_extended_community_id_list_read(ip_extended_community_properties.add)
             ip_extended_community_properties.delete = AAZObjectType()
+            _WaitHelper._build_schema_ip_extended_community_id_list_read(ip_extended_community_properties.delete)
             ip_extended_community_properties.set = AAZObjectType()
-
-            add = cls._schema_on_200.properties.statements.Element.action.ip_extended_community_properties.add
-            add.ip_extended_community_ids = AAZListType(
-                serialized_name="ipExtendedCommunityIds",
-            )
-
-            ip_extended_community_ids = cls._schema_on_200.properties.statements.Element.action.ip_extended_community_properties.add.ip_extended_community_ids
-            ip_extended_community_ids.Element = AAZStrType()
-
-            delete = cls._schema_on_200.properties.statements.Element.action.ip_extended_community_properties.delete
-            delete.ip_extended_community_ids = AAZListType(
-                serialized_name="ipExtendedCommunityIds",
-            )
-
-            ip_extended_community_ids = cls._schema_on_200.properties.statements.Element.action.ip_extended_community_properties.delete.ip_extended_community_ids
-            ip_extended_community_ids.Element = AAZStrType()
-
-            set = cls._schema_on_200.properties.statements.Element.action.ip_extended_community_properties.set
-            set.ip_extended_community_ids = AAZListType(
-                serialized_name="ipExtendedCommunityIds",
-            )
-
-            ip_extended_community_ids = cls._schema_on_200.properties.statements.Element.action.ip_extended_community_properties.set.ip_extended_community_ids
-            ip_extended_community_ids.Element = AAZStrType()
+            _WaitHelper._build_schema_ip_extended_community_id_list_read(ip_extended_community_properties.set)
 
             condition = cls._schema_on_200.properties.statements.Element.condition
             condition.ip_community_ids = AAZListType(
@@ -280,6 +256,7 @@ class Wait(AAZWaitCommand):
             condition.ip_prefix_id = AAZStrType(
                 serialized_name="ipPrefixId",
             )
+            condition.type = AAZStrType()
 
             ip_community_ids = cls._schema_on_200.properties.statements.Element.condition.ip_community_ids
             ip_community_ids.Element = AAZStrType()
@@ -315,6 +292,46 @@ class Wait(AAZWaitCommand):
 
 class _WaitHelper:
     """Helper class for Wait"""
+
+    _schema_ip_community_id_list_read = None
+
+    @classmethod
+    def _build_schema_ip_community_id_list_read(cls, _schema):
+        if cls._schema_ip_community_id_list_read is not None:
+            _schema.ip_community_ids = cls._schema_ip_community_id_list_read.ip_community_ids
+            return
+
+        cls._schema_ip_community_id_list_read = _schema_ip_community_id_list_read = AAZObjectType()
+
+        ip_community_id_list_read = _schema_ip_community_id_list_read
+        ip_community_id_list_read.ip_community_ids = AAZListType(
+            serialized_name="ipCommunityIds",
+        )
+
+        ip_community_ids = _schema_ip_community_id_list_read.ip_community_ids
+        ip_community_ids.Element = AAZStrType()
+
+        _schema.ip_community_ids = cls._schema_ip_community_id_list_read.ip_community_ids
+
+    _schema_ip_extended_community_id_list_read = None
+
+    @classmethod
+    def _build_schema_ip_extended_community_id_list_read(cls, _schema):
+        if cls._schema_ip_extended_community_id_list_read is not None:
+            _schema.ip_extended_community_ids = cls._schema_ip_extended_community_id_list_read.ip_extended_community_ids
+            return
+
+        cls._schema_ip_extended_community_id_list_read = _schema_ip_extended_community_id_list_read = AAZObjectType()
+
+        ip_extended_community_id_list_read = _schema_ip_extended_community_id_list_read
+        ip_extended_community_id_list_read.ip_extended_community_ids = AAZListType(
+            serialized_name="ipExtendedCommunityIds",
+        )
+
+        ip_extended_community_ids = _schema_ip_extended_community_id_list_read.ip_extended_community_ids
+        ip_extended_community_ids.Element = AAZStrType()
+
+        _schema.ip_extended_community_ids = cls._schema_ip_extended_community_id_list_read.ip_extended_community_ids
 
 
 __all__ = ["Wait"]

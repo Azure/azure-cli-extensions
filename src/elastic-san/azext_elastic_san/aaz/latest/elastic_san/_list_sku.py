@@ -23,9 +23,9 @@ class ListSku(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-11-20-preview",
+        "version": "2022-12-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elasticsan/skus", "2021-11-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elasticsan/skus", "2022-12-01-preview"],
         ]
     }
 
@@ -56,11 +56,11 @@ class ListSku(AAZCommand):
         self.SkusList(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -111,7 +111,7 @@ class ListSku(AAZCommand):
                     "$filter", self.ctx.args.filter,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2021-11-20-preview",
+                    "api-version", "2022-12-01-preview",
                     required=True,
                 ),
             }
@@ -144,14 +144,16 @@ class ListSku(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+                flags={"read_only": True},
+            )
             _schema_on_200.value = AAZListType(
                 flags={"read_only": True},
             )
 
             value = cls._schema_on_200.value
-            value.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
             _element.capabilities = AAZListType(
@@ -165,20 +167,16 @@ class ListSku(AAZCommand):
                 flags={"read_only": True},
             )
             _element.name = AAZStrType(
-                flags={"required": True, "read_only": True},
+                flags={"required": True},
             )
             _element.resource_type = AAZStrType(
                 serialized_name="resourceType",
                 flags={"read_only": True},
             )
-            _element.tier = AAZStrType(
-                flags={"read_only": True},
-            )
+            _element.tier = AAZStrType()
 
             capabilities = cls._schema_on_200.value.Element.capabilities
-            capabilities.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            capabilities.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element.capabilities.Element
             _element.name = AAZStrType(
@@ -189,9 +187,7 @@ class ListSku(AAZCommand):
             )
 
             location_info = cls._schema_on_200.value.Element.location_info
-            location_info.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            location_info.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element.location_info.Element
             _element.location = AAZStrType(
@@ -202,16 +198,16 @@ class ListSku(AAZCommand):
             )
 
             zones = cls._schema_on_200.value.Element.location_info.Element.zones
-            zones.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            zones.Element = AAZStrType()
 
             locations = cls._schema_on_200.value.Element.locations
-            locations.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            locations.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _ListSkuHelper:
+    """Helper class for ListSku"""
 
 
 __all__ = ["ListSku"]

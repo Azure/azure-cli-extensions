@@ -7,7 +7,7 @@ import os
 from azure.cli.core.azclierror import ResourceNotFoundError
 from knack.util import CLIError
 from msrestazure.tools import resource_id
-from ...vendored_sdks.appplatform.v2023_05_01_preview import models
+from ...vendored_sdks.appplatform.v2023_07_01_preview import models
 from ..._utils import _get_sku_name
 from ...app import (app_create, app_update, app_deploy, deployment_create)
 from ...custom import (app_set_deployment, app_unset_deployment,
@@ -666,8 +666,8 @@ class TestAppCreate(BasicTest):
 
     def test_app_with_large_instance_count_enterprise(self):
         client = self._get_basic_mock_client(sku='Enterprise')
-        with self.assertRaisesRegexp(CLIError, 'Invalid --instance-count, should be in range \[1, 500\]'):
-            self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=501, client=client)
+        with self.assertRaisesRegexp(CLIError, 'Invalid --instance-count, should be in range \[1, 1000\]'):
+            self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1001, client=client)
 
     def test_app_with_large_instance_count(self):
         with self.assertRaisesRegexp(CLIError, 'Invalid --instance-count, should be in range \[1, 500\]'):

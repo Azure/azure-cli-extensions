@@ -286,14 +286,17 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.cmd('network dns record-set cname create -g {} -z {} -n {}'.format(resource_group, zone_name, subdomain_1)).get_output_in_json()
         self.cmd('network dns record-set cname set-record -g {} -z {} -n {} -c {}'.format(resource_group, zone_name, subdomain_1, fqdn)).get_output_in_json()
         
-        # add hostname without binding
+        # add hostname without binding, it is a Private key certificates
         self.cmd('containerapp hostname add -g {} -n {} --hostname {}'.format(resource_group, ca_name, hostname_1), checks={
             JMESPathCheck('length(@)', 1),
             JMESPathCheck('[0].name', hostname_1),
             JMESPathCheck('[0].bindingType', "Disabled"),
         })
         self.cmd('containerapp hostname add -g {} -n {} --hostname {}'.format(resource_group, ca_name, hostname_1), expect_failure=True)
-        
+        self.cmd('containerapp env certificate list -g {} -n {} -c {} -p'.format(resource_group, env_name, cert_name), checks=[
+            JMESPathCheck('length(@)', 1),
+        ])
+
         # create a managed certificate
         self.cmd('containerapp env certificate create -n {} -g {} --hostname {} -v cname -c {}'.format(env_name, resource_group, hostname_1, cert_name), checks=[
             JMESPathCheck('type', "Microsoft.App/managedEnvironments/managedCertificates"),
@@ -301,7 +304,6 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.subjectName', hostname_1),
         ]).get_output_in_json()
 
-        self.cmd('containerapp env certificate create -n {} -g {} --hostname {} -v cname'.format(env_name, resource_group, hostname_1), expect_failure=True)
         self.cmd('containerapp env certificate list -g {} -n {} -m'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 1),
         ])
@@ -455,4 +457,40 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.cmd(f'containerapp env show -n {env} -g {resource_group}', checks=[
             JMESPathCheck('name', env),
             JMESPathCheck('properties.vnetConfiguration.internal', True),
+        ])
+
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_env_mtls(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --enable-mtls'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.peerAuthentication.mtls.enabled', True),
+        ])
+
+        self.cmd('containerapp env update -g {} -n {} --enable-mtls false'.format(resource_group, env_name))
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.peerAuthentication.mtls.enabled', False),
         ])

@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}", "2023-06-15"],
         ]
     }
 
@@ -42,7 +42,7 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the L3 Isolation Domain",
+            help="Name of the L3 Isolation Domain.",
             required=True,
             id_part="name",
         )
@@ -117,7 +117,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -160,7 +160,7 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -180,21 +180,16 @@ class Wait(AAZWaitCommand):
                 serialized_name="aggregateRouteConfiguration",
             )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
             properties.connected_subnet_route_policy = AAZObjectType(
                 serialized_name="connectedSubnetRoutePolicy",
-            )
-            properties.description = AAZStrType()
-            properties.disabled_on_resources = AAZListType(
-                serialized_name="disabledOnResources",
-                flags={"read_only": True},
             )
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},
-            )
-            properties.option_b_disabled_on_resources = AAZListType(
-                serialized_name="optionBDisabledOnResources",
-                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -217,30 +212,27 @@ class Wait(AAZWaitCommand):
 
             ipv4_routes = cls._schema_on_200.properties.aggregate_route_configuration.ipv4_routes
             ipv4_routes.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.aggregate_route_configuration.ipv4_routes.Element
-            _element.prefix = AAZStrType()
+            _WaitHelper._build_schema_aggregate_route_read(ipv4_routes.Element)
 
             ipv6_routes = cls._schema_on_200.properties.aggregate_route_configuration.ipv6_routes
             ipv6_routes.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.aggregate_route_configuration.ipv6_routes.Element
-            _element.prefix = AAZStrType()
+            _WaitHelper._build_schema_aggregate_route_read(ipv6_routes.Element)
 
             connected_subnet_route_policy = cls._schema_on_200.properties.connected_subnet_route_policy
-            connected_subnet_route_policy.administrative_state = AAZStrType(
-                serialized_name="administrativeState",
-                flags={"read_only": True},
+            connected_subnet_route_policy.export_route_policy = AAZObjectType(
+                serialized_name="exportRoutePolicy",
             )
             connected_subnet_route_policy.export_route_policy_id = AAZStrType(
                 serialized_name="exportRoutePolicyId",
             )
 
-            disabled_on_resources = cls._schema_on_200.properties.disabled_on_resources
-            disabled_on_resources.Element = AAZStrType()
-
-            option_b_disabled_on_resources = cls._schema_on_200.properties.option_b_disabled_on_resources
-            option_b_disabled_on_resources.Element = AAZStrType()
+            export_route_policy = cls._schema_on_200.properties.connected_subnet_route_policy.export_route_policy
+            export_route_policy.export_ipv4_route_policy_id = AAZStrType(
+                serialized_name="exportIpv4RoutePolicyId",
+            )
+            export_route_policy.export_ipv6_route_policy_id = AAZStrType(
+                serialized_name="exportIpv6RoutePolicyId",
+            )
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -270,6 +262,23 @@ class Wait(AAZWaitCommand):
 
 class _WaitHelper:
     """Helper class for Wait"""
+
+    _schema_aggregate_route_read = None
+
+    @classmethod
+    def _build_schema_aggregate_route_read(cls, _schema):
+        if cls._schema_aggregate_route_read is not None:
+            _schema.prefix = cls._schema_aggregate_route_read.prefix
+            return
+
+        cls._schema_aggregate_route_read = _schema_aggregate_route_read = AAZObjectType()
+
+        aggregate_route_read = _schema_aggregate_route_read
+        aggregate_route_read.prefix = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.prefix = cls._schema_aggregate_route_read.prefix
 
 
 __all__ = ["Wait"]

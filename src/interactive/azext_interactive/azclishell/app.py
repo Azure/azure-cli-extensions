@@ -214,14 +214,15 @@ class AzInteractiveShell(object):
         self._update_default_info()
 
         cli.buffers['description'].reset(
-            initial_document=Document(self.description_docs, cursor_position=0))
+            initial_document=Document(self._wrap_desc_param(self.description_docs), cursor_position=0))
         cli.buffers['parameter'].reset(
-            initial_document=Document(self.param_docs))
+            initial_document=Document(self._wrap_desc_param(self.param_docs)))
         cli.buffers['examples'].reset(
             initial_document=Document(self.example_docs))
         cli.buffers['default_values'].reset(
             initial_document=Document(
                 u'{}'.format(self.config_default if self.config_default else 'No Default Values')))
+        self._update_help_text()
         self._update_toolbar()
         cli.request_redraw()
 
@@ -245,6 +246,21 @@ class AzInteractiveShell(object):
         self.cli.buffers['scenarios'].reset(
             initial_document=Document(u'{}'.format(scenarios_rec_info)))
         self.cli.request_redraw()
+
+    def _desc_param_buffer_width(self):
+        _, cols = get_window_dim()
+        # The rightmost column in window doesn't seem to be used
+        cols = int(cols) - 1
+        if self.config.get_boolean('Layout', 'command_description') \
+                and self.config.get_boolean('Layout', 'param_description'):
+            return (cols - 1) // 2
+        else:
+            return cols
+
+    def _wrap_desc_param(self, content, max_lines=4):
+        width = self._desc_param_buffer_width()
+        from textwrap import fill
+        return fill(content, width=width, max_lines=max_lines, placeholder='...')
 
     def _space_examples(self, list_examples, rows, section_value):
         """ makes the example text """
@@ -276,6 +292,25 @@ class AzInteractiveShell(object):
             page_number = '\n' + str(section_value) + "/" + str(int(math.ceil(num_newline / len_of_excerpt)))
 
         return example + page_number + ' CTRL+Y (^) CTRL+N (v)'
+
+    def _update_help_text(self):
+        _, cols = get_window_dim()
+        cols = int(cols) - 1
+
+        from .configuration import GESTURE_INFO, GESTURE_LENGTH
+        from textwrap import fill
+        lines = []
+        for key in GESTURE_INFO:
+            # Build the help text of each GESTURE_INFO, use `fill` to support wrap(but here we fix the max_lines to 1)
+            # `subsequent_indent` is to align the lines of GESTURE_INFO with the first line
+            # e.g.
+            # %%[cmd]   : set a scope, and scopes
+            #             can be chained
+            lines.append(fill(GESTURE_INFO[key], initial_indent=key.ljust(GESTURE_LENGTH) + ': ',
+                              subsequent_indent=' ' * (GESTURE_LENGTH + 2), width=cols, max_lines=1,
+                              placeholder='...'))
+
+        self.cli.buffers['symbols'].reset(initial_document=Document(u'{}'.format('\n'.join(lines))))
 
     def _update_toolbar(self):
         cli = self.cli
@@ -536,11 +571,11 @@ class AzInteractiveShell(object):
         # e.g. :: 1  => `selected_option='1'`
         selected_option = text.partition(SELECT_SYMBOL['example'])[2].strip()
         try:
-            selected_option = int(selected_option)
+            selected_option = int(selected_option) - 1
         except ValueError:
             print("An Integer should follow the colon", file=self.output)
             return
-        if 0 <= selected_option <= len(self.recommender.get_scenarios() or []):
+        if 0 <= selected_option < len(self.recommender.get_scenarios() or []):
             scenario = self.recommender.get_scenarios()[selected_option]
             self.recommender.feedback_scenario(selected_option, scenario)
         else:
@@ -569,6 +604,7 @@ class AzInteractiveShell(object):
             initial_document=Document(scenario.get('reason') or scenario.get('scenario') or 'Running a E2E Scenario. ')
         )
         quit_scenario = False
+        all_skipped = True
         # give notice to users that they can skip a command or quit the scenario
         print_styled_text([(Style.WARNING, '\nYou can use CTRL C to skip a command of the scenario, '
                                            'and CTRL D to exit the scenario.')])
@@ -587,6 +623,7 @@ class AzInteractiveShell(object):
                     document = example_cli.run()
                 except (KeyboardInterrupt, ValueError):
                     # CTRL C
+                    print_styled_text([(Style.WARNING, 'Skipped')])
                     break
                 if not document:
                     # CTRL D
@@ -606,12 +643,20 @@ class AzInteractiveShell(object):
                     telemetry.set_failure()
                 else:
                     retry = False
+                    all_skipped = False
                     telemetry.set_success()
                 # Update execution result of previous command, fetch recommendation if command failed
                 self.recommender.update_exec_result(self.last_exit_code, telemetry.get_error_info()['result_summary'])
                 telemetry.flush()
             if quit_scenario:
                 break
+        if not quit_scenario:
+            if all_skipped:
+                print_styled_text([(Style.SUCCESS, '\n(✓)Done: '),
+                                   (Style.WARNING, 'All commands Skipped! \n')])
+            else:
+                print_styled_text([(Style.SUCCESS, '\n(✓)Done: '),
+                                   (Style.PRIMARY, 'All commands in this scenario have been executed! \n')])
         self.completer.enable_scenario_recommender(True)
         example_cli.exit()
         del example_cli
@@ -946,9 +991,6 @@ class AzInteractiveShell(object):
         self.cli_ctx.get_progress_controller().init_progress(ShellProgressView())
         self.cli_ctx.get_progress_controller = self.progress_patch
 
-        from .configuration import SHELL_HELP
-        self.cli.buffers['symbols'].reset(
-            initial_document=Document(u'{}'.format(SHELL_HELP)))
         # flush telemetry for new commands and send successful interactive mode entry event
         telemetry.set_success()
         telemetry.flush()
