@@ -846,7 +846,7 @@ helps['vmware workload-network segment create'] = """
     short-summary: Create a segment by ID in a private cloud workload network.
     examples:
     - name: Create a segment by ID in a workload network.
-      text: az vmware workload-network segment create --resource-group group1 --private-cloud cloud1 --segment segment1 --display-name segment1 --connected-gateway /infra/tier-1s/gateway --revision 1 --dhcp-ranges 40.20.0.0 40.20.0.1 --gateway-address 40.20.20.20/16 --port-name port1
+      text: az vmware workload-network segment create --resource-group group1 --private-cloud cloud1 --segment segment1 --display-name segment1 --connected-gateway /infra/tier-1s/gateway --revision 1 --dhcp-ranges 40.20.0.0 40.20.0.1 --gateway-address 40.20.20.20/16
 """
 
 helps['vmware workload-network segment update'] = """
@@ -854,7 +854,7 @@ helps['vmware workload-network segment update'] = """
     short-summary: Update a segment by ID in a private cloud workload network.
     examples:
     - name: Update a segment by ID in a workload network.
-      text: az vmware workload-network segment update --resource-group group1 --private-cloud cloud1 --segment segment1 --display-name segment1 --connected-gateway /infra/tier-1s/gateway --revision 1 --dhcp-ranges 40.20.0.0 40.20.0.1 --gateway-address 40.20.20.20/16 --port-name port1
+      text: az vmware workload-network segment update --resource-group group1 --private-cloud cloud1 --segment segment1 --display-name segment1 --connected-gateway /infra/tier-1s/gateway --revision 1 --dhcp-ranges 40.20.0.0 40.20.0.1 --gateway-address 40.20.20.20/16
 """
 
 helps['vmware workload-network segment delete'] = """

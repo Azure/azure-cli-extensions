@@ -38,8 +38,8 @@ Press any key to continue
 
 
 def privatecloud_listadmincredentials(cmd, resource_group_name, private_cloud):
-    from .aaz.latest.vmware.private_cloud import ListAdminCredential
-    return ListAdminCredential(cli_ctx=cmd.cli_ctx)(command_args={
+    from .aaz.latest.vmware.private_cloud import ListAdminCredentials
+    return ListAdminCredentials(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
         "private_cloud": private_cloud
     })

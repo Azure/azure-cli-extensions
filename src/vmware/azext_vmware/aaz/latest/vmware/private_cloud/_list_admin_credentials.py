@@ -12,9 +12,9 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "vmware private-cloud list-admin-credential",
+    "vmware private-cloud list-admin-credentials",
 )
-class ListAdminCredential(AAZCommand):
+class ListAdminCredentials(AAZCommand):
     """List the admin credentials for the private cloud
     """
 
@@ -170,8 +170,8 @@ class ListAdminCredential(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListAdminCredentialHelper:
-    """Helper class for ListAdminCredential"""
+class _ListAdminCredentialsHelper:
+    """Helper class for ListAdminCredentials"""
 
 
-__all__ = ["ListAdminCredential"]
+__all__ = ["ListAdminCredentials"]

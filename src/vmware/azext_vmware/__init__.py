@@ -11,10 +11,7 @@ class VmwareCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_vmware._client_factory import cf_vmware
-        vmware_custom = CliCommandType(
-            operations_tmpl='azext_vmware.custom#{}',
-            client_factory=cf_vmware)
+        vmware_custom = CliCommandType(operations_tmpl='azext_vmware.custom#{}')
         super(VmwareCommandsLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=vmware_custom)  # pylint: disable=super-with-arguments
 
     def load_command_table(self, args):
