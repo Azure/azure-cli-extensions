@@ -16,18 +16,6 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ContainerappJobPreviewScenarioTest(ScenarioTest):
-    def __init__(self, method_name, config_file=None, recording_name=None, recording_processors=None,
-                 replay_processors=None, recording_patches=None, replay_patches=None, random_config_dir=False):
-
-        super().__init__(method_name, config_file, recording_name, recording_processors, replay_processors,
-                         recording_patches, replay_patches, random_config_dir)
-        cmd = ['azdev', 'extension', 'add', 'connectedk8s']
-        run(cmd, check=True)
-        cmd = ['azdev', 'extension', 'add', 'k8s-extension']
-        run(cmd, check=True)
-        # Wait for extensions to be installed
-        # We mock time.sleep in azure-sdk-tools, that's why we need to use sleep here.
-        sleep(120)
 
     @ResourceGroupPreparer(location="eastus", random_name_length=15)
     def test_containerappjob_preview_environment_type(self, resource_group):
@@ -116,6 +104,7 @@ class ContainerappJobPreviewScenarioTest(ScenarioTest):
         self.cmd('containerapp job list -g {}'.format(resource_group), checks=[
             JMESPathCheck('length(@)', 0)
         ])
+        clean_up_test_file(file)
 
     @ResourceGroupPreparer(location="eastus")
     def test_containerappjob_preview_e2e(self, resource_group):
