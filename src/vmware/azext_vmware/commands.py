@@ -91,6 +91,5 @@ def load_command_table(self, _):
     with self.command_group('vmware datastore', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'datastore_create', deprecate_info=g.deprecate(redirect='"az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create"', hide=True))
 
-    # TODO: need to confirm some properties
     with self.command_group('vmware script-execution', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'script_execution_create')

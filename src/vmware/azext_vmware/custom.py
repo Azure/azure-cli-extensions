@@ -5,7 +5,6 @@
 # pylint: disable=line-too-long
 
 from typing import List, Tuple
-from azext_vmware.vendored_sdks.avs_client import AVSClient
 
 LEGAL_TERMS = '''
 LEGAL TERMS
@@ -168,9 +167,20 @@ def datastore_create():
     print('Please use "az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create" instead.')
 
 
-def script_execution_create(client: AVSClient, resource_group_name, private_cloud, name, timeout, script_cmdlet_id=None, parameters=None, hidden_parameters=None, failure_reason=None, retention=None, out=None, named_outputs: List[Tuple[str, str]] = None):
-    from azext_vmware.vendored_sdks.avs_client.models import ScriptExecution
+def script_execution_create(cmd, resource_group_name, private_cloud, name, timeout, script_cmdlet_id=None, parameters=None, hidden_parameters=None, failure_reason=None, retention=None, out=None, named_outputs: List[Tuple[str, str]] = None):
+    from .aaz.latest.vmware.script_execution import Create
     if named_outputs is not None:
         named_outputs = dict(named_outputs)
-    script_execution = ScriptExecution(timeout=timeout, script_cmdlet_id=script_cmdlet_id, parameters=parameters, hidden_parameters=hidden_parameters, failure_reason=failure_reason, retention=retention, output=out, named_outputs=named_outputs)
-    return client.script_executions.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, script_execution_name=name, script_execution=script_execution)
+    return Create(cli_ctx=cmd.cli_ctx)(command_args={
+        "private_cloud": private_cloud,
+        "resource_group": resource_group_name,
+        "script_execution_name": name,
+        "timeout": timeout,
+        "script_cmdlet_id": script_cmdlet_id,
+        "parameters": parameters,
+        "hidden_parameters": hidden_parameters,
+        "failure_reason": failure_reason,
+        "retention": retention,
+        "output": out,
+        "named_outputs": named_outputs,
+    })
