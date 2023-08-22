@@ -10,8 +10,6 @@ Upcoming
 * 'az containerapp service': add support for creation and deletion of kafka
 * 'az containerapp create': --registry-server support registry with custom port
 * Add regex to fix validation for containerapp name
-* Add support for binding managed MySQL Flexible server to a containerapp
-
 0.3.33
 ++++++
 * 'az containerapp create': fix --registry-identity "system" with --revision-suffix
