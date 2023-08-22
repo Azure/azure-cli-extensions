@@ -2,6 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
+
 from ..aaz.latest.vmware.addon import Show as _AddonShow, Create as _AddonCreate, Update as _AddonUpdate, \
     Delete as _AddonDelete
 from azure.cli.core.aaz import register_command

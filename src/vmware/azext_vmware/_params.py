@@ -6,8 +6,6 @@
 
 
 from azext_vmware.action import ScriptExecutionNamedOutputAction, ScriptExecutionParameterAction
-from azure.cli.core.commands.parameters import get_enum_type
-from ._validators import server_addresses_length
 
 
 def load_arguments(self, _):

@@ -2,11 +2,10 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
+
 from ..aaz.latest.vmware.private_cloud import Create as _PrivateCloudCreate, Update as _PrivateCloudUpdate
 
-from ..custom import LEGAL_TERMS
-from knack.prompting import prompt_y_n
-from knack.util import CLIError
 from knack.arguments import CLICommandArgument
 
 

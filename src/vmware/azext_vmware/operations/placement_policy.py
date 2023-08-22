@@ -2,6 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
+
 from ..aaz.latest.vmware.placement_policy import Create as _Create, Update as _Update, Delete as _Delete
 from azure.cli.core.aaz import register_command
 

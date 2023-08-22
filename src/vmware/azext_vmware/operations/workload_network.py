@@ -2,6 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
+
 from ..aaz.latest.vmware.workload_network.dhcp import Create as _DHCPCreate, Update as _DHCPUpdate, Delete as _DHCPDelete
 from azure.cli.core.aaz import register_command
 
@@ -20,11 +22,12 @@ class DHCPRelayCreate(_DHCPCreate):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZListArg, AAZStrArg
+        from azure.cli.core.aaz import AAZListArg, AAZStrArg, AAZListArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
 
         args_schema.server_addresses = AAZListArg(
             options=["--server-addresses"],
+            fmt=AAZListArgFormat(max_length=3),
             help="DHCP Relay Addresses. Max 3.",
         )
         server_addresses = args_schema.server_addresses
@@ -63,11 +66,12 @@ class DHCPRelayUpdate(_DHCPUpdate):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZListArg, AAZStrArg
+        from azure.cli.core.aaz import AAZListArg, AAZStrArg, AAZListArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
 
         args_schema.server_addresses = AAZListArg(
             options=["--server-addresses"],
+            fmt=AAZListArgFormat(max_length=3),
             help="DHCP Relay Addresses. Max 3.",
             nullable=True,
         )
