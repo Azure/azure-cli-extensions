@@ -23,7 +23,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2022-05-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2023-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]}}'
@@ -33,7 +33,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:54:21 GMT
+      - Tue, 22 Aug 2023 18:26:50 GMT
       server:
       - Rocket
     status:
@@ -59,7 +59,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons/hcx?api-version=2022-05-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons/hcx?api-version=2023-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}'
@@ -69,7 +69,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:54:23 GMT
+      - Tue, 22 Aug 2023 18:26:54 GMT
       server:
       - Rocket
     status:
@@ -91,7 +91,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons?api-version=2022-05-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/addons?api-version=2023-03-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}]}'
@@ -101,7 +101,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:54:25 GMT
+      - Tue, 22 Aug 2023 18:26:59 GMT
       server:
       - Rocket
     status:
@@ -123,7 +123,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites?api-version=2022-05-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites?api-version=2023-03-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/site1","name":"site1","type":"Microsoft.AVS/privateClouds/hcxEnterpriseSites","properties":{"activationKey":"0276EF1A9A1749A5A362BF73EA9F8D0D","status":"Available"}}]}'
@@ -133,7 +133,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:54:28 GMT
+      - Tue, 22 Aug 2023 18:27:03 GMT
       server:
       - Rocket
     status:
@@ -159,7 +159,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/myhcx?api-version=2022-05-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/myhcx?api-version=2023-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/site1","name":"site1","type":"Microsoft.AVS/privateClouds/hcxEnterpriseSites","properties":{"activationKey":"0276EF1A9A1749A5A362BF73EA9F8D0D","status":"Available"}}'
@@ -169,7 +169,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:54:30 GMT
+      - Tue, 22 Aug 2023 18:27:07 GMT
       server:
       - Rocket
     status:
@@ -191,7 +191,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites?api-version=2022-05-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites?api-version=2023-03-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/site1","name":"site1","type":"Microsoft.AVS/privateClouds/hcxEnterpriseSites","properties":{"activationKey":"0276EF1A9A1749A5A362BF73EA9F8D0D","status":"Available"}}]}'
@@ -201,7 +201,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:54:32 GMT
+      - Tue, 22 Aug 2023 18:27:12 GMT
       server:
       - Rocket
     status:
@@ -223,7 +223,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/myhcx?api-version=2022-05-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/myhcx?api-version=2023-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/site1","name":"site1","type":"Microsoft.AVS/privateClouds/hcxEnterpriseSites","properties":{"activationKey":"0276EF1A9A1749A5A362BF73EA9F8D0D","status":"Available"}}'
@@ -233,7 +233,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:54:34 GMT
+      - Tue, 22 Aug 2023 18:27:16 GMT
       server:
       - Rocket
     status:
@@ -257,7 +257,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/myhcx?api-version=2022-05-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/myhcx?api-version=2023-03-01
   response:
     body:
       string: ''
@@ -265,7 +265,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 17 Oct 2022 15:54:37 GMT
+      - Tue, 22 Aug 2023 18:27:20 GMT
       server:
       - Rocket
     status:
@@ -287,7 +287,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites?api-version=2022-05-01
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites?api-version=2023-03-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/hcxEnterpriseSites/site1","name":"site1","type":"Microsoft.AVS/privateClouds/hcxEnterpriseSites","properties":{"activationKey":"0276EF1A9A1749A5A362BF73EA9F8D0D","status":"Available"}}]}'
@@ -297,7 +297,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:54:39 GMT
+      - Tue, 22 Aug 2023 18:27:24 GMT
       server:
       - Rocket
     status:

@@ -107,6 +107,12 @@ class VmwareScenarioTest(ScenarioTest):
         # disable cmk encyrption
         self.cmd('az vmware private-cloud disable-cmk-encryption -c {privatecloud} -g {rg} --yes')
 
+        # create extended network blocks
+        self.cmd("az vmware private-cloud add-extended-network-blocks -c {privatecloud} -g {rg} --ext-nw-blocks 10.0.8.0/23")
+
+        # delete extended network blocks
+        self.cmd("az vmware private-cloud delete-extended-network-blocks -c {privatecloud} -g {rg} --yes")
+
         # set managed identity
         self.cmd('vmware private-cloud identity assign -g {rg} -c {privatecloud} --system-assigned')
 
