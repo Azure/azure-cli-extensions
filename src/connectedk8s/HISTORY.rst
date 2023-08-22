@@ -3,14 +3,13 @@
 Release History
 ===============
 
+1.4.1
+++++++
+* Setting guard default authnMode to 'arc' when RBAC is enabled.
+
 1.4.0
 ++++++
 * Added support for reading ARM metadata 2022-09-01.
-
-1.3.21
-++++++
-
-* Setting guard default authnMode to 'arc' when RBAC is enabled
 
 1.3.20
 ++++++
