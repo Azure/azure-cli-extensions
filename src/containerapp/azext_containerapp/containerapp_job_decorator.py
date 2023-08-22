@@ -495,9 +495,22 @@ class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
 
 
 class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
+    def construct_payload(self):
+        super().construct_payload()
+        self.set_up_extended_location()
+
+    def set_up_extended_location(self):
+        if self.get_argument_environment_type() == CONNECTED_ENVIRONMENT_TYPE:
+            if not self.containerappjob_def.get('extendedLocation'):
+                parsed_env = parse_resource_id(self.get_argument_managed_env())  # custom_location check here perhaps
+                env_name = parsed_env['name']
+                env_rg = parsed_env['resource_group']
+                env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
+                self.containerappjob_def["extendedLocation"] = env_info["extendedLocation"]
+
     def get_environment_client(self):
         if self.get_argument_yaml():
-            env = safe_get(self.containerapp_def, "properties", "environmentId")
+            env = safe_get(self.containerappjob_def, "properties", "environmentId")
         else:
             env = self.get_argument_managed_env()
 
@@ -527,6 +540,9 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
 
     def get_argument_environment_type(self):
         return self.get_param("environment_type")
+
+    def set_argument_managed_env(self, managed_env):
+        self.set_param("managed_env", managed_env)
 
     def set_argument_environment_type(self, environment_type):
         self.set_param("environment_type", environment_type)
