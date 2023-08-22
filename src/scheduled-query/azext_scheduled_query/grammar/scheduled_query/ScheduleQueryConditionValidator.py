@@ -8,8 +8,8 @@ from azext_scheduled_query.vendored_sdks.azure_mgmt_scheduled_query.models impor
 
 
 op_conversion = {
-    '=': 'Equals',
-    '!=': 'NotEquals',
+    '=': 'Equal',
+    '!=': 'NotEqual',
     '>': 'GreaterThan',
     '>=': 'GreaterThanOrEqual',
     '<': 'LessThan',
