@@ -99,7 +99,7 @@ def load_arguments(self, _):
         c.argument('force',
                    help='Specify whether to force delete the extension from the cluster.')
 
-    with self.argument_context(f"{consts.EXTENSION_NAME} extension-types") as c:
+    with self.argument_context(f"{consts.EXTENSION_NAME} extension-types list") as c:
         c.argument('cluster_name',
                    options_list=['--cluster-name', '-c'],
                    help='Name of the Kubernetes cluster')
@@ -107,26 +107,24 @@ def load_arguments(self, _):
                    arg_type=get_enum_type(['connectedClusters', 'managedClusters', 'appliances']),
                    options_list=['--cluster-type', '-t'],
                    help='Specify Arc clusters or AKS managed clusters or Arc appliances.')
+
+    with self.argument_context(f"{consts.EXTENSION_NAME} extension-types list-by-location") as c:
+        c.argument('location',
+                   validator=get_default_location_from_resource_group)
+
+    with self.argument_context(f"{consts.EXTENSION_NAME} extension-types show") as c:
+        c.argument('extension_type',
+                   help='Name of the extension type.')
+        c.argument('cluster_name',
+                   options_list=['--cluster-name', '-c'],
+                   help='Name of the Kubernetes cluster')
+        c.argument('cluster_type',
+                   arg_type=get_enum_type(['connectedClusters', 'managedClusters', 'appliances']),
+                   options_list=['--cluster-type', '-t'],
+                   help='Specify Arc clusters or AKS managed clusters or Arc appliances.')
+
+    with self.argument_context(f"{consts.EXTENSION_NAME} extension-types list-versions") as c:
         c.argument('extension_type',
                    help='Name of the extension type.')
         c.argument('location',
-                   validator=get_default_location_from_resource_group,
-                   help='Name of the location. Values from: `az account list-locations`')
-        c.argument('version',
-                   help='Version for the extension type.')
-        c.argument('plan_name',
-                   arg_group="Marketplace",
-                   options_list=['--plan-name'],
-                   help='The plan name is referring to the Marketplace Plan ID of the extension.')
-        c.argument('plan_product',
-                   arg_group="Marketplace",
-                   options_list=['--plan-product'],
-                   help='The plan product is referring to the Marketplace Product ID of the extension.')
-        c.argument('plan_publisher',
-                   arg_group="Marketplace",
-                   options_list=['--plan-publisher'],
-                   help='The plan publisher is referring to the Marketplace Publisher ID of the extension')
-        c.argument('major_version',
-                   help='Filter results by only the major version of an extension type. For example if 1 is specified, all versions with major version 1 (1.1, 1.1.2) will be shown. The default value is None')
-        c.argument('show_latest',
-                   help='Filter results by only the latest version. For example, if this flag is used the latest version of the extensionType will be shown.')
+                   validator=get_default_location_from_resource_group)

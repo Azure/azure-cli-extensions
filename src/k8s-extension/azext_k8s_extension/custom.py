@@ -370,163 +370,52 @@ def delete_k8s_extension(
     )
 
 
-# list by location
-def list_extension_types_by_location(
-        client,
-        location,
-        plan_publisher=None,
-        plan_product=None,
-        plan_name=None,
-        release_train=None,
-        cluster_type=None):
-
-    """ List available Cluster Extension Types in a region."""
-
-    return client.location_list(
-        location,
-        plan_publisher,
-        plan_product,
-        plan_name,
-        release_train,
-        cluster_type)
-
-
-# get by location
-def show_extension_type_by_location(client, location, extension_type):
-
-    """Get properties for a Cluster Extension Type in a region."""
-    return client.location_get(
-        location,
-        extension_type
-    )
-
-
-# list version by location
-def list_extension_type_versions_by_location(
-        client,
-        location,
-        extension_type,
-        release_train=None,
-        cluster_type=None,
-        major_version=None,
-        show_latest=False):
-
-    """ List available versions for a Cluster Extension Type versions in a region. """
-
-    versions_list = client.list_versions(
-        location,
-        extension_type,
-        release_train,
-        cluster_type,
-        major_version,
-        show_latest)
+def list_k8s_extension_type_versions(cmd, client, location, extension_type):
+    """ List available extension type versions
+    """
+    versions_list = client.list(location, extension_type)
     return versions_list
 
 
-# get version by location
-def show_extension_type_version_by_location(
-        client,
-        location,
-        extension_type,
-        version):
-
-    """ Get properties associated with a Cluster Extension Type version in a region."""
-    version = client.get_version(
-        location,
-        extension_type,
-        version)
-    return version
+def list_k8s_cluster_extension_types(client, resource_group_name, cluster_name, cluster_type):
+    """ List available extension types
+    """
+    cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type)
+    return client.list(resource_group_name, cluster_rp, cluster_type, cluster_name)
 
 
-# list by cluster
-def list_extension_types_by_cluster(
-        client,
-        resource_group_name,
-        cluster_name,
-        cluster_type,
-        plan_publisher=None,
-        plan_name=None,
-        plan_product=None,
-        release_train=None):
-
-    """ List available Cluster Extension Types for an existing cluster."""
-    cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
-
-    return client.list(
-        resource_group_name,
-        cluster_rp,
-        cluster_type,
-        cluster_name,
-        plan_publisher,
-        plan_product,
-        plan_name,
-        release_train)
+def list_k8s_location_extension_types(client, location):
+    """ List available extension types based on location
+    """
+    return client.list(location)
 
 
-# get by cluster
-def show_extension_type_by_cluster(
-        client,
-        resource_group_name,
-        cluster_name,
-        cluster_type,
-        extension_type):
+def show_k8s_cluster_extension_type(client, resource_group_name, cluster_type, cluster_name, extension_type):
+    """Get an existing Extension Type.
+    """
+    # Determine ClusterRP
+    cluster_rp, parent_api_version = get_cluster_rp_api_version(cluster_type)
 
-    """ Get properties for a Cluster Extension Type for an existing cluster"""
-    cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
-
-    return client.get(
-        resource_group_name,
-        cluster_rp,
-        cluster_type,
-        cluster_name,
-        extension_type)
-
-
-# list version by cluster
-def list_extension_type_versions_by_cluster(
-        client,
-        resource_group_name,
-        cluster_type,
-        cluster_name,
-        extension_type,
-        release_train=None,
-        major_version=None,
-        show_latest=False):
-
-    """ List available versions for a Cluster Extension Type for a given cluster."""
-    cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
-
-    return client.cluster_list_versions(
-        resource_group_name,
-        cluster_rp,
-        cluster_type,
-        cluster_name,
-        extension_type,
-        release_train,
-        major_version,
-        show_latest)
-
-
-# get version by cluster
-def show_extension_type_version_by_cluster(
-        client,
-        resource_group_name,
-        cluster_type,
-        cluster_name,
-        extension_type,
-        version):
-
-    """ Get properties associated with a Cluster Extension Type version for an existing cluster"""
-
-    cluster_rp, _ = get_cluster_rp_api_version(cluster_type)
-
-    return client.cluster_get_version(
-        resource_group_name,
-        cluster_rp,
-        cluster_type,
-        cluster_name,
-        extension_type,
-        version)
+    try:
+        extension_type = client.get(resource_group_name,
+                                    cluster_rp, cluster_type, cluster_name, extension_type)
+        return extension_type
+    except HttpResponseError as ex:
+        # Customize the error message for resources not found
+        if ex.response.status_code == 404:
+            # If Cluster not found
+            if ex.message.__contains__("(ResourceNotFound)"):
+                message = "{0} Verify that the extension type is correct and the resource exists.".format(
+                    ex.message)
+            # If Configuration not found
+            elif ex.message.__contains__("Operation returned an invalid status code 'Not Found'"):
+                message = "(ExtensionNotFound) The Resource {0}/{1}/{2}/Microsoft.KubernetesConfiguration/" \
+                          "extensions/{3} could not be found!".format(
+                              cluster_rp, cluster_type, cluster_name, extension_type)
+            else:
+                message = ex.message
+            raise ResourceNotFoundError(message) from ex
+        raise ex
 
 
 def __create_identity(cmd, resource_group_name, cluster_name, cluster_type, cluster_rp):
