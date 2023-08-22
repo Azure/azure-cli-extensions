@@ -928,8 +928,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
         # Containers
         if update_map["container"]:
-            self.new_containerapp["properties"]["template"] = {} if "template" not in self.new_containerapp["properties"] else \
-            self.new_containerapp["properties"]["template"]
+            self.new_containerapp["properties"]["template"] = {} if "template" not in self.new_containerapp["properties"] else self.new_containerapp["properties"]["template"]
             self.new_containerapp["properties"]["template"]["containers"] = self.containerapp_def["properties"]["template"][
                 "containers"]
             if not self.get_argument_container_name():
@@ -991,8 +990,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                                 "memory": self.get_argument_memory()
                             }
                     if self.get_argument_secret_volume_mount() is not None:
-                        self.new_containerapp["properties"]["template"]["volumes"] = \
-                        self.containerapp_def["properties"]["template"]["volumes"]
+                        self.new_containerapp["properties"]["template"]["volumes"] = self.containerapp_def["properties"]["template"]["volumes"]
                         if "volumeMounts" not in c or not c["volumeMounts"]:
                             # if no volume mount exists, create a new volume and then mount
                             volume_def = VolumeModel
@@ -1148,8 +1146,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             self.new_containerapp["properties"]["configuration"] = {} if "configuration" not in self.new_containerapp[
                 "properties"] else self.new_containerapp["properties"]["configuration"]
             if "registries" in self.containerapp_def["properties"]["configuration"]:
-                self.new_containerapp["properties"]["configuration"]["registries"] = \
-                self.containerapp_def["properties"]["configuration"]["registries"]
+                self.new_containerapp["properties"]["configuration"]["registries"] = self.containerapp_def["properties"]["configuration"]["registries"]
             if "registries" not in self.containerapp_def["properties"]["configuration"] or \
                     self.containerapp_def["properties"]["configuration"]["registries"] is None:
                 self.new_containerapp["properties"]["configuration"]["registries"] = []
@@ -1267,8 +1264,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
         # Change which revision we update from
         if self.get_argument_from_revision():
-            r = self.client.show_revision(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
-                                                 container_app_name=name, name=self.get_argument_from_revision())
+            r = self.client.show_revision(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), container_app_name=name, name=self.get_argument_from_revision())
             _update_revision_env_secretrefs(r["properties"]["template"]["containers"], name)
             self.new_containerapp["properties"]["template"] = r["properties"]["template"]
 
