@@ -96,7 +96,7 @@ class ContainerAppAuthDecorator(BaseResource):
         containerapp_def = None
         try:
             containerapp_def = self.containerapp_client.show(cmd=self.cmd, resource_group_name=resource_group_name, name=name)
-        except:
+        except:  # pylint: disable=bare-except
             pass
 
         if not containerapp_def:
