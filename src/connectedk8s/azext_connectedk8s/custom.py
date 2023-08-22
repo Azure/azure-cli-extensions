@@ -1465,7 +1465,10 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         cmd_helm_upgrade.extend(["--kube-context", kube_context])
     if enable_azure_rbac:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.enabled=true"])
-        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.authnMode=arc"])  # new mode for latest OBO changes
+        # Setting the default authnMode mode as "arc" for guard. This mode used Arc RBAC 1P apps for authN/authZ.
+        # This needs
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.authnMode=arc"])
+        logger.warning("Please use the latest kubelogin version which has support for generating PoP token(s) needed by guard running in 'arc' authN mode.")
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.skipAuthzCheck={}".format(azrbac_skip_authz_check)])
     if enable_cluster_connect:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=true"])

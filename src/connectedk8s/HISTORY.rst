@@ -5,7 +5,7 @@ Release History
 1.3.21
 ++++++
 
-* Setting default authnMode to 'arc' when RBAC is enabled
+* Setting guard default authnMode to 'arc' when RBAC is enabled
 
 1.3.20
 ++++++
