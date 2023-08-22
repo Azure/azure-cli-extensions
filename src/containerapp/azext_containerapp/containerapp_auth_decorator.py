@@ -5,28 +5,34 @@
 from typing import Any, Dict
 
 from azure.cli.core.commands import AzCliCommand
+from knack.log import get_logger
 
+from ._clients import ContainerAppClient
 from ._client_factory import handle_raw_exception
 from .base_resource import BaseResource
-from ._constants import BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME
-from ._utils import safe_set
+from ._constants import BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME, MAXIMUM_SECRET_LENGTH
+from ._utils import safe_set, safe_get, _get_existing_secrets, _add_or_update_secrets, parse_secret_flags
 from knack.prompting import prompt_y_n
-from azure.cli.core.azclierror import ArgumentUsageError
+from azure.cli.core.azclierror import ArgumentUsageError, ResourceNotFoundError, ValidationError
+
+logger = get_logger(__name__)
 
 
 class ContainerAppAuthDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
         self.existing_auth = {}
+        self.containerapp_client = ContainerAppClient
 
     def show(self):
         auth_settings = {}
         try:
             auth_settings = self.client.get(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), container_app_name=self.get_argument_name(), auth_config_name="current")["properties"]
-        except:
+        except:  # pylint: disable=bare-except
             pass
         return auth_settings
 
+    # construct payload for `az containerapp auth update`
     def construct_payload(self):
         from ._utils import set_field_in_auth_settings, update_http_settings_in_auth_settings
         self.existing_auth = {}
@@ -82,6 +88,30 @@ class ContainerAppAuthDecorator(BaseResource):
         except Exception as e:
             handle_raw_exception(e)
 
+    def set_secrets(self,
+                    name,
+                    resource_group_name,
+                    secrets,
+                    no_wait=False):
+        containerapp_def = None
+        try:
+            containerapp_def = self.containerapp_client.show(cmd=self.cmd, resource_group_name=resource_group_name, name=name)
+        except:
+            pass
+
+        if not containerapp_def:
+            raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
+
+        _get_existing_secrets(self.cmd, resource_group_name, name, containerapp_def)
+        _add_or_update_secrets(containerapp_def, parse_secret_flags(secrets))
+
+        try:
+            r = self.containerapp_client.create_or_update(cmd=self.cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+            logger.warning("Containerapp '{}' must be restarted in order for secret changes to take effect.".format(name))
+            return safe_get(r, "properties", "configuration", "secrets")
+        except Exception as e:
+            handle_raw_exception(e)
+
     def get_argument_set_string(self):
         return self.get_param("set_string")
 
@@ -118,6 +148,13 @@ class ContainerAppAuthDecorator(BaseResource):
 
 # decorator for preview auth show/update
 class ContainerAppPreviewAuthDecorator(ContainerAppAuthDecorator):
+    def prepare_process(self):
+        if self.get_argument_token_store() and self.get_argument_sas_url_secret() is not None:
+            self.set_secrets(self.get_argument_name(),
+                             self.get_argument_resource_group_name(),
+                             secrets=[f"{BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME}={self.get_argument_sas_url_secret()}"],
+                             no_wait=True)
+
     def construct_payload(self):
         super().construct_payload()
         self.set_up_token_store()
