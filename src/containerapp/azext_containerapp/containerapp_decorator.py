@@ -756,6 +756,40 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             if self.get_argument_max_replicas() < 1 or self.get_argument_max_replicas() > 1000:
                 raise ArgumentUsageError('--max-replicas must be in the range [1,1000]')
 
+    def update(self):
+        try:
+            r = self.client.update(
+                cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name(), container_app_envelope=self.new_containerapp,
+                no_wait=self.get_argument_no_wait())
+            if not self.get_argument_no_wait() and "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting":
+                logger.warning('Containerapp update in progress. Please monitor the update using `az containerapp show -n {} -g {}`'.format(self.get_argument_name(), self.get_argument_resource_group_name()))
+            return r
+        except Exception as e:
+            handle_raw_exception(e)
+
+    def post_process(self, r):
+        # Delete managed bindings
+        linker_client = None
+        if self.get_argument_unbind_service_bindings():
+            linker_client = get_linker_client(self.cmd)
+            for item in self.get_argument_unbind_service_bindings():
+                while r["properties"]["provisioningState"].lower() == "inprogress":
+                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
+                    time.sleep(1)
+                linker_client.linker.begin_delete(resource_uri=r["id"], linker_name=item).result()
+
+        # Update managed bindings
+        if self.get_argument_service_connectors_def_list() is not None:
+            linker_client = get_linker_client(self.cmd) if linker_client is None else linker_client
+            for item in self.get_argument_service_connectors_def_list():
+                while r["properties"]["provisioningState"].lower() == "inprogress":
+                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
+                    time.sleep(1)
+                linker_client.linker.begin_create_or_update(resource_uri=r["id"],
+                                                            parameters=item["parameters"],
+                                                            linker_name=item["linker_name"]).result()
+        return r
+
     def set_up_from_revision(self):
         if self.get_argument_from_revision():
             r = None
@@ -858,9 +892,6 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         update_map['ingress'] = self.get_argument_ingress() or self.get_argument_target_port()
         update_map['registry'] = self.get_argument_registry_server() or self.get_argument_registry_user() or self.get_argument_registry_pass()
 
-        linker_client = get_linker_client(self.cmd)
-        service_connectors_def_list = []
-
         self.set_up_service_bindings()
         self.set_up_unbind_service_bindings()
 
@@ -868,8 +899,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             _add_or_update_tags(self.new_containerapp, self.get_argument_tags())
 
         if self.get_argument_revision_suffix() is not None:
-            self.new_containerapp["properties"]["template"] = {} if "template" not in self.new_containerapp["properties"] else \
-            self.new_containerapp["properties"]["template"]
+            self.new_containerapp["properties"]["template"] = {} if "template" not in self.new_containerapp["properties"] else self.new_containerapp["properties"]["template"]
             self.new_containerapp["properties"]["template"]["revisionSuffix"] = self.get_argument_revision_suffix()
 
         if self.get_argument_termination_grace_period() is not None:
@@ -884,9 +914,8 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             managed_env_rg = parsed_managed_env['resource_group']
             managed_env_info = None
             try:
-                managed_env_info = ManagedEnvironmentClient.show(cmd=self.cmd, resource_group_name=managed_env_rg,
-                                                                 name=managed_env_name)
-            except:
+                managed_env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=managed_env_rg, name=managed_env_name)
+            except:  # pylint: disable=bare-except
                 pass
 
             if not managed_env_info:
@@ -1016,7 +1045,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
                 if self.get_argument_replace_env_vars() is not None:
                     # env vars
-                    _add_or_update_env_vars(container_def["env"], parse_env_var_flags(self.get_argument_replace_env_varsself.get_argument_))
+                    _add_or_update_env_vars(container_def["env"], parse_env_var_flags(self.get_argument_replace_env_vars()))
 
                 if self.get_argument_remove_env_vars() is not None:
                     # env vars
@@ -1038,8 +1067,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                 if resources_def is not None:
                     container_def["resources"] = resources_def
                 if self.get_argument_secret_volume_mount() is not None:
-                    self.new_containerapp["properties"]["template"]["volumes"] = self.containerapp_def["properties"]["template"][
-                        "volumes"]
+                    self.new_containerapp["properties"]["template"]["volumes"] = self.containerapp_def["properties"]["template"]["volumes"]
                     # generate a new volume name
                     volume_def = VolumeModel
                     volume_mount_def = VolumeMountModel
@@ -1058,8 +1086,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                 self.new_containerapp["properties"]["template"]["containers"].append(container_def)
         # Scale
         if update_map["scale"]:
-            self.new_containerapp["properties"]["template"] = {} if "template" not in self.new_containerapp["properties"] else \
-            self.new_containerapp["properties"]["template"]
+            self.new_containerapp["properties"]["template"] = {} if "template" not in self.new_containerapp["properties"] else self.new_containerapp["properties"]["template"]
             if "scale" not in self.new_containerapp["properties"]["template"]:
                 self.new_containerapp["properties"]["template"]["scale"] = {}
             if self.get_argument_min_replicas() is not None:
@@ -1130,10 +1157,8 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             registries_def = self.new_containerapp["properties"]["configuration"]["registries"]
 
             _get_existing_secrets(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name(), self.containerapp_def)
-            if "secrets" in self.containerapp_def["properties"]["configuration"] and \
-                    self.containerapp_def["properties"]["configuration"]["secrets"]:
-                self.new_containerapp["properties"]["configuration"]["secrets"] = \
-                self.containerapp_def["properties"]["configuration"]["secrets"]
+            if "secrets" in self.containerapp_def["properties"]["configuration"] and self.containerapp_def["properties"]["configuration"]["secrets"]:
+                self.new_containerapp["properties"]["configuration"]["secrets"] = self.containerapp_def["properties"]["configuration"]["secrets"]
             else:
                 self.new_containerapp["properties"]["configuration"]["secrets"] = []
 
@@ -1182,8 +1207,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                     registries_def.append(registry)
 
         if not self.get_argument_revision_suffix():
-            self.new_containerapp["properties"]["template"] = {} if "template" not in self.new_containerapp["properties"] else \
-            self.new_containerapp["properties"]["template"]
+            self.new_containerapp["properties"]["template"] = {} if "template" not in self.new_containerapp["properties"] else self.new_containerapp["properties"]["template"]
             self.new_containerapp["properties"]["template"]["revisionSuffix"] = None
 
     def set_up_update_containerapp_yaml(self, name, file_name):
@@ -1210,23 +1234,21 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         elif yaml_containerapp.get('type').lower() != "microsoft.app/containerapps":
             raise ValidationError('Containerapp type must be \"Microsoft.App/ContainerApps\"')
 
-        self.containerapp_def = None
-
         # Check if containerapp exists
         try:
-            self.containerapp_def = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+            self.new_containerapp = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
         except Exception as e:
             handle_non_404_exception(e)
 
-        if not self.containerapp_def:
+        if not self.new_containerapp:
             raise ValidationError("The containerapp '{}' does not exist".format(name))
-        existed_environment_id = self.containerapp_def['properties']['environmentId']
-        self.containerapp_def = None
+        existed_environment_id = self.new_containerapp['properties']['environmentId']
+        self.new_containerapp = None
 
         # Deserialize the yaml into a ContainerApp object. Need this since we're not using SDK
         try:
             deserializer = create_deserializer(self.models)
-            self.containerapp_def = deserializer('ContainerApp', yaml_containerapp)
+            self.new_containerapp = deserializer('ContainerApp', yaml_containerapp)
         except DeserializationError as ex:
             raise ValidationError(
                 'Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.') from ex
@@ -1237,40 +1259,40 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             tags = yaml_containerapp.get('tags')
             del yaml_containerapp['tags']
 
-        self.containerapp_def = _convert_object_from_snake_to_camel_case(_object_to_dict(self.containerapp_def))
-        self.containerapp_def['tags'] = tags
+        self.new_containerapp = _convert_object_from_snake_to_camel_case(_object_to_dict(self.new_containerapp))
+        self.new_containerapp['tags'] = tags
 
         # After deserializing, some properties may need to be moved under the "properties" attribute. Need this since we're not using SDK
-        self.containerapp_def = process_loaded_yaml(self.containerapp_def)
+        self.new_containerapp = process_loaded_yaml(self.new_containerapp)
 
         # Change which revision we update from
         if self.get_argument_from_revision():
             r = self.client.show_revision(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                                                  container_app_name=name, name=self.get_argument_from_revision())
             _update_revision_env_secretrefs(r["properties"]["template"]["containers"], name)
-            self.containerapp_def["properties"]["template"] = r["properties"]["template"]
+            self.new_containerapp["properties"]["template"] = r["properties"]["template"]
 
         # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
-        _remove_additional_attributes(self.containerapp_def)
-        _remove_readonly_attributes(self.containerapp_def)
+        _remove_additional_attributes(self.new_containerapp)
+        _remove_readonly_attributes(self.new_containerapp)
 
         secret_values = self.list_secrets()
-        _populate_secret_values(self.containerapp_def, secret_values)
+        _populate_secret_values(self.new_containerapp, secret_values)
 
         # Clean null values since this is an update
-        self.containerapp_def = clean_null_values(self.containerapp_def)
+        self.new_containerapp = clean_null_values(self.new_containerapp)
 
         # Fix bug with revisionSuffix when containers are added
-        if not safe_get(self.containerapp_def, "properties", "template", "revisionSuffix"):
-            if "properties" not in self.containerapp_def:
-                self.containerapp_def["properties"] = {}
-            if "template" not in self.containerapp_def["properties"]:
-                self.containerapp_def["properties"]["template"] = {}
-            self.containerapp_def["properties"]["template"]["revisionSuffix"] = None
+        if not safe_get(self.new_containerapp, "properties", "template", "revisionSuffix"):
+            if "properties" not in self.new_containerapp:
+                self.new_containerapp["properties"] = {}
+            if "template" not in self.new_containerapp["properties"]:
+                self.new_containerapp["properties"]["template"] = {}
+            self.new_containerapp["properties"]["template"]["revisionSuffix"] = None
 
         # Remove the environmentId in the PATCH payload if it has not been changed
-        if safe_get(self.containerapp_def, "properties", "environmentId") and safe_get(self.containerapp_def, "properties", "environmentId").lower() == existed_environment_id.lower():
-            del self.containerapp_def["properties"]['environmentId']
+        if safe_get(self.new_containerapp, "properties", "environmentId") and safe_get(self.new_containerapp, "properties", "environmentId").lower() == existed_environment_id.lower():
+            del self.new_containerapp["properties"]['environmentId']
 
 
 # decorator for preview create
