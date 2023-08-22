@@ -1623,6 +1623,12 @@ class ContainerappScaleTests(ScenarioTest):
 
 
 class ContainerappOtherPropertyTests(ScenarioTest):
+    # @live_only()
+    def test_containerapp_get_customdomainverificationid(self):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        self.cmd(f'containerapp show-custom-domain-verification-id', expect_failure=False)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_termination_grace_period_seconds(self, resource_group):
