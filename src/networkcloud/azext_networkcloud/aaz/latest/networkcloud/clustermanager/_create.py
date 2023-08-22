@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud clustermanager create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new cluster manager or update properties of the cluster manager if it exists.

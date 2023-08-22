@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.0.0a1
+++++++++++++++++++
+
+* `az mesh secretvalue/service/service-replica list`: Remove the argument `--ids` as list command should not support it.
+
 0.10.7 (2021-5-10)
 ++++++++++++++++++
 
