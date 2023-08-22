@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2023-06-01-preview"],
         ]
     }
 
@@ -54,7 +54,6 @@ class Update(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -93,6 +92,53 @@ class Update(AAZCommand):
         user_assigned_identities.Element = AAZObjectArg(
             nullable=True,
             blank={},
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.encryption = AAZObjectArg(
+            options=["--encryption"],
+            arg_group="Properties",
+            help="Encryption settings to be used for server-side encryption for proprietary content (such as catalogs, logs, customizations).",
+            nullable=True,
+        )
+
+        encryption = cls._args_schema.encryption
+        encryption.customer_managed_key_encryption = AAZObjectArg(
+            options=["customer-managed-key-encryption"],
+            help="All Customer-managed key encryption properties for the resource.",
+            nullable=True,
+        )
+
+        customer_managed_key_encryption = cls._args_schema.encryption.customer_managed_key_encryption
+        customer_managed_key_encryption.key_encryption_key_identity = AAZObjectArg(
+            options=["key-encryption-key-identity"],
+            help="All identity configuration for Customer-managed key settings defining which identity should be used to auth to Key Vault.",
+            nullable=True,
+        )
+        customer_managed_key_encryption.key_encryption_key_url = AAZStrArg(
+            options=["key-encryption-key-url"],
+            help="key encryption key Url, versioned or non-versioned. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78 or https://contosovault.vault.azure.net/keys/contosokek.",
+            nullable=True,
+        )
+
+        key_encryption_key_identity = cls._args_schema.encryption.customer_managed_key_encryption.key_encryption_key_identity
+        key_encryption_key_identity.delegated_identity_client_id = AAZUuidArg(
+            options=["delegated-identity-client-id"],
+            help="delegated identity to use for accessing key encryption key Url. Ex: /subscriptions/fa5fc227-a624-475e-b696-cdd604c735bc/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId. Mutually exclusive with identityType systemAssignedIdentity and userAssignedIdentity - internal use only.",
+            nullable=True,
+        )
+        key_encryption_key_identity.identity_type = AAZStrArg(
+            options=["identity-type"],
+            help="Values can be systemAssignedIdentity or userAssignedIdentity",
+            nullable=True,
+            enum={"delegatedResourceIdentity": "delegatedResourceIdentity", "systemAssignedIdentity": "systemAssignedIdentity", "userAssignedIdentity": "userAssignedIdentity"},
+        )
+        key_encryption_key_identity.user_assigned_identity_resource_id = AAZResourceIdArg(
+            options=["user-assigned-identity-resource-id"],
+            help="user assigned identity to use for accessing key encryption key Url. Ex: /subscriptions/fa5fc227-a624-475e-b696-cdd604c735bc/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId. Mutually exclusive with identityType systemAssignedIdentity and delegatedResourceIdentity.",
+            nullable=True,
         )
         return cls._args_schema
 
@@ -174,7 +220,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-06-01-preview",
                     required=True,
                 ),
             }
@@ -273,7 +319,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-06-01-preview",
                     required=True,
                 ),
             }
@@ -332,6 +378,7 @@ class Update(AAZCommand):
                 typ=AAZObjectType
             )
             _builder.set_prop("identity", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             identity = _builder.get(".identity")
@@ -342,6 +389,25 @@ class Update(AAZCommand):
             user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
             if user_assigned_identities is not None:
                 user_assigned_identities.set_elements(AAZObjectType, ".")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("encryption", AAZObjectType, ".encryption")
+
+            encryption = _builder.get(".properties.encryption")
+            if encryption is not None:
+                encryption.set_prop("customerManagedKeyEncryption", AAZObjectType, ".customer_managed_key_encryption")
+
+            customer_managed_key_encryption = _builder.get(".properties.encryption.customerManagedKeyEncryption")
+            if customer_managed_key_encryption is not None:
+                customer_managed_key_encryption.set_prop("keyEncryptionKeyIdentity", AAZObjectType, ".key_encryption_key_identity")
+                customer_managed_key_encryption.set_prop("keyEncryptionKeyUrl", AAZStrType, ".key_encryption_key_url")
+
+            key_encryption_key_identity = _builder.get(".properties.encryption.customerManagedKeyEncryption.keyEncryptionKeyIdentity")
+            if key_encryption_key_identity is not None:
+                key_encryption_key_identity.set_prop("delegatedIdentityClientId", AAZStrType, ".delegated_identity_client_id")
+                key_encryption_key_identity.set_prop("identityType", AAZStrType, ".identity_type")
+                key_encryption_key_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".user_assigned_identity_resource_id")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -435,9 +501,34 @@ class _UpdateHelper:
             serialized_name="devCenterUri",
             flags={"read_only": True},
         )
+        properties.encryption = AAZObjectType()
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
+        )
+
+        encryption = _schema_dev_center_read.properties.encryption
+        encryption.customer_managed_key_encryption = AAZObjectType(
+            serialized_name="customerManagedKeyEncryption",
+        )
+
+        customer_managed_key_encryption = _schema_dev_center_read.properties.encryption.customer_managed_key_encryption
+        customer_managed_key_encryption.key_encryption_key_identity = AAZObjectType(
+            serialized_name="keyEncryptionKeyIdentity",
+        )
+        customer_managed_key_encryption.key_encryption_key_url = AAZStrType(
+            serialized_name="keyEncryptionKeyUrl",
+        )
+
+        key_encryption_key_identity = _schema_dev_center_read.properties.encryption.customer_managed_key_encryption.key_encryption_key_identity
+        key_encryption_key_identity.delegated_identity_client_id = AAZStrType(
+            serialized_name="delegatedIdentityClientId",
+        )
+        key_encryption_key_identity.identity_type = AAZStrType(
+            serialized_name="identityType",
+        )
+        key_encryption_key_identity.user_assigned_identity_resource_id = AAZStrType(
+            serialized_name="userAssignedIdentityResourceId",
         )
 
         system_data = _schema_dev_center_read.system_data

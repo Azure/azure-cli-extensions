@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin image-version list",
+    "devcenter admin catalog-devbox-definition list",
 )
 class List(AAZCommand):
-    """List versions for an image.
+    """List dev box definitions in the catalog.
 
     :example: List
-        az devcenter admin image-version list --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --image-name "Win11" --resource-group "rg1"
+        az devcenter admin catalog-devbox-definition list --catalog-name "CentralCatalog" --dev-center-name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {
         "version": "2023-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/galleries/{}/images/{}/versions", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}/devboxdefinitions", "2023-06-01-preview"],
         ]
     }
 
@@ -45,19 +45,14 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.catalog_name = AAZStrArg(
+            options=["--catalog-name"],
+            help="The name of the catalog.",
+            required=True,
+        )
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
-            required=True,
-        )
-        _args_schema.gallery_name = AAZStrArg(
-            options=["--gallery-name"],
-            help="The name of the gallery.",
-            required=True,
-        )
-        _args_schema.image_name = AAZStrArg(
-            options=["--image-name"],
-            help="The name of the image.",
+            help="The name of the dev center.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -67,7 +62,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ImageVersionsListByImage(ctx=self.ctx)()
+        self.CatalogDevBoxDefinitionsListByCatalog(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -83,7 +78,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class ImageVersionsListByImage(AAZHttpOperation):
+    class CatalogDevBoxDefinitionsListByCatalog(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -97,7 +92,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/galleries/{galleryName}/images/{imageName}/versions",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/catalogs/{catalogName}/devboxdefinitions",
                 **self.url_parameters
             )
 
@@ -113,15 +108,11 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "catalogName", self.ctx.args.catalog_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "devCenterName", self.ctx.args.dev_center_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "galleryName", self.ctx.args.gallery_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "imageName", self.ctx.args.image_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -187,38 +178,80 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
+            _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.exclude_from_latest = AAZBoolType(
-                serialized_name="excludeFromLatest",
-                flags={"read_only": True},
+            properties.active_image_reference = AAZObjectType(
+                serialized_name="activeImageReference",
             )
-            properties.name = AAZStrType(
-                flags={"read_only": True},
+            _ListHelper._build_schema_image_reference_read(properties.active_image_reference)
+            properties.hibernate_support = AAZStrType(
+                serialized_name="hibernateSupport",
             )
-            properties.os_disk_image_size_in_gb = AAZIntType(
-                serialized_name="osDiskImageSizeInGb",
-                flags={"read_only": True},
+            properties.image_reference = AAZObjectType(
+                serialized_name="imageReference",
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_image_reference_read(properties.image_reference)
+            properties.image_validation_error_details = AAZObjectType(
+                serialized_name="imageValidationErrorDetails",
+            )
+            properties.image_validation_status = AAZStrType(
+                serialized_name="imageValidationStatus",
+            )
+            properties.os_storage_type = AAZStrType(
+                serialized_name="osStorageType",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.published_date = AAZStrType(
-                serialized_name="publishedDate",
+            properties.sku = AAZObjectType(
+                flags={"required": True},
+            )
+            properties.validation_error_details = AAZListType(
+                serialized_name="validationErrorDetails",
                 flags={"read_only": True},
             )
+            properties.validation_status = AAZStrType(
+                serialized_name="validationStatus",
+            )
+
+            image_validation_error_details = cls._schema_on_200.value.Element.properties.image_validation_error_details
+            image_validation_error_details.code = AAZStrType()
+            image_validation_error_details.message = AAZStrType()
+
+            sku = cls._schema_on_200.value.Element.properties.sku
+            sku.capacity = AAZIntType()
+            sku.family = AAZStrType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+            sku.size = AAZStrType()
+            sku.tier = AAZStrType()
+
+            validation_error_details = cls._schema_on_200.value.Element.properties.validation_error_details
+            validation_error_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.validation_error_details.Element
+            _element.code = AAZStrType()
+            _element.message = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -240,11 +273,35 @@ class List(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
             return cls._schema_on_200
 
 
 class _ListHelper:
     """Helper class for List"""
+
+    _schema_image_reference_read = None
+
+    @classmethod
+    def _build_schema_image_reference_read(cls, _schema):
+        if cls._schema_image_reference_read is not None:
+            _schema.exact_version = cls._schema_image_reference_read.exact_version
+            _schema.id = cls._schema_image_reference_read.id
+            return
+
+        cls._schema_image_reference_read = _schema_image_reference_read = AAZObjectType()
+
+        image_reference_read = _schema_image_reference_read
+        image_reference_read.exact_version = AAZStrType(
+            serialized_name="exactVersion",
+            flags={"read_only": True},
+        )
+        image_reference_read.id = AAZStrType()
+
+        _schema.exact_version = cls._schema_image_reference_read.exact_version
+        _schema.id = cls._schema_image_reference_read.id
 
 
 __all__ = ["List"]

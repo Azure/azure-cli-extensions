@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}", "2023-06-01-preview"],
         ]
     }
 
@@ -59,7 +59,6 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -201,7 +200,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-06-01-preview",
                     required=True,
                 ),
             }
@@ -275,10 +274,18 @@ class Create(AAZCommand):
                 serialized_name="adoGit",
             )
             _CreateHelper._build_schema_git_catalog_read(properties.ado_git)
+            properties.connection_state = AAZStrType(
+                serialized_name="connectionState",
+                flags={"read_only": True},
+            )
             properties.git_hub = AAZObjectType(
                 serialized_name="gitHub",
             )
             _CreateHelper._build_schema_git_catalog_read(properties.git_hub)
+            properties.last_connection_time = AAZStrType(
+                serialized_name="lastConnectionTime",
+                flags={"read_only": True},
+            )
             properties.last_sync_time = AAZStrType(
                 serialized_name="lastSyncTime",
                 flags={"read_only": True},

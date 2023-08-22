@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2023-06-01-preview"],
         ]
     }
 
@@ -47,7 +47,6 @@ class Wait(AAZWaitCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema
@@ -117,7 +116,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-06-01-preview",
                     required=True,
                 ),
             }
@@ -206,9 +205,34 @@ class Wait(AAZWaitCommand):
                 serialized_name="devCenterUri",
                 flags={"read_only": True},
             )
+            properties.encryption = AAZObjectType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+
+            encryption = cls._schema_on_200.properties.encryption
+            encryption.customer_managed_key_encryption = AAZObjectType(
+                serialized_name="customerManagedKeyEncryption",
+            )
+
+            customer_managed_key_encryption = cls._schema_on_200.properties.encryption.customer_managed_key_encryption
+            customer_managed_key_encryption.key_encryption_key_identity = AAZObjectType(
+                serialized_name="keyEncryptionKeyIdentity",
+            )
+            customer_managed_key_encryption.key_encryption_key_url = AAZStrType(
+                serialized_name="keyEncryptionKeyUrl",
+            )
+
+            key_encryption_key_identity = cls._schema_on_200.properties.encryption.customer_managed_key_encryption.key_encryption_key_identity
+            key_encryption_key_identity.delegated_identity_client_id = AAZStrType(
+                serialized_name="delegatedIdentityClientId",
+            )
+            key_encryption_key_identity.identity_type = AAZStrType(
+                serialized_name="identityType",
+            )
+            key_encryption_key_identity.user_assigned_identity_resource_id = AAZStrType(
+                serialized_name="userAssignedIdentityResourceId",
             )
 
             system_data = cls._schema_on_200.system_data
