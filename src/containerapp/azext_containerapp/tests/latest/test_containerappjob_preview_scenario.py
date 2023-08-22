@@ -80,7 +80,7 @@ class ContainerappJobPreviewScenarioTest(ScenarioTest):
 
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         self.cmd(
-            f"az containerapp job create --name {ca_name} --resource-group {resource_group} --environment {connected_env_name} --replica-timeout 200 --replica-retry-limit 2 --trigger-type manual --parallelism 1 --replica-completion-count 1 --image mcr.microsoft.com/k8se/quickstart-jobs:latest --cpu '0.25' --memory '0.5Gi'",
+            f"az containerapp job create --name {ca_name} --resource-group {resource_group} --environment {connected_env_name} --environment-type connected --replica-timeout 200 --replica-retry-limit 2 --trigger-type manual --parallelism 1 --replica-completion-count 1 --image mcr.microsoft.com/k8se/quickstart-jobs:latest --cpu '0.25' --memory '0.5Gi'",
             checks=[
                 JMESPathCheck('properties.environmentId', connected_env_resource_id),
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
@@ -100,15 +100,7 @@ class ContainerappJobPreviewScenarioTest(ScenarioTest):
             ])
 
         # test show/list/delete
-        self.cmd('containerapp list -g {}'.format(resource_group), checks=[
-            JMESPathCheck('length(@)', 2)
-        ])
-
-        self.cmd('containerapp list -g {} --environment-type {}'.format(resource_group, 'connected'), checks=[
-            JMESPathCheck('length(@)', 2)
-        ])
-
-        self.cmd('containerapp list -g {} --environment-type {} --environment {}'.format(resource_group, 'connected', connected_env_name), checks=[
+        self.cmd('containerapp job list -g {}'.format(resource_group), checks=[
             JMESPathCheck('length(@)', 2)
         ])
 
@@ -116,15 +108,14 @@ class ContainerappJobPreviewScenarioTest(ScenarioTest):
             JMESPathCheck('length(@)', 0)
         ])
 
-        app2 = self.cmd('containerapp show -n {} -g {}'.format(ca_name2, resource_group)).get_output_in_json()
-        self.cmd('containerapp delete --ids {} --yes'.format(app2['id']))
+        app2 = self.cmd('containerapp job show -n {} -g {}'.format(ca_name2, resource_group)).get_output_in_json()
+        self.cmd('containerapp job delete --ids {} --yes'.format(app2['id']))
 
-        self.cmd('containerapp delete -n {} -g {} --yes'.format(ca_name, resource_group))
+        self.cmd('containerapp job delete -n {} -g {} --yes'.format(ca_name, resource_group))
 
-        self.cmd('containerapp list -g {}'.format(resource_group), checks=[
+        self.cmd('containerapp job list -g {}'.format(resource_group), checks=[
             JMESPathCheck('length(@)', 0)
         ])
-        clean_up_test_file(file)
 
     @ResourceGroupPreparer(location="eastus")
     def test_containerappjob_preview_e2e(self, resource_group):
@@ -148,7 +139,7 @@ class ContainerappJobPreviewScenarioTest(ScenarioTest):
             ])
 
         app = self.cmd(
-            'containerapp show -n {} -g {}'.format(ca_name, resource_group),
+            'containerapp job show -n {} -g {}'.format(ca_name, resource_group),
             checks=[
                 JMESPathCheck('properties.environmentId', containerapp_env['id']),
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
@@ -156,16 +147,12 @@ class ContainerappJobPreviewScenarioTest(ScenarioTest):
             ]
         ).get_output_in_json()
 
-        self.cmd('containerapp list -g {}'.format(resource_group), checks=[
+        self.cmd('containerapp job list -g {}'.format(resource_group), checks=[
             JMESPathCheck('length(@)', 1)
         ])
 
-        self.cmd('containerapp list -g {} --environment-type {}'.format(resource_group, 'managed'), checks=[
-            JMESPathCheck('length(@)', 1)
-        ])
+        self.cmd('containerapp job delete --ids {} --yes'.format(app['id']))
 
-        self.cmd('containerapp delete --ids {} --yes'.format(app['id']))
-
-        self.cmd('containerapp list -g {}'.format(resource_group), checks=[
+        self.cmd('containerapp job list -g {}'.format(resource_group), checks=[
             JMESPathCheck('length(@)', 0)
         ])
