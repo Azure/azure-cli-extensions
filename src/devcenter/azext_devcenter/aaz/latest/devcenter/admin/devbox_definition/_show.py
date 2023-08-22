@@ -49,7 +49,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.dev_box_definition_name = AAZStrArg(
-            options=["-n", "--name", "--dev-box-definition-name"],
+            options=["-n", "--name", "--devbox-definition-name"],
             help="The name of the Dev Box definition.",
             required=True,
             id_part="child_name_1",

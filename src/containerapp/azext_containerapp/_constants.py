@@ -2,6 +2,10 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+MANAGED_ENVIRONMENT_TYPE = "managed"
+CONNECTED_ENVIRONMENT_TYPE = "connected"
+MANAGED_ENVIRONMENT_RESOURCE_TYPE = "managedEnvironments"
+CONNECTED_ENVIRONMENT_RESOURCE_TYPE = "connectedEnvironments"
 
 MAXIMUM_SECRET_LENGTH = 20
 MAXIMUM_CONTAINER_APP_NAME_LENGTH = 32
@@ -41,6 +45,8 @@ DEV_MARIADB_CONTAINER_NAME = 'mariadb'
 PENDING_STATUS = "Pending"
 SUCCEEDED_STATUS = "Succeeded"
 UPDATING_STATUS = "Updating"
+
+BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME = "blob-storage-token-store-sasurl-secret"
 
 MICROSOFT_SECRET_SETTING_NAME = "microsoft-provider-authentication-secret"
 FACEBOOK_SECRET_SETTING_NAME = "facebook-provider-authentication-secret"

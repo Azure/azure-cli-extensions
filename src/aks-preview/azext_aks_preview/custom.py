@@ -47,6 +47,7 @@ from azext_aks_preview._consts import (
     CONST_SPOT_EVICTION_POLICY_DELETE,
     CONST_VIRTUAL_NODE_ADDON_NAME,
     CONST_VIRTUAL_NODE_SUBNET_NAME,
+    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
 )
 from azext_aks_preview._helpers import (
     get_cluster_snapshot_by_snapshot_id,
@@ -724,6 +725,7 @@ def aks_update(
     enable_image_cleaner=False,
     disable_image_cleaner=False,
     image_cleaner_interval_hours=None,
+    disable_image_integrity=False,
     enable_apiserver_vnet_integration=False,
     apiserver_subnet_id=None,
     enable_keda=False,
@@ -1067,6 +1069,7 @@ def aks_agentpool_add(
     max_pods=0,
     zones=None,
     ppg=None,
+    vm_set_type=None,
     enable_encryption_at_host=False,
     enable_ultra_ssd=False,
     enable_fips_image=False,
@@ -2402,8 +2405,28 @@ def aks_mesh_enable(
         client,
         resource_group_name,
         name,
+        key_vault_id=None,
+        ca_cert_object_name=None,
+        ca_key_object_name=None,
+        root_cert_object_name=None,
+        cert_chain_object_name=None
 ):
-    return _aks_mesh_update(cmd, client, resource_group_name, name, enable_azure_service_mesh=True)
+    instance = client.get(resource_group_name, name)
+    addon_profiles = instance.addon_profiles
+    if key_vault_id is not None and ca_cert_object_name is not None and ca_key_object_name is not None and root_cert_object_name is not None and cert_chain_object_name is not None:
+        if not addon_profiles or not addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME] or not addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME].enabled:
+            raise CLIError('AzureKeyvaultSecretsProvider addon is required for Azure Service Mesh plugin certificate authority feature.')
+
+    return _aks_mesh_update(cmd,
+                            client,
+                            resource_group_name,
+                            name,
+                            key_vault_id,
+                            ca_cert_object_name,
+                            ca_key_object_name,
+                            root_cert_object_name,
+                            cert_chain_object_name,
+                            enable_azure_service_mesh=True)
 
 
 def aks_mesh_disable(
@@ -2453,6 +2476,11 @@ def _aks_mesh_update(
         client,
         resource_group_name,
         name,
+        key_vault_id=None,
+        ca_cert_object_name=None,
+        ca_key_object_name=None,
+        root_cert_object_name=None,
+        cert_chain_object_name=None,
         enable_azure_service_mesh=None,
         disable_azure_service_mesh=None,
         enable_ingress_gateway=None,
