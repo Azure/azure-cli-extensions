@@ -5,6 +5,8 @@ Release History
 0.5.5
 ++++++
 Adding ARM64 support.
+Fix for telemetry for repair-and-restore command.
+Repair VM fix for gen1 VM attaching disk on SCSI controller, preventing nested VM from booting (by Ryan McCallum)
 
 0.5.4
 ++++++
