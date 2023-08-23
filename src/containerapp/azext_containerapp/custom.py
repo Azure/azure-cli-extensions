@@ -1049,16 +1049,12 @@ def list_containerapp(cmd, resource_group_name=None, managed_env=None, environme
 
 
 def show_custom_domain_verification_id(cmd):
-    raw_parameters = locals()
-    containerapp_base_decorator = BaseContainerAppDecorator(
-        cmd=cmd,
-        client=ContainerAppPreviewClient,
-        raw_parameters=raw_parameters,
-        models=CONTAINER_APPS_SDK_MODELS
-    )
-    containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
-
-    return containerapp_base_decorator.show_custom_domain_verification_id()
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        r = ContainerAppPreviewClient.show_custom_domain_verification_id(cmd)
+        return r
+    except CLIError as e:
+        handle_raw_exception(e)
 
 
 def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
