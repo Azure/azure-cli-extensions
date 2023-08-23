@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new cluster or update the properties of the cluster if it exists.

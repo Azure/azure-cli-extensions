@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a Route Policy resource
 
     :example: Create a Route Policy Example 1
-        az networkfabric routepolicy create --resource-group "example-rg" --resource-name "example-routepolicy" --location "westus3" --default-action "Permit" --nf-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric" --address-family-type "IPv4" --statements "[{sequenceNumber:1234,condition:{ipCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipCommunities/example-ipCommunityName'],ipPrefixId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/example-ipPrefixName',type:Or},action:{localPreference:123,actionType:Permit,ipCommunityProperties:{add:{ipCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipCommunities/example-ipCommunityName']}}}}]"
+        az networkfabric routepolicy create --resource-group "example-rg" --resource-name "example-routepolicy" --location "westus3" --nf-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric" --address-family-type "IPv4" --statements "[{sequenceNumber:1234,condition:{ipCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipCommunities/example-ipCommunityName'],ipPrefixId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/example-ipPrefixName',type:Or},action:{localPreference:123,actionType:Permit,ipCommunityProperties:{add:{ipCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipCommunities/example-ipCommunityName']}}}}]"
 
     :example: Create a Route Policy Example 2
-        az networkfabric routepolicy create --resource-group "example-rg" --resource-name "example-routepolicy" --location "westus3" --default-action "Permit" --nf-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric" --address-family-type "IPv4" --statements "[{sequenceNumber:1235,condition:{ipExtendedCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipExtendedCommunities/example-ipExtendedCommunityName'],type:And},action:{localPreference:1235,actionType:Deny,ipExtendedCommunityProperties:{set:{ipExtendedCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipExtendedCommunities/example-ipExtendedCommunityName']}}}}]"
+        az networkfabric routepolicy create --resource-group "example-rg" --resource-name "example-routepolicy" --location "westus3" --nf-id "/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric" --address-family-type "IPv4" --statements "[{sequenceNumber:1235,condition:{ipExtendedCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipExtendedCommunities/example-ipExtendedCommunityName'],type:And},action:{localPreference:1235,actionType:Deny,ipExtendedCommunityProperties:{set:{ipExtendedCommunityIds:['/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/ipExtendedCommunities/example-ipExtendedCommunityName']}}}}]"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
-        az networkfabric routepolicy create --statements "??"
+        az networkfabric routepolicy create --statements ??
         az networkfabric routepolicy create --statements "[{action:??"
         az networkfabric routepolicy create --statements "[{action:{ip-community-properties:??"
     """
@@ -99,12 +99,6 @@ class Create(AAZCommand):
             options=["--annotation"],
             arg_group="Properties",
             help="Description for underlying resource.",
-        )
-        _args_schema.default_action = AAZStrArg(
-            options=["--default-action"],
-            arg_group="Properties",
-            help="Default action that needs to be applied when no condition is matched. Example: Permit.",
-            enum={"Deny": "Deny", "Permit": "Permit"},
         )
         _args_schema.nf_id = AAZResourceIdArg(
             options=["--nf-id"],
@@ -393,7 +387,6 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("addressFamilyType", AAZStrType, ".address_family_type")
                 properties.set_prop("annotation", AAZStrType, ".annotation")
-                properties.set_prop("defaultAction", AAZStrType, ".default_action")
                 properties.set_prop("networkFabricId", AAZStrType, ".nf_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("statements", AAZListType, ".statements", typ_kwargs={"flags": {"required": True}})
 
@@ -499,9 +492,6 @@ class Create(AAZCommand):
             properties.configuration_state = AAZStrType(
                 serialized_name="configurationState",
                 flags={"read_only": True},
-            )
-            properties.default_action = AAZStrType(
-                serialized_name="defaultAction",
             )
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",

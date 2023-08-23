@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud trunkednetwork list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List trunked networks in the provided resource group or subscription.

@@ -5079,70 +5079,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('securityProfile.imageCleaner.intervalHours', 24),
         ])
 
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_update_with_image_integrity(self, resource_group, resource_group_location):
-        # reset the count so in replay mode the random names will start with 0
-        self.test_resources_count = 0
-        # kwargs for string formatting
-        aks_name = self.create_random_name('cliakstest', 16)
-        request_body = '{\"type\": \"Microsoft.ContainerService/managedClusters\", \"name\": \"'+ aks_name +'\", \"location\": \"' + resource_group_location + '\", \"properties\": {\"securityProfile\": {\"imageIntegrity\": {\"enabled\": true}}}}'
-        
-        self.kwargs.update({
-            'resource_group': resource_group,
-            'name': aks_name,
-            'location': resource_group_location,
-            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
-            'vm_size': 'Standard_D4s_v3',
-            'node_count': 1,
-            'ssh_key_value': self.generate_ssh_keys(),
-            'request_body': request_body,
-        })
-
-        create_cmd = ' '.join([
-            'aks', 'create', '--resource-group={resource_group}', '--name={name}', '--location={location}',
-            '--node-vm-size {vm_size}',
-            '--node-count {node_count}',
-            '-a azure-policy',
-            '--enable-oidc-issuer',
-            '-k 1.26', #TOD remove when default version becomes 1.26
-            '--ssh-key-value={ssh_key_value}',
-            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-AzurePolicyExternalData',
-        ])
-        response=self.cmd(create_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-        ]).get_output_in_json()
-
-        cluster_resource_id = response["id"]
-        subscription = cluster_resource_id.split("/")[2]
-
-        url = 'https://management.azure.com/subscriptions/' + subscription + '/resourceGroups/' + resource_group + '/providers/Microsoft.ContainerService/managedClusters/' + aks_name + '?api-version=2023-06-02-preview'
-        
-        enable_cmd = ' '.join([
-            'rest', '--method put', '--url ' + url,
-            '--body \'{request_body}\'',
-            '--headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableImageIntegrityPreview,Microsoft.ContainerService/AKS-AzurePolicyExternalData'
-        ])
-        self.cmd(enable_cmd, checks=[])
-        for i in range(0, 20):
-            get_cmd = ' '.join([
-                'aks', 'show', '--resource-group={resource_group}', '--name={name}',
-            ])
-            cluster = self.cmd(get_cmd, checks=[
-                self.check('securityProfile.imageIntegrity.enabled', True),
-            ]).get_output_in_json()
-            if cluster["provisioningState"] == "Succeeded":
-                break
-            time.sleep(30)
-
-        disable_cmd = ' '.join([
-            'aks', 'update', '--resource-group={resource_group}', '--name={name}',
-            '--disable-image-integrity',
-        ])
-        self.cmd(disable_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('securityProfile.imageIntegrity.enabled', False),
-        ])
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
@@ -7350,66 +7286,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('serviceMeshProfile.mode', 'Istio'),
             self.check('serviceMeshProfile.istio.components.ingressGateways[0].mode', 'Internal'),
             self.check('serviceMeshProfile.istio.components.ingressGateways[0].enabled', None)
-        ])
-
-        # delete the cluster
-        delete_cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
-        self.cmd(delete_cmd, checks=[
-            self.is_empty(),
-        ])
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_azure_service_mesh_with_pluginca(self, resource_group, resource_group_location):
-        """ This test case exercises providing plugin ca params with mesh enable command.
-
-        It creates a cluster, enables azure service mesh with plugica params, then disable it.
-        """
-
-        # reset the count so in replay mode the random names will start with 0
-        self.test_resources_count = 0
-        # kwargs for string formatting
-        aks_name = self.create_random_name('cliakstest', 16)
-        self.kwargs.update({
-            'resource_group': resource_group,
-            'name': aks_name,
-            'location': resource_group_location,
-            'ssh_key_value': self.generate_ssh_keys(),
-        })
-
-        # create cluster
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureServiceMeshPreview ' \
-                     '--ssh-key-value={ssh_key_value}'
-        self.cmd(create_cmd, checks=[
-            self.check('provisioningState', 'Succeeded')
-        ])
-
-        # enable azurekeyvaultsecretsprovider addon
-        enable_cmd = 'aks enable-addons --addons azure-keyvault-secrets-provider --resource-group={resource_group} --name={name} -o json'
-        self.cmd(enable_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check(
-                'addonProfiles.azureKeyvaultSecretsProvider.enabled', True),
-            self.check(
-                'addonProfiles.azureKeyvaultSecretsProvider.config.enableSecretRotation', "false")
-        ])
-
-        # enable azure service mesh with pluginca
-        update_cmd = 'aks mesh enable --resource-group={resource_group} --name={name} ' \
-                     '--key-vault-id my-akv-id ' \
-                     '--ca-cert-object-name my-ca-cert ' \
-                     '--ca-key-object-name my-ca-key ' \
-                     '--cert-chain-object-name my-cert-chain ' \
-                     '--root-cert-object-name my-root-cert'
-
-        self.cmd(update_cmd, checks=[
-            self.check('serviceMeshProfile.mode', 'Istio'),
-            self.check('serviceMeshProfile.istio.certificateAuthority.plugin.keyVaultId', 'my-akv-id'),
-            self.check('serviceMeshProfile.istio.certificateAuthority.plugin.certObjectName', 'my-ca-cert'),
-            self.check('serviceMeshProfile.istio.certificateAuthority.plugin.keyObjectName', 'my-ca-key'),
-            self.check('serviceMeshProfile.istio.certificateAuthority.plugin.rootCertObjectName', 'my-root-cert'),
-            self.check('serviceMeshProfile.istio.certificateAuthority.plugin.certChainObjectName', 'my-cert-chain')
         ])
 
         # delete the cluster

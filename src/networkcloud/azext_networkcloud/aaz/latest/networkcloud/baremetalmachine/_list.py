@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List bare metal machines in the provided resource group or subscription.

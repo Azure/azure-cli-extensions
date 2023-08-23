@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster metricsconfiguration update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update properties of metrics configuration for the provided cluster, or update the tags associated with it. Properties and tag updates can be done independently.

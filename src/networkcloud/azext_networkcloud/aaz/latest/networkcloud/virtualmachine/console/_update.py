@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine console update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update the properties of the provided virtual machine console, or update the tags associated with the virtual machine console. Properties and tag updates can be done independently.
@@ -88,7 +89,7 @@ class Update(AAZCommand):
         _args_schema.enabled = AAZStrArg(
             options=["--enabled"],
             arg_group="Properties",
-            help="The indicator of whether the console access is enabled.",
+            help="The credentials used to login to the image repository that has access to the specified image.",
             enum={"False": "False", "True": "True"},
         )
         _args_schema.expiration = AAZDateTimeArg(

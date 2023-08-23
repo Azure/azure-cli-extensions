@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster bmckeyset show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get baseboard management controller key set of the provided cluster.

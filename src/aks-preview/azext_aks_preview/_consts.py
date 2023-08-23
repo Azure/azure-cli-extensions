@@ -65,6 +65,11 @@ CONST_LOAD_BALANCER_SKU_STANDARD = "standard"
 CONST_MANAGED_CLUSTER_SKU_TIER_FREE = "free"
 CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD = "standard"
 
+# outbound type
+CONST_OUTBOUND_TYPE_LOAD_BALANCER = "loadBalancer"
+CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING = "userDefinedRouting"
+CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY = "managedNATGateway"
+CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY = "userAssignedNATGateway"
 CONST_OUTBOUND_MIGRATION_MULTIZONE_TO_NATGATEWAY_MSG = "Warning: this AKS cluster has multi-zonal nodepools, but NAT Gateway is not currently zone redundant. Migrating outbound connectivity to NAT Gateway could lead to a reduction in zone redundancy for this cluster. Continue?"
 # load balancer backend pool type
 CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP = "nodeIP"

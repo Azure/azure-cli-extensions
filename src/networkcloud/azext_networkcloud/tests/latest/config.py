@@ -12,11 +12,10 @@ from os import path
 
 
 class LoadConfig:
-    """Loads the resource specific configuration for network cloud resources from config.ini.
+    ''' Loads the resource specific configuration for network cloud resources from config.ini.
     This configuration is loaded at the first instance and stored in the _config_instance
     Global parameter CONFIG can be used by calling classes to use the configuration values
-    """
-
+    '''
     config = None
 
     def __init__(self):
@@ -25,7 +24,7 @@ class LoadConfig:
         self.config = self.readconfig(filename)
 
     def readconfig(self, filename):
-        """Load resource config from configuration file"""
+        ''' Load resource config from configuration file'''
         if self._config_instance:
             return self._config_instance
         self._config_instance = configparser.ConfigParser()
@@ -34,7 +33,7 @@ class LoadConfig:
 
 
 def get_config():
-    """Load the config and return the class instance"""
+    ''' Load the config and return the class instance'''
     load_cnfig = LoadConfig()
     return load_cnfig.config
 

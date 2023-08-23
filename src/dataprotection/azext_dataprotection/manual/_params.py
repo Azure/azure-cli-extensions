@@ -14,12 +14,11 @@ from azure.cli.core.commands.parameters import (
     get_location_type,
     get_three_state_flag
 )
-
 from azure.cli.core.commands.validators import (
     validate_file_or_dict
 )
 
-from azext_dataprotection.manual._validators import datetime_type, schedule_days_type, namespaced_name_resource_type
+from azext_dataprotection.manual._validators import datetime_type, schedule_days_type
 from azext_dataprotection.manual.enums import (
     get_protection_status_values,
     get_backup_frequency_values,
@@ -66,10 +65,6 @@ def load_arguments(self, _):
         c.argument('include_cluster_scope_resources', arg_type=get_three_state_flag(),
                    options_list=['--include-cluster-scope-resources', '--include-cluster-scope'],
                    help="Boolean parameter to decide whether cluster scope resources are included for restore. By default this is taken as true.")
-        c.argument('backup_hook_references',
-                   type=namespaced_name_resource_type,
-                   options_list=['--backup-hook-references', '--backup-hook-refs'],
-                   help='Property sets the hook reference to be executed during backup.')
 
     with self.argument_context('dataprotection backup-instance initialize') as c:
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
@@ -187,10 +182,6 @@ def load_arguments(self, _):
         c.argument('include_cluster_scope_resources', arg_type=get_three_state_flag(),
                    options_list=['--include-cluster-scope-resources', '--include-cluster-scope'],
                    help="Boolean parameter to decide whether cluster scope resources are included for restore. By default this is taken as true.")
-        c.argument('restore_hook_references',
-                   type=namespaced_name_resource_type,
-                   options_list=['--restore-hook-references', '--restore-hook-refs'],
-                   help='Property sets the hook reference to be executed during restore.')
 
     with self.argument_context('dataprotection backup-instance restore initialize-for-data-recovery') as c:
         c.argument('target_resource_id', type=str, help="specify the resource ID to which the data will be restored.")

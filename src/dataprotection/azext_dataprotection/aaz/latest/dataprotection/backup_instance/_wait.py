@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2023-01-01"],
         ]
     }
 
@@ -126,7 +126,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2023-01-01",
                     required=True,
                 ),
             }
@@ -193,9 +193,6 @@ class Wait(AAZWaitCommand):
             properties.friendly_name = AAZStrType(
                 serialized_name="friendlyName",
             )
-            properties.identity_details = AAZObjectType(
-                serialized_name="identityDetails",
-            )
             properties.object_type = AAZStrType(
                 serialized_name="objectType",
                 flags={"required": True},
@@ -236,10 +233,6 @@ class Wait(AAZWaitCommand):
             data_source_info.resource_name = AAZStrType(
                 serialized_name="resourceName",
             )
-            data_source_info.resource_properties = AAZObjectType(
-                serialized_name="resourceProperties",
-            )
-            _WaitHelper._build_schema_base_resource_properties_read(data_source_info.resource_properties)
             data_source_info.resource_type = AAZStrType(
                 serialized_name="resourceType",
             )
@@ -264,10 +257,6 @@ class Wait(AAZWaitCommand):
             data_source_set_info.resource_name = AAZStrType(
                 serialized_name="resourceName",
             )
-            data_source_set_info.resource_properties = AAZObjectType(
-                serialized_name="resourceProperties",
-            )
-            _WaitHelper._build_schema_base_resource_properties_read(data_source_set_info.resource_properties)
             data_source_set_info.resource_type = AAZStrType(
                 serialized_name="resourceType",
             )
@@ -293,14 +282,6 @@ class Wait(AAZWaitCommand):
             )
             secret_store_resource.uri = AAZStrType()
             secret_store_resource.value = AAZStrType()
-
-            identity_details = cls._schema_on_200.properties.identity_details
-            identity_details.use_system_assigned_identity = AAZBoolType(
-                serialized_name="useSystemAssignedIdentity",
-            )
-            identity_details.user_assigned_identity_arm_url = AAZStrType(
-                serialized_name="userAssignedIdentityArmUrl",
-            )
 
             policy_info = cls._schema_on_200.properties.policy_info
             policy_info.policy_id = AAZStrType(
@@ -342,9 +323,6 @@ class Wait(AAZWaitCommand):
             containers_list.Element = AAZStrType()
 
             disc_kubernetes_cluster_backup_datasource_parameters = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters")
-            disc_kubernetes_cluster_backup_datasource_parameters.backup_hook_references = AAZListType(
-                serialized_name="backupHookReferences",
-            )
             disc_kubernetes_cluster_backup_datasource_parameters.excluded_namespaces = AAZListType(
                 serialized_name="excludedNamespaces",
             )
@@ -368,13 +346,6 @@ class Wait(AAZWaitCommand):
                 serialized_name="snapshotVolumes",
                 flags={"required": True},
             )
-
-            backup_hook_references = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").backup_hook_references
-            backup_hook_references.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").backup_hook_references.Element
-            _element.name = AAZStrType()
-            _element.namespace = AAZStrType()
 
             excluded_namespaces = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").excluded_namespaces
             excluded_namespaces.Element = AAZStrType()
@@ -444,24 +415,6 @@ class Wait(AAZWaitCommand):
 
 class _WaitHelper:
     """Helper class for Wait"""
-
-    _schema_base_resource_properties_read = None
-
-    @classmethod
-    def _build_schema_base_resource_properties_read(cls, _schema):
-        if cls._schema_base_resource_properties_read is not None:
-            _schema.object_type = cls._schema_base_resource_properties_read.object_type
-            return
-
-        cls._schema_base_resource_properties_read = _schema_base_resource_properties_read = AAZObjectType()
-
-        base_resource_properties_read = _schema_base_resource_properties_read
-        base_resource_properties_read.object_type = AAZStrType(
-            serialized_name="objectType",
-            flags={"required": True},
-        )
-
-        _schema.object_type = cls._schema_base_resource_properties_read.object_type
 
     _schema_inner_error_read = None
 

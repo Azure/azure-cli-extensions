@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud storageappliance disable-remote-vendor-management",
+    is_preview=True,
 )
 class DisableRemoteVendorManagement(AAZCommand):
     """Disable remote vendor management of the provided storage appliance.

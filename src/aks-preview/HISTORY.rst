@@ -9,21 +9,14 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
-0.5.152
+Pending
 ++++++
-* move loadbalancer/natgateway util functions to azure-cli and update reference in aks-preview project. 
-* bump azure-cli to 2.49
-
-0.5.151
-+++++++
-* Add `--disable-image-integrity` to the `az aks update` command.
 
 0.5.150
 +++++++
 * Vendor new SDK and bump API version to 2023-06-02-preview.
 * Add `--network-dataplane` to the `az aks update` command.
 * Support "VirtualMachines" agent pool type to `az aks create --vm-set-type` and `az aks nodepool add --vm-set-type`. This is internal use only, not for public preview.
-* Add plugin CA support for `az aks mesh enable` commands for Azure Service Mesh.
 
 0.5.149
 +++++++

@@ -11,7 +11,6 @@ from typing import TYPE_CHECKING
 from msrest import Serializer
 
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
-from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpResponse
 from azure.core.polling import LROPoller, NoPolling, PollingMethod
@@ -25,7 +24,7 @@ from .._vendor import _convert_request, _format_url_section
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Iterable, Optional, TypeVar, Union
+    from typing import Any, Callable, Dict, Optional, TypeVar, Union
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
@@ -319,7 +318,7 @@ class VirtualMachineInstancesOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.connectedvmware.models
+    :type models: ~azure_arc_vmware_management_service_api.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -407,7 +406,7 @@ class VirtualMachineInstancesOperations(object):
          Compute machine resource to be extended.
         :type resource_uri: str
         :param body: Request payload.
-        :type body: ~azure.mgmt.connectedvmware.models.VirtualMachineInstance
+        :type body: ~azure_arc_vmware_management_service_api.models.VirtualMachineInstance
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -419,7 +418,7 @@ class VirtualMachineInstancesOperations(object):
         :return: An instance of LROPoller that returns either VirtualMachineInstance or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.LROPoller[~azure.mgmt.connectedvmware.models.VirtualMachineInstance]
+         ~azure.core.polling.LROPoller[~azure_arc_vmware_management_service_api.models.VirtualMachineInstance]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
@@ -480,7 +479,7 @@ class VirtualMachineInstancesOperations(object):
         :type resource_uri: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VirtualMachineInstance, or the result of cls(response)
-        :rtype: ~azure.mgmt.connectedvmware.models.VirtualMachineInstance
+        :rtype: ~azure_arc_vmware_management_service_api.models.VirtualMachineInstance
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineInstance"]
@@ -565,16 +564,11 @@ class VirtualMachineInstancesOperations(object):
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
-        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize('VirtualMachineInstance', pipeline_response)
 
-        if response.status_code == 202:
-            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
-            
-
         if cls:
-            return cls(pipeline_response, deserialized, response_headers)
+            return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
@@ -597,7 +591,7 @@ class VirtualMachineInstancesOperations(object):
          Compute machine resource to be extended.
         :type resource_uri: str
         :param body: Resource properties to update.
-        :type body: ~azure.mgmt.connectedvmware.models.VirtualMachineInstanceUpdate
+        :type body: ~azure_arc_vmware_management_service_api.models.VirtualMachineInstanceUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -609,7 +603,7 @@ class VirtualMachineInstancesOperations(object):
         :return: An instance of LROPoller that returns either VirtualMachineInstance or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.LROPoller[~azure.mgmt.connectedvmware.models.VirtualMachineInstance]
+         ~azure.core.polling.LROPoller[~azure_arc_vmware_management_service_api.models.VirtualMachineInstance]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
@@ -688,17 +682,12 @@ class VirtualMachineInstancesOperations(object):
         )
         response = pipeline_response.http_response
 
-        if response.status_code not in [202, 204]:
+        if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
-            
-
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, None, {})
 
     _delete_initial.metadata = {'url': "/{resourceUri}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default"}  # type: ignore
 
@@ -779,7 +768,7 @@ class VirtualMachineInstancesOperations(object):
         resource_uri,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.VirtualMachineInstancesList"]
+        # type: (...) -> "_models.VirtualMachineInstancesList"
         """Implements List virtual machine instances.
 
         Lists all of the virtual machine instances within the specified parent resource.
@@ -788,71 +777,48 @@ class VirtualMachineInstancesOperations(object):
          Compute machine resource to be extended.
         :type resource_uri: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either VirtualMachineInstancesList or the result of
-         cls(response)
-        :rtype:
-         ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.VirtualMachineInstancesList]
+        :return: VirtualMachineInstancesList, or the result of cls(response)
+        :rtype: ~azure_arc_vmware_management_service_api.models.VirtualMachineInstancesList
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
-
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineInstancesList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        def prepare_request(next_link=None):
-            if not next_link:
-                
-                request = build_list_request(
-                    resource_uri=resource_uri,
-                    api_version=api_version,
-                    template_url=self.list.metadata['url'],
-                )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
 
-            else:
-                
-                request = build_list_request(
-                    resource_uri=resource_uri,
-                    api_version=api_version,
-                    template_url=next_link,
-                )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
-                request.method = "GET"
-            return request
+        api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
 
-        def extract_data(pipeline_response):
-            deserialized = self._deserialize("VirtualMachineInstancesList", pipeline_response)
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)
-            return deserialized.next_link or None, iter(list_of_elem)
-
-        def get_next(next_link=None):
-            request = prepare_request(next_link)
-
-            pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
-                request,
-                stream=False,
-                **kwargs
-            )
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-
-        return ItemPaged(
-            get_next, extract_data
+        
+        request = build_list_request(
+            resource_uri=resource_uri,
+            api_version=api_version,
+            template_url=self.list.metadata['url'],
         )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
+
+        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('VirtualMachineInstancesList', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+
     list.metadata = {'url': "/{resourceUri}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances"}  # type: ignore
+
 
     def _stop_initial(  # pylint: disable=inconsistent-return-statements
         self,
@@ -892,16 +858,12 @@ class VirtualMachineInstancesOperations(object):
         )
         response = pipeline_response.http_response
 
-        if response.status_code not in [202]:
+        if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        response_headers = {}
-        response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
-
-
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, None, {})
 
     _stop_initial.metadata = {'url': "/{resourceUri}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default/stop"}  # type: ignore
 
@@ -922,7 +884,7 @@ class VirtualMachineInstancesOperations(object):
          Compute machine resource to be extended.
         :type resource_uri: str
         :param body: Virtualmachine stop action payload.
-        :type body: ~azure.mgmt.connectedvmware.models.StopVirtualMachineOptions
+        :type body: ~azure_arc_vmware_management_service_api.models.StopVirtualMachineOptions
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -1004,16 +966,12 @@ class VirtualMachineInstancesOperations(object):
         )
         response = pipeline_response.http_response
 
-        if response.status_code not in [202]:
+        if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        response_headers = {}
-        response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
-
-
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, None, {})
 
     _start_initial.metadata = {'url': "/{resourceUri}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default/start"}  # type: ignore
 
@@ -1110,16 +1068,12 @@ class VirtualMachineInstancesOperations(object):
         )
         response = pipeline_response.http_response
 
-        if response.status_code not in [202]:
+        if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        response_headers = {}
-        response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
-
-
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, None, {})
 
     _restart_initial.metadata = {'url': "/{resourceUri}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineInstances/default/restart"}  # type: ignore
 

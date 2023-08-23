@@ -16,8 +16,8 @@ from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
-from .vendored_sdks.appplatform.v2023_07_01_preview.models import (ApmReference, CertificateReference)
-from .vendored_sdks.appplatform.v2023_07_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
+from .vendored_sdks.appplatform.v2023_05_01_preview.models import (ApmReference, CertificateReference)
+from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
 
 from ._resource_quantity import validate_cpu as validate_and_normalize_cpu
 from ._resource_quantity import \

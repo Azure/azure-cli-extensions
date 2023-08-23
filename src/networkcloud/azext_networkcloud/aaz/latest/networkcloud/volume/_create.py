@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud volume create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new volume or update the properties of the existing one.

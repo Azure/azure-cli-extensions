@@ -25,19 +25,33 @@ SELECT_SYMBOL = {
 
 GESTURE_INFO = {
     # pylint: disable=line-too-long
-    SELECT_SYMBOL['search'] + '[keyword]': "search for commands and scenarios",
+    SELECT_SYMBOL['search'] + ' [keyword]': "search for commands and scenarios",
     SELECT_SYMBOL['outside'] + "[cmd]": "use commands outside the application",
-    SELECT_SYMBOL['example'] + "[num]": "complete a recommended scenario step by step",
-    "[cmd][param]" + SELECT_SYMBOL['query'] + "[query]": "Inject jmespath query from previous command",
-    SELECT_SYMBOL['query'] + "[query]": "Jmespath query of the previous command",
-    "[cmd]" + SELECT_SYMBOL['example'] + "[num]": "do a step by step tutorial of example",
+    SELECT_SYMBOL['example'] + " [num]": "complete a recommended scenario step by step",
+    "[cmd] + [param] +" + "\"" + SELECT_SYMBOL[
+        'query'] + "[query]" + "\"": "Inject jmespath query from previous command",
+    "\"" + SELECT_SYMBOL['query'] + "[query]" + "\"": "Jmespath query of the previous command",
+    "[cmd] " + SELECT_SYMBOL['example'] + " [num]": "do a step by step tutorial of example",
     SELECT_SYMBOL['exit_code']: "get the exit code of the previous command",
     SELECT_SYMBOL['scope'] + '[cmd]': "set a scope, and scopes can be chained with spaces",
-    SELECT_SYMBOL['scope'] + SELECT_SYMBOL['unscope']: "go back a scope",
+    SELECT_SYMBOL['scope'] + ' ' + SELECT_SYMBOL['unscope']: "go back a scope",
 }
 
 CONFIG_FILE_NAME = 'shell-config'
-GESTURE_LENGTH = max(len(key) for key in GESTURE_INFO)
+GESTURE_LENGTH = max(len(key) for key in GESTURE_INFO) + 1
+
+
+def help_text(values):
+    """ reformats the help text """
+    result = ""
+    for key in values:
+        # ' '.join('' for x in range(GESTURE_LENGTH - len(key))) is used to make the help text aligned
+        # Example: If values = {'/ [keyword]': 'description1', '#[cmd]': 'description2'}, the result will be:'/ [keyword]: description1\n#[cmd]   : description2\n'
+        result += key + ' '.join('' for x in range(GESTURE_LENGTH - len(key))) + ': ' + values[key] + '\n'
+    return result
+
+
+SHELL_HELP = help_text(GESTURE_INFO)
 
 
 class Configuration(object):
@@ -135,9 +149,6 @@ class Configuration(object):
         """ updates the configuration settings """
         with open(os.path.join(self.config_dir, CONFIG_FILE_NAME), 'w') as config_file:
             self.config.write(config_file)
-
-    def get_boolean(self, section, option):
-        return self.BOOLEAN_STATES[self.config.get(section, option)]
 
 
 def ask_user_for_telemetry():

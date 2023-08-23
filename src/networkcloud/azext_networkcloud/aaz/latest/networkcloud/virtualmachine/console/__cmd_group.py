@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "networkcloud virtualmachine console",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage virtual machine's console

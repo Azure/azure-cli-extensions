@@ -19,7 +19,6 @@ from .action import (
     AddUserAccountAuthInfo,
 )
 
-EX_SUPPORTED_AUTH_TYPE = SUPPORTED_AUTH_TYPE.copy()
 PASSWORDLESS_SOURCE_RESOURCES = [
     RESOURCE.WebApp,
     RESOURCE.ContainerApp,
@@ -35,7 +34,7 @@ PASSWORDLESS_TARGET_RESOURCES = [
 ]
 
 # pylint: disable=line-too-long
-EX_SUPPORTED_AUTH_TYPE[RESOURCE.Local] = {
+SUPPORTED_AUTH_TYPE[RESOURCE.Local] = {
     RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
     RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
     RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
@@ -43,7 +42,7 @@ EX_SUPPORTED_AUTH_TYPE[RESOURCE.Local] = {
 }
 
 for resourceType in PASSWORDLESS_SOURCE_RESOURCES:
-    EX_SUPPORTED_AUTH_TYPE[resourceType] = {
+    SUPPORTED_AUTH_TYPE[resourceType] = {
         RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
         RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
         RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],

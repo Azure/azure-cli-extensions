@@ -21,7 +21,7 @@ class Update(AAZCommand):
         az networkfabric controller update --resource-group "example-rg"   --resource-name "example-nfc" --infra-er-connections "[{expressRouteCircuitId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit',expressRouteAuthorizationKey:'auth-key'}]" --workload-er-connections "[{expressRouteCircuitId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit',expressRouteAuthorizationKey:'auth-key'}]"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
-        az networkfabric controller update --infra-er-connections "??"
+        az networkfabric controller update --infra-er-connections ??
     """
 
     _aaz_info = {

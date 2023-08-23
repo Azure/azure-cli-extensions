@@ -3,20 +3,14 @@
 Release History
 ===============
 
-1.0.0
-++++++++
-* This is the first stable version of the CLI extension that supports NetworkCloud 2023-07-01 stable APIs.
-* Virtualmachine console create and update commands have been enhanced to accept a file path for ssh_public_key parameter.
-
 1.0.0b1
 ++++++++
-* This is first beta version of the CLI extension that supports NetworkCloud 2023-07-01 stable APIs.
-* The defaultcninetwork and hybridakscluster resources are no longer available.
+* This the first beta version of the CLI extension that supports NetworkCloud 2023-07-01 stable APIs.
 
 0.4.1
 ++++++
 * This version updates the kubernetescluster resource to not send an empty array `sshPubKeys` for control plane configuration and agent pool configuration if the input contains no ssh keys provided for these parameters.
-* This version updates the agentpool child resource of kubernetescluster to not send an empty array `sshPubKeys` is not provided in the input.
+* This version update the agentpool child resource of kubernetescluster to not send an empty array `sshPubKeys` is not provided in the input.
 
 0.4.0
 ++++++

@@ -10,11 +10,7 @@ from unittest import mock
 
 from azext_networkcloud import NetworkcloudCommandsLoader
 from azext_networkcloud.operations.cluster.metricsconfiguration import (
-    ClusterMetricsConfiguration,
-    Create,
-    Delete,
-    Show,
-    Update,
+    Create, Delete, Show, Update, ClusterMetricsConfiguration
 )
 from azure.cli.core.mock import DummyCli
 
@@ -32,8 +28,10 @@ class TestClusterMetricsConfiguration(unittest.TestCase):
         """Test that _build_arguments_schema unregisters the command."""
         args_schema = mock.Mock()
         results_args_schema = self.cmd._build_arguments_schema(args_schema)
-        self.assertFalse(results_args_schema.metrics_configuration_name._registered)
-        self.assertFalse(results_args_schema.metrics_configuration_name._required)
+        self.assertFalse(
+            results_args_schema.metrics_configuration_name._registered)
+        self.assertFalse(
+            results_args_schema.metrics_configuration_name._required)
 
     def test_pre_operations(self):
         """
@@ -60,7 +58,8 @@ class ClusterMetricsConfigurationCallBackTestBase(ABC):
         self.cmd.ctx.args = mock.Mock()
 
         self.cmd.pre_operations()
-        self.assertEqual(self.cmd.ctx.args.metrics_configuration_name, "default")
+        self.assertEqual(
+            self.cmd.ctx.args.metrics_configuration_name, "default")
 
 
 class TestClusterMetricsConfigurationCreate(
@@ -76,7 +75,9 @@ class TestClusterMetricsConfigurationCreate(
         """Set command to ClusterMetricsConfigurationCreate."""
         self._cli_ctx = DummyCli()
         self._loader = NetworkcloudCommandsLoader(cli_ctx=self._cli_ctx)
-        self.cmd = Create(loader=self._loader, cli_ctx=self._cli_ctx)
+        self.cmd = Create(
+            loader=self._loader, cli_ctx=self._cli_ctx
+        )
 
 
 class TestClusterMetricsConfigurationDelete(
@@ -92,7 +93,9 @@ class TestClusterMetricsConfigurationDelete(
         """Set command to ClusterMetricsConfigurationDelete."""
         self._cli_ctx = DummyCli()
         self._loader = NetworkcloudCommandsLoader(cli_ctx=self._cli_ctx)
-        self.cmd = Delete(loader=self._loader, cli_ctx=self._cli_ctx)
+        self.cmd = Delete(
+            loader=self._loader, cli_ctx=self._cli_ctx
+        )
 
 
 class TestClusterMetricsConfigurationShow(
@@ -108,7 +111,9 @@ class TestClusterMetricsConfigurationShow(
         """Set command to ClusterMetricsConfigurationShow."""
         self._cli_ctx = DummyCli()
         self._loader = NetworkcloudCommandsLoader(cli_ctx=self._cli_ctx)
-        self.cmd = Show(loader=self._loader, cli_ctx=self._cli_ctx)
+        self.cmd = Show(
+            loader=self._loader, cli_ctx=self._cli_ctx
+        )
 
 
 class TestClusterMetricsConfigurationUpdate(
@@ -124,4 +129,6 @@ class TestClusterMetricsConfigurationUpdate(
         """Set command to ClusterMetricsConfigurationUpdate."""
         self._cli_ctx = DummyCli()
         self._loader = NetworkcloudCommandsLoader(cli_ctx=self._cli_ctx)
-        self.cmd = Update(loader=self._loader, cli_ctx=self._cli_ctx)
+        self.cmd = Update(
+            loader=self._loader, cli_ctx=self._cli_ctx
+        )

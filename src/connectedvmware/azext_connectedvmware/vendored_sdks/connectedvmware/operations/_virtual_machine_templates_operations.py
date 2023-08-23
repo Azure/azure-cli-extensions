@@ -265,7 +265,7 @@ class VirtualMachineTemplatesOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.connectedvmware.models
+    :type models: ~azure_arc_vmware_management_service_api.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -357,7 +357,7 @@ class VirtualMachineTemplatesOperations(object):
         :param virtual_machine_template_name: Name of the virtual machine template resource.
         :type virtual_machine_template_name: str
         :param body: Request payload.
-        :type body: ~azure.mgmt.connectedvmware.models.VirtualMachineTemplate
+        :type body: ~azure_arc_vmware_management_service_api.models.VirtualMachineTemplate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -369,7 +369,7 @@ class VirtualMachineTemplatesOperations(object):
         :return: An instance of LROPoller that returns either VirtualMachineTemplate or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.LROPoller[~azure.mgmt.connectedvmware.models.VirtualMachineTemplate]
+         ~azure.core.polling.LROPoller[~azure_arc_vmware_management_service_api.models.VirtualMachineTemplate]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
@@ -433,7 +433,7 @@ class VirtualMachineTemplatesOperations(object):
         :type virtual_machine_template_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VirtualMachineTemplate, or the result of cls(response)
-        :rtype: ~azure.mgmt.connectedvmware.models.VirtualMachineTemplate
+        :rtype: ~azure_arc_vmware_management_service_api.models.VirtualMachineTemplate
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineTemplate"]
@@ -495,10 +495,10 @@ class VirtualMachineTemplatesOperations(object):
         :param virtual_machine_template_name: Name of the virtual machine template resource.
         :type virtual_machine_template_name: str
         :param body: Resource properties to update.
-        :type body: ~azure.mgmt.connectedvmware.models.ResourcePatch
+        :type body: ~azure_arc_vmware_management_service_api.models.ResourcePatch
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VirtualMachineTemplate, or the result of cls(response)
-        :rtype: ~azure.mgmt.connectedvmware.models.VirtualMachineTemplate
+        :rtype: ~azure_arc_vmware_management_service_api.models.VirtualMachineTemplate
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachineTemplate"]
@@ -588,13 +588,8 @@ class VirtualMachineTemplatesOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
-            
-
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, None, {})
 
     _delete_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineTemplates/{virtualMachineTemplateName}"}  # type: ignore
 
@@ -682,7 +677,7 @@ class VirtualMachineTemplatesOperations(object):
         :return: An iterator like instance of either VirtualMachineTemplatesList or the result of
          cls(response)
         :rtype:
-         ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.VirtualMachineTemplatesList]
+         ~azure.core.paging.ItemPaged[~azure_arc_vmware_management_service_api.models.VirtualMachineTemplatesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
@@ -762,7 +757,7 @@ class VirtualMachineTemplatesOperations(object):
         :return: An iterator like instance of either VirtualMachineTemplatesList or the result of
          cls(response)
         :rtype:
-         ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.VirtualMachineTemplatesList]
+         ~azure.core.paging.ItemPaged[~azure_arc_vmware_management_service_api.models.VirtualMachineTemplatesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str

@@ -29,8 +29,199 @@ from azext_connectedmachine.action import (
 
 def load_arguments(self, _):
 
+    with self.argument_context('connectedmachine list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+
+    with self.argument_context('connectedmachine show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('machine_name', options_list=['--name', '-n', '--machine-name'], help='The name of the '
+                   'hybrid machine.', id_part='name')
+
+    with self.argument_context('connectedmachine delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('machine_name', options_list=['--name', '-n', '--machine-name'], help='The name of the '
+                   'hybrid machine.', id_part='name')
+
+    with self.argument_context('connectedmachine extension list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('machine_name', help='The name of the machine containing the extension.')
+        c.argument('expand', help='The expand expression to apply on the operation.')
+
+    with self.argument_context('connectedmachine extension show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('machine_name', help='The name of the machine containing the extension.', id_part='name')
+        c.argument('name', help='The name of the machine extension.', id_part='child_name_1')
+
+    with self.argument_context('connectedmachine extension create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('machine_name', help='The name of the machine where the extension should be created or '
+                   'updated.')
+        c.argument('name', help='The name of the machine extension.')
+        c.argument('tags', tags_type)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+                   validator=get_default_location_from_resource_group)
+        c.argument('force_update_tag', help='How the extension handler should be forced to update even if '
+                   'the extension configuration has not changed.')
+        c.argument('publisher', type=str, help='The name of the extension handler publisher.')
+        c.argument('type_', options_list=['--type'], help='Specify the type of the extension; an example '
+                   'is "CustomScriptExtension".')
+        c.argument('type_handler_version', type=str, help='Specify the version of the script handler.')
+        c.argument('enable_auto_upgrade', arg_type=get_three_state_flag(), help='Indicate whether the extension '
+                   'should be automatically upgraded by the platform if there is a newer version available.')
+        c.argument('auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicate whether the extension should '
+                   'use a newer minor version if one is available at deployment time. Once deployed, however, the '
+                   'extension will not upgrade minor versions unless redeployed, even with this property set to true.')
+        c.argument('settings', type=validate_file_or_dict, help='Json formatted public settings for the extension. '
+                   'Expected value: json-string/json-file/@json-file.')
+        c.argument('protected_settings', type=validate_file_or_dict, help='The extension can contain either '
+                   'protectedSettings or protectedSettingsFromKeyVault or no protected settings at all. Expected '
+                   'value: json-string/json-file/@json-file.')
+        c.argument('instance_view_type', help='Specify the type of the extension; an example is '
+                   '"CustomScriptExtension".', arg_group='Instance View')
+        c.argument('inst_handler_version', help='Specify the version of the script handler.',
+                   arg_group='Instance View')
+        c.argument('status', action=AddStatus, nargs='+', help='Instance view status.', arg_group='Instance View')
+
+    with self.argument_context('connectedmachine extension update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('machine_name', help='The name of the machine where the extension should be created or '
+                   'updated.', id_part='name')
+        c.argument('name', help='The name of the machine extension.', id_part='child_name_1')
+        c.argument('tags', tags_type)
+        c.argument('force_update_tag', help='How the extension handler should be forced to update even if '
+                   'the extension configuration has not changed.')
+        c.argument('publisher', help='The name of the extension handler publisher.')
+        c.argument('type_', options_list=['--type'], help='Specify the type of the extension; an example '
+                   'is "CustomScriptExtension".')
+        c.argument('type_handler_version', help='Specify the version of the script handler.')
+        c.argument('enable_auto_upgrade', arg_type=get_three_state_flag(), help='Indicate whether the extension '
+                   'should be automatically upgraded by the platform if there is a newer version available.')
+        c.argument('auto_upgrade_minor', arg_type=get_three_state_flag(), help='Indicate whether the extension should '
+                   'use a newer minor version if one is available at deployment time. Once deployed, however, the '
+                   'extension will not upgrade minor versions unless redeployed, even with this property set to true.')
+        c.argument('settings', type=validate_file_or_dict, help='Json formatted public settings for the extension. '
+                   'Expected value: json-string/json-file/@json-file.')
+        c.argument('protected_settings', type=validate_file_or_dict, help='The extension can contain either '
+                   'protectedSettings or protectedSettingsFromKeyVault or no protected settings at all. Expected '
+                   'value: json-string/json-file/@json-file.')
+
+    with self.argument_context('connectedmachine extension delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('machine_name', help='The name of the machine where the extension should be deleted.',
+                   id_part='name')
+        c.argument('name', help='The name of the machine extension.', id_part='child_name_1')
+
+    with self.argument_context('connectedmachine extension wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('machine_name', help='The name of the machine containing the extension.', id_part='name')
+        c.argument('name', help='The name of the machine extension.', id_part='child_name_1')
+
+    with self.argument_context('connectedmachine upgrade-extension') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('machine_name', help='The name of the hybrid machine.', id_part='name')
+        c.argument('extension_targets', type=validate_file_or_dict, help='Describe the Extension Target Properties. '
+                   'Expected value: json-string/json-file/@json-file.')
+
+    with self.argument_context('connectedmachine private-link-scope list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+
+    with self.argument_context('connectedmachine private-link-scope show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+
+    with self.argument_context('connectedmachine private-link-scope create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', help='The name of the Azure Arc PrivateLinkScope resource.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+                   validator=get_default_location_from_resource_group)
+        c.argument('tags', tags_type)
+        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Indicate whether '
+                   'machines associated with the private link scope can also use public Azure Arc service endpoints.')
+
+    with self.argument_context('connectedmachine private-link-scope update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+                   validator=get_default_location_from_resource_group)
+        c.argument('tags', tags_type)
+        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Indicate whether '
+                   'machines associated with the private link scope can also use public Azure Arc service endpoints.')
+        c.ignore('parameters')
+
+    with self.argument_context('connectedmachine private-link-scope delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+
+    with self.argument_context('connectedmachine private-link-scope show-validation-detail') as c:
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), id_part='name')
+        c.argument('private_link_scope_id', help='The id (Guid) of the Azure Arc PrivateLinkScope resource.',
+                   id_part='child_name_1')
+
+    with self.argument_context('connectedmachine private-link-scope show-validation-detail-for-machine') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('machine_name', help='The name of the target machine to get the private link scope '
+                   'validation details for.', id_part='name')
+
     with self.argument_context('connectedmachine private-link-scope update-tag') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('scope_name', help='The name of the Azure Arc PrivateLinkScope resource.',
                    id_part='name')
         c.argument('tags', tags_type)
+
+    with self.argument_context('connectedmachine private-link-scope wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+
+    with self.argument_context('connectedmachine private-link-resource list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', help='The name of the Azure Arc PrivateLinkScope resource.')
+
+    with self.argument_context('connectedmachine private-link-resource show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+        c.argument('group_name', help='The name of the private link resource.', id_part='child_name_1')
+
+    with self.argument_context('connectedmachine private-endpoint-connection list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', help='The name of the Azure Arc PrivateLinkScope resource.')
+
+    with self.argument_context('connectedmachine private-endpoint-connection show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
+                                                                     'e'], help='The name of the private '
+                   'endpoint connection.', id_part='child_name_1')
+
+    with self.argument_context('connectedmachine private-endpoint-connection update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
+                                                                     'e'], help='The name of the private '
+                   'endpoint connection.', id_part='child_name_1')
+        c.argument('connection_state', action=AddConnectionState, nargs='+', help='Connection state of the private '
+                   'endpoint connection.')
+        c.argument('id_', options_list=['--id'], help='Resource id of the private endpoint.',
+                   arg_group='Private Endpoint')
+
+    with self.argument_context('connectedmachine private-endpoint-connection delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
+                                                                     'e'], help='The name of the private '
+                   'endpoint connection.', id_part='child_name_1')
+
+    with self.argument_context('connectedmachine private-endpoint-connection wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
+                                                                     'e'], help='The name of the private '
+                   'endpoint connection.', id_part='child_name_1')

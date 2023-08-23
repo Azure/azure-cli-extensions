@@ -66,13 +66,8 @@ class AzureArcVMwareManagementServiceAPIOperationsMixin:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
-            
-
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, None, {})
 
     _upgrade_extensions_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/upgradeExtensions"}  # type: ignore
 
@@ -92,7 +87,8 @@ class AzureArcVMwareManagementServiceAPIOperationsMixin:
         :param virtual_machine_name: The name of the machine containing the extension.
         :type virtual_machine_name: str
         :param extension_upgrade_parameters: Parameters supplied to the Upgrade Extensions operation.
-        :type extension_upgrade_parameters: ~azure.mgmt.connectedvmware.models.MachineExtensionUpgrade
+        :type extension_upgrade_parameters:
+         ~azure_arc_vmware_management_service_api.models.MachineExtensionUpgrade
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for

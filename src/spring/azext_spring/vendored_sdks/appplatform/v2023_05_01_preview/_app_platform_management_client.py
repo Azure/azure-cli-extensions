@@ -172,92 +172,66 @@ class AppPlatformManagementClient:  # pylint: disable=client-accepts-api-version
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
-        self.services = ServicesOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
-        )
-        self.apms = ApmsOperations(self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview")
-        self.eureka_servers = EurekaServersOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
-        )
-        self.config_servers = ConfigServersOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
-        )
+        self.services = ServicesOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.apms = ApmsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.eureka_servers = EurekaServersOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.config_servers = ConfigServersOperations(self._client, self._config, self._serialize, self._deserialize)
         self.configuration_services = ConfigurationServicesOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
+            self._client, self._config, self._serialize, self._deserialize
         )
         self.service_registries = ServiceRegistriesOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
+            self._client, self._config, self._serialize, self._deserialize
         )
         self.application_live_views = ApplicationLiveViewsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
+            self._client, self._config, self._serialize, self._deserialize
         )
-        self.dev_tool_portals = DevToolPortalsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
-        )
+        self.dev_tool_portals = DevToolPortalsOperations(self._client, self._config, self._serialize, self._deserialize)
         self.container_registries = ContainerRegistriesOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
+            self._client, self._config, self._serialize, self._deserialize
         )
-        self.build_service = BuildServiceOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
-        )
+        self.build_service = BuildServiceOperations(self._client, self._config, self._serialize, self._deserialize)
         self.buildpack_binding = BuildpackBindingOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
+            self._client, self._config, self._serialize, self._deserialize
         )
         self.build_service_builder = BuildServiceBuilderOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
+            self._client, self._config, self._serialize, self._deserialize
         )
         self.build_service_agent_pool = BuildServiceAgentPoolOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
+            self._client, self._config, self._serialize, self._deserialize
         )
         self.monitoring_settings = MonitoringSettingsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
+            self._client, self._config, self._serialize, self._deserialize
         )
-        self.apps = AppsOperations(self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview")
-        self.bindings = BindingsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
-        )
-        self.storages = StoragesOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
-        )
-        self.certificates = CertificatesOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
-        )
-        self.custom_domains = CustomDomainsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
-        )
-        self.deployments = DeploymentsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
-        )
-        self.operations = Operations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
-        )
+        self.apps = AppsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.bindings = BindingsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.storages = StoragesOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.certificates = CertificatesOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.custom_domains = CustomDomainsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.deployments = DeploymentsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.operations = Operations(self._client, self._config, self._serialize, self._deserialize)
         self.runtime_versions = RuntimeVersionsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
+            self._client, self._config, self._serialize, self._deserialize
         )
-        self.skus = SkusOperations(self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview")
-        self.gateways = GatewaysOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
-        )
+        self.skus = SkusOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.gateways = GatewaysOperations(self._client, self._config, self._serialize, self._deserialize)
         self.gateway_route_configs = GatewayRouteConfigsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
+            self._client, self._config, self._serialize, self._deserialize
         )
         self.gateway_custom_domains = GatewayCustomDomainsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
+            self._client, self._config, self._serialize, self._deserialize
         )
-        self.api_portals = ApiPortalsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
-        )
+        self.api_portals = ApiPortalsOperations(self._client, self._config, self._serialize, self._deserialize)
         self.api_portal_custom_domains = ApiPortalCustomDomainsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
+            self._client, self._config, self._serialize, self._deserialize
         )
         self.application_accelerators = ApplicationAcceleratorsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
+            self._client, self._config, self._serialize, self._deserialize
         )
         self.customized_accelerators = CustomizedAcceleratorsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
+            self._client, self._config, self._serialize, self._deserialize
         )
         self.predefined_accelerators = PredefinedAcceleratorsOperations(
-            self._client, self._config, self._serialize, self._deserialize, "2023-05-01-preview"
+            self._client, self._config, self._serialize, self._deserialize
         )
 
     def _send_request(self, request: HttpRequest, **kwargs: Any) -> HttpResponse:

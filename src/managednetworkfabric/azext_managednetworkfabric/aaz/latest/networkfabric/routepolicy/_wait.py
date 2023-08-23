@@ -184,9 +184,6 @@ class Wait(AAZWaitCommand):
                 serialized_name="configurationState",
                 flags={"read_only": True},
             )
-            properties.default_action = AAZStrType(
-                serialized_name="defaultAction",
-            )
             properties.network_fabric_id = AAZStrType(
                 serialized_name="networkFabricId",
                 flags={"required": True},

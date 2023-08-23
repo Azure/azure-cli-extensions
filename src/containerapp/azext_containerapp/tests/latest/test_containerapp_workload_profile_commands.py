@@ -144,37 +144,6 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
-    def test_containerapp_create_enable_workload_profiles_three_state_flag(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        env = self.create_random_name(prefix='env', length=24)
-        self.cmd('containerapp env create -g {} -n {} --logs-destination none --enable-workload-profiles false'.format(resource_group, env), expect_failure=False, checks=[
-            JMESPathCheck("name", env),
-            JMESPathCheck("properties.provisioningState", "Succeeded"),
-            JMESPathCheck("properties.workloadProfiles", None),
-        ])
-        env2 = self.create_random_name(prefix='env2', length=24)
-        self.cmd('containerapp env create -g {} -n {} --logs-destination none --enable-workload-profiles'.format(
-            resource_group, env2), expect_failure=False, checks=[
-            JMESPathCheck("name", env2),
-            JMESPathCheck("properties.provisioningState", "Succeeded"),
-            JMESPathCheck("length(properties.workloadProfiles)", 1),
-            JMESPathCheck('properties.workloadProfiles[0].name', "Consumption", case_sensitive=False),
-            JMESPathCheck('properties.workloadProfiles[0].workloadProfileType', "Consumption", case_sensitive=False),
-        ])
-
-        env3 = self.create_random_name(prefix='env3', length=24)
-        self.cmd('containerapp env create -g {} -n {} --logs-destination none --enable-workload-profiles true'.format(
-            resource_group, env3), expect_failure=False, checks=[
-            JMESPathCheck("name", env3),
-            JMESPathCheck("properties.provisioningState", "Succeeded"),
-            JMESPathCheck("length(properties.workloadProfiles)", 1),
-            JMESPathCheck('properties.workloadProfiles[0].name', "Consumption", case_sensitive=False),
-            JMESPathCheck('properties.workloadProfiles[0].workloadProfileType', "Consumption", case_sensitive=False),
-        ])
-
-
-    @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="eastus")
     def test_containerapp_create_with_workloadprofile_yaml(self, resource_group):
 
         env = self.create_random_name(prefix='env', length=24)

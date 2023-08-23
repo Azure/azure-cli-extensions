@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine console list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List consoles of the virtual machine.

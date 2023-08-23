@@ -24,9 +24,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-06-27-preview",
+        "version": "2023-05-18-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.delegatednetwork/delegatedsubnets/{}", "2023-06-27-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.delegatednetwork/delegatedsubnets/{}", "2023-05-18-preview"],
         ]
     }
 
@@ -48,6 +48,7 @@ class Delete(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         _args_schema.resource_name = AAZStrArg(
@@ -156,7 +157,7 @@ class Delete(AAZCommand):
                     "forceDelete", self.ctx.args.force_delete,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2023-06-27-preview",
+                    "api-version", "2023-05-18-preview",
                     required=True,
                 ),
             }

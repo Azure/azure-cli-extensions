@@ -588,8 +588,8 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('ruleCollections[2].ruleCollectionType', "FirewallPolicyFilterRuleCollection"),
                      self.check('ruleCollections[2].name', "filter-collection-2"),
                      self.check('ruleCollections[2].rules[0].ruleType', 'ApplicationRule'),
-                     self.check('ruleCollections[2].rules[0].terminateTLS', True),
-                     self.check('ruleCollections[2].rules[0].targetUrls', ['www.google.com', 'www.bing.com'])
+                     self.check('ruleCollections[2].rules[0].terminateTls', True),
+                     self.check('ruleCollections[2].rules[0].targetUrls', "['www.google.com', 'www.bing.com']")
                  ])
 
         self.cmd('az network firewall policy rule-collection-group collection add-nat-collection -n nat-collection-2 \
@@ -623,7 +623,7 @@ class AzureFirewallScenario(ScenarioTest):
                  checks=[
                      self.check('length(ruleCollections[2].rules)', 3),
                      self.check('ruleCollections[2].rules[2].name', 'application-rule-3'),
-                     self.check('ruleCollections[2].rules[2].terminateTLS', False),
+                     self.check('ruleCollections[2].rules[2].terminateTls', False),
                      self.check('ruleCollections[2].rules[2].targetUrls', "['microsoft.com']")
                  ])
 
@@ -646,7 +646,7 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('length(ruleCollections)', 3)
         ])
 
-        self.cmd('network firewall policy rule-collection-group delete -g {rg} --policy-name {policy} --name {collectiongroup} -y')
+        self.cmd('network firewall policy rule-collection-group delete -g {rg} --policy-name {policy} --name {collectiongroup}')
 
         self.cmd('network firewall policy rule-collection-group list -g {rg} --policy-name {policy}', checks=[
             self.check('length(@)', 0)
@@ -769,7 +769,7 @@ class AzureFirewallScenario(ScenarioTest):
                  checks=[
                      self.check('length(ruleCollections[1].rules)', 2)
                  ])
-    @AllowLargeResponse()
+
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='westus2')
     def test_azure_firewall_policy_rules_with_ip_groups(self, resource_group, resource_group_location):
         self.kwargs.update({
@@ -895,7 +895,7 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('length(ruleCollections)', 2)
                  ])
 
-        self.cmd('network firewall policy rule-collection-group delete -g {rg} --policy-name {policy} --name {collectiongroup} -y')
+        self.cmd('network firewall policy rule-collection-group delete -g {rg} --policy-name {policy} --name {collectiongroup}')
 
         self.cmd('network firewall policy rule-collection-group list -g {rg} --policy-name {policy}', checks=[
             self.check('length(@)', 0)

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine console create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new virtual machine console or update the properties of the existing virtual machine console.

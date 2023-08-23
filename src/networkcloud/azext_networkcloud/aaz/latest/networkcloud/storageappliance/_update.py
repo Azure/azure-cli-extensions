@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud storageappliance update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update properties of the provided storage appliance, or update tags associated with the storage appliance Properties and tag updates can be done independently.

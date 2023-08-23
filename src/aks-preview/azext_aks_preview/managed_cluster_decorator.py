@@ -12,10 +12,6 @@ from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 from azure.cli.command_modules.acs._consts import (
     DecoratorEarlyExitException,
     DecoratorMode,
-    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
-    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
-    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
-    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
 )
 from azure.cli.command_modules.acs._helpers import (
     check_is_msi_cluster,
@@ -59,6 +55,10 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_PLUGIN_AZURE,
     CONST_NETWORK_PLUGIN_MODE_OVERLAY,
     CONST_NETWORK_DATAPLANE_CILIUM,
+    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
     CONST_PRIVATE_DNS_ZONE_NONE,
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
     CONST_IGNORE_KUBERNETES_DEPRECATIONS,
@@ -73,6 +73,8 @@ from azext_aks_preview._loadbalancer import create_load_balancer_profile
 from azext_aks_preview._loadbalancer import (
     update_load_balancer_profile as _update_load_balancer_profile,
 )
+from azext_aks_preview._natgateway import update_nat_gateway_profile as _update_nat_gateway_profile
+
 from azext_aks_preview._podidentity import (
     _fill_defaults_for_pod_identity_profile,
     _is_pod_identity_addon_enabled,
@@ -1160,16 +1162,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return interval_hours
 
-    def get_disable_image_integrity(self) -> bool:
-        """Obtain the value of disable_image_integrity.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        disable_image_integrity = self.raw_param.get("disable_image_integrity")
-
-        return disable_image_integrity
-
     def get_cluster_snapshot_id(self) -> Union[str, None]:
         """Obtain the values of cluster_snapshot_id.
 
@@ -2193,37 +2185,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 )
                 updated = True
 
-        # deal with plugin ca
-        key_vault_id = self.raw_param.get("key_vault_id", None)
-        ca_cert_object_name = self.raw_param.get("ca_cert_object_name", None)
-        ca_key_object_name = self.raw_param.get("ca_key_object_name", None)
-        root_cert_object_name = self.raw_param.get("root_cert_object_name", None)
-        cert_chain_object_name = self.raw_param.get("cert_chain_object_name", None)
-
-        if any([key_vault_id, ca_cert_object_name, ca_key_object_name, root_cert_object_name, cert_chain_object_name]):
-            if key_vault_id is None:
-                raise InvalidArgumentValueError('--key-vault-id is required to use Azure Service Mesh plugin CA feature.')
-            if ca_cert_object_name is None:
-                raise InvalidArgumentValueError('--ca-cert-object-name is required to use Azure Service Mesh plugin CA feature.')
-            if ca_key_object_name is None:
-                raise InvalidArgumentValueError('--ca-key-object-name is required to use Azure Service Mesh plugin CA feature.')
-            if root_cert_object_name is None:
-                raise InvalidArgumentValueError('--root-cert-object-name is required to use Azure Service Mesh plugin CA feature.')
-            if cert_chain_object_name is None:
-                raise InvalidArgumentValueError('--cert-chain-object-name is required to use Azure Service Mesh plugin CA feature.')
-
-        if enable_asm and all([key_vault_id, ca_cert_object_name, ca_key_object_name, root_cert_object_name, cert_chain_object_name]):
-            if new_profile.istio.certificate_authority is None:
-                new_profile.istio.certificate_authority = self.models.IstioCertificateAuthority()
-            if new_profile.istio.certificate_authority.plugin is None:
-                new_profile.istio.certificate_authority.plugin = self.models.IstioPluginCertificateAuthority()
-            new_profile.istio.certificate_authority.plugin.key_vault_id = key_vault_id
-            new_profile.istio.certificate_authority.plugin.cert_object_name = ca_cert_object_name
-            new_profile.istio.certificate_authority.plugin.key_object_name = ca_key_object_name
-            new_profile.istio.certificate_authority.plugin.root_cert_object_name = root_cert_object_name
-            new_profile.istio.certificate_authority.plugin.cert_chain_object_name = cert_chain_object_name
-            updated = True
-
         if updated:
             return new_profile
         else:
@@ -3090,6 +3051,40 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
         return mc
 
+    def update_outbound_type_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update outbound type of network profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        outboundType = self.context.get_outbound_type()
+        if outboundType:
+            mc.network_profile.outbound_type = outboundType
+        return mc
+
+    def update_nat_gateway_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update nat gateway profile for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        if not mc.network_profile:
+            raise UnknownError(
+                "Unexpectedly get an empty network profile in the process of updating nat gateway profile."
+            )
+        outbound_type = self.context.get_outbound_type()
+        if outbound_type and outbound_type != CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY:
+            mc.network_profile.nat_gateway_profile = None
+        else:
+            mc.network_profile.nat_gateway_profile = _update_nat_gateway_profile(
+                self.context.get_nat_gateway_managed_outbound_ip_count(),
+                self.context.get_nat_gateway_idle_timeout(),
+                mc.network_profile.nat_gateway_profile,
+                models=self.models.nat_gateway_models,
+            )
+        return mc
+
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update load balancer profile for the ManagedCluster object.
 
@@ -3121,17 +3116,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 profile=mc.network_profile.load_balancer_profile,
                 models=self.models.load_balancer_models,
             )
-        return mc
-
-    def update_outbound_type_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update outbound type of network profile for the ManagedCluster object.
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        outboundType = self.context.get_outbound_type()
-        if outboundType:
-            mc.network_profile.outbound_type = outboundType
         return mc
 
     def update_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -3297,32 +3281,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         if interval_hours is not None:
             image_cleaner_profile.interval_hours = interval_hours
-
-        return mc
-
-    def update_image_integrity(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update security profile imageIntegrity for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        disable_image_integrity = self.context.get_disable_image_integrity()
-
-        # no image integrity related changes
-        if not disable_image_integrity:
-            return mc
-
-        if mc.security_profile is None:
-            mc.security_profile = self.models.ManagedClusterSecurityProfile()
-
-        image_integrity_profile = mc.security_profile.image_integrity
-
-        if image_integrity_profile is None:
-            image_integrity_profile = self.models.ManagedClusterSecurityProfileImageIntegrity()
-            mc.security_profile.image_integrity = image_integrity_profile
-
-        image_integrity_profile.enabled = False
 
         return mc
 
@@ -3687,8 +3645,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_node_restriction(mc)
         # update image cleaner
         mc = self.update_image_cleaner(mc)
-        # update image integrity
-        mc = self.update_image_integrity(mc)
         # update workload auto scaler profile
         mc = self.update_workload_auto_scaler_profile(mc)
         # update azure monitor metrics profile
@@ -3703,8 +3659,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_network_plugin_settings(mc)
         # update outbound type
         mc = self.update_outbound_type_in_network_profile(mc)
-        # update loadbalancer profile
-        mc = self.update_load_balancer_profile(mc)
         # update kube proxy config
         mc = self.update_kube_proxy_config(mc)
         # update custom ca trust certificates

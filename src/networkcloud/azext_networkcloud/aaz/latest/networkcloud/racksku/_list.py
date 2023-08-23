@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud racksku list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List rack SKUs in the provided subscription.

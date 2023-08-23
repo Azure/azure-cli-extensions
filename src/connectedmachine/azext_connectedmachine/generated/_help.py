@@ -12,6 +12,218 @@
 from knack.help_files import helps
 
 
+helps['connectedmachine'] = '''
+    type: group
+    short-summary: Manage Connected Machine
+'''
+
+helps['connectedmachine list'] = """
+    type: command
+    short-summary: "List all the hybrid machines in the specified resource group. Use the nextLink property in the \
+response to get the next page of hybrid machines. And Lists all the hybrid machines in the specified subscription. Use \
+the nextLink property in the response to get the next page of hybrid machines."
+    examples:
+      - name: List Machines by resource group
+        text: |-
+               az connectedmachine list --resource-group "myResourceGroup"
+      - name: List Machines by resource group
+        text: |-
+               az connectedmachine list
+"""
+
+helps['connectedmachine show'] = """
+    type: command
+    short-summary: "Retrieve information about the model view or the instance view of a hybrid machine."
+    examples:
+      - name: Get Machine
+        text: |-
+               az connectedmachine show --name "myMachine" --resource-group "myResourceGroup"
+"""
+
+helps['connectedmachine delete'] = """
+    type: command
+    short-summary: "The operation to remove a hybrid machine identity in Azure."
+    examples:
+      - name: Delete a Machine
+        text: |-
+               az connectedmachine delete --name "myMachine" --resource-group "myResourceGroup"
+"""
+
+helps['connectedmachine extension'] = """
+    type: group
+    short-summary: Manage machine extension with connectedmachine
+"""
+
+helps['connectedmachine extension list'] = """
+    type: command
+    short-summary: "The operation to get all extensions of a non-Azure machine."
+    examples:
+      - name: Get all Machine Extensions
+        text: |-
+               az connectedmachine extension list --machine-name "myMachine" --resource-group "myResourceGroup"
+"""
+
+helps['connectedmachine extension show'] = """
+    type: command
+    short-summary: "The operation to get the extension."
+    examples:
+      - name: Get Machine Extension
+        text: |-
+               az connectedmachine extension show --name "CustomScriptExtension" --machine-name "myMachine" \
+--resource-group "myResourceGroup"
+"""
+
+helps['connectedmachine extension create'] = """
+    type: command
+    short-summary: "The operation to Create the extension."
+    parameters:
+      - name: --status
+        short-summary: "Instance view status."
+        long-summary: |
+            Usage: --status code=XX level=XX display-status=XX message=XX time=XX
+            code: The status code.
+            level: The level code.
+            display-status: The short localizable label for the status.
+            message: The detailed status message, including for alerts and error messages.
+            time: The time of the status.
+    examples:
+      - name: Create or Update a Machine Extension
+        text: |-
+               az connectedmachine extension create --name "CustomScriptExtension" --location "eastus2euap" --type \
+"CustomScriptExtension" --publisher "Microsoft.Compute" --settings '{\"commandToExecute\":\"hostname\"}' --type-handler-version "1.10" --machine-name \
+"myMachine" --resource-group "myResourceGroup"
+"""
+
+helps['connectedmachine extension update'] = """
+    type: command
+    short-summary: "The operation to create or update the extension."
+    examples:
+      - name: Create or Update a Machine Extension
+        text: |-
+               az connectedmachine extension update --name "CustomScriptExtension" --type "CustomScriptExtension" \
+--publisher "Microsoft.Compute" --settings '{\"commandToExecute\":\"hostname\"}' --type-handler-version "1.10" --machine-name "myMachine" --resource-group \
+"myResourceGroup"
+"""
+
+helps['connectedmachine extension delete'] = """
+    type: command
+    short-summary: "The operation to delete the extension."
+    examples:
+      - name: Delete a Machine Extension
+        text: |-
+               az connectedmachine extension delete --name "MMA" --machine-name "myMachine" --resource-group \
+"myResourceGroup"
+"""
+
+helps['connectedmachine extension wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the connectedmachine extension is met.
+    examples:
+      - name: Pause executing next line of CLI script until the connectedmachine extension is successfully created.
+        text: |-
+               az connectedmachine extension wait --name "CustomScriptExtension" --machine-name "myMachine" \
+--resource-group "myResourceGroup" --created
+      - name: Pause executing next line of CLI script until the connectedmachine extension is successfully updated.
+        text: |-
+               az connectedmachine extension wait --name "CustomScriptExtension" --machine-name "myMachine" \
+--resource-group "myResourceGroup" --updated
+      - name: Pause executing next line of CLI script until the connectedmachine extension is successfully deleted.
+        text: |-
+               az connectedmachine extension wait --name "CustomScriptExtension" --machine-name "myMachine" \
+--resource-group "myResourceGroup" --deleted
+"""
+
+helps['connectedmachine upgrade-extension'] = """
+    type: command
+    short-summary: "The operation to upgrade Machine Extensions."
+    examples:
+      - name: Upgrade Machine Extensions
+        text: |-
+               az connectedmachine upgrade-extension --extension-targets '{\"Microsoft.Azure.Monitoring\":{\"targetV\
+ersion\":\"2.0\"},\"Microsoft.Compute.CustomScriptExtension\":{\"targetVersion\":\"1.10\"}}' --machine-name \
+"myMachine" --resource-group "myResourceGroup"
+"""
+
+helps['connectedmachine private-link-scope'] = """
+    type: group
+    short-summary: Manage private link scope with connectedmachine
+"""
+
+helps['connectedmachine private-link-scope list'] = """
+    type: command
+    short-summary: "Get a list of Azure Arc PrivateLinkScopes within a resource group. And Gets a list of all Azure \
+Arc PrivateLinkScopes within a subscription."
+    examples:
+      - name: PrivateLinkScopeListByResourceGroup
+        text: |-
+               az connectedmachine private-link-scope list --resource-group "my-resource-group"
+      - name: PrivateLinkScopesList.json
+        text: |-
+               az connectedmachine private-link-scope list
+"""
+
+helps['connectedmachine private-link-scope show'] = """
+    type: command
+    short-summary: "Return a Azure Arc PrivateLinkScope."
+    examples:
+      - name: PrivateLinkScopeGet
+        text: |-
+               az connectedmachine private-link-scope show --resource-group "my-resource-group" --scope-name \
+"my-privatelinkscope"
+"""
+
+helps['connectedmachine private-link-scope create'] = """
+    type: command
+    short-summary: "Create (or update) a Azure Arc PrivateLinkScope. Note: You cannot specify a different value for \
+InstrumentationKey nor AppId in the Put operation."
+    examples:
+      - name: PrivateLinkScopeCreate
+        text: |-
+               az connectedmachine private-link-scope create --location "westus" --resource-group "my-resource-group" \
+--scope-name "my-privatelinkscope"
+"""
+
+helps['connectedmachine private-link-scope update'] = """
+    type: command
+    short-summary: "Update a Azure Arc PrivateLinkScope. Note: You cannot specify a different value for \
+InstrumentationKey nor AppId in the Put operation."
+    examples:
+      - name: PrivateLinkScopeUpdate
+        text: |-
+               az connectedmachine private-link-scope update --location "westus" --tags Tag1="Value1" --resource-group \
+"my-resource-group" --scope-name "my-privatelinkscope"
+"""
+
+helps['connectedmachine private-link-scope delete'] = """
+    type: command
+    short-summary: "Delete a Azure Arc PrivateLinkScope."
+    examples:
+      - name: PrivateLinkScopesDelete
+        text: |-
+               az connectedmachine private-link-scope delete --resource-group "my-resource-group" --scope-name \
+"my-privatelinkscope"
+"""
+
+helps['connectedmachine private-link-scope show-validation-detail'] = """
+    type: command
+    short-summary: "Return a Azure Arc PrivateLinkScope's validation details."
+    examples:
+      - name: PrivateLinkScopeGet
+        text: |-
+               az connectedmachine private-link-scope show-validation-detail --location "wus2" --private-link-scope-id \
+"f5dc51d3-92ed-4d7e-947a-775ea79b4919"
+"""
+
+helps['connectedmachine private-link-scope show-validation-detail-for-machine'] = """
+    type: command
+    short-summary: "Return a Azure Arc PrivateLinkScope's validation details for a given machine."
+    examples:
+      - name: PrivateLinkScopeGet
+        text: |-
+               az connectedmachine private-link-scope show-validation-detail-for-machine --machine-name "machineName" \
+--resource-group "my-resource-group"
+"""
+
 helps['connectedmachine private-link-scope update-tag'] = """
     type: command
     short-summary: "Update an existing PrivateLinkScope's tags. To update other fields use the CreateOrUpdate \
@@ -21,4 +233,112 @@ method."
         text: |-
                az connectedmachine private-link-scope update-tag --tags Tag1="Value1" Tag2="Value2" --resource-group \
 "my-resource-group" --scope-name "my-privatelinkscope"
+"""
+
+helps['connectedmachine private-link-scope wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the connectedmachine private-link-scope is \
+met.
+    examples:
+      - name: Pause executing next line of CLI script until the connectedmachine private-link-scope is successfully \
+deleted.
+        text: |-
+               az connectedmachine private-link-scope wait --resource-group "my-resource-group" --scope-name \
+"my-privatelinkscope" --deleted
+"""
+
+helps['connectedmachine private-link-resource'] = """
+    type: group
+    short-summary: Manage private link resource with connectedmachine
+"""
+
+helps['connectedmachine private-link-resource list'] = """
+    type: command
+    short-summary: "Get the private link resources that need to be created for a Azure Monitor PrivateLinkScope."
+    examples:
+      - name: Get private endpoint connection.
+        text: |-
+               az connectedmachine private-link-resource list --resource-group "myResourceGroup" --scope-name \
+"myPrivateLinkScope"
+"""
+
+helps['connectedmachine private-link-resource show'] = """
+    type: command
+    short-summary: "Get the private link resources that need to be created for a Azure Monitor PrivateLinkScope."
+    examples:
+      - name: Get private endpoint connection.
+        text: |-
+               az connectedmachine private-link-resource show --group-name "hybridcompute" --resource-group \
+"myResourceGroup" --scope-name "myPrivateLinkScope"
+"""
+
+helps['connectedmachine private-endpoint-connection'] = """
+    type: group
+    short-summary: Manage private endpoint connection with connectedmachine
+"""
+
+helps['connectedmachine private-endpoint-connection list'] = """
+    type: command
+    short-summary: "Get all private endpoint connections on a private link scope."
+    examples:
+      - name: Get list of private endpoint connections on a private link scope.
+        text: |-
+               az connectedmachine private-endpoint-connection list --resource-group "myResourceGroup" --scope-name \
+"myPrivateLinkScope"
+"""
+
+helps['connectedmachine private-endpoint-connection show'] = """
+    type: command
+    short-summary: "Get a private endpoint connection."
+    examples:
+      - name: Get private endpoint connection.
+        text: |-
+               az connectedmachine private-endpoint-connection show --name "private-endpoint-connection-name" \
+--resource-group "myResourceGroup" --scope-name "myPrivateLinkScope"
+"""
+
+helps['connectedmachine private-endpoint-connection update'] = """
+    type: command
+    short-summary: "Approve or reject a private endpoint connection with a given name."
+    parameters:
+      - name: --connection-state
+        short-summary: "Connection state of the private endpoint connection."
+        long-summary: |
+            Usage: --connection-state status=XX description=XX
+
+            status: Required. The private link service connection status.
+            description: Required. The private link service connection description.
+    examples:
+      - name: Approve or reject a private endpoint connection with a given name.
+        text: |-
+               az connectedmachine private-endpoint-connection update --connection-state description="Approved by \
+johndoe@contoso.com" status="Approved" --name "private-endpoint-connection-name" --resource-group "myResourceGroup" \
+--scope-name "myPrivateLinkScope"
+"""
+
+helps['connectedmachine private-endpoint-connection delete'] = """
+    type: command
+    short-summary: "Delete a private endpoint connection with a given name."
+    examples:
+      - name: Delete a private endpoint connection with a given name.
+        text: |-
+               az connectedmachine private-endpoint-connection delete --name "private-endpoint-connection-name" \
+--resource-group "myResourceGroup" --scope-name "myPrivateLinkScope"
+"""
+
+helps['connectedmachine private-endpoint-connection wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the connectedmachine \
+private-endpoint-connection is met.
+    examples:
+      - name: Pause executing next line of CLI script until the connectedmachine private-endpoint-connection is \
+successfully updated.
+        text: |-
+               az connectedmachine private-endpoint-connection wait --name "private-endpoint-connection-name" \
+--resource-group "myResourceGroup" --scope-name "myPrivateLinkScope" --updated
+      - name: Pause executing next line of CLI script until the connectedmachine private-endpoint-connection is \
+successfully deleted.
+        text: |-
+               az connectedmachine private-endpoint-connection wait --name "private-endpoint-connection-name" \
+--resource-group "myResourceGroup" --scope-name "myPrivateLinkScope" --deleted
 """

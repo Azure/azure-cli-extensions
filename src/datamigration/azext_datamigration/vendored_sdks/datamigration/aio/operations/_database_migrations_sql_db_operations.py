@@ -184,7 +184,7 @@ class DatabaseMigrationsSqlDbOperations:
         parameters: "models.DatabaseMigrationSqlDb",
         **kwargs
     ) -> AsyncLROPoller["models.DatabaseMigrationSqlDb"]:
-        """Create a new database migration to a given SQL Db. This command can migrate data from the selected source database tables to the target database tables. If the target database have no table existing, please use New-AzDataMigrationSqlServerSchema command to migrate schema objects from source database to target databse. The link of New-AzDataMigrationSqlServerSchema is https://learn.microsoft.com/cli/azure/datamigration?view=azure-cli-latest#az-datamigration-sql-server-schema
+        """Create a new database migration to a given SQL DB.
 
         :param resource_group_name: Name of the resource group that contains the resource. You can
          obtain this value from the Azure Resource Manager API or the portal.

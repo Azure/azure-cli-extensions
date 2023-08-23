@@ -197,7 +197,7 @@ class GuestAgentsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.connectedvmware.models
+    :type models: ~azure_arc_vmware_management_service_api.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -294,7 +294,7 @@ class GuestAgentsOperations(object):
         :param name: Name of the guestAgents.
         :type name: str
         :param body: Request payload.
-        :type body: ~azure.mgmt.connectedvmware.models.GuestAgent
+        :type body: ~azure_arc_vmware_management_service_api.models.GuestAgent
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -304,7 +304,8 @@ class GuestAgentsOperations(object):
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
         :return: An instance of LROPoller that returns either GuestAgent or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.connectedvmware.models.GuestAgent]
+        :rtype:
+         ~azure.core.polling.LROPoller[~azure_arc_vmware_management_service_api.models.GuestAgent]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
@@ -372,7 +373,7 @@ class GuestAgentsOperations(object):
         :type name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: GuestAgent, or the result of cls(response)
-        :rtype: ~azure.mgmt.connectedvmware.models.GuestAgent
+        :rtype: ~azure_arc_vmware_management_service_api.models.GuestAgent
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.GuestAgent"]
@@ -456,13 +457,8 @@ class GuestAgentsOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        response_headers = {}
-        if response.status_code == 202:
-            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
-            
-
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, None, {})
 
     _delete_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/guestAgents/{name}"}  # type: ignore
 
@@ -554,7 +550,8 @@ class GuestAgentsOperations(object):
         :type virtual_machine_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either GuestAgentList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.GuestAgentList]
+        :rtype:
+         ~azure.core.paging.ItemPaged[~azure_arc_vmware_management_service_api.models.GuestAgentList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str

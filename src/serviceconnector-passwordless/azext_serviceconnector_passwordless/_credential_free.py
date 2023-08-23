@@ -63,7 +63,6 @@ def get_enable_mi_for_db_linker_func(yes=False):
             cmd, target_id, target_type, auth_info, client_type, connection_name, skip_prompt=yes)
         if target_handler is None:
             return None
-        target_handler.check_db_existence()
 
         user_object_id = auth_info.get(
             'principal_id') if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserAccount] else auth_info.get("user_object_id")
@@ -221,9 +220,6 @@ class TargetHandler:
     def create_aad_user(self):
         return
 
-    def check_db_existence(self):
-        return
-
     def get_auth_flag(self):
         if self.auth_type == AUTHTYPES[AUTH_TYPE.UserAccount]:
             return '--user-account'
@@ -277,19 +273,6 @@ class MysqlFlexibleHandler(TargetHandler):
         target_segments = parse_resource_id(target_id)
         self.server = target_segments.get('name')
         self.dbname = target_segments.get('child_name_1')
-
-    def check_db_existence(self):
-        try:
-            db_info = run_cli_cmd(
-                'az mysql flexible-server db show --ids {}'.format(self.target_id))
-            if db_info is None:
-                e = ResourceNotFoundError(
-                    "No database found with name {}".format(self.dbname))
-                telemetry.set_exception(e, "No-Db")
-                raise e
-        except CLIInternalError as e:
-            telemetry.set_exception(e, "No-Db")
-            raise e
 
     def set_user_admin(self, user_object_id, **kwargs):
         mysql_identity_id = kwargs['mysql_identity_id']
@@ -476,19 +459,6 @@ class SqlHandler(TargetHandler):
         self.server = target_segments.get('name')
         self.dbname = target_segments.get('child_name_1')
 
-    def check_db_existence(self):
-        try:
-            db_info = run_cli_cmd(
-                'az sql db show --ids {}'.format(self.target_id))
-            if db_info is None:
-                e = ResourceNotFoundError(
-                    "No database found with name {}".format(self.dbname))
-                telemetry.set_exception(e, "No-Db")
-                raise e
-        except CLIInternalError as e:
-            telemetry.set_exception(e, "No-Db")
-            raise e
-
     def set_user_admin(self, user_object_id, **kwargs):
         # pylint: disable=not-an-iterable
         admins = run_cli_cmd(
@@ -642,7 +612,7 @@ class SqlHandler(TargetHandler):
             self.aad_username = self.login_username
         role_q = "CREATE USER \"{}\" FROM EXTERNAL PROVIDER;".format(
             self.aad_username)
-        grant_q = "GRANT CONTROL ON DATABASE::\"{}\" TO \"{}\";".format(
+        grant_q = "GRANT CONTROL ON DATABASE::{} TO \"{}\";".format(
             self.dbname, self.aad_username)
 
         return [role_q, grant_q]
@@ -663,19 +633,6 @@ class PostgresFlexHandler(TargetHandler):
         self.db_server = target_segments.get('name')
         self.host = self.db_server + self.endpoint
         self.dbname = target_segments.get('child_name_1')
-
-    def check_db_existence(self):
-        try:
-            db_info = run_cli_cmd(
-                'az postgres flexible-server db show --ids {}'.format(self.target_id))
-            if db_info is None:
-                e = ResourceNotFoundError(
-                    "No database found with name {}".format(self.dbname))
-                telemetry.set_exception(e, "No-Db")
-                raise e
-        except CLIInternalError as e:
-            telemetry.set_exception(e, "No-Db")
-            raise e
 
     def enable_target_aad_auth(self):
         target = run_cli_cmd(
@@ -848,19 +805,6 @@ class PostgresSingleHandler(PostgresFlexHandler):
 
     def enable_target_aad_auth(self):
         return
-
-    def check_db_existence(self):
-        try:
-            db_info = run_cli_cmd(
-                'az postgres server db show --ids {}'.format(self.target_id))
-            if db_info is None:
-                e = ResourceNotFoundError(
-                    "No database found with name {}".format(self.dbname))
-                telemetry.set_exception(e, "No-Db")
-                raise e
-        except CLIInternalError as e:
-            telemetry.set_exception(e, "No-Db")
-            raise e
 
     def set_user_admin(self, user_object_id, **kwargs):
         sub = self.subscription

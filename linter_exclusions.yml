@@ -2170,11 +2170,6 @@ networkcloud kubernetescluster agentpool wait:
     kubernetes_cluster_name:
       rule_exclusions:
       - option_length_too_long
-networkfabric acl create:
-  parameters:
-    dynamic_match_configurations:
-      rule_exclusions:
-      - option_length_too_long
 networkfabric controller create:
   parameters:
     workload_er_connections:
@@ -2279,6 +2274,18 @@ networkfabric internetgateway update:
     internet_gateway_rule_id:
       rule_exclusions:
       - option_length_too_long
+networkfabric internetgatewayrule create:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric internetgatewayrule delete:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric internetgatewayrule list:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric internetgatewayrule show:
+  rule_exclusions:
+  - missing_command_test_coverage
 networkfabric internetgatewayrule update:
   rule_exclusions:
   - missing_command_test_coverage
@@ -2290,22 +2297,9 @@ networkfabric ipextendedcommunity create:
     ip_extended_community_rules:
       rule_exclusions:
       - option_length_too_long
-networkfabric tap update:
+networkfabric npb show:
   rule_exclusions:
   - missing_command_test_coverage
-networkfabric taprule create:
-  parameters:
-    dynamic_match_configurations:
-      rule_exclusions:
-      - option_length_too_long
-    polling_interval_in_seconds:
-      rule_exclusions:
-      - option_length_too_long
-networkfabric taprule update:
-  parameters:
-    dynamic_match_configurations:
-      rule_exclusions:
-      - option_length_too_long
 notification-hub authorization-rule create:
   parameters:
     notification_hub_name:

@@ -7,18 +7,12 @@ from abc import ABC
 from unittest import mock
 
 from azext_networkcloud import NetworkcloudCommandsLoader
-from azext_networkcloud.operations.custom_arguments import AAZFileStringArgFormat
 from azext_networkcloud.operations.virtualmachine.console import (
-    Create,
-    Delete,
-    Show,
-    Update,
-    VirtualMachineConsole,
+    Create, Delete, Show, Update, VirtualMachineConsole
 )
+from .test_common_ssh import TestCommonSsh
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.mock import DummyCli
-
-from .test_common_ssh import TestCommonSsh
 
 
 class TestVirtualMachineConsole(unittest.TestCase):
@@ -78,18 +72,9 @@ class TestVirtualMachineConsoleCreate(
         """Set command to VirtualMachineConsoleCreate."""
         self._cli_ctx = DummyCli()
         self._loader = NetworkcloudCommandsLoader(cli_ctx=self._cli_ctx)
-        self.cmd = Create(loader=self._loader, cli_ctx=self._cli_ctx)
-
-    def test_build_arguments_schema(self):
-        """
-        Test that build_arguments_schema changes the ssh_public_key argument format
-        """
-        # Mock CLI args
-        self.cmd.ctx = mock.Mock()
-        self.cmd.ctx.args = mock.Mock()
-
-        result_args = self.cmd._build_arguments_schema()
-        self.assertIsInstance(result_args.ssh_public_key._fmt, AAZFileStringArgFormat)
+        self.cmd = Create(
+            loader=self._loader, cli_ctx=self._cli_ctx
+        )
 
 
 class TestVirtualMachineConsoleDelete(
@@ -105,7 +90,9 @@ class TestVirtualMachineConsoleDelete(
         """Set command to VirtualMachineConsoleDelete."""
         self._cli_ctx = DummyCli()
         self._loader = NetworkcloudCommandsLoader(cli_ctx=self._cli_ctx)
-        self.cmd = Delete(loader=self._loader, cli_ctx=self._cli_ctx)
+        self.cmd = Delete(
+            loader=self._loader, cli_ctx=self._cli_ctx
+        )
 
 
 class TestVirtualMachineConsoleShow(
@@ -137,18 +124,9 @@ class TestVirtualMachineConsoleUpdate(
         """Set command to VirtualMachineConsoleUpdate."""
         self._cli_ctx = DummyCli()
         self._loader = NetworkcloudCommandsLoader(cli_ctx=self._cli_ctx)
-        self.cmd = Update(loader=self._loader, cli_ctx=self._cli_ctx)
-
-    def test_build_arguments_schema(self):
-        """
-        Test that build_arguments_schema changes the ssh_public_key argument format
-        """
-        # Mock CLI args
-        self.cmd.ctx = mock.Mock()
-        self.cmd.ctx.args = mock.Mock()
-
-        result_args = self.cmd._build_arguments_schema()
-        self.assertIsInstance(result_args.ssh_public_key._fmt, AAZFileStringArgFormat)
+        self.cmd = Update(
+            loader=self._loader, cli_ctx=self._cli_ctx
+        )
 
 
 class TestVirtualMachineCreate(unittest.TestCase):
@@ -160,15 +138,15 @@ class TestVirtualMachineCreate(unittest.TestCase):
     @mock.patch("azure.cli.core.keys.generate_ssh_keys")
     @mock.patch("os.path.expanduser")
     def test_vm_generate_ssh_keys(self, mock_expand_user, mock_keys):
-        TestCommonSsh.validate_generate_ssh_keys(self, mock_expand_user, mock_keys)
+        TestCommonSsh.validate_generate_ssh_keys(
+            self, mock_expand_user, mock_keys)
 
     @mock.patch("os.listdir")
     @mock.patch("os.path.isdir")
     @mock.patch("os.path.isfile")
     def test_get_ssh_keys_from_path(self, mock_isfile, mock_isdir, mock_listdir):
         TestCommonSsh.validate_get_ssh_keys_from_path(
-            self, mock_isfile, mock_isdir, mock_listdir
-        )
+            self, mock_isfile, mock_isdir, mock_listdir)
 
     def test_add_key_action(self):
         TestCommonSsh.validate_add_key_action(self)

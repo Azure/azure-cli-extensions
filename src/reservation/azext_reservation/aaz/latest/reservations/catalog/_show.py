@@ -74,6 +74,14 @@ class Show(AAZCommand):
             options=["--reserved-resource-type"],
             help="The type of the resource for which the skus should be provided.",
         )
+        _args_schema.skip = AAZFloatArg(
+            options=["--skip"],
+            help="The number of reservations to skip from the list before returning results",
+        )
+        _args_schema.take = AAZFloatArg(
+            options=["--take"],
+            help="To number of reservations to return",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -134,6 +142,12 @@ class Show(AAZCommand):
             parameters = {
                 **self.serialize_query_param(
                     "$filter", self.ctx.args.filter,
+                ),
+                **self.serialize_query_param(
+                    "$skip", self.ctx.args.skip,
+                ),
+                **self.serialize_query_param(
+                    "$take", self.ctx.args.take,
                 ),
                 **self.serialize_query_param(
                     "location", self.ctx.args.location,
@@ -255,15 +269,12 @@ class Show(AAZCommand):
             msrp.p1_y = AAZObjectType(
                 serialized_name="p1Y",
             )
-            _ShowHelper._build_schema_price_read(msrp.p1_y)
-            msrp.p3_y = AAZObjectType(
-                serialized_name="p3Y",
+
+            p1_y = cls._schema_on_200.value.Element.msrp.p1_y
+            p1_y.amount = AAZFloatType()
+            p1_y.currency_code = AAZStrType(
+                serialized_name="currencyCode",
             )
-            _ShowHelper._build_schema_price_read(msrp.p3_y)
-            msrp.p5_y = AAZObjectType(
-                serialized_name="p5Y",
-            )
-            _ShowHelper._build_schema_price_read(msrp.p5_y)
 
             restrictions = cls._schema_on_200.value.Element.restrictions
             restrictions.Element = AAZObjectType()
@@ -293,26 +304,6 @@ class Show(AAZCommand):
 
 class _ShowHelper:
     """Helper class for Show"""
-
-    _schema_price_read = None
-
-    @classmethod
-    def _build_schema_price_read(cls, _schema):
-        if cls._schema_price_read is not None:
-            _schema.amount = cls._schema_price_read.amount
-            _schema.currency_code = cls._schema_price_read.currency_code
-            return
-
-        cls._schema_price_read = _schema_price_read = AAZObjectType()
-
-        price_read = _schema_price_read
-        price_read.amount = AAZFloatType()
-        price_read.currency_code = AAZStrType(
-            serialized_name="currencyCode",
-        )
-
-        _schema.amount = cls._schema_price_read.amount
-        _schema.currency_code = cls._schema_price_read.currency_code
 
 
 __all__ = ["Show"]

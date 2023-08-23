@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster baremetalmachinekeyset list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List bare metal machine key sets of the cluster.

@@ -23,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01",
+        "version": "2023-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2023-01-01"],
         ]
     }
 
@@ -64,25 +64,6 @@ class Create(AAZCommand):
 
         # define Arg Group "Properties"
         return cls._args_schema
-
-    _args_base_resource_properties_create = None
-
-    @classmethod
-    def _build_args_base_resource_properties_create(cls, _schema):
-        if cls._args_base_resource_properties_create is not None:
-            _schema.object_type = cls._args_base_resource_properties_create.object_type
-            return
-
-        cls._args_base_resource_properties_create = AAZObjectArg()
-
-        base_resource_properties_create = cls._args_base_resource_properties_create
-        base_resource_properties_create.object_type = AAZStrArg(
-            options=["object-type"],
-            help="Type of the specific object - used for deserializing",
-            required=True,
-        )
-
-        _schema.object_type = cls._args_base_resource_properties_create.object_type
 
     def _execute_operations(self):
         self.pre_operations()
@@ -169,7 +150,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2023-01-01",
                     required=True,
                 ),
             }
@@ -250,9 +231,6 @@ class Create(AAZCommand):
             properties.friendly_name = AAZStrType(
                 serialized_name="friendlyName",
             )
-            properties.identity_details = AAZObjectType(
-                serialized_name="identityDetails",
-            )
             properties.object_type = AAZStrType(
                 serialized_name="objectType",
                 flags={"required": True},
@@ -293,10 +271,6 @@ class Create(AAZCommand):
             data_source_info.resource_name = AAZStrType(
                 serialized_name="resourceName",
             )
-            data_source_info.resource_properties = AAZObjectType(
-                serialized_name="resourceProperties",
-            )
-            _CreateHelper._build_schema_base_resource_properties_read(data_source_info.resource_properties)
             data_source_info.resource_type = AAZStrType(
                 serialized_name="resourceType",
             )
@@ -321,10 +295,6 @@ class Create(AAZCommand):
             data_source_set_info.resource_name = AAZStrType(
                 serialized_name="resourceName",
             )
-            data_source_set_info.resource_properties = AAZObjectType(
-                serialized_name="resourceProperties",
-            )
-            _CreateHelper._build_schema_base_resource_properties_read(data_source_set_info.resource_properties)
             data_source_set_info.resource_type = AAZStrType(
                 serialized_name="resourceType",
             )
@@ -350,14 +320,6 @@ class Create(AAZCommand):
             )
             secret_store_resource.uri = AAZStrType()
             secret_store_resource.value = AAZStrType()
-
-            identity_details = cls._schema_on_200_201.properties.identity_details
-            identity_details.use_system_assigned_identity = AAZBoolType(
-                serialized_name="useSystemAssignedIdentity",
-            )
-            identity_details.user_assigned_identity_arm_url = AAZStrType(
-                serialized_name="userAssignedIdentityArmUrl",
-            )
 
             policy_info = cls._schema_on_200_201.properties.policy_info
             policy_info.policy_id = AAZStrType(
@@ -399,9 +361,6 @@ class Create(AAZCommand):
             containers_list.Element = AAZStrType()
 
             disc_kubernetes_cluster_backup_datasource_parameters = cls._schema_on_200_201.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters")
-            disc_kubernetes_cluster_backup_datasource_parameters.backup_hook_references = AAZListType(
-                serialized_name="backupHookReferences",
-            )
             disc_kubernetes_cluster_backup_datasource_parameters.excluded_namespaces = AAZListType(
                 serialized_name="excludedNamespaces",
             )
@@ -425,13 +384,6 @@ class Create(AAZCommand):
                 serialized_name="snapshotVolumes",
                 flags={"required": True},
             )
-
-            backup_hook_references = cls._schema_on_200_201.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").backup_hook_references
-            backup_hook_references.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").backup_hook_references.Element
-            _element.name = AAZStrType()
-            _element.namespace = AAZStrType()
 
             excluded_namespaces = cls._schema_on_200_201.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").excluded_namespaces
             excluded_namespaces.Element = AAZStrType()
@@ -501,30 +453,6 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
-
-    @classmethod
-    def _build_schema_base_resource_properties_create(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("objectType", AAZStrType, ".object_type", typ_kwargs={"flags": {"required": True}})
-
-    _schema_base_resource_properties_read = None
-
-    @classmethod
-    def _build_schema_base_resource_properties_read(cls, _schema):
-        if cls._schema_base_resource_properties_read is not None:
-            _schema.object_type = cls._schema_base_resource_properties_read.object_type
-            return
-
-        cls._schema_base_resource_properties_read = _schema_base_resource_properties_read = AAZObjectType()
-
-        base_resource_properties_read = _schema_base_resource_properties_read
-        base_resource_properties_read.object_type = AAZStrType(
-            serialized_name="objectType",
-            flags={"required": True},
-        )
-
-        _schema.object_type = cls._schema_base_resource_properties_read.object_type
 
     _schema_inner_error_read = None
 

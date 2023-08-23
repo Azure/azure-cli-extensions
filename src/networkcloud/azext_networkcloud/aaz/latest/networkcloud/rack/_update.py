@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud rack update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update properties of the provided rack, or update the tags associated with the rack. Properties and tag updates can be done independently.

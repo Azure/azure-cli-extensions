@@ -9,16 +9,16 @@ from abc import ABC
 from unittest import mock
 
 from azext_networkcloud.operations.common_ssh import CustomSshOptions
-from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.mock import DummyCli
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 
 class TestCommonSsh(unittest.TestCase):
-    """TestCommonSsh provides common methods to validate ssh
-    operations in CommonSsh like generate ssh key, read sshkey from path,etc"""
+    """ TestCommonSsh provides common methods to validate ssh
+    operations in CommonSsh like generate ssh key, read sshkey from path,etc """
 
     def validate_generate_ssh_keys(self, mock_expand_user, mock_keys):
         # Mock user home dir path
@@ -78,7 +78,8 @@ class TestCommonSsh(unittest.TestCase):
         mock_isfile.return_value = False
         with mock.patch("builtins.open", mock.mock_open(None, valid_key)):
             result = CustomSshOptions.get_ssh_keys_from_path(paths)
-            self.assertEqual([{"keyData": valid_key} for _ in range(4)], result)
+            self.assertEqual([{"keyData": valid_key}
+                              for _ in range(4)], result)
 
         # Test that a valid dir path to invalid keys raises exception
         with mock.patch("builtins.open", mock.mock_open(None, invalid_key)):
@@ -113,7 +114,8 @@ class TestCommonSsh(unittest.TestCase):
         # pass keys wrapped in the type the code expects. Passing as a string
         # achieves the same result for now. Example:
         # values = [AAZStrType(x) for x in keys]
-        self.assertEqual(expected_result, CustomSshOptions.add_ssh_key_action(keys))
+        self.assertEqual(
+            expected_result, CustomSshOptions.add_ssh_key_action(keys))
 
         # Change a key to an invalid type and validate it raises exception
         keys[1] = "==== ssh-rsa invalid-key"

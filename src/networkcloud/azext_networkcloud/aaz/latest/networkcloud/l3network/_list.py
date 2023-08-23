@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud l3network list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List layer 3 (L3) networks in the provided resource group or subscription.

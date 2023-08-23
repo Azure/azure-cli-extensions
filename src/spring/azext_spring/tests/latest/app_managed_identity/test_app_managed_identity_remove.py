@@ -5,7 +5,7 @@
 
 import unittest
 from argparse import Namespace
-from ....vendored_sdks.appplatform.v2023_07_01_preview.models import ManagedIdentityType
+from ....vendored_sdks.appplatform.v2023_05_01_preview.models import ManagedIdentityType
 from ....app_managed_identity import (_get_new_identity_type_for_remove)
 
 

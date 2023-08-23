@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud rack list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List racks in the provided resource group or subscription.

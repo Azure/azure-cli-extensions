@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud clustermanager show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get the properties of the provided cluster manager.

@@ -11,7 +11,6 @@ from azext_networkcloud.operations.kubernetescluster.agentpool._create import Cr
 from azure.cli.core.mock import DummyCli
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-
 from .test_common_ssh import TestCommonSsh
 
 
@@ -74,18 +73,18 @@ class TestKubernetesClusterAgentPoolCreate(unittest.TestCase):
     @mock.patch("azure.cli.core.keys.generate_ssh_keys")
     @mock.patch("os.path.expanduser")
     def test_vm_generate_ssh_keys(self, mock_expand_user, mock_keys):
-        """Test KubernetesCluster agentpool generate ssh key option"""
-        TestCommonSsh.validate_generate_ssh_keys(self, mock_expand_user, mock_keys)
+        """ Test KubernetesCluster agentpool generate ssh key option"""
+        TestCommonSsh.validate_generate_ssh_keys(
+            self, mock_expand_user, mock_keys)
 
     @mock.patch("os.listdir")
     @mock.patch("os.path.isdir")
     @mock.patch("os.path.isfile")
     def test_vm_get_ssh_keys_from_path(self, mock_isfile, mock_isdir, mock_listdir):
-        """Test KubernetesCluster agent pool ssh-key-from-path parameter enabled"""
+        """ Test KubernetesCluster agent pool ssh-key-from-path parameter enabled """
         TestCommonSsh.validate_get_ssh_keys_from_path(
-            self, mock_isfile, mock_isdir, mock_listdir
-        )
+            self, mock_isfile, mock_isdir, mock_listdir)
 
     def test_vm_add_key_action(self):
-        """Test ssh key provided as input are correctly set in ssh-public-keys"""
+        """ Test ssh key provided as input are correctly set in ssh-public-keys"""
         TestCommonSsh.validate_add_key_action(self)

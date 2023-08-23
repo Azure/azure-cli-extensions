@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud clustermanager update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update properties of the provided cluster manager, or update the tags assigned to the cluster manager. Properties and tag updates can be done independently.

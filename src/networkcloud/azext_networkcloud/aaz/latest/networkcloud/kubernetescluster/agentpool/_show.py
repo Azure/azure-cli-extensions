@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster agentpool show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get properties of the provided Kubernetes cluster agent pool.

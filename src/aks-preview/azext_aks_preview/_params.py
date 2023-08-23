@@ -14,20 +14,6 @@ from azext_aks_preview._completers import (
     get_k8s_versions_completion_list,
     get_vm_size_completion_list,
 )
-from azure.cli.command_modules.acs._consts import (
-    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
-    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
-    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
-    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
-)
-from azure.cli.command_modules.acs._validators import (
-    validate_load_balancer_idle_timeout,
-    validate_load_balancer_outbound_ip_prefixes,
-    validate_load_balancer_outbound_ips,
-    validate_load_balancer_outbound_ports,
-    validate_nat_gateway_idle_timeout,
-    validate_nat_gateway_managed_outbound_ip_count,
-)
 from azext_aks_preview._consts import (
     CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
@@ -72,6 +58,10 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
+    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
     CONST_PATCH_UPGRADE_CHANNEL,
     CONST_RAPID_UPGRADE_CHANNEL,
     CONST_RELATIVEMONTHLY_MAINTENANCE_SCHEDULE,
@@ -127,9 +117,15 @@ from azext_aks_preview._validators import (
     validate_k8s_version,
     validate_linux_host_name,
     validate_load_balancer_backend_pool_type,
+    validate_load_balancer_idle_timeout,
+    validate_load_balancer_outbound_ip_prefixes,
+    validate_load_balancer_outbound_ips,
+    validate_load_balancer_outbound_ports,
     validate_load_balancer_sku,
     validate_max_surge,
     validate_message_of_the_day,
+    validate_nat_gateway_idle_timeout,
+    validate_nat_gateway_managed_outbound_ip_count,
     validate_node_public_ip_tags,
     validate_nodepool_id,
     validate_nodepool_labels,
@@ -154,7 +150,7 @@ from azext_aks_preview._validators import (
     validate_user,
     validate_utc_offset,
     validate_vm_set_type,
-    validate_vnet_subnet_id
+    validate_vnet_subnet_id,
 )
 from azure.cli.core.commands.parameters import (
     edge_zone_type,
@@ -543,7 +539,6 @@ def load_arguments(self, _):
         c.argument('enable_image_cleaner', action='store_true', is_preview=True)
         c.argument('disable_image_cleaner', action='store_true', validator=validate_image_cleaner_enable_disable_mutually_exclusive, is_preview=True)
         c.argument('image_cleaner_interval_hours', type=int, is_preview=True)
-        c.argument('disable_image_integrity', action='store_true', is_preview=True)
         c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
         c.argument('enable_keda', action='store_true', is_preview=True)
@@ -906,13 +901,6 @@ def load_arguments(self, _):
     with self.argument_context('aks mesh disable-ingress-gateway') as c:
         c.argument('ingress_gateway_type',
                    arg_type=get_enum_type(ingress_gateway_types))
-
-    with self.argument_context('aks mesh enable') as c:
-        c.argument('key_vault_id')
-        c.argument('ca_cert_object_name')
-        c.argument('ca_key_object_name')
-        c.argument('root_cert_object_name')
-        c.argument('cert_chain_object_name')
 
 
 def _get_default_install_location(exe_name):

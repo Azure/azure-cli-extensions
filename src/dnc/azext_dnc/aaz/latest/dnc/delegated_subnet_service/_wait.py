@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.delegatednetwork/delegatedsubnets/{}", "2023-06-27-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.delegatednetwork/delegatedsubnets/{}", "2023-05-18-preview"],
         ]
     }
 
@@ -41,6 +41,7 @@ class Wait(AAZWaitCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         _args_schema.resource_name = AAZStrArg(
@@ -121,7 +122,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-27-preview",
+                    "api-version", "2023-05-18-preview",
                     required=True,
                 ),
             }
@@ -170,9 +171,6 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.allocation_block_prefix_size = AAZIntType(
-                serialized_name="allocationBlockPrefixSize",
-            )
             properties.controller_details = AAZObjectType(
                 serialized_name="controllerDetails",
             )

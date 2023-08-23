@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new Kubernetes cluster or update the properties of the existing one.

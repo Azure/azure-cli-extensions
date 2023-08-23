@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List virtual machines in the provided resource group or subscription.

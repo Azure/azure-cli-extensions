@@ -26,7 +26,7 @@ from azure.cli.command_modules.serviceconnector._resource_config import (
 )
 from ._resource_config import (
     AUTH_TYPE_PARAMS,
-    EX_SUPPORTED_AUTH_TYPE,
+    SUPPORTED_AUTH_TYPE,
     TARGET_RESOURCES_PARAMS,
 )
 
@@ -37,7 +37,7 @@ yes_arg_type = CLIArgumentType(
 
 
 def add_auth_block(context, source, target):
-    support_auth_types = EX_SUPPORTED_AUTH_TYPE.get(
+    support_auth_types = SUPPORTED_AUTH_TYPE.get(
         source, {}).get(target, [])
     for auth_type in AUTH_TYPE_PARAMS:
         if auth_type in support_auth_types:

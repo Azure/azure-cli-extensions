@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud l2network create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new layer 2 (L2) network or update the properties of the existing network.

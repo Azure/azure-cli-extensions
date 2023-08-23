@@ -13,7 +13,7 @@ from azure.cli.testsdk.preparers import (
 )
 from .custom_preparers import SpringPreparer, SpringResourceGroupPreparer, SpringSubResourceWrapper
 from .custom_dev_setting_constant import SpringTestEnvironmentEnum
-from ...vendored_sdks.appplatform.v2023_07_01_preview import models
+from ...vendored_sdks.appplatform.v2023_05_01_preview import models
 from ...api_portal import (api_portal_custom_domain_update, api_portal_custom_domain_unbind)
 try:
     import unittest.mock as mock

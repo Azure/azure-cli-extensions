@@ -27,13 +27,6 @@ def call_scenario1(test):
     step_list_resource_group(test, checks=[])
     cleanup_scenario1(test)
 
-def step_show(test, checks=None):
-    '''Network Packet Broker show operation'''
-    if checks is None:
-        checks = []
-    test.cmd(
-        'az networkfabric npb show --resource-name {name} --resource-group {rg}')
-
 def step_list_resource_group(test, checks=None):
     '''Network Packet Broker list by resource group operation'''
     if checks is None:
@@ -47,14 +40,14 @@ def step_list_subscription(test, checks=None):
         checks = []
     test.cmd(
         'az networkfabric npb list')
+
 class GA_NpbScenarioTest1(ScenarioTest):
     ''' Network Packet Broker Scenario test'''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.kwargs.update({
-            'rg': CONFIG.get('NETWORK_PACKET_BROKER', 'resource_group'),
-            'name': CONFIG.get('NETWORK_PACKET_BROKER', 'resource_name')
+            'rg': CONFIG.get('NETWORK_PACKE_BROKER', 'resource_group')
         })
 
     def test_GA_npb_scenario1(self):

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List clusters in the provided resource group or subscription.

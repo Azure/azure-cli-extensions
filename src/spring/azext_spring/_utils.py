@@ -17,7 +17,7 @@ from json import dumps
 from knack.util import CLIError, todict
 from knack.log import get_logger
 from azure.cli.core.azclierror import ValidationError
-from .vendored_sdks.appplatform.v2023_07_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
+from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
 from ._client_factory import cf_resource_groups
 
 

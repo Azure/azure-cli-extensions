@@ -19,13 +19,13 @@ class Create(AAZCommand):
     """Create delegated subnet resource.
 
     :example: Create a subnet delegated to DNC
-        az dnc delegated-subnet-service create --location "West US" --id "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.DelegatedNetwork/controller/dnctestcontroller" --subnet-details-id "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.Network/virtualNetworks/testvnet/subnets/testsubnet" --resource-group "TestRG" --resource-name "delegated1" --allocation-block-prefix-size 27
+        az dnc delegated-subnet-service create --location "West US" --id "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.DelegatedNetwork/controller/dnctestcontroller" --subnet-details-id "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.Network/virtualNetworks/testvnet/subnets/testsubnet" --resource-group "TestRG" --resource-name "delegated1"
     """
 
     _aaz_info = {
-        "version": "2023-06-27-preview",
+        "version": "2023-05-18-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.delegatednetwork/delegatedsubnets/{}", "2023-06-27-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.delegatednetwork/delegatedsubnets/{}", "2023-05-18-preview"],
         ]
     }
 
@@ -47,6 +47,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         _args_schema.resource_name = AAZStrArg(
@@ -87,20 +88,6 @@ class Create(AAZCommand):
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.allocation_block_prefix_size = AAZIntArg(
-            options=["-a", "--allocation-block-prefix-size"],
-            arg_group="Properties",
-            help={"short-summary": "Defines prefix size of CIDR blocks allocated to nodes in VnetBlock Mode.", "long-summary": "Defines prefix size of CIDR blocks allocated to nodes in VnetBlock Mode. This should be greater than Delegated subnet's prefix size by a minimum of 3."},
-            is_preview=True,
-            fmt=AAZIntArgFormat(
-                maximum=30,
-                minimum=24,
-            ),
-        )
 
         # define Arg Group "SubnetDetails"
 
@@ -193,7 +180,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-27-preview",
+                    "api-version", "2023-05-18-preview",
                     required=True,
                 ),
             }
@@ -224,7 +211,6 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("allocationBlockPrefixSize", AAZIntType, ".allocation_block_prefix_size")
                 properties.set_prop("controllerDetails", AAZObjectType)
                 properties.set_prop("subnetDetails", AAZObjectType)
 
@@ -276,9 +262,6 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.allocation_block_prefix_size = AAZIntType(
-                serialized_name="allocationBlockPrefixSize",
-            )
             properties.controller_details = AAZObjectType(
                 serialized_name="controllerDetails",
             )

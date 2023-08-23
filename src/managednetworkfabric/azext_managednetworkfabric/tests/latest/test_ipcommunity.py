@@ -26,7 +26,6 @@ def call_scenario1(test):
     step_create(test, checks=[])
     step_show(test, checks=[])
     step_list_resource_group(test, checks=[])
-    step_list_subscription(test, checks=[])
     step_delete(test, checks=[])
     cleanup_scenario1(test)
 
@@ -49,12 +48,6 @@ def step_list_resource_group(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az networkfabric ipcommunity list --resource-group {rg}')
-
-def step_list_subscription(test, checks=None):
-    '''ipcommunity list by subscription'''
-    if checks is None:
-        checks = []
-    test.cmd('az networkfabric ipcommunity list')
 
 def step_delete(test, checks=None):
     '''ipcommunity delete operation'''

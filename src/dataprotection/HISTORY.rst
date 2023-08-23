@@ -2,17 +2,6 @@
 
 Release History
 ===============
-0.10.0
-++++++
-* Add complete support for Soft Delete
-* `az dataprotection backup-instance deleted-backup-instance`: Add support to list, show, and undelete soft deleted backed up instances
-
-0.9.2
-++++++
-* Updated API version to 2023-05-01 across the board
-* `az dataprotection backup-instance initialize-backupconfig`: Added support for AKS Hooks
-* `az dataprotection backup-instance initialize-restoreconfig`: Added support for AKS Hooks
-
 0.9.1
 +++++
 * `az dataprotection update-msi-permissions`: Fixed bug in fetching AKS workload resource group

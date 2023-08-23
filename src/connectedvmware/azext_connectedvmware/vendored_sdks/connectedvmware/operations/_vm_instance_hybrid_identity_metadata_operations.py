@@ -104,7 +104,7 @@ class VmInstanceHybridIdentityMetadataOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure.mgmt.connectedvmware.models
+    :type models: ~azure_arc_vmware_management_service_api.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -135,7 +135,7 @@ class VmInstanceHybridIdentityMetadataOperations(object):
         :type resource_uri: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VmInstanceHybridIdentityMetadata, or the result of cls(response)
-        :rtype: ~azure.mgmt.connectedvmware.models.VmInstanceHybridIdentityMetadata
+        :rtype: ~azure_arc_vmware_management_service_api.models.VmInstanceHybridIdentityMetadata
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VmInstanceHybridIdentityMetadata"]
@@ -195,7 +195,7 @@ class VmInstanceHybridIdentityMetadataOperations(object):
         :return: An iterator like instance of either VmInstanceHybridIdentityMetadataList or the result
          of cls(response)
         :rtype:
-         ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.VmInstanceHybridIdentityMetadataList]
+         ~azure.core.paging.ItemPaged[~azure_arc_vmware_management_service_api.models.VmInstanceHybridIdentityMetadataList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str

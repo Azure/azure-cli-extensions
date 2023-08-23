@@ -74,6 +74,11 @@ helps['maintenance applyupdate create'] = """
 --resource-name "smdtest1" --resource-type "virtualMachineScaleSets"
 """
 
+helps['maintenance applyupdate update'] = """
+    type: command
+    short-summary: "Apply maintenance updates to resource."
+"""
+
 helps['maintenance applyupdate create-or-update-parent'] = """
     type: command
     short-summary: "Apply maintenance updates to resource with parent."
@@ -92,6 +97,17 @@ helps['maintenance applyupdate show-parent'] = """
       - name: ApplyUpdates_GetParent
         text: |-
                az maintenance applyupdate show-parent --name "e9b9685d-78e4-44c4-a81c-64a14f9b87b6" --provider-name \
+"Microsoft.Compute" --resource-group "examplerg" --resource-name "smdvm1" --resource-parent-name "smdtest1" \
+--resource-parent-type "virtualMachineScaleSets" --resource-type "virtualMachines"
+"""
+
+helps['maintenance applyupdate get-parent'] = """
+    type: command
+    short-summary: "Track maintenance updates to resource with parent."
+    examples:
+      - name: ApplyUpdates_GetParent
+        text: |-
+               az maintenance applyupdate get-parent --name "e9b9685d-78e4-44c4-a81c-64a14f9b87b6" --provider-name \
 "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdvm1" --resource-parent-name "smdtest1" \
 --resource-parent-type "virtualMachineScaleSets" --resource-type "virtualMachines"
 """

@@ -9,9 +9,8 @@
 Cluster tests scenarios
 """
 
-from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-
+from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .config import CONFIG
 
 
@@ -240,11 +239,21 @@ class ClusterScenarioTest(ScenarioTest):
                 "thresholdGrouping": CONFIG.get("CLUSTER", "threshold_grouping"),
                 "thresholdValue": CONFIG.get("CLUSTER", "threshold_value"),
                 "networkFabricId": CONFIG.get("CLUSTER", "network_fabric_id"),
-                "networkRackId": CONFIG.get("CLUSTER", "network_rack_id"),
-                "rackSkuId": CONFIG.get("CLUSTER", "rack_sku_id"),
-                "rackSerialNumber": CONFIG.get("CLUSTER", "rack_serial_number"),
-                "rackLocation": CONFIG.get("CLUSTER", "rack_location"),
-                "availabilityZone": CONFIG.get("CLUSTER", "availability_zone"),
+                "networkRackId": CONFIG.get(
+                    "CLUSTER", "network_rack_id"
+                ),
+                "rackSkuId": CONFIG.get(
+                    "CLUSTER", "rack_sku_id"
+                ),
+                "rackSerialNumber": CONFIG.get(
+                    "CLUSTER", "rack_serial_number"
+                ),
+                "rackLocation": CONFIG.get(
+                    "CLUSTER", "rack_location"
+                ),
+                "availabilityZone": CONFIG.get(
+                    "CLUSTER", "availability_zone"
+                ),
                 "storageApplianceConfigurationData": CONFIG.get(
                     "CLUSTER", "storage_appliance_configuration_data"
                 ),

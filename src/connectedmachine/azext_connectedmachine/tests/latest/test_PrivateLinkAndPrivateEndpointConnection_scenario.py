@@ -33,120 +33,148 @@ from .. import (
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
+# Env setup_scenario
+@try_manual
+def setup_scenario(test):
+    pass
+
+
+# Env cleanup_scenario
+@try_manual
+def cleanup_scenario(test):
+    pass
+
+
+def test_private_link(test):
+    rand_string = test.create_random_name('', 5)
+    test.kwargs.update({
+        'machine': 'testMachine',
+        'rg': 'az-sdk-test-' + rand_string,
+        'scope': 'scope-' + rand_string,
+        'vnet': 'vnet-' + rand_string,
+        'subnet': 'subnet-' + rand_string,
+        'private_endpoint': 'pe-' + rand_string,
+        'private_endpoint_connection': 'pec-' + rand_string,
+        'location': 'eastus2euap',
+        'customScriptName': 'custom-' + rand_string,
+    })
+
+    # Prepare network
+    test.cmd('az group create -n {rg} -l {location}',
+                checks=test.check('name', '{rg}'))
+
+    # Prepare network
+    test.cmd('az network vnet create -n {vnet} -g {rg} -l {location} --subnet-name {subnet}',
+                checks=test.check('length(newVNet.subnets)', 1))
+    test.cmd('az network vnet subnet update -n {subnet} --vnet-name {vnet} -g {rg} '
+                '--disable-private-endpoint-network-policies true',
+                checks=test.check('privateEndpointNetworkPolicies', 'Disabled'))
+
+    #  Create a private link scope
+    test.cmd('az connectedmachine private-link-scope create '
+             '--location "{location}" '
+             '--resource-group "{rg}" '
+             '--scope-name "{scope}"',
+             checks=[
+                 test.check('name','{scope}'),
+                 test.check('properties.publicNetworkAccess','Disabled')
+             ])
+
+    # Update the private link scope
+    test.cmd('az connectedmachine private-link-scope update '
+             '--location "{location}" '
+             '--tags Tag1="Value1" '
+             '--public-network-access Enabled '
+             '--resource-group "{rg}" '
+             '--scope-name "{scope}"',
+             checks=[
+                 test.check('name','{scope}'),
+                 test.check('properties.publicNetworkAccess','Enabled')
+             ])
+
+    # Test private link scope list 
+    test.cmd('az connectedmachine private-link-scope list '
+             '--resource-group "{rg}"',
+             checks=[
+                 test.check('length(@)', 1)
+            ])
+
+    # Private link scope update tag
+    test.cmd('az connectedmachine private-link-scope update-tag '
+             '--tags Tag1="Value1" Tag2="Value2" '
+             '--resource-group "{rg}" '
+             '--scope-name "{scope}"',
+             checks=[
+                 test.check('length(tags)', 2)
+             ])
+
+    # Private link scope show
+    private_link_scope = test.cmd('az connectedmachine private-link-scope show --scope-name {scope} -g {rg}').get_output_in_json()
+    test.kwargs['scope_id'] = private_link_scope['id']
+
+    # Test private link resource list
+    test.cmd('az connectedmachine private-link-resource list --scope-name {scope} -g {rg}', checks=[
+        test.check('length(@)', 1)
+    ])
+
+    result = test.cmd('az network private-endpoint create -g {rg} -n {private_endpoint} --vnet-name {vnet} --subnet {subnet} --private-connection-resource-id {scope_id} '
+    '--connection-name {private_endpoint_connection} --group-id hybridcompute').get_output_in_json()
+    test.assertTrue(test.kwargs['private_endpoint'].lower() in result['name'].lower())
+
+    connection_list = test.cmd('az connectedmachine private-endpoint-connection list '
+             '--resource-group "{rg}" '
+             '--scope-name "{scope}"').get_output_in_json()
+    test.kwargs['private_endpoint_connection_name'] = connection_list[0]['name']
+
+    test.cmd('az connectedmachine private-endpoint-connection update '
+             '--connection-state description="Rejected by AZ CLI test" status="Rejected" '
+             '--name "{private_endpoint_connection_name}" '
+             '--resource-group "{rg}" '
+             '--scope-name "{scope}"',
+             checks=[
+                 test.check('name', '{private_endpoint_connection_name}'),
+                 test.check('properties.privateLinkServiceConnectionState.description', 'Rejected by AZ CLI test'),
+                 test.check('properties.privateLinkServiceConnectionState.status', 'Rejected')
+             ])
+
+    test.cmd('az connectedmachine private-endpoint-connection show '
+             '--name "{private_endpoint_connection_name}" '
+             '--resource-group "{rg}" '
+             '--scope-name "{scope}"',
+             checks=[
+                 test.check('name', '{private_endpoint_connection_name}'),
+                 test.check('properties.privateLinkServiceConnectionState.description', 'Rejected by AZ CLI test'),
+                 test.check('properties.privateLinkServiceConnectionState.status', 'Rejected')
+             ])
+    
+    test.cmd('az connectedmachine private-endpoint-connection delete -y '
+             '--name "{private_endpoint_connection_name}" '
+             '--resource-group "{rg}" '
+             '--scope-name "{scope}"',
+             checks=[])
+    
+    test.cmd('az connectedmachine private-endpoint-connection list '
+             '--resource-group "{rg}" '
+             '--scope-name "{scope}"',
+             checks=[
+                 test.check('length(@)', 0)
+             ])
+    
+
+# Testcase: Scenario
+@try_manual
+def call_scenario(test):
+    setup_scenario(test)
+    test_private_link(test)
+    cleanup_scenario(test)
+
+
+# Test class for Scenario
+@try_manual
 class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
-
-    @ResourceGroupPreparer(name_prefix='cli_test_privatelink')
-    def test_private_link(self):
-        rand_string = 'test'
-        self.kwargs.update({
-            'machine': 'testMachine',
-            'rg': 'az-sdk-test',
-            'scope': 'scope-' + rand_string,
-            'vnet': 'vnet-' + rand_string,
-            'subnet': 'subnet-' + rand_string,
-            'private_endpoint': 'pe-' + rand_string,
-            'private_endpoint_connection': 'pec-' + rand_string,
-            'location': 'eastus2euap',
-            'customScriptName': 'custom-' + rand_string,
-        })
-
-        # Prepare network
-        self.cmd('az group create -n {rg} -l {location}',
-                    checks=self.check('name', '{rg}'))
-
-        # Prepare network
-        self.cmd('az network vnet create -n {vnet} -g {rg} -l {location} --subnet-name {subnet}',
-                    checks=self.check('length(newVNet.subnets)', 1))
-        self.cmd('az network vnet subnet update -n {subnet} --vnet-name {vnet} -g {rg} '
-                    '--disable-private-endpoint-network-policies true',
-                    checks=self.check('privateEndpointNetworkPolicies', 'Disabled'))
-
-        #  Create a private link scope
-        self.cmd('az connectedmachine private-link-scope create '
-                '--location "{location}" '
-                '--resource-group "{rg}" '
-                '--scope-name "{scope}"',
-                checks=[
-                    self.check('name','{scope}'),
-                    self.check('properties.publicNetworkAccess','Disabled')
-                ])
-
-        # Update the private link scope
-        self.cmd('az connectedmachine private-link-scope update '
-                '--tags Tag1="Value1" '
-                '--public-network-access Enabled '
-                '--resource-group "{rg}" '
-                '--scope-name "{scope}"',
-                checks=[
-                    self.check('name','{scope}'),
-                    self.check('properties.publicNetworkAccess','Enabled')
-                ])
-
-        # Test private link scope list 
-        self.cmd('az connectedmachine private-link-scope list '
-                '--resource-group "{rg}"',
-                checks=[])
-
-        # Private link scope update tag
-        self.cmd('az connectedmachine private-link-scope update-tag '
-                '--tags Tag1="Value1" Tag2="Value2" '
-                '--resource-group "{rg}" '
-                '--scope-name "{scope}"',
-                checks=[
-                    self.check('length(tags)', 2)
-                ])
-
-        # Private link scope show
-        private_link_scope = self.cmd('az connectedmachine private-link-scope show --scope-name {scope} -g {rg}').get_output_in_json()
-        self.kwargs['scope_id'] = private_link_scope['id']
-
-        # Test private link resource show
-        self.cmd('az connectedmachine private-link-resource show --scope-name {scope} -g {rg} --group-name hybridcompute', checks=[
-            # self.check('length(@)', 6)
-        ])
-
-        # Test private link resource list
-        self.cmd('az connectedmachine private-link-resource list --scope-name {scope} -g {rg}', checks=[])
-        
-        result = self.cmd('az network private-endpoint create -g {rg} -n {private_endpoint} --vnet-name {vnet} --subnet {subnet} --private-connection-resource-id {scope_id} '
-        '--connection-name {private_endpoint_connection} --group-id hybridcompute').get_output_in_json()
-        self.assertTrue(self.kwargs['private_endpoint'].lower() in result['name'].lower())
-
-        connection_list = self.cmd('az connectedmachine private-endpoint-connection list '
-                '--resource-group "{rg}" '
-                '--scope-name "{scope}"').get_output_in_json()
-        self.kwargs['private_endpoint_connection_name'] = connection_list[0]['name']
-
-        self.cmd('az connectedmachine private-endpoint-connection update '
-                '--connection-state "{{\\"description\\":\\"Rejected by AZ CLI\\", \\"status\\":\\"Rejected\\"}}" '
-                '--name "{private_endpoint_connection_name}" '
-                '--resource-group "{rg}" '
-                '--scope-name "{scope}"',
-                checks=[
-                    self.check('name', '{private_endpoint_connection_name}'),
-                    self.check('properties.privateLinkServiceConnectionState.description', 'Rejected by AZ CLI'),
-                    self.check('properties.privateLinkServiceConnectionState.status', 'Rejected')
-                ])
-
-        self.cmd('az connectedmachine private-endpoint-connection show '
-                '--name "{private_endpoint_connection_name}" '
-                '--resource-group "{rg}" '
-                '--scope-name "{scope}"',
-                checks=[
-                    self.check('name', '{private_endpoint_connection_name}'),
-                    self.check('properties.privateLinkServiceConnectionState.description', 'Rejected by AZ CLI'),
-                    self.check('properties.privateLinkServiceConnectionState.status', 'Rejected')
-                ])
-        
-        self.cmd('az connectedmachine private-endpoint-connection delete -y '
-                '--name "{private_endpoint_connection_name}" '
-                '--resource-group "{rg}" '
-                '--scope-name "{scope}"',
-                checks=[])
-        
-        self.cmd('az connectedmachine private-endpoint-connection list '
-                '--resource-group "{rg}" '
-                '--scope-name "{scope}"',
-                checks=[
-                    self.check('length(@)', 0)
-                ])
+    def __init__(self, *args, **kwargs):
+        super(PrivateLinkAndPrivateEndpointConnectionScenarioTest, self).__init__(*args, **kwargs)
+    def test_PrivateLinkAndPrivateEndpointConnection_Scenario(self):
+        call_scenario(self)
+        calc_coverage(__file__)
+        raise_if()

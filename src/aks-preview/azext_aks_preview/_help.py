@@ -960,9 +960,6 @@ helps['aks update'] = """
         - name: --image-cleaner-interval-hours
           type: int
           short-summary: ImageCleaner scanning interval.
-        - name: --disable-image-integrity
-          type: bool
-          short-summary: Disable ImageIntegrity Service.
         - name: --enable-apiserver-vnet-integration
           type: bool
           short-summary: Enable integration of user vnet with control plane apiserver pods.
@@ -2564,28 +2561,6 @@ helps['aks mesh enable'] = """
     type: command
     short-summary: Enable Azure Service Mesh.
     long-summary: This command enables Azure Service Mesh in given cluster.
-    parameters:
-      - name: --key-vault-id
-        type: string
-        short-summary: The Azure Keyvault id with plugin CA info.
-      - name: --ca-cert-object-name
-        type: string
-        short-summary: Intermediate cert object name in the Azure Keyvault.
-      - name: --ca-key-object-name
-        type: string
-        short-summary: Intermediate key object name in the Azure Keyvault.
-      - name: --cert-chain-object-name
-        type: string
-        short-summary: Cert chain object name in the Azure Keyvault.
-      - name: --root-cert-object-name
-        type: string
-        short-summary: Root cert object name in the Azure Keyvault.
-    examples:
-      - name: Enable Azure Service Mesh with selfsigned CA.
-        text: az aks mesh enable --resource-group MyResourceGroup --name MyManagedCluster
-      - name: Enable Azure Service Mesh with plugin CA.
-        text: az aks mesh enable --resource-group MyResourceGroup --name MyManagedCluster --key-vault-id my-akv-id --ca-cert-object-name my-ca-cert --ca-key-object-name my-ca-key --cert-chain-object-name my-cert-chain --root-cert-object-name my-root-cert
-
 """
 
 helps['aks mesh disable'] = """

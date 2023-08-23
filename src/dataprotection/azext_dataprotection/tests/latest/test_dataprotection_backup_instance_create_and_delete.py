@@ -39,7 +39,6 @@ def backup_instance_validate_create(test):
             '--custom "properties.protectionStatus.status==\'ProtectionConfigured\'"')
 
 
-# Uses persistent disk and vault for both tests
 class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
 
     def setUp(test):

@@ -13,7 +13,6 @@ Release History
 * Added delete-from-host flag for `vm delete`
 * Deprecated VM List option as VM Instance is a child resource of Machines.
 * Updated tests and helps accordingly.
-* raising better exception types instead of CLIError
 
 0.1.12
 ++++++

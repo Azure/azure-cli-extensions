@@ -115,8 +115,7 @@ from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, F
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, HELLO_WORLD_IMAGE, LOG_TYPE_SYSTEM, LOG_TYPE_CONSOLE,
                          MANAGED_CERTIFICATE_RT, PRIVATE_CERTIFICATE_RT, PENDING_STATUS, SUCCEEDED_STATUS, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
                          DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
-                         DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_SERVICE_LIST,
-                         CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME)
+                         DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS)
 
 logger = get_logger(__name__)
 
@@ -5037,9 +5036,7 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
                        runtime_version=None, config_file_path=None, unauthenticated_client_action=None,
                        redirect_provider=None, require_https=None,
                        proxy_convention=None, proxy_custom_host_header=None,
-                       proxy_custom_proto_header=None, excluded_paths=None,
-                       token_store=None, sas_url_secret=None, sas_url_secret_name=None,
-                       yes=False):
+                       proxy_custom_proto_header=None, excluded_paths=None):
     raw_parameters = locals()
     containerapp_auth_decorator = ContainerAppPreviewAuthDecorator(
         cmd=cmd,
@@ -5049,8 +5046,6 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
     )
 
     containerapp_auth_decorator.construct_payload()
-    if containerapp_auth_decorator.get_argument_token_store() and containerapp_auth_decorator.get_argument_sas_url_secret() is not None:
-        set_secrets(cmd, name, resource_group_name, secrets=[f"{BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME}={containerapp_auth_decorator.get_argument_sas_url_secret()}"], no_wait=True, disable_max_length=True)
     return containerapp_auth_decorator.create_or_update()
 
 

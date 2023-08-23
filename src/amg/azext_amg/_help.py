@@ -9,7 +9,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['grafana'] = """
     type: group
-    short-summary: Commands to manage Azure Grafana instances.
+    short-summary: Commands to manage Azure Grafana instanced.
     long-summary: For optimized experience, not all data plane Apis, documented at https://grafana.com/docs/grafana/latest/http_api/, are exposed. On coverage gap, please reach out to ad4g@microsoft.com
 """
 

@@ -2,10 +2,6 @@
 
 Release History
 ===============
-1.0.0b1(2023-08-11)
-++++++++++++++++++
-* `az storage account migration start/show`: Support start and show storage account migration
-
 0.9.0(2023-07-19)
 ++++++++++++++++++
 * [BREAKING CHANGE] `az storage file/directory`: Default action changes from trimming trailing dot in file/directory names to not trimming, support `--disallow-trailing-dot` and `--disallow-source-trailing-dot`

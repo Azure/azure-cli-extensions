@@ -294,63 +294,23 @@ class AzureReservationsTests(ScenarioTest):
 
     @record_only()  # This test relies on the existing reservation order
     def test_update_reservation(self):
-        renew_properties = '{applied-scope-type:Shared,billing-plan:Monthly,billing-scope-id:/subscriptions/00000000-0000-0000-0000-000000000000,display-name:TestRenewalCLI,instance-flexibility:On,quantity:5,term:P1Y,reserved-resource-type:VirtualMachines,sku:Standard_B1ls,Location:eastus}'
         self.kwargs.update({
-            'reservation_order_id': 'a3896858-3f6c-4ce6-bf6c-003a31325fdd',
-            'reservation_id': 'f8887b7e-e8bf-4ddb-8290-405928206191',
+            'reservation_order_id': 'b4e780cb-1d19-4b62-b843-b229b10522ae',
+            'reservation_id': '96a8b784-28da-4cae-a32d-001cf4ea9a64',
             'scope': '/subscriptions/00000000-0000-0000-0000-000000000000',
-            'instance_flexibility': 'Off',
-            'new_name': 'NewRIName',
-            'renew': 'true',
-            'renew_properties': renew_properties
+            'instance_flexibility': 'Off'
         })
 
-        # Change RI to Shared scope
-        reservation = self.cmd('reservations reservation update --reservation-order-id {reservation_order_id} '
-                                      '--reservation-id {reservation_id} --applied-scope-type Shared').get_output_in_json()
+        shared_reservation = self.cmd('reservations reservation update --reservation-order-id {reservation_order_id} '
+                                      '--reservation-id {reservation_id} --applied-scope-typ Shared').get_output_in_json()
         self.assertEqual(
-            'Shared', reservation['properties']['appliedScopeType'])
+            'Shared', shared_reservation['properties']['appliedScopeType'])
 
-        # Change RI to Single scope
-        reservation = self.cmd('reservations reservation update --reservation-order-id {reservation_order_id}'
+        single_reservation = self.cmd('reservations reservation update --reservation-order-id {reservation_order_id}'
                                       ' --reservation-id {reservation_id} --applied-scope-type Single --applied-scopes {scope}'
                                       ' --instance-flexibility {instance_flexibility}').get_output_in_json()
         self.assertEqual(
-            'Single', reservation['properties']['appliedScopeType'])
-        self.assertEqual(
-            'Off', reservation['properties']['instanceFlexibility'])
-
-        # Renaming RI
-        reservation = self.cmd('reservations reservation update --reservation-order-id {reservation_order_id} '
-                                      '--reservation-id {reservation_id} --name {new_name}').get_output_in_json()
-        self.assertEqual(
-            'NewRIName', reservation['properties']['displayName'])
-
-        # Turn on auto renewal
-        self.cmd('reservations reservation update --reservation-order-id {reservation_order_id} '
-                                      '--reservation-id {reservation_id} --renew {renew} --renewal-properties {renew_properties}').get_output_in_json()
-        reservation = self.cmd('reservations reservation show --reservation-id {reservation_id} --reservation-order-id {reservation_order_id} --expand renewProperties').get_output_in_json()
-        self.assertEqual(
-            'On', reservation['properties']['userFriendlyRenewState'])
-        purchaseProperties = reservation['properties']['renewProperties']['purchaseProperties']
-        self.assertEqual(
-            'Standard_B1ls', purchaseProperties['sku']['name'])
-        self.assertEqual(
-            'eastus', purchaseProperties['location'])
-        self.assertEqual(
-            'P1Y', purchaseProperties['term'])
-        self.assertEqual(
-            'Monthly', purchaseProperties['billingPlan'])
-        self.assertEqual(
-            5, purchaseProperties['quantity'])
-        self.assertEqual(
-            'TestRenewalCLI', purchaseProperties['displayName'])
-        self.assertEqual(
-            'Shared', purchaseProperties['appliedScopeType'])
-        self.assertEqual(
-            'VirtualMachines', purchaseProperties['reservedResourceType'])
-        self.assertEqual(
-            'On', purchaseProperties['reservedResourceProperties']['instanceFlexibility'])
+            'Single', single_reservation['properties']['appliedScopeType'])
 
     @record_only()  # This test relies on the existing reservation order
     def test_split_and_merge(self):

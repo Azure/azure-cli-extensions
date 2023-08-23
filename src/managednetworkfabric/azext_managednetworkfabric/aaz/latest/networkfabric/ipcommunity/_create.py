@@ -21,7 +21,7 @@ class Create(AAZCommand):
         az networkfabric ipcommunity create --resource-group "example-rg" --location "westus3" --resource-name "example-ipcommunity" --ip-community-rules "[{action:Permit,communityMembers:['1:1'],sequenceNumber:1234,wellKnownCommunities:[Internet,GShut]}]"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
-        az networkfabric ipcommunity create --ip-community-rules "??"
+        az networkfabric ipcommunity create --ip-community-rules ??
     """
 
     _aaz_info = {

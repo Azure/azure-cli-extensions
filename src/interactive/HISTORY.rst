@@ -3,10 +3,6 @@
 Release History
 ===============
 
-0.5.3
-+++++
-* Optimize the visualization of help text when the window is reduced horizontally
-
 0.5.2
 +++++
 * Add command skipped message in Scenario Execution Mode

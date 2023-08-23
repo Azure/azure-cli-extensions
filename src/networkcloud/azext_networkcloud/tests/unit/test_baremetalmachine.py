@@ -12,9 +12,7 @@ from azext_networkcloud.operations.baremetalmachine._run_data_extract import (
 from azext_networkcloud.operations.baremetalmachine._run_read_command import (
     RunReadCommand,
 )
-from azext_networkcloud.tests.unit.test_run_command_options import (
-    RunCommandOptionsTestClass,
-)
+from azext_networkcloud.tests.unit.test_run_command_options import RunCommandOptionsTestClass
 from azure.cli.core.mock import DummyCli
 
 

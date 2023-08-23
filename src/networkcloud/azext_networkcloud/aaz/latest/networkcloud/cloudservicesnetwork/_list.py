@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cloudservicesnetwork list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List cloud services networks in the provided resource group or subscription.

@@ -21,7 +21,7 @@ class Create(AAZCommand):
         az networkfabric controller create --resource-group "example-rg" --location "westus3"  --resource-name "example-nfc" --ipv4-address-space "10.0.0.0/19" --is-workload-management-network-enabled "True" --nfc-sku "Basic" --infra-er-connections "[{expressRouteCircuitId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit',expressRouteAuthorizationKey:'auth-key'},{expressRouteCircuitId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit',expressRouteAuthorizationKey:'auth-key'}]" --workload-er-connections "[{expressRouteCircuitId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit',expressRouteAuthorizationKey:'auth-key'},{expressRouteCircuitId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit',expressRouteAuthorizationKey:'auth-key'}]" --mrg name=example-mrgName location=eastus
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
-        az networkfabric controller create --infra-er-connections "??"
+        az networkfabric controller create --infra-er-connections ??
     """
 
     _aaz_info = {

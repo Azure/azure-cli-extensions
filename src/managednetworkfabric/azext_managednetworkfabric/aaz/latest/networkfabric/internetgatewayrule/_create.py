@@ -21,7 +21,7 @@ class Create(AAZCommand):
         az networkfabric internetgatewayrule create --resource-group "example-rg" --location "westus3" --resource-name "example-internetgatewayrule" --rule-properties "{action:Allow,addressList:['10.10.10.10']}"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
-        az networkfabric internetgatewayrule create --rule-properties "??"
+        az networkfabric internetgatewayrule create --rule-properties ??
     """
 
     _aaz_info = {
