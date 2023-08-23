@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cloudservicesnetwork create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a new cloud services network or update the properties of the existing cloud services network.

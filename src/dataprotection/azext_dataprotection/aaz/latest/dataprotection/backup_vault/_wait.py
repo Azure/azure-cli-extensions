@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}", "2023-05-01"],
         ]
     }
 
@@ -116,7 +116,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01",
+                    "api-version", "2023-05-01",
                     required=True,
                 ),
             }
@@ -184,6 +184,22 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             identity.type = AAZStrType()
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
 
             properties = cls._schema_on_200.properties
             properties.feature_settings = AAZObjectType(
@@ -207,6 +223,10 @@ class Wait(AAZWaitCommand):
                 serialized_name="resourceMoveState",
                 flags={"read_only": True},
             )
+            properties.secure_score = AAZStrType(
+                serialized_name="secureScore",
+                flags={"read_only": True},
+            )
             properties.security_settings = AAZObjectType(
                 serialized_name="securitySettings",
             )
@@ -216,9 +236,15 @@ class Wait(AAZWaitCommand):
             )
 
             feature_settings = cls._schema_on_200.properties.feature_settings
+            feature_settings.cross_region_restore_settings = AAZObjectType(
+                serialized_name="crossRegionRestoreSettings",
+            )
             feature_settings.cross_subscription_restore_settings = AAZObjectType(
                 serialized_name="crossSubscriptionRestoreSettings",
             )
+
+            cross_region_restore_settings = cls._schema_on_200.properties.feature_settings.cross_region_restore_settings
+            cross_region_restore_settings.state = AAZStrType()
 
             cross_subscription_restore_settings = cls._schema_on_200.properties.feature_settings.cross_subscription_restore_settings
             cross_subscription_restore_settings.state = AAZStrType()
