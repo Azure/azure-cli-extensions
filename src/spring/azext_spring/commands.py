@@ -132,7 +132,7 @@ def load_command_table(self, _):
         g.custom_command('stop', 'spring_stop', supports_no_wait=True)
         g.custom_command('list', 'spring_list', table_transformer=transform_spring_table_output)
         g.custom_show_command('show', 'spring_get', table_transformer=transform_spring_table_output)
-        g.custom_command('flush-virtualnetwork-dns-setting', 'spring_flush_vnet_dns_setting', is_preview=True, supports_no_wait=True)
+        g.custom_command('flush-virtualnetwork-dns-settings', 'spring_flush_vnet_dns_setting', is_preview=True, supports_no_wait=True)
 
     with self.command_group('spring test-endpoint', client_factory=cf_spring,
                             exception_handler=handle_asc_exception) as g:

@@ -167,13 +167,13 @@ class FlushVirtualNetworkDnsSettingTest(ScenarioTest):
 
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
-    def test_flush_virtualnetwork_dns_setting_service(self, resource_group, spring):
+    def test_flush_virtualnetwork_dns_settings_service(self, resource_group, spring):
         self.kwargs.update({
             'serviceName': spring,
             'resource_group': resource_group,
         })
 
-        self.cmd('spring flush-virtualnetwork-dns-setting -n {serviceName} -g {resource_group}')
+        self.cmd('spring flush-virtualnetwork-dns-settings -n {serviceName} -g {resource_group}')
         self.cmd('spring show --name {serviceName} -g {resource_group}', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('properties.powerState', 'Running')
