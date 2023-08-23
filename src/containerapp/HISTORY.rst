@@ -6,7 +6,9 @@ upcoming
 ++++++
 * Removed preview tag for some command groups and params (e.g. 'az containerapp job', 'az containerapp env storage', 'az containerapp env workload-profile')
 * 'az containerapp env': --enable-workload-profiles allowed values:true, false
-* Support 'az containerapp env dapr-component init' to initialize a Dapr components for development
+* 'az containerapp auth': support --token-store, --sas-url-secret, --sas-url-secret-name, --yes
+* 'az containerapp create'/'az containerapp job create': When --environment is provided and the environmentId value does not exist in --yaml, use the value in --environment as environmentId
+* 'az containerapp env dapr-component': add support to initialize Dapr components for development
 
 0.3.37
 ++++++

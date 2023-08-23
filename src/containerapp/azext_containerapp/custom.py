@@ -116,7 +116,8 @@ from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, F
                          DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
                          DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_SERVICE_LIST,
                          DAPR_REDIS_SERVICE_NAME, DAPR_REDIS_CONFIG_PASSWORD_KEY, DAPR_REDIS_CONFIG_PORT_KEY,
-                         DAPR_COMPONENT_REDIS_STATESTORE_NAME, DAPR_COMPONENT_REDIS_PUBSUB_NAME, DAPR_REDIS_SECRET_NAME, CONTAINER_APPS_SDK_MODELS)
+                         DAPR_COMPONENT_REDIS_STATESTORE_NAME, DAPR_COMPONENT_REDIS_PUBSUB_NAME, DAPR_REDIS_SECRET_NAME, CONTAINER_APPS_SDK_MODELS,
+                         CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME)
 
 logger = get_logger(__name__)
 
@@ -5086,7 +5087,9 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
                        runtime_version=None, config_file_path=None, unauthenticated_client_action=None,
                        redirect_provider=None, require_https=None,
                        proxy_convention=None, proxy_custom_host_header=None,
-                       proxy_custom_proto_header=None, excluded_paths=None):
+                       proxy_custom_proto_header=None, excluded_paths=None,
+                       token_store=None, sas_url_secret=None, sas_url_secret_name=None,
+                       yes=False):
     raw_parameters = locals()
     containerapp_auth_decorator = ContainerAppPreviewAuthDecorator(
         cmd=cmd,
@@ -5096,6 +5099,8 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
     )
 
     containerapp_auth_decorator.construct_payload()
+    if containerapp_auth_decorator.get_argument_token_store() and containerapp_auth_decorator.get_argument_sas_url_secret() is not None:
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME}={containerapp_auth_decorator.get_argument_sas_url_secret()}"], no_wait=True, disable_max_length=True)
     return containerapp_auth_decorator.create_or_update()
 
 

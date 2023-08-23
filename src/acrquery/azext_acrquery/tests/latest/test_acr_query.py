@@ -3,52 +3,99 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.testsdk import ScenarioTest
-from azure.cli.command_modules.acr._docker_utils import (
-    EMPTY_GUID
+import unittest
+from unittest import mock
+import json
+
+from azext_acrquery.query import (
+    create_query
 )
 
+from azure.cli.command_modules.acr._docker_utils import (
+    EMPTY_GUID,
+    get_authorization_header,
+)
 
-class AcrQueryTests(ScenarioTest):
+from azure.cli.core.mock import DummyCli
 
-    def test_acrquery(self):
-        self.kwargs.update({
-            'registry_name': 'metadataunittest',
-            'resource_group': 'cabarker',
-            'repository_name': 'nginx',
-            'query': '"Manifests | limit 1"',
-            'username': 'user',
-            'password': 'password',
-            'password_name': 'password'
-        })
 
-        # Query with bearer auth and filter by count
-        credentials = self.cmd(
-            'acr credential show -n {registry_name} -g {resource_group}').get_output_in_json()
+class AcrQueryCommandsTests(unittest.TestCase):
 
-        self.kwargs['username'] = credentials['username']
-        self.kwargs['password'] = credentials['passwords'][0]['value']
+    @mock.patch('azext_acrquery.query.get_access_credentials', autospec=True)
+    @mock.patch('requests.request', autospec=True)
+    def test_acrquery(self, mock_requests_get, mock_get_access_credentials):
+        cmd = self._setup_cmd()
 
-        self.cmd(
-            'acr query -n {registry_name} -q {query} --username {username} --password {password} ',
-            checks=[self.check('count', 1)])
+        response = mock.MagicMock()
+        response.headers = {}
+        response.status_code = 200
+        response.content = json.dumps({'repositories': ['testrepo1', 'testrepo2']}).encode()
+        mock_requests_get.return_value = response
 
-        # Query with basic auth and filter by repository
-        token = self.cmd('acr login -n {registry_name} --expose-token').get_output_in_json()
-        self.kwargs['username'] = EMPTY_GUID
-        self.kwargs['password'] = token["accessToken"]
-        self.kwargs['query'] = '"Manifests"'
-        self.kwargs['repository_name'] = 'test/new'
+        # Basic auth
+        mock_get_access_credentials.return_value = 'testregistry.azurecr.io', 'username', 'password'
+        create_query(cmd, 'testregistry', 'get')
+        mock_requests_get.assert_called_with(
+            method='post',
+            url='https://testregistry.azurecr.io/acr/v1/_metadata/_query',
+            headers=get_authorization_header('username', 'password'),
+            params=None,
+            json={
+                'query': 'get'
+            },
+            timeout=300,
+            verify=mock.ANY)
 
-        self.cmd(
-            'acr query -n {registry_name} --repository {repository_name} -q {query} --username {username} --password {password} ',
-            checks=[self.check('count', 12)])
+        # Bearer auth
+        mock_get_access_credentials.return_value = 'testregistry.azurecr.io', EMPTY_GUID, 'password'
+        create_query(cmd, 'testregistry', 'get')
+        mock_requests_get.assert_called_with(
+            method='post',
+            url='https://testregistry.azurecr.io/acr/v1/_metadata/_query',
+            headers=get_authorization_header(EMPTY_GUID, 'password'),
+            params=None,
+            json={
+                'query': 'get'
+            },
+            timeout=300,
+            verify=mock.ANY)
 
-        # Renew credentials
-        self.cmd(
-            'acr credential renew -n {registry_name} --password-name {password_name} ')
+        # Filter by repository
+        mock_get_access_credentials.return_value = 'testregistry.azurecr.io', EMPTY_GUID, 'password'
+        create_query(cmd, 'testregistry', 'get', repository='repository')
+        mock_requests_get.assert_called_with(
+            method='post',
+            url='https://testregistry.azurecr.io/acr/v1/repository/_metadata/_query',
+            headers=get_authorization_header(EMPTY_GUID, 'password'),
+            params=None,
+            json={
+                'query': 'get'
+            },
+            timeout=300,
+            verify=mock.ANY)
 
-        # Filter by size 
-        self.kwargs['query'] = '"Manifests | where imageSize > 100000000"'
-        self.cmd(
-            'acr query -n {registry_name} -q {query}', checks=[self.check('count', 3)])
+        # Request with skip token
+        mock_get_access_credentials.return_value = 'testregistry.azurecr.io', EMPTY_GUID, 'password'
+        create_query(cmd, 'testregistry', 'get', repository='repository', skip_token='12345678')
+        mock_requests_get.assert_called_with(
+            method='post',
+            url='https://testregistry.azurecr.io/acr/v1/repository/_metadata/_query',
+            headers=get_authorization_header(EMPTY_GUID, 'password'),
+            params=None,
+            json={
+                'query': 'get',
+                'options': {
+                    '$skipToken': '12345678'
+                }
+            },
+            timeout=300,
+            verify=mock.ANY)
+
+    def _setup_cmd(self):
+        cmd = mock.MagicMock()
+        cmd.cli_ctx = DummyCli()
+        mock_sku = mock.MagicMock()
+        mock_sku.classic.value = 'Classic'
+        mock_sku.basic.value = 'Basic'
+        cmd.get_models.return_value = mock_sku
+        return cmd
