@@ -208,6 +208,9 @@ helps['containerapp show-custom-domain-verification-id'] = """
     - name: Get the verification id, which needs to be added as a TXT record for app custom domain to verify domain ownership
       text: |
           az containerapp show-custom-domain-verification-id
+    - name: Get the verification id, which needs to be added as a TXT record for custom environment DNS suffix to verify domain ownership
+      text: |
+          az containerapp show-custom-domain-verification-id
 """
 
 # Replica Commands
