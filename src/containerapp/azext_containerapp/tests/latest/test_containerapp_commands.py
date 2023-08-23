@@ -1623,7 +1623,6 @@ class ContainerappScaleTests(ScenarioTest):
 
 
 class ContainerappOtherPropertyTests(ScenarioTest):
-    # @live_only()
     def test_containerapp_get_customdomainverificationid(self):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
