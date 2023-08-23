@@ -72,7 +72,7 @@ if ($hyperv.Installed -and $hypervTools.Installed -and $hypervPowerShell.Install
         $return = Set-DhcpServerv4OptionValue -DnsServer 168.63.129.16 -Router 192.168.0.1 -ErrorAction Stop
 
         # Create the nested guest VM
-        if (!$gen) {
+        if (!$gen -or ($gen -eq 1)) {
             Log-Info 'Creating Gen1 VM with 4GB memory' | Out-File -FilePath $logFile -Append
             $return = New-VM -Name $nestedGuestVmName -MemoryStartupBytes 4GB -NoVHD -BootDevice IDE -Generation 1 -ErrorAction Stop
         }
@@ -84,7 +84,7 @@ if ($hyperv.Installed -and $hypervTools.Installed -and $hypervPowerShell.Install
         $disk = get-disk -ErrorAction Stop | where {$_.FriendlyName -eq 'Msft Virtual Disk'}
         $return = $disk | set-disk -IsOffline $true -ErrorAction Stop
 
-        if (!$gen) {
+        if (!$gen -or ($gen -eq 1)) {
             Log-Info "Gen1: Adding hard drive to IDE controller" | Out-File -FilePath $logFile -Append
             $return = $disk | Add-VMHardDiskDrive -VMName $nestedGuestVmName -ErrorAction Stop            
         }
