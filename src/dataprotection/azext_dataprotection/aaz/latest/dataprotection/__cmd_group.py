@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_experimental=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage dataprotection
+    """Manage dataprotection.
     """
     pass
 
