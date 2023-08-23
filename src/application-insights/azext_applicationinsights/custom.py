@@ -222,6 +222,12 @@ def delete_component(client, application, resource_group_name):
 
 
 class APIKeyCreate(_APIKeyCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.api_key._required = True
+        return args_schema
+
     def pre_operations(self):
         args = self.ctx.args
         if not has_value(args.read_properties):

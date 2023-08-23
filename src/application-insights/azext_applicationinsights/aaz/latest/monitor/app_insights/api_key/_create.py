@@ -50,12 +50,10 @@ class Create(AAZCommand):
         _args_schema.read_properties = AAZListArg(
             options=["--read-properties"],
             help="A space-separated list of names of read Roles for this API key                                      to inherit.",
-            default=["ReadTelemetry", "AuthenticateSDKControlChannel"],
         )
         _args_schema.write_properties = AAZListArg(
             options=["--write-properties"],
             help="A space-separated list of names of write Roles for this API key                                      to inherit.",
-            default=[],
         )
         _args_schema.api_key = AAZStrArg(
             options=["--api-key"],
