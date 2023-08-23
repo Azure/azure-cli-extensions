@@ -9,9 +9,21 @@ import json
 import os
 import stat
 from knack.util import CLIError
+
+from azure.cli.core.aaz import has_value
 from azure.cli.core.util import user_confirmation
 from azure.core.exceptions import HttpResponseError
 from ._client_factory import cf_artifacts
+from .aaz.latest.blueprint import Create as _BlueprintCreate, Update as _BlueprintUpdate, Delete as _BlueprintDelete, \
+    Show as _BlueprintShow, List as _BlueprintList, Publish as _BlueprintPublish
+from .aaz.latest.blueprint.artifact import Delete as _BlueprintArtifactDelete, Show as _BlueprintArtifactShow, \
+    List as _BlueprintArtifactList
+from .aaz.latest.blueprint.assignment import Delete as _BlueprintAssignmentDelete, Show as _BlueprintAssignmentShow, \
+    List as _BlueprintAssignmentList, Who as _BlueprintAssignmentWho
+from .aaz.latest.blueprint.version import Delete as _BlueprintVersionDelete, Show as _BlueprintVersionShow, \
+    List as _BlueprintVersionList
+from .aaz.latest.blueprint.version.artifact import Show as _BlueprintVersionArtifactShow, \
+    List as _BlueprintVersionArtifactList
 
 
 def import_blueprint_with_artifacts(cmd,
@@ -41,8 +53,7 @@ def import_blueprint_with_artifacts(cmd,
                 body['description'] = blueprint_properties['description']  # str
             body['target_scope'] = blueprint_properties.get('targetScope', 'subscription')  # str
             if 'parameters' in blueprint_properties:
-                body['parameters'] = blueprint_properties[
-                    'parameters']  # dictionary
+                body['parameters'] = blueprint_properties['parameters']  # dictionary
             if 'resourceGroups' in blueprint_properties:
                 body['resource_groups'] = blueprint_properties['resourceGroups']  # dictionary
 
@@ -81,84 +92,130 @@ def import_blueprint_with_artifacts(cmd,
     return blueprint_response
 
 
-def create_blueprint(client,
-                     blueprint_name,
-                     management_group=None,
-                     subscription=None,
-                     resource_scope=None,
-                     display_name=None,
-                     description=None,
-                     target_scope=None,
-                     parameters=None,
-                     resource_groups=None,
-                     versions=None):
-    blueprint = {}
-    if display_name is not None:
-        blueprint['display_name'] = display_name
-    if description is not None:
-        blueprint['description'] = description
-    if target_scope is not None:
-        blueprint['target_scope'] = target_scope
-    if parameters is not None:
-        blueprint['parameters'] = parameters
-    if resource_groups is not None:
-        blueprint['resource_groups'] = resource_groups
-    if versions is not None:
-        blueprint['versions'] = versions
-    return client.create_or_update(resource_scope=resource_scope,
-                                   blueprint_name=blueprint_name,
-                                   blueprint=blueprint)
+def _blueprint_validator(cmd):
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    args = cmd.ctx.args
+    if has_value(args.management_group):
+        args.resource_scope = '/providers/Microsoft.Management/managementGroups/{}'.format(args.management_group)
+    elif has_value(args.subscription_id):
+        args.resource_scope = '/subscriptions/{}'.format(args.subscription_id)
+    else:
+        args.resource_scope = '/subscriptions/{}'.format(get_subscription_id(cmd.cli_ctx))
 
 
-def update_blueprint(instance,
-                     blueprint_name,
-                     management_group=None,
-                     subscription=None,
-                     resource_scope=None,
-                     display_name=None,
-                     description=None,
-                     target_scope=None,
-                     parameters=None,
-                     resource_groups=None,
-                     versions=None):
-    if display_name is not None:
-        instance.display_name = display_name
-    if description is not None:
-        instance.description = description
-    if target_scope is not None:
-        instance.target_scope = target_scope
-    if parameters is not None:
-        instance.parameters = parameters
-    if resource_groups is not None:
-        instance.resource_groups = resource_groups
-    if versions is not None:
-        instance.versions = versions
-    return instance
+def build_arguments_schema(args_schema):
+    from azure.cli.core.aaz import AAZStrArg
+    args_schema.management_group = AAZStrArg(
+        options=['--management-group', '-m'],
+        arg_group="Resource_scope",
+        help="Use management group for the scope of the blueprint.")
+    args_schema.subscription_id = AAZStrArg(
+        options=['--subscription', '-s'],
+        arg_group="Resource_scope",
+        help="Use subscription for the scope of the blueprint. If --management-group is not specified, "
+             "--subscription value or the default subscription will be used as the scope.")
+    args_schema.resource_scope._required = False
+    args_schema.resource_scope._registered = False
+    return args_schema
 
 
-def delete_blueprint(client,
-                     blueprint_name,
-                     management_group=None,
-                     subscription=None,
-                     resource_scope=None,):
-    return client.delete(resource_scope=resource_scope,
-                         blueprint_name=blueprint_name)
+# ignore the global subscription param
+def cli_arguments_loader(args):
+    from knack.arguments import CLICommandArgument
+    args.append(("_subscription", CLICommandArgument(dest="_subscription", options_list=["--___subscription"])))
+    return args
 
 
-def get_blueprint(client,
-                  blueprint_name,
-                  management_group=None,
-                  subscription=None,
-                  resource_scope=None,):
-    return client.get(resource_scope=resource_scope,
-                      blueprint_name=blueprint_name)
+class BlueprintCreate(_BlueprintCreate):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return build_arguments_schema(args_schema)
+
+    # ignore the global subscription param
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        cli_arguments_loader(args)
+        return args
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.resource_scope):
+            _blueprint_validator(self)
 
 
-def list_blueprint(client,
-                   management_group=None,
-                   subscription=None,
-                   resource_scope=None,):
-    return client.list(resource_scope=resource_scope)
+class BlueprintUpdate(_BlueprintUpdate):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return build_arguments_schema(args_schema)
+
+    # ignore the global subscription param
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        cli_arguments_loader(args)
+        return args
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.resource_scope):
+            _blueprint_validator(self)
+
+
+class BlueprintDelete(_BlueprintDelete):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return build_arguments_schema(args_schema)
+
+    # ignore the global subscription param
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        cli_arguments_loader(args)
+        return args
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.resource_scope):
+            _blueprint_validator(self)
+
+
+class BlueprintShow(_BlueprintShow):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return build_arguments_schema(args_schema)
+
+    # ignore the global subscription param
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        cli_arguments_loader(args)
+        return args
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.resource_scope):
+            _blueprint_validator(self)
+
+
+class BlueprintList(_BlueprintList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return build_arguments_schema(args_schema)
+
+    # ignore the global subscription param
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        cli_arguments_loader(args)
+        return args
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.resource_scope):
+            _blueprint_validator(self)
 
 
 def export_blueprint_with_artifacts(cmd, client, blueprint_name, output_path,
@@ -197,26 +254,61 @@ def export_blueprint_with_artifacts(cmd, client, blueprint_name, output_path,
     return blueprint
 
 
-def delete_blueprint_artifact(client, blueprint_name, artifact_name,
-                              management_group=None, subscription=None, resource_scope=None):
-    return client.delete(resource_scope=resource_scope,
-                         blueprint_name=blueprint_name,
-                         artifact_name=artifact_name)
+class BlueprintArtifactDelete(_BlueprintArtifactDelete):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return build_arguments_schema(args_schema)
+
+    # ignore the global subscription param
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        cli_arguments_loader(args)
+        return args
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.resource_scope):
+            _blueprint_validator(self)
 
 
-def get_blueprint_artifact(client, blueprint_name, artifact_name,
-                           management_group=None, subscription=None,
-                           resource_scope=None):
-    return client.get(resource_scope=resource_scope,
-                      blueprint_name=blueprint_name,
-                      artifact_name=artifact_name)
+class BlueprintArtifactShow(_BlueprintArtifactShow):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return build_arguments_schema(args_schema)
+
+    # ignore the global subscription param
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        cli_arguments_loader(args)
+        return args
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.resource_scope):
+            _blueprint_validator(self)
 
 
-def list_blueprint_artifact(client, blueprint_name, management_group=None, subscription=None, resource_scope=None):
-    return client.list(resource_scope=resource_scope, blueprint_name=blueprint_name)
+class BlueprintArtifactList(_BlueprintArtifactList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return build_arguments_schema(args_schema)
+
+    # ignore the global subscription param
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        cli_arguments_loader(args)
+        return args
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.resource_scope):
+            _blueprint_validator(self)
 
 
-def add_blueprint_resource_group(client,
+def add_blueprint_resource_group(cmd,
                                  blueprint_name,
                                  management_group=None,
                                  subscription=None,
@@ -228,17 +320,21 @@ def add_blueprint_resource_group(client,
                                  description=None,
                                  depends_on=None,
                                  tags=None):
-    body = client.get(resource_scope=resource_scope, blueprint_name=blueprint_name).as_dict()
+    args = {
+        "name": blueprint_name,
+        "resource_scope": resource_scope,
+    }
+    body = BlueprintShow(cli_ctx=cmd.cli_ctx)(command_args=args)
     rg_key = artifact_name
-    body.setdefault('resource_groups', {})
+    body.setdefault('resourceGroups', {})
     if artifact_name is None:
-        rg_len = len(body['resource_groups'])
+        rg_len = len(body['resourceGroups'])
         for i in range(rg_len + 1):
             posix = '' if i == 0 else i + 1
             rg_key = "ResourceGroup{}".format(posix)
-            if rg_key not in body['resource_groups']:
+            if rg_key not in body['resourceGroups']:
                 break
-    elif artifact_name in body['resource_groups']:
+    elif artifact_name in body['resourceGroups']:
         raise CLIError(
             'A resource group artifact with the same name already exists.')
 
@@ -250,14 +346,12 @@ def add_blueprint_resource_group(client,
         "depends_on": depends_on,
         "tags": tags
     }
-    body.setdefault('resource_groups', {})[rg_key] = resource_group
-    rgs = client.create_or_update(resource_scope=resource_scope,
-                                  blueprint_name=blueprint_name,
-                                  blueprint=body).resource_groups
+    args.setdefault('resource_groups', {})[rg_key] = resource_group
+    rgs = BlueprintUpdate(cli_ctx=cmd.cli_ctx)(command_args=args)['resourceGroups']
     return {k: v for k, v in rgs.items() if k == artifact_name}
 
 
-def update_blueprint_resource_group(client,
+def update_blueprint_resource_group(cmd,
                                     blueprint_name,
                                     artifact_name,
                                     management_group=None,
@@ -269,10 +363,14 @@ def update_blueprint_resource_group(client,
                                     description=None,
                                     depends_on=None,
                                     tags=None):
-    body = client.get(resource_scope=resource_scope, blueprint_name=blueprint_name).as_dict()
-    if artifact_name not in body.setdefault('resource_groups', {}):
+    args = {
+        "name": blueprint_name,
+        "resource_scope": resource_scope,
+    }
+    body = BlueprintShow(cli_ctx=cmd.cli_ctx)(command_args=args)
+    if artifact_name not in body.setdefault('resourceGroups', {}):
         raise CLIError('The specified artifact name: {} can not be found.'.format(artifact_name))
-    resource_group = body['resource_groups'][artifact_name]
+    resource_group = body['resourceGroups'][artifact_name]
     if rg_name is not None:
         resource_group['name'] = rg_name
     if rg_location is not None:
@@ -285,38 +383,45 @@ def update_blueprint_resource_group(client,
         resource_group['depends_on'] = _process_depends_on_for_update(depends_on)
     if tags is not None:
         resource_group['tags'] = tags
-
-    rgs = client.create_or_update(resource_scope=resource_scope,
-                                  blueprint_name=blueprint_name,
-                                  blueprint=body).resource_groups
+    args.setdefault('resource_groups', {})[artifact_name] = resource_group
+    rgs = BlueprintUpdate(cli_ctx=cmd.cli_ctx)(command_args=args)['resourceGroups']
     return {k: v for k, v in rgs.items() if k == artifact_name}
 
 
 # todo test
-def remove_blueprint_resource_group(client, blueprint_name,
+def remove_blueprint_resource_group(cmd, blueprint_name,
                                     artifact_name, management_group=None, subscription=None, resource_scope=None):
-    body = client.get(resource_scope=resource_scope, blueprint_name=blueprint_name).as_dict()
-    if artifact_name not in body.setdefault('resource_groups', {}):
+    args = {
+        "name": blueprint_name,
+        "resource_scope": resource_scope,
+    }
+    body = BlueprintShow(cli_ctx=cmd.cli_ctx)(command_args=args)
+    if artifact_name not in body.setdefault('resourceGroups', {}):
         raise CLIError('The specified artifact name: {} can not be found.'.format(artifact_name))
-    deleted_rg = body['resource_groups'][artifact_name]
-    del body['resource_groups'][artifact_name]
-    client.create_or_update(resource_scope=resource_scope,
-                            blueprint_name=blueprint_name,
-                            blueprint=body)
+    deleted_rg = body['resourceGroups'][artifact_name]
+    del body['resourceGroups'][artifact_name]
+    args['resource_groups'] = body['resourceGroups']
+    BlueprintUpdate(cli_ctx=cmd.cli_ctx)(command_args=args)
     return deleted_rg
 
 
-def get_blueprint_resource_group(client, blueprint_name,
+def get_blueprint_resource_group(cmd, blueprint_name,
                                  artifact_name, management_group=None, subscription=None, resource_scope=None):
-    rgs = client.get(resource_scope=resource_scope,
-                     blueprint_name=blueprint_name).resource_groups
+    show_args = {
+        "name": blueprint_name,
+        "resource_scope": resource_scope,
+    }
+    rgs = BlueprintShow(cli_ctx=cmd.cli_ctx)(command_args=show_args)['resourceGroups']
     return {k: v for k, v in rgs.items() if k == artifact_name}
 
 
-def list_blueprint_resource_group(client, blueprint_name, management_group=None,
+def list_blueprint_resource_group(cmd, blueprint_name, management_group=None,
                                   subscription=None, resource_scope=None):
-    body = client.get(resource_scope=resource_scope, blueprint_name=blueprint_name)
-    return body.resource_groups
+    show_args = {
+        "name": blueprint_name,
+        "resource_scope": resource_scope,
+    }
+    return BlueprintShow(cli_ctx=cmd.cli_ctx)(command_args=show_args)['resourceGroups']
 
 
 def create_blueprint_artifact_policy(client,
@@ -499,53 +604,112 @@ def update_blueprint_artifact_template(client,
                                    artifact=body)
 
 
-def publish_blueprint(client,
-                      blueprint_name,
-                      version_id,
-                      management_group=None,
-                      subscription=None,
-                      resource_scope=None,
-                      change_notes=None):
-    body = {}
-    body['change_notes'] = change_notes  # str
-    body['blueprint_name'] = blueprint_name
-    return client.create(resource_scope=resource_scope,
-                         blueprint_name=blueprint_name,
-                         version_id=version_id,
-                         published_blueprint=body)
+class BlueprintPublish(_BlueprintPublish):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return build_arguments_schema(args_schema)
+
+    # ignore the global subscription param
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        cli_arguments_loader(args)
+        return args
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.resource_scope):
+            _blueprint_validator(self)
 
 
-def delete_blueprint_version(client, blueprint_name, version_id,
-                             management_group=None, subscription=None, resource_scope=None):
-    return client.delete(resource_scope=resource_scope,
-                         blueprint_name=blueprint_name,
-                         version_id=version_id)
+class BlueprintVersionDelete(_BlueprintVersionDelete):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return build_arguments_schema(args_schema)
+
+    # ignore the global subscription param
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        cli_arguments_loader(args)
+        return args
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.resource_scope):
+            _blueprint_validator(self)
 
 
-def get_blueprint_version(client, blueprint_name, version_id, management_group=None,
-                          subscription=None, resource_scope=None):
-    return client.get(resource_scope=resource_scope,
-                      blueprint_name=blueprint_name,
-                      version_id=version_id)
+class BlueprintVersionShow(_BlueprintVersionShow):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return build_arguments_schema(args_schema)
+
+    # ignore the global subscription param
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        cli_arguments_loader(args)
+        return args
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.resource_scope):
+            _blueprint_validator(self)
 
 
-def list_blueprint_version(client, blueprint_name, management_group=None, subscription=None, resource_scope=None):
-    return client.list(resource_scope=resource_scope, blueprint_name=blueprint_name)
+class BlueprintVersionList(_BlueprintVersionList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return build_arguments_schema(args_schema)
+
+    # ignore the global subscription param
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        cli_arguments_loader(args)
+        return args
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.resource_scope):
+            _blueprint_validator(self)
 
 
-def get_blueprint_version_artifact(client, blueprint_name, version_id, artifact_name,
-                                   management_group=None, subscription=None, resource_scope=None):
-    return client.get(resource_scope=resource_scope,
-                      blueprint_name=blueprint_name,
-                      version_id=version_id,
-                      artifact_name=artifact_name)
+class BlueprintVersionArtifactShow(_BlueprintVersionArtifactShow):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return build_arguments_schema(args_schema)
+
+    # ignore the global subscription param
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        cli_arguments_loader(args)
+        return args
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.resource_scope):
+            _blueprint_validator(self)
 
 
-def list_blueprint_version_artifact(client, blueprint_name, version_id,
-                                    management_group=None, subscription=None, resource_scope=None):
-    return client.list(resource_scope=resource_scope,
-                       blueprint_name=blueprint_name,
-                       version_id=version_id)
+class BlueprintVersionArtifactList(_BlueprintVersionArtifactList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return build_arguments_schema(args_schema)
+
+    # ignore the global subscription param
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        cli_arguments_loader(args)
+        return args
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.resource_scope):
+            _blueprint_validator(self)
 
 
 def resource_group_list_2_dict(resource_groups):
@@ -619,7 +783,7 @@ def _assign_owner_role_in_target_scope(cmd, role_scope, spn_object_id,):
                                assignee_principal_type='ServicePrincipal')
 
 
-def update_blueprint_assignment(client,
+def update_blueprint_assignment(cmd, client,
                                 assignment_name,
                                 management_group=None,
                                 subscription=None,
@@ -678,26 +842,80 @@ def update_blueprint_assignment(client,
                                    assignment=body)
 
 
-def delete_blueprint_assignment(client, assignment_name, management_group=None, subscription=None, resource_scope=None):
-    return client.delete(resource_scope=resource_scope, assignment_name=assignment_name)
+class BlueprintAssignmentDelete(_BlueprintAssignmentDelete):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return build_arguments_schema(args_schema)
+
+    # ignore the global subscription param
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        cli_arguments_loader(args)
+        return args
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.resource_scope):
+            _blueprint_validator(self)
 
 
 def get_blueprint_assignment(client, assignment_name, management_group=None, subscription=None, resource_scope=None):
     return client.get(resource_scope=resource_scope, assignment_name=assignment_name)
 
 
-def list_blueprint_assignment(client, management_group=None, subscription=None, resource_scope=None):
-    return client.list(resource_scope=resource_scope)
+class BlueprintAssignmentShow(_BlueprintAssignmentShow):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return build_arguments_schema(args_schema)
+
+    # ignore the global subscription param
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        cli_arguments_loader(args)
+        return args
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.resource_scope):
+            _blueprint_validator(self)
 
 
-def wait_for_blueprint_assignment(client, assignment_name, management_group=None,
-                                  subscription=None, resource_scope=None):
-    client.wait(resource_scope=resource_scope, assignment_name=assignment_name)
+class BlueprintAssignmentList(_BlueprintAssignmentList):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return build_arguments_schema(args_schema)
+
+    # ignore the global subscription param
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        cli_arguments_loader(args)
+        return args
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.resource_scope):
+            _blueprint_validator(self)
 
 
-def who_is_blueprint_blueprint_assignment(client, assignment_name, management_group=None,
-                                          subscription=None, resource_scope=None):
-    return client.who_is_blueprint(resource_scope=resource_scope, assignment_name=assignment_name)
+class BlueprintAssignmentWho(_BlueprintAssignmentWho):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return build_arguments_schema(args_schema)
+
+    # ignore the global subscription param
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        cli_arguments_loader(args)
+        return args
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.resource_scope):
+            _blueprint_validator(self)
 
 
 def _process_depends_on_for_update(depends_on):

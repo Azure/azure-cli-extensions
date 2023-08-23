@@ -43,19 +43,21 @@ subscription_type = CLIArgumentType(
     arg_group='Resource_scope',
     options_list=['--subscription', '-s'],
     help='Use subscription for the scope of the blueprint. If --management-group is not specified,'
-         ' --subscription value or the default subscription will be used as the scope.'
+         ' --subscription value or the default subscription will be used as the scope.',
+    validator=blueprint_validator
 )
 
 management_group_type = CLIArgumentType(
     arg_group='Resource_scope',
     options_list=['--management-group', '-m'],
-    help='Use management group for the scope of the blueprint.'
+    help='Use management group for the scope of the blueprint.',
+    validator=blueprint_validator
 )
 
 
 def load_arguments(self, _):
 
-    with self.argument_context('blueprint', validator=blueprint_validator) as c:
+    with self.argument_context('blueprint') as c:
         c.ignore('resource_scope')  # scope is divided into management_group and subscription
         c.ignore('_subscription')  # ignore the global subscription param
         c.argument('subscription', arg_type=subscription_type)
