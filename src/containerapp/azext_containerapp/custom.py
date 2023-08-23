@@ -3674,7 +3674,6 @@ def init_dapr_component(cmd, resource_group_name, environment_name):
     # Create Dapr components
     logger.info("Creating the statestore component...")
     statestore_component = DaprUtils.get_dapr_component_def_from_service(DAPR_COMPONENT_TYPE_STATESTORE_REDIS, DAPR_REDIS_SERVICE_NAME, redis_service_id)
-    logger.warning("The statestore component will be created with the following configuration: {}.".format(statestore_component))
 
     try:
         dapr_statestore_def = DaprComponentPreviewClient.create_or_update(cmd, resource_group_name=resource_group_name, environment_name=environment_name,
@@ -3684,7 +3683,6 @@ def init_dapr_component(cmd, resource_group_name, environment_name):
 
     logger.info("Creating the pubsub component...")
     pubsub_component = DaprUtils.get_dapr_component_def_from_service(DAPR_COMPONENT_TYPE_PUBSUB_REDIS, DAPR_REDIS_SERVICE_NAME, redis_service_id)
-    logger.warning("The pubsub component will be created with the following configuration: {}.".format(pubsub_component))
 
     try:
         dapr_pubsub_def = DaprComponentPreviewClient.create_or_update(cmd, resource_group_name=resource_group_name, environment_name=environment_name,
