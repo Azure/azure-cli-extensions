@@ -201,6 +201,11 @@ helps['containerapp logs show'] = """
           az containerapp logs show -n MyContainerapp -g MyResourceGroup --replica MyReplica --revision MyRevision --container MyContainer
 """
 
+helps['containerapp show-custom-domain-verification-id'] = """
+    type: command
+    short-summary: Show the verification id for binding custom domains.
+"""
+
 # Replica Commands
 helps['containerapp replica'] = """
     type: group
