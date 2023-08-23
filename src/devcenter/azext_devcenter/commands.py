@@ -19,6 +19,7 @@ from .custom import (
     AttachedNetworkShow,
     AttachedNetworkWait,
     CheckNameAvailabilityExecute,
+    CatalogConnect,
     CatalogCreate,
     CatalogDelete,
     CatalogList,
@@ -26,6 +27,8 @@ from .custom import (
     CatalogSync,
     CatalogUpdate,
     CatalogWait,
+    CatalogDevBoxDefinitionList,
+    CatalogDevBoxDefinitionShow,
     DevBoxDefinitionCreate,
     DevBoxDefinitionDelete,
     DevBoxDefinitionList,
@@ -91,6 +94,7 @@ def load_command_table(self, _):
         "devcenter admin check-name-availability execute"
     ] = CheckNameAvailabilityExecute(loader=self)
 
+    self.command_table["devcenter admin catalog connect"] = CatalogConnect(loader=self)
     self.command_table["devcenter admin catalog create"] = CatalogCreate(loader=self)
     self.command_table["devcenter admin catalog delete"] = CatalogDelete(loader=self)
     self.command_table["devcenter admin catalog list"] = CatalogList(loader=self)
@@ -98,6 +102,9 @@ def load_command_table(self, _):
     self.command_table["devcenter admin catalog sync"] = CatalogSync(loader=self)
     self.command_table["devcenter admin catalog update"] = CatalogUpdate(loader=self)
     self.command_table["devcenter admin catalog wait"] = CatalogWait(loader=self)
+
+    self.command_table["devcenter admin catalog-devbox-definition list"] = CatalogDevBoxDefinitionList(loader=self)
+    self.command_table["devcenter admin catalog-devbox-definition show"] = CatalogDevBoxDefinitionShow(loader=self)
 
     self.command_table[
         "devcenter admin devbox-definition create"
