@@ -48,7 +48,8 @@ from ._clients import (
     WorkloadProfileClient,
     ContainerAppsJobClient,
     ContainerAppPreviewClient,
-    AuthPreviewClient, SubscriptionPreviewClient
+    AuthPreviewClient,
+    SubscriptionPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._github_oauth import get_github_access_token
