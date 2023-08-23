@@ -1517,6 +1517,14 @@ class AuthClient():
 class ContainerAppPreviewClient(ContainerAppClient):
     api_version = PREVIEW_API_VERSION
 
+
+class SubscriptionClient():
+    api_version = CURRENT_API_VERSION
+
+
+class SubscriptionPreviewClient(SubscriptionClient):
+    api_version = PREVIEW_API_VERSION
+
     @classmethod
     def show_custom_domain_verification_id(cls, cmd):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager

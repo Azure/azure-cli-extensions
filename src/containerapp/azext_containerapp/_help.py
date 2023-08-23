@@ -203,7 +203,11 @@ helps['containerapp logs show'] = """
 
 helps['containerapp show-custom-domain-verification-id'] = """
     type: command
-    short-summary: Show the verification id for binding custom domains.
+    short-summary: Show the verification id for binding app or environment custom domains
+    examples:
+    - name: Get the verification id, which needs to be added as a TXT record for app custom domain to verify domain ownership
+      text: |
+          containerapp show-custom-domain-verification-id
 """
 
 # Replica Commands
