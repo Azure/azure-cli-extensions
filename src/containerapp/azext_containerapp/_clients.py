@@ -1525,6 +1525,8 @@ class ManagedEnvironmentPreviewClient(ManagedEnvironmentClient):
 class AuthPreviewClient(AuthClient):
     api_version = PREVIEW_API_VERSION
 
+class DaprComponentPreviewClient(DaprComponentClient):
+    api_version = PREVIEW_API_VERSION
 
 class ConnectedEnvironmentClient():
     api_version = ARC_PREVIEW_API_VERSION

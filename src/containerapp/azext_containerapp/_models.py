@@ -306,7 +306,9 @@ DaprComponent = {
         "initTimeout": None,
         "secrets": None,
         "metadata": None,
-        "scopes": None
+        "scopes": None,
+        "secretStoreComponent": None,
+        "serviceComponentBind": None,
     }
 }
 

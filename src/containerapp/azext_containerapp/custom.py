@@ -43,6 +43,7 @@ from ._clients import (
     ContainerAppClient,
     GitHubActionClient,
     DaprComponentClient,
+    DaprComponentPreviewClient,
     StorageClient,
     AuthClient,
     WorkloadProfileClient,
@@ -115,9 +116,9 @@ from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, F
                          MANAGED_CERTIFICATE_RT, PRIVATE_CERTIFICATE_RT, PENDING_STATUS, SUCCEEDED_STATUS, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
                          DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
                          DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_SERVICE_LIST,
-                         DAPR_REDIS_SERVICE_NAME, DAPR_REDIS_CONFIG_PASSWORD_KEY, DAPR_REDIS_CONFIG_PORT_KEY,
-                         DAPR_COMPONENT_REDIS_STATESTORE_NAME, DAPR_COMPONENT_REDIS_PUBSUB_NAME, DAPR_REDIS_SECRET_NAME, CONTAINER_APPS_SDK_MODELS,
-                         CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME)
+                         DAPR_REDIS_SERVICE_NAME, DAPR_COMPONENT_REDIS_STATESTORE_NAME, DAPR_COMPONENT_REDIS_PUBSUB_NAME, DAPR_REDIS_SECRET_NAME,
+                         DAPR_COMPONENT_TYPE_STATESTORE_REDIS, DAPR_COMPONENT_TYPE_PUBSUB_REDIS, CONTAINER_APPS_SDK_MODELS, 
+                         BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME)
 
 logger = get_logger(__name__)
 
@@ -3664,41 +3665,35 @@ def init_dapr_component(cmd, resource_group_name, environment_name):
 
     from ._dapr_utils import DaprUtils
 
+    # Create Redis service if not exists
     redis_capp_def, _is_redis_created = DaprUtils.create_redis_service_if_not_exists(cmd, resource_group_name, environment_name, DAPR_REDIS_SERVICE_NAME)
-    redis_config = DaprUtils.get_redis_configuration(cmd, resource_group_name, DAPR_REDIS_SERVICE_NAME, redis_capp_def)
+    redis_service_id = safe_get(redis_capp_def, "id", default=None)
+    if not redis_service_id:
+        raise ValidationError("Service ID for Redis service not found.")
 
-    redis_password = safe_get(redis_config, DAPR_REDIS_CONFIG_PASSWORD_KEY)
-    if redis_password is None:
-        raise ValidationError(f"Redis password not found in redis configuration, please check the redis configuration in redis service {DAPR_REDIS_SERVICE_NAME}.")
-
-    redis_port = safe_get(redis_config, DAPR_REDIS_CONFIG_PORT_KEY)
-    if redis_port is None:
-        raise ValidationError(f"Redis port not found in redis configuration, please check the redis configuration in redis service {DAPR_REDIS_SERVICE_NAME}.")
-
-    # Create the Dapr components
-    redis_host = f"{DAPR_REDIS_SERVICE_NAME}:{redis_port}"
-
+    # Create Dapr components
     logger.info("Creating the statestore component...")
-    statestore_component = DaprUtils.get_dapr_redis_statestore_component(redis_host, redis_password)
+    statestore_component = DaprUtils.get_dapr_component_def_from_service(DAPR_COMPONENT_TYPE_STATESTORE_REDIS, DAPR_REDIS_SERVICE_NAME, redis_service_id)
+    logger.warning("The statestore component will be created with the following configuration: {}.".format(statestore_component))
 
     try:
-        dapr_statestore_def = DaprComponentClient.create_or_update(cmd, resource_group_name=resource_group_name, environment_name=environment_name, dapr_component_envelope=statestore_component, name=DAPR_COMPONENT_REDIS_STATESTORE_NAME)
+        dapr_statestore_def = DaprComponentPreviewClient.create_or_update(cmd, resource_group_name=resource_group_name, environment_name=environment_name,
+                                                                          dapr_component_envelope=statestore_component, name=DAPR_COMPONENT_REDIS_STATESTORE_NAME)
     except Exception as e:
         raise ValidationError("Failed to create statestore component, error: {}.".format(e)) from e
 
     logger.info("Creating the pubsub component...")
-    pubsub_component = DaprUtils.get_dapr_redis_pubsub_component(redis_host, redis_password)
+    pubsub_component = DaprUtils.get_dapr_component_def_from_service(DAPR_COMPONENT_TYPE_PUBSUB_REDIS, DAPR_REDIS_SERVICE_NAME, redis_service_id)
+    logger.warning("The pubsub component will be created with the following configuration: {}.".format(pubsub_component))
 
     try:
-        dapr_pubsub_def = DaprComponentClient.create_or_update(cmd, resource_group_name=resource_group_name, environment_name=environment_name, dapr_component_envelope=pubsub_component, name=DAPR_COMPONENT_REDIS_PUBSUB_NAME)
+        dapr_pubsub_def = DaprComponentPreviewClient.create_or_update(cmd, resource_group_name=resource_group_name, environment_name=environment_name,
+                                                                      dapr_component_envelope=pubsub_component, name=DAPR_COMPONENT_REDIS_PUBSUB_NAME)
     except Exception as e:
         raise ValidationError("Failed to create pubsub component, error: {}.".format(e)) from e
 
-    # Remove secrets because we don't want to expose them to the user
+    # Remove potential secrets, and return the result
     _remove_secret(redis_capp_def, DAPR_REDIS_SECRET_NAME)
-    DaprUtils.remove_dapr_metadata_values(dapr_statestore_def)
-    DaprUtils.remove_dapr_metadata_values(dapr_pubsub_def)
-
     return {
         "message": "Successfully initialized components!",
         "resources": {

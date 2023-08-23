@@ -7,10 +7,9 @@ from typing import Any
 from azure.cli.core.azclierror import ValidationError
 from knack.log import get_logger
 from ._clients import ContainerAppClient
-from ._constants import DAPR_REDIS_SECRET_NAME
 from ._models import (DaprComponent as DaprComponentModel,
-                      DaprMetadata as DaprMetadataModel)
-from .custom import create_redis_service, _get_existing_secrets, safe_get
+                      ServiceBinding as ServiceBindingModel)
+from .custom import create_redis_service, safe_get
 
 logger = get_logger(__name__)
 
@@ -49,72 +48,29 @@ class DaprUtils:
         return redis_capp_def, True
 
     @staticmethod
-    def get_redis_configuration(cmd, resource_group_name, service_name, redis_capp_def) -> dict:
-        """Get Redis configuration from the Redis service secret."""
-        # Load secrets into redis_capp_def
-        _get_existing_secrets(cmd, resource_group_name, service_name, redis_capp_def)
-        redis_secrets = safe_get(redis_capp_def, "properties", "configuration", "secrets", default=[])
-        if len(redis_secrets) == 0:
-            raise ValidationError("Failed to read redis configuration, no secrets found for Redis service.")
+    def get_dapr_component_def_from_service(
+        component_type: str,
+        service_component_name: str,
+        service_component_id: str,
+        component_version: str = "v1",
+        ignore_errors: bool = False):
+        """Get a Dapr component with binding to a service.
+        Returns the component definition.
 
-        redis_secret_value: str = None
-        for secret in redis_secrets:
-            if safe_get(secret, "name") == DAPR_REDIS_SECRET_NAME:
-                redis_secret_value = safe_get(secret, "value")
-                break
+        :param component_type: The type of the component, e.g. "state.redis".
+        :param service_component_name: The name of the service component, e.g. "redis".
+        :param service_component_id: The ARM ID of the service component, e.g. "/subscriptions/.../redis".
+        :param component_version: The version of the component, e.g. "v1".
+        :param ignore_errors: Whether to ignore errors while loading the component.
+        """
+        serviceBinding = ServiceBindingModel.copy()
+        serviceBinding["name"] = service_component_name
+        serviceBinding["serviceId"] = service_component_id
 
-        if redis_secret_value is None:
-            raise ValidationError(f"Failed to read redis configuration,\
-                                  {DAPR_REDIS_SECRET_NAME} secret not found for Redis service.")
-
-        # Parse the secret value into key-value pairs. It is in the below format:
-        # requirepass mypassword\ndir /mnt/data\nport 6379\nprotected-mode yes\nappendonly yes\n
-        redis_config = {}
-        for line in redis_secret_value.splitlines():
-            idx = line.strip().find(" ")
-            if idx == -1:
-                continue
-            redis_config[line[:idx]] = line[idx + 1:]
-
-        return redis_config
-
-    @staticmethod
-    def get_dapr_redis_statestore_component(redis_host, redis_password):
-        """Get Dapr Redis statestore component with given host and password."""
         component = DaprComponentModel.copy()
-        component["properties"]["componentType"] = "state.redis"
-        component["properties"]["version"] = "v1"
-        component["properties"]["ignoreErrors"] = False
-        component["properties"]["metadata"] = [
-            DaprUtils._get_dapr_metadata_from_value("redisHost", redis_host),
-            DaprUtils._get_dapr_metadata_from_value("redisPassword", redis_password)]
+        component["properties"]["componentType"] = component_type
+        component["properties"]["version"] = component_version
+        component["properties"]["ignoreErrors"] = ignore_errors
+        component["properties"]["serviceComponentBind"] = serviceBinding
 
         return component
-
-    @staticmethod
-    def get_dapr_redis_pubsub_component(redis_host, redis_password):
-        """Get Dapr Redis pubsub component with given host and password."""
-        component = DaprComponentModel.copy()
-        component["properties"]["componentType"] = "pubsub.redis"
-        component["properties"]["version"] = "v1"
-        component["properties"]["ignoreErrors"] = False
-        component["properties"]["metadata"] = [
-            DaprUtils._get_dapr_metadata_from_value("redisHost", redis_host),
-            DaprUtils._get_dapr_metadata_from_value("redisPassword", redis_password)]
-
-        return component
-
-    @staticmethod
-    def _get_dapr_metadata_from_value(name, value):
-        """Get a Dapr metadata object with given name and value."""
-        metadata = DaprMetadataModel.copy()
-        metadata["name"] = name
-        metadata["value"] = value
-        return metadata
-
-    @staticmethod
-    def remove_dapr_metadata_values(component_def):
-        """Removes values from Dapr metadata by setting them to empty."""
-        metadata = safe_get(component_def, "properties", "metadata", default=[])
-        for m in metadata:
-            m["value"] = ""
