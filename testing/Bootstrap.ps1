@@ -71,7 +71,7 @@ if ($?)
 
 Write-Host "Connecting the cluster to Arc with connectedk8s..."
 $Env:KUBECONFIG="$PSScriptRoot/tmp/KUBECONFIG"
-az connectedk8s connect -g $ENVCONFIG.resourceGroup -n $ENVCONFIG.arcClusterName
+az connectedk8s connect -g $ENVCONFIG.resourceGroup -n $ENVCONFIG.arcClusterName -l westeurope
 if (!$?)
 {
     kubectl get pods -A
