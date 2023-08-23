@@ -13,21 +13,21 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-03-23T09:49:13Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_component_with_linked_storage","date":"2023-08-23T01:59:14Z","module":"application-insights"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '310'
+      - '386'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 23 Mar 2023 09:50:12 GMT
+      - Wed, 23 Aug 2023 02:00:07 GMT
       expires:
       - '-1'
       pragma:
@@ -60,12 +60,12 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/clitest000004?api-version=2021-12-01-preview
   response:
     body:
-      string: '{"properties":{"customerId":"43d1f8fe-56ea-4496-b2ce-d522b4dd27aa","provisioningState":"Creating","sku":{"name":"PerGB2018","lastSkuUpdate":"2023-03-23T09:50:14.7676461Z"},"retentionInDays":30,"features":{"legacy":0,"searchVersion":1,"enableLogAccessUsingOnlyResourcePermissions":true},"workspaceCapping":{"dailyQuotaGb":-1.0,"quotaNextResetTime":"2023-03-24T09:00:00Z","dataIngestionStatus":"RespectQuota"},"publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled","createdDate":"2023-03-23T09:50:14.7676461Z","modifiedDate":"2023-03-23T09:50:14.7676461Z"},"location":"westus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/clitest000004","name":"clitest000004","type":"Microsoft.OperationalInsights/workspaces"}'
+      string: '{"properties":{"customerId":"235deed2-8ce3-44b1-849a-bf4c8b8cfd34","provisioningState":"Creating","sku":{"name":"PerGB2018","lastSkuUpdate":"2023-08-23T02:00:13.3315941Z"},"retentionInDays":30,"features":{"legacy":0,"searchVersion":1,"enableLogAccessUsingOnlyResourcePermissions":true},"workspaceCapping":{"dailyQuotaGb":-1.0,"quotaNextResetTime":"2023-08-23T05:00:00Z","dataIngestionStatus":"RespectQuota"},"publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled","createdDate":"2023-08-23T02:00:13.3315941Z","modifiedDate":"2023-08-23T02:00:13.3315941Z"},"location":"westus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/clitest000004","name":"clitest000004","type":"Microsoft.OperationalInsights/workspaces"}'
     headers:
       access-control-allow-origin:
       - '*'
@@ -78,7 +78,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 23 Mar 2023 09:50:15 GMT
+      - Wed, 23 Aug 2023 02:00:14 GMT
       expires:
       - '-1'
       location:
@@ -112,12 +112,12 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/clitest000004?api-version=2021-12-01-preview
   response:
     body:
-      string: '{"properties":{"customerId":"43d1f8fe-56ea-4496-b2ce-d522b4dd27aa","provisioningState":"Succeeded","sku":{"name":"PerGB2018","lastSkuUpdate":"2023-03-23T09:50:14.7676461Z"},"retentionInDays":30,"features":{"legacy":0,"searchVersion":1,"enableLogAccessUsingOnlyResourcePermissions":true},"workspaceCapping":{"dailyQuotaGb":-1.0,"quotaNextResetTime":"2023-03-24T09:00:00Z","dataIngestionStatus":"RespectQuota"},"publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled","createdDate":"2023-03-23T09:50:14.7676461Z","modifiedDate":"2023-03-23T09:50:14.7676461Z"},"location":"westus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/clitest000004","name":"clitest000004","type":"Microsoft.OperationalInsights/workspaces"}'
+      string: '{"properties":{"customerId":"235deed2-8ce3-44b1-849a-bf4c8b8cfd34","provisioningState":"Creating","sku":{"name":"PerGB2018","lastSkuUpdate":"2023-08-23T02:00:13.3315941Z"},"retentionInDays":30,"features":{"legacy":0,"searchVersion":1,"enableLogAccessUsingOnlyResourcePermissions":true},"workspaceCapping":{"dailyQuotaGb":-1.0,"quotaNextResetTime":"2023-08-23T05:00:00Z","dataIngestionStatus":"RespectQuota"},"publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled","createdDate":"2023-08-23T02:00:13.3315941Z","modifiedDate":"2023-08-23T02:00:13.3315941Z"},"location":"westus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/clitest000004","name":"clitest000004","type":"Microsoft.OperationalInsights/workspaces"}'
     headers:
       access-control-allow-origin:
       - '*'
@@ -126,11 +126,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '834'
+      - '833'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 23 Mar 2023 09:50:45 GMT
+      - Wed, 23 Aug 2023 02:00:15 GMT
       expires:
       - '-1'
       pragma:
@@ -171,8 +171,8 @@ interactions:
       ParameterSetName:
       - --app --location --kind -g --workspace --application-type
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.6
-        (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Insights/components/demoApp?api-version=2020-02-02-preview
   response:
@@ -180,13 +180,13 @@ interactions:
       string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp\"\
         ,\r\n  \"name\": \"demoApp\",\r\n  \"type\": \"microsoft.insights/components\"\
         ,\r\n  \"location\": \"westus\",\r\n  \"tags\": {},\r\n  \"kind\": \"web\"\
-        ,\r\n  \"etag\": \"\\\"8a00d06e-0000-0200-0000-641c20fe0000\\\"\",\r\n  \"\
+        ,\r\n  \"etag\": \"\\\"1000bde8-0000-0200-0000-64e568350000\\\"\",\r\n  \"\
         properties\": {\r\n    \"ApplicationId\": \"demoApp\",\r\n    \"AppId\": \"\
-        fe3800c1-dd09-4ecb-9010-1b091c309500\",\r\n    \"Application_Type\": \"web\"\
+        4c6a49e0-9c88-4f92-bc0b-8bb6f6683929\",\r\n    \"Application_Type\": \"web\"\
         ,\r\n    \"Flow_Type\": \"Bluefield\",\r\n    \"Request_Source\": \"rest\"\
-        ,\r\n    \"InstrumentationKey\": \"de71b252-ccdc-4aa3-93eb-6a33c864018a\"\
-        ,\r\n    \"ConnectionString\": \"InstrumentationKey=de71b252-ccdc-4aa3-93eb-6a33c864018a;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/\"\
-        ,\r\n    \"Name\": \"demoApp\",\r\n    \"CreationDate\": \"2023-03-23T09:50:51.0236905+00:00\"\
+        ,\r\n    \"InstrumentationKey\": \"d3c1a65a-b434-478b-910c-e555c2c8e292\"\
+        ,\r\n    \"ConnectionString\": \"InstrumentationKey=d3c1a65a-b434-478b-910c-e555c2c8e292;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/\"\
+        ,\r\n    \"Name\": \"demoApp\",\r\n    \"CreationDate\": \"2023-08-23T02:00:20.1819044+00:00\"\
         ,\r\n    \"TenantId\": \"0b1f6471-1bf0-4dda-aec3-cb9272f09590\",\r\n    \"\
         provisioningState\": \"Succeeded\",\r\n    \"SamplingPercentage\": null,\r\
         \n    \"RetentionInDays\": 90,\r\n    \"WorkspaceResourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.OperationalInsights/workspaces/clitest000004\"\
@@ -203,13 +203,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 23 Mar 2023 09:50:57 GMT
+      - Wed, 23 Aug 2023 02:00:22 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:7f83c1fe-8c94-4d55-9337-4ddc696f61ed
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -245,8 +245,7 @@ interactions:
       ParameterSetName:
       - --app -g -s
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.6
-        (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/linkedStorageAccounts/ServiceProfiler?api-version=2020-03-01-preview
   response:
@@ -265,13 +264,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 23 Mar 2023 09:51:02 GMT
+      - Wed, 23 Aug 2023 02:00:30 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:7f83c1fe-8c94-4d55-9337-4ddc696f61ed
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -303,8 +302,7 @@ interactions:
       ParameterSetName:
       - --app -g
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.6
-        (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/linkedStorageAccounts/ServiceProfiler?api-version=2020-03-01-preview
   response:
@@ -323,13 +321,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 23 Mar 2023 09:51:03 GMT
+      - Wed, 23 Aug 2023 02:00:31 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:7f83c1fe-8c94-4d55-9337-4ddc696f61ed
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -363,8 +361,7 @@ interactions:
       ParameterSetName:
       - --app -g -s
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.6
-        (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/linkedStorageAccounts/ServiceProfiler?api-version=2020-03-01-preview
   response:
@@ -383,13 +380,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 23 Mar 2023 09:51:09 GMT
+      - Wed, 23 Aug 2023 02:00:36 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:7f83c1fe-8c94-4d55-9337-4ddc696f61ed
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -401,7 +398,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
       x-powered-by:
       - ASP.NET
     status:
@@ -411,7 +408,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -421,10 +418,9 @@ interactions:
       Content-Length:
       - '0'
       ParameterSetName:
-      - --app -g
+      - --app -g -y
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.6
-        (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/linkedStorageAccounts/ServiceProfiler?api-version=2020-03-01-preview
   response:
@@ -438,13 +434,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 23 Mar 2023 09:51:13 GMT
+      - Wed, 23 Aug 2023 02:00:40 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:7f83c1fe-8c94-4d55-9337-4ddc696f61ed
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -472,8 +468,7 @@ interactions:
       ParameterSetName:
       - --app -g
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.6
-        (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.insights/components/demoApp/linkedStorageAccounts/ServiceProfiler?api-version=2020-03-01-preview
   response:
@@ -489,13 +484,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 23 Mar 2023 09:51:17 GMT
+      - Wed, 23 Aug 2023 02:00:42 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:7f83c1fe-8c94-4d55-9337-4ddc696f61ed
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:

@@ -314,7 +314,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         api_keys = self.cmd('az monitor app-insights api-key show --app {name} -g {resource_group}').get_output_in_json()
         assert len(api_keys) == 3
 
-        self.cmd('az monitor app-insights api-key delete --app {name} -g {resource_group} --api-key {apiKeyB}', checks=[
+        self.cmd('az monitor app-insights api-key delete --app {name} -g {resource_group} --api-key {apiKeyB} -y', checks=[
             self.check('name', '{apiKeyB}')
         ])
         return
@@ -323,6 +323,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
     @StorageAccountPreparer(name_prefix='component', kind='StorageV2')
     @StorageAccountPreparer(name_prefix='component', kind='StorageV2', parameter_name='storage_account_2')
     def test_component_with_linked_storage(self, resource_group, location, storage_account, storage_account_2):
+        from azure.core.exceptions import ResourceNotFoundError
         self.kwargs.update({
             'loc': location,
             'resource_group': resource_group,
@@ -351,8 +352,8 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         assert self.kwargs['storage_account'] in output_json['linkedStorageAccount']
         output_json = self.cmd('monitor app-insights component linked-storage update --app {name_a} -g {resource_group} -s {storage_account_2}').get_output_in_json()
         assert self.kwargs['storage_account_2'] in output_json['linkedStorageAccount']
-        self.cmd('monitor app-insights component linked-storage unlink --app {name_a} -g {resource_group}')
-        with self.assertRaisesRegexp(SystemExit, '3'):
+        self.cmd('monitor app-insights component linked-storage unlink --app {name_a} -g {resource_group} -y')
+        with self.assertRaisesRegexp(ResourceNotFoundError, "Operation returned an invalid status 'Not Found'"):
             self.cmd('monitor app-insights component linked-storage show --app {name_a} -g {resource_group}')
 
     @AllowLargeResponse()

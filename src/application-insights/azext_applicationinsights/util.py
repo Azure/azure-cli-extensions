@@ -55,7 +55,7 @@ def get_linked_properties(cli_ctx, app, resource_group, read_properties=None, wr
         "AuthenticateSDKControlChannel": "agentconfig"
     }
 
-    sub_id = get_subscription_id(cli_ctx)
+    sub_id = cli_ctx.subscription_id
     tmpl = f'/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/microsoft.insights/components/{app}'
     linked_read_properties, linked_write_properties = [], []
 
@@ -70,9 +70,3 @@ def get_linked_properties(cli_ctx, app, resource_group, read_properties=None, wr
     else:
         linked_write_properties = [f'{tmpl}/{roles[write_properties]}']
     return linked_read_properties, linked_write_properties
-
-
-def get_subscription_id(cli_ctx):
-    from azure.cli.core._profile import Profile
-    _, sub_id, _ = Profile(cli_ctx=cli_ctx).get_login_credentials(subscription_id=None)
-    return sub_id

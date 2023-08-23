@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+1.0.0a1
+++++++++++++++++++
+
+
 0.1.19
 ++++++++++++++++++
 * `az monitor app-insights web-test`: Upgrade api-version to 2022-06-15.

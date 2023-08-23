@@ -19,8 +19,8 @@ interactions:
       ParameterSetName:
       - -a -l -g --kind --application-type
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.6
-        (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/Microsoft.Insights/components/test-app?api-version=2018-05-01-preview
   response:
@@ -28,13 +28,13 @@ interactions:
       string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app\"\
         ,\r\n  \"name\": \"test-app\",\r\n  \"type\": \"microsoft.insights/components\"\
         ,\r\n  \"location\": \"westus\",\r\n  \"tags\": {},\r\n  \"kind\": \"web\"\
-        ,\r\n  \"etag\": \"\\\"8400f001-0000-0200-0000-641b228b0000\\\"\",\r\n  \"\
+        ,\r\n  \"etag\": \"\\\"10008ede-0000-0200-0000-64e567610000\\\"\",\r\n  \"\
         properties\": {\r\n    \"ApplicationId\": \"test-app\",\r\n    \"AppId\":\
-        \ \"393c2ceb-bb59-4a26-b95b-ae65960a3d02\",\r\n    \"Application_Type\": \"\
+        \ \"7ef127a8-32f0-4cee-addd-c01b0dfd0d77\",\r\n    \"Application_Type\": \"\
         web\",\r\n    \"Flow_Type\": \"Bluefield\",\r\n    \"Request_Source\": \"\
-        rest\",\r\n    \"InstrumentationKey\": \"b703c20b-0749-45d8-bbcc-d9a88e808d7b\"\
-        ,\r\n    \"ConnectionString\": \"InstrumentationKey=b703c20b-0749-45d8-bbcc-d9a88e808d7b;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/\"\
-        ,\r\n    \"Name\": \"test-app\",\r\n    \"CreationDate\": \"2023-03-22T15:45:14.7309297+00:00\"\
+        rest\",\r\n    \"InstrumentationKey\": \"8660d64f-2e10-4553-a4f6-76411a7af065\"\
+        ,\r\n    \"ConnectionString\": \"InstrumentationKey=8660d64f-2e10-4553-a4f6-76411a7af065;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/\"\
+        ,\r\n    \"Name\": \"test-app\",\r\n    \"CreationDate\": \"2023-08-23T01:56:48.9253262+00:00\"\
         ,\r\n    \"TenantId\": \"0b1f6471-1bf0-4dda-aec3-cb9272f09590\",\r\n    \"\
         provisioningState\": \"Succeeded\",\r\n    \"SamplingPercentage\": null,\r\
         \n    \"RetentionInDays\": 90,\r\n    \"IngestionMode\": \"ApplicationInsights\"\
@@ -50,13 +50,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Mar 2023 15:45:16 GMT
+      - Wed, 23 Aug 2023 01:56:50 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:7f83c1fe-8c94-4d55-9337-4ddc696f61ed
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -99,8 +99,8 @@ interactions:
         --http-verb --request-body --request-url --retry-enabled --synthetic-monitor-id
         --timeout --ssl-lifetime-check --ssl-check --tags
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.6
-        (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/Microsoft.Insights/webtests/test-webtest?api-version=2022-06-15
   response:
@@ -108,7 +108,7 @@ interactions:
       string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/webtests/test-webtest\"\
         ,\r\n  \"name\": \"test-webtest\",\r\n  \"type\": \"microsoft.insights/webtests\"\
         ,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app\"\
-        : \"Resource\"\r\n  },\r\n  \"kind\": \"ping\",\r\n  \"etag\": \"\\\"8400fa01-0000-0200-0000-641b22940000\\\
+        : \"Resource\"\r\n  },\r\n  \"kind\": \"ping\",\r\n  \"etag\": \"\\\"1000ebde-0000-0200-0000-64e567680000\\\
         \"\",\r\n  \"properties\": {\r\n    \"SyntheticMonitorId\": \"test-webtest\"\
         ,\r\n    \"Name\": \"test-webtest\",\r\n    \"Description\": null,\r\n   \
         \ \"Enabled\": true,\r\n    \"Frequency\": 900,\r\n    \"Timeout\": 120,\r\
@@ -132,13 +132,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Mar 2023 15:45:24 GMT
+      - Wed, 23 Aug 2023 01:56:56 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:7f83c1fe-8c94-4d55-9337-4ddc696f61ed
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -170,8 +170,8 @@ interactions:
       ParameterSetName:
       - -g --component-name
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.6
-        (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/Microsoft.Insights/components/test-app/webtests?api-version=2022-06-15
   response:
@@ -180,7 +180,7 @@ interactions:
         ,\r\n      \"name\": \"test-webtest\",\r\n      \"type\": \"microsoft.insights/webtests\"\
         ,\r\n      \"location\": \"westus\",\r\n      \"tags\": {\r\n        \"hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app\"\
         : \"Resource\"\r\n      },\r\n      \"kind\": \"ping\",\r\n      \"etag\"\
-        : \"\\\"8400fa01-0000-0200-0000-641b22940000\\\"\",\r\n      \"properties\"\
+        : \"\\\"1000ebde-0000-0200-0000-64e567680000\\\"\",\r\n      \"properties\"\
         : {\r\n        \"SyntheticMonitorId\": \"test-webtest\",\r\n        \"Name\"\
         : \"test-webtest\",\r\n        \"Description\": null,\r\n        \"Enabled\"\
         : true,\r\n        \"Frequency\": 900,\r\n        \"Timeout\": 120,\r\n  \
@@ -206,13 +206,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Mar 2023 15:45:26 GMT
+      - Wed, 23 Aug 2023 01:56:59 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:7f83c1fe-8c94-4d55-9337-4ddc696f61ed
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -242,8 +242,8 @@ interactions:
       ParameterSetName:
       - -n -l -g --locations
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.6
-        (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/Microsoft.Insights/webtests/test-webtest?api-version=2018-05-01-preview
   response:
@@ -251,7 +251,7 @@ interactions:
       string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/webtests/test-webtest\"\
         ,\r\n  \"name\": \"test-webtest\",\r\n  \"type\": \"microsoft.insights/webtests\"\
         ,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app\"\
-        : \"Resource\"\r\n  },\r\n  \"kind\": \"ping\",\r\n  \"etag\": \"\\\"8400fa01-0000-0200-0000-641b22940000\\\
+        : \"Resource\"\r\n  },\r\n  \"kind\": \"ping\",\r\n  \"etag\": \"\\\"1000ebde-0000-0200-0000-64e567680000\\\
         \"\",\r\n  \"properties\": {\r\n    \"SyntheticMonitorId\": \"test-webtest\"\
         ,\r\n    \"Name\": \"test-webtest\",\r\n    \"Description\": null,\r\n   \
         \ \"Enabled\": true,\r\n    \"Frequency\": 900,\r\n    \"Timeout\": 120,\r\
@@ -275,13 +275,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Mar 2023 15:45:27 GMT
+      - Wed, 23 Aug 2023 01:57:01 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:7f83c1fe-8c94-4d55-9337-4ddc696f61ed
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -321,8 +321,8 @@ interactions:
       ParameterSetName:
       - -n -l -g --locations
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.6
-        (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/Microsoft.Insights/webtests/test-webtest?api-version=2018-05-01-preview
   response:
@@ -330,7 +330,7 @@ interactions:
       string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/webtests/test-webtest\"\
         ,\r\n  \"name\": \"test-webtest\",\r\n  \"type\": \"microsoft.insights/webtests\"\
         ,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app\"\
-        : \"Resource\"\r\n  },\r\n  \"kind\": \"ping\",\r\n  \"etag\": \"\\\"8400fd01-0000-0200-0000-641b229a0000\\\
+        : \"Resource\"\r\n  },\r\n  \"kind\": \"ping\",\r\n  \"etag\": \"\\\"100075df-0000-0200-0000-64e567700000\\\
         \"\",\r\n  \"properties\": {\r\n    \"SyntheticMonitorId\": \"test-webtest\"\
         ,\r\n    \"Name\": \"test-webtest\",\r\n    \"Description\": null,\r\n   \
         \ \"Enabled\": true,\r\n    \"Frequency\": 900,\r\n    \"Timeout\": 120,\r\
@@ -354,13 +354,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Mar 2023 15:45:29 GMT
+      - Wed, 23 Aug 2023 01:57:04 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:7f83c1fe-8c94-4d55-9337-4ddc696f61ed
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -372,7 +372,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
       x-powered-by:
       - ASP.NET
     status:
@@ -392,8 +392,8 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.6
-        (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/Microsoft.Insights/webtests/test-webtest?api-version=2022-06-15
   response:
@@ -401,7 +401,7 @@ interactions:
       string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/webtests/test-webtest\"\
         ,\r\n  \"name\": \"test-webtest\",\r\n  \"type\": \"microsoft.insights/webtests\"\
         ,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app\"\
-        : \"Resource\"\r\n  },\r\n  \"kind\": \"ping\",\r\n  \"etag\": \"\\\"8400fd01-0000-0200-0000-641b229a0000\\\
+        : \"Resource\"\r\n  },\r\n  \"kind\": \"ping\",\r\n  \"etag\": \"\\\"100075df-0000-0200-0000-64e567700000\\\
         \"\",\r\n  \"properties\": {\r\n    \"SyntheticMonitorId\": \"test-webtest\"\
         ,\r\n    \"Name\": \"test-webtest\",\r\n    \"Description\": null,\r\n   \
         \ \"Enabled\": true,\r\n    \"Frequency\": 900,\r\n    \"Timeout\": 120,\r\
@@ -425,13 +425,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Mar 2023 15:45:32 GMT
+      - Wed, 23 Aug 2023 01:57:06 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:7f83c1fe-8c94-4d55-9337-4ddc696f61ed
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -463,8 +463,8 @@ interactions:
       ParameterSetName:
       - -n -g --yes
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.6
-        (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/Microsoft.Insights/webtests/test-webtest?api-version=2022-06-15
   response:
@@ -478,13 +478,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 22 Mar 2023 15:45:36 GMT
+      - Wed, 23 Aug 2023 01:57:11 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:7f83c1fe-8c94-4d55-9337-4ddc696f61ed
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -492,7 +492,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '14998'
       x-powered-by:
       - ASP.NET
     status:
@@ -524,8 +524,8 @@ interactions:
         --http-verb --request-body --request-url --retry-enabled --synthetic-monitor-id
         --timeout --ssl-lifetime-check --ssl-check --headers --tags
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.6
-        (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/Microsoft.Insights/webtests/test-webtest?api-version=2022-06-15
   response:
@@ -533,7 +533,7 @@ interactions:
       string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/webtests/test-webtest\"\
         ,\r\n  \"name\": \"test-webtest\",\r\n  \"type\": \"microsoft.insights/webtests\"\
         ,\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app\"\
-        : \"Resource\"\r\n  },\r\n  \"kind\": \"ping\",\r\n  \"etag\": \"\\\"84000d02-0000-0200-0000-641b22a70000\\\
+        : \"Resource\"\r\n  },\r\n  \"kind\": \"ping\",\r\n  \"etag\": \"\\\"100032e0-0000-0200-0000-64e5677d0000\\\
         \"\",\r\n  \"properties\": {\r\n    \"SyntheticMonitorId\": \"test-webtest\"\
         ,\r\n    \"Name\": \"test-webtest\",\r\n    \"Description\": null,\r\n   \
         \ \"Enabled\": true,\r\n    \"Frequency\": 900,\r\n    \"Timeout\": 120,\r\
@@ -558,13 +558,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Mar 2023 15:45:46 GMT
+      - Wed, 23 Aug 2023 01:57:18 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:7f83c1fe-8c94-4d55-9337-4ddc696f61ed
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -596,8 +596,8 @@ interactions:
       ParameterSetName:
       - -g --component-name
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.6
-        (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-applicationinsights/1.0.0 Python/3.10.9
+        (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/Microsoft.Insights/components/test-app/webtests?api-version=2022-06-15
   response:
@@ -606,7 +606,7 @@ interactions:
         ,\r\n      \"name\": \"test-webtest\",\r\n      \"type\": \"microsoft.insights/webtests\"\
         ,\r\n      \"location\": \"westus\",\r\n      \"tags\": {\r\n        \"hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_000001/providers/microsoft.insights/components/test-app\"\
         : \"Resource\"\r\n      },\r\n      \"kind\": \"ping\",\r\n      \"etag\"\
-        : \"\\\"84000d02-0000-0200-0000-641b22a70000\\\"\",\r\n      \"properties\"\
+        : \"\\\"100032e0-0000-0200-0000-64e5677d0000\\\"\",\r\n      \"properties\"\
         : {\r\n        \"SyntheticMonitorId\": \"test-webtest\",\r\n        \"Name\"\
         : \"test-webtest\",\r\n        \"Description\": null,\r\n        \"Enabled\"\
         : true,\r\n        \"Frequency\": 900,\r\n        \"Timeout\": 120,\r\n  \
@@ -634,13 +634,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Mar 2023 15:45:47 GMT
+      - Wed, 23 Aug 2023 01:57:20 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:7f83c1fe-8c94-4d55-9337-4ddc696f61ed
+      - appId=cid-v1:60b64f55-e716-48c8-8b96-83eb9c6a7a9b
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
