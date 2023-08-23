@@ -22,9 +22,9 @@ class Sync(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}/sync", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}/sync", "2023-06-01-preview"],
         ]
     }
 
@@ -58,7 +58,6 @@ class Sync(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema
@@ -100,6 +99,7 @@ class Sync(AAZCommand):
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
+
             return self.on_error(session.http_response)
 
         @property
@@ -143,7 +143,7 @@ class Sync(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-06-01-preview",
                     required=True,
                 ),
             }
@@ -151,6 +151,7 @@ class Sync(AAZCommand):
 
         def on_200(self, session):
             pass
+
 
 class _SyncHelper:
     """Helper class for Sync"""

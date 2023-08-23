@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin project-environment-type show",
+    "devcenter admin catalog-devbox-definition show",
 )
 class Show(AAZCommand):
-    """Get a project environment type.
+    """Get a dev box definition from the catalog
 
     :example: Get
-        az devcenter admin project-environment-type show --environment-type-name "DevTest" --project-name "ContosoProj" --resource-group "rg1"
+        az devcenter admin catalog-devbox-definition show --catalog-name "CentralCatalog" -devbox-definition-name "devBoxDef" --dev-center-name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {
         "version": "2023-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/environmenttypes/{}", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}/devboxdefinitions/{}", "2023-06-01-preview"],
         ]
     }
 
@@ -44,15 +44,21 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.environment_type_name = AAZStrArg(
-            options=["-n", "--name", "--environment-type-name"],
-            help="The name of the environment type.",
+        _args_schema.catalog_name = AAZStrArg(
+            options=["--catalog-name"],
+            help="The name of the catalog.",
             required=True,
             id_part="child_name_1",
         )
-        _args_schema.project_name = AAZStrArg(
-            options=["--project", "--project-name"],
-            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
+        _args_schema.devbox_definition_name = AAZStrArg(
+            options=["-n", "--name", "--devbox-definition-name"],
+            help="The name of the dev box definition.",
+            required=True,
+            id_part="child_name_2",
+        )
+        _args_schema.dev_center_name = AAZStrArg(
+            options=["-d", "--dev-center", "--dev-center-name"],
+            help="The name of the dev center.",
             required=True,
             id_part="name",
         )
@@ -63,7 +69,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ProjectEnvironmentTypesGet(ctx=self.ctx)()
+        self.CatalogDevBoxDefinitionsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -78,7 +84,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ProjectEnvironmentTypesGet(AAZHttpOperation):
+    class CatalogDevBoxDefinitionsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -92,7 +98,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/environmentTypes/{environmentTypeName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/catalogs/{catalogName}/devboxdefinitions/{devBoxDefinitionName}",
                 **self.url_parameters
             )
 
@@ -108,11 +114,15 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "environmentTypeName", self.ctx.args.environment_type_name,
+                    "catalogName", self.ctx.args.catalog_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "projectName", self.ctx.args.project_name,
+                    "devBoxDefinitionName", self.ctx.args.devbox_definition_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "devCenterName", self.ctx.args.dev_center_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -166,8 +176,9 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType()
-            _schema_on_200.location = AAZStrType()
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -183,67 +194,62 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
-            identity = cls._schema_on_200.identity
-            identity.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
+            properties = cls._schema_on_200.properties
+            properties.active_image_reference = AAZObjectType(
+                serialized_name="activeImageReference",
             )
-            identity.tenant_id = AAZStrType(
-                serialized_name="tenantId",
-                flags={"read_only": True},
+            _ShowHelper._build_schema_image_reference_read(properties.active_image_reference)
+            properties.hibernate_support = AAZStrType(
+                serialized_name="hibernateSupport",
             )
-            identity.type = AAZStrType(
+            properties.image_reference = AAZObjectType(
+                serialized_name="imageReference",
                 flags={"required": True},
             )
-            identity.user_assigned_identities = AAZDictType(
-                serialized_name="userAssignedIdentities",
+            _ShowHelper._build_schema_image_reference_read(properties.image_reference)
+            properties.image_validation_error_details = AAZObjectType(
+                serialized_name="imageValidationErrorDetails",
             )
-
-            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.identity.user_assigned_identities.Element
-            _element.client_id = AAZStrType(
-                serialized_name="clientId",
-                flags={"read_only": True},
+            properties.image_validation_status = AAZStrType(
+                serialized_name="imageValidationStatus",
             )
-            _element.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.creator_role_assignment = AAZObjectType(
-                serialized_name="creatorRoleAssignment",
-            )
-            properties.deployment_target_id = AAZStrType(
-                serialized_name="deploymentTargetId",
+            properties.os_storage_type = AAZStrType(
+                serialized_name="osStorageType",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.status = AAZStrType()
-            properties.user_role_assignments = AAZDictType(
-                serialized_name="userRoleAssignments",
+            properties.sku = AAZObjectType(
+                flags={"required": True},
+            )
+            properties.validation_error_details = AAZListType(
+                serialized_name="validationErrorDetails",
+                flags={"read_only": True},
+            )
+            properties.validation_status = AAZStrType(
+                serialized_name="validationStatus",
             )
 
-            creator_role_assignment = cls._schema_on_200.properties.creator_role_assignment
-            creator_role_assignment.roles = AAZDictType()
+            image_validation_error_details = cls._schema_on_200.properties.image_validation_error_details
+            image_validation_error_details.code = AAZStrType()
+            image_validation_error_details.message = AAZStrType()
 
-            roles = cls._schema_on_200.properties.creator_role_assignment.roles
-            roles.Element = AAZObjectType()
-            _ShowHelper._build_schema_environment_role_read(roles.Element)
+            sku = cls._schema_on_200.properties.sku
+            sku.capacity = AAZIntType()
+            sku.family = AAZStrType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+            sku.size = AAZStrType()
+            sku.tier = AAZStrType()
 
-            user_role_assignments = cls._schema_on_200.properties.user_role_assignments
-            user_role_assignments.Element = AAZObjectType()
+            validation_error_details = cls._schema_on_200.properties.validation_error_details
+            validation_error_details.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.properties.user_role_assignments.Element
-            _element.roles = AAZDictType()
-
-            roles = cls._schema_on_200.properties.user_role_assignments.Element.roles
-            roles.Element = AAZObjectType()
-            _ShowHelper._build_schema_environment_role_read(roles.Element)
+            _element = cls._schema_on_200.properties.validation_error_details.Element
+            _element.code = AAZStrType()
+            _element.message = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -274,28 +280,26 @@ class Show(AAZCommand):
 class _ShowHelper:
     """Helper class for Show"""
 
-    _schema_environment_role_read = None
+    _schema_image_reference_read = None
 
     @classmethod
-    def _build_schema_environment_role_read(cls, _schema):
-        if cls._schema_environment_role_read is not None:
-            _schema.description = cls._schema_environment_role_read.description
-            _schema.role_name = cls._schema_environment_role_read.role_name
+    def _build_schema_image_reference_read(cls, _schema):
+        if cls._schema_image_reference_read is not None:
+            _schema.exact_version = cls._schema_image_reference_read.exact_version
+            _schema.id = cls._schema_image_reference_read.id
             return
 
-        cls._schema_environment_role_read = _schema_environment_role_read = AAZObjectType()
+        cls._schema_image_reference_read = _schema_image_reference_read = AAZObjectType()
 
-        environment_role_read = _schema_environment_role_read
-        environment_role_read.description = AAZStrType(
+        image_reference_read = _schema_image_reference_read
+        image_reference_read.exact_version = AAZStrType(
+            serialized_name="exactVersion",
             flags={"read_only": True},
         )
-        environment_role_read.role_name = AAZStrType(
-            serialized_name="roleName",
-            flags={"read_only": True},
-        )
+        image_reference_read.id = AAZStrType()
 
-        _schema.description = cls._schema_environment_role_read.description
-        _schema.role_name = cls._schema_environment_role_read.role_name
+        _schema.exact_version = cls._schema_image_reference_read.exact_version
+        _schema.id = cls._schema_image_reference_read.id
 
 
 __all__ = ["Show"]

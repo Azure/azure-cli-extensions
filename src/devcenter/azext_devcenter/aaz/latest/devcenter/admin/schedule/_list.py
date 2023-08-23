@@ -19,11 +19,13 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/schedules", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/schedules", "2023-06-01-preview"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -51,7 +53,6 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema
@@ -126,7 +127,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-06-01-preview",
                     required=True,
                 ),
             }

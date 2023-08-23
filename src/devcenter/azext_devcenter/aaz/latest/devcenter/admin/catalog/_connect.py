@@ -12,20 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin devcenter delete",
-    confirmation="Are you sure you want to perform this operation?",
+    "devcenter admin catalog connect",
 )
-class Delete(AAZCommand):
-    """Delete a dev center.
+class Connect(AAZCommand):
+    """Connects a catalog to enable syncing.
 
-    :example: Delete
-        az devcenter admin devcenter delete --name "Contoso" --resource-group "rg1"
+    :example: Connect
+        az devcenter admin catalog connect --name "CentralCatalog" --dev-center-name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {
         "version": "2023-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}/connect", "2023-06-01-preview"],
         ]
     }
 
@@ -46,8 +45,14 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
+        _args_schema.catalog_name = AAZStrArg(
+            options=["--catalog-name"],
+            help="The name of the catalog.",
+            required=True,
+            id_part="child_name_1",
+        )
+        _args_schema.dev_center_name = AAZStrArg(
+            options=["-d", "--dev-center", "--dev-center-name"],
             help="The name of the dev center.",
             required=True,
             id_part="name",
@@ -59,7 +64,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.DevCentersDelete(ctx=self.ctx)()
+        yield self.CatalogsConnect(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,7 +75,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class DevCentersDelete(AAZHttpOperation):
+    class CatalogsConnect(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -80,25 +85,7 @@ class Delete(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
+                    None,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
@@ -109,13 +96,13 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/catalogs/{catalogName}/connect",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "POST"
 
         @property
         def error_format(self):
@@ -125,7 +112,11 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "devCenterName", self.ctx.args.name,
+                    "catalogName", self.ctx.args.catalog_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "devCenterName", self.ctx.args.dev_center_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -149,15 +140,9 @@ class Delete(AAZCommand):
             }
             return parameters
 
-        def on_200(self, session):
-            pass
 
-        def on_204(self, session):
-            pass
+class _ConnectHelper:
+    """Helper class for Connect"""
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
-
-
-__all__ = ["Delete"]
+__all__ = ["Connect"]
