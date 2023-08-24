@@ -8,6 +8,7 @@ upcoming
 * 'az containerapp env': --enable-workload-profiles allowed values:true, false
 * 'az containerapp auth': support --token-store, --sas-url-secret, --sas-url-secret-name, --yes
 * 'az containerapp create'/'az containerapp job create': When --environment is provided and the environmentId value does not exist in --yaml, use the value in --environment as environmentId
+* Added 'az containerapp show-custom-domain-verification-id' to show verfication id used for binding custom domain
 
 0.3.37
 ++++++
