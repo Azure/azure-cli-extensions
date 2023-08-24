@@ -49,7 +49,8 @@ from ._clients import (
     ContainerAppsJobClient,
     ContainerAppPreviewClient,
     AuthPreviewClient,
-    SubscriptionPreviewClient
+    SubscriptionPreviewClient,
+    ContainerAppsJobPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._github_oauth import get_github_access_token
@@ -1222,7 +1223,7 @@ def create_containerappsjob(cmd,
     raw_parameters = locals()
     containerapp_job_create_decorator = ContainerAppJobPreviewCreateDecorator(
         cmd=cmd,
-        client=ContainerAppsJobClient,
+        client=ContainerAppsJobPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )

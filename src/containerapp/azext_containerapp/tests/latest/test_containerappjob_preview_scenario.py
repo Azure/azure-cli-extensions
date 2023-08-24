@@ -10,7 +10,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 from subprocess import run
 
 from .common import (write_test_file, TEST_LOCATION, clean_up_test_file)
-from .custom_preparers import AksAndConnectedClusterPreparer
+from .custom_preparers import ConnectedClusterPreparer
 from .utils import create_containerapp_env
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -19,10 +19,10 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class ContainerappJobPreviewScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(location=TEST_LOCATION, random_name_length=15)
-    @AksAndConnectedClusterPreparer(location=TEST_LOCATION)
-    def test_containerappjob_preview_environment_type(self, resource_group, aks_name, connected_cluster_name):
+    @ConnectedClusterPreparer(location=TEST_LOCATION)
+    def test_containerappjob_preview_environment_type(self, resource_group, infra_cluster, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        custom_location_id = None
+        custom_location_name = "my-custom-location"
         try:
             connected_cluster = self.cmd(f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
             while connected_cluster["connectivityStatus"] == "Connecting":
@@ -44,9 +44,9 @@ class ContainerappJobPreviewScenarioTest(ScenarioTest):
                                  f' --configuration-settings "appsNamespace=appplat-ns"'
                                  f' --configuration-settings "clusterName={connected_cluster_name}"'
                                  f' --configuration-settings "envoy.annotations.service.beta.kubernetes.io/azure-load-balancer-resource-group={resource_group}"').get_output_in_json()
-            custom_location_name = "my-custom-location"
-            custom_location_id = self.cmd(f'az customlocation create -g {resource_group} -n {custom_location_name} -l {TEST_LOCATION} --host-resource-id {connected_cluster_id} --namespace appplat-ns -c {extension["id"]}').get_output_in_json()['id']
-        except Exception as e:
+
+            self.cmd(f'az customlocation create -g {resource_group} -n {custom_location_name} -l {TEST_LOCATION} --host-resource-id {connected_cluster_id} --namespace appplat-ns -c {extension["id"]}')
+        except:
             pass
 
         # create connected environment with client or create a command for connected?
@@ -54,6 +54,7 @@ class ContainerappJobPreviewScenarioTest(ScenarioTest):
 
         connected_env_name = 'my-connected-env'
         connected_env_resource_id = f"/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/Microsoft.App/connectedEnvironments/{connected_env_name}"
+        custom_location_id = f"/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/Microsoft.ExtendedLocation/customLocations/{custom_location_name}"
         file = f"{resource_group}.json"
         env_payload = '{{ "location": "{location}", "extendedLocation": {{ "name": "{custom_location_id}", "type": "CustomLocation" }}, "Properties": {{}}}}' \
             .format(location=TEST_LOCATION, custom_location_id=custom_location_id)
