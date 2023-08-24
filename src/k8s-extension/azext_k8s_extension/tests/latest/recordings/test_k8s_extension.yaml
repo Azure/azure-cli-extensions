@@ -12,11 +12,11 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g -n -c --cluster-type --extension-type --release-train --version --configuration-settings
-        --no-wait
+        --no-wait --auto-upgrade
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration?api-version=2022-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.KubernetesConfiguration","namespace":"Microsoft.KubernetesConfiguration","authorizations":[{"applicationId":"c699bf69-fb1d-4eaf-999b-99e6b2ae4d85","roleDefinitionId":"90155430-a360-410f-af5d-89dc284d85c6"},{"applicationId":"03db181c-e9d3-4868-9097-f0b728327182","roleDefinitionId":"DE2ADB97-42D8-49C8-8FCF-DBB53EF936AC"},{"applicationId":"a0f92522-89de-4c5e-9a75-0044ccf66efd","roleDefinitionId":"b3429810-7d5c-420e-8605-cf280f3099f2"},{"applicationId":"bd9b7cd5-dac1-495f-b013-ac871e98fa5f","roleDefinitionId":"0d44c8f0-08b9-44d4-9f59-e51c83f95200"},{"applicationId":"585fc3c3-9a59-4720-8319-53cce041a605","roleDefinitionId":"4a9ce2ee-6de2-43ba-a7bd-8f316de763a7"}],"resourceTypes":[{"resourceType":"sourceControlConfigurations","locations":["East
@@ -26,14 +26,16 @@ interactions:
         East","Canada East","Canada Central","Norway East","Germany West Central","Sweden
         Central","Switzerland North","Australia Southeast","Central India","South
         India","Japan West","Uk West","France South","Korea South","South Africa North","Brazil
-        South","Uae North","East US 2 EUAP","Central US EUAP"],"apiVersions":["2022-11-01","2022-07-01","2022-03-01","2021-03-01","2020-10-01-preview","2020-07-01-preview","2019-11-01-preview"],"defaultApiVersion":"2022-03-01","capabilities":"SupportsExtension"},{"resourceType":"extensions","locations":["East
+        South","Uae North","Norway West","Germany North","Jio India West","East US
+        2 EUAP","Central US EUAP"],"apiVersions":["2023-05-01","2022-11-01","2022-07-01","2022-03-01","2021-03-01","2020-10-01-preview","2020-07-01-preview","2019-11-01-preview"],"defaultApiVersion":"2022-03-01","capabilities":"SupportsExtension"},{"resourceType":"extensions","locations":["East
         US","West Europe","West Central US","West US 2","West US 3","South Central
         US","East US 2","North Europe","UK South","Southeast Asia","Australia East","France
         Central","Central US","North Central US","West US","Korea Central","East Asia","Japan
         East","Canada East","Canada Central","Norway East","Germany West Central","Sweden
         Central","Switzerland North","Australia Southeast","Central India","South
         India","Japan West","Uk West","France South","Korea South","South Africa North","Brazil
-        South","Uae North","East US 2 EUAP","Central US EUAP"],"apiVersions":["2022-11-01","2022-07-01","2022-04-02-preview","2022-03-01","2021-09-01","2021-05-01-preview","2020-07-01-preview"],"defaultApiVersion":"2022-07-01","capabilities":"SystemAssignedResourceIdentity,
+        South","Uae North","Norway West","Germany North","Jio India West","East US
+        2 EUAP","Central US EUAP"],"apiVersions":["2023-05-01","2022-11-01","2022-07-01","2022-03-01","2020-07-01-preview"],"defaultApiVersion":"2022-07-01","capabilities":"SystemAssignedResourceIdentity,
         SupportsExtension"},{"resourceType":"fluxConfigurations","locations":["East
         US","West Europe","West Central US","West US 2","West US 3","South Central
         US","East US 2","North Europe","UK South","Southeast Asia","Australia East","France
@@ -41,7 +43,32 @@ interactions:
         East","Canada East","Canada Central","Norway East","Germany West Central","Sweden
         Central","Switzerland North","Australia Southeast","Central India","South
         India","Japan West","Uk West","Korea South","France South","South Africa North","Brazil
-        South","Uae North"],"apiVersions":["2022-11-01","2022-07-01","2022-03-01","2022-01-01-preview","2021-11-01-preview","2021-06-01-preview"],"defaultApiVersion":"2022-07-01","capabilities":"SupportsExtension"},{"resourceType":"operations","locations":[],"apiVersions":["2022-11-01","2022-03-01","2022-01-01-preview","2021-12-01-preview","2021-11-01-preview","2021-09-01","2021-06-01-preview","2021-05-01-preview","2021-03-01","2020-10-01-preview","2020-07-01-preview","2019-11-01-preview"],"capabilities":"None"},{"resourceType":"privateLinkScopes","locations":["East
+        South","Uae North","Norway West","Germany North","Jio India West","East US
+        2 EUAP","Central US EUAP"],"apiVersions":["2023-05-01","2022-11-01","2022-07-01","2022-03-01","2022-01-01-preview","2021-11-01-preview","2021-06-01-preview"],"defaultApiVersion":"2022-07-01","capabilities":"SupportsExtension"},{"resourceType":"operations","locations":[],"apiVersions":["2023-05-01-preview","2023-05-01","2022-11-01","2022-03-01","2022-01-01-preview","2021-12-01-preview","2021-11-01-preview","2021-09-01","2021-06-01-preview","2021-05-01-preview","2021-03-01","2020-10-01-preview","2020-07-01-preview","2019-11-01-preview"],"capabilities":"None"},{"resourceType":"extensionTypes","locations":["West
+        US 2","East US","West Europe","West Central US","West US 3","South Central
+        US","East US 2","North Europe","UK South","Southeast Asia","Australia East","France
+        Central","Central US","North Central US","West US","Korea Central","East Asia","Japan
+        East","Canada Central","Canada East","Norway East","Central India","South
+        India","Australia Southeast","Germany West Central","Switzerland North","Sweden
+        Central","Japan West","Uk West","Korea South","France South","South Africa
+        North","Brazil South","Uae North","Norway West","Germany North","Jio India
+        West","East US 2 EUAP"],"apiVersions":["2023-05-01-preview","2022-01-15-preview"],"capabilities":"SupportsExtension"},{"resourceType":"locations/extensionTypes","locations":["West
+        US 2","East US","West Europe","West Central US","West US 3","South Central
+        US","East US 2","North Europe","UK South","Southeast Asia","Australia East","France
+        Central","Central US","North Central US","West US","Korea Central","East Asia","Japan
+        East","Canada Central","Canada East","Central India","South India","Norway
+        East","Australia Southeast","Germany West Central","Switzerland North","Sweden
+        Central","Japan West","Uk West","Korea South","France South","South Africa
+        North","Brazil South","Uae North","Norway West","Germany North","Jio India
+        West","East US 2 EUAP"],"apiVersions":["2023-05-01-preview","2022-01-15-preview"],"capabilities":"None"},{"resourceType":"locations/extensionTypes/versions","locations":["West
+        US 2","East US","West Europe","West Central US","West US 3","South Central
+        US","East US 2","North Europe","UK South","Southeast Asia","Australia East","France
+        Central","Central US","North Central US","West US","Korea Central","East Asia","Japan
+        East","Canada Central","Canada East","Central India","Norway East","Australia
+        Southeast","Germany West Central","Switzerland North","Sweden Central","Japan
+        West","Uk West","Korea South","France South","South Africa North","South India","Brazil
+        South","Uae North","Norway West","Germany North","Jio India West","East US
+        2 EUAP"],"apiVersions":["2023-05-01-preview","2022-01-15-preview"],"capabilities":"None"},{"resourceType":"privateLinkScopes","locations":["East
         US","West Europe","West Central US","West US 2","West US 3","South Central
         US","East US 2","North Europe","UK South","Southeast Asia","Australia East","France
         Central","Central US","North Central US","West US","Korea Central","East Asia","Japan
@@ -63,44 +90,24 @@ interactions:
         East","Canada East","Canada Central","Norway East","Germany West Central","Sweden
         Central","Switzerland North","Australia Southeast","Central India","South
         India","Japan West","Uk West","South Africa North","Korea South","France South","Brazil
-        South","Uae North","East US 2 EUAP","Central US EUAP"],"apiVersions":["2022-04-02-preview"],"capabilities":"None"},{"resourceType":"extensionTypes","locations":["East
-        US 2 EUAP","West US 2","East US","West Europe","West Central US","West US
-        3","South Central US","East US 2","North Europe","UK South","Southeast Asia","Australia
-        East","France Central","Central US","North Central US","West US","Korea Central","East
-        Asia","Japan East","Canada Central","Canada East","Norway East","Central India","South
-        India","Australia Southeast","Germany West Central","Switzerland North","Sweden
-        Central","Japan West","Uk West","Korea South","France South","South Africa
-        North","Brazil South","Uae North"],"apiVersions":["2022-01-15-preview"],"capabilities":"SupportsExtension"},{"resourceType":"locations","locations":["East
+        South","Uae North","East US 2 EUAP","Central US EUAP"],"apiVersions":["2022-04-02-preview"],"capabilities":"None"},{"resourceType":"locations","locations":["East
         US 2 EUAP","West US 2","East US","West Europe","West Central US","West US
         3","South Central US","East US 2","North Europe","UK South","Southeast Asia","Australia
         East","France Central","Central US","North Central US","West US","Korea Central","East
         Asia","Japan East","Canada Central","Canada East","Central India","South India","Norway
         East","Australia Southeast","Germany West Central","Switzerland North","Sweden
         Central","Japan West","Uk West","Korea South","France South","South Africa
-        North","Brazil South","Uae North"],"apiVersions":["2022-01-15-preview"],"capabilities":"None"},{"resourceType":"locations/extensionTypes","locations":["East
-        US 2 EUAP","West US 2","East US","West Europe","West Central US","West US
-        3","South Central US","East US 2","North Europe","UK South","Southeast Asia","Australia
-        East","France Central","Central US","North Central US","West US","Korea Central","East
-        Asia","Japan East","Canada Central","Canada East","Central India","South India","Norway
-        East","Australia Southeast","Germany West Central","Switzerland North","Sweden
-        Central","Japan West","Uk West","Korea South","France South","South Africa
-        North","Brazil South","Uae North"],"apiVersions":["2022-01-15-preview"],"capabilities":"None"},{"resourceType":"locations/extensionTypes/versions","locations":["East
-        US 2 EUAP","West US 2","East US","West Europe","West Central US","West US
-        3","South Central US","East US 2","North Europe","UK South","Southeast Asia","Australia
-        East","France Central","Central US","North Central US","West US","Korea Central","East
-        Asia","Japan East","Canada Central","Canada East","Central India","Norway
-        East","Australia Southeast","Germany West Central","Switzerland North","Sweden
-        Central","Japan West","Uk West","Korea South","France South","South Africa
-        North","South India","Brazil South","Uae North"],"apiVersions":["2022-01-15-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+        North","Brazil South","Uae North","Norway West","Germany North","Jio India
+        West"],"apiVersions":["2023-05-01-preview","2022-01-15-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '8181'
+      - '8647'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Jan 2023 22:43:16 GMT
+      - Wed, 19 Jul 2023 18:31:22 GMT
       expires:
       - '-1'
       pragma:
@@ -115,10 +122,10 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"extensionType": "microsoft.dapr", "releaseTrain": "stable",
-      "version": "1.6.0", "scope": {"cluster": {"releaseNamespace": "dapr-system"}},
-      "configurationSettings": {"skipExistingDaprCheck": "true"}, "configurationProtectedSettings":
-      {}}}'
+    body: '{"properties": {"extensionType": "microsoft.dapr", "autoUpgradeMinorVersion":
+      false, "releaseTrain": "stable", "version": "1.6.0", "scope": {"cluster": {"releaseNamespace":
+      "dapr-system"}}, "configurationSettings": {"skipExistingDaprCheck": "true"},
+      "configurationProtectedSettings": {}}}'
     headers:
       Accept:
       - application/json
@@ -129,37 +136,37 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '254'
+      - '288'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -n -c --cluster-type --extension-type --release-train --version --configuration-settings
-        --no-wait
+        --no-wait --auto-upgrade
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-kubernetesconfiguration/2.0.0 Python/3.10.8
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-kubernetesconfiguration/0.1.0 Python/3.10.11
         (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr?api-version=2022-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr?api-version=2023-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr","name":"dapr","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.dapr","autoUpgradeMinorVersion":false,"releaseTrain":"stable","version":"1.6.0","scope":{"cluster":{"releaseNamespace":"dapr-system"}},"provisioningState":"Creating","configurationSettings":{"skipExistingDaprCheck":"true"},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null,"isSystemExtension":false},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2023-01-12T22:43:18.1754991+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2023-01-12T22:43:18.1754991+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr","name":"dapr","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.dapr","autoUpgradeMinorVersion":false,"releaseTrain":"stable","version":"1.6.0","currentVersion":null,"scope":{"cluster":{"releaseNamespace":"dapr-system"}},"provisioningState":"Creating","configurationSettings":{"skipExistingDaprCheck":"true"},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null,"isSystemExtension":false},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2023-07-19T18:31:24.4169171+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2023-07-19T18:31:24.4169171+00:00"}}'
     headers:
       api-supported-versions:
-      - '2022-11-01'
+      - '2023-05-01'
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/ConnectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr/operations/29f0ffb2-3281-47d6-8218-1d42bcfddbc9?api-Version=2022-11-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/ConnectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr/operations/dbef82c3-3ef9-493e-8253-e5519262973a?api-Version=2023-05-01
       cache-control:
       - no-cache
       content-length:
-      - '849'
+      - '871'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Jan 2023 22:43:17 GMT
+      - Wed, 19 Jul 2023 18:31:24 GMT
       expires:
       - '-1'
       location:
-      - https://eastus2euap.rp.kubernetesconfiguration.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/ConnectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr
+      - https://eastus.rp.kubernetesconfiguration.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/ConnectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr
       pragma:
       - no-cache
       strict-transport-security:
@@ -185,24 +192,24 @@ interactions:
       ParameterSetName:
       - -c -g --cluster-type
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-kubernetesconfiguration/2.0.0 Python/3.10.8
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-kubernetesconfiguration/0.1.0 Python/3.10.11
         (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions?api-version=2022-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions?api-version=2023-05-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr","name":"dapr","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.dapr","autoUpgradeMinorVersion":false,"releaseTrain":"stable","version":"1.6.0","scope":{"cluster":{"releaseNamespace":"dapr-system"}},"provisioningState":"Creating","configurationSettings":{"skipExistingDaprCheck":"true"},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null,"isSystemExtension":false},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2023-01-12T22:43:18.1754991+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2023-01-12T22:43:18.1754991+00:00"}}],"nextLink":null}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr","name":"dapr","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.dapr","autoUpgradeMinorVersion":false,"releaseTrain":"stable","version":"1.6.0","currentVersion":null,"scope":{"cluster":{"releaseNamespace":"dapr-system"}},"provisioningState":"Creating","configurationSettings":{"skipExistingDaprCheck":"true"},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null,"isSystemExtension":false},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2023-07-19T18:31:24.4169171+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2023-07-19T18:31:24.4169171+00:00"}}],"nextLink":null}'
     headers:
       api-supported-versions:
-      - '2022-11-01'
+      - '2023-05-01'
       cache-control:
       - no-cache
       content-length:
-      - '877'
+      - '899'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Jan 2023 22:43:17 GMT
+      - Wed, 19 Jul 2023 18:31:25 GMT
       expires:
       - '-1'
       pragma:
@@ -232,24 +239,24 @@ interactions:
       ParameterSetName:
       - -c -g -n --cluster-type
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-kubernetesconfiguration/2.0.0 Python/3.10.8
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-kubernetesconfiguration/0.1.0 Python/3.10.11
         (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr?api-version=2022-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr?api-version=2023-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr","name":"dapr","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.dapr","autoUpgradeMinorVersion":false,"releaseTrain":"stable","version":"1.6.0","scope":{"cluster":{"releaseNamespace":"dapr-system"}},"provisioningState":"Creating","configurationSettings":{"skipExistingDaprCheck":"true"},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null,"isSystemExtension":false},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2023-01-12T22:43:18.1754991+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2023-01-12T22:43:18.1754991+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr","name":"dapr","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.dapr","autoUpgradeMinorVersion":false,"releaseTrain":"stable","version":"1.6.0","currentVersion":"1.6.0","scope":{"cluster":{"releaseNamespace":"dapr-system"}},"provisioningState":"Creating","configurationSettings":{"skipExistingDaprCheck":"true"},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null,"isSystemExtension":false},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2023-07-19T18:31:24.4169171+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2023-07-19T18:31:24.4169171+00:00"}}'
     headers:
       api-supported-versions:
-      - '2022-11-01'
+      - '2023-05-01'
       cache-control:
       - no-cache
       content-length:
-      - '849'
+      - '874'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Jan 2023 22:43:18 GMT
+      - Wed, 19 Jul 2023 18:31:25 GMT
       expires:
       - '-1'
       pragma:
@@ -279,24 +286,24 @@ interactions:
       ParameterSetName:
       - -g -c -n --cluster-type --force -y
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-kubernetesconfiguration/2.0.0 Python/3.10.8
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-kubernetesconfiguration/0.1.0 Python/3.10.11
         (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr?api-version=2022-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr?api-version=2023-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr","name":"dapr","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.dapr","autoUpgradeMinorVersion":false,"releaseTrain":"stable","version":"1.6.0","scope":{"cluster":{"releaseNamespace":"dapr-system"}},"provisioningState":"Creating","configurationSettings":{"skipExistingDaprCheck":"true"},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null,"isSystemExtension":false},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2023-01-12T22:43:18.1754991+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2023-01-12T22:43:18.1754991+00:00"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr","name":"dapr","type":"Microsoft.KubernetesConfiguration/extensions","properties":{"extensionType":"microsoft.dapr","autoUpgradeMinorVersion":false,"releaseTrain":"stable","version":"1.6.0","currentVersion":"1.6.0","scope":{"cluster":{"releaseNamespace":"dapr-system"}},"provisioningState":"Creating","configurationSettings":{"skipExistingDaprCheck":"true"},"configurationProtectedSettings":{},"statuses":[],"aksAssignedIdentity":null,"isSystemExtension":false},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2023-07-19T18:31:24.4169171+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2023-07-19T18:31:24.4169171+00:00"}}'
     headers:
       api-supported-versions:
-      - '2022-11-01'
+      - '2023-05-01'
       cache-control:
       - no-cache
       content-length:
-      - '849'
+      - '874'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Jan 2023 22:43:19 GMT
+      - Wed, 19 Jul 2023 18:31:26 GMT
       expires:
       - '-1'
       pragma:
@@ -328,16 +335,16 @@ interactions:
       ParameterSetName:
       - -g -c -n --cluster-type --force -y
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-kubernetesconfiguration/2.0.0 Python/3.10.8
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-kubernetesconfiguration/0.1.0 Python/3.10.11
         (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr?api-version=2022-11-01&forceDelete=true
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions/dapr?api-version=2023-05-01&forceDelete=true
   response:
     body:
-      string: '{"content":{"headers":[]},"statusCode":200,"headers":[],"version":"1.1","reasonPhrase":"OK","trailingHeaders":[],"requestMessage":null,"isSuccessStatusCode":true}'
+      string: '{"version":"1.1","content":{"headers":[]},"statusCode":200,"reasonPhrase":"OK","headers":[],"trailingHeaders":[],"requestMessage":null,"isSuccessStatusCode":true}'
     headers:
       api-supported-versions:
-      - '2022-11-01'
+      - '2023-05-01'
       cache-control:
       - no-cache
       content-length:
@@ -345,7 +352,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Jan 2023 22:43:20 GMT
+      - Wed, 19 Jul 2023 18:31:26 GMT
       expires:
       - '-1'
       pragma:
@@ -377,16 +384,16 @@ interactions:
       ParameterSetName:
       - -c -g --cluster-type
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-kubernetesconfiguration/2.0.0 Python/3.10.8
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-kubernetesconfiguration/0.1.0 Python/3.10.11
         (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions?api-version=2022-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azurecli-tests/providers/Microsoft.Kubernetes/connectedClusters/arc-cluster/providers/Microsoft.KubernetesConfiguration/extensions?api-version=2023-05-01
   response:
     body:
       string: '{"value":[],"nextLink":null}'
     headers:
       api-supported-versions:
-      - '2022-11-01'
+      - '2023-05-01'
       cache-control:
       - no-cache
       content-length:
@@ -394,7 +401,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 12 Jan 2023 22:43:21 GMT
+      - Wed, 19 Jul 2023 18:31:28 GMT
       expires:
       - '-1'
       pragma:

@@ -28,7 +28,7 @@ class K8sExtensionScenarioTest(ScenarioTest):
 
         self.cmd('k8s-extension create -g {rg} -n {name} -c {cluster_name} --cluster-type {cluster_type} '
                  '--extension-type {extension_type} --release-train {release_train} --version {version} '
-                 '--configuration-settings "skipExistingDaprCheck=true" --no-wait')
+                 '--configuration-settings "skipExistingDaprCheck=true" --no-wait --auto-upgrade false')
 
         # Update requires agent running in k8s cluster that is connected to Azure - so no update tests here
         # self.cmd('k8s-extension update -g {rg} -n {name} --tags foo=boo', checks=[
