@@ -2,8 +2,14 @@
 
 Release History
 ===============
+upcoming
+++++++
+* Removed preview tag for some command groups and params (e.g. 'az containerapp job', 'az containerapp env storage', 'az containerapp env workload-profile')
+* 'az containerapp env': --enable-workload-profiles allowed values:true, false
+* 'az containerapp auth': support --token-store, --sas-url-secret, --sas-url-secret-name, --yes
+* 'az containerapp create'/'az containerapp job create': When --environment is provided and the environmentId value does not exist in --yaml, use the value in --environment as environmentId
 
-Upcoming
+0.3.37
 ++++++
 * 'az containerapp job start': update start execution payload format to exlude template property from API version 2023-05-01 onwards
 * 'az containerapp service': add support for creation and deletion of MariaDB
