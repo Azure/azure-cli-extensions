@@ -27,7 +27,6 @@ from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import open_page_in_browser
-from azure.cli.command_modules.appservice.utils import _normalize_location
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, prompt as prompt_str
 
@@ -36,9 +35,8 @@ from msrest.exceptions import DeserializationError
 
 from .containerapp_job_decorator import ContainerAppJobDecorator, ContainerAppJobCreateDecorator
 from .containerapp_env_decorator import ContainerAppEnvDecorator, ContainerAppEnvCreateDecorator, ContainerAppEnvUpdateDecorator
-from .containerapp_auth_decorator import ContainerAppAuthDecorator
-from .containerapp_decorator import ContainerAppCreateDecorator, BaseContainerAppDecorator, \
-    ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator
+from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
+from .containerapp_decorator import BaseContainerAppDecorator, ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_exception
 from ._clients import (
     ManagedEnvironmentClient,
@@ -49,7 +47,8 @@ from ._clients import (
     AuthClient,
     WorkloadProfileClient,
     ContainerAppsJobClient,
-    ContainerAppPreviewClient
+    ContainerAppPreviewClient,
+    AuthPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._github_oauth import get_github_access_token
@@ -116,7 +115,8 @@ from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, F
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, HELLO_WORLD_IMAGE, LOG_TYPE_SYSTEM, LOG_TYPE_CONSOLE,
                          MANAGED_CERTIFICATE_RT, PRIVATE_CERTIFICATE_RT, PENDING_STATUS, SUCCEEDED_STATUS, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
                          DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
-                         DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS)
+                         DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_SERVICE_LIST,
+                         CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME)
 
 logger = get_logger(__name__)
 
@@ -445,6 +445,7 @@ def create_containerapp(cmd,
                         exposed_port=None,
                         transport="auto",
                         ingress=None,
+                        allow_insecure=False,
                         revisions_mode="single",
                         secrets=None,
                         env_vars=None,
@@ -5036,24 +5037,28 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
                        runtime_version=None, config_file_path=None, unauthenticated_client_action=None,
                        redirect_provider=None, require_https=None,
                        proxy_convention=None, proxy_custom_host_header=None,
-                       proxy_custom_proto_header=None, excluded_paths=None):
+                       proxy_custom_proto_header=None, excluded_paths=None,
+                       token_store=None, sas_url_secret=None, sas_url_secret_name=None,
+                       yes=False):
     raw_parameters = locals()
-    containerapp_auth_decorator = ContainerAppAuthDecorator(
+    containerapp_auth_decorator = ContainerAppPreviewAuthDecorator(
         cmd=cmd,
-        client=AuthClient,
+        client=AuthPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
 
     containerapp_auth_decorator.construct_payload()
+    if containerapp_auth_decorator.get_argument_token_store() and containerapp_auth_decorator.get_argument_sas_url_secret() is not None:
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME}={containerapp_auth_decorator.get_argument_sas_url_secret()}"], no_wait=True, disable_max_length=True)
     return containerapp_auth_decorator.create_or_update()
 
 
 def show_auth_config(cmd, resource_group_name, name):
     raw_parameters = locals()
-    containerapp_auth_decorator = ContainerAppAuthDecorator(
+    containerapp_auth_decorator = ContainerAppPreviewAuthDecorator(
         cmd=cmd,
-        client=AuthClient,
+        client=AuthPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )

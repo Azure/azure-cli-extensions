@@ -11,16 +11,16 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
 class StorageMoverScenario(ScenarioTest):
-    @ResourceGroupPreparer(location='eastus2')
+    @ResourceGroupPreparer(location='eastus2euap')
     def test_storage_mover_scenarios(self, resource_group):
         self.kwargs.update({
             "mover_name": self.create_random_name('storage-mover', 24)
         })
-        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2 '
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2euap '
                  '--tags {{key1:value1}} --description ExampleDesc')
         self.cmd('az storage-mover show -g {rg} -n {mover_name}',
                  checks=[JMESPathCheck('name', self.kwargs.get('mover_name', '')),
-                         JMESPathCheck('location', "eastus2"),
+                         JMESPathCheck('location', "eastus2euap"),
                          JMESPathCheck('tags', {"key1":"value1"}),
                          JMESPathCheck('description', "ExampleDesc")])
         self.cmd('az storage-mover list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
@@ -33,13 +33,13 @@ class StorageMoverScenario(ScenarioTest):
 
     @record_only()
     # need to manually register agent, first create the rg and the storagemover
-    # az group create -n test-storagemover-rg -l eastus
-    # az storage-mover create -n teststoragemover -g test-storagemover-rg
+    # az group create -n test-storagemover-rg2 -l eastus2euap
+    # az storage-mover create -n teststoragemover2 -g test-storagemover-rg2
     def test_storage_mover_agent_scenarios(self):
         self.kwargs.update({
-            "rg": "test-storagemover-rg",
-            "mover_name": "teststoragemover",
-            "agent_name": "testagent"
+            "rg": "test-storagemover-rg2",
+            "mover_name": "teststoragemover2",
+            "agent_name": "agent2"
         })
         self.cmd('az storage-mover agent show -g {rg} -n {agent_name} --storage-mover-name {mover_name}')
         self.cmd('az storage-mover agent list -g {rg} --storage-mover-name {mover_name}',
@@ -50,7 +50,7 @@ class StorageMoverScenario(ScenarioTest):
         self.cmd('az storage-mover agent list -g {rg} --storage-mover-name {mover_name}',
                  checks=[JMESPathCheck('length(@)', 0)])
 
-    @ResourceGroupPreparer(location='eastus2')
+    @ResourceGroupPreparer(location='eastus2euap')
     @StorageAccountPreparer()
     @AllowLargeResponse()
     def test_storage_mover_endpoint_scenarios(self, resource_group, storage_account):
@@ -63,11 +63,17 @@ class StorageMoverScenario(ScenarioTest):
             "account_id": self.cmd('az storage account show -n {} -g {} --query id '
                                    '-otsv'.format(storage_account, resource_group)).output.strip(),
             "endpoint_container": self.create_random_name('endpoint_container', 32),
+            "endpoint_file_share": self.create_random_name('endpoint_file_share', 32),
             "endpoint_nfs": self.create_random_name('endpoint_nfs', 32),
-            "vm_name": self.create_random_name('vm', 24),
+            "endpoint_smb": self.create_random_name('endpoint_smb', 32),
+            "vm_nfs_name": self.create_random_name('vm', 24),
+            "vm_smb_name": self.create_random_name('vm', 24),
+            "file_share_name": self.create_random_name('fileshare', 24),
+            "smb_share_name": self.create_random_name('smbshare', 24),
         })
-        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2 '
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2euap '
                  '--tags {{key1:value1}} --description MoverDesc')
+
         # create for storage container
         self.cmd('az storage container create -n {container_name} --account-name {account_name} '
                  '--account-key {account_key}')
@@ -81,9 +87,38 @@ class StorageMoverScenario(ScenarioTest):
                          JMESPathCheck('properties.storageAccountResourceId', self.kwargs.get('account_id', '')),
                          JMESPathCheck('properties.description', "endpointDesc"),
                          ])
-        # create for nfs
-        vm_ip = self.cmd('az vm create -n {vm_name} -g {rg} --image UbuntuLTS --size Standard_D4s_v3 --nsg-rule '
-                 'NONE --admin-username ubuntuuser --generate-ssh-keys').get_output_in_json()["publicIpAddress"]
+
+        # update for storage container
+        self.cmd('az storage-mover endpoint update-for-storage-container -g {rg} --storage-mover-name {mover_name} '
+                 '-n {endpoint_container} --description endpointDescUpdate',
+                 checks=[JMESPathCheck('name', self.kwargs.get('endpoint_container', '')),
+                         JMESPathCheck('properties.description', "endpointDescUpdate")])
+
+        # create for storage smb file share
+        self.cmd('az storage share create -n {file_share_name} --account-name {account_name} '
+                 '--account-key {account_key}')
+        self.cmd('az storage-mover endpoint create-for-storage-smb-file-share -g {rg} '
+                 '--storage-mover-name {mover_name} '
+                 '-n {endpoint_file_share} --file-share-name {file_share_name} --storage-account-id {account_id} '
+                 '--description endpointFileShareDesc')
+        self.cmd('az storage-mover endpoint show -g {rg} --storage-mover-name {mover_name} -n {endpoint_file_share}',
+                 checks=[JMESPathCheck('name', self.kwargs.get('endpoint_file_share', '')),
+                         JMESPathCheck('properties.fileShareName', self.kwargs.get('file_share_name', '')),
+                         JMESPathCheck('properties.endpointType', "AzureStorageSmbFileShare"),
+                         JMESPathCheck('properties.storageAccountResourceId', self.kwargs.get('account_id', '')),
+                         JMESPathCheck('properties.description', "endpointFileShareDesc"),
+                         ])
+
+        # update for storage smb file share
+        self.cmd('az storage-mover endpoint update-for-storage-smb-file-share -g {rg} '
+                 '--storage-mover-name {mover_name} '
+                 '-n {endpoint_file_share} --description endpointFileShareDescUpdate',
+                 checks=[JMESPathCheck('name', self.kwargs.get('endpoint_file_share', '')),
+                         JMESPathCheck('properties.description', "endpointFileShareDescUpdate")])
+
+        # create for nfs mount
+        vm_ip = self.cmd('az vm create -n {vm_nfs_name} -g {rg} --image Ubuntu2204 --size Standard_D4s_v3 --nsg-rule '
+                         'NONE --admin-username ubuntuuser --generate-ssh-keys').get_output_in_json()["publicIpAddress"]
         self.cmd('az storage-mover endpoint create-for-nfs -g {rg} --storage-mover-name {mover_name} '
                  '-n {endpoint_nfs} --description endpointDesc --export exportfolder --nfs-version NFSv4 --host '+vm_ip)
         self.cmd('az storage-mover endpoint show -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs}',
@@ -93,37 +128,57 @@ class StorageMoverScenario(ScenarioTest):
                                JMESPathCheck('properties.host', vm_ip),
                                JMESPathCheck('properties.nfsVersion', "NFSv4"),
                                JMESPathCheck('properties.description', "endpointDesc")])
-        self.cmd('az storage-mover endpoint list -g {rg} --storage-mover-name {mover_name}',
-                 checks=[JMESPathCheck('length(@)', 2)])
 
-        # update for storage container
-        self.cmd('az storage-mover endpoint update-for-storage-container -g {rg} --storage-mover-name {mover_name} '
-                 '-n {endpoint_container} --description endpointDescUpdate '
-                 '--container-name {container_name} --storage-account-id {account_id}',
-                 checks=[JMESPathCheck('name', self.kwargs.get('endpoint_container', '')),
-                         JMESPathCheck('properties.description', "endpointDescUpdate")])
-
-        # update for nfs
+        # update for nfs mount
         self.cmd('az storage-mover endpoint update-for-nfs -g {rg} --storage-mover-name {mover_name} '
-                 '-n {endpoint_nfs} --description endpointDescUpdate '
-                 '--export exportfolder --nfs-version NFSv4 --host ' + vm_ip,
+                 '-n {endpoint_nfs} --description endpointDescUpdate',
                  checks=[JMESPathCheck('name', self.kwargs.get('endpoint_nfs', '')),
                          JMESPathCheck('properties.description', "endpointDescUpdate")])
 
+        # create for smb mount
+        vm_smb_ip = self.cmd('az vm create -n {vm_smb_name} -g {rg} --image Ubuntu2204 --size Standard_D4s_v3 '
+                             '--nsg-rule NONE --admin-username ubuntuuser '
+                             '--generate-ssh-keys').get_output_in_json()["publicIpAddress"]
+        self.cmd('az storage-mover endpoint create-for-smb -g {rg} --storage-mover-name {mover_name} -n {endpoint_smb}'
+                 ' --description endpointSmbDesc --share-name {smb_share_name} '
+                 '--username-uri "https://smb-demo-kv.vault.azure.net/secrets/username" '
+                 '--password-uri "https://smb-demo-kv.vault.azure.net/secrets/password" --host '+vm_smb_ip)
+        self.cmd('az storage-mover endpoint show -g {rg} --storage-mover-name {mover_name} -n {endpoint_smb}',
+                       checks=[JMESPathCheck('name', self.kwargs.get('endpoint_smb', '')),
+                               JMESPathCheck('properties.endpointType', "SmbMount"),
+                               JMESPathCheck('properties.host', vm_smb_ip),
+                               JMESPathCheck('properties.shareName', self.kwargs.get('smb_share_name', '')),
+                               JMESPathCheck('properties.description', "endpointSmbDesc"),
+                               JMESPathCheck('properties.credentials.passwordUri',
+                                             "https://smb-demo-kv.vault.azure.net/secrets/password"),
+                               JMESPathCheck('properties.credentials.usernameUri',
+                                             "https://smb-demo-kv.vault.azure.net/secrets/username")])
+
+        # update for smb mount
+        self.cmd('az storage-mover endpoint update-for-smb -g {rg} '
+                 '--storage-mover-name {mover_name} '
+                 '-n {endpoint_smb} --username-uri "" --password-uri "" --description endpointSmbDescUpdate',
+                 checks=[JMESPathCheck('name', self.kwargs.get('endpoint_smb', '')),
+                         JMESPathCheck('properties.description', "endpointSmbDescUpdate"),
+                         JMESPathCheck('properties.credentials.passwordUri', None),
+                         JMESPathCheck('properties.credentials.usernameUri', None)])
+
+        self.cmd('az storage-mover endpoint list -g {rg} --storage-mover-name {mover_name}',
+                 checks=[JMESPathCheck('length(@)', 4)])
         self.cmd('az storage-mover endpoint delete -g {rg} --storage-mover-name {mover_name} -n {endpoint_nfs} -y')
         self.cmd('az storage-mover endpoint list -g {rg} --storage-mover-name {mover_name}',
-                 checks=[JMESPathCheck('length(@)', 1)])
+                 checks=[JMESPathCheck('length(@)', 3)])
 
     @record_only()
     # need to manually register agent, first create the rg and the storagemover
-    # az group create -n test-storagemover-rg -l eastus
-    # az storage-mover create -n teststoragemover -g test-storagemover-rg
+    # az group create -n test-storagemover-rg2 -l eastus2euap
+    # az storage-mover create -n teststoragemover2 -g test-storagemover-rg2
     @AllowLargeResponse()
     def test_storage_mover_job_definition_scenarios(self):
         self.kwargs.update({
-            "rg": "test-storagemover-rg",
-            "mover_name": "teststoragemover",
-            "agent_name": "testagent",
+            "rg": "test-storagemover-rg2",
+            "mover_name": "teststoragemover2",
+            "agent_name": "agent2",
             "project_name": "testproject",
             "job_definition": "testdefinition",
             "account_name": "testjobdefinitionsa2",
@@ -144,7 +199,7 @@ class StorageMoverScenario(ScenarioTest):
         })
         self.cmd('az storage container create -n {target_container} --account-name {account_name} '
                  '--account-key {account_key}')
-        vm_ip = self.cmd('az vm create -n {source_vm} -g {rg} --image UbuntuLTS --size Standard_D4s_v3 --nsg-rule '
+        vm_ip = self.cmd('az vm create -n {source_vm} -g {rg} --image Ubuntu2204 --size Standard_D4s_v3 --nsg-rule '
                          'NONE --admin-username ubuntuuser --generate-ssh-keys').get_output_in_json()["publicIpAddress"]
         self.cmd('az storage-mover endpoint create-for-nfs -g {rg} --storage-mover-name {mover_name} '
                  '-n {source_endpoint} --description srcendpointDesc --export exportfolder --nfs-version NFSv4 '
@@ -189,13 +244,13 @@ class StorageMoverScenario(ScenarioTest):
                  '--storage-mover-name {mover_name}', checks=[JMESPathCheck('length(@)', 0)])
 
 
-    @ResourceGroupPreparer(location='eastus2')
+    @ResourceGroupPreparer(location='eastus2euap')
     def test_storage_mover_project_scenarios(self, resource_group):
         self.kwargs.update({
             "mover_name": self.create_random_name('storage-mover', 24),
             "project_name": self.create_random_name('project', 24)
         })
-        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2 '
+        self.cmd('az storage-mover create -g {rg} -n {mover_name} -l eastus2euap '
                  '--tags {{key1:value1}} --description MoverDesc')
         self.cmd('az storage-mover project create -g {rg} --storage-mover-name {mover_name} -n {project_name} '
                  '--description ProjectDesc')

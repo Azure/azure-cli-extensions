@@ -215,3 +215,71 @@ class DataboxScenario(ScenarioTest):
         self.cmd('databox job cancel --resource-group {rg} --name {job_name} --reason "CancelTest" -y')
         self.cmd('databox job delete --resource-group {rg} --name {job_name} -y')
         self.cmd('lock delete --name DATABOX_SERVICE -g {rg} --resource-name {storage_account_1} --resource-type Microsoft.Storage/storageAccounts')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_databox')
+    @StorageAccountPreparer(parameter_name='storage_account_1')
+    def test_databox_transfer_all_details(self, storage_account_1):
+        self.kwargs.update({
+            'job_name': self.create_random_name('job', 24),
+            'job_name_2': self.create_random_name('job', 24),
+            'storage_account_1': storage_account_1,
+        })
+        self.cmd('databox job create '
+                 '--resource-group {rg} '
+                 '--name {job_name} '
+                 '--location westus '
+                 '--sku DataBox '
+                 '--expected-data-size 1 '
+                 '--contact-name "Public SDK Test" '
+                 '--phone 14258828080 '
+                 '--email-list testing@microsoft.com '
+                 '--street-address1 "1 MICROSOFT WAY" '
+                 '--city Redmond '
+                 '--state-or-province WA '
+                 '--country US '
+                 '--postal-code 98052 '
+                 '--company-name Microsoft '
+                 '--storage-account {storage_account_1} '
+                 '--transfer-type ExportFromAzure '
+                 '--transfer-configuration-type TransferAll '
+                 '--transfer-all-blobs true',
+                 checks=[
+                     self.check('status', 'DeviceOrdered'),
+                     self.check('transferType', 'ExportFromAzure'),
+                     self.check('details.dataExportDetails[0].transferConfiguration.transferConfigurationType', 'TransferAll'),
+                     self.check('details.dataExportDetails[0].transferConfiguration.transferAllDetails.include.transferAllBlobs', True),
+                     self.check('details.dataExportDetails[0].transferConfiguration.transferAllDetails.include.transferAllFiles', False)
+                 ])
+
+        self.cmd('databox job create '
+                 '--resource-group {rg} '
+                 '--name {job_name_2} '
+                 '--location westus '
+                 '--sku DataBox '
+                 '--expected-data-size 1 '
+                 '--contact-name "Public SDK Test" '
+                 '--phone 14258828080 '
+                 '--email-list testing@microsoft.com '
+                 '--street-address1 "1 MICROSOFT WAY" '
+                 '--city Redmond '
+                 '--state-or-province WA '
+                 '--country US '
+                 '--postal-code 98052 '
+                 '--company-name Microsoft '
+                 '--storage-account {storage_account_1} '
+                 '--transfer-type ExportFromAzure '
+                 '--transfer-configuration-type TransferAll '
+                 '--transfer-all-files True',
+                 checks=[
+                     self.check('status', 'DeviceOrdered'),
+                     self.check('transferType', 'ExportFromAzure'),
+                     self.check('details.dataExportDetails[0].transferConfiguration.transferConfigurationType', 'TransferAll'),
+                     self.check('details.dataExportDetails[0].transferConfiguration.transferAllDetails.include.transferAllBlobs', False),
+                     self.check('details.dataExportDetails[0].transferConfiguration.transferAllDetails.include.transferAllFiles', True)
+                 ])
+
+        self.cmd('databox job cancel --resource-group {rg} --name {job_name} --reason "CancelTest" -y')
+        self.cmd('databox job delete --resource-group {rg} --name {job_name} -y')
+        self.cmd('databox job cancel --resource-group {rg} --name {job_name_2} --reason "CancelTest" -y')
+        self.cmd('databox job delete --resource-group {rg} --name {job_name_2} -y')
+        self.cmd('lock delete --name DATABOX_SERVICE -g {rg} --resource-name {storage_account_1} --resource-type Microsoft.Storage/storageAccounts')
