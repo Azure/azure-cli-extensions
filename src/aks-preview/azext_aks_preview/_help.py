@@ -796,10 +796,12 @@ helps['aks update'] = """
         - name: --node-os-upgrade-channel
           type: string
           short-summary: Manner in which the OS on your nodes is updated. It could be NodeImage, None, SecurityPatch or Unmanaged.
-        - name: --force-upgrade
+        - name: --enable-force-upgrade
           type: bool
-          short-summary: Whether to update the cluster upgrade settings to enable forceUpgrade.
-          long-summary: Whether to update cluster upgrade settings to bypass validations such as deprecated API usage.
+          short-summary: Enable forceUpgrade cluster upgrade settings override.
+        - name: --disable-force-upgrade
+          type: bool
+          short-summary: Disable forceUpgrade cluster upgrade settings override.
         - name: --upgrade-override-until
           type: string
           short-summary: Until when the cluster upgradeSettings overrides are effective. It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --force-upgrade is set to true and --upgrade-override-until is not set, by default it will be set to 3 days from now.
