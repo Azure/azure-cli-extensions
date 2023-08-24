@@ -205,6 +205,15 @@ def spring_stop(cmd, client, resource_group, name, no_wait=False):
     return sdk_no_wait(no_wait, client.services.begin_stop, resource_group_name=resource_group, service_name=name)
 
 
+def spring_flush_vnet_dns_setting(cmd, client, resource_group, name, no_wait=False):
+    resource = client.services.get(resource_group, name)
+    state = resource.properties.provisioning_state
+    power_state = resource.properties.power_state
+    if state != "Succeeded" or power_state != "Running":
+        raise ClientRequestError("Service is in Provisioning State({}) and Power State({}), flush vnet dns setting cannot be performed.".format(state, power_state))
+    return sdk_no_wait(no_wait, client.services.begin_flush_vnet_dns_setting, resource_group_name=resource_group, service_name=name)
+
+
 def spring_list(cmd, client, resource_group=None):
     if resource_group is None:
         return client.services.list_by_subscription()

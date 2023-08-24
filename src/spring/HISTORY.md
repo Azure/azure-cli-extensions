@@ -1,5 +1,9 @@
 Release History
 ===============
+1.14.2
+---
+* Add new command `az spring flush-virtualnetwork-dns-settings` to flush virtual network DNS settings for the service instance.
+
 1.14.1
 ---
 * Support up to 1000 app instances in Enterprise tier.
