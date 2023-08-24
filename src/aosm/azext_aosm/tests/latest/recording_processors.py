@@ -7,22 +7,31 @@
 # the recordings so that we can avoid checking in secrets to the repo.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.testsdk.scenario_tests import RecordingProcessor
+from azure.cli.testsdk.scenario_tests import (
+    RecordingProcessor
+)
 from azure.cli.testsdk.scenario_tests.utilities import is_text_payload
 import json
+import re
 
-MOCK_ACR_TOKEN = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-MOCK_SAS_URI = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+MOCK_TOKEN = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+MOCK_SAS_URI = "https://xxxxxxxxxxxxxxx.blob.core.windows.net"
+MOCK_STORAGE_ACCOUNT_SR = "&si=StorageAccountAccessPolicy&sr=xxxxxxxxxxxxxxxxxxxx"
+BLOB_STORE_URI_REGEX = r"https:\/\/[a-zA-Z0-9]+\.blob\.core\.windows\.net"
+STORAGE_ACCOUNT_SR_REGEX = r"&si=StorageAccountAccessPolicy&sr=.*"
 
 
-class AcrTokenReplacer(RecordingProcessor):
+class TokenReplacer(RecordingProcessor):
     def process_response(self, response):
         ACR_TOKEN = "acrToken"
+        ACCESS_TOKEN = "access_token"
         if is_text_payload(response) and response["body"]["string"]:
             try:
                 response_body = json.loads(response["body"]["string"])
                 if ACR_TOKEN in response_body:
-                    response_body[ACR_TOKEN] = MOCK_ACR_TOKEN
+                    response_body[ACR_TOKEN] = MOCK_TOKEN
+                if ACCESS_TOKEN in response_body:
+                    response_body[ACCESS_TOKEN] = MOCK_TOKEN
                 response["body"]["string"] = json.dumps(response_body)
             except TypeError:
                 pass
@@ -46,7 +55,8 @@ class SasUriReplacer(RecordingProcessor):
 
             for credential in credentials_list:
                 if CONTAINER_SAS_URI in credential:
-                    credential[CONTAINER_SAS_URI] = MOCK_SAS_URI
+                    credential[CONTAINER_SAS_URI] = re.sub(BLOB_STORE_URI_REGEX, MOCK_SAS_URI, credential[CONTAINER_SAS_URI])
+                    credential[CONTAINER_SAS_URI] = re.sub(STORAGE_ACCOUNT_SR_REGEX, MOCK_STORAGE_ACCOUNT_SR, credential[CONTAINER_SAS_URI])
                 new_credentials_list.append(credential)
 
             response_body[CONTAINER_CREDENTIALS] = new_credentials_list
@@ -55,3 +65,15 @@ class SasUriReplacer(RecordingProcessor):
             pass
 
         return response
+
+
+class BlobStoreUriReplacer(RecordingProcessor):
+    def process_request(self, request):
+        try:
+            request.uri = re.sub(BLOB_STORE_URI_REGEX, MOCK_SAS_URI, request.uri)
+            request.uri = re.sub(STORAGE_ACCOUNT_SR_REGEX, MOCK_STORAGE_ACCOUNT_SR, request.uri)
+
+        except TypeError:
+            pass
+
+        return request

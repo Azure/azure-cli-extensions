@@ -541,26 +541,42 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
                 :raise RuntimeError if validation or deploy fails
         :return: Output dictionary from the bicep template.
         """
-        # Get current time from the time module and remove all digits after the decimal point
+        # Get current time from the time module and remove all digits after the decimal
+        # point
         current_time = str(time.time()).split(".", maxsplit=1)[0]
 
         # Add a timestamp to the deployment name to ensure it is unique
         deployment_name = f"AOSM_CLI_deployment_{current_time}"
 
-        validation = self.api_clients.resource_client.deployments.begin_validate(
-            resource_group_name=resource_group,
-            deployment_name=deployment_name,
-            parameters={
-                "properties": {
-                    "mode": "Incremental",
-                    "template": template,
-                    "parameters": parameters,
-                }
-            },
-        )
-        validation_res = LongRunningOperation(
-            self.cli_ctx, "Validating ARM template..."
-        )(validation)
+        # Validation is automatically re-attempted in live runs, but not in test
+        # playback, causing them to fail. This explicitly re-attempts validation to
+        # ensure the tests pass
+        validation_res = None
+        for validation_attempt in range(2):
+            try:
+                validation = self.api_clients.resource_client.deployments.begin_validate(
+                    resource_group_name=resource_group,
+                    deployment_name=deployment_name,
+                    parameters={
+                        "properties": {
+                            "mode": "Incremental",
+                            "template": template,
+                            "parameters": parameters,
+                        }
+                    },
+                )
+                validation_res = LongRunningOperation(
+                    self.cli_ctx, "Validating ARM template..."
+                )(validation)
+                break
+            except Exception:  # pylint: disable=broad-except
+                if validation_attempt == 1:
+                    raise
+
+        if not validation_res:
+            # Don't expect to hit this but it appeases mypy
+            raise RuntimeError(f"Validation of template {template} failed.")
+
         logger.debug("Validation Result %s", validation_res)
         if validation_res.error:
             # Validation failed so don't even try to deploy
