@@ -11,6 +11,7 @@ import tempfile
 import time
 from typing import Any, Dict, Optional
 
+from azure.cli.core.commands import LongRunningOperation
 from azure.mgmt.resource.resources.models import DeploymentExtended
 from knack.log import get_logger
 
@@ -61,7 +62,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         bicep_path: Optional[str] = None,
         parameters_json_file: Optional[str] = None,
         manifest_bicep_path: Optional[str] = None,
-        manifest_parameters_json_file: Optional[str] = None,
+        manifest_params_file: Optional[str] = None,
         skip: Optional[SkipSteps] = None,
         cli_ctx: Optional[object] = None,
     ):
@@ -71,10 +72,10 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         :param bicep_path: The path to the bicep template of the nfdv
         :param parameters_json_file: path to an override file of set parameters for the nfdv
         :param manifest_bicep_path: The path to the bicep template of the manifest
-        :param manifest_parameters_json_file: path to an override file of set parameters for
+        :param manifest_params_file: path to an override file of set parameters for
         the manifest
         :param skip: options to skip, either publish bicep or upload artifacts
-        :param cli_ctx: The CLI context. Only used with CNFs.
+        :param cli_ctx: The CLI context. Used with CNFs and all LongRunningOperations
         """
         self.api_clients = api_clients
         self.resource_type = resource_type
@@ -82,10 +83,12 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         self.bicep_path = bicep_path
         self.parameters_json_file = parameters_json_file
         self.manifest_bicep_path = manifest_bicep_path
-        self.manifest_parameters_json_file = manifest_parameters_json_file
+        self.manifest_params_file = manifest_params_file
         self.skip = skip
         self.cli_ctx = cli_ctx
-        self.pre_deployer = PreDeployerViaSDK(self.api_clients, self.config)
+        self.pre_deployer = PreDeployerViaSDK(
+            self.api_clients, self.config, self.cli_ctx
+        )
 
     def deploy_nfd_from_bicep(self) -> None:
         """
@@ -463,11 +466,11 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
                 str(self.config.output_directory_for_build),
                 file_name,
             )
-        if not self.manifest_parameters_json_file:
+        if not self.manifest_params_file:
             manifest_params = self.construct_manifest_parameters()
         else:
             logger.info("Use provided manifest parameters")
-            with open(self.manifest_parameters_json_file, "r", encoding="utf-8") as f:
+            with open(self.manifest_params_file, "r", encoding="utf-8") as f:
                 manifest_json = json.loads(f.read())
                 manifest_params = manifest_json["parameters"]
         self.deploy_bicep_template(manifest_bicep_path, manifest_params)
@@ -555,8 +558,9 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
                 }
             },
         )
-
-        validation_res = validation.result()
+        validation_res = LongRunningOperation(
+            self.cli_ctx, "Validating ARM template..."
+        )(validation)
         logger.debug("Validation Result %s", validation_res)
         if validation_res.error:
             # Validation failed so don't even try to deploy
@@ -595,7 +599,9 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         logger.debug(poller)
 
         # Wait for the deployment to complete and get the outputs
-        deployment: DeploymentExtended = poller.result()
+        deployment: DeploymentExtended = LongRunningOperation(
+            self.cli_ctx, "Deploying ARM template"
+        )(poller)
         logger.debug("Finished deploying")
 
         if deployment.properties is not None:
@@ -626,17 +632,9 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         Convert a bicep template into an ARM template.
 
         :param bicep_template_path: The path to the bicep template to be converted
-                :raise RuntimeError if az CLI is not installed.
+
         :return: Output dictionary from the bicep template.
         """
-        if not shutil.which("az"):
-            logger.error(
-                "The Azure CLI is not installed - follow "
-                "https://github.com/Azure/bicep/blob/main/docs/installing.md#linux"
-            )
-            raise RuntimeError(
-                "The Azure CLI is not installed - cannot render ARM templates."
-            )
         logger.debug("Converting %s to ARM template", bicep_template_path)
 
         with tempfile.TemporaryDirectory() as tmpdir:

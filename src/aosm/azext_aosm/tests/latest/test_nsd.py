@@ -288,12 +288,15 @@ class TestNSDGenerator:
                     "nsd-bicep-templates/schemas/multinf_ConfigGroupSchema.json",
                 )
 
-                # The bicep checks take a while, so we only do them here and not on the
-                # other tests.
-                build_bicep("nsd-bicep-templates/nginx-nfdg_nf.bicep")
-                build_bicep("nsd-bicep-templates/ubuntu-nfdg_nf.bicep")
-                build_bicep("nsd-bicep-templates/nsd_definition.bicep")
-                build_bicep("nsd-bicep-templates/artifact_manifest.bicep")
+                # The bicep checks take a while, so we would only do them here and not
+                # on the other tests. However, they are disabled until we can look at
+                # them further, as the version of Bicep used ends up in the built file,
+                # and we don't control what version of bicep is used in the pipeline or
+                # on the user's machine.
+                # build_bicep("nsd-bicep-templates/nginx-nfdg_nf.bicep")
+                # build_bicep("nsd-bicep-templates/ubuntu-nfdg_nf.bicep")
+                # build_bicep("nsd-bicep-templates/nsd_definition.bicep")
+                # build_bicep("nsd-bicep-templates/artifact_manifest.bicep")
 
                 compare_to_expected_output("test_build_multiple_nfs")
             finally:

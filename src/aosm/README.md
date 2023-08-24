@@ -13,23 +13,9 @@ use with Azure Operator Service Manager or Network Function Manager.
 
 ## Installation
 
-Eventually the extension will be published through the usual process and it will be
-installed as usual, via `az extension add --name aosm`
-
-Until then, the latest development version can be found here:
-https://github.com/jddarby/azure-cli-extensions/releases/download/aosm-extension/aosm-0.2.0-py2.py3-none-any.whl
-
-To install, download this wheel and run:
-`az extension add --source path/to/aosm-0.2.0-py2.py3-none-any.whl`
+`az extension add --name aosm`
 
 For CNFs you will also need helm installed. See [CNFs](#cnfs) below for details.
-
-## Updating 
-
-We are currently not bumping versions, so if you would like the most up to date version of the CLI. You should run:
-'az extension remove --name aosm'
-
-And then re-add with the new wheel, as detailed in Installation above. 
 
 # nfd and nsd commands
 
@@ -174,9 +160,11 @@ Delete a published design and the publisher, artifact stores and NSD group
 
 ## Bug Reporting
 
-Especially as this extension is still in development, you may encounter bugs or
-usability issues as you try to use it in its current form. It would be much
-appreciated if you could report these so that we're aware of them!
+It would be much appreciated if you could report these so that we're aware of them!
+
+Please see [Logging](#logging) for how to view and collect logs. 
+
+Please describe what you are doing and if possible provide the input and output files.
 
 The (Microsoft internal) process for bug reporting during development is here:
 https://eng.ms/docs/strategic-missions-and-technologies/strategic-missions-and-technologies-organization/azure-for-operators/aiops/aiops-orchestration/aosm-product-docs/processes/bug_process

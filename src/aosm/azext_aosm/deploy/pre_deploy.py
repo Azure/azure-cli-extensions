@@ -5,7 +5,10 @@
 """Contains class for deploying resources required by NFDs/NSDs via the SDK."""
 
 import re
+from typing import Optional
+
 from azure.cli.core.azclierror import AzCLIError
+from azure.cli.core.commands import LongRunningOperation
 from azure.core import exceptions as azure_exceptions
 from azure.mgmt.resource.resources.models import ResourceGroup
 from knack.log import get_logger
@@ -40,16 +43,19 @@ class PreDeployerViaSDK:
         self,
         api_clients: ApiClients,
         config: Configuration,
+        cli_ctx: Optional[object] = None,
     ) -> None:
         """
         Initializes a new instance of the Deployer class.
 
         :param api_clients: ApiClients object for AOSM and ResourceManagement
         :param config: The configuration for this NF
+        :param cli_ctx: The CLI context. Used with all LongRunningOperation calls.
         """
 
         self.api_clients = api_clients
         self.config = config
+        self.cli_ctx = cli_ctx
 
     def ensure_resource_group_exists(self, resource_group_name: str) -> None:
         """
@@ -67,9 +73,10 @@ class PreDeployerViaSDK:
             logger.info("RG %s not found. Create it.", resource_group_name)
             print(f"Creating resource group {resource_group_name}.")
             rg_params: ResourceGroup = ResourceGroup(location=self.config.location)
-            self.api_clients.resource_client.resource_groups.create_or_update(
+            poller = self.api_clients.resource_client.resource_groups.create_or_update(
                 resource_group_name, rg_params
             )
+            LongRunningOperation(self.cli_ctx, "Creating resource group...")(poller)
         else:
             print(f"Resource group {resource_group_name} exists.")
             self.api_clients.resource_client.resource_groups.get(resource_group_name)
@@ -111,12 +118,12 @@ class PreDeployerViaSDK:
                 f"Creating publisher {publisher_name} in resource group"
                 f" {resource_group_name}"
             )
-            pub = self.api_clients.aosm_client.publishers.begin_create_or_update(
+            poller = self.api_clients.aosm_client.publishers.begin_create_or_update(
                 resource_group_name=resource_group_name,
                 publisher_name=publisher_name,
                 parameters=Publisher(location=location, scope="Private"),
             )
-            pub.result()
+            LongRunningOperation(self.cli_ctx, "Creating publisher...")(poller)
 
     def ensure_config_publisher_exists(self) -> None:
         """
@@ -213,9 +220,11 @@ class PreDeployerViaSDK:
                     ),
                 )
             )
-            # Asking for result waits for provisioning state Succeeded before carrying
-            # on
-            arty: ArtifactStore = poller.result()
+            # LongRunningOperation waits for provisioning state Succeeded before
+            # carrying on
+            arty: ArtifactStore = LongRunningOperation(
+                self.cli_ctx, "Creating Artifact Store..."
+            )(poller)
 
             if arty.provisioning_state != ProvisioningState.SUCCEEDED:
                 logger.debug("Failed to provision artifact store: %s", arty.name)
@@ -311,7 +320,9 @@ class PreDeployerViaSDK:
 
             # Asking for result waits for provisioning state Succeeded before carrying
             # on
-            nfdg: NetworkFunctionDefinitionGroup = poller.result()
+            nfdg: NetworkFunctionDefinitionGroup = LongRunningOperation(
+                self.cli_ctx, "Creating Network Function Definition Group..."
+            )(poller)
 
             if nfdg.provisioning_state != ProvisioningState.SUCCEEDED:
                 logger.debug(
@@ -428,16 +439,22 @@ class PreDeployerViaSDK:
         :param location: The location of the network service design group.
         :type location: str
         """
-
-        logger.info(
-            "Creating network service design group %s if it does not exist",
+        print(
+            "Creating Network Service Design Group %s if it does not exist",
             nsdg_name,
         )
-        self.api_clients.aosm_client.network_service_design_groups.begin_create_or_update(
+        logger.info(
+            "Creating Network Service Design Group %s if it does not exist",
+            nsdg_name,
+        )
+        poller = self.api_clients.aosm_client.network_service_design_groups.begin_create_or_update(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_service_design_group_name=nsdg_name,
             parameters=NetworkServiceDesignGroup(location=location),
+        )
+        LongRunningOperation(self.cli_ctx, "Creating Network Service Design group...")(
+            poller
         )
 
     def resource_exists_by_name(self, rg_name: str, resource_name: str) -> bool:

@@ -3,8 +3,10 @@
 # License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------
 """Contains class for deploying generated definitions using the Python SDK."""
+from typing import Optional
 from knack.log import get_logger
 
+from azure.cli.core.commands import LongRunningOperation
 from azext_aosm._configuration import (
     Configuration,
     NFConfiguration,
@@ -22,6 +24,7 @@ class ResourceDeleter:
         self,
         api_clients: ApiClients,
         config: Configuration,
+        cli_ctx: Optional[object] = None,
     ) -> None:
         """
         Initializes a new instance of the Deployer class.
@@ -34,6 +37,7 @@ class ResourceDeleter:
         logger.debug("Create ARM/Bicep Deployer")
         self.api_clients = api_clients
         self.config = config
+        self.cli_ctx = cli_ctx
 
     def delete_nfd(self, clean: bool = False, force: bool = False) -> None:
         """
@@ -132,7 +136,7 @@ class ResourceDeleter:
                 network_function_definition_group_name=self.config.nfdg_name,
                 network_function_definition_version_name=self.config.version,
             )
-            poller.result()
+            LongRunningOperation(self.cli_ctx, "Deleting NFDV...")(poller)
             print("Deleted NFDV.")
         except Exception:
             logger.error(
@@ -157,7 +161,7 @@ class ResourceDeleter:
                 network_service_design_group_name=self.config.nsdg_name,
                 network_service_design_version_name=self.config.nsd_version,
             )
-            poller.result()
+            LongRunningOperation(self.cli_ctx, "Deleting NSDV...")(poller)
             print("Deleted NSDV.")
         except Exception:
             logger.error(
@@ -201,7 +205,9 @@ class ResourceDeleter:
                     artifact_store_name=store_name,
                     artifact_manifest_name=manifest_name,
                 )
-                poller.result()
+                LongRunningOperation(self.cli_ctx, "Deleting Artifact manifest...")(
+                    poller
+                )  # noqa: E501
                 print("Deleted Artifact Manifest")
             except Exception:
                 logger.error(
@@ -225,7 +231,7 @@ class ResourceDeleter:
                     network_service_design_group_name=self.config.nsdg_name,
                 )
             )
-            poller.result()
+            LongRunningOperation(self.cli_ctx, "Deleting NSD Group...")(poller)
             print("Deleted NSD Group")
         except Exception:
             logger.error("Failed to delete NFDG.")
@@ -243,7 +249,7 @@ class ResourceDeleter:
                 publisher_name=self.config.publisher_name,
                 network_function_definition_group_name=self.config.nfdg_name,
             )
-            poller.result()
+            LongRunningOperation(self.cli_ctx, "Deleting NFD Group...")(poller)
             print("Deleted NFD Group")
         except Exception:
             logger.error("Failed to delete NFDG.")
@@ -275,7 +281,7 @@ class ResourceDeleter:
                 publisher_name=self.config.publisher_name,
                 artifact_store_name=store_name,
             )
-            poller.result()
+            LongRunningOperation(self.cli_ctx, "Deleting Artifact store...")(poller)
             print("Deleted Artifact Store")
         except Exception:
             logger.error("Failed to delete Artifact store %s", store_name)
@@ -295,7 +301,7 @@ class ResourceDeleter:
                 resource_group_name=self.config.publisher_resource_group_name,
                 publisher_name=self.config.publisher_name,
             )
-            poller.result()
+            LongRunningOperation(self.cli_ctx, "Deleting Publisher...")(poller)
             print("Deleted Publisher")
         except Exception:
             logger.error("Failed to delete publisher")
@@ -315,7 +321,9 @@ class ResourceDeleter:
                     configuration_group_schema_name=self.config.cg_schema_name,
                 )
             )
-            poller.result()
+            LongRunningOperation(
+                self.cli_ctx, "Deleting Configuration Group Schema..."
+            )(poller)
             print("Deleted Configuration Group Schema")
         except Exception:
             logger.error("Failed to delete the Configuration Group Schema")
