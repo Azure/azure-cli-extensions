@@ -790,7 +790,6 @@ class ContainerappServiceBindingTests(ScenarioTest):
         postgresqlserver = postgresqlflex_dict['host'].split('.')[0]
         postgresqldb = postgresqlflex_dict['databaseName']
         create_containerapp_env(self, env_name, resource_group)
-        create_containerapp_env(self, env_name, resource_group)
         
 
         self.cmd('containerapp create -g {} -n {} --environment {} --bind {}:{},database={},username={},password={}'.format(
