@@ -48,7 +48,8 @@ from ._clients import (
     WorkloadProfileClient,
     ContainerAppsJobClient,
     ContainerAppPreviewClient,
-    AuthPreviewClient
+    AuthPreviewClient,
+    SubscriptionPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._github_oauth import get_github_access_token
@@ -1046,6 +1047,15 @@ def list_containerapp(cmd, resource_group_name=None, managed_env=None, environme
     containerapp_list_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
     return containerapp_list_decorator.list()
+
+
+def show_custom_domain_verification_id(cmd):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        r = SubscriptionPreviewClient.show_custom_domain_verification_id(cmd)
+        return r
+    except CLIError as e:
+        handle_raw_exception(e)
 
 
 def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
