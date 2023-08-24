@@ -154,7 +154,8 @@ from azext_aks_preview._validators import (
     validate_user,
     validate_utc_offset,
     validate_vm_set_type,
-    validate_vnet_subnet_id
+    validate_vnet_subnet_id,
+    validate_force_upgrade_disable_and_enable_parameters
 )
 from azure.cli.core.commands.parameters import (
     edge_zone_type,
@@ -465,7 +466,8 @@ def load_arguments(self, _):
         c.argument('kube_proxy_config')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
         c.argument('node_os_upgrade_channel', arg_type=get_enum_type(node_os_upgrade_channels))
-        c.argument('upgrade_settings', is_preview=True)
+        c.argument('disable_force_upgrade', action='store_true', validator=validate_force_upgrade_disable_and_enable_parameters)
+        c.argument('enable_force_upgrade', action='store_true')
         c.argument('upgrade_override_until', is_preview=True)
         c.argument('cluster_autoscaler_profile', nargs='+', options_list=["--cluster-autoscaler-profile", "--ca-profile"],
                    help="Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.")
