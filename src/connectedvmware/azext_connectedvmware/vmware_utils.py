@@ -99,9 +99,8 @@ def get_resource_id(
             )
         rid_parts.update(child_rid_parts)
 
-    rid_parts: dict[str, str] = {}
+    rid_parts: Dict[str, str] = {}
     rid_parts.update(
-        resource_group=resource_group,
         namespace=namespace,
         type=_type,
     )
@@ -169,6 +168,8 @@ def get_resource_id(
 
     if "subscription" not in rid_parts:
         rid_parts["subscription"] = get_subscription_id(cmd.cli_ctx)
+    if "resource_group" not in rid_parts:
+        rid_parts["resource_group"] = resource_group
 
     return resource_id(**rid_parts)
 

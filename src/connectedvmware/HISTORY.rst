@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.2.1
+++++++
+* Bug fix for `get-resource-id` internal function, which was not honoring resource-group override.
 
 0.2.0
 ++++++
