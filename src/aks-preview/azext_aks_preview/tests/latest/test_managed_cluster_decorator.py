@@ -227,7 +227,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         # fail on invalid file path
         with self.assertRaises(InvalidArgumentValueError):
             ctx_3.get_http_proxy_config()
-    
+
     def test_get_guardrails_level(self):
         ctx1 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -236,7 +236,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE
         )
         self.assertEqual(ctx1.get_guardrails_level(), None)
-        
+
         ctx2 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict({"guardrails_level": "Warning"}),
@@ -249,7 +249,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         ctx2.attach_mc(mc2)
         self.assertEqual(ctx2.get_guardrails_level(), "Warning")
-    
+
     def test_get_guardrails_version(self):
         ctx1 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -3314,86 +3314,43 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_3.get_disable_vpa()
 
-    def test_get_upgrade_settings(self):
+    def test_get_force_upgrade(self):
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict({}),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_0.get_upgrade_settings(), None)
+        self.assertEqual(ctx_0.get_force_upgrade(), None)
 
         ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"upgrade_settings": ""}),
+            AKSManagedClusterParamDict({"enable_force_upgrade": True}),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_1.get_upgrade_settings(), [])
+        self.assertEqual(ctx_1.get_force_upgrade(), True)
         ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"upgrade_settings": "IgnoreKubernetesDeprecations"}),
+            AKSManagedClusterParamDict({"enable_force_upgrade": False}),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_2.get_upgrade_settings(), ["IgnoreKubernetesDeprecations"])
-
+        self.assertEqual(ctx_2.get_force_upgrade(), False)
         ctx_3 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "upgrade_settings": "",
-                    "upgrade_override_until": "2022-11-01T13:00:00Z",
-                }
-            ),
+            AKSManagedClusterParamDict({"disable_force_upgrade": True}),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        # fail on mutually exclusive upgrade_override_until and empty
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_3.get_upgrade_settings()
+        self.assertEqual(ctx_3.get_force_upgrade(), False)
         ctx_4 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"upgrade_settings": "IgnoreKubernetesDeprecations,IgnoreKubernetesDeprecations"}),
+            AKSManagedClusterParamDict({"disable_force_upgrade": False}),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        # fail on invalid input
-        with self.assertRaises(InvalidArgumentValueError):
-            ctx_4.get_upgrade_settings()
-        ctx_5 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({"upgrade_settings": "xyz"}),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        # fail on invalid input
-        with self.assertRaises(InvalidArgumentValueError):
-            ctx_5.get_upgrade_settings()
-        # fail on invalid input
-        with self.assertRaises(InvalidArgumentValueError):
-            ctx_4.get_upgrade_settings()
-        ctx_6 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({"upgrade_settings": "None,IgnoreKubernetesDeprecations"}),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        # fail on invalid input
-        with self.assertRaises(InvalidArgumentValueError):
-            ctx_6.get_upgrade_settings()
-        ctx_7 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "upgrade_settings": "IgnoreKubernetesDeprecations",
-                    "upgrade_override_until": "2022-11-01T13:00:00Z",
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertEqual(ctx_7.get_upgrade_settings(), ["IgnoreKubernetesDeprecations"])
+        self.assertEqual(ctx_4.get_force_upgrade(), True)
 
     def test_get_upgrade_override_until(self):
         ctx_0 = AKSPreviewManagedClusterContext(
@@ -6354,7 +6311,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
-                    control_plane_overrides=["IgnoreKubernetesDeprecations"],
+                    force_upgrade=True,
                     until=parse("2023-04-01T13:00:00Z")
                 )
             )
@@ -6365,72 +6322,70 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
-                    control_plane_overrides=["IgnoreKubernetesDeprecations"],
+                    force_upgrade=True,
                     until=parse("2023-04-01T13:00:00Z")
                 )
             )
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
-        # disable
+        # force_upgrade false
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"upgrade_settings": ""},
+            {"disable_force_upgrade": True},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_2 = self.models.ManagedCluster(
             location="test_location",
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
-                    control_plane_overrides=["IgnoreKubernetesDeprecations"],
-                    until=parse("2099-04-01T13:00:00Z")  # Will be reset to now() to make overrides no longer effective.
+                    force_upgrade=True,
+                    until=parse("2099-04-01T13:00:00Z")
                 )
             )
         )
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.update_upgrade_settings(mc_2)
-        self.assertGreater(dec_mc_2.upgrade_settings.override_settings.until.timestamp(), (datetime.datetime.utcnow() - datetime.timedelta(days=1)).timestamp())
-        self.assertLess(dec_mc_2.upgrade_settings.override_settings.until.timestamp(), (datetime.datetime.utcnow() + datetime.timedelta(minutes=1)).timestamp())
-        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {"upgrade_settings": ""},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_3 = self.models.ManagedCluster(
+        ground_truth_mc_2 = self.models.ManagedCluster(
             location="test_location",
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
+                    force_upgrade=False,
                     until=parse("2099-04-01T13:00:00Z")
                 )
             )
         )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # force_upgrade true
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_force_upgrade": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+        )
         dec_3.context.attach_mc(mc_3)
         dec_mc_3 = dec_3.update_upgrade_settings(mc_3)
-        ground_truth_mc_3 = self.models.ManagedCluster(
-            location="test_location",
-            upgrade_settings=self.models.ClusterUpgradeSettings(
-                override_settings = self.models.UpgradeOverrideSettings(
-                    until=parse("2099-04-01T13:00:00Z")  # unchanged as there's no overrides
-                )
-            )
-        )
-        self.assertEqual(dec_mc_3, ground_truth_mc_3)
+        self.assertEqual(dec_mc_3.upgrade_settings.override_settings.force_upgrade, True)
+        self.assertGreater(dec_mc_3.upgrade_settings.override_settings.until.timestamp(), (datetime.datetime.utcnow() + datetime.timedelta(days=2)).timestamp())
+        self.assertLess(dec_mc_3.upgrade_settings.override_settings.until.timestamp(), (datetime.datetime.utcnow() + datetime.timedelta(days=4)).timestamp())
 
-        # Enable
+        # Set Until
         dec_4 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"upgrade_settings": "IgnoreKubernetesDeprecations"},
+            {"upgrade_override_until": "2023-04-01T13:00:00Z"},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_4 = self.models.ManagedCluster(
             location="test_location",
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
-                    control_plane_overrides=[],
-                    until=parse("2099-04-01T13:00:00Z")  # Will not override as it's > now()
+                    until=parse("2023-01-01T13:00:00Z")
                 )
             )
         )
@@ -6440,133 +6395,59 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
-                    control_plane_overrides=["IgnoreKubernetesDeprecations"],
-                    until=parse("2099-04-01T13:00:00Z")
+                    until=parse("2023-04-01T13:00:00Z")
                 )
             )
         )
         self.assertEqual(dec_mc_4, ground_truth_mc_4)
+
+        # Set both fields
         dec_5 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"upgrade_settings": "IgnoreKubernetesDeprecations"},
+            {"enable_force_upgrade": True,
+             "upgrade_override_until": "2023-04-01T13:00:00Z"},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_5 = self.models.ManagedCluster(
             location="test_location",
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
-                    until=parse("2000-04-01T13:00:00Z") # Will override as it's <= now()
+                    force_upgrade=True,
+                    until=parse("2023-05-01T13:00:00Z")
                 )
             )
         )
         dec_5.context.attach_mc(mc_5)
         dec_mc_5 = dec_5.update_upgrade_settings(mc_5)
+        ground_truth_mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            upgrade_settings=self.models.ClusterUpgradeSettings(
+                override_settings = self.models.UpgradeOverrideSettings(
+                    force_upgrade=True,
+                    until=parse("2023-04-01T13:00:00Z")
+                )
+            )
+        )
+        self.assertEqual(dec_mc_5, ground_truth_mc_5)
 
-        self.assertEqual(dec_mc_5.upgrade_settings.override_settings.control_plane_overrides, ["IgnoreKubernetesDeprecations"])
-        self.assertGreater(dec_mc_5.upgrade_settings.override_settings.until.timestamp(), (datetime.datetime.utcnow() + datetime.timedelta(days=2)).timestamp())
-        self.assertLess(dec_mc_5.upgrade_settings.override_settings.until.timestamp(), (datetime.datetime.utcnow() + datetime.timedelta(days=4)).timestamp())
-
-        # Set Until
         dec_6 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"upgrade_override_until": "2023-04-01T13:00:00Z"},
+            {"upgrade_override_until": "abc"},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_6 = self.models.ManagedCluster(
             location="test_location",
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
-                    control_plane_overrides=[],
-                    until=parse("2023-01-01T13:00:00Z")
+                    until=parse("2023-05-01T13:00:00Z")
                 )
             )
         )
         dec_6.context.attach_mc(mc_6)
-        dec_mc_6 = dec_6.update_upgrade_settings(mc_6)
-        ground_truth_mc_6 = self.models.ManagedCluster(
-            location="test_location",
-            upgrade_settings=self.models.ClusterUpgradeSettings(
-                override_settings = self.models.UpgradeOverrideSettings(
-                    control_plane_overrides=[],
-                    until=parse("2023-04-01T13:00:00Z")
-                )
-            )
-        )
-        self.assertEqual(dec_mc_6, ground_truth_mc_6)
-        dec_7 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {"upgrade_override_until": "2023-04-01T13:00:00Z"},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_7 = self.models.ManagedCluster(
-            location="test_location",
-            upgrade_settings=self.models.ClusterUpgradeSettings(
-                override_settings = self.models.UpgradeOverrideSettings(
-                    control_plane_overrides=["IgnoreKubernetesDeprecations"],
-                    until=parse("2023-01-01T13:00:00Z")
-                )
-            )
-        )
-        dec_7.context.attach_mc(mc_7)
-        dec_mc_7 = dec_7.update_upgrade_settings(mc_7)
-        ground_truth_mc_7 = self.models.ManagedCluster(
-            location="test_location",
-            upgrade_settings=self.models.ClusterUpgradeSettings(
-                override_settings = self.models.UpgradeOverrideSettings(
-                    control_plane_overrides=["IgnoreKubernetesDeprecations"],
-                    until=parse("2023-04-01T13:00:00Z")
-                )
-            )
-        )
-        self.assertEqual(dec_mc_7, ground_truth_mc_7)
-        dec_8 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {"upgrade_settings": "IgnoreKubernetesDeprecations",
-             "upgrade_override_until": "2023-04-01T13:00:00Z"},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_8 = self.models.ManagedCluster(
-            location="test_location",
-            upgrade_settings=self.models.ClusterUpgradeSettings(
-                override_settings = self.models.UpgradeOverrideSettings(
-                    until=parse("2023-05-01T13:00:00Z")
-                )
-            )
-        )
-        dec_8.context.attach_mc(mc_8)
-        before_update_time = datetime.datetime.utcnow()
-        dec_mc_8 = dec_8.update_upgrade_settings(mc_8)
-        ground_truth_mc_8 = self.models.ManagedCluster(
-            location="test_location",
-            upgrade_settings=self.models.ClusterUpgradeSettings(
-                override_settings = self.models.UpgradeOverrideSettings(
-                    control_plane_overrides=["IgnoreKubernetesDeprecations"],
-                    until=parse("2023-04-01T13:00:00Z")
-                )
-            )
-        )
-        self.assertEqual(dec_mc_8, ground_truth_mc_8)
-        dec_9 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {"upgrade_override_until": "abc"},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_9 = self.models.ManagedCluster(
-            location="test_location",
-            upgrade_settings=self.models.ClusterUpgradeSettings(
-                override_settings = self.models.UpgradeOverrideSettings(
-                    until=parse("2023-05-01T13:00:00Z")
-                )
-            )
-        )
-        dec_9.context.attach_mc(mc_9)
         with self.assertRaises(InvalidArgumentValueError):
-            dec_9.update_upgrade_settings(mc_9)
+            dec_6.update_upgrade_settings(mc_6)
 
     def test_update_mc_profile_preview(self):
         import inspect
