@@ -3,10 +3,11 @@
 
 # pylint: disable=unidiomatic-typecheck
 """A module to handle interacting with artifacts."""
+import math
 import subprocess
 import shutil
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List, Optional, Union
 
 from azure.cli.core.commands import LongRunningOperation
 from azure.mgmt.containerregistry import ContainerRegistryManagementClient
@@ -106,7 +107,9 @@ class Artifact:
             "--query",
             "accessToken",
         ]
-        acr_token = subprocess.check_output(acr_login_with_token_cmd, encoding="utf-8").strip()
+        acr_token = subprocess.check_output(
+            acr_login_with_token_cmd, encoding="utf-8"
+        ).strip()
 
         try:
             logger.debug("Uploading %s to %s", chart_path, target_registry)
@@ -131,8 +134,33 @@ class Artifact:
             ]
             subprocess.run(push_command, check=True)
         finally:
-            helm_logout_cmd = [str(shutil.which("helm")), "registry", "logout", registry]
+            helm_logout_cmd = [
+                str(shutil.which("helm")),
+                "registry",
+                "logout",
+                registry,
+            ]
             subprocess.run(helm_logout_cmd, check=True)
+
+    def _convert_to_readable_size(self, size_in_bytes: Optional[int]) -> str:
+        """Converts a size in bytes to a human readable size."""
+        if size_in_bytes is None:
+            return "Unknown bytes"
+        size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+        index = int(math.floor(math.log(size_in_bytes, 1024)))
+        power = math.pow(1024, index)
+        readable_size = round(size_in_bytes / power, 2)
+        return f"{readable_size} {size_name[index]}"
+
+    def _vhd_upload_progress_callback(
+        self, current_bytes: int, total_bytes: Optional[int]
+    ) -> None:
+        """Callback function for VHD upload progress."""
+        current_readable = self._convert_to_readable_size(current_bytes)
+        total_readable = self._convert_to_readable_size(total_bytes)
+        message = f"Uploaded {current_readable} of {total_readable} bytes"
+        logger.info(message)
+        print(message)
 
     def _upload_to_storage_account(self, artifact_config: ArtifactConfig) -> None:
         """
@@ -148,7 +176,10 @@ class Artifact:
             logger.info("Upload to blob store")
             with open(artifact_config.file_path, "rb") as artifact:
                 self.artifact_client.upload_blob(
-                    artifact, overwrite=True, blob_type=BlobType.PAGEBLOB
+                    data=artifact,
+                    overwrite=True,
+                    blob_type=BlobType.PAGEBLOB,
+                    progress_hook=self._vhd_upload_progress_callback,
                 )
             logger.info(
                 "Successfully uploaded %s to %s",

@@ -3,7 +3,7 @@
 Release History
 ===============
 
-unreleased
+upcoming
 ++++++++++
 * Added a `--clean` flag to the NSD `delete` command. This flag will delete the NSDG on top of the other resources deleted by the `delete` command.
 * Added integration tests for `publish` and `delete` commands.
