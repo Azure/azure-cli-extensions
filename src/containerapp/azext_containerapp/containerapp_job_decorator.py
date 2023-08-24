@@ -502,7 +502,8 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
     def set_up_extended_location(self):
         if self.get_argument_environment_type() == CONNECTED_ENVIRONMENT_TYPE:
             if not self.containerappjob_def.get('extendedLocation'):
-                parsed_env = parse_resource_id(self.get_argument_managed_env())  # custom_location check here perhaps
+                env_id = safe_get(self.containerappjob_def, "properties", 'environmentId') or self.get_argument_managed_env()
+                parsed_env = parse_resource_id(env_id)
                 env_name = parsed_env['name']
                 env_rg = parsed_env['resource_group']
                 env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
@@ -523,11 +524,11 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
         # Validate environment type
         if parsed_env.get('resource_type').lower() == CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower():
             if environment_type == MANAGED_ENVIRONMENT_TYPE:
-                logger.warning("User passed a connectedEnvironment resource id but did not specify --environment-type connected. Using environment type connected.")
+                logger.warning(f"User passed a connectedEnvironment resource id but did not specify --environment-type {CONNECTED_ENVIRONMENT_TYPE}. Using environment type {CONNECTED_ENVIRONMENT_TYPE}.")
             environment_type = CONNECTED_ENVIRONMENT_TYPE
         else:
             if environment_type == CONNECTED_ENVIRONMENT_TYPE:
-                logger.warning("User passed a managedEnvironment resource id but specified --environment-type connected. Using environment type managed.")
+                logger.warning(f"User passed a managedEnvironment resource id but specified --environment-type {CONNECTED_ENVIRONMENT_TYPE}. Using environment type {MANAGED_ENVIRONMENT_TYPE}.")
             environment_type = MANAGED_ENVIRONMENT_TYPE
 
         self.set_argument_environment_type(environment_type)

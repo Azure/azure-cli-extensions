@@ -10,6 +10,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 from subprocess import run
 
 from .common import (write_test_file, TEST_LOCATION, clean_up_test_file)
+from .custom_preparers import AksAndConnectedClusterPreparer
 from .utils import create_containerapp_env
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -17,18 +18,16 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ContainerappJobPreviewScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(location="eastus", random_name_length=15)
-    def test_containerappjob_preview_environment_type(self, resource_group):
+    @ResourceGroupPreparer(location=TEST_LOCATION, random_name_length=15)
+    @AksAndConnectedClusterPreparer(location=TEST_LOCATION)
+    def test_containerappjob_preview_environment_type(self, resource_group, aks_name, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        aks_name = "my-aks-cluster"
-        connected_cluster_name = "my-connected-cluster"
         custom_location_id = None
         try:
-            self.cmd(f'aks create --resource-group {resource_group} --name {aks_name} --enable-aad --generate-ssh-keys --enable-cluster-autoscaler --min-count 4 --max-count 10 --node-count 4')
-            self.cmd(f'aks get-credentials --resource-group {resource_group} --name {aks_name} --overwrite-existing --admin')
-
-            self.cmd(f'connectedk8s connect --resource-group {resource_group} --name {connected_cluster_name}')
             connected_cluster = self.cmd(f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
+            while connected_cluster["connectivityStatus"] == "Connecting":
+                time.sleep(5)
+                connected_cluster = self.cmd(f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
 
             connected_cluster_id = connected_cluster.get('id')
             extension = self.cmd(f'az k8s-extension create'
