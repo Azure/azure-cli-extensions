@@ -13,37 +13,73 @@ helps[
 """
 
 helps[
-    "aosm definition"
+    "aosm nfd"
 ] = """
     type: group
-    short-summary: Manage AOSM publisher definitions.
+    short-summary: Manage AOSM publisher Network Function Definitions.
 """
 
 helps[
-    "aosm definition generate-config"
+    "aosm nfd generate-config"
 ] = """
     type: command
-    short-summary: Generate configuration file for building an AOSM publisher definition.
+    short-summary: Generate configuration file for building an AOSM publisher Network Function Definition.
 """
 
 helps[
-    "aosm definition build"
+    "aosm nfd build"
 ] = """
     type: command
-    short-summary: Build an AOSM publisher definition.
+    short-summary: Build an AOSM Network Function Definition.
 """
 
 helps[
-    "aosm definition publish"
+    "aosm nfd publish"
 ] = """
     type: command
-    short-summary: Publish a pre-built AOSM publisher definition.
+    short-summary: Publish a pre-built AOSM Network Function definition.
 """
 
 
 helps[
-    "aosm definition delete"
+    "aosm nfd delete"
 ] = """
     type: command
-    short-summary: Delete AOSM publisher definition.
+    short-summary: Delete AOSM Network Function Definition.
+"""
+
+helps[
+    "aosm nsd"
+] = """
+    type: group
+    short-summary: Manage AOSM publisher Network Service Designs.
+"""
+
+helps[
+    "aosm nsd generate-config"
+] = """
+    type: command
+    short-summary: Generate configuration file for building an AOSM publisher Network Service Design.
+"""
+
+helps[
+    "aosm nsd build"
+] = """
+    type: command
+    short-summary: Build an AOSM Network Service Design.
+"""
+
+helps[
+    "aosm nsd publish"
+] = """
+    type: command
+    short-summary: Publish a pre-built AOSM Network Service Design.
+"""
+
+
+helps[
+    "aosm nfd delete"
+] = """
+    type: command
+    short-summary: Delete AOSM Network Function Definition.
 """

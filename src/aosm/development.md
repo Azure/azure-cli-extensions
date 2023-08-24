@@ -71,6 +71,7 @@ azdev linter --include-whl-extensions aosm
 
 Current expected output:
 ```
+
 ==============
 | CLI Linter |
 ==============
@@ -79,46 +80,27 @@ Modules: aosm
 
 Initializing linter with command table and help files...
 
- Results 
+ Results
 =========
 
--  pass: faulty_help_example_parameters_rule 
--  pass: faulty_help_example_rule 
--  pass: faulty_help_type_rule 
--  FAIL - HIGH severity: unrecognized_help_entry_rule
-    Help-Entry: `aosm definition build` - Not a recognized command or command-group
-    Help-Entry: `aosm definition delete` - Not a recognized command or command-group
-    Help-Entry: `aosm definition generate-config` - Not a recognized command or command-group
-    Help-Entry: `aosm definition publish` - Not a recognized command or command-group
-    Help-Entry: `aosm definition` - Not a recognized command or command-group
-
--  pass: unrecognized_help_parameter_rule 
--  pass: expired_command_group 
--  FAIL - HIGH severity: missing_group_help
-    Command-Group: `aosm nfd` - Missing help
-    Command-Group: `aosm nsd` - Missing help
-
--  pass: expired_command 
--  pass: missing_command_help 
--  pass: no_ids_for_list_commands 
--  FAIL - HIGH severity: bad_short_option
-    Parameter: aosm nfd publish, `manifest_parameters_json_file` - Found multi-character short options: -mp. Use a single character or convert to a long-option.
-
--  pass: expired_option 
--  pass: expired_parameter 
--  pass: missing_parameter_help 
--  pass: no_parameter_defaults_for_update_commands 
--  pass: no_positional_parameters 
--  FAIL - HIGH severity: option_length_too_long
-    Parameter: aosm nsd publish, `manifest_parameters_json_file` - The lengths of all options ['--manifest-parameters-json-file'] are longer than threshold 22. Argument manifest_parameters_json_file must have a short abbreviation.
-
--  pass: option_should_not_contain_under_score 
-
-Run custom pylint rules.
-Running pylint on extensions...
-
-No violations found for custom pylint rules.
-Linter: PASSED
+-  pass: faulty_help_example_parameters_rule
+-  pass: faulty_help_example_rule
+-  pass: faulty_help_type_rule
+-  pass: unrecognized_help_entry_rule
+-  pass: unrecognized_help_parameter_rule
+-  pass: expired_command_group
+-  pass: missing_group_help
+-  pass: expired_command
+-  pass: missing_command_help
+-  pass: no_ids_for_list_commands
+-  pass: bad_short_option
+-  pass: expired_option
+-  pass: expired_parameter
+-  pass: missing_parameter_help
+-  pass: no_parameter_defaults_for_update_commands
+-  pass: no_positional_parameters
+-  pass: option_length_too_long
+-  pass: option_should_not_contain_under_score
 ```
 
 #### Typing

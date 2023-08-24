@@ -61,7 +61,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         bicep_path: Optional[str] = None,
         parameters_json_file: Optional[str] = None,
         manifest_bicep_path: Optional[str] = None,
-        manifest_parameters_json_file: Optional[str] = None,
+        manifest_params_file: Optional[str] = None,
         skip: Optional[SkipSteps] = None,
         cli_ctx: Optional[object] = None,
     ):
@@ -71,7 +71,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         :param bicep_path: The path to the bicep template of the nfdv
         :param parameters_json_file: path to an override file of set parameters for the nfdv
         :param manifest_bicep_path: The path to the bicep template of the manifest
-        :param manifest_parameters_json_file: path to an override file of set parameters for
+        :param manifest_params_file: path to an override file of set parameters for
         the manifest
         :param skip: options to skip, either publish bicep or upload artifacts
         :param cli_ctx: The CLI context. Only used with CNFs.
@@ -82,7 +82,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         self.bicep_path = bicep_path
         self.parameters_json_file = parameters_json_file
         self.manifest_bicep_path = manifest_bicep_path
-        self.manifest_parameters_json_file = manifest_parameters_json_file
+        self.manifest_params_file = manifest_params_file
         self.skip = skip
         self.cli_ctx = cli_ctx
         self.pre_deployer = PreDeployerViaSDK(self.api_clients, self.config)
@@ -463,11 +463,11 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
                 str(self.config.output_directory_for_build),
                 file_name,
             )
-        if not self.manifest_parameters_json_file:
+        if not self.manifest_params_file:
             manifest_params = self.construct_manifest_parameters()
         else:
             logger.info("Use provided manifest parameters")
-            with open(self.manifest_parameters_json_file, "r", encoding="utf-8") as f:
+            with open(self.manifest_params_file, "r", encoding="utf-8") as f:
                 manifest_json = json.loads(f.read())
                 manifest_params = manifest_json["parameters"]
         self.deploy_bicep_template(manifest_bicep_path, manifest_params)

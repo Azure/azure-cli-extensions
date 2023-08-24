@@ -143,7 +143,7 @@ def publish_definition(
     definition_file: Optional[str] = None,
     parameters_json_file: Optional[str] = None,
     manifest_file: Optional[str] = None,
-    manifest_parameters_json_file: Optional[str] = None,
+    manifest_params_file: Optional[str] = None,
     skip: Optional[SkipSteps] = None,
 ):
     """
@@ -162,7 +162,7 @@ def publish_definition(
         parameters from config will be turned into parameters for the bicep file
     :param manifest_file: Optional path to an override bicep template to deploy
         manifests
-    :param manifest_parameters_json_file: Optional path to an override bicep parameters
+    :param manifest_params_file: Optional path to an override bicep parameters
         file for manifest parameters
     :param skip: options to skip, either publish bicep or upload artifacts
     """
@@ -190,7 +190,7 @@ def publish_definition(
         bicep_path=definition_file,
         parameters_json_file=parameters_json_file,
         manifest_bicep_path=manifest_file,
-        manifest_parameters_json_file=manifest_parameters_json_file,
+        manifest_params_file=manifest_params_file,
         skip=skip,
         cli_ctx=cmd.cli_ctx,
     )
@@ -347,7 +347,7 @@ def publish_design(
     design_file: Optional[str] = None,
     parameters_json_file: Optional[str] = None,
     manifest_file: Optional[str] = None,
-    manifest_parameters_json_file: Optional[str] = None,
+    manifest_params_file: Optional[str] = None,
     skip: Optional[SkipSteps] = None,
 ):
     """
@@ -364,7 +364,7 @@ def publish_design(
                       for the bicep file
     :param manifest_file: Optional path to an override bicep template to deploy
                         manifests
-    :param manifest_parameters_json_file: Optional path to an override bicep parameters
+    :param manifest_params_file: Optional path to an override bicep parameters
                         file for manifest parameters
     :param skip: options to skip, either publish bicep or upload artifacts
     """
@@ -385,7 +385,7 @@ def publish_design(
         bicep_path=design_file,
         parameters_json_file=parameters_json_file,
         manifest_bicep_path=manifest_file,
-        manifest_parameters_json_file=manifest_parameters_json_file,
+        manifest_params_file=manifest_params_file,
         skip=skip,
     )
 

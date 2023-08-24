@@ -101,8 +101,8 @@ def load_arguments(self: AzCommandsLoader, _):
             ),
         )
         c.argument(
-            "manifest_parameters_json_file",
-            options_list=["--manifest-parameters-file", "-mp"],
+            "manifest_params_file",
+            options_list=["--manifest-params-file"],
             type=file_type,
             completer=FilesCompleter(allowednames="*.json"),
             help=(
