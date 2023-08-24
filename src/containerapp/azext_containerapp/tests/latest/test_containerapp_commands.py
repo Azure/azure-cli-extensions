@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
 import os
 import time
 import unittest
@@ -766,6 +767,43 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
         self.cmd('containerapp service list -g {} --environment {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
+        ])
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_managed_service_binding_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        mysqlflex_json= self.cmd('az mysql flexible-server create --resource-group {} -y'.format(resource_group)).output
+        postgresqlflex_json= self.cmd('az postgres flexible-server create --resource-group {} -y'.format(resource_group)).output
+        mysqlflex_dict = json.loads(mysqlflex_json)
+        mysqlusername = mysqlflex_dict['username']
+        mysqlpassword = mysqlflex_dict['password']
+        mysqlserver = mysqlflex_dict['host'].split('.')[0]
+        mysqldb = mysqlflex_dict['databaseName']
+        flex_binding="mysqlflex_binding"
+        postgresqlflex_dict = json.loads(postgresqlflex_json)
+        postgresqlusername = postgresqlflex_dict['username']
+        postgresqlpassword = postgresqlflex_dict['password']
+        postgresqlserver = postgresqlflex_dict['host'].split('.')[0]
+        postgresqldb = postgresqlflex_dict['databaseName']
+        create_containerapp_env(self, env_name, resource_group)
+        create_containerapp_env(self, env_name, resource_group)
+        
+
+        self.cmd('containerapp create -g {} -n {} --environment {} --bind {}:{},database={},username={},password={}'.format(
+            resource_group, ca_name, env_name, mysqlserver, flex_binding, mysqldb , mysqlusername, mysqlpassword))
+        self.cmd('containerapp show -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(properties.template.containers[0].env[?name==`AZURE_MYSQL_HOST`])', 1)
+        ])
+
+        self.cmd('containerapp update -g {} -n {} --bind {},database={},username={},password={}'.format(
+            resource_group, ca_name, postgresqlserver, postgresqldb , postgresqlusername, postgresqlpassword))
+        self.cmd('containerapp show -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(properties.template.containers[0].env[?name==`AZURE_MYSQL_HOST`])', 1),
+            JMESPathCheck('length(properties.template.containers[0].env[?name==`AZURE_POSTGRESQL_HOST`])', 1)
         ])
 
 
