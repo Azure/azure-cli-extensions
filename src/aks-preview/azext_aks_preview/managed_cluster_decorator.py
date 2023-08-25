@@ -777,6 +777,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         enable_force_upgrade = self.raw_param.get("enable_force_upgrade")
         disable_force_upgrade = self.raw_param.get("disable_force_upgrade")
 
+        if enable_force_upgrade is False and disable_force_upgrade is False:
+            return None
         if enable_force_upgrade is not None:
             return enable_force_upgrade
         if disable_force_upgrade is not None:
@@ -3680,7 +3682,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_auto_upgrade_profile(mc)
         # update guardrails_profile
         mc = self.update_guardrails_profile(mc)
-        # update auto upgrade profile
+        # update cluster upgrade settings profile
         mc = self.update_upgrade_settings(mc)
         # update nodepool taints
         mc = self.update_nodepool_taints_mc(mc)

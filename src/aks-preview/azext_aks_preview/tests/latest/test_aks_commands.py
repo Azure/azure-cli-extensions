@@ -7484,12 +7484,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('upgradeSettings.overrideSettings.forceUpgrade', True),
             self.exists('upgradeSettings.overrideSettings.until')
         ])
-        self.cmd('aks update --resource-group={resource_group} --name={name} --disable-force-upgrade --upgrade-override-until 2020-02-22T22:30:17+00:00', checks=[
+        self.cmd('aks update --resource-group={resource_group} --name={name} --enable-force-upgrade --upgrade-override-until 2020-02-22T22:30:17+00:00', checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('upgradeSettings.overrideSettings.forceUpgrade', False),
+            self.check('upgradeSettings.overrideSettings.forceUpgrade', True),
             self.check('upgradeSettings.overrideSettings.until', '2020-02-22T22:30:17+00:00')
         ])
-        self.cmd('aks update --resource-group={resource_group} --name={name} --force-upgrade false \"\"', checks=[
+        self.cmd('aks update --resource-group={resource_group} --name={name} --disable-force-upgrade \"\"', checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('upgradeSettings.overrideSettings.forceUpgrade', False),
             self.check('upgradeSettings.overrideSettings.until', '2020-02-22T22:30:17+00:00')
