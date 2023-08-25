@@ -658,7 +658,7 @@ def _get_relay_connection_str(
         HycoAuthoCreate(cli_ctx=cmd.cli_ctx)(command_args={"resource_group": resource_group_name,
                                                            "namespace_name": relay_namespace_name,
                                                            "hybrid_connection_name": hybrid_connection_name,
-                                                           "name": hybrid_connection_name,
+                                                           "name": auth_rule_name,
                                                            "rights": auth_rule_rights})
 
         # get connection string
