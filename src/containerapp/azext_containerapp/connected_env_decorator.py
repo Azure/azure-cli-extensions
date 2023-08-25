@@ -81,3 +81,36 @@ class ConnectedEnvironmentCreateDecorator(ConnectedEnvironmentDecorator):
             return r
         except Exception as e:
             handle_raw_exception(e)
+
+
+class ConnectedEnvironmentUpdateDecorator(ConnectedEnvironmentDecorator):
+    def __init__(
+            self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str, resource_type: str
+    ):
+        super().__init__(cmd, client, raw_parameters, models, resource_type)
+        self.connected_env_def = ConnectedEnvironmentModel
+
+    def validate_arguments(self):
+        location = validate_environment_location(self.cmd, self.get_argument_location(), self.resource_type)
+        self.set_argument_location(location)
+        validate_custom_location(self.cmd, self.get_argument_custom_location())
+
+    def construct_payload(self):
+        self.connected_env_def["location"] = self.get_argument_location()
+        self.connected_env_def["properties"]["daprAIConnectionString"] = self.get_argument_dapr_ai_connection_string()
+        self.connected_env_def["properties"]["staticIp"] = self.get_argument_static_ip()
+        self.connected_env_def["tags"] = self.get_argument_tags()
+        extended_location_def = ExtendedLocationModel
+        extended_location_def["name"] = self.get_argument_custom_location()
+        extended_location_def["type"] = "CustomLocation"
+        self.connected_env_def["extendedLocation"] = extended_location_def
+
+    def update(self):
+        try:
+            r = self.client.update(
+                cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name(),
+                connected_environment_envelope=self.connected_env_def, no_wait=self.get_argument_no_wait())
+
+            return r
+        except Exception as e:
+            handle_raw_exception(e)
