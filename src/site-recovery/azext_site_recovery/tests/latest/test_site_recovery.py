@@ -9,6 +9,7 @@ from azure.cli.testsdk import *
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 import time
 
+# pylint: disable=line-too-long
 class SiteRecoveryScenario(ScenarioTest):
     @AllowLargeResponse()
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.siterecovery.')
@@ -707,7 +708,7 @@ class SiteRecoveryScenario(ScenarioTest):
             'rg': 'rgtestsrv2arcm',
             'subscription': '0b1f6471-1bf0-4dda-aec3-cb9272f09590',
             'vault_name': 'vaulttestv2arcm',
-            'target_vm_name': 'CliVM2',
+            'target_vm_name': 'RCM-Win2K16-01',
             'recovery_loc': 'eastus',
             'fabric_name': 'vaulttestv2arcm-vmwarefabric',
             'policy_name': 'cli-test-policy-V2ARCM-1',
@@ -720,10 +721,7 @@ class SiteRecoveryScenario(ScenarioTest):
             'storage_name': 'cliteststoragev2arcm1',
             'recovery_plan_name': 'cli-test-recovery-plan-V2ARCM-1',
             'vcenter_server': 'vcenter65',
-            'machine_name': 'RCMApplDec16Proxytest',
-            'machine_id': '/subscriptions/c89695cf-3a29-4ff0-86da-2696d2c5322b/resourceGroups/h2asignoff/'
-                          'providers/Microsoft.Compute/virtualMachines/RCMApplDec16Proxytest',
-            'ip_address/FQDN': 'WIN-18GKCVAMV9Q',
+            'credential_display_name': 'wincreds'
         })
         # requires service to setup environment
         # set subscription
@@ -767,37 +765,156 @@ class SiteRecoveryScenario(ScenarioTest):
         self.kwargs.update({"container_name": container_name})
 
         # create container mapping
-        self.cmd('az site-recovery protection-container mapping create -g {rg} '
-                 '--fabric-name {fabric_name} -n {container_mapping_name} '
-                 '--protection-container {container_name} '
-                 '--vault-name {vault_name} --policy-id {policy_id} --target-container \"Microsoft Azure\" '
-                 '--provider-input {{in-mage-rcm:{{enable-agent-auto-upgrade:true}}}}')
+        # self.cmd('az site-recovery protection-container mapping create -g {rg} '
+        #          '--fabric-name {fabric_name} -n {container_mapping_name} '
+        #          '--protection-container {container_name} '
+        #          '--vault-name {vault_name} --policy-id {policy_id} --target-container \"Microsoft Azure\" '
+        #          '--provider-input {{in-mage-rcm:{{enable-agent-auto-upgrade:true}}}}')
 
-        # # get protectable_item name
-        # protectable_item = self.cmd('az site-recovery protectable-item list -g {rg} '
-        #                             '--fabric-name {fabric_name} --protection-container {container_name} '
-        #                             '--vault-name {vault_name}').get_output_in_json()[0]
-        # self.kwargs.update({"protectable_item_name": protectable_item["name"],
-        #                     "protectable_item_id": protectable_item["id"]})
-        #
-        # # get vm info
-        # self.kwargs.update({"vhd_id": protectable_item["properties"]["customDetails"]["diskDetails"][0]["vhdId"]})
-        #
-        # # # enable protection
+        # get process_server_id
+        recovery_services_provider = self.cmd("az site-recovery recovery-services-provider list --fabric-name "
+                                              "{fabric_name} -g {rg} --vault-name {vault_name}").get_output_in_json()[0]
+        self.kwargs.update({"process_server_id": recovery_services_provider["properties"]["machineId"]})
+        # get fabric site name
+        fabric = self.cmd('az site-recovery fabric show -g {rg} --vault-name {vault_name} '
+                          '--fabric-name {fabric_name}').get_output_in_json()
+        site_name = fabric["properties"]["customDetails"]["vmwareSiteId"].split('/')[-1]
+        self.kwargs.update({"site_name": site_name})
+        # get target vm id
+        vmware_machines = self.cmd('az site-recovery vmware-site machine list -g {rg} '
+                                   '--site-name {site_name}').get_output_in_json()
+        for machine in vmware_machines:
+            if machine["properties"]["displayName"] == self.kwargs.get("target_vm_name"):
+                self.kwargs.update({"fabric_discovery_machine_id": machine["id"]})
+                break
+        # get target vm id
+        credentials = self.cmd('az site-recovery vmware-site run-as-account list -g {rg} '
+                               '--site-name {site_name}').get_output_in_json()
+        for credential in credentials:
+            if credential["properties"]["displayName"] == self.kwargs.get("credential_display_name"):
+                self.kwargs.update({"run_as_account_id": credential["id"]})
+                break
+
+        # # enable protection
         # self.cmd('az site-recovery protected-item create -g {rg} '
         #          '--fabric-name {fabric_name} -n {protected_item_name} --protection-container {container_name} '
-        #          '--vault-name {vault_name} --policy-id {policy_id} --protectable-item-id {protectable_item_id} '
-        #          '--provider-details {{hyper-v-replica-azure:{{'
-        #          'disks-to-include:[{vhd_id}],'
-        #          'enable-rdp-on-target-option:Never,'
-        #          'os-type:Windows,'
-        #          'target-azure-network-id:{vnet_id},'
-        #          'target-azure-subnet-id:{subnet_id},'
-        #          'target-azure-v2-resource-group-id:{rg_id},'
-        #          'target-azure-vm-name:{hypervvm_name},'
-        #          'target-storage-account-id:{storage_id},'
-        #          'use-managed-disks:false,'
-        #          'vhd-id:{vhd_id}}}}}')
+        #          '--vault-name {vault_name} --policy-id {policy_id} '
+        #          '--provider-details {{in-mage-rcm:{{'
+        #          'fabric-discovery-machine-id:{fabric_discovery_machine_id},'
+        #          'process-server-id:{process_server_id},'
+        #          'run-as-account-id:{run_as_account_id},'
+        #          'target-resource-group-id:{rg_id},'
+        #          'target-boot-diagnostics-storage-account-id:{storage_id},'
+        #          'target-network-id:{vnet_id},'
+        #          'target-subnet-name:MySubnet,'
+        #          'target-vm-name:{target_vm_name},'
+        #          'disks-default:{{disk-type:Premium_LRS,log-storage-account-id:{storage_id}}}}}}}')
+
+        # # wait for protection to fully enabled
+        # while True:
+        #     protected_item = self.cmd('az site-recovery protected-item show -g {rg} '
+        #                               '--fabric-name {fabric_name} -n {protected_item_name} '
+        #                               '--protection-container {container_name} '
+        #                               '--vault-name {vault_name}').get_output_in_json()
+        #     if protected_item["properties"]["protectionState"] == "Protected":
+        #         self.kwargs.update({"protected_item_id": protected_item["id"]})
+        #         break
+        #     time.sleep(300)
+        #
+        protected_item = self.cmd('az site-recovery protected-item show -g {rg} '
+                                  '--fabric-name {fabric_name} -n {protected_item_name} '
+                                  '--protection-container {container_name} '
+                                  '--vault-name {vault_name}').get_output_in_json()
+        self.kwargs.update({"protected_item_id": protected_item["id"],
+                            "vm_id": protected_item["properties"]["providerSpecificDetails"]["internalIdentifier"]})
+
+        # recovery-plan
+        fabric_id = self.cmd('az site-recovery fabric show -n {fabric_name} -g {rg} '
+                             '--vault-name {vault_name}').get_output_in_json()["id"]
+        self.kwargs.update({"fabric_id": fabric_id})
+
+        # self.cmd('az site-recovery recovery-plan create -n {recovery_plan_name} -g {rg} '
+        #          '--vault-name {vault_name} --groups [{{group-type:Boot,'
+        #          'replication-protected-items:[{{id:{protected_item_id},virtual-machine-id:{vm_id}}}]}}] '
+        #          '--primary-fabric-id {fabric_id} '
+        #          '--recovery-fabric-id "Microsoft Azure" '
+        #          '--failover-deployment-model ResourceManager')
+        # self.cmd('az site-recovery recovery-plan show -n {recovery_plan_name} -g {rg} --vault-name {vault_name}',
+        #          checks=[self.check('properties.failoverDeploymentModel', 'ResourceManager'),
+        #                  self.check('properties.primaryFabricId', fabric_id),
+        #                  self.check('properties.recoveryFabricId', "Microsoft Azure")])
+        # self.cmd('az site-recovery recovery-plan list -g {rg} --vault-name {vault_name}',
+        #          checks=[self.check('length(@)', 1)])
+        # self.cmd('az site-recovery recovery-plan delete -n {recovery_plan_name} -g {rg} '
+        #          '--vault-name {vault_name} -y')
+        # self.cmd('az site-recovery recovery-plan list -g {rg} --vault-name {vault_name}',
+        #          checks=[self.check('length(@)', 0)])
+        #
+        # # need to add contributor and blob data contributor role assignment to storage account for the vault
+        # self.cmd('az role assignment create --assignee-object-id {vault_principal_id} '
+        #          '--role "Contributor" --scope {storage_id}')
+        # self.cmd('az role assignment create --assignee-object-id {vault_principal_id} '
+        #          '--role "Storage Blob Data Contributor" --scope {storage_id}')
+        #
+        # # failover
+        # self.cmd('az site-recovery protected-item unplanned-failover --fabric-name {fabric_name} '
+        #          '--protection-container {container_name} -n {protected_item_name} -g {rg} --vault-name {vault_name} '
+        #          '--failover-direction PrimaryToRecovery --provider-details {{in-mage-rcm:{{perform-shutdown:true}}}} '
+        #          '--source-site-operations NotRequired')
+
+        # protected_item = self.cmd('az site-recovery protected-item show -g {rg} '
+        #                           '--fabric-name {fabric_name} -n {protected_item_name} '
+        #                           '--protection-container {container_name} '
+        #                           '--vault-name {vault_name}').get_output_in_json()
+        # self.kwargs.update({"datastore_name": protected_item["properties"]["providerSpecificDetails"]["discoveredVmDetails"]["datastores"][0]})
+        # fabric = self.cmd('az site-recovery fabric show -g {rg} --vault-name {vault_name} '
+        #                   '--fabric-name {fabric_name}').get_output_in_json()
+        # self.kwargs.update({"reprotect_agent_id": fabric["properties"]["customDetails"]["reprotectAgents"][0]["id"]})
+
+        # need to manually enable disk.EnableUUID
+        # https://sort.veritas.com/public/documents/sfha/6.2/vmwareesx/productguides/html/sfhas_virtualization/ch10s05s01.htm
+
+        # # reprotect
+        # self.cmd("az site-recovery protected-item reprotect --fabric-name {fabric_name} "
+        #          "--protection-container {container_name} -n {protected_item_name} -g {rg} --vault-name {vault_name} "
+        #          "--failover-direction RecoveryToPrimary --provider-details "
+        #          "\"{{in-mage-rcm:{{datastore-name:'{datastore_name}',log-storage-account-id:{storage_id},"
+        #          "reprotect-agent-id:{reprotect_agent_id}}}}}\"")
+
+        # # wait for protection to fully enabled
+        # while True:
+        #     protected_item = self.cmd('az site-recovery protected-item show -g {rg} '
+        #                               '--fabric-name {fabric_name} -n {protected_item_name} '
+        #                               '--protection-container {container_name} '
+        #                               '--vault-name {vault_name}').get_output_in_json()
+        #     if protected_item["properties"]["protectionState"] == "Protected":
+        #         self.kwargs.update({"protected_item_id": protected_item["id"]})
+        #         break
+        #     time.sleep(300)
+
+        # failback
+        self.cmd('az site-recovery protected-item unplanned-failover --fabric-name {fabric_name} '
+                 '--protection-container {container_name} -n {protected_item_name} -g {rg} --vault-name {vault_name} '
+                 '--failover-direction RecoveryToPrimary --provider-details {{in-mage-rcm:{{perform-shutdown:true}}}} '
+                 '--source-site-operations NotRequired')
+        #
+        # # disable protection
+        # self.cmd('az site-recovery protected-item remove -g {rg} '
+        #          '--fabric-name {fabric_name} -n {protected_item_name} --protection-container {container_name} '
+        #          '--vault-name {vault_name}')
+        #
+        # # delete container mappings
+        # self.cmd('az site-recovery protection-container mapping delete -g {rg} '
+        #          '--fabric-name {fabric_name} -n {container_mapping_name} --protection-container {container_name} '
+        #          '--vault-name {vault_name} -y')
+        #
+        # # delete containers not supported
+        # #
+        # # delete policy
+        # self.cmd('az site-recovery policy delete -g {rg} '
+        #          '--vault-name {vault_name} -n {policy_name} -y')
+        #
+        # # delete fabrics not supported
 
     @record_only()
     @AllowLargeResponse()
