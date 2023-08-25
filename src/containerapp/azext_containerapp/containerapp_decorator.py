@@ -810,8 +810,8 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             managed_env_info = None
             try:
                 managed_env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=managed_env_rg, name=managed_env_name)
-            except:  # pylint: disable=bare-except
-                pass
+            except Exception as e:
+                handle_non_404_exception(e)
 
             if not managed_env_info:
                 raise ValidationError(
