@@ -502,21 +502,8 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
 
         template_def = TemplateModel
 
-        service_bindings_def_list = None
-        service_connectors_def_list = None
-
-        if self.get_argument_service_bindings() is not None:
-            service_connectors_def_list, service_bindings_def_list = parse_service_bindings(self.cmd, self.get_argument_service_bindings(),
-                                                                                            self.get_argument_resource_group_name(), self.get_argument_name())
-            self.set_argument_service_connectors_def_list(service_connectors_def_list)
-            unique_bindings = check_unique_bindings(self.cmd, service_connectors_def_list, service_bindings_def_list,
-                                                    self.get_argument_resource_group_name(), self.get_argument_name())
-            if not unique_bindings:
-                raise ValidationError("Binding names across managed and dev services should be unique.")
-
         template_def["containers"] = [container_def]
         template_def["scale"] = scale_def
-        template_def["serviceBinds"] = service_bindings_def_list
 
         if self.get_argument_secret_volume_mount() is not None:
             volume_def = VolumeModel
@@ -598,16 +585,6 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
                                                                         "az containerapp ingress enable -n %s -g %s --type external --target-port %s"
                                                                         " --transport auto\n", self.get_argument_name(), self.get_argument_resource_group_name(), target_port)
 
-        if self.get_argument_service_connectors_def_list() is not None:
-            linker_client = get_linker_client(self.cmd)
-
-            for item in self.get_argument_service_connectors_def_list():
-                while r is not None and r["properties"]["provisioningState"].lower() == "inprogress":
-                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
-                    time.sleep(1)
-                linker_client.linker.begin_create_or_update(resource_uri=r["id"],
-                                                            parameters=item["parameters"],
-                                                            linker_name=item["linker_name"]).result()
         return r
 
     def set_up_create_containerapp_yaml(self, name, file_name):
@@ -767,29 +744,6 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         except Exception as e:
             handle_raw_exception(e)
 
-    def post_process(self, r):
-        # Delete managed bindings
-        linker_client = None
-        if self.get_argument_unbind_service_bindings():
-            linker_client = get_linker_client(self.cmd)
-            for item in self.get_argument_unbind_service_bindings():
-                while r["properties"]["provisioningState"].lower() == "inprogress":
-                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
-                    time.sleep(1)
-                linker_client.linker.begin_delete(resource_uri=r["id"], linker_name=item).result()
-
-        # Update managed bindings
-        if self.get_argument_service_connectors_def_list() is not None:
-            linker_client = get_linker_client(self.cmd) if linker_client is None else linker_client
-            for item in self.get_argument_service_connectors_def_list():
-                while r["properties"]["provisioningState"].lower() == "inprogress":
-                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
-                    time.sleep(1)
-                linker_client.linker.begin_create_or_update(resource_uri=r["id"],
-                                                            parameters=item["parameters"],
-                                                            linker_name=item["linker_name"]).result()
-        return r
-
     def set_up_from_revision(self):
         if self.get_argument_from_revision():
             r = None
@@ -801,63 +755,6 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
             _update_revision_env_secretrefs(r["properties"]["template"]["containers"], self.get_argument_name())
             safe_set(self.new_containerapp, "properties", "template", value=r["properties"]["template"])
-
-    def set_up_service_bindings(self):
-        if self.get_argument_service_bindings() is not None:
-            linker_client = get_linker_client(self.cmd)
-
-            service_connectors_def_list, service_bindings_def_list = parse_service_bindings(self.cmd, self.get_argument_service_bindings(), self.get_argument_resource_group_name(), self.get_argument_name())
-            self.set_argument_service_connectors_def_list(service_connectors_def_list)
-            service_bindings_used_map = {update_item["name"]: False for update_item in service_bindings_def_list}
-
-            safe_set(self.new_containerapp, "properties", "template", "serviceBinds", value=self.containerapp_def["properties"]["template"]["serviceBinds"])
-
-            if self.new_containerapp["properties"]["template"]["serviceBinds"] is None:
-                self.new_containerapp["properties"]["template"]["serviceBinds"] = []
-
-            for item in self.new_containerapp["properties"]["template"]["serviceBinds"]:
-                for update_item in service_bindings_def_list:
-                    if update_item["name"] in item.values():
-                        item["serviceId"] = update_item["serviceId"]
-                        service_bindings_used_map[update_item["name"]] = True
-
-            for update_item in service_bindings_def_list:
-                if service_bindings_used_map[update_item["name"]] is False:
-                    # Check if it doesn't exist in existing service linkers
-                    managed_bindings = linker_client.linker.list(resource_uri=self.containerapp_def["id"])
-                    if managed_bindings:
-                        managed_bindings_list = [item.name for item in managed_bindings]
-                        if update_item["name"] in managed_bindings_list:
-                            raise ValidationError("Binding names across managed and dev services should be unique.")
-
-                    self.new_containerapp["properties"]["template"]["serviceBinds"].append(update_item)
-
-            if service_connectors_def_list is not None:
-                for item in service_connectors_def_list:
-                    # Check if it doesn't exist in existing service bindings
-                    service_bindings_list = []
-                    for binds in self.new_containerapp["properties"]["template"]["serviceBinds"]:
-                        service_bindings_list.append(binds["name"])
-                        if item["linker_name"] in service_bindings_list:
-                            raise ValidationError("Binding names across managed and dev services should be unique.")
-
-    def set_up_unbind_service_bindings(self):
-        if self.get_argument_unbind_service_bindings():
-            new_template = self.new_containerapp.setdefault("properties", {}).setdefault("template", {})
-            existing_template = self.containerapp_def["properties"]["template"]
-
-            if not self.get_argument_service_bindings():
-                new_template["serviceBinds"] = existing_template.get("serviceBinds", [])
-
-            service_bindings_dict = {}
-            if new_template["serviceBinds"]:
-                service_bindings_dict = {service_binding["name"]: index for index, service_binding in
-                                         enumerate(new_template.get("serviceBinds", []))}
-
-            for item in self.get_argument_unbind_service_bindings():
-                if item in service_bindings_dict:
-                    new_template["serviceBinds"] = [binding for binding in new_template["serviceBinds"] if
-                                                    binding["name"] != item]
 
     def _need_update_container(self):
         return self.get_argument_image() or self.get_argument_container_name() or self.get_argument_set_env_vars() is not None or self.get_argument_remove_env_vars() is not None or self.get_argument_replace_env_vars() is not None or self.get_argument_remove_all_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_startup_command() is not None or self.get_argument_args() is not None or self.get_argument_secret_volume_mount() is not None
@@ -891,9 +788,6 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         update_map['container'] = self._need_update_container()
         update_map['ingress'] = self.get_argument_ingress() or self.get_argument_target_port()
         update_map['registry'] = self.get_argument_registry_server() or self.get_argument_registry_user() or self.get_argument_registry_pass()
-
-        self.set_up_service_bindings()
-        self.set_up_unbind_service_bindings()
 
         if self.get_argument_tags():
             _add_or_update_tags(self.new_containerapp, self.get_argument_tags())
@@ -1300,7 +1194,37 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
     def construct_payload(self):
         super().construct_payload()
+        self.set_up_service_binds()
         self.set_up_extended_location()
+
+    def post_process(self, r):
+        if is_registry_msi_system(self.get_argument_registry_identity()):
+            r = self.create()
+
+        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not self.get_argument_no_wait():
+            not self.get_argument_disable_warnings() and logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(self.get_argument_name(), self.get_argument_resource_group_name()))
+
+        if "configuration" in r["properties"] and "ingress" in r["properties"]["configuration"] and \
+                r["properties"]["configuration"]["ingress"] and "fqdn" in r["properties"]["configuration"]["ingress"]:
+            not self.get_argument_disable_warnings() and logger.warning("\nContainer app created. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
+        else:
+            target_port = self.get_argument_target_port() or "<port>"
+            not self.get_argument_disable_warnings() and logger.warning(
+                "\nContainer app created. To access it over HTTPS, enable ingress: "
+                "az containerapp ingress enable -n %s -g %s --type external --target-port %s"
+                " --transport auto\n", self.get_argument_name(), self.get_argument_resource_group_name(), target_port)
+
+        if self.get_argument_service_connectors_def_list() is not None:
+            linker_client = get_linker_client(self.cmd)
+
+            for item in self.get_argument_service_connectors_def_list():
+                while r is not None and r["properties"]["provisioningState"].lower() == "inprogress":
+                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
+                    time.sleep(1)
+                linker_client.linker.begin_create_or_update(resource_uri=r["id"],
+                                                            parameters=item["parameters"],
+                                                            linker_name=item["linker_name"]).result()
+        return r
 
     def set_up_extended_location(self):
         if self.get_argument_environment_type() == CONNECTED_ENVIRONMENT_TYPE:
@@ -1310,6 +1234,19 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                 env_rg = parsed_env['resource_group']
                 env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
                 self.containerapp_def["extendedLocation"] = env_info["extendedLocation"]
+
+    def set_up_service_binds(self):
+        if self.get_argument_service_bindings() is not None:
+            service_connectors_def_list, service_bindings_def_list = parse_service_bindings(self.cmd,
+                                                                                            self.get_argument_service_bindings(),
+                                                                                            self.get_argument_resource_group_name(),
+                                                                                            self.get_argument_name())
+            self.set_argument_service_connectors_def_list(service_connectors_def_list)
+            unique_bindings = check_unique_bindings(self.cmd, service_connectors_def_list, service_bindings_def_list,
+                                                    self.get_argument_resource_group_name(), self.get_argument_name())
+            if not unique_bindings:
+                raise ValidationError("Binding names across managed and dev services should be unique.")
+            safe_set(self.containerapp_def, "properties", "template", "serviceBinds", value=service_bindings_def_list)
 
     def get_environment_client(self):
         if self.get_argument_yaml():
@@ -1346,6 +1283,94 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
     def set_argument_environment_type(self, environment_type):
         self.set_param("environment_type", environment_type)
+
+
+# decorator for preview update
+class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
+    def construct_payload(self):
+        super().construct_payload()
+        self.set_up_service_bindings()
+        self.set_up_unbind_service_bindings()
+
+    def post_process(self, r):
+        # Delete managed bindings
+        linker_client = None
+        if self.get_argument_unbind_service_bindings():
+            linker_client = get_linker_client(self.cmd)
+            for item in self.get_argument_unbind_service_bindings():
+                while r["properties"]["provisioningState"].lower() == "inprogress":
+                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
+                    time.sleep(1)
+                linker_client.linker.begin_delete(resource_uri=r["id"], linker_name=item).result()
+
+        # Update managed bindings
+        if self.get_argument_service_connectors_def_list() is not None:
+            linker_client = get_linker_client(self.cmd) if linker_client is None else linker_client
+            for item in self.get_argument_service_connectors_def_list():
+                while r["properties"]["provisioningState"].lower() == "inprogress":
+                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
+                    time.sleep(1)
+                linker_client.linker.begin_create_or_update(resource_uri=r["id"],
+                                                            parameters=item["parameters"],
+                                                            linker_name=item["linker_name"]).result()
+        return r
+
+    def set_up_service_bindings(self):
+        if self.get_argument_service_bindings() is not None:
+            linker_client = get_linker_client(self.cmd)
+
+            service_connectors_def_list, service_bindings_def_list = parse_service_bindings(self.cmd, self.get_argument_service_bindings(), self.get_argument_resource_group_name(), self.get_argument_name())
+            self.set_argument_service_connectors_def_list(service_connectors_def_list)
+            service_bindings_used_map = {update_item["name"]: False for update_item in service_bindings_def_list}
+
+            safe_set(self.new_containerapp, "properties", "template", "serviceBinds", value=self.containerapp_def["properties"]["template"]["serviceBinds"])
+
+            if self.new_containerapp["properties"]["template"]["serviceBinds"] is None:
+                self.new_containerapp["properties"]["template"]["serviceBinds"] = []
+
+            for item in self.new_containerapp["properties"]["template"]["serviceBinds"]:
+                for update_item in service_bindings_def_list:
+                    if update_item["name"] in item.values():
+                        item["serviceId"] = update_item["serviceId"]
+                        service_bindings_used_map[update_item["name"]] = True
+
+            for update_item in service_bindings_def_list:
+                if service_bindings_used_map[update_item["name"]] is False:
+                    # Check if it doesn't exist in existing service linkers
+                    managed_bindings = linker_client.linker.list(resource_uri=self.containerapp_def["id"])
+                    if managed_bindings:
+                        managed_bindings_list = [item.name for item in managed_bindings]
+                        if update_item["name"] in managed_bindings_list:
+                            raise ValidationError("Binding names across managed and dev services should be unique.")
+
+                    self.new_containerapp["properties"]["template"]["serviceBinds"].append(update_item)
+
+            if service_connectors_def_list is not None:
+                for item in service_connectors_def_list:
+                    # Check if it doesn't exist in existing service bindings
+                    service_bindings_list = []
+                    for binds in self.new_containerapp["properties"]["template"]["serviceBinds"]:
+                        service_bindings_list.append(binds["name"])
+                        if item["linker_name"] in service_bindings_list:
+                            raise ValidationError("Binding names across managed and dev services should be unique.")
+
+    def set_up_unbind_service_bindings(self):
+        if self.get_argument_unbind_service_bindings():
+            new_template = self.new_containerapp.setdefault("properties", {}).setdefault("template", {})
+            existing_template = self.containerapp_def["properties"]["template"]
+
+            if not self.get_argument_service_bindings():
+                new_template["serviceBinds"] = existing_template.get("serviceBinds", [])
+
+            service_bindings_dict = {}
+            if new_template["serviceBinds"]:
+                service_bindings_dict = {service_binding["name"]: index for index, service_binding in
+                                         enumerate(new_template.get("serviceBinds", []))}
+
+            for item in self.get_argument_unbind_service_bindings():
+                if item in service_bindings_dict:
+                    new_template["serviceBinds"] = [binding for binding in new_template["serviceBinds"] if
+                                                    binding["name"] != item]
 
 
 # decorator for preview list

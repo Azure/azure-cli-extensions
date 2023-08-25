@@ -36,7 +36,7 @@ from msrest.exceptions import DeserializationError
 from .containerapp_job_decorator import ContainerAppJobDecorator, ContainerAppJobCreateDecorator
 from .containerapp_env_decorator import ContainerAppEnvDecorator, ContainerAppEnvCreateDecorator, ContainerAppEnvUpdateDecorator
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
-from .containerapp_decorator import BaseContainerAppDecorator, ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppUpdateDecorator
+from .containerapp_decorator import BaseContainerAppDecorator, ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_exception
 from ._clients import (
     ManagedEnvironmentClient,
@@ -533,9 +533,9 @@ def update_containerapp_logic(cmd,
                               secret_volume_mount=None):
     raw_parameters = locals()
 
-    containerapp_update_decorator = ContainerAppUpdateDecorator(
+    containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
         cmd=cmd,
-        client=ContainerAppClient,
+        client=ContainerAppPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )

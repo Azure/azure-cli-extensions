@@ -1247,6 +1247,32 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
         ])
 
+        # test managedEnvironmentId
+        containerapp_yaml_text = f"""
+                                        properties:
+                                          configuration:
+                                            activeRevisionsMode: Multiple
+                                            ingress:
+                                              external: false
+                                              additionalPortMappings:
+                                              - external: false
+                                                targetPort: 321
+                                              - external: false
+                                                targetPort: 8080
+                                                exposedPort: 1234
+                                        """
+
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+
+        self.cmd(f'containerapp update -n {app} -g {resource_group} --yaml {containerapp_file_name}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.configuration.ingress.external", False),
+            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[0].external", False),
+            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[0].targetPort", 321),
+            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].external", False),
+            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].targetPort", 8080),
+            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].exposedPort", 1234),
+        ])
         clean_up_test_file(containerapp_file_name)
 
     @AllowLargeResponse(8192)
