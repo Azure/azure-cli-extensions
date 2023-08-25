@@ -1518,6 +1518,10 @@ class ContainerAppPreviewClient(ContainerAppClient):
     api_version = PREVIEW_API_VERSION
 
 
+class ContainerAppsJobPreviewClient(ContainerAppsJobClient):
+    api_version = PREVIEW_API_VERSION
+
+
 class SubscriptionClient():
     api_version = CURRENT_API_VERSION
 
