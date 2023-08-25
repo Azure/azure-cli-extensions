@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.4.4
+++++++++++++++++++
+* drop `azure-mgmt-relay` sdk dependency for Azure Monitor K8s extensions
+
 1.4.3
 ++++++++++++++++++
 * microsoft.azuremonitor.containers: Extend ContainerInsights Extension dataCollectionSettings with streams and containerlogv2 field. Also, add a kind tag in DCR creation for the ContainerInsights extension.
