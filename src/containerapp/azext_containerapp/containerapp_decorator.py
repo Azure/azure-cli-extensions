@@ -1230,7 +1230,8 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def set_up_extended_location(self):
         if self.get_argument_environment_type() == CONNECTED_ENVIRONMENT_TYPE:
             if not self.containerapp_def.get('extendedLocation'):
-                parsed_env = parse_resource_id(self.get_argument_managed_env())  # custom_location check here perhaps
+                env_id = safe_get(self.containerapp_def, "properties", 'environmentId') or self.get_argument_managed_env()
+                parsed_env = parse_resource_id(env_id)
                 env_name = parsed_env['name']
                 env_rg = parsed_env['resource_group']
                 env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)

@@ -33,7 +33,7 @@ from knack.prompting import prompt_y_n, prompt as prompt_str
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
-from .containerapp_job_decorator import ContainerAppJobDecorator, ContainerAppJobCreateDecorator
+from .containerapp_job_decorator import ContainerAppJobDecorator, ContainerAppJobPreviewCreateDecorator
 from .containerapp_env_decorator import ContainerAppEnvDecorator, ContainerAppEnvCreateDecorator, ContainerAppEnvUpdateDecorator
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import BaseContainerAppDecorator, ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
@@ -49,7 +49,8 @@ from ._clients import (
     ContainerAppsJobClient,
     ContainerAppPreviewClient,
     AuthPreviewClient,
-    SubscriptionPreviewClient
+    SubscriptionPreviewClient,
+    ContainerAppsJobPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._github_oauth import get_github_access_token
@@ -804,11 +805,12 @@ def create_containerappsjob(cmd,
                             disable_warnings=False,
                             user_assigned=None,
                             registry_identity=None,
-                            workload_profile_name=None):
+                            workload_profile_name=None,
+                            environment_type="managed"):
     raw_parameters = locals()
-    containerapp_job_create_decorator = ContainerAppJobCreateDecorator(
+    containerapp_job_create_decorator = ContainerAppJobPreviewCreateDecorator(
         cmd=cmd,
-        client=ContainerAppsJobClient,
+        client=ContainerAppsJobPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )

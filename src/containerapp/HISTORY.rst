@@ -9,8 +9,8 @@ upcoming
 * 'az containerapp auth': support --token-store, --sas-url-secret, --sas-url-secret-name, --yes
 * 'az containerapp create'/'az containerapp job create': When --environment is provided and the environmentId value does not exist in --yaml, use the value in --environment as environmentId
 * Added 'az containerapp show-custom-domain-verification-id' to show verfication id used for binding custom domain
+* 'az containerapp job create': support --environment-type parameter
 * 'az containerapp update': --yaml support property additionalPortMappings for api-version 2023-05-02-preview
-
 
 0.3.37
 ++++++

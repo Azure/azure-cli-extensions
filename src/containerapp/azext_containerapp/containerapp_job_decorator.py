@@ -19,11 +19,12 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from ._decorator_utils import process_loaded_yaml, load_yaml_file, create_deserializer
-from ._constants import HELLO_WORLD_IMAGE, CONTAINER_APPS_RP
+from ._constants import HELLO_WORLD_IMAGE, CONTAINER_APPS_RP, CONNECTED_ENVIRONMENT_RESOURCE_TYPE, \
+    MANAGED_ENVIRONMENT_TYPE, CONNECTED_ENVIRONMENT_TYPE
 from ._validators import validate_create
 from .base_resource import BaseResource
-from ._clients import ManagedEnvironmentClient
-from ._client_factory import handle_raw_exception
+from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient
+from ._client_factory import handle_raw_exception, handle_non_404_exception
 
 from ._models import (
     JobConfiguration as JobConfigurationModel,
@@ -482,8 +483,8 @@ class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
 
         try:
             env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
-        except:
-            pass
+        except Exception as e:
+            handle_non_404_exception(e)
 
         if not env_info:
             raise ValidationError("The environment '{}' in resource group '{}' was not found".format(env_name, env_rg))
@@ -491,3 +492,58 @@ class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
         # Validate location
         if not self.containerappjob_def.get('location'):
             self.containerappjob_def['location'] = env_info['location']
+
+
+class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
+    def construct_payload(self):
+        super().construct_payload()
+        self.set_up_extended_location()
+
+    def set_up_extended_location(self):
+        if self.get_argument_environment_type() == CONNECTED_ENVIRONMENT_TYPE:
+            if not self.containerappjob_def.get('extendedLocation'):
+                env_id = safe_get(self.containerappjob_def, "properties", 'environmentId') or self.get_argument_managed_env()
+                parsed_env = parse_resource_id(env_id)
+                env_name = parsed_env['name']
+                env_rg = parsed_env['resource_group']
+                env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
+                self.containerappjob_def["extendedLocation"] = env_info["extendedLocation"]
+
+    def get_environment_client(self):
+        if self.get_argument_yaml():
+            env = safe_get(self.containerappjob_def, "properties", "environmentId")
+        else:
+            env = self.get_argument_managed_env()
+
+        environment_type = self.get_argument_environment_type()
+        if not env and not environment_type:
+            return ManagedEnvironmentClient
+
+        parsed_env = parse_resource_id(env)
+
+        # Validate environment type
+        if parsed_env.get('resource_type').lower() == CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower():
+            if environment_type == MANAGED_ENVIRONMENT_TYPE:
+                logger.warning(f"User passed a connectedEnvironment resource id but did not specify --environment-type {CONNECTED_ENVIRONMENT_TYPE}. Using environment type {CONNECTED_ENVIRONMENT_TYPE}.")
+            environment_type = CONNECTED_ENVIRONMENT_TYPE
+        else:
+            if environment_type == CONNECTED_ENVIRONMENT_TYPE:
+                logger.warning(f"User passed a managedEnvironment resource id but specified --environment-type {CONNECTED_ENVIRONMENT_TYPE}. Using environment type {MANAGED_ENVIRONMENT_TYPE}.")
+            environment_type = MANAGED_ENVIRONMENT_TYPE
+
+        self.set_argument_environment_type(environment_type)
+        self.set_argument_managed_env(env)
+
+        if environment_type == CONNECTED_ENVIRONMENT_TYPE:
+            return ConnectedEnvironmentClient
+        else:
+            return ManagedEnvironmentPreviewClient
+
+    def get_argument_environment_type(self):
+        return self.get_param("environment_type")
+
+    def set_argument_managed_env(self, managed_env):
+        self.set_param("managed_env", managed_env)
+
+    def set_argument_environment_type(self, environment_type):
+        self.set_param("environment_type", environment_type)
