@@ -13,7 +13,8 @@ import time
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     ValidationError,
-    ArgumentUsageError, ResourceNotFoundError)
+    ArgumentUsageError,
+    ResourceNotFoundError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 
 from knack.log import get_logger
