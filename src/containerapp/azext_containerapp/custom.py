@@ -50,7 +50,8 @@ from ._clients import (
     ContainerAppPreviewClient,
     AuthPreviewClient,
     SubscriptionPreviewClient,
-    ContainerAppsJobPreviewClient
+    ContainerAppsJobPreviewClient,
+    ManagedEnvironmentPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._github_oauth import get_github_access_token
@@ -641,6 +642,24 @@ def show_custom_domain_verification_id(cmd):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     try:
         r = SubscriptionPreviewClient.show_custom_domain_verification_id(cmd)
+        return r
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def list_usages(cmd, location):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        r = SubscriptionPreviewClient.list_usages(cmd, location)
+        return r
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def list_environment_usages(cmd, resource_group_name, name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        r = ManagedEnvironmentPreviewClient.list_usages(cmd, resource_group_name, name)
         return r
     except CLIError as e:
         handle_raw_exception(e)
