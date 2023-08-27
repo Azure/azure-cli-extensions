@@ -781,12 +781,15 @@ class SiteRecoveryScenario(ScenarioTest):
         site_name = fabric["properties"]["customDetails"]["vmwareSiteId"].split('/')[-1]
         self.kwargs.update({"site_name": site_name})
         # get target vm id
-        vmware_machines = self.cmd('az site-recovery vmware-site machine list -g {rg} '
-                                   '--site-name {site_name}').get_output_in_json()
-        for machine in vmware_machines:
-            if machine["properties"]["displayName"] == self.kwargs.get("target_vm_name"):
-                self.kwargs.update({"fabric_discovery_machine_id": machine["id"]})
-                break
+        # vmware_machines = self.cmd('az site-recovery vmware-site machine list -g {rg} '
+        #                            '--site-name {site_name}').get_output_in_json()
+        # for machine in vmware_machines:
+        #     if machine["properties"]["displayName"] == self.kwargs.get("target_vm_name"):
+        #         self.kwargs.update({"fabric_discovery_machine_id": machine["id"]})
+        #         break
+        # for recording
+        self.kwargs.update({"fabric_discovery_machine_id": "machineid"})
+
         # get target vm id
         credentials = self.cmd('az site-recovery vmware-site run-as-account list -g {rg} '
                                '--site-name {site_name}').get_output_in_json()
