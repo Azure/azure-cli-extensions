@@ -701,7 +701,7 @@ class SiteRecoveryScenario(ScenarioTest):
                              '--vault-name {vault_name} -n {policy_name}').get_output_in_json()["id"]
         self.kwargs.update({"policy_id": policy_id})
 
-    # @record_only()
+    @record_only()
     @AllowLargeResponse()
     def test_siterecovery_V2A_RCMInMage_scenarios(self):
         self.kwargs.update({
