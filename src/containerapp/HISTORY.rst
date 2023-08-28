@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* Add support for binding managed MySQL Flexible server to a containerapp
 * Removed preview tag for some command groups and params (e.g. 'az containerapp job', 'az containerapp env storage', 'az containerapp env workload-profile')
 * 'az containerapp env': --enable-workload-profiles allowed values:true, false
 * 'az containerapp auth': support --token-store, --sas-url-secret, --sas-url-secret-name, --yes
