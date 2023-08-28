@@ -1721,25 +1721,40 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self._get_api_server_authorized_ip_ranges(enable_validation=True)
 
-    def get_dns_zone_resource_id(self) -> Union[str, None]:
-        """Obtain the value of ip_families.
+    def get_dns_zone_resource_ids(self) -> Union[str, None]:
+        """Obtain the value of dns_zone_resource_ids.
 
         :return: string or None
         """
         # read the original value passed by the command
-        dns_zone_resource_id = self.raw_param.get("dns_zone_resource_id")
+        dns_zone_resource_ids = self.raw_param.get("dns_zone_resource_ids")
+        # normalize
+        dns_zone_resource_ids = [
+            x.strip()
+            for x in (
+                dns_zone_resource_ids.split(",")
+                if dns_zone_resource_ids
+                else []
+            )
+        ]
         # try to read the property value corresponding to the parameter from the `mc` object
         if (
             self.mc and
             self.mc.ingress_profile and
             self.mc.ingress_profile.web_app_routing and
-            self.mc.ingress_profile.web_app_routing.dns_zone_resource_id is not None
+            self.mc.ingress_profile.web_app_routing.dns_zone_resource_ids is not None
         ):
-            dns_zone_resource_id = self.mc.ingress_profile.web_app_routing.dns_zone_resource_id
+            dns_zone_resource_ids = self.mc.ingress_profile.web_app_routing.dns_zone_resource_ids    
+        
+        # for backward compatibility, if --dns-zone-resource-ids is not specified,
+        # try to read from --dns-zone-resource-id
+        dns_zone_resource_id = self.raw_param.get("dns_zone_resource_id")
+        if not dns_zone_resource_ids and dns_zone_resource_id:
+            dns_zone_resource_ids = [dns_zone_resource_id]
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
-        return dns_zone_resource_id
+        return dns_zone_resource_ids
 
     def _get_enable_keda(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_keda.
@@ -2530,10 +2545,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if "web_application_routing" in addons:
             if mc.ingress_profile is None:
                 mc.ingress_profile = self.models.ManagedClusterIngressProfile()
-            dns_zone_resource_id = self.context.get_dns_zone_resource_id()
+            dns_zone_resource_ids = self.context.get_dns_zone_resource_ids()
             mc.ingress_profile.web_app_routing = self.models.ManagedClusterIngressProfileWebAppRouting(
                 enabled=True,
-                dns_zone_resource_id=dns_zone_resource_id,
+                dns_zone_resource_ids=dns_zone_resource_ids,
             )
         return mc
 

@@ -2356,29 +2356,53 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(RequiredArgumentMissingError):
             ctx_6.get_apiserver_subnet_id()
 
-    def test_get_dns_zone_resource_id(self):
+    def test_get_dns_zone_resource_ids(self):
         ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
                 {
-                    "dns_zone_resource_id": "test_dns_zone_resource_id",
+                    "dns_zone_resource_ids": "test_dns_zone_resource_id",
                 }
             ),
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_1.get_dns_zone_resource_id(), "test_dns_zone_resource_id")
+        self.assertEqual(ctx_1.get_dns_zone_resource_ids(), ["test_dns_zone_resource_id"])
         mc_1 = self.models.ManagedCluster(
             location="test_location",
             ingress_profile=self.models.ManagedClusterIngressProfile(
                 web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                     enabled=True,
-                    dns_zone_resource_id="test_mc_dns_zone_resource_id",
+                    dns_zone_resource_ids=["test_mc_dns_zone_resource_id"],
                 )
             ),
         )
         ctx_1.attach_mc(mc_1)
-        self.assertEqual(ctx_1.get_dns_zone_resource_id(), "test_mc_dns_zone_resource_id")
+        self.assertEqual(ctx_1.get_dns_zone_resource_ids(), ["test_mc_dns_zone_resource_id"])
+
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "dns_zone_resource_ids": "test_dns_zone_resource_id_1,test_dns_zone_resource_id_2",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_dns_zone_resource_ids(), ["test_dns_zone_resource_id_1", "test_dns_zone_resource_id_2"])
+
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "dns_zone_resource_id": "test_dns_zone_resource_id_1",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_dns_zone_resource_ids(), ["test_dns_zone_resource_id_1"])
 
     def test_get_enable_keda(self):
         # Returns the value of enable_keda if keda is None in existing profile.
@@ -4103,7 +4127,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
             self.client,
-            {"enable_addons": "web_application_routing", "dns_zone_resource_id": "test_dns_zone_resource_id"},
+            {"enable_addons": "web_application_routing", "dns_zone_resource_ids": "test_dns_zone_resource_id"},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_1 = self.models.ManagedCluster(location="test_location")
@@ -4112,7 +4136,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_ingress_profile_1 = self.models.ManagedClusterIngressProfile(
             web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                 enabled=True,
-                dns_zone_resource_id="test_dns_zone_resource_id",
+                dns_zone_resource_ids=["test_dns_zone_resource_id"],
             )
         )
         ground_truth_mc_1 = self.models.ManagedCluster(

@@ -6160,7 +6160,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
                      '--enable-addons web_application_routing ' \
-                     '--dns-zone-resource-id "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourcegroups/notexist/providers/Microsoft.Network/dnsZones/notexist.com" ' \
+                     '--dns-zone-resource-ids "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourcegroups/notexist/providers/Microsoft.Network/dnsZones/notexist.com" ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         try:
             self.cmd(create_cmd, checks=[])
@@ -6229,7 +6229,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         role_assignment_cmd = 'role assignment create --role "DNS Zone Contributor" --assignee {web_app_routing_identity_obj_id} --scope {dns_zone_id}'
         self.cmd(role_assignment_cmd)
 
-        addon_update_cmd = 'aks addon update -g {resource_group} -n {name} --addon web_application_routing --dns-zone-resource-id={dns_zone_id}'
+        addon_update_cmd = 'aks addon update -g {resource_group} -n {name} --addon web_application_routing --dns-zone-resource-ids={dns_zone_id}'
         self.cmd(addon_update_cmd, checks=[
             self.check('provisioningState', 'Succeeded')
         ])
