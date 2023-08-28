@@ -19,6 +19,9 @@ class PlannedFailover(AAZCommand):
 
     :example: failback hyper-v-replica-azure
         az site-recovery protected-item planned-failover --fabric-name "fabric_name" --protection-container "container_name" -n "protected_item_name" -g "rg" --vault-name "vault_name" --failover-direction RecoveryToPrimary --provider-details '{hyper-v-replica-azure-failback:{data-sync-option:ForSynchronization,recovery-vm-creation-option:NoAction}}'
+
+    :example: failback v2arcm
+        az site-recovery protected-item planned-failover --fabric-name "fabric_name" --protection-container "container_name" -n "protected_item_name" -g "rg" --vault-name "vault_name" --provider-details '{in-mage-rcm-failback:{recovery-point-type:CrashConsistent}}'
     """
 
     _aaz_info = {

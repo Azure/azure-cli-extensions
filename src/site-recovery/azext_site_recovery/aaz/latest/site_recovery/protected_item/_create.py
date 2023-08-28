@@ -22,6 +22,9 @@ class Create(AAZCommand):
 
     :example: protected-item create for hyper-v-replica-azure
         az site-recovery protected-item create -g "rg" --fabric-name "fabric_name" -n "protected_item_name" --protection-container "container_name" --vault-name "vault_name" --policy-id "policy_id" --protectable-item-id "protectable_item_id" --provider-details '{hyper-v-replica-azure:{disks-to-include:["vhd_id"],enable-rdp-on-target-option:Never,os-type:Windows,target-azure-network-id:"vnet_id",target-azure-subnet-id:"subnet_id",target-azure-v2-resource-group-id:"rg_id",target-azure-vm-name:"hypervvm_name",target-storage-account-id:"storage_id",use-managed-disks:false,vhd-id:"vhd_id"}}'
+
+    :example: protected-item create for v2arcm
+        az site-recovery protected-item create -g "rg" --fabric-name "fabric_name" -n "protected_item_name" --protection-container "container_name" --vault-name "vault_name" --policy-id "policy_id" --provider-details '{in-mage-rcm:{fabric-discovery-machine-id:"fabric_discovery_machine_id",process-server-id:"process_server_id",run-as-account-id:"run_as_account_id",target-resource-group-id:"rg_id",target-boot-diagnostics-storage-account-id:"storage_id",target-network-id:"vnet_id",target-subnet-name:MySubnet,target-vm-name:"target_vm_name",disks-default:{disk-type:Premium_LRS,log-storage-account-id:"storage_id"}}}'
     """
 
     _aaz_info = {

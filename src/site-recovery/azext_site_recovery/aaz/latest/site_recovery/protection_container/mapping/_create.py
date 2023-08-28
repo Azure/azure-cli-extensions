@@ -22,6 +22,9 @@ class Create(AAZCommand):
 
     :example: protection-container mapping create for H2A
         az site-recovery protection-container mapping create -g "rg" --fabric-name "fabric_name" -n "container_mapping_name" --protection-container "container_name" --vault-name "vault_name" --policy-id "policy_id" --target-container "Microsoft Azure" --provider-input '{hyper-v-replica-azure:""}'
+
+    :example: protection-container mapping create for V2A RCM
+        az site-recovery protection-container mapping create -g "rg" --fabric-name "fabric_name" -n "container_mapping_name" --protection-container "container_name" --vault-name "vault_name" --policy-id "policy_id" --target-container "Microsoft Azure" --provider-input '{in-mage-rcm:{enable-agent-auto-upgrade:true}}'
     """
 
     _aaz_info = {

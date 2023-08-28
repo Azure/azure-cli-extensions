@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List to get run as accounts.
+
+    :example: vmware-site run-as-account list
+        az site-recovery vmware-site run-as-account list -g "rg" --site-name "site_name"
     """
 
     _aaz_info = {

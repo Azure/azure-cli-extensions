@@ -22,6 +22,9 @@ class Create(AAZCommand):
 
     :example: recovery-plan create hyper-v-replica-azure
         az site-recovery recovery-plan create -n "recovery_plan_name" -g "rg" --vault-name "vault_name" --groups '[{group-type:Boot,replication-protected-items:[{id:"protected_item_id",virtual-machine-id:"protectable_item_id"}]}]' --primary-fabric-id "fabric_id" --recovery-fabric-id \"Microsoft Azure\" --failover-deployment-model ResourceManager
+
+    :example: recovery-plan create for v2arcm
+        az site-recovery recovery-plan create -n "recovery_plan_name" -g "rg" --vault-name "vault_name" --groups '[{group-type:Boot,replication-protected-items:[{id:"protected_item_id",virtual-machine-id:"vm_id"}]}]' --primary-fabric-id "fabric_id" --recovery-fabric-id "Microsoft Azure" --failover-deployment-model ResourceManager
     """
 
     _aaz_info = {

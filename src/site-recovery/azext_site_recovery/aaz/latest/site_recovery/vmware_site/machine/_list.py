@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List to get machine.
+
+    :example: vmware-site machine list for v2arcm
+        az site-recovery vmware-site machine list -g "rg" --site-name "site_name"
     """
 
     _aaz_info = {

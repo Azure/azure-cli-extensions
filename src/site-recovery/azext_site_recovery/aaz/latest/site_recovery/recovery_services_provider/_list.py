@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the registered recovery services providers for the specified fabric.
+
+    :example: recovery-services-provider list for v2arcm
+        az site-recovery recovery-services-provider list --fabric-name "fabric_name" -g "rg" --vault-name "vault_name"
     """
 
     _aaz_info = {

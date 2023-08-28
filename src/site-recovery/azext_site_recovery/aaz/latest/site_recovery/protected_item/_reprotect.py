@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Reprotect(AAZCommand):
     """Operation to reprotect or reverse replicate a failed over replication protected item.
+
+    :example: reprotect for v2arcm after failover
+        az site-recovery protected-item reprotect --fabric-name "fabric_name" --protection-container "container_name" -n "protected_item_name" -g "rg" --vault-name "vault_name" --failover-direction RecoveryToPrimary --provider-details '{in-mage-rcm:{datastore-name:"datastore_name",log-storage-account-id:"storage_id",reprotect-agent-id:"reprotect_agent_id"}}'
     """
 
     _aaz_info = {
