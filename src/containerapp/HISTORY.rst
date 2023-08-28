@@ -12,6 +12,7 @@ upcoming
 * 'az containerapp show-custom-domain-verification-id': show verfication id used for binding custom domain
 * 'az containerapp list-usages': list usages in subscription
 * 'az containerapp env list-usages': list usages in environment
+* 'az containerapp update': --yaml support property additionalPortMappings for api-version 2023-05-02-preview
 * 'az containerapp create/update': raise ValidationError when value in --yaml is None
 
 0.3.37
