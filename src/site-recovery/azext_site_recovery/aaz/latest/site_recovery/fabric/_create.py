@@ -78,10 +78,6 @@ class Create(AAZCommand):
         custom_details.in_mage_rcm = AAZObjectArg(
             options=["in-mage-rcm"],
         )
-        custom_details.vmware_v2 = AAZObjectArg(
-            options=["vmware-v2"],
-            help="vmware-v2",
-        )
 
         azure = cls._args_schema.custom_details.azure
         azure.location = AAZStrArg(
@@ -137,21 +133,6 @@ class Create(AAZCommand):
             options=["tenant-id"],
             help="The tenant Id for the service principal with which the on-premise management/data plane components would communicate with our Azure services.",
             required=True,
-        )
-
-        vmware_v2 = cls._args_schema.custom_details.vmware_v2
-        vmware_v2.migration_solution_id = AAZStrArg(
-            options=["migration-solution-id"],
-            help="The ARM Id of the migration solution.",
-            required=True,
-        )
-        vmware_v2.physical_site_id = AAZStrArg(
-            options=["physical-site-id"],
-            help="The ARM Id of the physical site.",
-        )
-        vmware_v2.vmware_site_id = AAZStrArg(
-            options=["vmware-site-id"],
-            help="The ARM Id of the VMware site.",
         )
         return cls._args_schema
 
@@ -276,7 +257,6 @@ class Create(AAZCommand):
                 custom_details.set_const("instanceType", "Azure", AAZStrType, ".azure", typ_kwargs={"flags": {"required": True}})
                 custom_details.set_const("instanceType", "HyperVSite", AAZStrType, ".hyper_v_site", typ_kwargs={"flags": {"required": True}})
                 custom_details.set_const("instanceType", "InMageRcm", AAZStrType, ".in_mage_rcm", typ_kwargs={"flags": {"required": True}})
-                custom_details.set_const("instanceType", "VMwareV2", AAZStrType, ".vmware_v2", typ_kwargs={"flags": {"required": True}})
                 custom_details.discriminate_by("instanceType", "Azure")
                 custom_details.discriminate_by("instanceType", "HyperVSite")
                 custom_details.discriminate_by("instanceType", "InMageRcm")

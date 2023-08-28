@@ -87,12 +87,6 @@ class Update(AAZCommand):
         provider_specific_input.hyper_v_replica_azure = AAZObjectArg(
             options=["hyper-v-replica-azure"],
         )
-        provider_specific_input.in_mage = AAZObjectArg(
-            options=["in-mage"],
-        )
-        provider_specific_input.in_mage_azure_v2 = AAZObjectArg(
-            options=["in-mage-azure-v2"],
-        )
         provider_specific_input.in_mage_rcm = AAZObjectArg(
             options=["in-mage-rcm"],
         )
@@ -236,50 +230,6 @@ class Update(AAZCommand):
 
         storage_accounts = cls._args_schema.provider_specific_input.hyper_v_replica_azure.storage_accounts
         storage_accounts.Element = AAZStrArg()
-
-        in_mage = cls._args_schema.provider_specific_input.in_mage
-        in_mage.app_consistent_frequency_in_minutes = AAZIntArg(
-            options=["app-consistent-frequency-in-minutes"],
-            help="The app consistent snapshot frequency (in minutes).",
-        )
-        in_mage.multi_vm_sync_status = AAZStrArg(
-            options=["multi-vm-sync-status"],
-            help="A value indicating whether multi-VM sync has to be enabled. Value should be 'Enabled' or 'Disabled'.",
-            required=True,
-            enum={"Disable": "Disable", "Enable": "Enable"},
-        )
-        in_mage.recovery_point_history = AAZIntArg(
-            options=["recovery-point-history"],
-            help="The duration in minutes until which the recovery points need to be stored.",
-        )
-        in_mage.recovery_point_threshold_in_minutes = AAZIntArg(
-            options=["recovery-point-threshold-in-minutes"],
-            help="The recovery point threshold in minutes.",
-        )
-
-        in_mage_azure_v2 = cls._args_schema.provider_specific_input.in_mage_azure_v2
-        in_mage_azure_v2.app_consistent_frequency_in_minutes = AAZIntArg(
-            options=["app-consistent-frequency-in-minutes"],
-            help="The app consistent snapshot frequency (in minutes).",
-        )
-        in_mage_azure_v2.crash_consistent_frequency_in_minutes = AAZIntArg(
-            options=["crash-consistent-frequency-in-minutes"],
-            help="The crash consistent snapshot frequency (in minutes).",
-        )
-        in_mage_azure_v2.multi_vm_sync_status = AAZStrArg(
-            options=["multi-vm-sync-status"],
-            help="A value indicating whether multi-VM sync has to be enabled. Value should be 'Enabled' or 'Disabled'.",
-            required=True,
-            enum={"Disable": "Disable", "Enable": "Enable"},
-        )
-        in_mage_azure_v2.recovery_point_history = AAZIntArg(
-            options=["recovery-point-history"],
-            help="The duration in minutes until which the recovery points need to be stored.",
-        )
-        in_mage_azure_v2.recovery_point_threshold_in_minutes = AAZIntArg(
-            options=["recovery-point-threshold-in-minutes"],
-            help="The recovery point threshold in minutes.",
-        )
 
         in_mage_rcm = cls._args_schema.provider_specific_input.in_mage_rcm
         in_mage_rcm.app_consistent_frequency_in_minutes = AAZIntArg(
@@ -446,8 +396,6 @@ class Update(AAZCommand):
                 replication_provider_settings.set_const("instanceType", "HyperVReplica2012", AAZStrType, ".hyper_v_replica2012", typ_kwargs={"flags": {"required": True}})
                 replication_provider_settings.set_const("instanceType", "HyperVReplica2012R2", AAZStrType, ".hyper_v_replica2012_r2", typ_kwargs={"flags": {"required": True}})
                 replication_provider_settings.set_const("instanceType", "HyperVReplicaAzure", AAZStrType, ".hyper_v_replica_azure", typ_kwargs={"flags": {"required": True}})
-                replication_provider_settings.set_const("instanceType", "InMage", AAZStrType, ".in_mage", typ_kwargs={"flags": {"required": True}})
-                replication_provider_settings.set_const("instanceType", "InMageAzureV2", AAZStrType, ".in_mage_azure_v2", typ_kwargs={"flags": {"required": True}})
                 replication_provider_settings.set_const("instanceType", "InMageRcm", AAZStrType, ".in_mage_rcm", typ_kwargs={"flags": {"required": True}})
                 replication_provider_settings.set_const("instanceType", "InMageRcmFailback", AAZStrType, ".in_mage_rcm_failback", typ_kwargs={"flags": {"required": True}})
                 replication_provider_settings.set_const("instanceType", "VMwareCbt", AAZStrType, ".vmware_cbt", typ_kwargs={"flags": {"required": True}})

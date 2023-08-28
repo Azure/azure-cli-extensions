@@ -664,42 +664,6 @@ class SiteRecoveryScenario(ScenarioTest):
         self.cmd('az site-recovery fabric delete -n {fabric2_name} -g {rg} '
                  '--vault-name {vault_name} -y')
 
-    @record_only()
-    def test_siterecovery_V2A_CS_scenarios(self):
-        self.kwargs.update({
-            'rg': 'FPLSignoff',
-            'subscription': 'c89695cf-3a29-4ff0-86da-2696d2c5322b',
-            'vault_name': 'CLITeraform-Testing-CSVault',
-            # 'vm_name': 'CliVM2',
-            # 'vm_rg': 'CliTerraformVMRG',
-            'fabric_name': 'CLITeraform-Testing-CSVault-vmwarefabric',
-            'policy_name': 'cli-test-policy-V2ACS-1',
-            # 'policy_name': 'TF-TestPolicy-Harishcreated',
-            'container_name': 'CLITeraforb551replicationcontainer',
-            # 'container2_name': 'cli-test-container-V2ARCM-2',
-            'container_mapping1_name': 'cli-test-container-mapping-V2ARCM-1',
-            # 'container_mapping2_name': 'cli-test-container-mapping-A2A-2',
-            # 'vnet1_name': 'cli-test-vnet-A2A-1',
-            # 'vnet2_name': 'cli-test-vnet-A2A-2',
-            # 'network_mapping1_name': 'cli-test-network-mapping-A2A-1',
-            # 'network_mapping2_name': 'cli-test-network-mapping-A2A-2',
-            'protected_item_name': 'cli-test-protected-item-V2ARCM-1',
-            # 'storage1_name': 'cliteststoragea2a1',
-            # 'storage2_name': 'cliteststoragea2a2',
-            # 'recovery_plan_name': 'cli-test-recovery-plan-A2A-1'
-        })
-        # set subscription and create a policy
-        self.cmd('az account set -n {subscription}')
-        self.cmd('az site-recovery policy create -g {rg} '
-                 '--vault-name {vault_name} -n {policy_name} '
-                 '--provider-specific-input {{in-mage-azure-v2:{{'
-                 'multi-vm-sync-status:Enable,'
-                 'app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:5,'
-                 'recovery-point-history:2880,recovery-point-threshold-in-minutes:10}}}}')
-
-        policy_id = self.cmd('az site-recovery policy show -g {rg} '
-                             '--vault-name {vault_name} -n {policy_name}').get_output_in_json()["id"]
-        self.kwargs.update({"policy_id": policy_id})
 
     @record_only()
     @AllowLargeResponse()
