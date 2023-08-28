@@ -6,6 +6,12 @@ upcoming
 ++++++
 * Removed preview tag for some command groups and params (e.g. 'az containerapp job', 'az containerapp env storage', 'az containerapp env workload-profile')
 * 'az containerapp env': --enable-workload-profiles allowed values:true, false
+* 'az containerapp auth': support --token-store, --sas-url-secret, --sas-url-secret-name, --yes
+* 'az containerapp create'/'az containerapp job create': When --environment is provided and the environmentId value does not exist in --yaml, use the value in --environment as environmentId
+* 'az containerapp job create': support --environment-type parameter
+* 'az containerapp show-custom-domain-verification-id': show verfication id used for binding custom domain
+* 'az containerapp list-usages': list usages in subscription
+* 'az containerapp env list-usages': list usages in environment
 
 0.3.37
 ++++++

@@ -134,6 +134,24 @@ helps['containerapp list'] = """
           az containerapp list -g MyResourceGroup
 """
 
+helps['containerapp list-usages'] = """
+    type: command
+    short-summary: List usages of subscription level quotas in specific region.
+    examples:
+    - name: List usages of  quotas in specific region.
+      text: |
+          az containerapp list-usages -l eastus
+"""
+
+helps['containerapp env list-usages'] = """
+    type: command
+    short-summary: List usages of quotas for specific managed environment.
+    examples:
+    - name: List usages of quotas for specific managed environment.
+      text: |
+          az containerapp env list-usages -n MyEnv -g MyResourceGroup
+"""
+
 helps['containerapp exec'] = """
     type: command
     short-summary: Open an SSH-like interactive shell within a container app replica
@@ -214,6 +232,18 @@ helps['containerapp logs show'] = """
     - name: Fetch logs for a particular revision, replica, and container
       text: |
           az containerapp logs show -n MyContainerapp -g MyResourceGroup --replica MyReplica --revision MyRevision --container MyContainer
+"""
+
+helps['containerapp show-custom-domain-verification-id'] = """
+    type: command
+    short-summary: Show the verification id for binding app or environment custom domains
+    examples:
+    - name: Get the verification id, which needs to be added as a TXT record for app custom domain to verify domain ownership
+      text: |
+          az containerapp show-custom-domain-verification-id
+    - name: Get the verification id, which needs to be added as a TXT record for custom environment DNS suffix to verify domain ownership
+      text: |
+          az containerapp show-custom-domain-verification-id
 """
 
 # Replica Commands
@@ -666,6 +696,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Manual.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
               --trigger-type Manual \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -676,6 +707,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Schedule.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
               --trigger-type Schedule \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -686,6 +718,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Event.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
               --trigger-type Event \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -701,6 +734,18 @@ helps['containerapp job create'] = """
                                     "queueLength": "5" "queueName": "foo" \\
               --scale-rule-auth "connection=my-connection-string-secret-name" \\
               --image imageName
+    - name: Create a container apps job hosted on a Connected Environment.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappConnectedEnv
+              --environment-type connected
+              --trigger-type Manual \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1 \\
+              --image imageName \\
+              --workload-profile-name my-wlp
 """
 
 helps['containerapp job update'] = """

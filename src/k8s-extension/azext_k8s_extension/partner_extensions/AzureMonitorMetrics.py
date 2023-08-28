@@ -9,7 +9,7 @@ import datetime
 import json
 import re
 
-from ..utils import get_cluster_rp_api_version
+from ..utils import get_cluster_rp_api_version, is_skip_prerequisites_specified
 
 from knack.log import get_logger
 
@@ -48,16 +48,19 @@ class AzureMonitorMetrics(DefaultExtension):
         if release_train is None:
             release_train = 'stable'
 
-        cluster_subscription = get_subscription_id(cmd.cli_ctx)
-        ensure_azure_monitor_profile_prerequisites(
-            cmd,
-            cluster_rp,
-            cluster_subscription,
-            resource_group_name,
-            cluster_name,
-            configuration_settings,
-            cluster_type
-        )
+        if not is_skip_prerequisites_specified(configuration_settings):
+            cluster_subscription = get_subscription_id(cmd.cli_ctx)
+            ensure_azure_monitor_profile_prerequisites(
+                cmd,
+                cluster_rp,
+                cluster_subscription,
+                resource_group_name,
+                cluster_name,
+                configuration_settings,
+                cluster_type
+            )
+        else:
+            logger.info("Provisioning of prerequisites is skipped")
 
         create_identity = True
         extension = Extension(
@@ -72,6 +75,16 @@ class AzureMonitorMetrics(DefaultExtension):
         return extension, name, create_identity
 
     def Delete(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp, yes):
-        # cluster_rp, _ = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_rp)
+        cluster_rp, _ = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_rp)
+        try:
+            extension = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
+        except Exception:
+            pass  # its OK to ignore the exception since MSI auth in preview
+
+        if (extension is not None) and (extension.configuration_settings is not None):
+            if is_skip_prerequisites_specified(extension.configuration_settings):
+                logger.info("Deprovisioning of prerequisites is skipped")
+                return
+
         cluster_subscription = get_subscription_id(cmd.cli_ctx)
         unlink_azure_monitor_profile_artifacts(cmd, cluster_subscription, resource_group_name, cluster_name)

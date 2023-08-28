@@ -21,7 +21,7 @@ from ._stream_utils import stream_logs
 from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
 from ._utils import (get_portal_uri, get_spring_sku, get_proxy_api_endpoint, BearerAuth)
 from knack.util import CLIError
-from .vendored_sdks.appplatform.v2023_09_01_preview import models, AppPlatformManagementClient
+from .vendored_sdks.appplatform.v2023_07_01_preview import models, AppPlatformManagementClient
 from knack.log import get_logger
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
@@ -203,6 +203,15 @@ def spring_stop(cmd, client, resource_group, name, no_wait=False):
     if state != "Succeeded" or power_state != "Running":
         raise ClientRequestError("Service is in Provisioning State({}) and Power State({}), stopping cannot be performed.".format(state, power_state))
     return sdk_no_wait(no_wait, client.services.begin_stop, resource_group_name=resource_group, service_name=name)
+
+
+def spring_flush_vnet_dns_setting(cmd, client, resource_group, name, no_wait=False):
+    resource = client.services.get(resource_group, name)
+    state = resource.properties.provisioning_state
+    power_state = resource.properties.power_state
+    if state != "Succeeded" or power_state != "Running":
+        raise ClientRequestError("Service is in Provisioning State({}) and Power State({}), flush vnet dns setting cannot be performed.".format(state, power_state))
+    return sdk_no_wait(no_wait, client.services.begin_flush_vnet_dns_setting, resource_group_name=resource_group, service_name=name)
 
 
 def spring_list(cmd, client, resource_group=None):

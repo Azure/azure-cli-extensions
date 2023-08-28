@@ -33,7 +33,7 @@ from knack.prompting import prompt_y_n, prompt as prompt_str
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
-from .containerapp_job_decorator import ContainerAppJobDecorator, ContainerAppJobCreateDecorator
+from .containerapp_job_decorator import ContainerAppJobDecorator, ContainerAppJobPreviewCreateDecorator
 from .containerapp_env_decorator import ContainerAppEnvDecorator, ContainerAppEnvCreateDecorator, ContainerAppEnvUpdateDecorator
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import BaseContainerAppDecorator, ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator
@@ -48,7 +48,10 @@ from ._clients import (
     WorkloadProfileClient,
     ContainerAppsJobClient,
     ContainerAppPreviewClient,
-    AuthPreviewClient
+    AuthPreviewClient,
+    SubscriptionPreviewClient,
+    ContainerAppsJobPreviewClient,
+    ManagedEnvironmentPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._github_oauth import get_github_access_token
@@ -115,7 +118,8 @@ from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, F
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, HELLO_WORLD_IMAGE, LOG_TYPE_SYSTEM, LOG_TYPE_CONSOLE,
                          MANAGED_CERTIFICATE_RT, PRIVATE_CERTIFICATE_RT, PENDING_STATUS, SUCCEEDED_STATUS, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
                          DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
-                         DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS)
+                         DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_SERVICE_LIST,
+                         CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME)
 
 logger = get_logger(__name__)
 
@@ -1102,6 +1106,33 @@ def list_containerapp(cmd, resource_group_name=None, managed_env=None, environme
     return containerapp_list_decorator.list()
 
 
+def show_custom_domain_verification_id(cmd):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        r = SubscriptionPreviewClient.show_custom_domain_verification_id(cmd)
+        return r
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def list_usages(cmd, location):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        r = SubscriptionPreviewClient.list_usages(cmd, location)
+        return r
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def list_environment_usages(cmd, resource_group_name, name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        r = ManagedEnvironmentPreviewClient.list_usages(cmd, resource_group_name, name)
+        return r
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
 def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
     raw_parameters = locals()
     containerapp_base_decorator = BaseContainerAppDecorator(
@@ -1261,11 +1292,12 @@ def create_containerappsjob(cmd,
                             disable_warnings=False,
                             user_assigned=None,
                             registry_identity=None,
-                            workload_profile_name=None):
+                            workload_profile_name=None,
+                            environment_type="managed"):
     raw_parameters = locals()
-    containerapp_job_create_decorator = ContainerAppJobCreateDecorator(
+    containerapp_job_create_decorator = ContainerAppJobPreviewCreateDecorator(
         cmd=cmd,
-        client=ContainerAppsJobClient,
+        client=ContainerAppsJobPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
@@ -5091,7 +5123,9 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
                        runtime_version=None, config_file_path=None, unauthenticated_client_action=None,
                        redirect_provider=None, require_https=None,
                        proxy_convention=None, proxy_custom_host_header=None,
-                       proxy_custom_proto_header=None, excluded_paths=None):
+                       proxy_custom_proto_header=None, excluded_paths=None,
+                       token_store=None, sas_url_secret=None, sas_url_secret_name=None,
+                       yes=False):
     raw_parameters = locals()
     containerapp_auth_decorator = ContainerAppPreviewAuthDecorator(
         cmd=cmd,
@@ -5101,6 +5135,8 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
     )
 
     containerapp_auth_decorator.construct_payload()
+    if containerapp_auth_decorator.get_argument_token_store() and containerapp_auth_decorator.get_argument_sas_url_secret() is not None:
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME}={containerapp_auth_decorator.get_argument_sas_url_secret()}"], no_wait=True, disable_max_length=True)
     return containerapp_auth_decorator.create_or_update()
 
 

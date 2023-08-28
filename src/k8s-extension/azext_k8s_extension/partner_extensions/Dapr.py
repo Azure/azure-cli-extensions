@@ -13,7 +13,7 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 from copy import deepcopy
 from knack.log import get_logger
 from knack.prompting import prompt, prompt_y_n
-from packaging import version as packaging_version
+from semver import VersionInfo
 
 from ..vendored_sdks.models import Extension, PatchExtension, Scope, ScopeCluster
 from .DefaultExtension import DefaultExtension
@@ -204,7 +204,7 @@ class Dapr(DefaultExtension):
         Returns True if version v1 is less than version v2.
         """
         try:
-            return packaging_version.Version(v1) < packaging_version.Version(v2)
-        except packaging_version.InvalidVersion:
+            return VersionInfo.parse(v1) < VersionInfo.parse(v2)
+        except ValueError:
             logger.debug("Warning: Unable to compare versions %s and %s.", v1, v2)
             return True  # This will cause the apply-CRDs hook to be disabled, which is safe.
