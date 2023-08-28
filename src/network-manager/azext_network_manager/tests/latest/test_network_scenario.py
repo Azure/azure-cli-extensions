@@ -11,7 +11,6 @@
 
 import os
 import unittest
-import time
 
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
@@ -564,34 +563,3 @@ class NetworkScenarioTest(ScenarioTest):
 
         self.cmd('network manager security-admin-config delete --configuration-name {name} --network-manager-name {manager_name} -g {rg} --force --yes')
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
-
-#     @ResourceGroupPreparer(name_prefix='test_network_manager_connection_crud', location='eastus2')
-#     def test_network_manager_scope_connection(self, resource_group):
-#
-#         self.kwargs.update({
-#             'sub': '/subscriptions/{}'.format(self.get_subscription_id()),
-#             'manager_id': '/subscriptions/{}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{connection_name}'.format(self.get_subscription_id()),
-#             'manager_name': 'TestNetworkManager',
-#             'connection_name': 'myTestNetworkManagerConnection',
-#             'mgId': 'testManagementGroupId'
-#         })
-#
-#         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
-#              '--scope-accesses "SecurityAdmin" "Connectivity" '
-#              '--network-manager-scopes '
-#              ' subscriptions={sub} '
-#              '-l eastus2 '
-#              '--resource-group {rg}')
-#
-#         self.cmd('network manager connection create --management-group-id {mgId} --connection-name {connection_name} '
-#                  '--description "My Test Network Manager Connection"'
-#                  '--network-manager-id {manager_id}')
-#
-#         self.cmd('network manager connection show --management-group-id {mgId} --connection-name {connection_name} ')
-#
-#         self.cmd('network manager scope-connection update --management-group-id {mgId} --connection-name {connection_name} '
-#                  '--description "My Test Network Manager Connection Updated Description"')
-#
-#         self.cmd('network manager scope-connection list --management-group-id {mgId} ')
-#
-#         self.cmd('network manager scope-connection delete --management-group-id {mgId} --connection-name {connection_name} ')

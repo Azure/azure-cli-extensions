@@ -16,13 +16,6 @@ class NetworkManagementClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        # from azext_network_manager._client_factory import cf_network_cl
-        # network_custom = CliCommandType(
-        #     operations_tmpl='azext_network_manager.custom#{}',
-        #     client_factory=cf_network_cl)
-        # super(NetworkManagementClientCommandsLoader, self).__init__(
-        #     cli_ctx=cli_ctx,
-        #     custom_command_type=network_custom)
         custom_command_type = CliCommandType(operations_tmpl='azext_network_manager.custom#{}')
         super(NetworkManagementClientCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                                     custom_command_type=custom_command_type)
