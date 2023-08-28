@@ -636,9 +636,6 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
                                                             parameters=item["parameters"],
                                                             linker_name=item["linker_name"]).result()
 
-        if self.get_argument_repo():
-            r = self.set_up_create_containerapp_if_source_or_repo()
-
         return r
 
     def set_up_create_containerapp_if_source_or_repo(self):
@@ -857,6 +854,40 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
     def _need_update_container(self):
         return self.get_argument_image() or self.get_argument_container_name() or self.get_argument_set_env_vars() is not None or self.get_argument_remove_env_vars() is not None or self.get_argument_replace_env_vars() is not None or self.get_argument_remove_all_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_startup_command() is not None or self.get_argument_args() is not None or self.get_argument_secret_volume_mount() is not None
 
+    def update_container_app_source(self, cmd, containerapp_def, name, target_port, image, workload_profile_name, ingress, source, registry_server, registry_user, registry_pass):
+        from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image, get_token, _has_dockerfile, _get_dockerfile_content, _get_ingress_and_target_port, _get_registry_details)
+
+        dockerfile = "Dockerfile"
+
+        # Parse resource group name and managed env name
+        env_id = containerapp_def["properties"]['environmentId']
+        parsed_managed_env = parse_resource_id(env_id)
+        env_name = parsed_managed_env['name']
+        env_rg = parsed_managed_env['resource_group']
+
+        # Set image to None if it was previously set to the default image (case where image was not provided by the user) else reformat it
+        image = None if image is None else _reformat_image(source=source, image=image, repo=None)
+        location = containerapp_def["location"]
+
+        if _has_dockerfile(source, dockerfile):
+            dockerfile_content = _get_dockerfile_content(repo=None, branch=None, token=None, source=source, context_path=None, dockerfile=dockerfile)
+            ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
+
+        # Construct ContainerApp
+        resource_group = ResourceGroup(cmd, env_rg, location=location)
+        env = ContainerAppEnvironment(cmd, env_name, resource_group, location=location)
+        app = ContainerApp(cmd=cmd, name=name, resource_group=resource_group, image=image, env=env, target_port=target_port, workload_profile_name=workload_profile_name, ingress=ingress, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
+
+        # Fetch registry credentials
+        _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
+
+        # Uses buildpacks to generate image if Dockerfile was not provided by the user
+        app.run_acr_build(dockerfile, source, quiet=False, build_from_source=not _has_dockerfile(source, dockerfile))
+        # Update image
+        containerapp_def["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
+
+        return containerapp_def
+
     def construct_payload(self):
         # construct from yaml
         if self.get_argument_yaml():
@@ -872,6 +903,16 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             raise ResourceNotFoundError("The containerapp '{}' does not exist".format(self.get_argument_name()))
 
         self.new_containerapp["properties"] = {}
+
+        if self.get_argument_source() and not self.get_argument_registry_server():
+            registry_server = self.containerapp_def["properties"]["configuration"]["registries"][0]["server"]
+            parsed = urlparse(registry_server)
+            registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
+            registry_user, registry_pass, _ = _get_acr_cred(self.cmd.cli_ctx, registry_name)
+            new_containerapp = self.update_container_app_source(cmd=self.cmd, containerapp_def=self.containerapp_def, name=self.get_argument_name(), target_port=self.get_argument_target_port(), image=self.get_argument_image(), workload_profile_name=self.get_argument_workload_profile_name(), ingress=self.get_argument_ingress(), source=self.get_argument_source(), registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
+            # Update image if --source was used to build the app.
+            self.set_argument_image(new_containerapp["properties"]["template"]["containers"][0]["image"])
+
         self.set_up_from_revision()
 
         # Doing this while API has bug. If env var is an empty string, API doesn't return "value" even though the "value" should be an empty string
@@ -1321,6 +1362,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                 linker_client.linker.begin_create_or_update(resource_uri=r["id"],
                                                             parameters=item["parameters"],
                                                             linker_name=item["linker_name"]).result()
+        if self.get_argument_repo():
+            r = self.set_up_create_containerapp_if_source_or_repo()
+
         return r
 
     def set_up_extended_location(self):

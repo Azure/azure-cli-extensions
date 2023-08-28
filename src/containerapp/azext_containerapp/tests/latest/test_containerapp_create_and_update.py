@@ -46,13 +46,6 @@ class ContainerAppCreateTest(ScenarioTest):
 
     @live_only()
     @ResourceGroupPreparer(location="eastus")
-    def test_containerapp_create_source_with_acr_task_e2e(self, resource_group):
-        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_acr_task"))
-        ingress = 'external'
-        target_port = '8080'
-
-    @live_only()
-    @ResourceGroupPreparer(location="eastus")
     def test_containerapp_create_source_and_repo_e2e(self, resource_group):
         source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_dockerfile"))
         repo = "https://github.com/test/repo"
