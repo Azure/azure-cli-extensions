@@ -577,10 +577,16 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             self.set_up_create_containerapp_if_source_or_repo()
 
         if self.get_argument_repo():
-            container_app = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
-            if container_app:
+             container_app = self._get_containerapp_if_exists()
+             if container_app:
                 # Update the image to ensure that the container app is not re-created with mcr.microsoft.com/k8se/quickstart:latest
                 self.containerapp_def["properties"]["template"]["containers"][0]["image"] = container_app["properties"]["template"]["containers"][0]["image"]
+
+    def _get_containerapp_if_exists(self):
+        try:
+            return self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+        except:
+            return None
 
     def create(self):
         try:
@@ -644,6 +650,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         target_port = self.get_argument_target_port()
         dockerfile = "Dockerfile"
         token = get_token(self.cmd, self.get_argument_repo(), self.get_argument_token())
+
         # Parse resource group name and managed env name
         env_id = self.containerapp_def["properties"]['environmentId']
         parsed_managed_env = parse_resource_id(env_id)
@@ -660,6 +667,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         if not self.get_argument_source() or _has_dockerfile(self.get_argument_source(), dockerfile):
             dockerfile_content = _get_dockerfile_content(self.get_argument_repo(), self.get_argument_branch(), token, self.get_argument_source(), self.get_argument_context_path(), dockerfile)
             ingress, target_port = _get_ingress_and_target_port(self.get_argument_ingress(), self.get_argument_target_port(), dockerfile_content)
+
         # Construct ContainerApp
         resource_group = ResourceGroup(self.cmd, env_rg, location=location)
         env = ContainerAppEnvironment(self.cmd, env_name, resource_group, location=location)
@@ -854,39 +862,41 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
     def _need_update_container(self):
         return self.get_argument_image() or self.get_argument_container_name() or self.get_argument_set_env_vars() is not None or self.get_argument_remove_env_vars() is not None or self.get_argument_replace_env_vars() is not None or self.get_argument_remove_all_env_vars() or self.get_argument_cpu() or self.get_argument_memory() or self.get_argument_startup_command() is not None or self.get_argument_args() is not None or self.get_argument_secret_volume_mount() is not None
 
-    def update_container_app_source(self, cmd, containerapp_def, name, target_port, image, workload_profile_name, ingress, source, registry_server, registry_user, registry_pass):
+    def update_container_app_source(self, cmd, registry_server, registry_user, registry_pass):
         from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image, get_token, _has_dockerfile, _get_dockerfile_content, _get_ingress_and_target_port, _get_registry_details)
 
+        ingress = self.get_argument_ingress()
+        target_port = self.get_argument_target_port()
         dockerfile = "Dockerfile"
 
         # Parse resource group name and managed env name
-        env_id = containerapp_def["properties"]['environmentId']
+        env_id = self.containerapp_def["properties"]['environmentId']
         parsed_managed_env = parse_resource_id(env_id)
         env_name = parsed_managed_env['name']
         env_rg = parsed_managed_env['resource_group']
 
         # Set image to None if it was previously set to the default image (case where image was not provided by the user) else reformat it
-        image = None if image is None else _reformat_image(source=source, image=image, repo=None)
-        location = containerapp_def["location"]
+        image = None if self.get_argument_image() is None else _reformat_image(source=self.get_argument_source(), image=self.get_argument_image(), repo=None)
+        location = self.containerapp_def["location"]
 
-        if _has_dockerfile(source, dockerfile):
-            dockerfile_content = _get_dockerfile_content(repo=None, branch=None, token=None, source=source, context_path=None, dockerfile=dockerfile)
-            ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
+        if _has_dockerfile(self.get_argument_source(), dockerfile):
+            dockerfile_content = _get_dockerfile_content(repo=None, branch=None, token=None, source=self.get_argument_source(), context_path=None, dockerfile=dockerfile)
+            ingress, target_port = _get_ingress_and_target_port(self.get_argument_ingress(), self.get_argument_target_port(), dockerfile_content)
 
         # Construct ContainerApp
         resource_group = ResourceGroup(cmd, env_rg, location=location)
         env = ContainerAppEnvironment(cmd, env_name, resource_group, location=location)
-        app = ContainerApp(cmd=cmd, name=name, resource_group=resource_group, image=image, env=env, target_port=target_port, workload_profile_name=workload_profile_name, ingress=ingress, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
+        app = ContainerApp(cmd=cmd, name=self.get_argument_name(), resource_group=resource_group, image=image, env=env, target_port=target_port, workload_profile_name=self.get_argument_workload_profile_name(), ingress=ingress, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
 
         # Fetch registry credentials
-        _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
+        _get_registry_details(cmd, app, self.get_argument_source())  # fetch ACR creds from arguments registry arguments
 
         # Uses buildpacks to generate image if Dockerfile was not provided by the user
-        app.run_acr_build(dockerfile, source, quiet=False, build_from_source=not _has_dockerfile(source, dockerfile))
+        app.run_acr_build(dockerfile, self.get_argument_source(), quiet=False, build_from_source=not _has_dockerfile(self.get_argument_source(), dockerfile))
         # Update image
-        containerapp_def["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
+        self.containerapp_def["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
+        self.set_argument_image(self.containerapp_def["properties"]["template"]["containers"][0]["image"])
 
-        return containerapp_def
 
     def construct_payload(self):
         # construct from yaml
@@ -909,9 +919,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             parsed = urlparse(registry_server)
             registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
             registry_user, registry_pass, _ = _get_acr_cred(self.cmd.cli_ctx, registry_name)
-            new_containerapp = self.update_container_app_source(cmd=self.cmd, containerapp_def=self.containerapp_def, name=self.get_argument_name(), target_port=self.get_argument_target_port(), image=self.get_argument_image(), workload_profile_name=self.get_argument_workload_profile_name(), ingress=self.get_argument_ingress(), source=self.get_argument_source(), registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
-            # Update image if --source was used to build the app.
-            self.set_argument_image(new_containerapp["properties"]["template"]["containers"][0]["image"])
+            self.update_container_app_source(cmd=self.cmd, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
 
         self.set_up_from_revision()
 
