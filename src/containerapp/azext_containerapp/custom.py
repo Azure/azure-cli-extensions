@@ -126,6 +126,8 @@ logger = get_logger(__name__)
 
 # These properties should be under the "properties" attribute. Move the properties under "properties" attribute
 def process_loaded_yaml(yaml_containerapp):
+    if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
     if not yaml_containerapp.get('properties'):
         yaml_containerapp['properties'] = {}
 
@@ -249,8 +251,6 @@ def delete_mariadb_service(cmd, service_name, resource_group_name, no_wait=False
 
 def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_revision=None, no_wait=False):
     yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
-    if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
     if not yaml_containerapp.get('name'):
         yaml_containerapp['name'] = name
@@ -339,8 +339,6 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
 
 def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=False):
     yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
-    if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
     if not yaml_containerapp.get('name'):
         yaml_containerapp['name'] = name
@@ -1286,8 +1284,6 @@ def update_containerappsjob_logic(cmd,
 
 def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_wait=False):
     yaml_containerappsjob = process_loaded_yaml(load_yaml_file(file_name))
-    if type(yaml_containerappsjob) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
 
     if not yaml_containerappsjob.get('name'):
         yaml_containerappsjob['name'] = name
@@ -1374,8 +1370,6 @@ def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_w
 
 def update_containerappjob_yaml(cmd, name, resource_group_name, file_name, from_revision=None, no_wait=False):
     yaml_containerappsjob = process_loaded_yaml(load_yaml_file(file_name))
-    if type(yaml_containerappsjob) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
 
     if not yaml_containerappsjob.get('name'):
         yaml_containerappsjob['name'] = name
