@@ -25,7 +25,7 @@ from msrest.exceptions import DeserializationError
 
 from .base_resource import BaseResource
 from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient
-from ._client_factory import handle_raw_exception, handle_non_404_exception
+from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 
 from ._models import (
     Ingress as IngressModel,
@@ -108,7 +108,7 @@ class BaseContainerAppDecorator(BaseResource):
         try:
             containerapp_def = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
         except Exception as e:
-            handle_non_404_exception(e)
+            handle_non_404_status_code_exception(e)
 
         if not containerapp_def:
             raise ResourceNotFoundError("The containerapp '{}' does not exist".format(self.get_argument_name()))
@@ -119,7 +119,7 @@ class BaseContainerAppDecorator(BaseResource):
         try:
             return self.client.list_secrets(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())["value"]
         except Exception as e:
-            handle_non_404_exception(e)
+            handle_non_404_status_code_exception(e)
 
     def get_environment_client(self):
         return ManagedEnvironmentClient
@@ -132,7 +132,7 @@ class BaseContainerAppDecorator(BaseResource):
             try:
                 secrets = self.client.list_secrets(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
             except Exception as e:  # pylint: disable=broad-except
-                handle_raw_exception(e)
+                handle_non_404_status_code_exception(e)
 
             containerapp_def["properties"]["configuration"]["secrets"] = secrets["value"]
             safe_set(containerapp_def, "properties", "configuration", "secrets", value=secrets["value"])
@@ -371,7 +371,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         try:
             managed_env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=managed_env_rg, name=managed_env_name)
         except Exception as e:
-            handle_non_404_exception(e)
+            handle_non_404_status_code_exception(e)
 
         if not managed_env_info:
             raise ValidationError("The environment '{}' does not exist. Specify a valid environment".format(self.get_argument_managed_env()))
@@ -667,7 +667,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         try:
             env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
         except Exception as e:
-            handle_non_404_exception(e)
+            handle_non_404_status_code_exception(e)
 
         if not env_info:
             raise ValidationError("The environment '{}' in resource group '{}' was not found".format(env_name, env_rg))
@@ -751,8 +751,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             try:
                 r = self.client.show_revision(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), container_app_name=self.get_argument_name(), name=self.get_argument_from_revision())
             except CLIError as e:
-                # Error handle the case where revision not found?
-                handle_raw_exception(e)
+                handle_non_404_status_code_exception(e)
 
             _update_revision_env_secretrefs(r["properties"]["template"]["containers"], self.get_argument_name())
             safe_set(self.new_containerapp, "properties", "template", value=r["properties"]["template"])
@@ -769,7 +768,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         try:
             self.containerapp_def = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
         except Exception as e:
-            handle_non_404_exception(e)
+            handle_non_404_status_code_exception(e)
 
         if not self.containerapp_def:
             raise ResourceNotFoundError("The containerapp '{}' does not exist".format(self.get_argument_name()))
@@ -811,7 +810,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             try:
                 managed_env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=managed_env_rg, name=managed_env_name)
             except Exception as e:
-                handle_non_404_exception(e)
+                handle_non_404_status_code_exception(e)
 
             if not managed_env_info:
                 raise ValidationError(
@@ -824,8 +823,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         # Containers
         if update_map["container"]:
             self.new_containerapp["properties"]["template"] = {} if "template" not in self.new_containerapp["properties"] else self.new_containerapp["properties"]["template"]
-            self.new_containerapp["properties"]["template"]["containers"] = self.containerapp_def["properties"]["template"][
-                "containers"]
+            self.new_containerapp["properties"]["template"]["containers"] = self.containerapp_def["properties"]["template"]["containers"]
             if not self.get_argument_container_name():
                 if len(self.new_containerapp["properties"]["template"]["containers"]) == 1:
                     container_name = self.new_containerapp["properties"]["template"]["containers"][0]["name"]
@@ -1130,7 +1128,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         try:
             self.new_containerapp = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
         except Exception as e:
-            handle_non_404_exception(e)
+            handle_non_404_status_code_exception(e)
 
         if not self.new_containerapp:
             raise ValidationError("The containerapp '{}' does not exist".format(name))
