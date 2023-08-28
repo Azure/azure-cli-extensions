@@ -1744,8 +1744,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             self.mc.ingress_profile.web_app_routing and
             self.mc.ingress_profile.web_app_routing.dns_zone_resource_ids is not None
         ):
-            dns_zone_resource_ids = self.mc.ingress_profile.web_app_routing.dns_zone_resource_ids    
-        
+            dns_zone_resource_ids = self.mc.ingress_profile.web_app_routing.dns_zone_resource_ids
+
         # for backward compatibility, if --dns-zone-resource-ids is not specified,
         # try to read from --dns-zone-resource-id
         dns_zone_resource_id = self.raw_param.get("dns_zone_resource_id")
