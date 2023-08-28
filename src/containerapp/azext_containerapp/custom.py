@@ -4899,7 +4899,7 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
             id_parts = parse_resource_id(ca["id"])
             resource_group_name = id_parts.get('resource_group')
             container_app_name = id_parts.get('name')
-            managed_env_id_parts = parse_resource_id(ca["properties"]["managedEnvironmentId"])
+            managed_env_id_parts = parse_resource_id(ca["properties"]["environmentId"])
             managed_env_name = managed_env_id_parts.get('name')
             containers = safe_get(ca, "properties", "template", "containers")
             for container in containers:

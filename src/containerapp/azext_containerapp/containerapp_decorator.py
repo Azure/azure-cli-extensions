@@ -803,7 +803,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         if self.get_argument_workload_profile_name():
             self.new_containerapp["properties"]["workloadProfileName"] = self.get_argument_workload_profile_name()
 
-            parsed_managed_env = parse_resource_id(self.containerapp_def["properties"]["managedEnvironmentId"])
+            parsed_managed_env = parse_resource_id(self.containerapp_def["properties"]["environmentId"])
             managed_env_name = parsed_managed_env['name']
             managed_env_rg = parsed_managed_env['resource_group']
             managed_env_info = None
@@ -1046,7 +1046,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
             registries_def = self.new_containerapp["properties"]["configuration"]["registries"]
 
-            _get_existing_secrets(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name(), self.containerapp_def)
+            self.set_up_get_existing_secrets(self.containerapp_def)
             if "secrets" in self.containerapp_def["properties"]["configuration"] and self.containerapp_def["properties"]["configuration"]["secrets"]:
                 self.new_containerapp["properties"]["configuration"]["secrets"] = self.containerapp_def["properties"]["configuration"]["secrets"]
             else:
