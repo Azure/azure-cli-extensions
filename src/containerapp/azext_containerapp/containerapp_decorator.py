@@ -580,6 +580,12 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         if self.get_argument_source():
             self.set_up_create_containerapp_if_source_or_repo()
 
+        if self.get_argument_repo():
+            container_app = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+            if container_app:
+                # Update the image to ensure that the container app is not re-created with mcr.microsoft.com/k8se/quickstart:latest
+                self.containerapp_def["properties"]["template"]["containers"][0]["image"] = container_app["properties"]["template"]["containers"][0]["image"]
+
     def create(self):
         try:
             r = self.client.create_or_update(
@@ -635,12 +641,12 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
                                                             linker_name=item["linker_name"]).result()
 
         if self.get_argument_repo():
-            app = self.set_up_create_containerapp_if_source_or_repo()
-            r = self.set_up_create_containerapp_repo(app=app, r=r, env=app.env, env_rg=app.resource_group.name)
+            r = self.set_up_create_containerapp_if_source_or_repo()
+
         return r
 
     def set_up_create_containerapp_if_source_or_repo(self):
-        from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image, get_token, _has_dockerfile, _get_dockerfile_content, _get_ingress_and_target_port, _get_registry_details)
+        from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image, get_token, _has_dockerfile, _get_dockerfile_content, _get_ingress_and_target_port, _get_registry_details, _create_github_action, get_token)
         ingress = self.get_argument_ingress()
         target_port = self.get_argument_target_port()
         dockerfile = "Dockerfile"
@@ -658,9 +664,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         # Set image to None if it was previously set to the default image (case where image was not provided by the user) else reformat it
         image = None if self.get_argument_image().__eq__(HELLO_WORLD_IMAGE) else _reformat_image(self.get_argument_source(), self.get_argument_repo(), self.get_argument_image())
 
-        if self.get_argument_source() and not _has_dockerfile(self.get_argument_source(), dockerfile):
-            pass
-        else:
+        if not self.get_argument_source() or _has_dockerfile(self.get_argument_source(), dockerfile):
             dockerfile_content = _get_dockerfile_content(self.get_argument_repo(), self.get_argument_branch(), token, self.get_argument_source(), self.get_argument_context_path(), dockerfile)
             ingress, target_port = _get_ingress_and_target_port(self.get_argument_ingress(), self.get_argument_target_port(), dockerfile_content)
         # Construct ContainerApp
@@ -676,17 +680,15 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             app.run_acr_build(dockerfile, self.get_argument_source(), quiet=False, build_from_source=not _has_dockerfile(self.get_argument_source(), dockerfile))
             # Update image
             self.containerapp_def["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
-        return app
 
-    def set_up_create_containerapp_repo(self, app, r, env, env_rg):
-        from ._up_utils import (_create_github_action, get_token)
-        # Get GitHub access token
-        token = get_token(self.cmd, self.get_argument_repo(), self.get_argument_token())
-        _create_github_action(app, env, self.get_argument_service_principal_client_id(), self.get_argument_service_principal_client_secret(),
+        if self.get_argument_repo():
+            # Get GitHub access token
+            token = get_token(self.cmd, self.get_argument_repo(), self.get_argument_token())
+            _create_github_action(app, env, self.get_argument_service_principal_client_id(), self.get_argument_service_principal_client_secret(),
                               self.get_argument_service_principal_tenant_id(), self.get_argument_branch(), token, self.get_argument_repo(), self.get_argument_context_path())
-        cache_github_token(self.cmd, token, self.get_argument_repo())
-        r = self.client.show(cmd=self.cmd, resource_group_name=env_rg, name=app.name)
-        return r
+            cache_github_token(self.cmd, token, self.get_argument_repo())
+            r = self.client.show(cmd=self.cmd, resource_group_name=env_rg, name=app.name)
+            return r
 
     def set_up_create_containerapp_yaml(self, name, file_name):
         if self.get_argument_image() or self.get_argument_min_replicas() or self.get_argument_max_replicas() or self.get_argument_target_port() or self.get_argument_ingress() or \

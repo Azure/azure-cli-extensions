@@ -994,9 +994,7 @@ def update_container_app_source(cmd, containerapp_def, name, target_port, image,
         image = None if image is None else _reformat_image(source=source, image=image, repo=None)
         location = containerapp_def["location"]
 
-        if source and not _has_dockerfile(source, dockerfile):
-            pass
-        else:
+        if _has_dockerfile(source, dockerfile):
             dockerfile_content = _get_dockerfile_content(repo=None, branch=None, token=None, source=source, context_path=None, dockerfile=dockerfile)
             ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
 
