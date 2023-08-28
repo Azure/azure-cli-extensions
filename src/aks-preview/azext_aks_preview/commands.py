@@ -146,9 +146,9 @@ def load_command_table(self, _):
         g.custom_command('get-os-options', 'aks_get_os_options')
         g.custom_command('operation-abort', 'aks_operation_abort', supports_no_wait=True)
 
-    # AKS AI commands
+    # AKS Copilot commands
     with self.command_group('aks') as g:
-        g.custom_command('ai', 'start_chat')
+        g.custom_command('copilot', 'start_chat')
 
     # AKS maintenance configuration commands
     with self.command_group('aks maintenanceconfiguration', maintenance_configuration_sdk, client_factory=cf_maintenance_configurations) as g:

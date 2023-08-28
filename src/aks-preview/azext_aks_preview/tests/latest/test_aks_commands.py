@@ -112,7 +112,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.assert_openai_interactive_shell_launched()
 
     def assert_openai_interactive_shell_launched(self):
-        start_ai_cmd = ['az', 'aks', 'ai']
+        start_ai_cmd = ['az', 'aks', 'copilot']
         try:
             # say Hi, and quit (q) the interactive shell
             result = subprocess.run(start_ai_cmd, input="Hi\nq\n".encode(), stdout=subprocess.PIPE)
@@ -125,7 +125,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             f"Prompt",
         ]:
             if not pattern in output:
-                raise CliTestError(f"Output from aks ai did not contain '{pattern}'. Output:\n{output}")
+                raise CliTestError(f"Output from aks copilot did not contain '{pattern}'. Output:\n{output}")
 
 
     @AllowLargeResponse()

@@ -2636,7 +2636,7 @@ helps['aks mesh disable-ingress-gateway'] = """
         text: az aks mesh disable-ingress-gateway --resource-group MyResourceGroup --name MyManagedCluster --ingress-gateway-type Internal
 """
 
-helps['aks ai'] = """
+helps['aks copilot'] = """
     type: command
     short-summary: Start a chat with the Azure Kubernetes Service expert. API keys for OpenAI or Azure are required.
     long-summary: |-
@@ -2650,5 +2650,5 @@ helps['aks ai'] = """
                     export OPENAI_API_KEY=xxx, export OPENAI_API_BASE=https://xxxinstance.openai.azure.com/, export OPENAI_API_DEPLOYMENT=gpt-4-32k-0314, export OPENAI_API_TYPE=azure
     examples:
         - name: How to create a AKS private cluster.
-          text: az aks ai -p "How to create a private cluster"
+          text: az aks copilot -p "How to create a private cluster"
 """

@@ -921,7 +921,7 @@ def load_arguments(self, _):
         c.argument('root_cert_object_name')
         c.argument('cert_chain_object_name')
 
-    with self.argument_context('aks ai') as c:
+    with self.argument_context('aks copilot') as c:
         c.argument('prompt', options_list=['--prompt', '-p'], validator=validate_prompt_input,
                    help='The question you want to ask, e.g: How to create a AKS cluster')
 
