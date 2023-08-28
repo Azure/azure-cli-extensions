@@ -1538,9 +1538,33 @@ class SubscriptionPreviewClient(SubscriptionClient):
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
 
+    @classmethod
+    def list_usages(cls, cmd, location):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        request_url = f"{management_hostname}subscriptions/{sub_id}/providers/Microsoft.App/locations/{location}/usages?api-version={cls.api_version}"
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        return r.json()
+
 
 class ManagedEnvironmentPreviewClient(ManagedEnvironmentClient):
     api_version = PREVIEW_API_VERSION
+
+    @classmethod
+    def list_usages(cls, cmd, resource_group_name, name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}/usages?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        return r.json()
 
 
 class AuthPreviewClient(AuthClient):
