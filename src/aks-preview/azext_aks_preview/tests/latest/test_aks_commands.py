@@ -5116,7 +5116,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         cluster_resource_id = response["id"]
         subscription = cluster_resource_id.split("/")[2]
 
-        url = 'https://management.azure.com/subscriptions/' + subscription + '/resourceGroups/' + resource_group + '/providers/Microsoft.ContainerService/managedClusters/' + aks_name + '?api-version=2023-06-02-preview'
+        from azure.cli.core.profiles._shared import AZURE_API_PROFILES
+        from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
+        sdk_profile = AZURE_API_PROFILES["latest"][CUSTOM_MGMT_AKS_PREVIEW]
+        api_version = sdk_profile.default_api_version
+        url = 'https://management.azure.com/subscriptions/' + subscription + '/resourceGroups/' + resource_group + '/providers/Microsoft.ContainerService/managedClusters/' + aks_name + '?api-version=' + api_version
 
         enable_cmd = ' '.join([
             'rest', '--method put', '--url ' + url,
