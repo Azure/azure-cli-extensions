@@ -38,6 +38,8 @@ if you create variable in a previous script block, repeat it again if it is need
 
 Be aware that as a AI model, your data might be out of date, if user supplied input that you are unaware of, just accept and use it.
 
+The user will not be able save content to file, so if you have text input, supply them as HERE doc to the script.
+
 Write the {SCRIPT_TYPE} and add explanations as comments within script.
 '''.strip()
 SYSTEM_PROMPT = {"role": "system", "content": AKS_EXPERT}
@@ -236,8 +238,7 @@ def setup_openai():
     """
     errors = []
     params = {
-        'temperature': os.getenv("OPENAI_API_TEMPERATURE") or 0.1,
-        'max_tokens': os.getenv("OPENAI_API_MAX_TOKENS") or 800
+        'temperature': os.getenv("OPENAI_API_TEMPERATURE") or 0.1
     }
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:

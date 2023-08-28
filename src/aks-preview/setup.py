@@ -24,8 +24,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    "openai~=0.27.8",
-    "colorama~=0.4.4"
+    "openai~=0.27.8"
 ]
 
 with open1("README.rst", "r", encoding="utf-8") as f:
