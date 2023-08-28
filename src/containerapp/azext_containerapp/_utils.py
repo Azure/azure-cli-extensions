@@ -50,7 +50,7 @@ from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDoma
                       ManagedCertificateEnvelop as ManagedCertificateEnvelopModel,
                       ServiceConnector as ServiceConnectorModel)
 from ._models import OryxMarinerRunImgTagProperty
-from ._managed_service_utils import ManagedRedisUtils, ManagedCosmosDBUtils, ManagedPostgreSQLUtils
+from ._managed_service_utils import ManagedRedisUtils, ManagedCosmosDBUtils, ManagedPostgreSQLFlexibleUtils, ManagedMySQLFlexibleUtils
 
 
 class AppType(Enum):
@@ -439,9 +439,14 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
                                                                               name, binding_name))
             elif service["type"] == "Microsoft.DBforPostgreSQL/flexibleServers":
                 service_connector_def_list.append(
-                    ManagedPostgreSQLUtils.build_postgresql_service_connector_def(subscription_id, resource_group_name,
-                                                                                  service_name, arg_dict,
-                                                                                  name, binding_name))
+                    ManagedPostgreSQLFlexibleUtils.build_postgresql_service_connector_def(subscription_id, resource_group_name,
+                                                                                          service_name, arg_dict,
+                                                                                          name, binding_name))
+            elif service["type"] == "Microsoft.DBforMySQL/flexibleServers":
+                service_connector_def_list.append(
+                    ManagedMySQLFlexibleUtils.build_mysql_service_connector_def(subscription_id, resource_group_name,
+                                                                                service_name, arg_dict,
+                                                                                name, binding_name))
             elif service["type"] == "Microsoft.App/containerApps":
                 containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name,
                                                            name=service_name)
@@ -603,14 +608,6 @@ def parse_auth_flags(auth_list):
         })
 
     return auth_def
-
-
-def _update_revision_env_secretrefs(containers, name):
-    for container in containers:
-        if "env" in container:
-            for var in container["env"]:
-                if "secretRef" in var:
-                    var["secretRef"] = var["secretRef"].replace("{}-".format(name), "")
 
 
 def _update_revision_env_secretrefs(containers, name):

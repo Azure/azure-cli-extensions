@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* Add support for binding managed MySQL Flexible server to a containerapp
 * Removed preview tag for some command groups and params (e.g. 'az containerapp job', 'az containerapp env storage', 'az containerapp env workload-profile')
 * 'az containerapp env': --enable-workload-profiles allowed values:true, false
 * 'az containerapp auth': support --token-store, --sas-url-secret, --sas-url-secret-name, --yes
@@ -12,6 +13,8 @@ upcoming
 * 'az containerapp show-custom-domain-verification-id': show verfication id used for binding custom domain
 * 'az containerapp list-usages': list usages in subscription
 * 'az containerapp env list-usages': list usages in environment
+* 'az containerapp update': --yaml support property additionalPortMappings for api-version 2023-05-02-preview
+* 'az containerapp create/update': raise ValidationError when value in --yaml is None
 
 0.3.37
 ++++++
