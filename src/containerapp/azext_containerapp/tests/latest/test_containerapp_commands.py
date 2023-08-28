@@ -7,6 +7,8 @@ import os
 import time
 import unittest
 
+from azure.cli.core.azclierror import ValidationError
+
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 from msrestazure.tools import parse_resource_id
@@ -1412,6 +1414,21 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision3")
         ])
+
+        # test invalid yaml
+        containerapp_yaml_text = f"""
+                                            """
+        containerapp_file_name = f"{self._testMethodName}_containerapp.yml"
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+        try:
+            self.cmd(f'containerapp create -n {app} -g {resource_group} --yaml {containerapp_file_name}')
+        except Exception as ex:
+            print(ex)
+            self.assertTrue(isinstance(ex, ValidationError))
+            self.assertEqual(ex.error_msg,
+                             'Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+            pass
+
         clean_up_test_file(containerapp_file_name)
 
     @AllowLargeResponse(8192)
