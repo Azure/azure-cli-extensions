@@ -556,6 +556,7 @@ def update_containerapp_logic(cmd,
     r = containerapp_update_decorator.post_process(r)
     return r
 
+
 def update_containerapp(cmd,
                         name,
                         resource_group_name,

@@ -73,10 +73,6 @@ from ._constants import (CONTAINER_APPS_RP,
 
 from ._github_oauth import cache_github_token
 
-
-
-
-
 logger = get_logger(__name__)
 
 
@@ -577,8 +573,8 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             self.set_up_create_containerapp_if_source_or_repo()
 
         if self.get_argument_repo():
-             container_app = self._get_containerapp_if_exists()
-             if container_app:
+            container_app = self._get_containerapp_if_exists()
+            if container_app:
                 # Update the image to ensure that the container app is not re-created with mcr.microsoft.com/k8se/quickstart:latest
                 self.containerapp_def["properties"]["template"]["containers"][0]["image"] = container_app["properties"]["template"]["containers"][0]["image"]
 
@@ -686,7 +682,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             # Get GitHub access token
             token = get_token(self.cmd, self.get_argument_repo(), self.get_argument_token())
             _create_github_action(app, env, self.get_argument_service_principal_client_id(), self.get_argument_service_principal_client_secret(),
-                              self.get_argument_service_principal_tenant_id(), self.get_argument_branch(), token, self.get_argument_repo(), self.get_argument_context_path())
+                                  self.get_argument_service_principal_tenant_id(), self.get_argument_branch(), token, self.get_argument_repo(), self.get_argument_context_path())
             cache_github_token(self.cmd, token, self.get_argument_repo())
             r = self.client.show(cmd=self.cmd, resource_group_name=env_rg, name=app.name)
             return r
@@ -896,7 +892,6 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         # Update image
         self.containerapp_def["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
         self.set_argument_image(self.containerapp_def["properties"]["template"]["containers"][0]["image"])
-
 
     def construct_payload(self):
         # construct from yaml
