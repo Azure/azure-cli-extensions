@@ -1404,7 +1404,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('guardrailsProfile.level', 'Warning'),
             self.check('guardrailsProfile.version','v1.0.0')
         ])
-    
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_update_with_guardrails(self, resource_group, resource_group_location):
@@ -1420,12 +1420,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded')
         ])
-    
+
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
                      '--guardrails-level Warning --guardrails-version "v1.0.0" ' \
                      '--guardrails-excluded-ns test-ns1 ' \
                      '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/GuardrailsPreview'
-        
+
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('guardrailsProfile.level', 'Warning'),
@@ -2946,7 +2946,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             enable_monitoring_cmd = 'aks addon enable -a monitoring '
         else:
             enable_monitoring_cmd = 'aks enable-addons -a monitoring '
-        enable_monitoring_cmd += f'--resource-group={resource_group} --name={aks_name} ' 
+        enable_monitoring_cmd += f'--resource-group={resource_group} --name={aks_name} '
         if syslog_enabled:
             enable_monitoring_cmd += f'--enable-syslog '
 
@@ -5087,7 +5087,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # kwargs for string formatting
         aks_name = self.create_random_name('cliakstest', 16)
         request_body = '{\"type\": \"Microsoft.ContainerService/managedClusters\", \"name\": \"'+ aks_name +'\", \"location\": \"' + resource_group_location + '\", \"properties\": {\"securityProfile\": {\"imageIntegrity\": {\"enabled\": true}}}}'
-        
+
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
@@ -5116,8 +5116,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         cluster_resource_id = response["id"]
         subscription = cluster_resource_id.split("/")[2]
 
-        url = 'https://management.azure.com/subscriptions/' + subscription + '/resourceGroups/' + resource_group + '/providers/Microsoft.ContainerService/managedClusters/' + aks_name + '?api-version=2023-06-02-preview'
-        
+        from azure.cli.core.profiles._shared import AZURE_API_PROFILES
+        from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
+        sdk_profile = AZURE_API_PROFILES["latest"][CUSTOM_MGMT_AKS_PREVIEW]
+        api_version = sdk_profile.default_api_version
+        url = 'https://management.azure.com/subscriptions/' + subscription + '/resourceGroups/' + resource_group + '/providers/Microsoft.ContainerService/managedClusters/' + aks_name + '?api-version=' + api_version
+
         enable_cmd = ' '.join([
             'rest', '--method put', '--url ' + url,
             '--body \'{request_body}\'',
@@ -6156,7 +6160,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
                      '--enable-addons web_application_routing ' \
-                     '--dns-zone-resource-id "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourcegroups/notexist/providers/Microsoft.Network/dnsZones/notexist.com" ' \
+                     '--dns-zone-resource-ids "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourcegroups/notexist/providers/Microsoft.Network/dnsZones/notexist.com" ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         try:
             self.cmd(create_cmd, checks=[])
@@ -6225,7 +6229,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         role_assignment_cmd = 'role assignment create --role "DNS Zone Contributor" --assignee {web_app_routing_identity_obj_id} --scope {dns_zone_id}'
         self.cmd(role_assignment_cmd)
 
-        addon_update_cmd = 'aks addon update -g {resource_group} -n {name} --addon web_application_routing --dns-zone-resource-id={dns_zone_id}'
+        addon_update_cmd = 'aks addon update -g {resource_group} -n {name} --addon web_application_routing --dns-zone-resource-ids={dns_zone_id}'
         self.cmd(addon_update_cmd, checks=[
             self.check('provisioningState', 'Succeeded')
         ])
@@ -7114,7 +7118,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--cluster-name={name} '
             '--name={node_pool_name} '
             '--node-vm-size={node_vm_size} '
-            '--vm-set-type=VirtualMachines ' 
+            '--vm-set-type=VirtualMachines '
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview',
             checks=[
                 self.check('provisioningState', 'Succeeded'),
@@ -7450,7 +7454,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_update_upgrade_settings(self, resource_group, resource_group_location):
-        """ This test case exercises enabling and disabling IgnoreKubernetesDeprecations override in cluster upgradeSettings.
+        """ This test case exercises enabling and disabling forceUpgrade override in cluster upgradeSettings.
         """
 
         # reset the count so in replay mode the random names will start with 0
@@ -7474,25 +7478,25 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # update upgrade settings
-        self.cmd('aks update --resource-group={resource_group} --name={name} --upgrade-override-until 2020-08-01T22:30:17+00:00', checks=[
+        self.cmd('aks update --resource-group={resource_group} --name={name} --upgrade-override-until 2020-01-01T22:30:17+00:00', checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.not_exists('upgradeSettings.overrideSettings.controlPlaneOverrides'),
+            self.not_exists('upgradeSettings.overrideSettings.forceUpgrade'),
             self.exists('upgradeSettings.overrideSettings.until')
         ])
-        self.cmd('aks update --resource-group={resource_group} --name={name} --upgrade-settings IgnoreKubernetesDeprecations', checks=[
+        self.cmd('aks update --resource-group={resource_group} --name={name} --enable-force-upgrade', checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('upgradeSettings.overrideSettings.controlPlaneOverrides[0]', "IgnoreKubernetesDeprecations"),
+            self.check('upgradeSettings.overrideSettings.forceUpgrade', True),
             self.exists('upgradeSettings.overrideSettings.until')
         ])
-        self.cmd('aks update --resource-group={resource_group} --name={name} --upgrade-settings IgnoreKubernetesDeprecations --upgrade-override-until 2020-02-22T22:30:17+00:00', checks=[
+        self.cmd('aks update --resource-group={resource_group} --name={name} --enable-force-upgrade --upgrade-override-until 2020-02-22T22:30:17+00:00', checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('upgradeSettings.overrideSettings.controlPlaneOverrides[0]', "IgnoreKubernetesDeprecations"),
+            self.check('upgradeSettings.overrideSettings.forceUpgrade', True),
             self.check('upgradeSettings.overrideSettings.until', '2020-02-22T22:30:17+00:00')
         ])
-        self.cmd('aks update --resource-group={resource_group} --name={name} --upgrade-settings \"\"', checks=[
+        self.cmd('aks update --resource-group={resource_group} --name={name} --disable-force-upgrade', checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('upgradeSettings.overrideSettings.controlPlaneOverrides[0]', "IgnoreKubernetesDeprecations"),
-            self.check('upgradeSettings.overrideSettings.until', '2020-02-22T22:30:17+00:00')  # This will be left unchanged as it's already expired.
+            self.check('upgradeSettings.overrideSettings.forceUpgrade', False),
+            self.check('upgradeSettings.overrideSettings.until', '2020-02-22T22:30:17+00:00')
         ])
 
         # delete
@@ -7511,7 +7515,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--ssh-key-value={ssh_key_value} --node-count=1 --tier standard ' 
+                     '--ssh-key-value={ssh_key_value} --node-count=1 --tier standard '
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded')
         ])
@@ -7542,7 +7546,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys(),
             'location': resource_group_location,
         })
-    
+
         # create
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--ssh-key-value={ssh_key_value} --node-count=1 --tier standard --enable-network-observability ' \
@@ -7567,7 +7571,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys(),
             'k8s_version': create_version,
         })
-    
+
         # create
         create_cmd = 'aks create --resource-group={resource_group} --name={name} -k {k8s_version} -c 1 ' \
                      '--ssh-key-value={ssh_key_value} ' \
