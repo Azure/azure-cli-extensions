@@ -75,6 +75,7 @@ from ._models_py3 import ContinuousModeBackupPolicy
 from ._models_py3 import ContinuousModeProperties
 from ._models_py3 import CorsPolicy
 from ._models_py3 import CosmosCassandraDataTransferDataSourceSink
+from ._models_py3 import CosmosDataTransferDataSourceSink
 from ._models_py3 import CosmosMongoDataTransferDataSourceSink
 from ._models_py3 import CosmosSqlDataTransferDataSourceSink
 from ._models_py3 import CreateJobRequest
@@ -345,10 +346,12 @@ from ._cosmos_db_management_client_enums import ConnectorOffer
 from ._cosmos_db_management_client_enums import ContinuousTier
 from ._cosmos_db_management_client_enums import CreateMode
 from ._cosmos_db_management_client_enums import CreatedByType
+from ._cosmos_db_management_client_enums import CustomerManagedKeyStatus
 from ._cosmos_db_management_client_enums import DataTransferComponent
 from ._cosmos_db_management_client_enums import DataType
 from ._cosmos_db_management_client_enums import DatabaseAccountKind
 from ._cosmos_db_management_client_enums import DefaultConsistencyLevel
+from ._cosmos_db_management_client_enums import DefaultPriorityLevel
 from ._cosmos_db_management_client_enums import EnableFullTextQuery
 from ._cosmos_db_management_client_enums import IndexKind
 from ._cosmos_db_management_client_enums import IndexingMode
@@ -457,6 +460,7 @@ __all__ = [
     "ContinuousModeProperties",
     "CorsPolicy",
     "CosmosCassandraDataTransferDataSourceSink",
+    "CosmosDataTransferDataSourceSink",
     "CosmosMongoDataTransferDataSourceSink",
     "CosmosSqlDataTransferDataSourceSink",
     "CreateJobRequest",
@@ -726,10 +730,12 @@ __all__ = [
     "ContinuousTier",
     "CreateMode",
     "CreatedByType",
+    "CustomerManagedKeyStatus",
     "DataTransferComponent",
     "DataType",
     "DatabaseAccountKind",
     "DefaultConsistencyLevel",
+    "DefaultPriorityLevel",
     "EnableFullTextQuery",
     "IndexKind",
     "IndexingMode",
