@@ -109,6 +109,7 @@ ManagedClusterSecurityProfileNodeRestriction = TypeVar("ManagedClusterSecurityPr
 ManagedClusterWorkloadProfileVerticalPodAutoscaler = TypeVar("ManagedClusterWorkloadProfileVerticalPodAutoscaler")
 ManagedClusterLoadBalancerProfile = TypeVar("ManagedClusterLoadBalancerProfile")
 ServiceMeshProfile = TypeVar("ServiceMeshProfile")
+ResourceReference = TypeVar("ResourceReference")
 
 
 # pylint: disable=too-few-public-methods
@@ -382,52 +383,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                             raise DecoratorEarlyExitException()
         return outbound_type
 
-    def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
-        """Obtain the value of load_balancer_managed_outbound_ip_count.
-
-        Note: Overwritten in aks-preview to preserve value from `mc` in update mode under certain circumstance.
-
-        Note: SDK provides default value 1 and performs the following validation {'maximum': 100, 'minimum': 1}.
-
-        :return: int or None
-        """
-        # read the original value passed by the command
-        load_balancer_managed_outbound_ip_count = self.raw_param.get(
-            "load_balancer_managed_outbound_ip_count"
-        )
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if (
-                self.mc and
-                self.mc.network_profile and
-                self.mc.network_profile.load_balancer_profile and
-                self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps and
-                self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count is not None
-            ):
-                load_balancer_managed_outbound_ip_count = (
-                    self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count
-                )
-        elif self.decorator_mode == DecoratorMode.UPDATE:
-            if (
-                not self.get_load_balancer_outbound_ips() and
-                not self.get_load_balancer_outbound_ip_prefixes() and
-                load_balancer_managed_outbound_ip_count is None
-            ):
-                if (
-                    self.mc and
-                    self.mc.network_profile and
-                    self.mc.network_profile.load_balancer_profile and
-                    self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps and
-                    self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count is not None
-                ):
-                    load_balancer_managed_outbound_ip_count = (
-                        self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count
-                    )
-
-        # this parameter does not need dynamic completion
-        # this parameter does not need validation
-        return load_balancer_managed_outbound_ip_count
-
     def _get_pod_cidr_and_service_cidr_and_dns_service_ip_and_docker_bridge_address_and_network_policy(
         self, enable_validation: bool = False
     ) -> Tuple[
@@ -634,6 +589,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("enable_network_observability")
 
+    def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
+        """Obtain the value of load_balancer_managed_outbound_ip_count.
+
+        Note: SDK performs the following validation {'maximum': 100, 'minimum': 1}.
+
+        :return: int or None
+        """
+        # read the original value passed by the command
+        return self.raw_param.get("load_balancer_managed_outbound_ip_count")
+
     def get_load_balancer_managed_outbound_ipv6_count(self) -> Union[int, None]:
         """Obtain the expected count of IPv6 managed outbound IPs.
 
@@ -641,37 +606,25 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: int or None
         """
-        count_ipv6 = self.raw_param.get('load_balancer_managed_outbound_ipv6_count')
+        return self.raw_param.get('load_balancer_managed_outbound_ipv6_count')
 
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if (
-                self.mc and
-                self.mc.network_profile and
-                self.mc.network_profile.load_balancer_profile and
-                self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps and
-                self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count_ipv6 is not None
-            ):
-                count_ipv6 = (
-                    self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count_ipv6
-                )
-        elif self.decorator_mode == DecoratorMode.UPDATE:
-            if (
-                not self.get_load_balancer_outbound_ips() and
-                not self.get_load_balancer_outbound_ip_prefixes() and
-                count_ipv6 is None
-            ):
-                if (
-                    self.mc and
-                    self.mc.network_profile and
-                    self.mc.network_profile.load_balancer_profile and
-                    self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps and
-                    self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count_ipv6 is not None
-                ):
-                    count_ipv6 = (
-                        self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count_ipv6
-                    )
+    def get_load_balancer_outbound_ips(self) -> Union[str, List[ResourceReference], None]:
+        """Obtain the value of load_balancer_outbound_ips.
 
-        return count_ipv6
+        Note: SDK performs the following validation {'maximum': 16, 'minimum': 1}.
+
+        :return: string, list of ResourceReference, or None
+        """
+        # read the original value passed by the command
+        return self.raw_param.get("load_balancer_outbound_ips")
+
+    def get_load_balancer_outbound_ip_prefixes(self) -> Union[str, List[ResourceReference], None]:
+        """Obtain the value of load_balancer_outbound_ip_prefixes.
+
+        :return: string, list of ResourceReference, or None
+        """
+        # read the original value passed by the command
+        return self.raw_param.get("load_balancer_outbound_ip_prefixes")
 
     def get_load_balancer_backend_pool_type(self) -> str:
         """Obtain the value of load_balancer_backend_pool_type.
