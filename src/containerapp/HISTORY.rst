@@ -2,6 +2,9 @@
 
 Release History
 ===============
+upcoming
+++++++
+
 0.3.38
 ++++++
 * Add support for binding managed MySQL Flexible server to a containerapp
