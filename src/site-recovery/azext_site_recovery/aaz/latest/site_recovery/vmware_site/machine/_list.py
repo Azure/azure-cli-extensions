@@ -59,9 +59,11 @@ class List(AAZCommand):
         )
         _args_schema.filter = AAZStrArg(
             options=["--filter"],
+            help="filter",
         )
         _args_schema.top = AAZIntArg(
             options=["--top"],
+            help="list a set number of machines",
         )
         _args_schema.total_record_count = AAZIntArg(
             options=["--total-record-count"],
