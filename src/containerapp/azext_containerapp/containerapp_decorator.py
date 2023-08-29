@@ -627,17 +627,6 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
                                                                         "az containerapp ingress enable -n %s -g %s --type external --target-port %s"
                                                                         " --transport auto\n", self.get_argument_name(), self.get_argument_resource_group_name(), target_port)
 
-        if self.get_argument_service_connectors_def_list() is not None:
-            linker_client = get_linker_client(self.cmd)
-
-            for item in self.get_argument_service_connectors_def_list():
-                while r is not None and r["properties"]["provisioningState"].lower() == "inprogress":
-                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
-                    time.sleep(1)
-                linker_client.linker.begin_create_or_update(resource_uri=r["id"],
-                                                            parameters=item["parameters"],
-                                                            linker_name=item["linker_name"]).result()
-
         return r
 
     def set_up_create_containerapp_if_source_or_repo(self):
