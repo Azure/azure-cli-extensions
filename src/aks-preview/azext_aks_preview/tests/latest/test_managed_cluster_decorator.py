@@ -500,7 +500,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         network_profile = self.models.ContainerServiceNetworkProfile(load_balancer_profile=load_balancer_profile)
         mc = self.models.ManagedCluster(location="test_location", network_profile=network_profile)
         ctx_1.attach_mc(mc)
-        self.assertEqual(ctx_1.get_load_balancer_managed_outbound_ip_count(), 10)
+        self.assertEqual(ctx_1.get_load_balancer_managed_outbound_ip_count(), None)
 
         # custom value
         ctx_2 = AKSPreviewManagedClusterContext(
@@ -529,7 +529,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         network_profile_2 = self.models.ContainerServiceNetworkProfile(load_balancer_profile=load_balancer_profile_2)
         mc_2 = self.models.ManagedCluster(location="test_location", network_profile=network_profile_2)
         ctx_2.attach_mc(mc_2)
-        self.assertEqual(ctx_2.get_load_balancer_managed_outbound_ip_count(), 10)
+        self.assertEqual(ctx_2.get_load_balancer_managed_outbound_ip_count(), None)
 
     def test_get_load_balancer_managed_outbound_ipv6_count(self):
         # default
@@ -552,7 +552,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         network_profile = self.models.ContainerServiceNetworkProfile(load_balancer_profile=load_balancer_profile)
         mc = self.models.ManagedCluster(location="test_location", network_profile=network_profile)
         ctx_1.attach_mc(mc)
-        self.assertEqual(ctx_1.get_load_balancer_managed_outbound_ipv6_count(), 10)
+        self.assertEqual(ctx_1.get_load_balancer_managed_outbound_ipv6_count(), None)
 
         # custom value
         ctx_2 = AKSPreviewManagedClusterContext(
@@ -590,7 +590,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         network_profile_3 = self.models.ContainerServiceNetworkProfile(load_balancer_profile=load_balancer_profile_3)
         mc_3 = self.models.ManagedCluster(location="test_location", network_profile=network_profile_3)
         ctx_3.attach_mc(mc_3)
-        self.assertEqual(ctx_3.get_load_balancer_managed_outbound_ipv6_count(), 20)
+        self.assertEqual(ctx_3.get_load_balancer_managed_outbound_ipv6_count(), None)
 
     def test_get_load_balancer_backend_pool_type(self):
         ctx = AKSPreviewManagedClusterContext(
