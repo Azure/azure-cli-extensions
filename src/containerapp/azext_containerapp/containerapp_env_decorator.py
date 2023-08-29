@@ -164,7 +164,7 @@ class ContainerAppEnvCreateDecorator(ContainerAppEnvDecorator):
         self.managed_env_def["tags"] = self.get_argument_tags()
         self.managed_env_def["properties"]["zoneRedundant"] = self.get_argument_zone_redundant()
 
-        self.managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(self.cmd, self.get_argument_location())
+        self.set_up_workload_profiles()
 
         # Custom domains
         if self.get_argument_hostname():
@@ -183,6 +183,9 @@ class ContainerAppEnvCreateDecorator(ContainerAppEnvDecorator):
 
         if self.get_argument_mtls_enabled() is not None:
             safe_set(self.managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=self.get_argument_mtls_enabled())
+
+    def set_up_workload_profiles(self):
+        self.managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(self.cmd, self.get_argument_location())
 
     def set_up_app_log_configuration(self):
         if (self.get_argument_logs_customer_id() is None or self.get_argument_logs_key() is None) and self.get_argument_logs_destination() == "log-analytics":
@@ -341,11 +344,10 @@ class ContainerAppEnvUpdateDecorator(ContainerAppEnvDecorator):
 
 
 class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
-    def construct_payload(self):
-        super().construct_payload()
-        if not self.get_argument_enable_workload_profiles():
-            if safe_get(self.managed_env_def, "properties", "workloadProfiles"):
-                del self.managed_env_def["properties"]["workloadProfiles"]
+
+    def set_up_workload_profiles(self):
+        if self.get_argument_enable_workload_profiles():
+            self.managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(self.cmd, self.get_argument_location())
 
     def get_argument_enable_workload_profiles(self):
         return self.get_param("enable_workload_profiles")
