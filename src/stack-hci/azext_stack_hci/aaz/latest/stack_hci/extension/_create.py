@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create extension for HCI cluster.
 
     :example: Create arc extension
-        az stack-hci extension create --arc-setting-name "default" --cluster-name "myCluster" --type "MicrosoftMonitoringAgent" --protected-settings "{workspaceKey:xx}" --publisher "Microsoft.Compute" --settings "{workspaceId:xx}" --type-handler-version "1.10" --name "MicrosoftMonitoringAgent" --resource-group "test-rg"
+        az stack-hci extension create --arc-setting-name "default" --cluster-name "myCluster" --type "MicrosoftMonitoringAgent" --protected-settings '{"workspaceId": "xx", "port": "6516"}' --publisher "Microsoft.Compute" --settings '{"workspaceKey": "xx"}' --type-handler-version "1.10" --name "MicrosoftMonitoringAgent" --resource-group "test-rg"
     """
 
     _aaz_info = {
@@ -77,7 +77,7 @@ class Create(AAZCommand):
             arg_group="ExtensionParameters",
             help="How the extension handler should be forced to update even if the extension configuration has not changed.",
         )
-        _args_schema.protected_settings = AAZObjectArg(
+        _args_schema.protected_settings = AAZFreeFormDictArg(
             options=["--protected-settings"],
             arg_group="ExtensionParameters",
             help="Protected settings (may contain secrets).",
@@ -87,7 +87,7 @@ class Create(AAZCommand):
             arg_group="ExtensionParameters",
             help="The name of the extension handler publisher.",
         )
-        _args_schema.settings = AAZObjectArg(
+        _args_schema.settings = AAZFreeFormDictArg(
             options=["--settings"],
             arg_group="ExtensionParameters",
             help="Json formatted public settings for the extension.",
@@ -101,18 +101,6 @@ class Create(AAZCommand):
             options=["--type-handler-version"],
             arg_group="ExtensionParameters",
             help="Specifies the version of the script handler. Latest version would be used if not specified.",
-        )
-
-        protected_settings = cls._args_schema.protected_settings
-        protected_settings.workspace_key = AAZStrArg(
-            options=["workspace-key"],
-            help="Workspace Key.",
-        )
-
-        settings = cls._args_schema.settings
-        settings.workspace_id = AAZStrArg(
-            options=["workspace-id"],
-            help="Workspace Id.",
         )
         return cls._args_schema
 
@@ -240,19 +228,19 @@ class Create(AAZCommand):
             if extension_parameters is not None:
                 extension_parameters.set_prop("autoUpgradeMinorVersion", AAZBoolType, ".auto_upgrade")
                 extension_parameters.set_prop("forceUpdateTag", AAZStrType, ".force_update_tag")
-                extension_parameters.set_prop("protectedSettings", AAZObjectType, ".protected_settings", typ_kwargs={"flags": {"secret": True}})
+                extension_parameters.set_prop("protectedSettings", AAZFreeFormDictType, ".protected_settings", typ_kwargs={"flags": {"secret": True}})
                 extension_parameters.set_prop("publisher", AAZStrType, ".publisher")
-                extension_parameters.set_prop("settings", AAZObjectType, ".settings")
+                extension_parameters.set_prop("settings", AAZFreeFormDictType, ".settings")
                 extension_parameters.set_prop("type", AAZStrType, ".type")
                 extension_parameters.set_prop("typeHandlerVersion", AAZStrType, ".type_handler_version")
 
             protected_settings = _builder.get(".properties.extensionParameters.protectedSettings")
             if protected_settings is not None:
-                protected_settings.set_prop("workspaceKey", AAZStrType, ".workspace_key")
+                protected_settings.set_anytype_elements(".")
 
             settings = _builder.get(".properties.extensionParameters.settings")
             if settings is not None:
-                settings.set_prop("workspaceId", AAZStrType, ".workspace_id")
+                settings.set_anytype_elements(".")
 
             return self.serialize_content(_content_value)
 
@@ -322,25 +310,15 @@ class Create(AAZCommand):
             extension_parameters.force_update_tag = AAZStrType(
                 serialized_name="forceUpdateTag",
             )
-            extension_parameters.protected_settings = AAZObjectType(
+            extension_parameters.protected_settings = AAZFreeFormDictType(
                 serialized_name="protectedSettings",
                 flags={"secret": True},
             )
             extension_parameters.publisher = AAZStrType()
-            extension_parameters.settings = AAZObjectType()
+            extension_parameters.settings = AAZFreeFormDictType()
             extension_parameters.type = AAZStrType()
             extension_parameters.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
-            )
-
-            protected_settings = cls._schema_on_200_201.properties.extension_parameters.protected_settings
-            protected_settings.workspace_key = AAZStrType(
-                serialized_name="workspaceKey",
-            )
-
-            settings = cls._schema_on_200_201.properties.extension_parameters.settings
-            settings.workspace_id = AAZStrType(
-                serialized_name="workspaceId",
             )
 
             per_node_extension_details = cls._schema_on_200_201.properties.per_node_extension_details
