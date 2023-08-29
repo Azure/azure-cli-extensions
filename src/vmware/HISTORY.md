@@ -1,6 +1,6 @@
 # Release History
 
-## 6.0.1 (2023-09)
+## 6.0.0 (2023-09)
 - Update to AVS 2023-03-01 API
 - Add `az vmware private-cloud add-extended-network-blocks`
 - Add `az vmware private-cloud delete-extended-network-blocks`
