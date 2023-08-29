@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create extension for HCI cluster.
 
     :example: Create arc extension
-        az stack-hci extension create --arc-setting-name "default" --cluster-name "myCluster" --type "MicrosoftMonitoringAgent" --protected-settings "{'workspaceId':'xx','port':'6516'}" --publisher "Microsoft.Compute" --settings "{'workspaceKey':'xx'}" --type-handler-version "1.10" --name "MicrosoftMonitoringAgent" --resource-group "test-rg"
+        az stack-hci extension create --arc-setting-name "default" --cluster-name "myCluster" --type "MicrosoftMonitoringAgent" --protected-settings '{"workspaceId": "xx", "port": "6516"}' --publisher "Microsoft.Compute" --settings '{"workspaceKey": "xx"}' --type-handler-version "1.10" --name "MicrosoftMonitoringAgent" --resource-group "test-rg"
     """
 
     _aaz_info = {
