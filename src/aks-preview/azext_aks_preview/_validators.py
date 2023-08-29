@@ -660,6 +660,11 @@ def validate_defender_disable_and_enable_parameters(namespace):
         raise ArgumentUsageError('Providing both --disable-defender and --enable-defender flags is invalid')
 
 
+def validate_force_upgrade_disable_and_enable_parameters(namespace):
+    if namespace.disable_force_upgrade and namespace.enable_force_upgrade:
+        raise MutuallyExclusiveArgumentError('Providing both --disable-force-upgrade and --enable-force-upgrade flags is invalid')
+
+
 def sanitize_resource_id(resource_id):
     resource_id = resource_id.strip()
     if not resource_id.startswith("/"):
