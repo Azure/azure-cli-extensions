@@ -26,8 +26,8 @@ def load_command_table(self, _):
         g.custom_command('exec', 'containerapp_ssh', validator=validate_ssh)
         g.custom_command('up', 'containerapp_up', supports_no_wait=False, exception_handler=ex_handler_factory())
         g.custom_command('browse', 'open_containerapp_in_browser')
-        g.custom_show_command('show-custom-domain-verification-id', 'show_custom_domain_verification_id')
-        g.custom_command('list-usages', 'list_usages', table_transformer=transform_usages_output)
+        g.custom_show_command('show-custom-domain-verification-id', 'show_custom_domain_verification_id', is_preview=True)
+        g.custom_command('list-usages', 'list_usages', table_transformer=transform_usages_output, is_preview=True)
 
     with self.command_group('containerapp replica') as g:
         g.custom_show_command('show', 'get_replica')  # TODO implement the table transformer
@@ -44,7 +44,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('delete', 'delete_managed_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
         g.custom_command('update', 'update_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
-        g.custom_command('list-usages', 'list_environment_usages', table_transformer=transform_usages_output)
+        g.custom_command('list-usages', 'list_environment_usages', table_transformer=transform_usages_output, is_preview=True)
 
     with self.command_group('containerapp job') as g:
         g.custom_show_command('show', 'show_containerappsjob')
