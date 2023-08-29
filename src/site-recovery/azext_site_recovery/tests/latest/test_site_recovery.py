@@ -140,7 +140,7 @@ class SiteRecoveryScenario(ScenarioTest):
                  checks=[self.check('length(@)', 0)])
 
     # pylint: disable=line-too-long
-    @record_only()
+    # @record_only()
     def test_siterecovery_A2A_selfcreated_scenarios(self):
         self.kwargs.update({
             'rg': 'cli.test.rg.SRVault',
@@ -170,7 +170,7 @@ class SiteRecoveryScenario(ScenarioTest):
         # self.cmd('az account set -n {subscription}')
         self.cmd('az group create -l {recovery_loc} -n {rg}')
         self.cmd('az group create -l {source_loc} -n {vm_rg}')
-        self.cmd('az vm create -n {vm_name} -g {vm_rg} --image Win2012Datacenter --public-ip-sku Standard '
+        self.cmd('az vm create -n {vm_name} -g {vm_rg} --image Win2019Datacenter --public-ip-sku Standard '
                  '--admin-password !q2w3e4R5t6y')
         self.cmd('az backup vault create -g {rg} -n {vault_name} -l {recovery_loc}')
         self.cmd('az site-recovery fabric create -n {fabric_source_name} -g {rg} '
@@ -312,6 +312,8 @@ class SiteRecoveryScenario(ScenarioTest):
                             "vm_id": vm["id"],
                             "os_disk": vm["storageProfile"]["osDisk"]["managedDisk"]["id"],
                             "rg_id": rg_id, "vm_rg_id": vm_rg_id})
+
+        # fix cert issue with https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-troubleshoot-errors#trusted-root-certificates-error-code-151066
 
         # enable protection
         self.cmd('az site-recovery protected-item create -g {rg} '
