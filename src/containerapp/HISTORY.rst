@@ -2,7 +2,7 @@
 
 Release History
 ===============
-upcoming
+0.3.38
 ++++++
 * Add support for binding managed MySQL Flexible server to a containerapp
 * Removed preview tag for some command groups and params (e.g. 'az containerapp job', 'az containerapp env storage', 'az containerapp env workload-profile')
