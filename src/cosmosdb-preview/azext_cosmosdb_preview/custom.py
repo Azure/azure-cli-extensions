@@ -747,7 +747,9 @@ def cli_cosmosdb_create(cmd,
                         restore_source=None,
                         restore_timestamp=None,
                         enable_materialized_views=None,
-                        enable_burst_capacity=None):
+                        enable_burst_capacity=None,
+                        enable_priority_based_execution=None,
+                        default_priority_level = None):
     """Create a new Azure Cosmos DB database account."""
 
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -801,7 +803,9 @@ def cli_cosmosdb_create(cmd,
                                     tables_to_restore=tables_to_restore,
                                     arm_location=resource_group_location,
                                     enable_materialized_views=enable_materialized_views,
-                                    enable_burst_capacity=enable_burst_capacity)
+                                    enable_burst_capacity=enable_burst_capacity,
+                                    enable_priority_based_execution=enable_priority_based_execution,
+                                    default_priority_level = default_priority_level)
 
 
 # pylint: disable=too-many-branches
@@ -833,7 +837,9 @@ def cli_cosmosdb_update(client,
                         backup_policy_type=None,
                         continuous_tier=None,
                         enable_materialized_views=None,
-                        enable_burst_capacity=None):
+                        enable_burst_capacity=None,
+                        enable_priority_based_execution=None,
+                        default_priority_level = None):
     """Update an existing Azure Cosmos DB database account. """
     existing = client.get(resource_group_name, account_name)
 
@@ -924,7 +930,9 @@ def cli_cosmosdb_update(client,
         default_identity=default_identity,
         analytical_storage_configuration=analytical_storage_configuration,
         enable_materialized_views=enable_materialized_views,
-        enable_burst_capacity=enable_burst_capacity)
+        enable_burst_capacity=enable_burst_capacity,
+        enable_priority_based_execution=enable_priority_based_execution,
+        default_priority_level = default_priority_level)
 
     async_docdb_update = client.begin_update(resource_group_name, account_name, params)
     docdb_account = async_docdb_update.result()
@@ -1127,7 +1135,9 @@ def _create_database_account(client,
                              arm_location=None,
                              enable_materialized_views=None,
                              enable_burst_capacity=None,
-                             source_backup_location=None):
+                             source_backup_location=None,
+                             enable_priority_based_execution=None,
+                             default_priority_level = None):
 
     consistency_policy = None
     if default_consistency_level is not None:
@@ -1264,7 +1274,9 @@ def _create_database_account(client,
         create_mode=create_mode,
         restore_parameters=restore_parameters,
         enable_materialized_views=enable_materialized_views,
-        enable_burst_capacity=enable_burst_capacity
+        enable_burst_capacity=enable_burst_capacity,
+        enable_priority_based_execution=enable_priority_based_execution,
+        default_priority_level = default_priority_level
     )
 
     async_docdb_create = client.begin_create_or_update(resource_group_name, account_name, params)
