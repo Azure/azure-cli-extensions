@@ -1,0 +1,2850 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - backup vault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) azsdk-python-mgmt-recoveryservices/2.4.0 Python/3.9.13
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002?api-version=2023-02-01
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.RecoveryServices/vaults/vault000002''
+        under resource group ''clitest.rg.siterecovery.vault.000001'' was not found.
+        For more details please go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '253'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:16:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"location": "eastus2euap", "properties": {"publicNetworkAccess": "Enabled",
+      "monitoringSettings": {"azureMonitorAlertSettings": {"alertsForAllJobFailures":
+      "Enabled"}, "classicAlertSettings": {"alertsForCriticalOperations": "Enabled"}}},
+      "sku": {"name": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - backup vault create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '267'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g -l
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) azsdk-python-mgmt-recoveryservices/2.4.0 Python/3.9.13
+        (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002?api-version=2023-02-01
+  response:
+    body:
+      string: '{"location":"eastus2euap","name":"vault000002","etag":"W/\"datetime''2023-08-02T12%3A16%3A55.7503191Z''\"","properties":{"provisioningState":"Provisioning","privateEndpointStateForBackup":"None","privateEndpointStateForSiteRecovery":"None","monitoringSettings":{"azureMonitorAlertSettings":{"alertsForAllJobFailures":"Enabled"},"classicAlertSettings":{"alertsForCriticalOperations":"Enabled"}},"publicNetworkAccess":"Enabled","restoreSettings":{"crossSubscriptionRestoreSettings":{"crossSubscriptionRestoreState":"Enabled"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002","type":"Microsoft.RecoveryServices/vaults","sku":{"name":"Standard"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/operationStatus/MjA0NztiZWUxMmQyYS1hMDRlLTQ3ZTctYWYyMC1mMTg1YTBmYTIxNmM=?api-version=2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '760'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:16:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/324e0ae6-8373-425e-943b-7efdeb0b9070
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '209'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - backup vault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) azsdk-python-mgmt-recoveryservices/2.4.0 Python/3.9.13
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/operationStatus/MjA0NztiZWUxMmQyYS1hMDRlLTQ3ZTctYWYyMC1mMTg1YTBmYTIxNmM=?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/operationStatus/MjA0NztiZWUxMmQyYS1hMDRlLTQ3ZTctYWYyMC1mMTg1YTBmYTIxNmM=\",\r\n
+        \ \"name\": \"MjA0NztiZWUxMmQyYS1hMDRlLTQ3ZTctYWYyMC1mMTg1YTBmYTIxNmM=\",\r\n
+        \ \"status\": \"InProgress\"\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/operationStatus/MjA0NztiZWUxMmQyYS1hMDRlLTQ3ZTctYWYyMC1mMTg1YTBmYTIxNmM=?api-version=2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '346'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:16:55 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/operationResults/MjA0NztiZWUxMmQyYS1hMDRlLTQ3ZTctYWYyMC1mMTg1YTBmYTIxNmM=?api-version=2023-02-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - backup vault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) azsdk-python-mgmt-recoveryservices/2.4.0 Python/3.9.13
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/operationStatus/MjA0NztiZWUxMmQyYS1hMDRlLTQ3ZTctYWYyMC1mMTg1YTBmYTIxNmM=?api-version=2023-02-01
+  response:
+    body:
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/operationStatus/MjA0NztiZWUxMmQyYS1hMDRlLTQ3ZTctYWYyMC1mMTg1YTBmYTIxNmM=\",\r\n
+        \ \"name\": \"MjA0NztiZWUxMmQyYS1hMDRlLTQ3ZTctYWYyMC1mMTg1YTBmYTIxNmM=\",\r\n
+        \ \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '345'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:17:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - backup vault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -l
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) azsdk-python-mgmt-recoveryservices/2.4.0 Python/3.9.13
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002?api-version=2023-02-01
+  response:
+    body:
+      string: '{"location":"eastus2euap","name":"vault000002","etag":"W/\"datetime''2023-08-02T12%3A16%3A56.4015009Z''\"","properties":{"provisioningState":"Succeeded","privateEndpointStateForBackup":"None","privateEndpointStateForSiteRecovery":"None","backupStorageVersion":"Unassigned","monitoringSettings":{"azureMonitorAlertSettings":{"alertsForAllJobFailures":"Enabled"},"classicAlertSettings":{"alertsForCriticalOperations":"Enabled"}},"securitySettings":{"immutabilitySettings":null,"softDeleteSettings":{"softDeleteRetentionPeriodInDays":14,"softDeleteState":"Enabled"},"multiUserAuthorization":"Disabled"},"publicNetworkAccess":"Enabled","restoreSettings":{"crossSubscriptionRestoreSettings":{"crossSubscriptionRestoreState":"Enabled"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002","type":"Microsoft.RecoveryServices/vaults","sku":{"name":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '966'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:17:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault list-appliance
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationAppliances?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:17:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault list-migration-item
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationMigrationItems?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault list-network
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationNetworks?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault list-network-mapping
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationNetworkMappings?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault list-protected-item
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationProtectedItems?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault list-protection-container
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationProtectionContainers?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault list-protection-container-mapping
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationProtectionContainerMappings?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault list-recovery-services-provider
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationRecoveryServicesProviders?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault list-storage-classification
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationStorageClassifications?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault list-storage-classification-mapping
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationStorageClassificationMappings?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault list-v-center
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationvCenters?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault show-supported-operating-system
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationSupportedOperatingSystems?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationSupportedOperatingSystems/Default","name":"Default","type":"Microsoft.RecoveryServices/vaults/replicationSupportedOperatingSystems","properties":{"supportedOsList":[{"instanceType":"A2A","supportedOs":[{"osName":"centos","osType":"linux","osVersions":[{"version":"6.0"},{"version":"6.1"},{"version":"6.2"},{"version":"6.3"},{"version":"6.4"},{"version":"6.5"},{"version":"6.6"},{"version":"6.7"},{"version":"6.8"},{"version":"6.9"},{"version":"6.10"},{"version":"7.0"},{"version":"7.1"},{"version":"7.2"},{"version":"7.3"},{"version":"7.4"},{"version":"7.5"},{"version":"7.6"},{"version":"7.7"},{"version":"7.8"},{"version":"7.9"},{"version":"8.0"},{"version":"8.1"},{"version":"8.2"},{"version":"8.3"},{"version":"8.4"},{"version":"8.5"},{"version":"8.6"},{"version":"8.7"},{"version":"7.*"},{"version":"8.*"}]},{"osName":"debian","osType":"linux","osVersions":[{"version":"7"},{"version":"8"},{"version":"9"},{"version":"10"},{"version":"11"}]},{"osName":"oracle","osType":"linux","osVersions":[{"version":"6.4"},{"version":"6.5"},{"version":"6.6"},{"version":"6.7"},{"version":"6.8"},{"version":"6.9"},{"version":"6.10"},{"version":"7.0"},{"version":"7.1"},{"version":"7.2"},{"version":"7.3"},{"version":"7.4"},{"version":"7.5"},{"version":"7.6"},{"version":"7.7"},{"version":"7.8"},{"version":"7.9"},{"version":"8.0"},{"version":"8.1"},{"version":"8.2"},{"version":"8.3"},{"version":"8.4"},{"version":"8.5"},{"version":"8.6"},{"version":"8.7"},{"version":"8.8"},{"version":"9.1"},{"version":"7.*"},{"version":"8.*"}]},{"osName":"rhel","osType":"linux","osVersions":[{"version":"9.0"},{"version":"9.1"}]},{"osName":"redhat","osType":"linux","osVersions":[{"version":"6.0"},{"version":"6.1"},{"version":"6.2"},{"version":"6.3"},{"version":"6.4"},{"version":"6.5"},{"version":"6.6"},{"version":"6.7"},{"version":"6.8"},{"version":"6.9"},{"version":"6.10"},{"version":"7.0"},{"version":"7.1"},{"version":"7.2"},{"version":"7.3"},{"version":"7.4"},{"version":"7.5"},{"version":"7.6"},{"version":"7.7"},{"version":"7.8"},{"version":"7.9"},{"version":"8.0"},{"version":"8.1"},{"version":"8.2"},{"version":"8.3"},{"version":"8.4"},{"version":"8.5"},{"version":"8.6"},{"version":"8.7"},{"version":"8.8"},{"version":"9.0"},{"version":"9.1"},{"version":"7.*"},{"version":"8.*"}]},{"osName":"suse","osType":"linux","osVersions":[{"version":"11"},{"version":"12"}]},{"osName":"sles","osType":"linux","osVersions":[{"version":"15"}]},{"osName":"ubuntu","osType":"linux","osVersions":[{"version":"14.04"},{"version":"16.04"},{"version":"18.04"},{"version":"20.04"},{"version":"22.04"}]},{"osName":"Windows
+        Server 2008 R2 Datacenter","osType":"windows","osVersions":[{"version":"6.1","servicePack":"1"}]},{"osName":"Windows
+        Server 2008 R2 Enterprise","osType":"windows","osVersions":[{"version":"6.1","servicePack":"1"}]},{"osName":"Windows
+        Server 2008 R2 Standard","osType":"windows","osVersions":[{"version":"6.1","servicePack":"1"}]},{"osName":"Windows
+        Server 2012 Standard","osType":"windows","osVersions":[{"version":"6.2"}]},{"osName":"Windows
+        Server 2012 Datacenter","osType":"windows","osVersions":[{"version":"6.2"}]},{"osName":"Windows
+        Server 2012 R2 Datacenter","osType":"windows","osVersions":[{"version":"6.3"}]},{"osName":"Windows
+        Server 2012 R2 Datacenter Evaluation","osType":"windows","osVersions":[{"version":"6.3"}]},{"osName":"Windows
+        Server 2012 R2 Standard","osType":"windows","osVersions":[{"version":"6.3"}]},{"osName":"Windows
+        Server 2012 R2 Standard Evaluation","osType":"windows","osVersions":[{"version":"6.3"}]},{"osName":"Windows
+        Server 2016 Standard","osType":"windows","osVersions":[{"version":"6.3"},{"version":"10.0"}]},{"osName":"Windows
+        Server 2016 Datacenter","osType":"windows","osVersions":[{"version":"6.3"},{"version":"10.0"}]},{"osName":"Windows
+        Web Server 2008 R2","osType":"windows","osVersions":[{"version":"6.1","servicePack":"1"}]},{"osName":"Windows
+        Server Datacenter","osType":"windows","osVersions":[{"version":"10.0"}]},{"osName":"Windows
+        7","osType":"windows","osVersions":[{"version":"6.1","servicePack":"1"}]},{"osName":"Windows
+        8","osType":"windows","osVersions":[{"version":"6.2"}]},{"osName":"Windows
+        8.1","osType":"windows","osVersions":[{"version":"6.3"}]},{"osName":"Windows
+        10","osType":"windows","osVersions":[{"version":"10.0"}]}]}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4463'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"customEmailAddresses": ["email@address.com"], "locale":
+      "en_US", "sendToOwners": "Send"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery alert-setting create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '106'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --vault-name --custom-email-addresses --locale --send-to-owners
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationAlertSettings/defaultAlertSetting?api-version=2022-08-01
+  response:
+    body:
+      string: '{"name":"defaultAlertSetting","type":"Microsoft.RecoveryServices/vaults/replicationAlertSettings","id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationAlertSettings/defaultAlertSetting","properties":{"sendToOwners":"Send","customEmailAddresses":["email@address.com"],"locale":"en_US"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '409'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery alert-setting show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationAlertSettings/defaultAlertSetting?api-version=2022-08-01
+  response:
+    body:
+      string: '{"name":"defaultAlertSetting","type":"Microsoft.RecoveryServices/vaults/replicationAlertSettings","id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationAlertSettings/defaultAlertSetting","properties":{"sendToOwners":"Send","customEmailAddresses":["email@address.com"],"locale":"en_US"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '409'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery alert-setting update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --vault-name --custom-email-addresses --locale --send-to-owners
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationAlertSettings/defaultAlertSetting?api-version=2022-08-01
+  response:
+    body:
+      string: '{"name":"defaultAlertSetting","type":"Microsoft.RecoveryServices/vaults/replicationAlertSettings","id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationAlertSettings/defaultAlertSetting","properties":{"sendToOwners":"Send","customEmailAddresses":["email@address.com"],"locale":"en_US"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '409'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"customEmailAddresses": ["email2@address.com"], "locale":
+      "fr_FR", "sendToOwners": "DoNotSend"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery alert-setting update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '112'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --vault-name --custom-email-addresses --locale --send-to-owners
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationAlertSettings/defaultAlertSetting?api-version=2022-08-01
+  response:
+    body:
+      string: '{"name":"defaultAlertSetting","type":"Microsoft.RecoveryServices/vaults/replicationAlertSettings","id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationAlertSettings/defaultAlertSetting","properties":{"sendToOwners":"DoNotSend","customEmailAddresses":["email2@address.com"],"locale":"fr_FR"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '415'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery alert-setting list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationAlertSettings?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[{"name":"defaultAlertSetting","type":"Microsoft.RecoveryServices/vaults/replicationAlertSettings","id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationAlertSettings/defaultAlertSetting","properties":{"sendToOwners":"DoNotSend","customEmailAddresses":["email2@address.com"],"locale":"fr_FR"}}],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '443'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery event list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationEvents?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault health refresh-default
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationVaultHealth/default/refresh?api-version=2022-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/8ef92677-cb79-4182-a1f3-11a8034e52fc?api-version=2022-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 02 Aug 2023 12:18:28 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationVaultHealth/operationresults/8ef92677-cb79-4182-a1f3-11a8034e52fc?api-version=2022-08-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault health refresh-default
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/8ef92677-cb79-4182-a1f3-11a8034e52fc?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"8ef92677-cb79-4182-a1f3-11a8034e52fc","properties":null,"status":"InProgress","startTime":"2023-08-02T12:18:29.2519669Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault health refresh-default
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/8ef92677-cb79-4182-a1f3-11a8034e52fc?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"8ef92677-cb79-4182-a1f3-11a8034e52fc","properties":null,"status":"Succeeded","startTime":"2023-08-02T12:18:29.2519669Z","endTime":"2023-08-02T12:18:30.0000000Z","percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:18:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault health show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationVaultHealth?api-version=2022-08-01
+  response:
+    body:
+      string: '{"name":"Default","type":"Microsoft.RecoveryServices/vaults/replicationVaultHealth","id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationVaultHealth/Default","properties":{"vaultErrors":[],"protectedItemsHealth":{"resourceCount":0,"issues":[],"categorizedResourceCounts":{"testFailoverApplicableProtectedItemsCount":0,"testFailoverInProgressProtectedItemsCount":0,"testFailoverWaitingProtectedItemsCount":0,"protectedItemsCriticalCount":0,"protectedItemsWarningCount":0,"protectedItemsNeutralCount":0,"protectedItemsTestFailoverCriticalCount":0,"protectedItemsTestFailoverWarningCount":0,"protectedItemsConfigurationCriticalCount":0,"protectedItemsConfigurationWarningCount":0,"protectedItemsFailoverHealthCriticalCount":0,"protectedItemsFailoverHealthWarningCount":0}},"fabricsHealth":{"resourceCount":0,"issues":[],"categorizedResourceCounts":null},"containersHealth":{"resourceCount":0,"issues":[],"categorizedResourceCounts":null}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1060'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:19:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery job list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationJobs?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationJobs/8ef92677-cb79-4182-a1f3-11a8034e52fc","name":"8ef92677-cb79-4182-a1f3-11a8034e52fc","type":"Microsoft.RecoveryServices/vaults/replicationJobs","properties":{"activityId":null,"scenarioName":"RefreshVaultHealth","friendlyName":"Refresh
+        vault health","state":"Succeeded","stateDescription":"Completed","tasks":[],"errors":[],"startTime":"2023-08-02T12:18:29.2519669Z","endTime":"2023-08-02T12:18:30Z","allowedActions":[],"targetObjectId":"1112329827161952327","targetObjectName":"","targetInstanceType":"Vault","customDetails":null}}],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '742'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:19:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name --job-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationJobs/8ef92677-cb79-4182-a1f3-11a8034e52fc?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationJobs/8ef92677-cb79-4182-a1f3-11a8034e52fc","name":"8ef92677-cb79-4182-a1f3-11a8034e52fc","type":"Microsoft.RecoveryServices/vaults/replicationJobs","properties":{"activityId":"af9753bd-312e-11ee-a255-c8d9d2028398
+        ActivityId: 023266dc-c811-4592-b7f0-f2b3105ceaeb","scenarioName":"RefreshVaultHealth","friendlyName":"Refresh
+        vault health","state":"Succeeded","stateDescription":"Completed","tasks":[{"taskId":"RefreshFailoverHealthTask","name":"RefreshFailoverHealthTask","startTime":"2023-08-02T12:18:29.976688Z","endTime":"2023-08-02T12:18:30.0079207Z","allowedActions":[],"friendlyName":"Refreshing
+        failover health","state":"Succeeded","stateDescription":"Completed","taskType":"TaskDetails","customDetails":{"instanceType":"TaskDetails"},"groupTaskCustomDetails":null,"errors":[]}],"errors":[],"startTime":"2023-08-02T12:18:29.2519669Z","endTime":"2023-08-02T12:18:30Z","allowedActions":[],"targetObjectId":"1112329827161952327","targetObjectName":"","targetInstanceType":"Vault","customDetails":{"instanceType":"AsrJobDetails","affectedObjectDetails":{}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1237'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:19:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery job export
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationJobs/export?api-version=2022-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/aed9279f-a60f-444e-9e4a-2f6f64304dd9?api-version=2022-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 02 Aug 2023 12:19:06 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationJobs/aed9279f-a60f-444e-9e4a-2f6f64304dd9/operationresults/aed9279f-a60f-444e-9e4a-2f6f64304dd9?api-version=2022-08-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery job export
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/aed9279f-a60f-444e-9e4a-2f6f64304dd9?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"aed9279f-a60f-444e-9e4a-2f6f64304dd9","properties":null,"status":"InProgress","startTime":"2023-08-02T12:19:06.8750309Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:19:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery job export
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/aed9279f-a60f-444e-9e4a-2f6f64304dd9?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"aed9279f-a60f-444e-9e4a-2f6f64304dd9","properties":null,"status":"Succeeded","startTime":"2023-08-02T12:19:06.8750309Z","endTime":"2023-08-02T12:19:07.0000000Z","percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:19:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"providerSpecificInput": {"instanceType": "InMageRcm",
+      "appConsistentFrequencyInMinutes": 0, "crashConsistentFrequencyInMinutes": 5,
+      "enableMultiVmSync": "true", "recoveryPointHistoryInMinutes": 2880}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '218'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000004?api-version=2022-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/9a936d78-9aed-467e-990f-cf7a72f08638?api-version=2022-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 02 Aug 2023 12:19:39 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000004/operationresults/9a936d78-9aed-467e-990f-cf7a72f08638?api-version=2022-08-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1195'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/9a936d78-9aed-467e-990f-cf7a72f08638?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"9a936d78-9aed-467e-990f-cf7a72f08638","properties":null,"status":"InProgress","startTime":"2023-08-02T12:19:40.1158123Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:19:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/9a936d78-9aed-467e-990f-cf7a72f08638?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"9a936d78-9aed-467e-990f-cf7a72f08638","properties":null,"status":"Succeeded","startTime":"2023-08-02T12:19:40.1158123Z","endTime":"2023-08-02T12:19:40.0000000Z","percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:20:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000004?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000004","name":"policy000004","type":"Microsoft.RecoveryServices/vaults/replicationPolicies","properties":{"friendlyName":"policy000004","providerSpecificDetails":{"instanceType":"InMageRcm","recoveryPointHistoryInMinutes":2880,"appConsistentFrequencyInMinutes":0,"crashConsistentFrequencyInMinutes":5,"enableMultiVmSync":"true","status":false,"associatedItemsCount":0,"dataSourceType":"VM"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '586'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:20:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000004?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000004","name":"policy000004","type":"Microsoft.RecoveryServices/vaults/replicationPolicies","properties":{"friendlyName":"policy000004","providerSpecificDetails":{"instanceType":"InMageRcm","recoveryPointHistoryInMinutes":2880,"appConsistentFrequencyInMinutes":0,"crashConsistentFrequencyInMinutes":5,"enableMultiVmSync":"true","status":false,"associatedItemsCount":0,"dataSourceType":"VM"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '586'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:20:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000004","name":"policy000004","type":"Microsoft.RecoveryServices/vaults/replicationPolicies","properties":{"friendlyName":"policy000004","providerSpecificDetails":{"instanceType":"InMageRcm","recoveryPointHistoryInMinutes":2880,"appConsistentFrequencyInMinutes":0,"crashConsistentFrequencyInMinutes":5,"enableMultiVmSync":"true","status":false,"associatedItemsCount":0,"dataSourceType":"VM"}}}],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '614'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:20:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"replicationProviderSettings": {"instanceType": "InMageRcm",
+      "appConsistentFrequencyInMinutes": 0, "crashConsistentFrequencyInMinutes": 5,
+      "enableMultiVmSync": "true", "recoveryPointHistoryInMinutes": 1440}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '224'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --debug -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000004?api-version=2022-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/e8242fa7-3b81-4ff9-b5e9-424c5f67fc5e?api-version=2022-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 02 Aug 2023 12:20:15 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000004/operationresults/e8242fa7-3b81-4ff9-b5e9-424c5f67fc5e?api-version=2022-08-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --debug -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/e8242fa7-3b81-4ff9-b5e9-424c5f67fc5e?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"e8242fa7-3b81-4ff9-b5e9-424c5f67fc5e","properties":null,"status":"InProgress","startTime":"2023-08-02T12:20:16.6984658Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:20:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --debug -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/e8242fa7-3b81-4ff9-b5e9-424c5f67fc5e?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"e8242fa7-3b81-4ff9-b5e9-424c5f67fc5e","properties":null,"status":"Succeeded","startTime":"2023-08-02T12:20:16.6984658Z","endTime":"2023-08-02T12:20:17.0000000Z","percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:20:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --debug -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000004?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000004","name":"policy000004","type":"Microsoft.RecoveryServices/vaults/replicationPolicies","properties":{"friendlyName":"policy000004","providerSpecificDetails":{"instanceType":"InMageRcm","recoveryPointHistoryInMinutes":1440,"appConsistentFrequencyInMinutes":0,"crashConsistentFrequencyInMinutes":5,"enableMultiVmSync":"true","status":false,"associatedItemsCount":0,"dataSourceType":"VM"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '586'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:20:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --vault-name -n -y
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000004?api-version=2022-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/dbc097a3-b6c1-4be7-a104-1db8385623c1?api-version=2022-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 02 Aug 2023 12:20:49 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000004/operationresults/dbc097a3-b6c1-4be7-a104-1db8385623c1?api-version=2022-08-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n -y
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/dbc097a3-b6c1-4be7-a104-1db8385623c1?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"dbc097a3-b6c1-4be7-a104-1db8385623c1","properties":null,"status":"InProgress","startTime":"2023-08-02T12:20:49.6276781Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:20:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n -y
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/dbc097a3-b6c1-4be7-a104-1db8385623c1?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"dbc097a3-b6c1-4be7-a104-1db8385623c1","properties":null,"status":"Succeeded","startTime":"2023-08-02T12:20:49.6276781Z","endTime":"2023-08-02T12:20:51.0000000Z","percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:21:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:21:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"providerSpecificInput": {"instanceType": "InMageRcmFailback",
+      "appConsistentFrequencyInMinutes": 60, "crashConsistentFrequencyInMinutes":
+      5}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '159'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000005?api-version=2022-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/b6197c31-ad16-4742-8a48-b1fcbc0b4f95?api-version=2022-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 02 Aug 2023 12:21:24 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000005/operationresults/b6197c31-ad16-4742-8a48-b1fcbc0b4f95?api-version=2022-08-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1194'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/b6197c31-ad16-4742-8a48-b1fcbc0b4f95?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"b6197c31-ad16-4742-8a48-b1fcbc0b4f95","properties":null,"status":"InProgress","startTime":"2023-08-02T12:21:24.3496305Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:21:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/b6197c31-ad16-4742-8a48-b1fcbc0b4f95?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"b6197c31-ad16-4742-8a48-b1fcbc0b4f95","properties":null,"status":"Succeeded","startTime":"2023-08-02T12:21:24.3496305Z","endTime":"2023-08-02T12:21:25.0000000Z","percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:21:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000005?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000005","name":"policy000005","type":"Microsoft.RecoveryServices/vaults/replicationPolicies","properties":{"friendlyName":"policy000005","providerSpecificDetails":{"instanceType":"InMageRcmFailback","appConsistentFrequencyInMinutes":60,"crashConsistentFrequencyInMinutes":5,"status":false,"associatedItemsCount":0,"dataSourceType":"VM"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '531'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:21:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000005?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000005","name":"policy000005","type":"Microsoft.RecoveryServices/vaults/replicationPolicies","properties":{"friendlyName":"policy000005","providerSpecificDetails":{"instanceType":"InMageRcmFailback","appConsistentFrequencyInMinutes":60,"crashConsistentFrequencyInMinutes":5,"status":false,"associatedItemsCount":0,"dataSourceType":"VM"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '531'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:21:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000005","name":"policy000005","type":"Microsoft.RecoveryServices/vaults/replicationPolicies","properties":{"friendlyName":"policy000005","providerSpecificDetails":{"instanceType":"InMageRcmFailback","appConsistentFrequencyInMinutes":60,"crashConsistentFrequencyInMinutes":5,"status":false,"associatedItemsCount":0,"dataSourceType":"VM"}}}],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '559'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:21:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"replicationProviderSettings": {"instanceType": "InMageRcmFailback",
+      "appConsistentFrequencyInMinutes": 0, "crashConsistentFrequencyInMinutes": 10}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '165'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000005?api-version=2022-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/feb6beeb-91d6-40a4-a853-85aa2fec7099?api-version=2022-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 02 Aug 2023 12:22:01 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000005/operationresults/feb6beeb-91d6-40a4-a853-85aa2fec7099?api-version=2022-08-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/feb6beeb-91d6-40a4-a853-85aa2fec7099?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"feb6beeb-91d6-40a4-a853-85aa2fec7099","properties":null,"status":"InProgress","startTime":"2023-08-02T12:22:00.7967604Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:22:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/feb6beeb-91d6-40a4-a853-85aa2fec7099?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"feb6beeb-91d6-40a4-a853-85aa2fec7099","properties":null,"status":"Succeeded","startTime":"2023-08-02T12:22:00.7967604Z","endTime":"2023-08-02T12:22:01.0000000Z","percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:22:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000005?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000005","name":"policy000005","type":"Microsoft.RecoveryServices/vaults/replicationPolicies","properties":{"friendlyName":"policy000005","providerSpecificDetails":{"instanceType":"InMageRcmFailback","appConsistentFrequencyInMinutes":0,"crashConsistentFrequencyInMinutes":10,"status":false,"associatedItemsCount":0,"dataSourceType":"VM"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '531'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:22:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --vault-name -n -y
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000005?api-version=2022-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/90b5c4b2-ace0-40b2-8dd2-5b4663850e47?api-version=2022-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 02 Aug 2023 12:22:34 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies/policy000005/operationresults/90b5c4b2-ace0-40b2-8dd2-5b4663850e47?api-version=2022-08-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n -y
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/90b5c4b2-ace0-40b2-8dd2-5b4663850e47?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"90b5c4b2-ace0-40b2-8dd2-5b4663850e47","properties":null,"status":"InProgress","startTime":"2023-08-02T12:22:34.9813073Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:22:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n -y
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationOperationStatus/90b5c4b2-ace0-40b2-8dd2-5b4663850e47?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"90b5c4b2-ace0-40b2-8dd2-5b4663850e47","properties":null,"status":"Succeeded","startTime":"2023-08-02T12:22:34.9813073Z","endTime":"2023-08-02T12:22:35.0000000Z","percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:23:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery policy list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name
+      User-Agent:
+      - AZURECLI/2.51.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.siterecovery.vault.000001/providers/Microsoft.RecoveryServices/vaults/vault000002/replicationPolicies?api-version=2022-08-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Aug 2023 12:23:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
