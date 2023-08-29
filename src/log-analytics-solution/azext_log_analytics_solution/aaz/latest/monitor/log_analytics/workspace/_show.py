@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "monitor log-analytics workspace show",
-)
 class Show(AAZCommand):
     """Show a workspace instance.
 
