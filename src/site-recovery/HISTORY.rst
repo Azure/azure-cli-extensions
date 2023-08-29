@@ -3,6 +3,6 @@
 Release History
 ===============
 
-0.1.0
+1.0.0
 ++++++
-* Initial release.
+* Initial release with swagger api-version 2022-08-01
