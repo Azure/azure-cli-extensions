@@ -140,7 +140,7 @@ class SiteRecoveryScenario(ScenarioTest):
                  checks=[self.check('length(@)', 0)])
 
     # pylint: disable=line-too-long
-    # @record_only()
+    @record_only()
     def test_siterecovery_A2A_selfcreated_scenarios(self):
         self.kwargs.update({
             'rg': 'cli.test.rg.SRVault',
