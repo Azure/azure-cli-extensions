@@ -2136,3 +2136,4 @@ def validate_custom_location(cmd, custom_location=None):
             break
     if not check_extension_type:
         raise ValidationError('There is no Microsoft.App.Environment extension found associated with custom location {}'.format(custom_location))
+    return r.location
