@@ -20,9 +20,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-01-01",
+        "version": "2023-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2023-05-01"],
         ]
     }
 
@@ -102,6 +102,12 @@ class Update(AAZCommand):
             help="Gets or sets the Backup Instance friendly name.",
             nullable=True,
         )
+        _args_schema.identity_details = AAZObjectArg(
+            options=["--identity-details"],
+            arg_group="Properties",
+            help="Contains information of the Identity Details for the BI. If it is null, default will be considered as System Assigned.",
+            nullable=True,
+        )
         _args_schema.object_type = AAZStrArg(
             options=["--object-type"],
             arg_group="Properties",
@@ -145,6 +151,12 @@ class Update(AAZCommand):
             help="Unique identifier of the resource in the context of parent.",
             nullable=True,
         )
+        data_source_info.resource_properties = AAZObjectArg(
+            options=["resource-properties"],
+            help="Properties specific to data source",
+            nullable=True,
+        )
+        cls._build_args_base_resource_properties_update(data_source_info.resource_properties)
         data_source_info.resource_type = AAZStrArg(
             options=["resource-type"],
             help="Resource Type of Datasource.",
@@ -181,6 +193,12 @@ class Update(AAZCommand):
             help="Unique identifier of the resource in the context of parent.",
             nullable=True,
         )
+        data_source_set_info.resource_properties = AAZObjectArg(
+            options=["resource-properties"],
+            help="Properties specific to data source set",
+            nullable=True,
+        )
+        cls._build_args_base_resource_properties_update(data_source_set_info.resource_properties)
         data_source_set_info.resource_type = AAZStrArg(
             options=["resource-type"],
             help="Resource Type of Datasource.",
@@ -221,11 +239,43 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        identity_details = cls._args_schema.identity_details
+        identity_details.use_system_assigned_identity = AAZBoolArg(
+            options=["use-system-assigned-identity"],
+            help="Specifies if the BI is protected by System Identity.",
+            nullable=True,
+        )
+        identity_details.user_assigned_identity_arm_url = AAZStrArg(
+            options=["user-assigned-identity-arm-url"],
+            help="ARM URL for User Assigned Identity.",
+            nullable=True,
+        )
+
         policy_info = cls._args_schema.policy_info
         policy_info.policy_id = AAZStrArg(
             options=["policy-id"],
         )
         return cls._args_schema
+
+    _args_base_resource_properties_update = None
+
+    @classmethod
+    def _build_args_base_resource_properties_update(cls, _schema):
+        if cls._args_base_resource_properties_update is not None:
+            _schema.object_type = cls._args_base_resource_properties_update.object_type
+            return
+
+        cls._args_base_resource_properties_update = AAZObjectArg(
+            nullable=True,
+        )
+
+        base_resource_properties_update = cls._args_base_resource_properties_update
+        base_resource_properties_update.object_type = AAZStrArg(
+            options=["object-type"],
+            help="Type of the specific object - used for deserializing",
+        )
+
+        _schema.object_type = cls._args_base_resource_properties_update.object_type
 
     def _execute_operations(self):
         self.pre_operations()
@@ -309,7 +359,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01",
+                    "api-version", "2023-05-01",
                     required=True,
                 ),
             }
@@ -412,7 +462,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01",
+                    "api-version", "2023-05-01",
                     required=True,
                 ),
             }
@@ -479,6 +529,7 @@ class Update(AAZCommand):
                 properties.set_prop("dataSourceSetInfo", AAZObjectType, ".data_source_set_info")
                 properties.set_prop("datasourceAuthCredentials", AAZObjectType, ".datasource_auth_credentials")
                 properties.set_prop("friendlyName", AAZStrType, ".friendly_name")
+                properties.set_prop("identityDetails", AAZObjectType, ".identity_details")
                 properties.set_prop("objectType", AAZStrType, ".object_type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("policyInfo", AAZObjectType, ".policy_info", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("validationType", AAZStrType, ".validation_type")
@@ -490,6 +541,7 @@ class Update(AAZCommand):
                 data_source_info.set_prop("resourceID", AAZStrType, ".resource_id", typ_kwargs={"flags": {"required": True}})
                 data_source_info.set_prop("resourceLocation", AAZStrType, ".resource_location")
                 data_source_info.set_prop("resourceName", AAZStrType, ".resource_name")
+                _UpdateHelper._build_schema_base_resource_properties_update(data_source_info.set_prop("resourceProperties", AAZObjectType, ".resource_properties"))
                 data_source_info.set_prop("resourceType", AAZStrType, ".resource_type")
                 data_source_info.set_prop("resourceUri", AAZStrType, ".resource_uri")
 
@@ -500,6 +552,7 @@ class Update(AAZCommand):
                 data_source_set_info.set_prop("resourceID", AAZStrType, ".resource_id", typ_kwargs={"flags": {"required": True}})
                 data_source_set_info.set_prop("resourceLocation", AAZStrType, ".resource_location")
                 data_source_set_info.set_prop("resourceName", AAZStrType, ".resource_name")
+                _UpdateHelper._build_schema_base_resource_properties_update(data_source_set_info.set_prop("resourceProperties", AAZObjectType, ".resource_properties"))
                 data_source_set_info.set_prop("resourceType", AAZStrType, ".resource_type")
                 data_source_set_info.set_prop("resourceUri", AAZStrType, ".resource_uri")
 
@@ -517,6 +570,11 @@ class Update(AAZCommand):
                 secret_store_resource.set_prop("secretStoreType", AAZStrType, ".secret_store_type", typ_kwargs={"flags": {"required": True}})
                 secret_store_resource.set_prop("uri", AAZStrType, ".uri")
                 secret_store_resource.set_prop("value", AAZStrType, ".value")
+
+            identity_details = _builder.get(".properties.identityDetails")
+            if identity_details is not None:
+                identity_details.set_prop("useSystemAssignedIdentity", AAZBoolType, ".use_system_assigned_identity")
+                identity_details.set_prop("userAssignedIdentityArmUrl", AAZStrType, ".user_assigned_identity_arm_url")
 
             policy_info = _builder.get(".properties.policyInfo")
             if policy_info is not None:
@@ -539,6 +597,12 @@ class Update(AAZCommand):
 
 class _UpdateHelper:
     """Helper class for Update"""
+
+    @classmethod
+    def _build_schema_base_resource_properties_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("objectType", AAZStrType, ".object_type", typ_kwargs={"flags": {"required": True}})
 
     _schema_backup_instance_resource_read = None
 
@@ -590,6 +654,9 @@ class _UpdateHelper:
         properties.friendly_name = AAZStrType(
             serialized_name="friendlyName",
         )
+        properties.identity_details = AAZObjectType(
+            serialized_name="identityDetails",
+        )
         properties.object_type = AAZStrType(
             serialized_name="objectType",
             flags={"required": True},
@@ -630,6 +697,10 @@ class _UpdateHelper:
         data_source_info.resource_name = AAZStrType(
             serialized_name="resourceName",
         )
+        data_source_info.resource_properties = AAZObjectType(
+            serialized_name="resourceProperties",
+        )
+        cls._build_schema_base_resource_properties_read(data_source_info.resource_properties)
         data_source_info.resource_type = AAZStrType(
             serialized_name="resourceType",
         )
@@ -654,6 +725,10 @@ class _UpdateHelper:
         data_source_set_info.resource_name = AAZStrType(
             serialized_name="resourceName",
         )
+        data_source_set_info.resource_properties = AAZObjectType(
+            serialized_name="resourceProperties",
+        )
+        cls._build_schema_base_resource_properties_read(data_source_set_info.resource_properties)
         data_source_set_info.resource_type = AAZStrType(
             serialized_name="resourceType",
         )
@@ -679,6 +754,14 @@ class _UpdateHelper:
         )
         secret_store_resource.uri = AAZStrType()
         secret_store_resource.value = AAZStrType()
+
+        identity_details = _schema_backup_instance_resource_read.properties.identity_details
+        identity_details.use_system_assigned_identity = AAZBoolType(
+            serialized_name="useSystemAssignedIdentity",
+        )
+        identity_details.user_assigned_identity_arm_url = AAZStrType(
+            serialized_name="userAssignedIdentityArmUrl",
+        )
 
         policy_info = _schema_backup_instance_resource_read.properties.policy_info
         policy_info.policy_id = AAZStrType(
@@ -720,6 +803,9 @@ class _UpdateHelper:
         containers_list.Element = AAZStrType()
 
         disc_kubernetes_cluster_backup_datasource_parameters = _schema_backup_instance_resource_read.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters")
+        disc_kubernetes_cluster_backup_datasource_parameters.backup_hook_references = AAZListType(
+            serialized_name="backupHookReferences",
+        )
         disc_kubernetes_cluster_backup_datasource_parameters.excluded_namespaces = AAZListType(
             serialized_name="excludedNamespaces",
         )
@@ -743,6 +829,13 @@ class _UpdateHelper:
             serialized_name="snapshotVolumes",
             flags={"required": True},
         )
+
+        backup_hook_references = _schema_backup_instance_resource_read.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").backup_hook_references
+        backup_hook_references.Element = AAZObjectType()
+
+        _element = _schema_backup_instance_resource_read.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").backup_hook_references.Element
+        _element.name = AAZStrType()
+        _element.namespace = AAZStrType()
 
         excluded_namespaces = _schema_backup_instance_resource_read.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").excluded_namespaces
         excluded_namespaces.Element = AAZStrType()
@@ -813,6 +906,24 @@ class _UpdateHelper:
         _schema.system_data = cls._schema_backup_instance_resource_read.system_data
         _schema.tags = cls._schema_backup_instance_resource_read.tags
         _schema.type = cls._schema_backup_instance_resource_read.type
+
+    _schema_base_resource_properties_read = None
+
+    @classmethod
+    def _build_schema_base_resource_properties_read(cls, _schema):
+        if cls._schema_base_resource_properties_read is not None:
+            _schema.object_type = cls._schema_base_resource_properties_read.object_type
+            return
+
+        cls._schema_base_resource_properties_read = _schema_base_resource_properties_read = AAZObjectType()
+
+        base_resource_properties_read = _schema_base_resource_properties_read
+        base_resource_properties_read.object_type = AAZStrType(
+            serialized_name="objectType",
+            flags={"required": True},
+        )
+
+        _schema.object_type = cls._schema_base_resource_properties_read.object_type
 
     _schema_inner_error_read = None
 

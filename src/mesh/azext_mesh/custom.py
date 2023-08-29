@@ -26,23 +26,6 @@ from sfmergeutility import SFMergeUtility  # pylint: disable=E0611,import-error
 logger = get_logger(__name__)
 
 
-def list_application(client, resource_group_name=None):
-    """List all applications. """
-    if resource_group_name is None:
-        return client.list_by_subscription()
-    return client.list_by_resource_group(resource_group_name)
-
-
-def show_application(client, resource_group_name, name):
-    """Show details of an application. """
-    return client.get(resource_group_name, name)
-
-
-def delete_application(client, resource_group_name, name, **kwargs):
-    """Delete an application. """
-    return client.delete(resource_group_name, name)
-
-
 def _ssl_context():
     if sys.version_info < (3, 4):
         return ssl.SSLContext(ssl.PROTOCOL_TLSv1)
@@ -305,13 +288,6 @@ def generate_arm_template(cmd, input_yaml_files=None, parameters=None):
     return _generate_arm_template_core(input_yaml_files, parameters)
 
 
-def list_networks(client, resource_group_name=None):
-    """List all networks in a resource group. """
-    if resource_group_name is None:
-        return client.list_by_subscription()
-    return client.list_by_resource_group(resource_group_name)
-
-
 def create_volume(client, resource_group_name,
                   name, location,
                   template_file=None, template_uri=None):
@@ -330,38 +306,9 @@ def create_volume(client, resource_group_name,
     return client.create(resource_group_name, name, volume_properties)
 
 
-def list_volumes(client, resource_group_name=None):
-    """List all volumes in a resource group. """
-    if resource_group_name is None:
-        return client.list_by_subscription()
-    return client.list_by_resource_group(resource_group_name)
-
-
-def show_volume(client, resource_group_name, name):
-    """Show details of a volume. """
-    return client.get(resource_group_name, name)
-
-
-def delete_volume(client, resource_group_name, name, **kwargs):
-    """Delete a volume. """
-    return client.delete(resource_group_name, name)
-
-
-def list_secrets(client, resource_group_name=None):
-    """List all networks in a resource group. """
-    if resource_group_name is None:
-        return client.list_by_subscription()
-    return client.list_by_resource_group(resource_group_name)
-
-
 def secret_show(client, resource_group_name, secret_name, secret_value_resource_name, show_value=False):
     secret_data = client.get(resource_group_name, secret_name, secret_value_resource_name)
     if show_value:
         secret_value = client.list_value(resource_group_name, secret_name, secret_value_resource_name)
         secret_data.value = secret_value.value
-    return secret_data
-
-
-def list_secret_values(client, resource_group_name, secret_name):
-    secret_data = client.list(resource_group_name, secret_name)
     return secret_data

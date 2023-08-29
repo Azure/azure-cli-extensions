@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud kubernetescluster show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get properties of the provided the Kubernetes cluster.

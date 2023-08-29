@@ -42,6 +42,7 @@ def backup_instance_validate_create(test):
 
 class BackupAndRestoreScenarioTest(ScenarioTest):
 
+    # Uses a persistent vault and DS
     @AllowLargeResponse()
     def test_dataprotection_backup_and_restore_oss(test):
         test.kwargs.update({
@@ -152,6 +153,7 @@ class BackupAndRestoreScenarioTest(ScenarioTest):
 
         track_job_to_completion(test)
 
+    # Uses a persistent vault and DS
     @AllowLargeResponse()
     def test_dataprotection_backup_and_restore_aks(test):
         test.kwargs.update({

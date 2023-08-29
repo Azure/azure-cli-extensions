@@ -13,7 +13,7 @@ from ._transformers import (transform_containerapp_output,
                             transform_job_execution_list_output,
                             transform_job_execution_show_output,
                             transform_revision_list_output,
-                            transform_revision_output)
+                            transform_revision_output, transform_usages_output)
 
 
 def load_command_table(self, _):
@@ -26,6 +26,8 @@ def load_command_table(self, _):
         g.custom_command('exec', 'containerapp_ssh', validator=validate_ssh)
         g.custom_command('up', 'containerapp_up', supports_no_wait=False, exception_handler=ex_handler_factory())
         g.custom_command('browse', 'open_containerapp_in_browser')
+        g.custom_show_command('show-custom-domain-verification-id', 'show_custom_domain_verification_id', is_preview=True)
+        g.custom_command('list-usages', 'list_usages', table_transformer=transform_usages_output, is_preview=True)
 
     with self.command_group('containerapp replica') as g:
         g.custom_show_command('show', 'get_replica')  # TODO implement the table transformer
@@ -42,8 +44,9 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('delete', 'delete_managed_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
         g.custom_command('update', 'update_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_command('list-usages', 'list_environment_usages', table_transformer=transform_usages_output, is_preview=True)
 
-    with self.command_group('containerapp job', is_preview=True) as g:
+    with self.command_group('containerapp job') as g:
         g.custom_show_command('show', 'show_containerappsjob')
         g.custom_command('list', 'list_containerappsjob')
         g.custom_command('create', 'create_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
@@ -79,7 +82,7 @@ def load_command_table(self, _):
         g.custom_command('upload', 'upload_certificate')
         g.custom_command('delete', 'delete_certificate', confirmation=True, exception_handler=ex_handler_factory(), is_preview=True)
 
-    with self.command_group('containerapp env storage', is_preview=True) as g:
+    with self.command_group('containerapp env storage') as g:
         g.custom_show_command('show', 'show_storage')
         g.custom_command('list', 'list_storage')
         g.custom_command('set', 'create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
@@ -207,7 +210,7 @@ def load_command_table(self, _):
         g.custom_command('upload', 'upload_ssl', exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp hostname') as g:
-        g.custom_command('add', 'add_hostname', exception_handler=ex_handler_factory(), is_preview=True)
+        g.custom_command('add', 'add_hostname', exception_handler=ex_handler_factory())
         g.custom_command('bind', 'bind_hostname', exception_handler=ex_handler_factory())
         g.custom_command('list', 'list_hostname')
         g.custom_command('delete', 'delete_hostname', confirmation=True, exception_handler=ex_handler_factory())
@@ -215,7 +218,7 @@ def load_command_table(self, _):
     with self.command_group('containerapp compose') as g:
         g.custom_command('create', 'create_containerapps_from_compose')
 
-    with self.command_group('containerapp env workload-profile', is_preview=True) as g:
+    with self.command_group('containerapp env workload-profile') as g:
         g.custom_command('list-supported', 'list_supported_workload_profiles')
         g.custom_command('list', 'list_workload_profiles')
         g.custom_show_command('show', 'show_workload_profile')

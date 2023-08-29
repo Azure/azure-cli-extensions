@@ -16,7 +16,7 @@ from ._resource_config import (
     AUTH_TYPE,
     RESOURCE,
     TARGET_RESOURCES_PARAMS,
-    SUPPORTED_AUTH_TYPE,
+    EX_SUPPORTED_AUTH_TYPE,
 )
 from ._utils import should_load_source
 
@@ -210,9 +210,9 @@ for source in SOURCE_RESOURCES:
       short-summary: Update a {source_display_name} connection
     """.format(source_display_name=source_display_name)
 
-    # use SUPPORTED_AUTH_TYPE to decide target resource, as some
+    # use EX_SUPPORTED_AUTH_TYPE to decide target resource, as some
     # target resources are not avialable for certain source resource
-    supported_target_resources = list(SUPPORTED_AUTH_TYPE.get(source).keys())
+    supported_target_resources = list(EX_SUPPORTED_AUTH_TYPE.get(source).keys())
     for target in supported_target_resources:
         target_id = TARGET_RESOURCES.get(target)
 
@@ -220,7 +220,7 @@ for source in SOURCE_RESOURCES:
         target_params = get_target_resource_params(target)
 
         # auth info params
-        auth_types = SUPPORTED_AUTH_TYPE.get(source).get(target)
+        auth_types = EX_SUPPORTED_AUTH_TYPE.get(source).get(target)
         auth_params = get_auth_info_params(auth_types[0])
 
         # auth info params in help message
@@ -516,9 +516,9 @@ helps['connection preview-configuration'] = """
 """
 
 
-# use SUPPORTED_AUTH_TYPE to decide target resource, as some
+# use EX_SUPPORTED_AUTH_TYPE to decide target resource, as some
 # target resources are not avialable for certain source resource
-supported_target_resources = list(SUPPORTED_AUTH_TYPE.get(source).keys())
+supported_target_resources = list(EX_SUPPORTED_AUTH_TYPE.get(source).keys())
 for target in supported_target_resources:
     target_id = TARGET_RESOURCES.get(target)
 
@@ -526,7 +526,7 @@ for target in supported_target_resources:
     target_params = get_target_resource_params(target)
 
     # auth info params
-    auth_types = SUPPORTED_AUTH_TYPE.get(source).get(target)
+    auth_types = EX_SUPPORTED_AUTH_TYPE.get(source).get(target)
     auth_params = get_auth_info_params(auth_types[0])
 
     # auth info params in help message
