@@ -22,7 +22,6 @@ def network_manager_create(cmd,
                            tags=None,
                            description=None):
     from .aaz.latest.network.manager import Create as _NetworkManagerCreate
-    Create = _NetworkManagerCreate(cmd.loader)
     parameters = {}
     parameters['resource_group'] = resource_group_name
     parameters['network_manager_name'] = network_manager_name
@@ -32,7 +31,7 @@ def network_manager_create(cmd,
     parameters['description'] = description
     parameters['network_manager_scopes'] = network_manager_scopes
     parameters['network_manager_scope_accesses'] = network_manager_scope_accesses
-    return Create(parameters)
+    return _NetworkManagerCreate(cli_ctx=cmd.cli_ctx)(command_args=parameters)
 
 
 def network_manager_update(cmd,
@@ -45,7 +44,6 @@ def network_manager_update(cmd,
                            network_manager_scopes=None,
                            network_manager_scope_accesses=None):
     from .aaz.latest.network.manager import Update as _NetworkManagerUpdate
-    Update = _NetworkManagerUpdate(cmd.loader)
     parameters = {}
     parameters['resource_group'] = resource_group_name
     parameters['network_manager_name'] = network_manager_name
@@ -61,7 +59,7 @@ def network_manager_update(cmd,
         parameters['network_manager_scopes'] = network_manager_scopes
     if network_manager_scope_accesses is not None:
         parameters['network_manager_scope_accesses'] = network_manager_scope_accesses
-    return Update(parameters)
+    return _NetworkManagerUpdate(cli_ctx=cmd.cli_ctx)(command_args=parameters)
 
 
 def network_manager_connect_config_create(cmd,
@@ -77,7 +75,6 @@ def network_manager_connect_config_create(cmd,
     if connectivity_topology == 'HubAndSpoke' and hub is None:
         raise CLIError("if 'HubAndSpoke' is the topolopy seleted,'--hub' is required")
     from .aaz.latest.network.manager.connect_config import Create as _ConnectConfigCreate
-    Create = _ConnectConfigCreate(cmd.loader)
     connectivity_configuration = {}
     connectivity_configuration['resource_group'] = resource_group_name
     connectivity_configuration['network_manager_name'] = network_manager_name
@@ -90,7 +87,7 @@ def network_manager_connect_config_create(cmd,
     connectivity_configuration['applies_to_groups'] = applies_to_groups
     if delete_existing_peering is not None:
         connectivity_configuration['delete_existing_peering'] = 'True' if delete_existing_peering else 'False'
-    return Create(connectivity_configuration)
+    return _ConnectConfigCreate(cli_ctx=cmd.cli_ctx)(command_args=connectivity_configuration)
 
 
 def network_manager_connect_config_update(cmd,
@@ -103,7 +100,6 @@ def network_manager_connect_config_update(cmd,
                                           applies_to_groups=None,
                                           delete_existing_peering=None):
     from .aaz.latest.network.manager.connect_config import Update as _ConnectConfigUpdate
-    Update = _ConnectConfigUpdate(cmd.loader)
     connectivity_configuration = {}
     connectivity_configuration['resource_group'] = resource_group_name
     connectivity_configuration['network_manager_name'] = network_manager_name
@@ -118,7 +114,7 @@ def network_manager_connect_config_update(cmd,
         connectivity_configuration['applies_to_groups'] = applies_to_groups
     if delete_existing_peering is not None:
         connectivity_configuration['delete_existing_peering'] = 'True' if delete_existing_peering else 'False'
-    return Update(connectivity_configuration)
+    return _ConnectConfigUpdate(cli_ctx=cmd.cli_ctx)(command_args=connectivity_configuration)
 
 
 def network_manager_admin_rule_collection_create(cmd,
@@ -129,7 +125,6 @@ def network_manager_admin_rule_collection_create(cmd,
                                                  applies_to_groups,
                                                  description=None):
     from .aaz.latest.network.manager.security_admin_config.rule_collection import Create as _RuleCollectionCreate
-    Create = _RuleCollectionCreate(cmd.loader)
     rule_collection = {}
     rule_collection['resource_group'] = resource_group_name
     rule_collection['network_manager_name'] = network_manager_name
@@ -137,7 +132,7 @@ def network_manager_admin_rule_collection_create(cmd,
     rule_collection['rule_collection_name'] = rule_collection_name
     rule_collection['description'] = description
     rule_collection['applies_to_groups'] = applies_to_groups
-    return Create(rule_collection)
+    return _RuleCollectionCreate(cli_ctx=cmd.cli_ctx)(command_args=rule_collection)
 
 
 def network_manager_admin_rule_collection_update(cmd,
@@ -148,7 +143,6 @@ def network_manager_admin_rule_collection_update(cmd,
                                                  description=None,
                                                  applies_to_groups=None):
     from .aaz.latest.network.manager.security_admin_config.rule_collection import Update as _RuleCollectionUpdate
-    Update = _RuleCollectionUpdate(cmd.loader)
     rule_collection = {}
     rule_collection['resource_group'] = resource_group_name
     rule_collection['network_manager_name'] = network_manager_name
@@ -158,7 +152,7 @@ def network_manager_admin_rule_collection_update(cmd,
         rule_collection["description"] = description
     if applies_to_groups is not None:
         rule_collection["applies_to_groups"] = applies_to_groups
-    return Update(rule_collection)
+    return _RuleCollectionUpdate(cli_ctx=cmd.cli_ctx)(command_args=rule_collection)
 
 
 def network_manager_admin_rule_create(cmd,
@@ -179,7 +173,6 @@ def network_manager_admin_rule_create(cmd,
                                       destination_port_ranges=None,
                                       flag=None):
     from .aaz.latest.network.manager.security_admin_config.rule_collection.rule import Create as _RuleCreate
-    Create = _RuleCreate(cmd.loader)
     rule = {}
     rule['resource_group'] = resource_group_name
     rule['network_manager_name'] = network_manager_name
@@ -200,7 +193,7 @@ def network_manager_admin_rule_create(cmd,
         rule['custom']['access'] = access
         rule['custom']['priority'] = priority
         rule['custom']['direction'] = direction
-    return Create(rule)
+    return _RuleCreate(cli_ctx=cmd.cli_ctx)(command_args=rule)
 
 
 def network_manager_admin_rule_update(cmd,
@@ -221,7 +214,6 @@ def network_manager_admin_rule_update(cmd,
                                       direction=None,
                                       flag=None):
     from .aaz.latest.network.manager.security_admin_config.rule_collection.rule import Update as _RuleUpdate
-    Update = _RuleUpdate(cmd.loader)
     rule = {}
     rule['resource_group'] = resource_group_name
     rule['network_manager_name'] = network_manager_name
@@ -252,4 +244,4 @@ def network_manager_admin_rule_update(cmd,
             rule['custom']['priority'] = priority
         if direction is not None:
             rule['custom']['direction'] = direction
-    return Update(rule)
+    return _RuleUpdate(cli_ctx=cmd.cli_ctx)(command_args=rule)

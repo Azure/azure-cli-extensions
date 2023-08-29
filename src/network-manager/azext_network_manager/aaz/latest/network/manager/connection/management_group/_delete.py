@@ -50,8 +50,8 @@ class Delete(AAZCommand):
             help="The management group Id which uniquely identify the Microsoft Azure management group.",
             required=True,
         )
-        _args_schema.network_manager_connection_name = AAZStrArg(
-            options=["-n", "--name", "--connection-name", "--network-manager-connection-name"],
+        _args_schema.connection_name = AAZStrArg(
+            options=["-n", "--name", "--connection-name"],
             help="Name for the network manager connection.",
             required=True,
         )
@@ -106,7 +106,7 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "networkManagerConnectionName", self.ctx.args.network_manager_connection_name,
+                    "networkManagerConnectionName", self.ctx.args.connection_name,
                     required=True,
                 ),
             }

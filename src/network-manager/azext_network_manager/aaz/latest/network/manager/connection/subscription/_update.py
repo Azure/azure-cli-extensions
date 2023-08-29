@@ -46,8 +46,8 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.network_manager_connection_name = AAZStrArg(
-            options=["-n", "--name", "--connection-name", "--network-manager-connection-name"],
+        _args_schema.connection_name = AAZStrArg(
+            options=["-n", "--name", "--connection-name"],
             help="Name for the network manager connection.",
             required=True,
             id_part="name",
@@ -130,7 +130,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkManagerConnectionName", self.ctx.args.network_manager_connection_name,
+                    "networkManagerConnectionName", self.ctx.args.connection_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -209,7 +209,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkManagerConnectionName", self.ctx.args.network_manager_connection_name,
+                    "networkManagerConnectionName", self.ctx.args.connection_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
