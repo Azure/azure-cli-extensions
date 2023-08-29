@@ -34,7 +34,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from .containerapp_job_decorator import ContainerAppJobDecorator, ContainerAppJobPreviewCreateDecorator
-from .containerapp_env_decorator import ContainerAppEnvDecorator, ContainerAppEnvCreateDecorator, ContainerAppEnvUpdateDecorator
+from .containerapp_env_decorator import ContainerAppEnvDecorator, ContainerappEnvPreviewCreateDecorator, ContainerAppEnvUpdateDecorator
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import BaseContainerAppDecorator, ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_exception
@@ -700,7 +700,7 @@ def create_managed_environment(cmd,
                                mtls_enabled=None,
                                no_wait=False):
     raw_parameters = locals()
-    containerapp_env_create_decorator = ContainerAppEnvCreateDecorator(
+    containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
         cmd=cmd,
         client=ManagedEnvironmentClient,
         raw_parameters=raw_parameters,
