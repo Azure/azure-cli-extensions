@@ -5,6 +5,7 @@ Release History
 
 1.0.0a1
 ++++++++++++++++++
+* Migrate manual code to automatic code by aaz tool.
 
 
 0.1.19
