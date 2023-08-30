@@ -17,18 +17,6 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ContainerappPreviewScenarioTest(ScenarioTest):
-    def __init__(self, method_name, config_file=None, recording_name=None, recording_processors=None,
-                 replay_processors=None, recording_patches=None, replay_patches=None, random_config_dir=False):
-
-        super().__init__(method_name, config_file, recording_name, recording_processors, replay_processors,
-                         recording_patches, replay_patches, random_config_dir)
-        cmd = ['azdev', 'extension', 'add', 'connectedk8s']
-        run(cmd, check=True)
-        cmd = ['azdev', 'extension', 'add', 'k8s-extension']
-        run(cmd, check=True)
-        # Wait for extensions to be installed
-        # We mock time.sleep in azure-sdk-tools, that's why we need to use sleep here.
-        sleep(120)
 
     @ResourceGroupPreparer(location="eastus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
@@ -57,7 +45,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
                                  f' --configuration-settings "clusterName={connected_cluster_name}"'
                                  f' --configuration-settings "envoy.annotations.service.beta.kubernetes.io/azure-load-balancer-resource-group={resource_group}"').get_output_in_json()
             self.cmd(f'az customlocation create -g {resource_group} -n {custom_location_name} -l {TEST_LOCATION} --host-resource-id {connected_cluster_id} --namespace appplat-ns -c {extension["id"]}')
-        except Exception as e:
+        except:
             pass
 
         # create connected environment with client or create a command for connected?
