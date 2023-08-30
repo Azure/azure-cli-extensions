@@ -12,6 +12,7 @@ import time
 from typing import Any, Dict, Optional
 
 from azure.cli.core.commands import LongRunningOperation
+from azure.cli.core._profile import Profile
 from azure.mgmt.resource.resources.models import DeploymentExtended
 from knack.log import get_logger
 
@@ -31,15 +32,15 @@ from azext_aosm.util.constants import (
     CNF,
     CNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
     CNF_MANIFEST_BICEP_TEMPLATE_FILENAME,
-    DeployableResourceTypes,
     IMAGE_UPLOAD,
     NSD,
     NSD_ARTIFACT_MANIFEST_BICEP_FILENAME,
     NSD_BICEP_FILENAME,
-    SkipSteps,
     VNF,
     VNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
     VNF_MANIFEST_BICEP_TEMPLATE_FILENAME,
+    DeployableResourceTypes,
+    SkipSteps,
 )
 from azext_aosm.util.management_clients import ApiClients
 
@@ -133,9 +134,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
                 file_name = VNF_DEFINITION_BICEP_TEMPLATE_FILENAME
             if self.resource_type == CNF:
                 file_name = CNF_DEFINITION_BICEP_TEMPLATE_FILENAME
-            bicep_path = os.path.join(
-                self.config.output_directory_for_build, file_name
-            )
+            bicep_path = os.path.join(self.config.output_directory_for_build, file_name)
         message = (
             f"Deploy bicep template for NFD {self.config.nf_name} version"
             f" {self.config.version} into"
@@ -202,6 +201,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         if self.config.source_registry_namespace:
             source_registry_namespace = f"{self.config.source_registry_namespace}/"
 
+        # The artifacts from the manifest which has been deployed by bicep
         acr_manifest = ArtifactManifestOperator(
             self.config,
             self.api_clients,
@@ -209,27 +209,33 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
             self.config.acr_manifest_names[0],
         )
 
+        # Create a new dictionary of artifacts from the manifest, keyed by artifact name
         artifact_dictionary = {}
 
         for artifact in acr_manifest.artifacts:
             artifact_dictionary[artifact.artifact_name] = artifact
 
         for helm_package in self.config.helm_packages:
+            # Go through the helm packages in the config that the user has provided
             helm_package_name = helm_package.name
 
             if helm_package_name not in artifact_dictionary:
+                # Helm package in the config file but not in the artifact manifest
                 raise ValueError(
                     f"Artifact {helm_package_name} not found in the artifact manifest"
                 )
-
+            # Get the artifact object that came from the manifest
             manifest_artifact = artifact_dictionary[helm_package_name]
 
             print(f"Uploading Helm package: {helm_package_name}")
 
+            # The artifact object will use the correct client (ORAS) to upload the
+            # artifact
             manifest_artifact.upload(helm_package)
 
             print(f"Finished uploading Helm package: {helm_package_name}")
 
+            # Remove this helm package artifact from the dictionary.
             artifact_dictionary.pop(helm_package_name)
 
         # All the remaining artifacts are not in the helm_packages list. We assume that
@@ -238,18 +244,27 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
             print("Skipping upload of images")
             return
 
+        from azure.cli.core.commands.client_factory import get_subscription_id
+        #subscription=get_subscription_id(self.cli_ctx)
+        profile = Profile(cli_ctx=self.cli_ctx)
+        cli_ctx_credential, subscription_id, _ = profile.get_login_credentials()
+        print(f"Subscription ID: {subscription_id}")
+        print(f"Credentials: {cli_ctx_credential}")
+        container_reg_client = acr_manifest.container_registry_client(subscription_id)
+
         for artifact in artifact_dictionary.values():
             assert isinstance(artifact, Artifact)
 
             print(f"Copying artifact: {artifact.artifact_name}")
             artifact.copy_image(
                 cli_ctx=self.cli_ctx,
-                container_registry_client=self.api_clients.container_registry_client,
+                container_registry_client=container_reg_client,
                 source_registry_id=self.config.source_registry_id,
                 source_image=(
                     f"{source_registry_namespace}{artifact.artifact_name}"
                     f":{artifact.artifact_version}"
                 ),
+                source_registry_creds=cli_ctx_credential,
                 target_registry_resource_group_name=target_registry_resource_group_name,
                 target_registry_name=target_registry_name,
                 target_tags=[f"{artifact.artifact_name}:{artifact.artifact_version}"],
@@ -514,8 +529,8 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         Deploy a bicep template.
 
         :param bicep_template_path: Path to the bicep template
-        :param parameters: Parameters for the bicep template
-        :return Any output that the template produces
+        :param parameters: Parameters for the bicep template :return Any output that the
+            template produces
         """
         logger.info("Deploy %s", bicep_template_path)
         logger.debug("Parameters: %s", parameters)
@@ -556,7 +571,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         :param template: The JSON contents of the template to deploy
         :param parameters: The JSON contents of the parameters file
         :param resource_group: The name of the resource group that has been deployed
-                :raise RuntimeError if validation or deploy fails
+            :raise RuntimeError if validation or deploy fails
         :return: Output dictionary from the bicep template.
         """
         # Get current time from the time module and remove all digits after the decimal
@@ -572,16 +587,18 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         validation_res = None
         for validation_attempt in range(2):
             try:
-                validation = self.api_clients.resource_client.deployments.begin_validate(
-                    resource_group_name=resource_group,
-                    deployment_name=deployment_name,
-                    parameters={
-                        "properties": {
-                            "mode": "Incremental",
-                            "template": template,
-                            "parameters": parameters,
-                        }
-                    },
+                validation = (
+                    self.api_clients.resource_client.deployments.begin_validate(
+                        resource_group_name=resource_group,
+                        deployment_name=deployment_name,
+                        parameters={
+                            "properties": {
+                                "mode": "Incremental",
+                                "template": template,
+                                "parameters": parameters,
+                            }
+                        },
+                    )
                 )
                 validation_res = LongRunningOperation(
                     self.cli_ctx, "Validating ARM template..."
@@ -666,7 +683,6 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         Convert a bicep template into an ARM template.
 
         :param bicep_template_path: The path to the bicep template to be converted
-
         :return: Output dictionary from the bicep template.
         """
         logger.debug("Converting %s to ARM template", bicep_template_path)

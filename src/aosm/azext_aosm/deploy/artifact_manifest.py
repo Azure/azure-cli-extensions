@@ -1,12 +1,16 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Highly Confidential Material
 """A module to handle interacting with artifact manifests."""
-
+import datetime
+import math
+from dateutil import parser
 from functools import cached_property, lru_cache
 from typing import Any, List, Union
 
 from azure.cli.core.azclierror import AzCLIError
 from azure.storage.blob import BlobClient
+from azure.mgmt.containerregistry import ContainerRegistryManagementClient
+from azure.core.credentials import TokenCredential, AccessToken
 from knack.log import get_logger
 from oras.client import OrasClient
 
@@ -22,6 +26,13 @@ from azext_aosm.vendored_sdks.models import (
 
 logger = get_logger(__name__)
 
+class BearerTokenCredential(TokenCredential):
+    def __init__(self, token: str, expiry: int):
+        self._token: AccessToken = AccessToken(token, expiry)
+        #self._token.token = token
+        
+    def get_token(self, *scopes, **kwargs):
+        return self._token
 
 class ArtifactManifestOperator:
     """ArtifactManifest class."""
@@ -65,6 +76,24 @@ class ArtifactManifestOperator:
             password=self._manifest_credentials["acr_token"],
         )
 
+        return client
+
+    @lru_cache(maxsize=32)  # noqa: B019
+    def container_registry_client(self, subscription_id: str) -> ContainerRegistryManagementClient:
+        """Get a container registry client authenticated with the manifest credentials.
+
+        :param subscription_id: _description_
+        :type subscription_id: str
+        :return: _description_
+        :rtype: ContainerRegistryManagementClient
+        """
+        expiry_dt = parser.parse(self._manifest_credentials["expiry"])
+        client = ContainerRegistryManagementClient(
+            credential=BearerTokenCredential(
+                self._manifest_credentials["acr_token"],
+                int(round(expiry_dt.timestamp()))),
+            subscription_id=subscription_id,
+        )
         return client
 
     def _get_artifact_list(self) -> List[Artifact]:
