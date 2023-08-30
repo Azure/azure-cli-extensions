@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* Add command group 'az containerapp connected-env', support show/list/delete/create connected environment
 
 0.3.38
 ++++++
