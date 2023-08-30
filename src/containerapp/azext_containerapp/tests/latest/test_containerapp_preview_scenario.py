@@ -53,7 +53,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         static_ip = '1.1.1.1'
         connected_env_name = 'my-connected-env'
         custom_location_id = f"/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/Microsoft.ExtendedLocation/customLocations/{custom_location_name}"
-        self.cmd(f'containerapp connected-env create -g {resource_group} --name {connected_env_name} --custom-location {custom_location_name} --static-ip {static_ip} --dapr-connection "InstrumentationKey=TestInstrumentationKey;IngestionEndpoint=https://ingestion.com/;LiveEndpoint=https://abc.com/" -l {TEST_LOCATION}', checks=[
+        self.cmd(f'containerapp connected-env create -g {resource_group} --name {connected_env_name} --custom-location {custom_location_name} --static-ip {static_ip} -d "InstrumentationKey=TestInstrumentationKey;IngestionEndpoint=https://ingestion.com/;LiveEndpoint=https://abc.com/" -l {TEST_LOCATION}', checks=[
             JMESPathCheck('name', connected_env_name),
             JMESPathCheck('properties.provisioningState', "Succeeded"),
             JMESPathCheck('extendedLocation.name', custom_location_id),
