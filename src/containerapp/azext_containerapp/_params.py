@@ -525,9 +525,5 @@ def load_arguments(self, _):
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('tags', arg_type=tags_type)
         c.argument('custom_location', help="Resource ID of custom location. List using 'az customlocation list'.", validator=validate_custom_location_name_or_id)
-
-    with self.argument_context('containerapp connected-env', arg_group='Dapr') as c:
-        c.argument('dapr_ai_connection_string', options_list=['--dapr-ai-connection-string', '--dapr-connection'], help='Connection string used for Dapr application insights.')
-
-    with self.argument_context('containerapp connected-env', arg_group='Network') as c:
-        c.argument('static_ip', help='Static IP value.')
+        c.argument('dapr_ai_connection_string', options_list=['--dapr-ai-connection-string', '-d'], help='Application Insights connection string used by Dapr to export Service to Service communication telemetry.')
+        c.argument('static_ip', help='Static IP of the connectedEnvironment.')

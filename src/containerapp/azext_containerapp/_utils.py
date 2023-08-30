@@ -2092,8 +2092,8 @@ def parse_oryx_mariner_tag(tag: str) -> OryxMarinerRunImgTagProperty:
 def get_custom_location(cmd, custom_location_id):
     parsed_custom_loc = parse_resource_id(custom_location_id)
     subscription_id = parsed_custom_loc.get("subscription")
-    custom_loc_name = parsed_custom_loc["name"]
-    custom_loc_rg = parsed_custom_loc["resource_group"]
+    custom_loc_name = parsed_custom_loc.get("name")
+    custom_loc_rg = parsed_custom_loc.get("resource_group")
     custom_location = None
     try:
         custom_location = custom_location_client_factory(cmd.cli_ctx, subscription_id=subscription_id).get(resource_group_name=custom_loc_rg, resource_name=custom_loc_name)
@@ -2128,12 +2128,12 @@ def validate_custom_location(cmd, custom_location=None):
         raise ResourceNotFoundError("Cannot find custom location with custom location ID {}".format(custom_location))
 
     # check extension type
-    check_extension_type = False
+    extension_existing = False
     for extension_id in r.cluster_extension_ids:
         extension = get_cluster_extension(cmd, extension_id)
-        if extension.extension_type.lower() == CONTAINER_APP_EXTENSION_TYPE:
-            check_extension_type = True
+        if extension.extension_type.lower() == CONTAINER_APP_EXTENSION_TYPE.lower():
+            extension_existing = True
             break
-    if not check_extension_type:
+    if not extension_existing:
         raise ValidationError('There is no Microsoft.App.Environment extension found associated with custom location {}'.format(custom_location))
     return r.location
