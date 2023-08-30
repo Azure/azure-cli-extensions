@@ -582,6 +582,13 @@ def is_sidecar(image_name: str) -> bool:
     return image_name.split(":")[0] in config.BASELINE_SIDECAR_CONTAINERS
 
 
+def translate_signals(signals: List[str]) -> List[int]:
+    for i, signal_val in enumerate(signals):
+        if isinstance(signal_val, str) and signal_val.upper() in config.SIGNALS:
+            signals[i] = config.SIGNALS[signal_val.upper()]
+    return signals
+
+
 def compare_env_vars(
     id_val, env_list1: List[Dict[str, Any]], env_list2: List[Dict[str, Any]]
 ) -> Dict[str, List[str]]:
