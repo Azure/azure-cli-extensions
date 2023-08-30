@@ -727,18 +727,6 @@ helps['containerapp job create'] = """
                                     "queueLength": "5" "queueName": "foo" \\
               --scale-rule-auth "connection=my-connection-string-secret-name" \\
               --image imageName
-    - name: Create a container apps job hosted on a Connected Environment.
-      text: |
-          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
-              --environment MyContainerappConnectedEnv
-              --environment-type connected
-              --trigger-type Manual \\
-              --replica-timeout 5 \\
-              --replica-retry-limit 2 \\
-              --replica-completion-count 1 \\
-              --parallelism 1 \\
-              --image imageName \\
-              --workload-profile-name my-wlp
 """
 
 helps['containerapp job update'] = """
@@ -1867,4 +1855,65 @@ helps['containerapp connected-env list'] = """
     - name: List connected environments by resource group.
       text: |
           az containerapp connected-env list -g MyResourceGroup
+"""
+
+# Container Apps Job Commands
+
+helps['containerapp job create'] = """
+    type: command
+    short-summary: Create a container apps job.
+    examples:
+    - name: Create a container apps job with Trigger Type as Manual.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
+              --trigger-type Manual \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1 \\
+              --image imageName \\
+              --workload-profile-name my-wlp
+    - name: Create a container apps job with Trigger Type as Schedule.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
+              --trigger-type Schedule \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1 \\
+              --cron-expression \"*/1 * * * *\" \\
+              --image imageName
+    - name: Create a container apps job with Trigger Type as Event.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
+              --trigger-type Event \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1 \\
+              --polling-interval 30 \\
+              --min-executions 0 \\
+              --max-executions 1 \\
+              --scale-rule-name queueJob \\
+              --scale-rule-type azure-queue \\
+              --scale-rule-metadata "accountName=mystorageaccountname" \\
+                                    "cloud=AzurePublicCloud" \\
+                                    "queueLength": "5" "queueName": "foo" \\
+              --scale-rule-auth "connection=my-connection-string-secret-name" \\
+              --image imageName
+    - name: Create a container apps job hosted on a Connected Environment.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappConnectedEnv
+              --environment-type connected
+              --trigger-type Manual \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1 \\
+              --image imageName \\
+              --workload-profile-name my-wlp
 """
