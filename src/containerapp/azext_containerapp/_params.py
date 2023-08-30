@@ -521,9 +521,8 @@ def load_arguments(self, _):
         c.argument('environment_type', arg_type=get_enum_type(["managed", "connected"]), help="Type of environment.", is_preview=True)
 
     with self.argument_context('containerapp connected-env') as c:
-        c.argument('name', name_type, help='Name of the Container Apps environment.')
+        c.argument('name', name_type, help='Name of the Container Apps connected environment.')
         c.argument('resource_group_name', arg_type=resource_group_name_type)
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), help='Location of resource. Examples: eastus2, northeurope')
         c.argument('tags', arg_type=tags_type)
         c.argument('custom_location', help="Resource ID of custom location. List using 'az customlocation list'.", validator=validate_custom_location_name_or_id)
 

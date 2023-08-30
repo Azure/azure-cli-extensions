@@ -1837,7 +1837,7 @@ helps['containerapp connected-env create'] = """
     - name: Create a connected environment
       text: |
           az containerapp connected-env create -n MyContainerappConnectedEnv -g MyResourceGroup \\
-              --location northcentralusstage --custom-location MyCustomLocationResourceID
+              --location eastus --custom-location MyCustomLocationResourceID
 """
 
 helps['containerapp connected-env delete'] = """
