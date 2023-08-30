@@ -804,7 +804,7 @@ def delete_vm(
     try:
         # TODO (snaskar): Add deleteFromHost to SDK
         op = sdk_no_wait(
-            no_wait, client.begin_delete, machine_id, force,
+            no_wait, client.begin_delete, machine_id, force, delete_from_host,
         )
     except ResourceNotFoundError:
         # Nothing to delete if the parent machine does not exist.

@@ -184,7 +184,7 @@ class ScVmmScenarioTest(ScenarioTest):
             ]
         )
 
-        self.cmd('az scvmm vm delete -g {resource_group} --name {vm_name} --deleteFromHost -y')
+        self.cmd('az scvmm vm delete -g {resource_group} --name {vm_name} --delete-from-host -y')
 
         self.cmd('az scvmm avset delete -g {resource_group} --name {avset_name} -y')
 

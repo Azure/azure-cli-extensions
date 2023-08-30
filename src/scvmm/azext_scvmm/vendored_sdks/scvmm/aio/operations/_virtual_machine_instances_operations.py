@@ -357,6 +357,7 @@ class VirtualMachineInstancesOperations:
         self,
         resource_uri: str,
         force: Optional[bool] = None,
+        delete_from_host: Optional[bool] = None,
         **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
@@ -372,6 +373,7 @@ class VirtualMachineInstancesOperations:
             resource_uri=resource_uri,
             api_version=api_version,
             force=force,
+            delete_from_host=delete_from_host,
             template_url=self._delete_initial.metadata['url'],
         )
         request = _convert_request(request)
@@ -399,6 +401,7 @@ class VirtualMachineInstancesOperations:
         self,
         resource_uri: str,
         force: Optional[bool] = None,
+        delete_from_host: Optional[bool] = None,
         **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Deletes an virtual machine.
@@ -410,6 +413,8 @@ class VirtualMachineInstancesOperations:
         :type resource_uri: str
         :param force: Whether force delete was specified.
         :type force: bool
+        :param delete_from_host: Whether to disable the VM from azure and also delete it from VMM.
+        :type delete_from_host: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
@@ -434,6 +439,7 @@ class VirtualMachineInstancesOperations:
             raw_result = await self._delete_initial(
                 resource_uri=resource_uri,
                 force=force,
+                delete_from_host=delete_from_host,
                 api_version=api_version,
                 cls=lambda x,y,z: x,
                 **kwargs

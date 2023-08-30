@@ -940,11 +940,18 @@ class GuestAgentProfile(msrest.serialization.Model):
 class GuestCredential(msrest.serialization.Model):
     """Username / Password Credentials to connect to guest.
 
-    :ivar username: Gets or sets username to connect with the guest.
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar username: Required. Gets or sets username to connect with the guest.
     :vartype username: str
-    :ivar password: Gets or sets the password to connect with the guest.
+    :ivar password: Required. Gets or sets the password to connect with the guest.
     :vartype password: str
     """
+
+    _validation = {
+        'username': {'required': True},
+        'password': {'required': True},
+    }
 
     _attribute_map = {
         'username': {'key': 'username', 'type': 'str'},
@@ -954,14 +961,14 @@ class GuestCredential(msrest.serialization.Model):
     def __init__(
         self,
         *,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
+        username: str,
+        password: str,
         **kwargs
     ):
         """
-        :keyword username: Gets or sets username to connect with the guest.
+        :keyword username: Required. Gets or sets username to connect with the guest.
         :paramtype username: str
-        :keyword password: Gets or sets the password to connect with the guest.
+        :keyword password: Required. Gets or sets the password to connect with the guest.
         :paramtype password: str
         """
         super(GuestCredential, self).__init__(**kwargs)
@@ -2325,11 +2332,14 @@ class OsProfileForVMInstance(msrest.serialization.Model):
     :vartype os_type: str or ~scvmm.models.OsType
     :ivar os_sku: Gets or sets os sku.
     :vartype os_sku: str
+    :ivar os_version: Gets os version.
+    :vartype os_version: str
     """
 
     _validation = {
         'os_type': {'readonly': True},
         'os_sku': {'readonly': True},
+        'os_version': {'readonly': True},
     }
 
     _attribute_map = {
@@ -2337,6 +2347,7 @@ class OsProfileForVMInstance(msrest.serialization.Model):
         'computer_name': {'key': 'computerName', 'type': 'str'},
         'os_type': {'key': 'osType', 'type': 'str'},
         'os_sku': {'key': 'osSku', 'type': 'str'},
+        'os_version': {'key': 'osVersion', 'type': 'str'},
     }
 
     def __init__(
@@ -2357,6 +2368,7 @@ class OsProfileForVMInstance(msrest.serialization.Model):
         self.computer_name = computer_name
         self.os_type = None
         self.os_sku = None
+        self.os_version = None
 
 
 class ResourceProviderOperation(msrest.serialization.Model):
@@ -3360,6 +3372,8 @@ class VirtualMachineInventoryItem(InventoryItemProperties):
     :vartype os_type: str or ~scvmm.models.OsType
     :ivar os_name: Gets or sets os name.
     :vartype os_name: str
+    :ivar os_version: Gets os version.
+    :vartype os_version: str
     :ivar power_state: Gets the power state of the virtual machine.
     :vartype power_state: str
     :ivar ip_addresses: Gets or sets the nic ip addresses.
@@ -3368,6 +3382,9 @@ class VirtualMachineInventoryItem(InventoryItemProperties):
     :vartype cloud: ~scvmm.models.InventoryItemDetails
     :ivar bios_guid: Gets or sets the bios guid.
     :vartype bios_guid: str
+    :ivar managed_machine_resource_id: Gets the tracked resource id corresponding to the inventory
+     resource.
+    :vartype managed_machine_resource_id: str
     """
 
     _validation = {
@@ -3378,8 +3395,10 @@ class VirtualMachineInventoryItem(InventoryItemProperties):
         'provisioning_state': {'readonly': True},
         'os_type': {'readonly': True},
         'os_name': {'readonly': True},
+        'os_version': {'readonly': True},
         'power_state': {'readonly': True},
         'bios_guid': {'readonly': True},
+        'managed_machine_resource_id': {'readonly': True},
     }
 
     _attribute_map = {
@@ -3390,10 +3409,12 @@ class VirtualMachineInventoryItem(InventoryItemProperties):
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'os_type': {'key': 'osType', 'type': 'str'},
         'os_name': {'key': 'osName', 'type': 'str'},
+        'os_version': {'key': 'osVersion', 'type': 'str'},
         'power_state': {'key': 'powerState', 'type': 'str'},
         'ip_addresses': {'key': 'ipAddresses', 'type': '[str]'},
         'cloud': {'key': 'cloud', 'type': 'InventoryItemDetails'},
         'bios_guid': {'key': 'biosGuid', 'type': 'str'},
+        'managed_machine_resource_id': {'key': 'managedMachineResourceId', 'type': 'str'},
     }
 
     def __init__(
@@ -3413,10 +3434,12 @@ class VirtualMachineInventoryItem(InventoryItemProperties):
         self.inventory_type = 'VirtualMachine'  # type: str
         self.os_type = None
         self.os_name = None
+        self.os_version = None
         self.power_state = None
         self.ip_addresses = ip_addresses
         self.cloud = cloud
         self.bios_guid = None
+        self.managed_machine_resource_id = None
 
 
 class VirtualMachineListResult(msrest.serialization.Model):

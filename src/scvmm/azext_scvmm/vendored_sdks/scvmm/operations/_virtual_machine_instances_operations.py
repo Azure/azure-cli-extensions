@@ -144,6 +144,7 @@ def build_delete_request_initial(
     # type: (...) -> HttpRequest
     api_version = kwargs.pop('api_version', "2023-04-01-preview")  # type: str
     force = kwargs.pop('force', None)  # type: Optional[bool]
+    delete_from_host = kwargs.pop('delete_from_host', None)  # type: Optional[bool]
 
     accept = "application/json"
     # Construct URL
@@ -159,6 +160,8 @@ def build_delete_request_initial(
     _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
     if force is not None:
         _query_parameters['force'] = _SERIALIZER.query("force", force, 'bool')
+    if delete_from_host is not None:
+        _query_parameters['deleteFromHost'] = _SERIALIZER.query("delete_from_host", delete_from_host, 'bool')
 
     # Construct headers
     _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
@@ -755,6 +758,7 @@ class VirtualMachineInstancesOperations(object):
         self,
         resource_uri,  # type: str
         force=None,  # type: Optional[bool]
+        delete_from_host=None,  # type: Optional[bool]
         **kwargs  # type: Any
     ):
         # type: (...) -> None
@@ -771,6 +775,7 @@ class VirtualMachineInstancesOperations(object):
             resource_uri=resource_uri,
             api_version=api_version,
             force=force,
+            delete_from_host=delete_from_host,
             template_url=self._delete_initial.metadata['url'],
         )
         request = _convert_request(request)
@@ -798,6 +803,7 @@ class VirtualMachineInstancesOperations(object):
         self,
         resource_uri,  # type: str
         force=None,  # type: Optional[bool]
+        delete_from_host=None,  # type: Optional[bool]
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller[None]
@@ -810,6 +816,8 @@ class VirtualMachineInstancesOperations(object):
         :type resource_uri: str
         :param force: Whether force delete was specified.
         :type force: bool
+        :param delete_from_host: Whether to disable the VM from azure and also delete it from VMM.
+        :type delete_from_host: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -834,6 +842,7 @@ class VirtualMachineInstancesOperations(object):
             raw_result = self._delete_initial(
                 resource_uri=resource_uri,
                 force=force,
+                delete_from_host=delete_from_host,
                 api_version=api_version,
                 cls=lambda x,y,z: x,
                 **kwargs
