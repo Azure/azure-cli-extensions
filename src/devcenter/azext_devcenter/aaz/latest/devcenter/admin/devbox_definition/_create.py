@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a dev box definition.
 
     :example: Create
-        az devcenter admin devbox-definition create --location "eastus" --image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.DevCenter/devcenters/Contoso/galleries/contosogallery/images/exampleImage/version/1.0.0" --os-storage-type "ssd_1024gb" --sku name="general_a_8c32gb_v1" --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
+        az devcenter admin devbox-definition create --location "eastus" --image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.DevCenter/devcenters/Contoso/galleries/contosogallery/images/exampleImage/version/1.0.0" --os-storage-type "ssd_1024gb" --sku name="general_a_8c32gb1024ssd_v2" --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {
@@ -84,6 +84,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.hibernate_support = AAZStrArg(
             options=["--hibernate-support"],
+            is_preview=True,
             arg_group="Properties",
             help="Indicates whether dev boxes created with this definition are capable of hibernation. Not all images are capable of supporting hibernation. To find out more see https://aka.ms/devbox/hibernate",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
