@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update a pool.
 
     :example: Update
-        az devcenter admin pool update --devbox-definition-name "WebDevBox2" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --stop-on-disconnect status="Disabled"
+        az devcenter admin pool update --devbox-definition-name "WebDevBox2" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {

@@ -108,7 +108,7 @@ def create_sig(self):
     self.cmd(
         'az vm create -n "{computeVmName}" '
         '-g "{rg}" '
-        '--image "MicrosoftWindowsDesktop:Windows-10:win10-21h2-entn-g2:19044.2486.230107" '
+        '--image "MicrosoftWindowsDesktop:Windows-10:win10-21h2-entn-g2:19044.3324.230801" '
         '--location "{location}" '
         "--security-type TrustedLaunch "
         '--admin-password "{computeVmPassword}" '
@@ -157,9 +157,9 @@ def create_sig_role_assignments(self):
 def create_kv_policy(self):
     if self.is_live:
         self.cmd(
-            'az keyvault set-policy -n "amlim-cli" '
-            "--secret-permissions get list "
-            '--object-id "{identityPrincipalId}"'
+            'az role assignment create --role "Key Vault Secrets Officer" '
+            '--assignee "{identityPrincipalId}" '
+            '--scope "/subscriptions/f141e9f2-4778-45a4-9aa0-8b31e6469454/resourceGroups/test/providers/Microsoft.KeyVault/vaults/test"'
         )
 
 
@@ -284,7 +284,7 @@ def create_attached_network_dev_box_definition(self):
             "imageRefId": imageRefId,
             "devBoxDefinitionName": self.create_random_name(prefix="c1", length=12),
             "osStorageType": "ssd_1024gb",
-            "skuName": "general_a_8c32gb_v1",
+            "skuName": "general_a_8c32gb1024ssd_v2",
             "attachedNetworkName": self.create_random_name(prefix="c2", length=12),
             "devBoxDefinitionName2": self.create_random_name(prefix="c2", length=12),
         }
@@ -377,7 +377,7 @@ def create_pool(self):
             "imageRefId": imageRefId,
             "devBoxDefinitionName": self.create_random_name(prefix="c1", length=12),
             "osStorageType": "ssd_1024gb",
-            "skuName": "general_a_8c32gb_v1",
+            "skuName": "general_a_8c32gb1024ssd_v2",
             "attachedNetworkName": self.create_random_name(prefix="c2", length=12),
             "time": "18:30",
             "timeZone": "America/Los_Angeles",
