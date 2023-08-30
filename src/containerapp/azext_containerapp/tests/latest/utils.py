@@ -7,11 +7,12 @@ import time
 import requests
 from azext_containerapp.tests.latest.common import TEST_LOCATION
 from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
+from azure.cli.testsdk import (JMESPathCheck)
 
 
 def create_containerapp_env(test_cls, env_name, resource_group, location=None):
     logs_workspace_name = test_cls.create_random_name(prefix='containerapp-env', length=24)
-    logs_workspace_id = test_cls.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+    logs_workspace_id = test_cls.cmd('monitor log-analytics workspace create -g {} -n {} -l {}'.format(resource_group, logs_workspace_name, TEST_LOCATION)).get_output_in_json()["customerId"]
     logs_workspace_key = test_cls.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
     if location:
@@ -86,7 +87,7 @@ def verify_containerapp_create_exception_with_source_and_repo(
         # Ensure that the Container App environment is created
         if env_name is None:
             env_name = test_cls.create_random_name(prefix='env', length=24)
-            test_cls.cmd(f'containerapp env create -g {resource_group} -n {env_name} -l "eastus"')
+            test_cls.cmd(f'containerapp env create -g {resource_group} -n {env_name} -l {TEST_LOCATION}')
 
         if app_name is None:
             # Generate a name for the Container App
@@ -127,7 +128,7 @@ def create_and_verify_containerapp_create_and_update(
         # Ensure that the Container App environment is created
         if env_name is None:
            env_name = test_cls.create_random_name(prefix='env', length=24)
-           test_cls.cmd(f'containerapp env create -g {resource_group} -n {env_name} -l "eastus"')
+           test_cls.cmd(f'containerapp env create -g {resource_group} -n {env_name} -l {TEST_LOCATION}')
 
         if app_name is None:
             # Generate a name for the Container App
@@ -164,10 +165,11 @@ def create_and_verify_containerapp_create_and_update(
         test_cls.cmd(create_cmd)
 
         # Verify successful execution
-        app = test_cls.cmd(f"containerapp show -g {resource_group} -n {app_name}").get_output_in_json()
-        test_cls.assertEqual(app["properties"]["configuration"]["registries"][0]["server"], registry_server)
-        test_cls.assertEqual(app["properties"]["configuration"]["registries"][0]["username"], registry_user)
-        test_cls.assertEqual(app["properties"]["provisioningState"], "Succeeded")
+        app = test_cls.cmd(f"containerapp show -g {resource_group} -n {app_name}", checks=[
+            JMESPathCheck('properties.configuration.registries[0].server', registry_server),
+            JMESPathCheck('properties.configuration.registries[0].username', registry_user),
+            JMESPathCheck('properties.provisioningState', 'Succeeded'),
+        ]).get_output_in_json()
         test_cls.assertEqual(app["properties"]["template"]["containers"][0]["image"].split(":")[0], image_name)
         old_image = app["properties"]["template"]["containers"][0]["image"]
 
@@ -183,10 +185,11 @@ def create_and_verify_containerapp_create_and_update(
         test_cls.cmd(update_cmd)
 
         # Verify successful execution
-        app = test_cls.cmd(f"containerapp show -g {resource_group} -n {app_name}").get_output_in_json()
-        test_cls.assertEqual(app["properties"]["configuration"]["registries"][0]["server"], registry_server)
-        test_cls.assertEqual(app["properties"]["configuration"]["registries"][0]["username"], registry_user)
-        test_cls.assertEqual(app["properties"]["provisioningState"], "Succeeded")
+        app = test_cls.cmd(f"containerapp show -g {resource_group} -n {app_name}", checks=[
+            JMESPathCheck('properties.configuration.registries[0].server', registry_server),
+            JMESPathCheck('properties.configuration.registries[0].username', registry_user),
+            JMESPathCheck('properties.provisioningState', 'Succeeded'),
+        ]).get_output_in_json()
         test_cls.assertEqual(app["properties"]["template"]["containers"][0]["image"].split(":")[0], image_name)
         test_cls.assertNotEqual(app["properties"]["template"]["containers"][0]["image"], old_image)
 

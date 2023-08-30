@@ -575,7 +575,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         if self.get_argument_repo():
             container_app = self._get_containerapp_if_exists()
             if container_app:
-                # Update the image to ensure that the container app is not re-created with mcr.microsoft.com/k8se/quickstart:latest
+                # Update the image to ensure that the container app is not re-created with mcr.microsoft.com/k8se/quickstart:latest; re-assign image to previously deployed image.
                 self.containerapp_def["properties"]["template"]["containers"][0]["image"] = container_app["properties"]["template"]["containers"][0]["image"]
 
     def _get_containerapp_if_exists(self):
@@ -901,6 +901,10 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         self.new_containerapp["properties"] = {}
 
         if self.get_argument_source() and not self.get_argument_registry_server():
+            if(self.containerapp_def["properties"]["configuration"]["registries"] is None or len(self.containerapp_def["properties"]["configuration"]["registries"]) == 0):
+                raise ValidationError(
+                    "Error: The containerapp '{}' does not have a registry associated with it. Please specify a registry using the --registry-server argument while creating the ContainerApp".format(
+                        self.get_argument_name()))
             registry_server = self.containerapp_def["properties"]["configuration"]["registries"][0]["server"]
             parsed = urlparse(registry_server)
             registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
