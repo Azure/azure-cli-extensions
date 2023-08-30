@@ -649,7 +649,8 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         # Set image to None if it was previously set to the default image (case where image was not provided by the user) else reformat it
         image = None if self.get_argument_image().__eq__(HELLO_WORLD_IMAGE) else _reformat_image(self.get_argument_source(), self.get_argument_repo(), self.get_argument_image())
 
-        if not self.get_argument_source() or _has_dockerfile(self.get_argument_source(), dockerfile):
+        hasDockerfile = _has_dockerfile(self.get_argument_source(), dockerfile)
+        if not self.get_argument_source() or hasDockerfile:
             dockerfile_content = _get_dockerfile_content(self.get_argument_repo(), self.get_argument_branch(), token, self.get_argument_source(), self.get_argument_context_path(), dockerfile)
             ingress, target_port = _get_ingress_and_target_port(self.get_argument_ingress(), self.get_argument_target_port(), dockerfile_content)
 
@@ -663,7 +664,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
 
         if self.get_argument_source():
             # Uses buildpacks to generate image if Dockerfile was not provided by the user
-            app.run_acr_build(dockerfile, self.get_argument_source(), quiet=False, build_from_source=not _has_dockerfile(self.get_argument_source(), dockerfile))
+            app.run_acr_build(dockerfile, self.get_argument_source(), quiet=False, build_from_source=not hasDockerfile)
             # Update image
             self.containerapp_def["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
 
@@ -864,7 +865,8 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         image = None if self.get_argument_image() is None else _reformat_image(source=self.get_argument_source(), image=self.get_argument_image(), repo=None)
         location = self.containerapp_def["location"]
 
-        if _has_dockerfile(self.get_argument_source(), dockerfile):
+        hasDockerfile = _has_dockerfile(self.get_argument_source(), dockerfile)
+        if hasDockerfile:
             dockerfile_content = _get_dockerfile_content(repo=None, branch=None, token=None, source=self.get_argument_source(), context_path=None, dockerfile=dockerfile)
             ingress, target_port = _get_ingress_and_target_port(self.get_argument_ingress(), self.get_argument_target_port(), dockerfile_content)
 
@@ -877,7 +879,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         _get_registry_details(cmd, app, self.get_argument_source())  # fetch ACR creds from arguments registry arguments
 
         # Uses buildpacks to generate image if Dockerfile was not provided by the user
-        app.run_acr_build(dockerfile, self.get_argument_source(), quiet=False, build_from_source=not _has_dockerfile(self.get_argument_source(), dockerfile))
+        app.run_acr_build(dockerfile, self.get_argument_source(), quiet=False, build_from_source=not hasDockerfile)
         # Update image
         self.containerapp_def["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
         self.set_argument_image(self.containerapp_def["properties"]["template"]["containers"][0]["image"])
