@@ -4,14 +4,15 @@
 # pylint: disable=unidiomatic-typecheck
 """A module to handle interacting with artifacts."""
 import math
-import subprocess
 import shutil
+import subprocess
 from dataclasses import dataclass
 from typing import List, Optional, Union
 
 from azure.cli.core.commands import LongRunningOperation
+from azure.cli.core.auth.credential_adaptor import CredentialAdaptor
 from azure.mgmt.containerregistry import ContainerRegistryManagementClient
-from azure.mgmt.containerregistry.models import ImportImageParameters, ImportSource
+from azure.mgmt.containerregistry.models import ImportImageParameters, ImportSource, ImportSourceCredentials
 from azure.storage.blob import BlobClient, BlobType
 from knack.log import get_logger
 from knack.util import CLIError
@@ -213,6 +214,7 @@ class Artifact:
         container_registry_client: ContainerRegistryManagementClient,
         source_registry_id: str,
         source_image: str,
+        source_registry_creds: CredentialAdaptor,
         target_registry_resource_group_name: str,
         target_registry_name: str,
         target_tags: List[str],
@@ -231,8 +233,12 @@ class Artifact:
                             should be of form: namepace/name:tag or name:tag
         :param mode: mode for import
         """
-
-        source = ImportSource(resource_id=source_registry_id, source_image=source_image)
+        # https://learn.microsoft.com/en-us/rest/api/containerregistry/registries/import-image?tabs=HTTP#importsource
+        source = ImportSource(
+            credentials=ImportSourceCredentials(username="", password=source_registry_creds.get_token()),
+            resource_id=source_registry_id,
+            source_image=source_image,
+        )
 
         import_parameters = ImportImageParameters(
             source=source,
@@ -241,7 +247,7 @@ class Artifact:
             mode=mode,
         )
         try:
-            result_poller = container_registry_client.begin_import_image(
+            result_poller = container_registry_client.registries.begin_import_image(
                 resource_group_name=target_registry_resource_group_name,
                 registry_name=target_registry_name,
                 parameters=import_parameters,
