@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from typing import Optional
+from typing import Dict, Optional, Set
 from azure.cli.core.azclierror import InvalidArgumentValueError, CLIInternalError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from msrestazure.tools import is_valid_resource_id, parse_resource_id, resource_id
@@ -68,7 +68,7 @@ def get_resource_id(
     }
 
     def process_resource_name(
-        rid_parts: dict[str, str],
+        rid_parts: Dict[str, str],
         resource_name_key: str,
         resource_name: Optional[str],
     ):
@@ -90,7 +90,7 @@ def get_resource_id(
         for key in child_rid_parts_keys:
             if key in selected_keys:
                 continue
-            if any([key.startswith(prefix) for prefix in selected_key_prefixes]):
+            if any(key.startswith(prefix) for prefix in selected_key_prefixes):
                 continue
             child_rid_parts.pop(key)
         child_set = {
@@ -105,13 +105,12 @@ def get_resource_id(
             )
         rid_parts.update(child_rid_parts)
 
-    rid_parts: dict[str, str] = {}
+    rid_parts: Dict[str, str] = {}
     rid_parts.update(
-        resource_group=resource_group,
         namespace=namespace,
         type=_type,
     )
-    null_keys: set[str] = set()
+    null_keys: Set[str] = set()
     if name is not None:
         process_resource_name(rid_parts, "name", name)
     else:
@@ -175,6 +174,8 @@ def get_resource_id(
 
     if "subscription" not in rid_parts:
         rid_parts["subscription"] = get_subscription_id(cmd.cli_ctx)
+    if "resource_group" not in rid_parts:
+        rid_parts["resource_group"] = resource_group
 
     return resource_id(**rid_parts)
 
