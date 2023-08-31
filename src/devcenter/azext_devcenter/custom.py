@@ -18,7 +18,6 @@ from .aaz.latest.devcenter.admin.attached_network import (
     Wait as _AttachedNetworkWait,
 )
 from .aaz.latest.devcenter.admin.catalog import (
-    Connect as _CatalogConnect,
     Create as _CatalogCreate,
     Delete as _CatalogDelete,
     List as _CatalogList,
@@ -26,10 +25,6 @@ from .aaz.latest.devcenter.admin.catalog import (
     Sync as _CatalogSync,
     Update as _CatalogUpdate,
     Wait as _CatalogWait,
-)
-from .aaz.latest.devcenter.admin.catalog_devbox_definition import (
-    List as _CatalogDevBoxDefinitionList,
-    Show as _CatalogDevBoxDefinitionShow,
 )
 from .aaz.latest.devcenter.admin.check_name_availability import (
     Execute as _CheckNameAvailabilityExecute,
@@ -170,12 +165,6 @@ class CheckNameAvailabilityExecute(_CheckNameAvailabilityExecute):
         return args_schema
 
 
-class CatalogConnect(_CatalogConnect):
-    def _cli_arguments_loader(self):
-        args = super()._cli_arguments_loader()
-        return set_configured_defaults(args)
-
-
 class CatalogCreate(_CatalogCreate):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
@@ -217,18 +206,6 @@ class CatalogUpdate(_CatalogUpdate):
 
 
 class CatalogWait(_CatalogWait):
-    def _cli_arguments_loader(self):
-        args = super()._cli_arguments_loader()
-        return set_configured_defaults(args)
-
-
-class CatalogDevBoxDefinitionList(_CatalogDevBoxDefinitionList):
-    def _cli_arguments_loader(self):
-        args = super()._cli_arguments_loader()
-        return set_configured_defaults(args)
-
-
-class CatalogDevBoxDefinitionShow(_CatalogDevBoxDefinitionShow):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)

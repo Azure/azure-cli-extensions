@@ -11,9 +11,9 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "devcenter admin catalog connect",
-)
+# @register_command(
+#     "devcenter admin catalog connect",
+# )
 class Connect(AAZCommand):
     """Connects a catalog to enable syncing.
 

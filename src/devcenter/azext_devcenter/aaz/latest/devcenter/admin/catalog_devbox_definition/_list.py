@@ -11,9 +11,9 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "devcenter admin catalog-devbox-definition list",
-)
+# @register_command(
+#     "devcenter admin catalog-devbox-definition list",
+# )
 class List(AAZCommand):
     """List dev box definitions in the catalog.
 

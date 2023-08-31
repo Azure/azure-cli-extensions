@@ -93,53 +93,6 @@ class Update(AAZCommand):
             nullable=True,
             blank={},
         )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.encryption = AAZObjectArg(
-            options=["--encryption"],
-            arg_group="Properties",
-            help="Encryption settings to be used for server-side encryption for proprietary content (such as catalogs, logs, customizations).",
-            nullable=True,
-        )
-
-        encryption = cls._args_schema.encryption
-        encryption.customer_managed_key_encryption = AAZObjectArg(
-            options=["customer-managed-key-encryption"],
-            help="All Customer-managed key encryption properties for the resource.",
-            nullable=True,
-        )
-
-        customer_managed_key_encryption = cls._args_schema.encryption.customer_managed_key_encryption
-        customer_managed_key_encryption.key_encryption_key_identity = AAZObjectArg(
-            options=["key-encryption-key-identity"],
-            help="All identity configuration for Customer-managed key settings defining which identity should be used to auth to Key Vault.",
-            nullable=True,
-        )
-        customer_managed_key_encryption.key_encryption_key_url = AAZStrArg(
-            options=["key-encryption-key-url"],
-            help="key encryption key Url, versioned or non-versioned. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78 or https://contosovault.vault.azure.net/keys/contosokek.",
-            nullable=True,
-        )
-
-        key_encryption_key_identity = cls._args_schema.encryption.customer_managed_key_encryption.key_encryption_key_identity
-        key_encryption_key_identity.delegated_identity_client_id = AAZUuidArg(
-            options=["delegated-identity-client-id"],
-            help="delegated identity to use for accessing key encryption key Url. Ex: /subscriptions/fa5fc227-a624-475e-b696-cdd604c735bc/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId. Mutually exclusive with identityType systemAssignedIdentity and userAssignedIdentity - internal use only.",
-            nullable=True,
-        )
-        key_encryption_key_identity.identity_type = AAZStrArg(
-            options=["identity-type"],
-            help="Values can be systemAssignedIdentity or userAssignedIdentity",
-            nullable=True,
-            enum={"delegatedResourceIdentity": "delegatedResourceIdentity", "systemAssignedIdentity": "systemAssignedIdentity", "userAssignedIdentity": "userAssignedIdentity"},
-        )
-        key_encryption_key_identity.user_assigned_identity_resource_id = AAZResourceIdArg(
-            options=["user-assigned-identity-resource-id"],
-            help="user assigned identity to use for accessing key encryption key Url. Ex: /subscriptions/fa5fc227-a624-475e-b696-cdd604c735bc/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId. Mutually exclusive with identityType systemAssignedIdentity and delegatedResourceIdentity.",
-            nullable=True,
-        )
         return cls._args_schema
 
     def _execute_operations(self):
