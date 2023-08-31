@@ -3,13 +3,9 @@
 Release History
 ===============
 
-1.4.5
-++++++++++++++++++
-* fix bugs while removing `azure-mgmt-relay` sdk
-
 1.4.4
 ++++++++++++++++++
-* drop `azure-mgmt-relay` sdk dependency for Azure Monitor K8s extensions
+* drop `azure-mgmt-relay` sdk dependency
 
 1.4.3
 ++++++++++++++++++
