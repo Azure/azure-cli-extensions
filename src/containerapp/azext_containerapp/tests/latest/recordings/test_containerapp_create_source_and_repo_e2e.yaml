@@ -1,0 +1,2032 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/managedCertificates","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"jobs","locations":["North Central US (Stage)","West
+        US 2","Southeast Asia","Sweden Central","Canada Central","West Europe","North
+        Europe","East US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappsjobOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappsjobOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/sourceControlOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/sourceControlOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/usages","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview"],"defaultApiVersion":"2023-05-02-preview","capabilities":"None"},{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","East US 2 EUAP","West US 2","Southeast
+        Asia","Sweden Central","Canada Central","West Europe","North Europe","East
+        US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"connectedEnvironments","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"connectedEnvironments/certificates","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations/connectedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/connectedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/managedCertificateOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/billingMeters","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/availableManagedEnvironmentsWorkloadProfileTypes","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"getCustomDomainVerificationId","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview"],"defaultApiVersion":"2023-05-02-preview","capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '15550'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Aug 2023 23:59:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: C8D609FBF4E14529A5DAAA7F08DD9C64 Ref B: CO6AA3150217037 Ref C: 2023-08-30T23:59:54Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/managedCertificates","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"jobs","locations":["North Central US (Stage)","West
+        US 2","Southeast Asia","Sweden Central","Canada Central","West Europe","North
+        Europe","East US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappsjobOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappsjobOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/sourceControlOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/sourceControlOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/usages","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview"],"defaultApiVersion":"2023-05-02-preview","capabilities":"None"},{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","East US 2 EUAP","West US 2","Southeast
+        Asia","Sweden Central","Canada Central","West Europe","North Europe","East
+        US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"connectedEnvironments","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"connectedEnvironments/certificates","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations/connectedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/connectedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/managedCertificateOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/billingMeters","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/availableManagedEnvironmentsWorkloadProfileTypes","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"getCustomDomainVerificationId","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview"],"defaultApiVersion":"2023-05-02-preview","capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '15550'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Aug 2023 23:59:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 64B5217F8847431D83E65B89645E30AB Ref B: CO6AA3150217045 Ref C: 2023-08-30T23:59:54Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/managedCertificates","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"jobs","locations":["North Central US (Stage)","West
+        US 2","Southeast Asia","Sweden Central","Canada Central","West Europe","North
+        Europe","East US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappsjobOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappsjobOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/sourceControlOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/sourceControlOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/usages","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview"],"defaultApiVersion":"2023-05-02-preview","capabilities":"None"},{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","East US 2 EUAP","West US 2","Southeast
+        Asia","Sweden Central","Canada Central","West Europe","North Europe","East
+        US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"connectedEnvironments","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"connectedEnvironments/certificates","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations/connectedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/connectedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/managedCertificateOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/billingMeters","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/availableManagedEnvironmentsWorkloadProfileTypes","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"getCustomDomainVerificationId","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview"],"defaultApiVersion":"2023-05-02-preview","capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '15550'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Aug 2023 23:59:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 98EEFD4C82A0414087ADBCAB217DA0C9 Ref B: CO6AA3150218029 Ref C: 2023-08-30T23:59:54Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/managedCertificates","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"jobs","locations":["North Central US (Stage)","West
+        US 2","Southeast Asia","Sweden Central","Canada Central","West Europe","North
+        Europe","East US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappsjobOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappsjobOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/sourceControlOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/sourceControlOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/usages","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview"],"defaultApiVersion":"2023-05-02-preview","capabilities":"None"},{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","East US 2 EUAP","West US 2","Southeast
+        Asia","Sweden Central","Canada Central","West Europe","North Europe","East
+        US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"connectedEnvironments","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"connectedEnvironments/certificates","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations/connectedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/connectedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/managedCertificateOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/billingMeters","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/availableManagedEnvironmentsWorkloadProfileTypes","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"getCustomDomainVerificationId","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview"],"defaultApiVersion":"2023-05-02-preview","capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '15550'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Aug 2023 23:59:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 7D788F1E06BC481B859ACC8B5285F9C0 Ref B: CO6AA3150220025 Ref C: 2023-08-30T23:59:54Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.OperationalInsights?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.OperationalInsights","namespace":"Microsoft.OperationalInsights","authorizations":[{"applicationId":"d2a0a418-0aac-4541-82b2-b3142c89da77","roleDefinitionId":"86695298-2eb9-48a7-9ec3-2fdb38b6878b"},{"applicationId":"ca7f3f0b-7d91-482c-8e09-c5d840d0eac5","roleDefinitionId":"5d5a2e56-9835-44aa-93db-d2f19e155438"}],"resourceTypes":[{"resourceType":"workspaces","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia Central","Australia
+        East","France Central","Korea Central","North Europe","Central US","East Asia","East
+        US 2","South Central US","North Central US","West US","UK West","South Africa
+        North","Brazil South","Switzerland North","Switzerland West","Germany West
+        Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2022-10-01","2021-12-01-preview","2021-06-01","2021-03-01-privatepreview","2020-10-01","2020-08-01","2020-03-01-preview","2017-04-26-preview","2017-03-15-preview","2017-03-03-preview","2017-01-01-preview","2015-11-01-preview","2015-03-20"],"defaultApiVersion":"2022-10-01","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"querypacks","locations":["West Central
+        US","East US","South Central US","North Europe","West Europe","Southeast Asia","West
+        US 2","UK South","Canada Central","Central India","Japan East","Australia
+        East","Korea Central","France Central","Central US","East US 2","East Asia","West
+        US","South Africa North","North Central US","Brazil South","Switzerland North","Norway
+        East","Australia Southeast","Australia Central 2","Germany West Central","Switzerland
+        West","UAE Central","UK West","Brazil Southeast","Japan West","UAE North","Australia
+        Central","France South","South India","Korea South","Jio India Central","Jio
+        India West","Qatar Central","Canada East","West US 3","Sweden Central"],"apiVersions":["2019-09-01-preview","2019-09-01"],"capabilities":"SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2020-10-01","2020-08-01","2020-03-01-preview","2019-08-01-preview","2017-04-26-preview","2017-03-15-preview","2017-03-03-preview","2017-01-01-preview","2015-11-01-preview","2015-03-20"],"defaultApiVersion":"2020-08-01","capabilities":"None"},{"resourceType":"locations/operationStatuses","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia Central","Australia
+        East","France Central","Korea Central","North Europe","Central US","East Asia","East
+        US 2","South Central US","North Central US","West US","UK West","South Africa
+        North","Brazil South","Switzerland North","Switzerland West","Germany West
+        Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2023-01-01-preview","2022-10-01","2022-09-01-privatepreview","2021-12-01-preview","2020-10-01","2020-08-01","2020-03-01-preview","2019-08-01-preview","2017-04-26-preview","2017-03-15-preview","2017-03-03-preview","2017-01-01-preview","2015-11-01-preview","2015-03-20"],"defaultApiVersion":"2022-10-01","capabilities":"None"},{"resourceType":"workspaces/scopedPrivateLinkProxies","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia Central","Australia
+        East","France Central","Korea Central","North Europe","Central US","East Asia","East
+        US 2","South Central US","North Central US","West US","UK West","South Africa
+        North","Brazil South","Switzerland North","Switzerland West","Germany West
+        Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2020-03-01-preview","2019-08-01-preview","2015-11-01-preview"],"defaultApiVersion":"2020-03-01-preview","capabilities":"None"},{"resourceType":"workspaces/query","locations":[],"apiVersions":["2017-10-01"],"capabilities":"None"},{"resourceType":"workspaces/metadata","locations":[],"apiVersions":["2017-10-01"],"capabilities":"None"},{"resourceType":"workspaces/dataSources","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia Central","Australia
+        East","France Central","Korea Central","North Europe","Central US","East Asia","East
+        US 2","South Central US","North Central US","West US","UK West","South Africa
+        North","Brazil South","Switzerland North","Switzerland West","Germany West
+        Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2020-08-01","2020-03-01-preview","2015-11-01-preview"],"defaultApiVersion":"2020-08-01","capabilities":"None"},{"resourceType":"workspaces/linkedStorageAccounts","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia Central","Australia
+        East","France Central","Korea Central","North Europe","Central US","East Asia","East
+        US 2","South Central US","North Central US","West US","UK West","South Africa
+        North","Brazil South","Switzerland North","Switzerland West","Germany West
+        Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2020-08-01","2020-03-01-preview","2019-08-01-preview"],"defaultApiVersion":"2020-08-01","capabilities":"None"},{"resourceType":"workspaces/tables","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia East","Australia
+        Central","France Central","Korea Central","North Europe","Central US","East
+        Asia","East US 2","South Central US","North Central US","West US","UK West","South
+        Africa North","Brazil South","Switzerland North","Switzerland West","Germany
+        West Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2022-10-01","2021-12-01-preview","2020-08-01","2020-03-01-preview","2017-04-26-preview"],"capabilities":"None"},{"resourceType":"workspaces/storageInsightConfigs","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia East","Australia
+        Central","France Central","Korea Central","North Europe","Central US","East
+        Asia","East US 2","South Central US","North Central US","West US","UK West","South
+        Africa North","Brazil South","Switzerland North","Switzerland West","Germany
+        West Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2020-08-01","2020-03-01-preview","2017-04-26-preview","2017-03-15-preview","2017-03-03-preview","2017-01-01-preview","2015-11-01-preview","2015-03-20"],"capabilities":"None"},{"resourceType":"storageInsightConfigs","locations":[],"apiVersions":["2020-08-01","2020-03-01-preview","2014-10-10"],"capabilities":"SupportsExtension"},{"resourceType":"workspaces/linkedServices","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia Central","Australia
+        East","France Central","Korea Central","North Europe","Central US","East Asia","East
+        US 2","South Central US","North Central US","West US","UK West","South Africa
+        North","Brazil South","Switzerland North","Switzerland West","Germany West
+        Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2020-08-01","2020-03-01-preview","2019-08-01-preview","2015-11-01-preview"],"defaultApiVersion":"2020-08-01","capabilities":"None"},{"resourceType":"linkTargets","locations":["East
+        US"],"apiVersions":["2020-03-01-preview","2015-03-20"],"capabilities":"None"},{"resourceType":"deletedWorkspaces","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia Central","Australia
+        East","France Central","Korea Central","North Europe","Central US","East Asia","East
+        US 2","South Central US","North Central US","West US","UK West","South Africa
+        North","Brazil South","Switzerland North","Switzerland West","Germany West
+        Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2022-10-01","2021-12-01-preview","2020-10-01","2020-08-01","2020-03-01-preview"],"defaultApiVersion":"2022-10-01","capabilities":"None"},{"resourceType":"operations","locations":[],"apiVersions":["2022-10-01","2021-12-01-preview","2020-10-01","2020-08-01","2020-03-01-preview","2015-11-01-preview","2014-11-10"],"defaultApiVersion":"2020-08-01","capabilities":"None"},{"resourceType":"clusters","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia Central","Australia
+        East","France Central","Korea Central","North Europe","Central US","East Asia","East
+        US 2","South Central US","North Central US","West US","UK West","South Africa
+        North","Switzerland North","Switzerland West","Germany West Central","Australia
+        Central 2","UAE Central","Brazil South","UAE North","Japan West","Brazil Southeast","Norway
+        East","Norway West","France South","South India","Korea South","Jio India
+        Central","Jio India West","Qatar Central","Canada East","West US 3","Sweden
+        Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2021-06-01","2020-10-01","2020-08-01","2020-03-01-preview","2019-08-01-preview"],"defaultApiVersion":"2021-06-01","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"workspaces/dataExports","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia Central","Australia
+        East","France Central","Korea Central","North Europe","Central US","East Asia","East
+        US 2","South Central US","North Central US","West US","UK West","South Africa
+        North","Brazil South","Switzerland North","Switzerland West","Germany West
+        Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2020-08-01","2020-03-01-preview","2019-08-01-preview"],"defaultApiVersion":"2020-08-01","capabilities":"None"},{"resourceType":"locations/notifyNetworkSecurityPerimeterUpdatesAvailable","locations":["North
+        Central US","East US 2 EUAP"],"apiVersions":["2021-10-01"],"defaultApiVersion":"2021-10-01","capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '13331'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Aug 2023 23:59:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 804680EC560747A8ADDAB02AF26C26B9 Ref B: CO6AA3150219023 Ref C: 2023-08-30T23:59:55Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.OperationalInsights?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.OperationalInsights","namespace":"Microsoft.OperationalInsights","authorizations":[{"applicationId":"d2a0a418-0aac-4541-82b2-b3142c89da77","roleDefinitionId":"86695298-2eb9-48a7-9ec3-2fdb38b6878b"},{"applicationId":"ca7f3f0b-7d91-482c-8e09-c5d840d0eac5","roleDefinitionId":"5d5a2e56-9835-44aa-93db-d2f19e155438"}],"resourceTypes":[{"resourceType":"workspaces","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia Central","Australia
+        East","France Central","Korea Central","North Europe","Central US","East Asia","East
+        US 2","South Central US","North Central US","West US","UK West","South Africa
+        North","Brazil South","Switzerland North","Switzerland West","Germany West
+        Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2022-10-01","2021-12-01-preview","2021-06-01","2021-03-01-privatepreview","2020-10-01","2020-08-01","2020-03-01-preview","2017-04-26-preview","2017-03-15-preview","2017-03-03-preview","2017-01-01-preview","2015-11-01-preview","2015-03-20"],"defaultApiVersion":"2022-10-01","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"querypacks","locations":["West Central
+        US","East US","South Central US","North Europe","West Europe","Southeast Asia","West
+        US 2","UK South","Canada Central","Central India","Japan East","Australia
+        East","Korea Central","France Central","Central US","East US 2","East Asia","West
+        US","South Africa North","North Central US","Brazil South","Switzerland North","Norway
+        East","Australia Southeast","Australia Central 2","Germany West Central","Switzerland
+        West","UAE Central","UK West","Brazil Southeast","Japan West","UAE North","Australia
+        Central","France South","South India","Korea South","Jio India Central","Jio
+        India West","Qatar Central","Canada East","West US 3","Sweden Central"],"apiVersions":["2019-09-01-preview","2019-09-01"],"capabilities":"SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2020-10-01","2020-08-01","2020-03-01-preview","2019-08-01-preview","2017-04-26-preview","2017-03-15-preview","2017-03-03-preview","2017-01-01-preview","2015-11-01-preview","2015-03-20"],"defaultApiVersion":"2020-08-01","capabilities":"None"},{"resourceType":"locations/operationStatuses","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia Central","Australia
+        East","France Central","Korea Central","North Europe","Central US","East Asia","East
+        US 2","South Central US","North Central US","West US","UK West","South Africa
+        North","Brazil South","Switzerland North","Switzerland West","Germany West
+        Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2023-01-01-preview","2022-10-01","2022-09-01-privatepreview","2021-12-01-preview","2020-10-01","2020-08-01","2020-03-01-preview","2019-08-01-preview","2017-04-26-preview","2017-03-15-preview","2017-03-03-preview","2017-01-01-preview","2015-11-01-preview","2015-03-20"],"defaultApiVersion":"2022-10-01","capabilities":"None"},{"resourceType":"workspaces/scopedPrivateLinkProxies","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia Central","Australia
+        East","France Central","Korea Central","North Europe","Central US","East Asia","East
+        US 2","South Central US","North Central US","West US","UK West","South Africa
+        North","Brazil South","Switzerland North","Switzerland West","Germany West
+        Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2020-03-01-preview","2019-08-01-preview","2015-11-01-preview"],"defaultApiVersion":"2020-03-01-preview","capabilities":"None"},{"resourceType":"workspaces/query","locations":[],"apiVersions":["2017-10-01"],"capabilities":"None"},{"resourceType":"workspaces/metadata","locations":[],"apiVersions":["2017-10-01"],"capabilities":"None"},{"resourceType":"workspaces/dataSources","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia Central","Australia
+        East","France Central","Korea Central","North Europe","Central US","East Asia","East
+        US 2","South Central US","North Central US","West US","UK West","South Africa
+        North","Brazil South","Switzerland North","Switzerland West","Germany West
+        Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2020-08-01","2020-03-01-preview","2015-11-01-preview"],"defaultApiVersion":"2020-08-01","capabilities":"None"},{"resourceType":"workspaces/linkedStorageAccounts","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia Central","Australia
+        East","France Central","Korea Central","North Europe","Central US","East Asia","East
+        US 2","South Central US","North Central US","West US","UK West","South Africa
+        North","Brazil South","Switzerland North","Switzerland West","Germany West
+        Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2020-08-01","2020-03-01-preview","2019-08-01-preview"],"defaultApiVersion":"2020-08-01","capabilities":"None"},{"resourceType":"workspaces/tables","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia East","Australia
+        Central","France Central","Korea Central","North Europe","Central US","East
+        Asia","East US 2","South Central US","North Central US","West US","UK West","South
+        Africa North","Brazil South","Switzerland North","Switzerland West","Germany
+        West Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2022-10-01","2021-12-01-preview","2020-08-01","2020-03-01-preview","2017-04-26-preview"],"capabilities":"None"},{"resourceType":"workspaces/storageInsightConfigs","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia East","Australia
+        Central","France Central","Korea Central","North Europe","Central US","East
+        Asia","East US 2","South Central US","North Central US","West US","UK West","South
+        Africa North","Brazil South","Switzerland North","Switzerland West","Germany
+        West Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2020-08-01","2020-03-01-preview","2017-04-26-preview","2017-03-15-preview","2017-03-03-preview","2017-01-01-preview","2015-11-01-preview","2015-03-20"],"capabilities":"None"},{"resourceType":"storageInsightConfigs","locations":[],"apiVersions":["2020-08-01","2020-03-01-preview","2014-10-10"],"capabilities":"SupportsExtension"},{"resourceType":"workspaces/linkedServices","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia Central","Australia
+        East","France Central","Korea Central","North Europe","Central US","East Asia","East
+        US 2","South Central US","North Central US","West US","UK West","South Africa
+        North","Brazil South","Switzerland North","Switzerland West","Germany West
+        Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2020-08-01","2020-03-01-preview","2019-08-01-preview","2015-11-01-preview"],"defaultApiVersion":"2020-08-01","capabilities":"None"},{"resourceType":"linkTargets","locations":["East
+        US"],"apiVersions":["2020-03-01-preview","2015-03-20"],"capabilities":"None"},{"resourceType":"deletedWorkspaces","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia Central","Australia
+        East","France Central","Korea Central","North Europe","Central US","East Asia","East
+        US 2","South Central US","North Central US","West US","UK West","South Africa
+        North","Brazil South","Switzerland North","Switzerland West","Germany West
+        Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2022-10-01","2021-12-01-preview","2020-10-01","2020-08-01","2020-03-01-preview"],"defaultApiVersion":"2022-10-01","capabilities":"None"},{"resourceType":"operations","locations":[],"apiVersions":["2022-10-01","2021-12-01-preview","2020-10-01","2020-08-01","2020-03-01-preview","2015-11-01-preview","2014-11-10"],"defaultApiVersion":"2020-08-01","capabilities":"None"},{"resourceType":"clusters","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia Central","Australia
+        East","France Central","Korea Central","North Europe","Central US","East Asia","East
+        US 2","South Central US","North Central US","West US","UK West","South Africa
+        North","Switzerland North","Switzerland West","Germany West Central","Australia
+        Central 2","UAE Central","Brazil South","UAE North","Japan West","Brazil Southeast","Norway
+        East","Norway West","France South","South India","Korea South","Jio India
+        Central","Jio India West","Qatar Central","Canada East","West US 3","Sweden
+        Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2021-06-01","2020-10-01","2020-08-01","2020-03-01-preview","2019-08-01-preview"],"defaultApiVersion":"2021-06-01","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"workspaces/dataExports","locations":["East
+        US","West Europe","Southeast Asia","Australia Southeast","West Central US","Japan
+        East","UK South","Central India","Canada Central","West US 2","Australia Central","Australia
+        East","France Central","Korea Central","North Europe","Central US","East Asia","East
+        US 2","South Central US","North Central US","West US","UK West","South Africa
+        North","Brazil South","Switzerland North","Switzerland West","Germany West
+        Central","Australia Central 2","UAE Central","UAE North","Japan West","Brazil
+        Southeast","Norway East","Norway West","France South","South India","Korea
+        South","Jio India Central","Jio India West","Qatar Central","Canada East","West
+        US 3","Sweden Central","South Africa West","Germany North","Poland Central"],"apiVersions":["2020-08-01","2020-03-01-preview","2019-08-01-preview"],"defaultApiVersion":"2020-08-01","capabilities":"None"},{"resourceType":"locations/notifyNetworkSecurityPerimeterUpdatesAvailable","locations":["North
+        Central US","East US 2 EUAP"],"apiVersions":["2021-10-01"],"defaultApiVersion":"2021-10-01","capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '13331'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Aug 2023 23:59:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B476AF8A958C4DBAAF3FCC1F9CD5453F Ref B: CO6AA3150220021 Ref C: 2023-08-30T23:59:55Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"publicNetworkAccessForIngestion":
+      "Enabled", "publicNetworkAccessForQuery": "Enabled"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '126'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-mgmt-loganalytics/13.0.0b4 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/workspace-clitestrgpfwnbk7ded3wspkvn7g2j?api-version=2021-12-01-preview
+  response:
+    body:
+      string: '{"properties":{"customerId":"c23a78b2-093d-4df0-b2b0-588447bf15c6","provisioningState":"Creating","sku":{"name":"PerGB2018","lastSkuUpdate":"2023-08-30T23:59:56.3718597Z"},"retentionInDays":30,"features":{"legacy":0,"searchVersion":1,"enableLogAccessUsingOnlyResourcePermissions":true},"workspaceCapping":{"dailyQuotaGb":-1.0,"quotaNextResetTime":"2023-08-31T18:00:00Z","dataIngestionStatus":"RespectQuota"},"publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled","createdDate":"2023-08-30T23:59:56.3718597Z","modifiedDate":"2023-08-30T23:59:56.3718597Z"},"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/workspace-clitestrgpfwnbk7ded3wspkvn7g2j","name":"workspace-clitestrgpfwnbk7ded3wspkvn7g2j","type":"Microsoft.OperationalInsights/workspaces"}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      api-supported-versions:
+      - 2021-12-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '887'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Aug 2023 23:59:55 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/workspace-clitestrgpfwnbk7ded3wspkvn7g2j?api-version=2021-12-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:e6336c63-aab2-45f0-996a-e5dbab2a1508
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 3CA1E0C6613C4ABC99FBA5E6FFC8ECD4 Ref B: CO6AA3150219051 Ref C: 2023-08-30T23:59:55Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-mgmt-loganalytics/13.0.0b4 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/workspace-clitestrgpfwnbk7ded3wspkvn7g2j?api-version=2021-12-01-preview
+  response:
+    body:
+      string: '{"properties":{"customerId":"c23a78b2-093d-4df0-b2b0-588447bf15c6","provisioningState":"Creating","sku":{"name":"PerGB2018","lastSkuUpdate":"2023-08-30T23:59:56.3718597Z"},"retentionInDays":30,"features":{"legacy":0,"searchVersion":1,"enableLogAccessUsingOnlyResourcePermissions":true},"workspaceCapping":{"dailyQuotaGb":-1.0,"quotaNextResetTime":"2023-08-31T18:00:00Z","dataIngestionStatus":"RespectQuota"},"publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled","createdDate":"2023-08-30T23:59:56.3718597Z","modifiedDate":"2023-08-30T23:59:56.3718597Z"},"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/workspace-clitestrgpfwnbk7ded3wspkvn7g2j","name":"workspace-clitestrgpfwnbk7ded3wspkvn7g2j","type":"Microsoft.OperationalInsights/workspaces"}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      api-supported-versions:
+      - 2021-12-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '887'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Aug 2023 23:59:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:e6336c63-aab2-45f0-996a-e5dbab2a1508
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 776B4DB549554C47A08487C7F2866CDD Ref B: CO6AA3150219051 Ref C: 2023-08-30T23:59:56Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-mgmt-loganalytics/13.0.0b4 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/workspace-clitestrgpfwnbk7ded3wspkvn7g2j/sharedKeys?api-version=2020-08-01
+  response:
+    body:
+      string: '{"primarySharedKey":"zUBN/vVlwd9+J2a4V1X1S99jDbtLx7mFYfKCi4oH2jz+FtYqfro/MvvrmUUHsm2rQuXb+78FVB2Ij7g613q8xw==","secondarySharedKey":"1NggWlV7hHQW5cBnIfHdLRBYLccZNw4GbH1Gsno6o1vkC4L8yLVQYNBDo5b2LShLeEemrsrhlHtVnJ4Hwjoe2g=="}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      api-supported-versions:
+      - 2015-03-20, 2020-08-01, 2020-10-01, 2021-06-01, 2022-10-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '223'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 30 Aug 2023 23:59:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:e6336c63-aab2-45f0-996a-e5dbab2a1508
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: F1DED9B33A194656A35C52C01DC60A76 Ref B: CO6AA3150218029 Ref C: 2023-08-30T23:59:57Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "tags": null, "properties": {"daprAIInstrumentationKey":
+      null, "vnetConfiguration": null, "appLogsConfiguration": {"destination": "log-analytics",
+      "logAnalyticsConfiguration": {"customerId": "c23a78b2-093d-4df0-b2b0-588447bf15c6",
+      "sharedKey": "zUBN/vVlwd9+J2a4V1X1S99jDbtLx7mFYfKCi4oH2jz+FtYqfro/MvvrmUUHsm2rQuXb+78FVB2Ij7g613q8xw=="}},
+      "customDomainConfiguration": null, "workloadProfiles": null, "zoneRedundant":
+      false}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '446'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.22621-SP0) AZURECLI/2.51.0
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002?api-version=2023-04-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","name":"env000002","type":"Microsoft.App/managedEnvironments","location":"East
+        US","systemData":{"createdBy":"snehapar@microsoft.com","createdByType":"User","createdAt":"2023-08-30T23:59:57.8116459Z","lastModifiedBy":"snehapar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-30T23:59:57.8116459Z"},"properties":{"provisioningState":"Waiting","daprAIInstrumentationKey":null,"daprAIConnectionString":null,"vnetConfiguration":null,"defaultDomain":"bluewater-a486cada.eastus.azurecontainerapps.io","staticIp":"20.242.207.38","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"c23a78b2-093d-4df0-b2b0-588447bf15c6","sharedKey":null}},"zoneRedundant":false,"kedaConfiguration":{"version":"2.10.0"},"daprConfiguration":{"version":"1.11.2"},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/managedEnvironments/env000002/eventstream","customDomainConfiguration":{"customDomainVerificationId":"114877694D8D814008DB8FDB1F32EFE919BE6A22ED8C8BEA46658B0401FBAC57","dnsSuffix":null,"certificateValue":null,"certificatePassword":null,"thumbprint":null,"subjectName":null,"expirationDate":null},"workloadProfiles":null,"firstPartyConfiguration":null,"infrastructureResourceGroup":null,"peerAuthentication":{"mtls":{"enabled":false}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd?api-version=2023-04-01-preview&azureAsyncOperation=true&t=2023-08-31T00%3a00%3a01&c=MIIHADCCBeigAwIBAgITHgMjMN6vpcEQg2_WbgAAAyMw3jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAzMDczNjQzWhcNMjQwNzI4MDczNjQzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKtqtBNpyBDffqSjU2vKc-q1Ku3MtRBZR4VV9i6TdAcmNpVmw6W8QNgsa-z0zaqgCcjkLIFSUySU0_7_r4cjNFPDGVj0Y3gPDesFRunHaZsZoA2l235ZxgkOhmI9Eq_hgRKbBV-_zy1PbegjuigJTDOv4tC_xxRRMMioo273xgqG_kUrJVmb5EpU0OONBJtawx7E17himPHTOSCk6f__KaMY6z55v5motGTAEvs40N_pYLk36d4xWMWAfMSqoQu0fCiDTOBh9fXR1Mix28dh2is83JJOEmTls4gNVGZ4_gVn6DrVk-sPnD5sGs789lwzBSlRdpOoJMUnxOgMEgc_JB0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQQBQ6aI7w4CwOrsQOypzq30e50CDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD5C_x4drGztlnmLaCdpAyL9KN3LkK_sr-VeDz0s3SwQ30lixsYUUfohjlbSqgoq5GW7WmEgMVuyHCv3nUc01REq-CK7A2xlhD68sfOKqXdpPFsjDCyVEFxuigozWoM3jh9ffTPLM-0cuvpIUH3sOooWAL0Y2RpShpYCxzE7ufkpuFvrs0SPvDNxn7Ga6gYdqvqXsGni-J8I4mQ5sPmZa23Nqq3RDpkYkMunjIJkX7_3p-mX4Wcnm5j93_oLnn7WRkjMF3gwwCcJGn_2yLAeVeJ8E4TNZA2_mfmwo7zGwRDV0VT4JM6evNGxDXVG9XG3hdGlZaoe_TTL5yyWR4CmM2A&s=f1bjY8GES_Y_Bg-p9S-Hmb6t5waIp0QETJKyMCdz-Grx8kgf4hZSU5H3CtoItTJUHwoX-atTgg4DelQLb79WA5R1b0xCoEfDe9vVVEmUhXXy6yggEAnElThII7I4OMS7QGO0N4KpXqCuEdzH0I3oI7J77sdefOY1agOqlF8GoLKve4_k7-5l85hSeTdWKNtj2eews7qErUdqNzijI_Dscoc_w3xMxWTP-T7_3Ch3Ry5ns_LI69XL-E6PNuKahmVsdKukFz7SYRtz-ZaAj7dNCYgwaXbKDMm8aDMP-W1MVnQoubsxUjQQuuubAOWH1RKBP3r5ka6KQQflxOGy2-_h4g&h=k_ULpJ6OOT60pfhQhIV2eOpJfXnfy8yXZVoK4GJouJo
+      cache-control:
+      - no-cache
+      content-length:
+      - '1526'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 31 Aug 2023 00:00:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT15M
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-msedge-ref:
+      - 'Ref A: A3A9CC26B8D846199959CA8661D98777 Ref B: CO6AA3150218035 Ref C: 2023-08-30T23:59:57Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.22621-SP0) AZURECLI/2.51.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd?api-version=2023-04-01-preview&azureAsyncOperation=true&t=2023-08-31T00%3A00%3A01&c=MIIHADCCBeigAwIBAgITHgMjMN6vpcEQg2_WbgAAAyMw3jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAzMDczNjQzWhcNMjQwNzI4MDczNjQzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKtqtBNpyBDffqSjU2vKc-q1Ku3MtRBZR4VV9i6TdAcmNpVmw6W8QNgsa-z0zaqgCcjkLIFSUySU0_7_r4cjNFPDGVj0Y3gPDesFRunHaZsZoA2l235ZxgkOhmI9Eq_hgRKbBV-_zy1PbegjuigJTDOv4tC_xxRRMMioo273xgqG_kUrJVmb5EpU0OONBJtawx7E17himPHTOSCk6f__KaMY6z55v5motGTAEvs40N_pYLk36d4xWMWAfMSqoQu0fCiDTOBh9fXR1Mix28dh2is83JJOEmTls4gNVGZ4_gVn6DrVk-sPnD5sGs789lwzBSlRdpOoJMUnxOgMEgc_JB0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQQBQ6aI7w4CwOrsQOypzq30e50CDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD5C_x4drGztlnmLaCdpAyL9KN3LkK_sr-VeDz0s3SwQ30lixsYUUfohjlbSqgoq5GW7WmEgMVuyHCv3nUc01REq-CK7A2xlhD68sfOKqXdpPFsjDCyVEFxuigozWoM3jh9ffTPLM-0cuvpIUH3sOooWAL0Y2RpShpYCxzE7ufkpuFvrs0SPvDNxn7Ga6gYdqvqXsGni-J8I4mQ5sPmZa23Nqq3RDpkYkMunjIJkX7_3p-mX4Wcnm5j93_oLnn7WRkjMF3gwwCcJGn_2yLAeVeJ8E4TNZA2_mfmwo7zGwRDV0VT4JM6evNGxDXVG9XG3hdGlZaoe_TTL5yyWR4CmM2A&s=f1bjY8GES_Y_Bg-p9S-Hmb6t5waIp0QETJKyMCdz-Grx8kgf4hZSU5H3CtoItTJUHwoX-atTgg4DelQLb79WA5R1b0xCoEfDe9vVVEmUhXXy6yggEAnElThII7I4OMS7QGO0N4KpXqCuEdzH0I3oI7J77sdefOY1agOqlF8GoLKve4_k7-5l85hSeTdWKNtj2eews7qErUdqNzijI_Dscoc_w3xMxWTP-T7_3Ch3Ry5ns_LI69XL-E6PNuKahmVsdKukFz7SYRtz-ZaAj7dNCYgwaXbKDMm8aDMP-W1MVnQoubsxUjQQuuubAOWH1RKBP3r5ka6KQQflxOGy2-_h4g&h=k_ULpJ6OOT60pfhQhIV2eOpJfXnfy8yXZVoK4GJouJo
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd","name":"94e95833-8718-42d8-8ac6-0bf77383e3dd","status":"InProgress","startTime":"2023-08-31T00:00:01.4133777"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '284'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 31 Aug 2023 00:00:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 003337F2D4FA4C3EBB901ADD1E597172 Ref B: CO6AA3150217009 Ref C: 2023-08-31T00:00:01Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.22621-SP0) AZURECLI/2.51.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd?api-version=2023-04-01-preview&azureAsyncOperation=true&t=2023-08-31T00%3A00%3A01&c=MIIHADCCBeigAwIBAgITHgMjMN6vpcEQg2_WbgAAAyMw3jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAzMDczNjQzWhcNMjQwNzI4MDczNjQzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKtqtBNpyBDffqSjU2vKc-q1Ku3MtRBZR4VV9i6TdAcmNpVmw6W8QNgsa-z0zaqgCcjkLIFSUySU0_7_r4cjNFPDGVj0Y3gPDesFRunHaZsZoA2l235ZxgkOhmI9Eq_hgRKbBV-_zy1PbegjuigJTDOv4tC_xxRRMMioo273xgqG_kUrJVmb5EpU0OONBJtawx7E17himPHTOSCk6f__KaMY6z55v5motGTAEvs40N_pYLk36d4xWMWAfMSqoQu0fCiDTOBh9fXR1Mix28dh2is83JJOEmTls4gNVGZ4_gVn6DrVk-sPnD5sGs789lwzBSlRdpOoJMUnxOgMEgc_JB0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQQBQ6aI7w4CwOrsQOypzq30e50CDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD5C_x4drGztlnmLaCdpAyL9KN3LkK_sr-VeDz0s3SwQ30lixsYUUfohjlbSqgoq5GW7WmEgMVuyHCv3nUc01REq-CK7A2xlhD68sfOKqXdpPFsjDCyVEFxuigozWoM3jh9ffTPLM-0cuvpIUH3sOooWAL0Y2RpShpYCxzE7ufkpuFvrs0SPvDNxn7Ga6gYdqvqXsGni-J8I4mQ5sPmZa23Nqq3RDpkYkMunjIJkX7_3p-mX4Wcnm5j93_oLnn7WRkjMF3gwwCcJGn_2yLAeVeJ8E4TNZA2_mfmwo7zGwRDV0VT4JM6evNGxDXVG9XG3hdGlZaoe_TTL5yyWR4CmM2A&s=f1bjY8GES_Y_Bg-p9S-Hmb6t5waIp0QETJKyMCdz-Grx8kgf4hZSU5H3CtoItTJUHwoX-atTgg4DelQLb79WA5R1b0xCoEfDe9vVVEmUhXXy6yggEAnElThII7I4OMS7QGO0N4KpXqCuEdzH0I3oI7J77sdefOY1agOqlF8GoLKve4_k7-5l85hSeTdWKNtj2eews7qErUdqNzijI_Dscoc_w3xMxWTP-T7_3Ch3Ry5ns_LI69XL-E6PNuKahmVsdKukFz7SYRtz-ZaAj7dNCYgwaXbKDMm8aDMP-W1MVnQoubsxUjQQuuubAOWH1RKBP3r5ka6KQQflxOGy2-_h4g&h=k_ULpJ6OOT60pfhQhIV2eOpJfXnfy8yXZVoK4GJouJo
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd","name":"94e95833-8718-42d8-8ac6-0bf77383e3dd","status":"InProgress","startTime":"2023-08-31T00:00:01.4133777"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '284'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 31 Aug 2023 00:00:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 463B11E355F44E9E87DEC4AD0FA226DF Ref B: CO6AA3150220045 Ref C: 2023-08-31T00:00:04Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.22621-SP0) AZURECLI/2.51.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd?api-version=2023-04-01-preview&azureAsyncOperation=true&t=2023-08-31T00%3A00%3A01&c=MIIHADCCBeigAwIBAgITHgMjMN6vpcEQg2_WbgAAAyMw3jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAzMDczNjQzWhcNMjQwNzI4MDczNjQzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKtqtBNpyBDffqSjU2vKc-q1Ku3MtRBZR4VV9i6TdAcmNpVmw6W8QNgsa-z0zaqgCcjkLIFSUySU0_7_r4cjNFPDGVj0Y3gPDesFRunHaZsZoA2l235ZxgkOhmI9Eq_hgRKbBV-_zy1PbegjuigJTDOv4tC_xxRRMMioo273xgqG_kUrJVmb5EpU0OONBJtawx7E17himPHTOSCk6f__KaMY6z55v5motGTAEvs40N_pYLk36d4xWMWAfMSqoQu0fCiDTOBh9fXR1Mix28dh2is83JJOEmTls4gNVGZ4_gVn6DrVk-sPnD5sGs789lwzBSlRdpOoJMUnxOgMEgc_JB0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQQBQ6aI7w4CwOrsQOypzq30e50CDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD5C_x4drGztlnmLaCdpAyL9KN3LkK_sr-VeDz0s3SwQ30lixsYUUfohjlbSqgoq5GW7WmEgMVuyHCv3nUc01REq-CK7A2xlhD68sfOKqXdpPFsjDCyVEFxuigozWoM3jh9ffTPLM-0cuvpIUH3sOooWAL0Y2RpShpYCxzE7ufkpuFvrs0SPvDNxn7Ga6gYdqvqXsGni-J8I4mQ5sPmZa23Nqq3RDpkYkMunjIJkX7_3p-mX4Wcnm5j93_oLnn7WRkjMF3gwwCcJGn_2yLAeVeJ8E4TNZA2_mfmwo7zGwRDV0VT4JM6evNGxDXVG9XG3hdGlZaoe_TTL5yyWR4CmM2A&s=f1bjY8GES_Y_Bg-p9S-Hmb6t5waIp0QETJKyMCdz-Grx8kgf4hZSU5H3CtoItTJUHwoX-atTgg4DelQLb79WA5R1b0xCoEfDe9vVVEmUhXXy6yggEAnElThII7I4OMS7QGO0N4KpXqCuEdzH0I3oI7J77sdefOY1agOqlF8GoLKve4_k7-5l85hSeTdWKNtj2eews7qErUdqNzijI_Dscoc_w3xMxWTP-T7_3Ch3Ry5ns_LI69XL-E6PNuKahmVsdKukFz7SYRtz-ZaAj7dNCYgwaXbKDMm8aDMP-W1MVnQoubsxUjQQuuubAOWH1RKBP3r5ka6KQQflxOGy2-_h4g&h=k_ULpJ6OOT60pfhQhIV2eOpJfXnfy8yXZVoK4GJouJo
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd","name":"94e95833-8718-42d8-8ac6-0bf77383e3dd","status":"InProgress","startTime":"2023-08-31T00:00:01.4133777"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '284'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 31 Aug 2023 00:00:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: D087DBEC556648F79918B59668B00146 Ref B: CO6AA3150218027 Ref C: 2023-08-31T00:00:07Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.22621-SP0) AZURECLI/2.51.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd?api-version=2023-04-01-preview&azureAsyncOperation=true&t=2023-08-31T00%3A00%3A01&c=MIIHADCCBeigAwIBAgITHgMjMN6vpcEQg2_WbgAAAyMw3jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAzMDczNjQzWhcNMjQwNzI4MDczNjQzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKtqtBNpyBDffqSjU2vKc-q1Ku3MtRBZR4VV9i6TdAcmNpVmw6W8QNgsa-z0zaqgCcjkLIFSUySU0_7_r4cjNFPDGVj0Y3gPDesFRunHaZsZoA2l235ZxgkOhmI9Eq_hgRKbBV-_zy1PbegjuigJTDOv4tC_xxRRMMioo273xgqG_kUrJVmb5EpU0OONBJtawx7E17himPHTOSCk6f__KaMY6z55v5motGTAEvs40N_pYLk36d4xWMWAfMSqoQu0fCiDTOBh9fXR1Mix28dh2is83JJOEmTls4gNVGZ4_gVn6DrVk-sPnD5sGs789lwzBSlRdpOoJMUnxOgMEgc_JB0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQQBQ6aI7w4CwOrsQOypzq30e50CDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD5C_x4drGztlnmLaCdpAyL9KN3LkK_sr-VeDz0s3SwQ30lixsYUUfohjlbSqgoq5GW7WmEgMVuyHCv3nUc01REq-CK7A2xlhD68sfOKqXdpPFsjDCyVEFxuigozWoM3jh9ffTPLM-0cuvpIUH3sOooWAL0Y2RpShpYCxzE7ufkpuFvrs0SPvDNxn7Ga6gYdqvqXsGni-J8I4mQ5sPmZa23Nqq3RDpkYkMunjIJkX7_3p-mX4Wcnm5j93_oLnn7WRkjMF3gwwCcJGn_2yLAeVeJ8E4TNZA2_mfmwo7zGwRDV0VT4JM6evNGxDXVG9XG3hdGlZaoe_TTL5yyWR4CmM2A&s=f1bjY8GES_Y_Bg-p9S-Hmb6t5waIp0QETJKyMCdz-Grx8kgf4hZSU5H3CtoItTJUHwoX-atTgg4DelQLb79WA5R1b0xCoEfDe9vVVEmUhXXy6yggEAnElThII7I4OMS7QGO0N4KpXqCuEdzH0I3oI7J77sdefOY1agOqlF8GoLKve4_k7-5l85hSeTdWKNtj2eews7qErUdqNzijI_Dscoc_w3xMxWTP-T7_3Ch3Ry5ns_LI69XL-E6PNuKahmVsdKukFz7SYRtz-ZaAj7dNCYgwaXbKDMm8aDMP-W1MVnQoubsxUjQQuuubAOWH1RKBP3r5ka6KQQflxOGy2-_h4g&h=k_ULpJ6OOT60pfhQhIV2eOpJfXnfy8yXZVoK4GJouJo
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd","name":"94e95833-8718-42d8-8ac6-0bf77383e3dd","status":"InProgress","startTime":"2023-08-31T00:00:01.4133777"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '284'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 31 Aug 2023 00:00:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 0F3EFE67F74749F0BE7D294F11FC46B4 Ref B: CO6AA3150218031 Ref C: 2023-08-31T00:00:09Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.22621-SP0) AZURECLI/2.51.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd?api-version=2023-04-01-preview&azureAsyncOperation=true&t=2023-08-31T00%3A00%3A01&c=MIIHADCCBeigAwIBAgITHgMjMN6vpcEQg2_WbgAAAyMw3jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAzMDczNjQzWhcNMjQwNzI4MDczNjQzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKtqtBNpyBDffqSjU2vKc-q1Ku3MtRBZR4VV9i6TdAcmNpVmw6W8QNgsa-z0zaqgCcjkLIFSUySU0_7_r4cjNFPDGVj0Y3gPDesFRunHaZsZoA2l235ZxgkOhmI9Eq_hgRKbBV-_zy1PbegjuigJTDOv4tC_xxRRMMioo273xgqG_kUrJVmb5EpU0OONBJtawx7E17himPHTOSCk6f__KaMY6z55v5motGTAEvs40N_pYLk36d4xWMWAfMSqoQu0fCiDTOBh9fXR1Mix28dh2is83JJOEmTls4gNVGZ4_gVn6DrVk-sPnD5sGs789lwzBSlRdpOoJMUnxOgMEgc_JB0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQQBQ6aI7w4CwOrsQOypzq30e50CDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD5C_x4drGztlnmLaCdpAyL9KN3LkK_sr-VeDz0s3SwQ30lixsYUUfohjlbSqgoq5GW7WmEgMVuyHCv3nUc01REq-CK7A2xlhD68sfOKqXdpPFsjDCyVEFxuigozWoM3jh9ffTPLM-0cuvpIUH3sOooWAL0Y2RpShpYCxzE7ufkpuFvrs0SPvDNxn7Ga6gYdqvqXsGni-J8I4mQ5sPmZa23Nqq3RDpkYkMunjIJkX7_3p-mX4Wcnm5j93_oLnn7WRkjMF3gwwCcJGn_2yLAeVeJ8E4TNZA2_mfmwo7zGwRDV0VT4JM6evNGxDXVG9XG3hdGlZaoe_TTL5yyWR4CmM2A&s=f1bjY8GES_Y_Bg-p9S-Hmb6t5waIp0QETJKyMCdz-Grx8kgf4hZSU5H3CtoItTJUHwoX-atTgg4DelQLb79WA5R1b0xCoEfDe9vVVEmUhXXy6yggEAnElThII7I4OMS7QGO0N4KpXqCuEdzH0I3oI7J77sdefOY1agOqlF8GoLKve4_k7-5l85hSeTdWKNtj2eews7qErUdqNzijI_Dscoc_w3xMxWTP-T7_3Ch3Ry5ns_LI69XL-E6PNuKahmVsdKukFz7SYRtz-ZaAj7dNCYgwaXbKDMm8aDMP-W1MVnQoubsxUjQQuuubAOWH1RKBP3r5ka6KQQflxOGy2-_h4g&h=k_ULpJ6OOT60pfhQhIV2eOpJfXnfy8yXZVoK4GJouJo
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd","name":"94e95833-8718-42d8-8ac6-0bf77383e3dd","status":"InProgress","startTime":"2023-08-31T00:00:01.4133777"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '284'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 31 Aug 2023 00:00:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 55742FB96EE649599A099636DF46EA58 Ref B: CO6AA3150218009 Ref C: 2023-08-31T00:00:12Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.22621-SP0) AZURECLI/2.51.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd?api-version=2023-04-01-preview&azureAsyncOperation=true&t=2023-08-31T00%3A00%3A01&c=MIIHADCCBeigAwIBAgITHgMjMN6vpcEQg2_WbgAAAyMw3jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAzMDczNjQzWhcNMjQwNzI4MDczNjQzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKtqtBNpyBDffqSjU2vKc-q1Ku3MtRBZR4VV9i6TdAcmNpVmw6W8QNgsa-z0zaqgCcjkLIFSUySU0_7_r4cjNFPDGVj0Y3gPDesFRunHaZsZoA2l235ZxgkOhmI9Eq_hgRKbBV-_zy1PbegjuigJTDOv4tC_xxRRMMioo273xgqG_kUrJVmb5EpU0OONBJtawx7E17himPHTOSCk6f__KaMY6z55v5motGTAEvs40N_pYLk36d4xWMWAfMSqoQu0fCiDTOBh9fXR1Mix28dh2is83JJOEmTls4gNVGZ4_gVn6DrVk-sPnD5sGs789lwzBSlRdpOoJMUnxOgMEgc_JB0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQQBQ6aI7w4CwOrsQOypzq30e50CDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD5C_x4drGztlnmLaCdpAyL9KN3LkK_sr-VeDz0s3SwQ30lixsYUUfohjlbSqgoq5GW7WmEgMVuyHCv3nUc01REq-CK7A2xlhD68sfOKqXdpPFsjDCyVEFxuigozWoM3jh9ffTPLM-0cuvpIUH3sOooWAL0Y2RpShpYCxzE7ufkpuFvrs0SPvDNxn7Ga6gYdqvqXsGni-J8I4mQ5sPmZa23Nqq3RDpkYkMunjIJkX7_3p-mX4Wcnm5j93_oLnn7WRkjMF3gwwCcJGn_2yLAeVeJ8E4TNZA2_mfmwo7zGwRDV0VT4JM6evNGxDXVG9XG3hdGlZaoe_TTL5yyWR4CmM2A&s=f1bjY8GES_Y_Bg-p9S-Hmb6t5waIp0QETJKyMCdz-Grx8kgf4hZSU5H3CtoItTJUHwoX-atTgg4DelQLb79WA5R1b0xCoEfDe9vVVEmUhXXy6yggEAnElThII7I4OMS7QGO0N4KpXqCuEdzH0I3oI7J77sdefOY1agOqlF8GoLKve4_k7-5l85hSeTdWKNtj2eews7qErUdqNzijI_Dscoc_w3xMxWTP-T7_3Ch3Ry5ns_LI69XL-E6PNuKahmVsdKukFz7SYRtz-ZaAj7dNCYgwaXbKDMm8aDMP-W1MVnQoubsxUjQQuuubAOWH1RKBP3r5ka6KQQflxOGy2-_h4g&h=k_ULpJ6OOT60pfhQhIV2eOpJfXnfy8yXZVoK4GJouJo
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd","name":"94e95833-8718-42d8-8ac6-0bf77383e3dd","status":"InProgress","startTime":"2023-08-31T00:00:01.4133777"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '284'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 31 Aug 2023 00:00:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B12699D30ABA4F9988A64E4E60203606 Ref B: CO6AA3150218053 Ref C: 2023-08-31T00:00:14Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.22621-SP0) AZURECLI/2.51.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd?api-version=2023-04-01-preview&azureAsyncOperation=true&t=2023-08-31T00%3A00%3A01&c=MIIHADCCBeigAwIBAgITHgMjMN6vpcEQg2_WbgAAAyMw3jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAzMDczNjQzWhcNMjQwNzI4MDczNjQzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKtqtBNpyBDffqSjU2vKc-q1Ku3MtRBZR4VV9i6TdAcmNpVmw6W8QNgsa-z0zaqgCcjkLIFSUySU0_7_r4cjNFPDGVj0Y3gPDesFRunHaZsZoA2l235ZxgkOhmI9Eq_hgRKbBV-_zy1PbegjuigJTDOv4tC_xxRRMMioo273xgqG_kUrJVmb5EpU0OONBJtawx7E17himPHTOSCk6f__KaMY6z55v5motGTAEvs40N_pYLk36d4xWMWAfMSqoQu0fCiDTOBh9fXR1Mix28dh2is83JJOEmTls4gNVGZ4_gVn6DrVk-sPnD5sGs789lwzBSlRdpOoJMUnxOgMEgc_JB0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQQBQ6aI7w4CwOrsQOypzq30e50CDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD5C_x4drGztlnmLaCdpAyL9KN3LkK_sr-VeDz0s3SwQ30lixsYUUfohjlbSqgoq5GW7WmEgMVuyHCv3nUc01REq-CK7A2xlhD68sfOKqXdpPFsjDCyVEFxuigozWoM3jh9ffTPLM-0cuvpIUH3sOooWAL0Y2RpShpYCxzE7ufkpuFvrs0SPvDNxn7Ga6gYdqvqXsGni-J8I4mQ5sPmZa23Nqq3RDpkYkMunjIJkX7_3p-mX4Wcnm5j93_oLnn7WRkjMF3gwwCcJGn_2yLAeVeJ8E4TNZA2_mfmwo7zGwRDV0VT4JM6evNGxDXVG9XG3hdGlZaoe_TTL5yyWR4CmM2A&s=f1bjY8GES_Y_Bg-p9S-Hmb6t5waIp0QETJKyMCdz-Grx8kgf4hZSU5H3CtoItTJUHwoX-atTgg4DelQLb79WA5R1b0xCoEfDe9vVVEmUhXXy6yggEAnElThII7I4OMS7QGO0N4KpXqCuEdzH0I3oI7J77sdefOY1agOqlF8GoLKve4_k7-5l85hSeTdWKNtj2eews7qErUdqNzijI_Dscoc_w3xMxWTP-T7_3Ch3Ry5ns_LI69XL-E6PNuKahmVsdKukFz7SYRtz-ZaAj7dNCYgwaXbKDMm8aDMP-W1MVnQoubsxUjQQuuubAOWH1RKBP3r5ka6KQQflxOGy2-_h4g&h=k_ULpJ6OOT60pfhQhIV2eOpJfXnfy8yXZVoK4GJouJo
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd","name":"94e95833-8718-42d8-8ac6-0bf77383e3dd","status":"InProgress","startTime":"2023-08-31T00:00:01.4133777"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '284'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 31 Aug 2023 00:00:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: F88A19E0B4634C00897ACCFC4345DF20 Ref B: CO6AA3150218037 Ref C: 2023-08-31T00:00:16Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.22621-SP0) AZURECLI/2.51.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd?api-version=2023-04-01-preview&azureAsyncOperation=true&t=2023-08-31T00%3A00%3A01&c=MIIHADCCBeigAwIBAgITHgMjMN6vpcEQg2_WbgAAAyMw3jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAzMDczNjQzWhcNMjQwNzI4MDczNjQzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKtqtBNpyBDffqSjU2vKc-q1Ku3MtRBZR4VV9i6TdAcmNpVmw6W8QNgsa-z0zaqgCcjkLIFSUySU0_7_r4cjNFPDGVj0Y3gPDesFRunHaZsZoA2l235ZxgkOhmI9Eq_hgRKbBV-_zy1PbegjuigJTDOv4tC_xxRRMMioo273xgqG_kUrJVmb5EpU0OONBJtawx7E17himPHTOSCk6f__KaMY6z55v5motGTAEvs40N_pYLk36d4xWMWAfMSqoQu0fCiDTOBh9fXR1Mix28dh2is83JJOEmTls4gNVGZ4_gVn6DrVk-sPnD5sGs789lwzBSlRdpOoJMUnxOgMEgc_JB0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQQBQ6aI7w4CwOrsQOypzq30e50CDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD5C_x4drGztlnmLaCdpAyL9KN3LkK_sr-VeDz0s3SwQ30lixsYUUfohjlbSqgoq5GW7WmEgMVuyHCv3nUc01REq-CK7A2xlhD68sfOKqXdpPFsjDCyVEFxuigozWoM3jh9ffTPLM-0cuvpIUH3sOooWAL0Y2RpShpYCxzE7ufkpuFvrs0SPvDNxn7Ga6gYdqvqXsGni-J8I4mQ5sPmZa23Nqq3RDpkYkMunjIJkX7_3p-mX4Wcnm5j93_oLnn7WRkjMF3gwwCcJGn_2yLAeVeJ8E4TNZA2_mfmwo7zGwRDV0VT4JM6evNGxDXVG9XG3hdGlZaoe_TTL5yyWR4CmM2A&s=f1bjY8GES_Y_Bg-p9S-Hmb6t5waIp0QETJKyMCdz-Grx8kgf4hZSU5H3CtoItTJUHwoX-atTgg4DelQLb79WA5R1b0xCoEfDe9vVVEmUhXXy6yggEAnElThII7I4OMS7QGO0N4KpXqCuEdzH0I3oI7J77sdefOY1agOqlF8GoLKve4_k7-5l85hSeTdWKNtj2eews7qErUdqNzijI_Dscoc_w3xMxWTP-T7_3Ch3Ry5ns_LI69XL-E6PNuKahmVsdKukFz7SYRtz-ZaAj7dNCYgwaXbKDMm8aDMP-W1MVnQoubsxUjQQuuubAOWH1RKBP3r5ka6KQQflxOGy2-_h4g&h=k_ULpJ6OOT60pfhQhIV2eOpJfXnfy8yXZVoK4GJouJo
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd","name":"94e95833-8718-42d8-8ac6-0bf77383e3dd","status":"InProgress","startTime":"2023-08-31T00:00:01.4133777"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '284'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 31 Aug 2023 00:00:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: A2FC1BC067F34160882688287F930D93 Ref B: CO6AA3150218021 Ref C: 2023-08-31T00:00:19Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.22621-SP0) AZURECLI/2.51.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd?api-version=2023-04-01-preview&azureAsyncOperation=true&t=2023-08-31T00%3A00%3A01&c=MIIHADCCBeigAwIBAgITHgMjMN6vpcEQg2_WbgAAAyMw3jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAzMDczNjQzWhcNMjQwNzI4MDczNjQzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKtqtBNpyBDffqSjU2vKc-q1Ku3MtRBZR4VV9i6TdAcmNpVmw6W8QNgsa-z0zaqgCcjkLIFSUySU0_7_r4cjNFPDGVj0Y3gPDesFRunHaZsZoA2l235ZxgkOhmI9Eq_hgRKbBV-_zy1PbegjuigJTDOv4tC_xxRRMMioo273xgqG_kUrJVmb5EpU0OONBJtawx7E17himPHTOSCk6f__KaMY6z55v5motGTAEvs40N_pYLk36d4xWMWAfMSqoQu0fCiDTOBh9fXR1Mix28dh2is83JJOEmTls4gNVGZ4_gVn6DrVk-sPnD5sGs789lwzBSlRdpOoJMUnxOgMEgc_JB0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQQBQ6aI7w4CwOrsQOypzq30e50CDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD5C_x4drGztlnmLaCdpAyL9KN3LkK_sr-VeDz0s3SwQ30lixsYUUfohjlbSqgoq5GW7WmEgMVuyHCv3nUc01REq-CK7A2xlhD68sfOKqXdpPFsjDCyVEFxuigozWoM3jh9ffTPLM-0cuvpIUH3sOooWAL0Y2RpShpYCxzE7ufkpuFvrs0SPvDNxn7Ga6gYdqvqXsGni-J8I4mQ5sPmZa23Nqq3RDpkYkMunjIJkX7_3p-mX4Wcnm5j93_oLnn7WRkjMF3gwwCcJGn_2yLAeVeJ8E4TNZA2_mfmwo7zGwRDV0VT4JM6evNGxDXVG9XG3hdGlZaoe_TTL5yyWR4CmM2A&s=f1bjY8GES_Y_Bg-p9S-Hmb6t5waIp0QETJKyMCdz-Grx8kgf4hZSU5H3CtoItTJUHwoX-atTgg4DelQLb79WA5R1b0xCoEfDe9vVVEmUhXXy6yggEAnElThII7I4OMS7QGO0N4KpXqCuEdzH0I3oI7J77sdefOY1agOqlF8GoLKve4_k7-5l85hSeTdWKNtj2eews7qErUdqNzijI_Dscoc_w3xMxWTP-T7_3Ch3Ry5ns_LI69XL-E6PNuKahmVsdKukFz7SYRtz-ZaAj7dNCYgwaXbKDMm8aDMP-W1MVnQoubsxUjQQuuubAOWH1RKBP3r5ka6KQQflxOGy2-_h4g&h=k_ULpJ6OOT60pfhQhIV2eOpJfXnfy8yXZVoK4GJouJo
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd","name":"94e95833-8718-42d8-8ac6-0bf77383e3dd","status":"InProgress","startTime":"2023-08-31T00:00:01.4133777"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '284'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 31 Aug 2023 00:00:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 542C8AF7C7F04C1FAE33176B5D25C13B Ref B: CO6AA3150218023 Ref C: 2023-08-31T00:00:22Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.22621-SP0) AZURECLI/2.51.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd?api-version=2023-04-01-preview&azureAsyncOperation=true&t=2023-08-31T00%3A00%3A01&c=MIIHADCCBeigAwIBAgITHgMjMN6vpcEQg2_WbgAAAyMw3jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAzMDczNjQzWhcNMjQwNzI4MDczNjQzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKtqtBNpyBDffqSjU2vKc-q1Ku3MtRBZR4VV9i6TdAcmNpVmw6W8QNgsa-z0zaqgCcjkLIFSUySU0_7_r4cjNFPDGVj0Y3gPDesFRunHaZsZoA2l235ZxgkOhmI9Eq_hgRKbBV-_zy1PbegjuigJTDOv4tC_xxRRMMioo273xgqG_kUrJVmb5EpU0OONBJtawx7E17himPHTOSCk6f__KaMY6z55v5motGTAEvs40N_pYLk36d4xWMWAfMSqoQu0fCiDTOBh9fXR1Mix28dh2is83JJOEmTls4gNVGZ4_gVn6DrVk-sPnD5sGs789lwzBSlRdpOoJMUnxOgMEgc_JB0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQQBQ6aI7w4CwOrsQOypzq30e50CDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD5C_x4drGztlnmLaCdpAyL9KN3LkK_sr-VeDz0s3SwQ30lixsYUUfohjlbSqgoq5GW7WmEgMVuyHCv3nUc01REq-CK7A2xlhD68sfOKqXdpPFsjDCyVEFxuigozWoM3jh9ffTPLM-0cuvpIUH3sOooWAL0Y2RpShpYCxzE7ufkpuFvrs0SPvDNxn7Ga6gYdqvqXsGni-J8I4mQ5sPmZa23Nqq3RDpkYkMunjIJkX7_3p-mX4Wcnm5j93_oLnn7WRkjMF3gwwCcJGn_2yLAeVeJ8E4TNZA2_mfmwo7zGwRDV0VT4JM6evNGxDXVG9XG3hdGlZaoe_TTL5yyWR4CmM2A&s=f1bjY8GES_Y_Bg-p9S-Hmb6t5waIp0QETJKyMCdz-Grx8kgf4hZSU5H3CtoItTJUHwoX-atTgg4DelQLb79WA5R1b0xCoEfDe9vVVEmUhXXy6yggEAnElThII7I4OMS7QGO0N4KpXqCuEdzH0I3oI7J77sdefOY1agOqlF8GoLKve4_k7-5l85hSeTdWKNtj2eews7qErUdqNzijI_Dscoc_w3xMxWTP-T7_3Ch3Ry5ns_LI69XL-E6PNuKahmVsdKukFz7SYRtz-ZaAj7dNCYgwaXbKDMm8aDMP-W1MVnQoubsxUjQQuuubAOWH1RKBP3r5ka6KQQflxOGy2-_h4g&h=k_ULpJ6OOT60pfhQhIV2eOpJfXnfy8yXZVoK4GJouJo
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd","name":"94e95833-8718-42d8-8ac6-0bf77383e3dd","status":"InProgress","startTime":"2023-08-31T00:00:01.4133777"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '284'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 31 Aug 2023 00:00:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 19B0421975004508B8E9F80AAC9F6CD2 Ref B: CO6AA3150220025 Ref C: 2023-08-31T00:00:24Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.22621-SP0) AZURECLI/2.51.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd?api-version=2023-04-01-preview&azureAsyncOperation=true&t=2023-08-31T00%3A00%3A01&c=MIIHADCCBeigAwIBAgITHgMjMN6vpcEQg2_WbgAAAyMw3jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAzMDczNjQzWhcNMjQwNzI4MDczNjQzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKtqtBNpyBDffqSjU2vKc-q1Ku3MtRBZR4VV9i6TdAcmNpVmw6W8QNgsa-z0zaqgCcjkLIFSUySU0_7_r4cjNFPDGVj0Y3gPDesFRunHaZsZoA2l235ZxgkOhmI9Eq_hgRKbBV-_zy1PbegjuigJTDOv4tC_xxRRMMioo273xgqG_kUrJVmb5EpU0OONBJtawx7E17himPHTOSCk6f__KaMY6z55v5motGTAEvs40N_pYLk36d4xWMWAfMSqoQu0fCiDTOBh9fXR1Mix28dh2is83JJOEmTls4gNVGZ4_gVn6DrVk-sPnD5sGs789lwzBSlRdpOoJMUnxOgMEgc_JB0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQQBQ6aI7w4CwOrsQOypzq30e50CDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD5C_x4drGztlnmLaCdpAyL9KN3LkK_sr-VeDz0s3SwQ30lixsYUUfohjlbSqgoq5GW7WmEgMVuyHCv3nUc01REq-CK7A2xlhD68sfOKqXdpPFsjDCyVEFxuigozWoM3jh9ffTPLM-0cuvpIUH3sOooWAL0Y2RpShpYCxzE7ufkpuFvrs0SPvDNxn7Ga6gYdqvqXsGni-J8I4mQ5sPmZa23Nqq3RDpkYkMunjIJkX7_3p-mX4Wcnm5j93_oLnn7WRkjMF3gwwCcJGn_2yLAeVeJ8E4TNZA2_mfmwo7zGwRDV0VT4JM6evNGxDXVG9XG3hdGlZaoe_TTL5yyWR4CmM2A&s=f1bjY8GES_Y_Bg-p9S-Hmb6t5waIp0QETJKyMCdz-Grx8kgf4hZSU5H3CtoItTJUHwoX-atTgg4DelQLb79WA5R1b0xCoEfDe9vVVEmUhXXy6yggEAnElThII7I4OMS7QGO0N4KpXqCuEdzH0I3oI7J77sdefOY1agOqlF8GoLKve4_k7-5l85hSeTdWKNtj2eews7qErUdqNzijI_Dscoc_w3xMxWTP-T7_3Ch3Ry5ns_LI69XL-E6PNuKahmVsdKukFz7SYRtz-ZaAj7dNCYgwaXbKDMm8aDMP-W1MVnQoubsxUjQQuuubAOWH1RKBP3r5ka6KQQflxOGy2-_h4g&h=k_ULpJ6OOT60pfhQhIV2eOpJfXnfy8yXZVoK4GJouJo
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd","name":"94e95833-8718-42d8-8ac6-0bf77383e3dd","status":"InProgress","startTime":"2023-08-31T00:00:01.4133777"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '284'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 31 Aug 2023 00:00:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B9D6837724C7466EB6E605664E583F84 Ref B: CO6AA3150217053 Ref C: 2023-08-31T00:00:27Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.22621-SP0) AZURECLI/2.51.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd?api-version=2023-04-01-preview&azureAsyncOperation=true&t=2023-08-31T00%3A00%3A01&c=MIIHADCCBeigAwIBAgITHgMjMN6vpcEQg2_WbgAAAyMw3jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAzMDczNjQzWhcNMjQwNzI4MDczNjQzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKtqtBNpyBDffqSjU2vKc-q1Ku3MtRBZR4VV9i6TdAcmNpVmw6W8QNgsa-z0zaqgCcjkLIFSUySU0_7_r4cjNFPDGVj0Y3gPDesFRunHaZsZoA2l235ZxgkOhmI9Eq_hgRKbBV-_zy1PbegjuigJTDOv4tC_xxRRMMioo273xgqG_kUrJVmb5EpU0OONBJtawx7E17himPHTOSCk6f__KaMY6z55v5motGTAEvs40N_pYLk36d4xWMWAfMSqoQu0fCiDTOBh9fXR1Mix28dh2is83JJOEmTls4gNVGZ4_gVn6DrVk-sPnD5sGs789lwzBSlRdpOoJMUnxOgMEgc_JB0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQQBQ6aI7w4CwOrsQOypzq30e50CDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD5C_x4drGztlnmLaCdpAyL9KN3LkK_sr-VeDz0s3SwQ30lixsYUUfohjlbSqgoq5GW7WmEgMVuyHCv3nUc01REq-CK7A2xlhD68sfOKqXdpPFsjDCyVEFxuigozWoM3jh9ffTPLM-0cuvpIUH3sOooWAL0Y2RpShpYCxzE7ufkpuFvrs0SPvDNxn7Ga6gYdqvqXsGni-J8I4mQ5sPmZa23Nqq3RDpkYkMunjIJkX7_3p-mX4Wcnm5j93_oLnn7WRkjMF3gwwCcJGn_2yLAeVeJ8E4TNZA2_mfmwo7zGwRDV0VT4JM6evNGxDXVG9XG3hdGlZaoe_TTL5yyWR4CmM2A&s=f1bjY8GES_Y_Bg-p9S-Hmb6t5waIp0QETJKyMCdz-Grx8kgf4hZSU5H3CtoItTJUHwoX-atTgg4DelQLb79WA5R1b0xCoEfDe9vVVEmUhXXy6yggEAnElThII7I4OMS7QGO0N4KpXqCuEdzH0I3oI7J77sdefOY1agOqlF8GoLKve4_k7-5l85hSeTdWKNtj2eews7qErUdqNzijI_Dscoc_w3xMxWTP-T7_3Ch3Ry5ns_LI69XL-E6PNuKahmVsdKukFz7SYRtz-ZaAj7dNCYgwaXbKDMm8aDMP-W1MVnQoubsxUjQQuuubAOWH1RKBP3r5ka6KQQflxOGy2-_h4g&h=k_ULpJ6OOT60pfhQhIV2eOpJfXnfy8yXZVoK4GJouJo
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd","name":"94e95833-8718-42d8-8ac6-0bf77383e3dd","status":"InProgress","startTime":"2023-08-31T00:00:01.4133777"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '284'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 31 Aug 2023 00:00:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: CB686A1741794298BC53F8151F94DB78 Ref B: CO6AA3150217039 Ref C: 2023-08-31T00:00:29Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.22621-SP0) AZURECLI/2.51.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd?api-version=2023-04-01-preview&azureAsyncOperation=true&t=2023-08-31T00%3A00%3A01&c=MIIHADCCBeigAwIBAgITHgMjMN6vpcEQg2_WbgAAAyMw3jANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAzMDczNjQzWhcNMjQwNzI4MDczNjQzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKtqtBNpyBDffqSjU2vKc-q1Ku3MtRBZR4VV9i6TdAcmNpVmw6W8QNgsa-z0zaqgCcjkLIFSUySU0_7_r4cjNFPDGVj0Y3gPDesFRunHaZsZoA2l235ZxgkOhmI9Eq_hgRKbBV-_zy1PbegjuigJTDOv4tC_xxRRMMioo273xgqG_kUrJVmb5EpU0OONBJtawx7E17himPHTOSCk6f__KaMY6z55v5motGTAEvs40N_pYLk36d4xWMWAfMSqoQu0fCiDTOBh9fXR1Mix28dh2is83JJOEmTls4gNVGZ4_gVn6DrVk-sPnD5sGs789lwzBSlRdpOoJMUnxOgMEgc_JB0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQQBQ6aI7w4CwOrsQOypzq30e50CDAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD5C_x4drGztlnmLaCdpAyL9KN3LkK_sr-VeDz0s3SwQ30lixsYUUfohjlbSqgoq5GW7WmEgMVuyHCv3nUc01REq-CK7A2xlhD68sfOKqXdpPFsjDCyVEFxuigozWoM3jh9ffTPLM-0cuvpIUH3sOooWAL0Y2RpShpYCxzE7ufkpuFvrs0SPvDNxn7Ga6gYdqvqXsGni-J8I4mQ5sPmZa23Nqq3RDpkYkMunjIJkX7_3p-mX4Wcnm5j93_oLnn7WRkjMF3gwwCcJGn_2yLAeVeJ8E4TNZA2_mfmwo7zGwRDV0VT4JM6evNGxDXVG9XG3hdGlZaoe_TTL5yyWR4CmM2A&s=f1bjY8GES_Y_Bg-p9S-Hmb6t5waIp0QETJKyMCdz-Grx8kgf4hZSU5H3CtoItTJUHwoX-atTgg4DelQLb79WA5R1b0xCoEfDe9vVVEmUhXXy6yggEAnElThII7I4OMS7QGO0N4KpXqCuEdzH0I3oI7J77sdefOY1agOqlF8GoLKve4_k7-5l85hSeTdWKNtj2eews7qErUdqNzijI_Dscoc_w3xMxWTP-T7_3Ch3Ry5ns_LI69XL-E6PNuKahmVsdKukFz7SYRtz-ZaAj7dNCYgwaXbKDMm8aDMP-W1MVnQoubsxUjQQuuubAOWH1RKBP3r5ka6KQQflxOGy2-_h4g&h=k_ULpJ6OOT60pfhQhIV2eOpJfXnfy8yXZVoK4GJouJo
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/94e95833-8718-42d8-8ac6-0bf77383e3dd","name":"94e95833-8718-42d8-8ac6-0bf77383e3dd","status":"Succeeded","startTime":"2023-08-31T00:00:01.4133777"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '283'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 31 Aug 2023 00:00:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 9EEE2451B528420C8799C896C9F45789 Ref B: CO6AA3150217037 Ref C: 2023-08-31T00:00:32Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - python/3.8.10 (Windows-10-10.0.22621-SP0) AZURECLI/2.51.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002?api-version=2023-04-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","name":"env000002","type":"Microsoft.App/managedEnvironments","location":"East
+        US","systemData":{"createdBy":"snehapar@microsoft.com","createdByType":"User","createdAt":"2023-08-30T23:59:57.8116459","lastModifiedBy":"snehapar@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-30T23:59:57.8116459"},"properties":{"provisioningState":"Succeeded","daprAIInstrumentationKey":null,"daprAIConnectionString":null,"vnetConfiguration":null,"defaultDomain":"bluewater-a486cada.eastus.azurecontainerapps.io","staticIp":"20.242.207.38","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"c23a78b2-093d-4df0-b2b0-588447bf15c6","sharedKey":null}},"zoneRedundant":false,"kedaConfiguration":{"version":"2.10.0"},"daprConfiguration":{"version":"1.11.2"},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/managedEnvironments/env000002/eventstream","customDomainConfiguration":{"customDomainVerificationId":"114877694D8D814008DB8FDB1F32EFE919BE6A22ED8C8BEA46658B0401FBAC57","dnsSuffix":null,"certificateValue":null,"certificatePassword":null,"thumbprint":null,"subjectName":null,"expirationDate":null},"workloadProfiles":null,"firstPartyConfiguration":null,"infrastructureResourceGroup":null,"peerAuthentication":{"mtls":{"enabled":false}}}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1526'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 31 Aug 2023 00:00:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: DD91E84CCCAA480CABB5147B3B03EDD1 Ref B: CO6AA3150219033 Ref C: 2023-08-31T00:00:32Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --environment --source --repo
+      User-Agent:
+      - AZURECLI/2.51.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"}],"resourceTypes":[{"resourceType":"managedEnvironments","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/managedCertificates","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"jobs","locations":["North Central US (Stage)","West
+        US 2","Southeast Asia","Sweden Central","Canada Central","West Europe","North
+        Europe","East US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappsjobOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/containerappsjobOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/sourceControlOperationResults","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/sourceControlOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/usages","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview"],"defaultApiVersion":"2023-05-02-preview","capabilities":"None"},{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","East US 2 EUAP","West US 2","Southeast
+        Asia","Sweden Central","Canada Central","West Europe","North Europe","East
+        US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"connectedEnvironments","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"connectedEnvironments/certificates","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations/connectedEnvironmentOperationResults","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/connectedEnvironmentOperationStatuses","locations":["North
+        Central US (Stage)","North Central US","East US","East Asia","West Europe"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/managedCertificateOperationStatuses","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/billingMeters","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"locations/availableManagedEnvironmentsWorkloadProfileTypes","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview","2023-05-01","2023-04-01-preview","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"defaultApiVersion":"2023-04-01-preview","capabilities":"None"},{"resourceType":"getCustomDomainVerificationId","locations":["North
+        Central US (Stage)","West US 2","Southeast Asia","Sweden Central","Canada
+        Central","West Europe","North Europe","East US","East US 2","East Asia","Australia
+        East","Germany West Central","Japan East","UK South","West US","Central US","North
+        Central US","South Central US","Korea Central","Brazil South","West US 3","France
+        Central","South Africa North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-05-02-preview"],"defaultApiVersion":"2023-05-02-preview","capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '15550'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 31 Aug 2023 00:00:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 4F2B800A3B9B4B8B86F7FD3D633DA2F1 Ref B: CO6AA3150217029 Ref C: 2023-08-31T00:00:33Z'
+    status:
+      code: 200
+      message: OK
+version: 1
