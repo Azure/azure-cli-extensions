@@ -20,6 +20,13 @@ def cf_resources(cli_ctx, subscription_id=None):
     )
 
 
+def cf_features(cli_ctx, subscription_id=None):
+    """Return the client for checking feature enablement."""
+    return get_mgmt_service_client(
+        cli_ctx, ResourceType.MGMT_RESOURCE_FEATURES, subscription_id=subscription_id
+    )
+
+
 def cf_acr_registries(cli_ctx, *_) -> ContainerRegistryManagementClient:
     """
     Returns the client for managing container registries.
