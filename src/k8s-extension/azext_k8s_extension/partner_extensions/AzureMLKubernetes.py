@@ -633,7 +633,7 @@ def _get_relay_connection_str(
                                                                    "hybrid_connection_name": hybrid_connection_name,
                                                                    "name": auth_rule_name})
 
-    except Exception as e:
+    except azure.core.exceptions.HttpResponseError as e:
         if e.response.status_code != 404 or get_key_only:
             raise e
         # create namespace
