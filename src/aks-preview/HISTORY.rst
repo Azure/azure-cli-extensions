@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.155
++++++++
+* Add `--disable-workload-identity` to the `az aks update` command.
+
 0.5.154
 +++++++
 * Vendor new SDK and bump API version to 2023-07-02-preview.
