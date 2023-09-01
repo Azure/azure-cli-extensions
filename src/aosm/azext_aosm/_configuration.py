@@ -316,7 +316,7 @@ class CNFConfiguration(NFConfiguration):
                 self.helm_packages[package_index] = HelmPackageConfig(**dict(package))
         if isinstance(self.images, dict):
             self.images = CNFImageConfig(**self.images)
-        self.validate()
+            self.validate()
 
     @property
     def output_directory_for_build(self) -> Path:
