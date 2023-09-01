@@ -35,7 +35,11 @@ CLASSIFIERS = [
     "License :: OSI Approved :: MIT License",
 ]
 
-DEPENDENCIES = ["docker", "tqdm", "deepdiff"]
+DEPENDENCIES = [
+    "docker==6.0.1",
+    "tqdm==4.65.0",
+    "deepdiff==6.3.0"
+]
 
 SecurityPolicyProxy.download_binaries()
 
