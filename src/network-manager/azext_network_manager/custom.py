@@ -10,7 +10,7 @@
 # pylint: disable=too-many-lines
 # pylint: disable=unused-argument
 from knack.util import CLIError
-
+from .aaz.latest.network.manager.group.static_member import Create as _GroupStaticMemberCreate
 
 def network_manager_create(cmd,
                            resource_group_name,
@@ -245,3 +245,14 @@ def network_manager_admin_rule_update(cmd,
         if direction is not None:
             rule['custom']['direction'] = direction
     return _RuleUpdate(cli_ctx=cmd.cli_ctx)(command_args=rule)
+
+
+class GroupStaticMemberCreate(_GroupStaticMemberCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.resource_id._fmt = AAZResourceIdArgFormat(
+            template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{}",
+        )
+        return args_schema
