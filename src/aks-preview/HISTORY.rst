@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.155
++++++++
+* Add `az aks copilot` command to start a chat with the Azure Kubernetes Service expert. API keys for OpenAI or Azure are required.
+
 0.5.154
 +++++++
 * Vendor new SDK and bump API version to 2023-07-02-preview.
