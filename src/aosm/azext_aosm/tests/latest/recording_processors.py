@@ -7,9 +7,7 @@
 # the recordings so that we can avoid checking in secrets to the repo.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.testsdk.scenario_tests import (
-    RecordingProcessor
-)
+from azure.cli.testsdk.scenario_tests import RecordingProcessor
 from azure.cli.testsdk.scenario_tests.utilities import is_text_payload
 import json
 import re
@@ -55,8 +53,16 @@ class SasUriReplacer(RecordingProcessor):
 
             for credential in credentials_list:
                 if CONTAINER_SAS_URI in credential:
-                    credential[CONTAINER_SAS_URI] = re.sub(BLOB_STORE_URI_REGEX, MOCK_SAS_URI, credential[CONTAINER_SAS_URI])
-                    credential[CONTAINER_SAS_URI] = re.sub(STORAGE_ACCOUNT_SR_REGEX, MOCK_STORAGE_ACCOUNT_SR, credential[CONTAINER_SAS_URI])
+                    credential[CONTAINER_SAS_URI] = re.sub(
+                        BLOB_STORE_URI_REGEX,
+                        MOCK_SAS_URI,
+                        credential[CONTAINER_SAS_URI],
+                    )
+                    credential[CONTAINER_SAS_URI] = re.sub(
+                        STORAGE_ACCOUNT_SR_REGEX,
+                        MOCK_STORAGE_ACCOUNT_SR,
+                        credential[CONTAINER_SAS_URI],
+                    )
                 new_credentials_list.append(credential)
 
             response_body[CONTAINER_CREDENTIALS] = new_credentials_list
@@ -71,7 +77,9 @@ class BlobStoreUriReplacer(RecordingProcessor):
     def process_request(self, request):
         try:
             request.uri = re.sub(BLOB_STORE_URI_REGEX, MOCK_SAS_URI, request.uri)
-            request.uri = re.sub(STORAGE_ACCOUNT_SR_REGEX, MOCK_STORAGE_ACCOUNT_SR, request.uri)
+            request.uri = re.sub(
+                STORAGE_ACCOUNT_SR_REGEX, MOCK_STORAGE_ACCOUNT_SR, request.uri
+            )
 
         except TypeError:
             pass

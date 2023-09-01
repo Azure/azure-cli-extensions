@@ -38,7 +38,8 @@ def update_resource_group_in_input_file(
     :param input_template_name: The name of the input template file.
     :param output_file_name: The name of the output file.
     :param resource_group: The name of the resource group to update the input template with.
-    :return: The path to the updated input template file."""
+    :return: The path to the updated input template file.
+    """
     code_dir = os.path.dirname(__file__)
     templates_dir = os.path.join(
         code_dir, "scenario_test_mocks", "mock_input_templates"
@@ -63,12 +64,11 @@ def update_resource_group_in_input_file(
 
 
 class VnfNsdTest(ScenarioTest):
-    """
-    This class contains the integration tests for the aosm extension for vnf definition type.
-    """
+    """This class contains the integration tests for the aosm extension for vnf definition type."""
+
     def __init__(self, method_name):
         """
-        This constructor initializes the class
+        This constructor initializes the class.
 
         :param method_name: The name of the test method.
         :param recording_processors: The recording processors to use for the test.
@@ -77,7 +77,11 @@ class VnfNsdTest(ScenarioTest):
         """
         super(VnfNsdTest, self).__init__(
             method_name,
-            recording_processors=[TokenReplacer(), SasUriReplacer(), BlobStoreUriReplacer()]
+            recording_processors=[
+                TokenReplacer(),
+                SasUriReplacer(),
+                BlobStoreUriReplacer(),
+            ],
         )
 
     @ResourceGroupPreparer(name_prefix="cli_test_vnf_nsd_", location="westcentralus")

@@ -7,7 +7,6 @@ import abc
 import logging
 import json
 import os
-import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
@@ -545,7 +544,7 @@ def get_configuration(
         except json.decoder.JSONDecodeError as e:
             raise InvalidArgumentValueError(
                 f"Config file {config_file} is not valid JSON: {e}"
-            )
+            ) from e
     else:
         config_as_dict = {}
 

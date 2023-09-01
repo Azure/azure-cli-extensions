@@ -5,7 +5,6 @@
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
-from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 
 from .vendored_sdks import HybridNetworkManagementClient
 
