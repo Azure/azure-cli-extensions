@@ -545,13 +545,15 @@ class Artifact:
                 # As we shell out the the subprocess, I think checking for these strings
                 # is the best check we can do for permission failures.
                 raise CLIError(
-                    " Failed to import image.\nIt looks like you do not have"
+                    " Failed to import image.\nIt looks like either the source_registry"
+                    " in your config file does not exist or the image doesn't exist or"
+                    " you do not have"
                     " permissions to import images. You need to have Reader/AcrPull"
                     f" from {source_registry_login_server}, and Contributor role +"
                     " AcrPush role, or a custom"
                     " role that allows the importImage action and AcrPush over the"
                     " whole subscription in order to be able to import to the new"
-                    " Artifact store.\n\n If you do not have the latter then you"
+                    " Artifact store.\n\nIf you do not have the latter then you"
                     " can re-run the command using the --no-subscription-permissions"
                     " flag to pull the image to your local machine and then"
                     " push it to the Artifact Store using manifest credentials scoped"
