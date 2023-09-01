@@ -284,10 +284,12 @@ class HelmPackageConfig:
     depends_on: List[str] = field(
         default_factory=lambda: [DESCRIPTION_MAP["helm_depends_on"]]
     )
-    
+
+
 @dataclass
 class CNFImageConfig:
     """CNF Image config settings."""
+
     source_registry: str = DESCRIPTION_MAP["source_registry"]
     source_registry_namespace: str = DESCRIPTION_MAP["source_registry_namespace"]
     source_local_docker_image: str = DESCRIPTION_MAP["source_local_docker_image"]
@@ -295,7 +297,6 @@ class CNFImageConfig:
 
 @dataclass
 class CNFConfiguration(NFConfiguration):
-
     images: Any = CNFImageConfig()
     helm_packages: List[Any] = field(default_factory=lambda: [HelmPackageConfig()])
 
@@ -335,7 +336,8 @@ class CNFConfiguration(NFConfiguration):
         )
         source_local_set = (
             self.images.source_local_docker_image
-            and self.images.source_local_docker_image != DESCRIPTION_MAP["source_local_docker_image"]
+            and self.images.source_local_docker_image
+            != DESCRIPTION_MAP["source_local_docker_image"]
         )
 
         # If these are the same, either neither is set or both are, both of which are errors
