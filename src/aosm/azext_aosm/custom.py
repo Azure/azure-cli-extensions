@@ -17,7 +17,7 @@ from azure.cli.core.azclierror import (
 )
 from knack.log import get_logger
 
-from azext_aosm._client_factory import cf_acr_registries, cf_resources
+from azext_aosm._client_factory import cf_resources
 from azext_aosm._configuration import (
     CNFConfiguration,
     Configuration,
@@ -145,6 +145,7 @@ def publish_definition(
     manifest_file: Optional[str] = None,
     manifest_params_file: Optional[str] = None,
     skip: Optional[SkipSteps] = None,
+    no_subscription_permissions: bool = False,
 ):
     """
     Publish a generated definition.
@@ -155,22 +156,27 @@ def publish_definition(
     :param definition_type: VNF or CNF
     :param config_file: Path to the config file for the NFDV
     :param definition_file: Optional path to a bicep template to deploy, in case the
-        user wants to edit the built NFDV template.
-        If omitted, the default built NFDV template will be used.
+        user wants to edit the built NFDV template. If omitted, the default built NFDV
+        template will be used.
     :param parameters_json_file: Optional path to a parameters file for the bicep file,
-        in case the user wants to edit the built NFDV template. If omitted,
-        parameters from config will be turned into parameters for the bicep file
+        in case the user wants to edit the built NFDV template. If omitted, parameters
+        from config will be turned into parameters for the bicep file
     :param manifest_file: Optional path to an override bicep template to deploy
         manifests
-    :param manifest_params_file: Optional path to an override bicep parameters
-        file for manifest parameters
+    :param manifest_params_file: Optional path to an override bicep parameters file for
+        manifest parameters
     :param skip: options to skip, either publish bicep or upload artifacts
+    :param no_subscription_permissions:
+            CNF definition_type publish only - ignored for VNF. Causes the image
+            artifact copy from a source ACR to be done via docker pull and push,
+            rather than `az acr import`. This is slower but does not require
+            Contributor (or importImage action) and AcrPush permissions on the publisher
+            subscription. It requires Docker to be installed.
     """
     print("Publishing definition.")
     api_clients = ApiClients(
         aosm_client=client,
         resource_client=cf_resources(cmd.cli_ctx),
-        container_registry_client=cf_acr_registries(cmd.cli_ctx),
     )
 
     if definition_type not in (VNF, CNF):
@@ -193,6 +199,7 @@ def publish_definition(
         manifest_params_file=manifest_params_file,
         skip=skip,
         cli_ctx=cmd.cli_ctx,
+        use_manifest_permissions=no_subscription_permissions,
     )
     deployer.deploy_nfd_from_bicep()
 

@@ -20,7 +20,6 @@ from azext_aosm.util.constants import (
     NSD,
     NSD_OUTPUT_BICEP_PREFIX,
     VNF,
-    SOURCE_ACR_REGEX,
 )
 
 logger = logging.getLogger(__name__)
@@ -87,13 +86,21 @@ DESCRIPTION_MAP: Dict[str, str] = {
         "The parameter name in the VM ARM template which specifies the name of the "
         "image to use for the VM."
     ),
-    "source_registry_id": (
-        "Resource ID of the source acr registry from which to pull the image."
+    "source_registry": (
+        "Optional. Login server of the source acr registry from which to pull the "
+        "image(s). For example sourceacr.azurecr.io. Leave blank if you have set "
+        "source_local_docker_image."
+    ),
+    "source_local_docker_image": (
+        "Optional. Image name of the source docker image from local machine. For "
+        "limited use case where the CNF only requires a single docker image and exists "
+        "in the local docker repository. Set to blank of not required."
     ),
     "source_registry_namespace": (
         "Optional. Namespace of the repository of the source acr registry from which "
         "to pull. For example if your repository is samples/prod/nginx then set this to"
-        " samples/prod . Leave blank if the image is in the root namespace."
+        " samples/prod . Leave blank if the image is in the root namespace or you have "
+        "set source_local_docker_image."
         "See https://learn.microsoft.com/en-us/azure/container-registry/"
         "container-registry-best-practices#repository-namespaces for further details."
     ),
@@ -277,12 +284,19 @@ class HelmPackageConfig:
     depends_on: List[str] = field(
         default_factory=lambda: [DESCRIPTION_MAP["helm_depends_on"]]
     )
+    
+@dataclass
+class CNFImageConfig:
+    """CNF Image config settings."""
+    source_registry: str = DESCRIPTION_MAP["source_registry"]
+    source_registry_namespace: str = DESCRIPTION_MAP["source_registry_namespace"]
+    source_local_docker_image: str = DESCRIPTION_MAP["source_local_docker_image"]
 
 
 @dataclass
 class CNFConfiguration(NFConfiguration):
-    source_registry_id: str = DESCRIPTION_MAP["source_registry_id"]
-    source_registry_namespace: str = DESCRIPTION_MAP["source_registry_namespace"]
+
+    images: Any = CNFImageConfig()
     helm_packages: List[Any] = field(default_factory=lambda: [HelmPackageConfig()])
 
     def __post_init__(self):
@@ -300,6 +314,9 @@ class CNFConfiguration(NFConfiguration):
                     package["path_to_mappings"]
                 )
                 self.helm_packages[package_index] = HelmPackageConfig(**dict(package))
+        if isinstance(self.images, dict):
+            self.images = CNFImageConfig(**self.images)
+        self.validate()
 
     @property
     def output_directory_for_build(self) -> Path:
@@ -312,15 +329,20 @@ class CNFConfiguration(NFConfiguration):
 
         :raises ValidationError: If source registry ID doesn't match the regex
         """
-        if self.source_registry_id == DESCRIPTION_MAP["source_registry_id"]:
-            # Config has not been filled in. Don't validate.
-            return
+        source_reg_set = (
+            self.images.source_registry
+            and self.images.source_registry != DESCRIPTION_MAP["source_registry"]
+        )
+        source_local_set = (
+            self.images.source_local_docker_image
+            and self.images.source_local_docker_image != DESCRIPTION_MAP["source_local_docker_image"]
+        )
 
-        source_registry_match = re.search(SOURCE_ACR_REGEX, self.source_registry_id)
-        if not source_registry_match or len(source_registry_match.groups()) < 2:
+        # If these are the same, either neither is set or both are, both of which are errors
+        if source_reg_set == source_local_set:
             raise ValidationError(
-                "CNF config has an invalid source registry ID. Please run `az aosm "
-                "nfd generate-config` to see the valid formats."
+                "Config validation error. Images config must have either a local docker image"
+                " or a source registry."
             )
 
 
@@ -515,22 +537,31 @@ def get_configuration(
     :return: The configuration object
     """
     if config_file:
-        with open(config_file, "r", encoding="utf-8") as f:
-            config_as_dict = json.loads(f.read())
+        try:
+            with open(config_file, "r", encoding="utf-8") as f:
+                config_as_dict = json.loads(f.read())
+        except json.decoder.JSONDecodeError as e:
+            raise InvalidArgumentValueError(
+                f"Config file {config_file} is not valid JSON: {e}"
+            )
     else:
         config_as_dict = {}
 
     config: Configuration
-
-    if configuration_type == VNF:
-        config = VNFConfiguration(config_file=config_file, **config_as_dict)
-    elif configuration_type == CNF:
-        config = CNFConfiguration(config_file=config_file, **config_as_dict)
-    elif configuration_type == NSD:
-        config = NSConfiguration(config_file=config_file, **config_as_dict)
-    else:
+    try:
+        if configuration_type == VNF:
+            config = VNFConfiguration(config_file=config_file, **config_as_dict)
+        elif configuration_type == CNF:
+            config = CNFConfiguration(config_file=config_file, **config_as_dict)
+        elif configuration_type == NSD:
+            config = NSConfiguration(config_file=config_file, **config_as_dict)
+        else:
+            raise InvalidArgumentValueError(
+                "Definition type not recognized, options are: vnf, cnf or nsd"
+            )
+    except TypeError as typeerr:
         raise InvalidArgumentValueError(
-            "Definition type not recognized, options are: vnf, cnf or nsd"
-        )
+            f"Config file {config_file} is not valid: {typeerr}"
+        ) from typeerr
 
     return config
