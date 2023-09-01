@@ -192,7 +192,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env create') as c:
         c.argument('zone_redundant', options_list=["--zone-redundant", "-z"], help="Enable zone redundancy on the environment. Cannot be used without --infrastructure-subnet-resource-id. If used with --location, the subnet's location must match")
-        c.argument('enable_workload_profiles', arg_type=get_three_state_flag(), options_list=["--enable-workload-profiles", "-w"], help="Boolean indicating if the environment is enabled to have workload profiles", is_preview=True)
+        c.argument('enable_workload_profiles', arg_type=get_three_state_flag(), options_list=["--enable-workload-profiles", "-w"], help="Boolean indicating if the environment is enabled to have workload profiles")
 
     with self.argument_context('containerapp env update') as c:
         c.argument('name', name_type, help='Name of the Container Apps environment.')
@@ -394,9 +394,9 @@ def load_arguments(self, _):
         c.argument('consumer_secret_setting_name', options_list=['--consumer-secret-name', '--secret-name'], help='The consumer secret name that contains the app secret.')
         c.argument('provider_name', required=True, help='The name of the custom OpenID Connect provider.')
         c.argument('openid_configuration', help='The endpoint that contains all the configuration endpoints for the provider.')
-        c.argument('token_store', arg_type=get_three_state_flag(), help='Boolean indicating if token store is enabled for the app.')
-        c.argument('sas_url_secret', help='The blob storage SAS URL to be used for token store.')
-        c.argument('sas_url_secret_name', help='The secret name that contains blob storage SAS URL to be used for token store.')
+        c.argument('token_store', arg_type=get_three_state_flag(), help='Boolean indicating if token store is enabled for the app.', is_preview=True)
+        c.argument('sas_url_secret', help='The blob storage SAS URL to be used for token store.', is_preview=True)
+        c.argument('sas_url_secret_name', help='The secret name that contains blob storage SAS URL to be used for token store.', is_preview=True)
 
         # auth update
         c.argument('set_string', options_list=['--set'], help='Value of a specific field within the configuration settings for the Azure App Service Authentication / Authorization feature.')
