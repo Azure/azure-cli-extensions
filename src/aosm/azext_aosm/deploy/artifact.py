@@ -311,8 +311,8 @@ class Artifact:
         """Format the acr url, artifact name and version into a target image string."""
         if include_hostname:
             return f"{self._get_acr()}" f"/{self.artifact_name}:{self.artifact_version}"
-        else:
-            return f"{self.artifact_name}:{self.artifact_version}"
+
+        return f"{self.artifact_name}:{self.artifact_version}"
 
     def _check_tool_installed(self, tool_name: str) -> None:
         """
@@ -566,16 +566,16 @@ class Artifact:
                     " only to the store. This requires Docker to be installed"
                     " locally."
                 ) from error
-            else:
-                # The most likely failure is that the image already exists in the
-                # artifact store, so don't fail at this stage, log the error.
-                logger.error(
-                    (
-                        "Failed to import %s to %s. Check if this image exists in the"
-                        " source registry or is already present in the target registry.\n"
-                        "%s"
-                    ),
-                    source_image,
-                    target_acr,
-                    error,
-                )
+
+            # The most likely failure is that the image already exists in the artifact
+            # store, so don't fail at this stage, log the error.
+            logger.error(
+                (
+                    "Failed to import %s to %s. Check if this image exists in the"
+                    " source registry or is already present in the target registry.\n"
+                    "%s"
+                ),
+                source_image,
+                target_acr,
+                error,
+            )

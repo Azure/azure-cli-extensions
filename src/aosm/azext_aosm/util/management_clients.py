@@ -5,9 +5,7 @@
 """Clients for the python SDK along with useful caches."""
 
 from dataclasses import dataclass
-from typing import Optional
 
-from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 from azure.mgmt.resource import ResourceManagementClient
 from knack.log import get_logger
 

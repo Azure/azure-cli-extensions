@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------
 """Contains class for deploying resources required by NFDs/NSDs via the SDK."""
 
-import re
 from typing import Optional
 
 from azure.cli.core.azclierror import AzCLIError
