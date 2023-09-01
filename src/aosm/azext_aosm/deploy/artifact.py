@@ -7,18 +7,14 @@ import math
 import shutil
 import subprocess
 from dataclasses import dataclass
-from typing import List, Optional, Union
+from typing import Any, Optional, Union
 
-from azure.cli.core.commands import LongRunningOperation
-from azure.cli.core.auth.credential_adaptor import CredentialAdaptor
-from azure.mgmt.containerregistry import ContainerRegistryManagementClient
-from azure.mgmt.containerregistry.models import ImportImageParameters, ImportSource, ImportSourceCredentials
 from azure.storage.blob import BlobClient, BlobType
 from knack.log import get_logger
 from knack.util import CLIError
 from oras.client import OrasClient
 
-from azext_aosm._configuration import ArtifactConfig, HelmPackageConfig
+from azext_aosm._configuration import ArtifactConfig, HelmPackageConfig, CNFImageConfig
 
 logger = get_logger(__name__)
 
@@ -31,8 +27,11 @@ class Artifact:
     artifact_type: str
     artifact_version: str
     artifact_client: Union[BlobClient, OrasClient]
+    manifest_credentials: Any
 
-    def upload(self, artifact_config: Union[ArtifactConfig, HelmPackageConfig]) -> None:
+    def upload(self,
+               artifact_config: Union[ArtifactConfig, HelmPackageConfig],
+               use_manifest_permissions: bool = False) -> None:
         """
         Upload artifact.
 
@@ -40,9 +39,11 @@ class Artifact:
         """
         if isinstance(self.artifact_client, OrasClient):
             if isinstance(artifact_config, HelmPackageConfig):
-                self._upload_helm_to_acr(artifact_config)
+                self._upload_helm_to_acr(artifact_config, use_manifest_permissions)
             elif isinstance(artifact_config, ArtifactConfig):
                 self._upload_arm_to_acr(artifact_config)
+            elif isinstance(artifact_config, CNFImageConfig):
+                self._upload_or_copy_image_to_acr(artifact_config, use_manifest_permissions)
             else:
                 raise ValueError(f"Unsupported artifact type: {type(artifact_config)}.")
         else:
@@ -73,45 +74,120 @@ class Artifact:
             raise NotImplementedError(
                 "Copying artifacts is not implemented for ACR artifacts stores."
             )
-
-    def _upload_helm_to_acr(self, artifact_config: HelmPackageConfig) -> None:
+            
+    def _call_subprocess_raise_output(self, cmd: list) -> None:
         """
-        Upload artifact to ACR.
+        Call a subprocess and raise a CLIError with the output if it fails.
+        
+        :param cmd: command to run, in list format
+        :raise CLIError: if the subprocess fails
+        """
+        try:
+            called_process = subprocess.run(
+                cmd,
+                encoding="utf-8",
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            logger.debug("Output from %s: %s. Error: %s", cmd, called_process.stdout, called_process.stderr)
+        except subprocess.CalledProcessError as error:
+            logger.debug("Failed to run %s with %s", cmd, error)
+
+            all_output: str = (f"Command 401: {'' ''.join(cmd)}\n"
+                               f"Output: {error.stdout}\n"
+                          f"Error output: {error.stderr}\n"
+                          f"Return code: {error.returncode}")
+            logger.debug("All the output %s", all_output)
+
+            raise CLIError(all_output) from error
+
+    def _upload_helm_to_acr(self,
+                            artifact_config: HelmPackageConfig,
+                            use_manifest_permissions: bool) -> None:
+        """
+        Upload artifact to ACR. This does and az acr login and then a helm push.
+        
+        Requires helm to be installed.
 
         :param artifact_config: configuration for the artifact being uploaded
+        :param use_manifest_permissions: whether to use the manifest credentials
+               for the upload. If False, the CLI user credentials will be used, which
+               does not require Docker to be installed. If True, the manifest creds will
+               be used, which requires Docker.
         """
+        self._check_tool_installed("helm")
         assert isinstance(self.artifact_client, OrasClient)
         chart_path = artifact_config.path_to_chart
         if not self.artifact_client.remote.hostname:
             raise ValueError(
                 "Cannot upload artifact. Oras client has no remote hostname."
             )
-        registry = self.artifact_client.remote.hostname.replace("https://", "")
+        registry = self._get_acr()
         target_registry = f"oci://{registry}"
         registry_name = registry.replace(".azurecr.io", "")
 
-        # Note that this uses the user running the CLI's AZ login credentials, not the
-        # manifest credentials retrieved from the ACR. This isn't ideal, but using the
-        # manifest credentials caused problems so we are doing this for now.
-        # This logs in to the registry by retrieving an access token, which allows use
-        # of this command in environments without docker.
-        logger.debug("Logging into %s", registry_name)
-        acr_login_with_token_cmd = [
-            str(shutil.which("az")),
-            "acr",
-            "login",
-            "--name",
-            registry_name,
-            "--expose-token",
-            "--output",
-            "tsv",
-            "--query",
-            "accessToken",
-        ]
-        acr_token = subprocess.check_output(
-            acr_login_with_token_cmd, encoding="utf-8"
-        ).strip()
+        username = self.manifest_credentials["username"]
+        password = self.manifest_credentials["acr_token"]
 
+        if not use_manifest_permissions:
+            # Note that this uses the user running the CLI's AZ login credentials, not
+            # the manifest credentials retrieved from the ACR. This allows users with
+            # enough permissions to avoid having to install docker. It logs in to the
+            # registry by retrieving an access token, which allows use of this command
+            # in environments without docker.
+            # It is governed by the no-subscription-permissions CLI argument which
+            # default to False.
+            logger.debug("Using CLI user credentials to log into %s", registry_name)
+            acr_login_with_token_cmd = [
+                str(shutil.which("az")),
+                "acr",
+                "login",
+                "--name",
+                registry_name,
+                "--expose-token",
+                "--output",
+                "tsv",
+                "--query",
+                "accessToken",
+            ]
+            username = "00000000-0000-0000-0000-000000000000"
+            try:
+                password = subprocess.check_output(
+                    acr_login_with_token_cmd, encoding="utf-8", text=True
+                ).strip()
+            except subprocess.CalledProcessError as error:
+                if ((" 401" or "unauthorized") in error.stderr
+                    or
+                    (" 401" or "unauthorized") in error.stdout):
+                    # As we shell out the the subprocess, I think checking for these
+                    # strings is the best check we can do for permission failures.
+                    raise CLIError(
+                        " Failed to login to Artifact Store ACR.\n"
+                        " It looks like you do not have permissions. You need to have"
+                        " the AcrPush role over the"
+                        " whole subscription in order to be able to upload to the new"
+                        " Artifact store.\n\nIf you do not have them then you can"
+                        " re-run the command using the --no-subscription-permissions"
+                        " flag to use manifest credentials scoped"
+                        " only to the store. This requires Docker to be installed"
+                        " locally."
+                    ) from error
+        else:
+            # This seems to prevent occasional helm login failures
+            self._check_tool_installed("docker")
+            acr_login_cmd = [
+                str(shutil.which("az")),
+                "acr",
+                "login",
+                "--name",
+                registry_name,
+                "--username",
+                username,
+                "--password",
+                password,
+            ]
+            self._call_subprocess_raise_output(acr_login_cmd)
         try:
             logger.debug("Uploading %s to %s", chart_path, target_registry)
             helm_login_cmd = [
@@ -120,11 +196,11 @@ class Artifact:
                 "login",
                 registry,
                 "--username",
-                "00000000-0000-0000-0000-000000000000",
+                username,
                 "--password",
-                acr_token,
+                password,
             ]
-            subprocess.run(helm_login_cmd, check=True)
+            self._call_subprocess_raise_output(helm_login_cmd)
 
             # helm push "$chart_path" "$target_registry"
             push_command = [
@@ -133,7 +209,7 @@ class Artifact:
                 chart_path,
                 target_registry,
             ]
-            subprocess.run(push_command, check=True)
+            self._call_subprocess_raise_output(push_command)
         finally:
             helm_logout_cmd = [
                 str(shutil.which("helm")),
@@ -141,7 +217,7 @@ class Artifact:
                 "logout",
                 registry,
             ]
-            subprocess.run(helm_logout_cmd, check=True)
+            self._call_subprocess_raise_output(helm_logout_cmd)
 
     def _convert_to_readable_size(self, size_in_bytes: Optional[int]) -> str:
         """Converts a size in bytes to a human readable size."""
@@ -207,64 +283,293 @@ class Artifact:
                     f"{source_blob.blob_name} does not exist in"
                     f" {source_blob.account_name}."
                 )
+                
+    def _get_acr(self) -> str:
+        """_summary_
 
-    @staticmethod
-    def copy_image(
-        cli_ctx,
-        container_registry_client: ContainerRegistryManagementClient,
-        source_registry_id: str,
-        source_image: str,
-        source_registry_creds: CredentialAdaptor,
-        target_registry_resource_group_name: str,
-        target_registry_name: str,
-        target_tags: List[str],
-        mode: str = "NoForce",
+        :return: _description_
+        :rtype: str
+        """
+        if not self.artifact_client.remote.hostname:
+            raise ValueError(
+                "Cannot upload artifact. Oras client has no remote hostname."
+            )
+        return self._clean_name(self.artifact_client.remote.hostname)
+
+    def _get_acr_target_image(
+        self,
+        include_hostname: bool = True,
+    ) -> str:
+        """Format the acr url, artifact name and version into a target image string."""
+        if include_hostname:
+            return (
+                f"{self._get_acr()}"
+                f"/{self.artifact_name}:{self.artifact_version}"
+            )
+        else:
+            return f"{self.artifact_name}:{self.artifact_version}"
+        
+    def _check_tool_installed(self, tool_name: str) -> None:
+        """
+        Check whether a tool such as docker or helm is installed.
+        
+        :param tool_name: name of the tool to check, e.g. docker
+        """
+        if shutil.which(tool_name) is None:
+            raise CLIError(f"You must install {tool_name} to use this command.")
+        
+    def _upload_or_copy_image_to_acr(self, 
+                                     artifact_config: CNFImageConfig,
+                                     use_manifest_permissions: bool) -> None:
+
+        # Check whether the source registry has a namespace in the repository path
+        source_registry_namespace: str = ""
+        if artifact_config.source_registry_namespace:
+            source_registry_namespace = f"{artifact_config.source_registry_namespace}/"
+            
+        if artifact_config.source_local_docker_image:
+            # The user has provided a local docker image to use as the source
+            # for the images in the artifact manifest
+            self._check_tool_installed("docker")
+            print(f"Using local docker image as source for image artifact upload for image artifact: {self.artifact_name}")
+            self._push_image_from_local_registry(
+                local_docker_image=artifact_config.source_local_docker_image,
+                target_username=self.manifest_credentials['username'],
+                target_password=self.manifest_credentials['acr_token'],
+            )
+        elif use_manifest_permissions:
+            self._check_tool_installed("docker")
+            print(f"Using docker pull and push to copy image artifact: {self.artifact_name}")
+            image_name = (
+                f"{self._clean_name(artifact_config.source_registry)}/"
+                f"{source_registry_namespace}{self.artifact_name}"
+                f":{self.artifact_version}"
+            )
+            self._pull_image_to_local_registry(
+                source_registry_login_server=self._clean_name(artifact_config.source_registry),
+                source_image=image_name
+            )
+            self._push_image_from_local_registry(
+                local_docker_image=image_name,
+                target_username=self.manifest_credentials['username'],
+                target_password=self.manifest_credentials['acr_token'],
+            )
+        else:
+            print(f"Using az acr import to copy image artifact: {self.artifact_name}")
+            self._copy_image(
+                source_registry_login_server=artifact_config.source_registry,
+                source_image=(
+                    f"{source_registry_namespace}{self.artifact_name}"
+                    f":{self.artifact_version}"
+                )
+            )
+
+    def _push_image_from_local_registry(
+        self,
+        local_docker_image: str,
+        target_username: str,
+        target_password: str,
     ):
         """
-        Copy image from one ACR to another.
+        Push image to target registry using docker push. Requires docker.
 
-        :param cli_ctx: CLI context
-        :param container_registry_client: container registry client
-        :param source_registry_id: source registry ID
-        :param source_image: source image
-        :param target_registry_resource_group_name: target registry resource group name
-        :param target_registry_name: target registry name
-        :param target_tags: the list of tags to be applied to the imported image
-                            should be of form: namepace/name:tag or name:tag
-        :param mode: mode for import
+        :param local_docker_image: name and tag of the source image on local registry
+                                    e.g. uploadacr.azurecr.io/samples/nginx:stable
+        :type local_docker_image: str
+        :param target_username: The username to use for the az acr login attempt
+        :type target_username: str
+        :param target_password: The password to use for the az acr login attempt
+        :type target_password: str
         """
-        # https://learn.microsoft.com/en-us/rest/api/containerregistry/registries/import-image?tabs=HTTP#importsource
-        source = ImportSource(
-            credentials=ImportSourceCredentials(username="", password=source_registry_creds.get_token()),
-            resource_id=source_registry_id,
-            source_image=source_image,
-        )
-
-        import_parameters = ImportImageParameters(
-            source=source,
-            target_tags=target_tags,
-            untagged_target_repositories=[],
-            mode=mode,
-        )
+        target_acr = self._get_acr()
         try:
-            result_poller = container_registry_client.registries.begin_import_image(
-                resource_group_name=target_registry_resource_group_name,
-                registry_name=target_registry_name,
-                parameters=import_parameters,
+            target = self._get_acr_target_image()
+            print("Tagging source image")
+
+            tag_image_cmd = [
+                str(shutil.which("docker")),
+                "tag",
+                local_docker_image,
+                target,
+            ]
+            self._call_subprocess_raise_output(tag_image_cmd)
+            message = (
+                "Logging into artifact store registry "
+                f"{self.artifact_client.remote.hostname}"
             )
 
-            LongRunningOperation(cli_ctx, "Importing image...")(result_poller)
+            print(message)
+            logger.info(message)
+            acr_target_login_cmd = [
+                str(shutil.which("az")),
+                "acr",
+                "login",
+                "--name",
+                target_acr,
+                "--username",
+                target_username,
+                "--password",
+                target_password
+            ]
+            self._call_subprocess_raise_output(acr_target_login_cmd)
 
-            logger.info(
-                "Successfully imported %s to %s", source_image, target_registry_name
-            )
+            print("Pushing target image using docker push")
+            push_target_image_cmd = [
+                str(shutil.which("docker")),
+                "push",
+                target,
+            ]
+            self._call_subprocess_raise_output(push_target_image_cmd)
         except CLIError as error:
             logger.error(
                 (
-                    "Failed to import %s to %s. Check if this image exists in the"
-                    " source registry or is already present in the target registry."
+                    "Failed to tag and push %s to %s."
                 ),
-                source_image,
-                target_registry_name,
+                local_docker_image,
+                target_acr,
             )
             logger.debug(error, exc_info=True)
+            raise error
+        finally:
+            docker_logout_cmd = [
+                str(shutil.which("docker")),
+                "logout",
+                target_acr,
+            ]
+            self._call_subprocess_raise_output(docker_logout_cmd)
+            
+    def _pull_image_to_local_registry(
+        self,
+        source_registry_login_server: str,
+        source_image: str,
+    ) -> None:
+        """
+        Pull image to local registry using docker pull. Requires docker.
+
+        Uses the CLI user's context to log in to the source registry.
+
+        :param: source_registry_login_server: e.g. uploadacr.azurecr.io
+        :param: source_image: source docker image name 
+                              e.g. uploadacr.azurecr.io/samples/nginx:stable
+        """
+        try:
+            # Login to the source registry with the CLI user credentials. This requires
+            # docker to be installed.
+            message = f"Logging into source registry {source_registry_login_server}"
+            print(message)
+            logger.info(message)
+            acr_source_login_cmd = [
+                str(shutil.which("az")),
+                "acr",
+                "login",
+                "--name",
+                source_registry_login_server,
+            ]
+            self._call_subprocess_raise_output(acr_source_login_cmd)
+            message = f"Pulling source image {source_image}"
+            print(message)
+            logger.info(message)
+            pull_source_image_cmd = [
+                str(shutil.which("docker")),
+                "pull",
+                source_image,
+            ]
+            self._call_subprocess_raise_output(pull_source_image_cmd)
+        except CLIError as error:
+            logger.error(
+                (
+                    "Failed to pull %s. Check if this image exists in the"
+                    " source registry %s."
+                ),
+                source_image,
+                source_registry_login_server
+            )
+            logger.debug(error, exc_info=True)
+            raise error
+        finally:
+            docker_logout_cmd = [
+                str(shutil.which("docker")),
+                "logout",
+                source_registry_login_server
+            ]
+            self._call_subprocess_raise_output(docker_logout_cmd)
+            
+    def _clean_name(self, registry_name: str) -> str:
+        """Remove https:// from the registry name."""
+        return registry_name.replace("https://", "")
+
+    def _copy_image(
+        self,
+        source_registry_login_server: str,
+        source_image: str,
+    ):
+        """
+        Copy image from one ACR to another.
+        
+        Use az acr import to do the import image. Previously we used the python
+        sdk ContainerRegistryManagementClient.registries.begin_import_image 
+        but this requires the source resource group name, which is more faff 
+        at configuration time.
+        
+        Neither az acr import or begin_import_image support using the username
+        and acr_token retrieved from the manifest credentials, so this uses the
+        CLI users context to access both the source registry and the target
+        Artifact Store registry, which requires either Contributor role or a 
+        custom role that allows the importImage action over the whole subscription.        
+
+        :param source_registry: source registry login server e.g. https://uploadacr.azurecr.io
+        :param source_image: source image including namespace and tags e.g.
+                             samples/nginx:stable
+        """
+        target_acr = self._get_acr()
+        try:
+
+            print("Copying artifact from source registry")
+            source = f"{self._clean_name(source_registry_login_server)}/{source_image}"
+            acr_import_image_cmd = [
+                str(shutil.which("az")),
+                "acr",
+                "import",
+                "--name",
+                target_acr,
+                "--source",
+                source,
+                "--image",
+                self._get_acr_target_image(include_hostname=False),
+                
+            ]
+            self._call_subprocess_raise_output(acr_import_image_cmd)
+        except CLIError as error:
+            logger.debug(error, exc_info=True)
+            if (" 401" or "Unauthorized") in str(error):
+                # As we shell out the the subprocess, I think checking for these strings
+                # is the best check we can do for permission failures.
+                raise CLIError(
+                    " Failed to import image.\nIt looks like you do not have"
+                    " permissions to import images. You need to have Reader/AcrPull"
+                    f" from {source_registry_login_server}, and Contributor role +"
+                    " AcrPush role, or a custom"
+                    " role that allows the importImage action and AcrPush over the"
+                    " whole subscription in order to be able to import to the new"
+                    " Artifact store.\n\n If you do not have the latter then you"
+                    " can re-run the command using the --no-subscription-permissions"
+                    " flag to pull the image to your local machine and then"
+                    " push it to the Artifact Store using manifest credentials scoped"
+                    " only to the store. This requires Docker to be installed"
+                    " locally."
+                ) from error
+            else:
+                # The most likely failure is that the image already exists in the
+                # artifact store, so don't fail at this stage, log the error.
+                logger.error(
+                    (
+                        "Failed to import %s to %s. Check if this image exists in the"
+                        " source registry or is already present in the target registry.\n"
+                        "%s"
+                    ),
+                    source_image,
+                    target_acr,
+                    error,
+                )
+
+ 

@@ -22,4 +22,3 @@ class ApiClients:
 
     aosm_client: HybridNetworkManagementClient
     resource_client: ResourceManagementClient
-    container_registry_client: Optional[ContainerRegistryManagementClient] = None

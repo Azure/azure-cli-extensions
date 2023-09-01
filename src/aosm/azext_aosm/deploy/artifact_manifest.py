@@ -26,14 +26,6 @@ from azext_aosm.vendored_sdks.models import (
 
 logger = get_logger(__name__)
 
-class BearerTokenCredential(TokenCredential):
-    def __init__(self, token: str, expiry: int):
-        self._token: AccessToken = AccessToken(token, expiry)
-        #self._token.token = token
-        
-    def get_token(self, *scopes, **kwargs):
-        return self._token
-
 class ArtifactManifestOperator:
     """ArtifactManifest class."""
 
@@ -75,25 +67,6 @@ class ArtifactManifestOperator:
             username=self._manifest_credentials["username"],
             password=self._manifest_credentials["acr_token"],
         )
-
-        return client
-
-    @lru_cache(maxsize=32)  # noqa: B019
-    def container_registry_client(self, subscription_id: str) -> ContainerRegistryManagementClient:
-        """Get a container registry client authenticated with the manifest credentials.
-
-        :param subscription_id: _description_
-        :type subscription_id: str
-        :return: _description_
-        :rtype: ContainerRegistryManagementClient
-        """
-        expiry_dt = parser.parse(self._manifest_credentials["expiry"])
-        client = ContainerRegistryManagementClient(
-            credential=BearerTokenCredential(
-                self._manifest_credentials["acr_token"],
-                int(round(expiry_dt.timestamp()))),
-            subscription_id=subscription_id,
-        )
         return client
 
     def _get_artifact_list(self) -> List[Artifact]:
@@ -129,6 +102,7 @@ class ArtifactManifestOperator:
                         artifact_type=artifact.artifact_type,
                         artifact_version=artifact.artifact_version,
                         artifact_client=self._get_artifact_client(artifact),
+                        manifest_credentials=self._manifest_credentials,
                     )
                 )
 

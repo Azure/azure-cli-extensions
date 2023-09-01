@@ -11,10 +11,11 @@ import tempfile
 import time
 from typing import Any, Dict, Optional
 
+from azure.cli.core.azclierror import ValidationError
 from azure.cli.core.commands import LongRunningOperation
-from azure.cli.core._profile import Profile
 from azure.mgmt.resource.resources.models import DeploymentExtended
 from knack.log import get_logger
+from knack.util import CLIError
 
 from azext_aosm._configuration import (
     CNFConfiguration,
@@ -66,6 +67,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         manifest_params_file: Optional[str] = None,
         skip: Optional[SkipSteps] = None,
         cli_ctx: Optional[object] = None,
+        use_manifest_permissions: bool = False,
     ):
         """
         :param api_clients: ApiClients object for AOSM and ResourceManagement
@@ -77,6 +79,13 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         the manifest
         :param skip: options to skip, either publish bicep or upload artifacts
         :param cli_ctx: The CLI context. Used with CNFs and all LongRunningOperations
+        :param use_manifest_permissions:
+            CNF definition_type publish only - ignored for VNF or NSD. Causes the image
+            artifact copy from a source ACR to be done via docker pull and push,
+            rather than `az acr import`. This is slower but does not require
+            Contributor (or importImage action) permissions on the publisher
+            subscription. Also uses manifest permissions for helm chart upload.
+            Requires Docker to be installed locally.
         """
         self.api_clients = api_clients
         self.resource_type = resource_type
@@ -90,6 +99,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         self.pre_deployer = PreDeployerViaSDK(
             self.api_clients, self.config, self.cli_ctx
         )
+        self.use_manifest_permissions = use_manifest_permissions
 
     def deploy_nfd_from_bicep(self) -> None:
         """
@@ -187,19 +197,10 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
             artifact_store_name=self.config.acr_artifact_store_name,
         )
         if not acr_properties.storage_resource_id:
-            raise ValueError(
+            raise CLIError(
                 f"Artifact store {self.config.acr_artifact_store_name} "
                 "has no storage resource id linked"
             )
-
-        target_registry_name = acr_properties.storage_resource_id.split("/")[-1]
-        target_registry_resource_group_name = acr_properties.storage_resource_id.split(
-            "/"
-        )[-5]
-        # Check whether the source registry has a namespace in the repository path
-        source_registry_namespace: str = ""
-        if self.config.source_registry_namespace:
-            source_registry_namespace = f"{self.config.source_registry_namespace}/"
 
         # The artifacts from the manifest which has been deployed by bicep
         acr_manifest = ArtifactManifestOperator(
@@ -221,7 +222,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
 
             if helm_package_name not in artifact_dictionary:
                 # Helm package in the config file but not in the artifact manifest
-                raise ValueError(
+                raise CLIError(
                     f"Artifact {helm_package_name} not found in the artifact manifest"
                 )
             # Get the artifact object that came from the manifest
@@ -231,7 +232,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
 
             # The artifact object will use the correct client (ORAS) to upload the
             # artifact
-            manifest_artifact.upload(helm_package)
+            manifest_artifact.upload(helm_package, self.use_manifest_permissions)
 
             print(f"Finished uploading Helm package: {helm_package_name}")
 
@@ -239,36 +240,23 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
             artifact_dictionary.pop(helm_package_name)
 
         # All the remaining artifacts are not in the helm_packages list. We assume that
-        # they are images that need to be copied from another ACR.
+        # they are images that need to be copied from another ACR or uploaded from a
+        # local image.
         if self.skip == IMAGE_UPLOAD:
             print("Skipping upload of images")
             return
 
-        from azure.cli.core.commands.client_factory import get_subscription_id
-        #subscription=get_subscription_id(self.cli_ctx)
-        profile = Profile(cli_ctx=self.cli_ctx)
-        cli_ctx_credential, subscription_id, _ = profile.get_login_credentials()
-        print(f"Subscription ID: {subscription_id}")
-        print(f"Credentials: {cli_ctx_credential}")
-        container_reg_client = acr_manifest.container_registry_client(subscription_id)
-
+        # This is the first time we have easy access to the number of images to upload
+        # so we validate the config file here.
+        if (len(artifact_dictionary.values()) > 1 and self.config.images.source_local_docker_image):
+            raise ValidationError(
+                "Multiple image artifacts found to upload and a local docker image"
+                " was specified in the config file. source_local_docker_image is only "
+                "supported if there is a single image artifact to upload."
+            )
         for artifact in artifact_dictionary.values():
             assert isinstance(artifact, Artifact)
-
-            print(f"Copying artifact: {artifact.artifact_name}")
-            artifact.copy_image(
-                cli_ctx=self.cli_ctx,
-                container_registry_client=container_reg_client,
-                source_registry_id=self.config.source_registry_id,
-                source_image=(
-                    f"{source_registry_namespace}{artifact.artifact_name}"
-                    f":{artifact.artifact_version}"
-                ),
-                source_registry_creds=cli_ctx_credential,
-                target_registry_resource_group_name=target_registry_resource_group_name,
-                target_registry_name=target_registry_name,
-                target_tags=[f"{artifact.artifact_name}:{artifact.artifact_version}"],
-            )
+            artifact.upload(self.config.images, self.use_manifest_permissions)
 
     def nfd_predeploy(self) -> bool:
         """
@@ -282,9 +270,6 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         self.pre_deployer.ensure_acr_artifact_store_exists()
         if self.resource_type == VNF:
             self.pre_deployer.ensure_sa_artifact_store_exists()
-        if self.resource_type == CNF:
-            self.pre_deployer.ensure_config_source_registry_exists()
-
         self.pre_deployer.ensure_config_nfdg_exists()
         return self.pre_deployer.do_config_artifact_manifests_exist()
 
