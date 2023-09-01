@@ -26,6 +26,7 @@ from azext_aosm.vendored_sdks.models import (
 
 logger = get_logger(__name__)
 
+
 class ArtifactManifestOperator:
     """ArtifactManifest class."""
 

@@ -29,9 +29,11 @@ class Artifact:
     artifact_client: Union[BlobClient, OrasClient]
     manifest_credentials: Any
 
-    def upload(self,
-               artifact_config: Union[ArtifactConfig, HelmPackageConfig],
-               use_manifest_permissions: bool = False) -> None:
+    def upload(
+        self,
+        artifact_config: Union[ArtifactConfig, HelmPackageConfig],
+        use_manifest_permissions: bool = False,
+    ) -> None:
         """
         Upload artifact.
 
@@ -43,7 +45,9 @@ class Artifact:
             elif isinstance(artifact_config, ArtifactConfig):
                 self._upload_arm_to_acr(artifact_config)
             elif isinstance(artifact_config, CNFImageConfig):
-                self._upload_or_copy_image_to_acr(artifact_config, use_manifest_permissions)
+                self._upload_or_copy_image_to_acr(
+                    artifact_config, use_manifest_permissions
+                )
             else:
                 raise ValueError(f"Unsupported artifact type: {type(artifact_config)}.")
         else:
@@ -74,40 +78,43 @@ class Artifact:
             raise NotImplementedError(
                 "Copying artifacts is not implemented for ACR artifacts stores."
             )
-            
+
     def _call_subprocess_raise_output(self, cmd: list) -> None:
         """
         Call a subprocess and raise a CLIError with the output if it fails.
-        
+
         :param cmd: command to run, in list format
         :raise CLIError: if the subprocess fails
         """
         try:
             called_process = subprocess.run(
-                cmd,
-                encoding="utf-8",
-                capture_output=True,
-                text=True,
-                check=True
+                cmd, encoding="utf-8", capture_output=True, text=True, check=True
             )
-            logger.debug("Output from %s: %s. Error: %s", cmd, called_process.stdout, called_process.stderr)
+            logger.debug(
+                "Output from %s: %s. Error: %s",
+                cmd,
+                called_process.stdout,
+                called_process.stderr,
+            )
         except subprocess.CalledProcessError as error:
             logger.debug("Failed to run %s with %s", cmd, error)
 
-            all_output: str = (f"Command 401: {'' ''.join(cmd)}\n"
-                               f"Output: {error.stdout}\n"
-                          f"Error output: {error.stderr}\n"
-                          f"Return code: {error.returncode}")
+            all_output: str = (
+                f"Command 401: {'' ''.join(cmd)}\n"
+                f"Output: {error.stdout}\n"
+                f"Error output: {error.stderr}\n"
+                f"Return code: {error.returncode}"
+            )
             logger.debug("All the output %s", all_output)
 
             raise CLIError(all_output) from error
 
-    def _upload_helm_to_acr(self,
-                            artifact_config: HelmPackageConfig,
-                            use_manifest_permissions: bool) -> None:
+    def _upload_helm_to_acr(
+        self, artifact_config: HelmPackageConfig, use_manifest_permissions: bool
+    ) -> None:
         """
         Upload artifact to ACR. This does and az acr login and then a helm push.
-        
+
         Requires helm to be installed.
 
         :param artifact_config: configuration for the artifact being uploaded
@@ -157,9 +164,9 @@ class Artifact:
                     acr_login_with_token_cmd, encoding="utf-8", text=True
                 ).strip()
             except subprocess.CalledProcessError as error:
-                if ((" 401" or "unauthorized") in error.stderr
-                    or
-                    (" 401" or "unauthorized") in error.stdout):
+                if (" 401" or "unauthorized") in error.stderr or (
+                    " 401" or "unauthorized"
+                ) in error.stdout:
                     # As we shell out the the subprocess, I think checking for these
                     # strings is the best check we can do for permission failures.
                     raise CLIError(
@@ -283,9 +290,10 @@ class Artifact:
                     f"{source_blob.blob_name} does not exist in"
                     f" {source_blob.account_name}."
                 )
-                
+
     def _get_acr(self) -> str:
-        """_summary_
+        """
+        _summary_
 
         :return: _description_
         :rtype: str
@@ -302,57 +310,59 @@ class Artifact:
     ) -> str:
         """Format the acr url, artifact name and version into a target image string."""
         if include_hostname:
-            return (
-                f"{self._get_acr()}"
-                f"/{self.artifact_name}:{self.artifact_version}"
-            )
+            return f"{self._get_acr()}" f"/{self.artifact_name}:{self.artifact_version}"
         else:
             return f"{self.artifact_name}:{self.artifact_version}"
-        
+
     def _check_tool_installed(self, tool_name: str) -> None:
         """
         Check whether a tool such as docker or helm is installed.
-        
+
         :param tool_name: name of the tool to check, e.g. docker
         """
         if shutil.which(tool_name) is None:
             raise CLIError(f"You must install {tool_name} to use this command.")
-        
-    def _upload_or_copy_image_to_acr(self, 
-                                     artifact_config: CNFImageConfig,
-                                     use_manifest_permissions: bool) -> None:
 
+    def _upload_or_copy_image_to_acr(
+        self, artifact_config: CNFImageConfig, use_manifest_permissions: bool
+    ) -> None:
         # Check whether the source registry has a namespace in the repository path
         source_registry_namespace: str = ""
         if artifact_config.source_registry_namespace:
             source_registry_namespace = f"{artifact_config.source_registry_namespace}/"
-            
+
         if artifact_config.source_local_docker_image:
             # The user has provided a local docker image to use as the source
             # for the images in the artifact manifest
             self._check_tool_installed("docker")
-            print(f"Using local docker image as source for image artifact upload for image artifact: {self.artifact_name}")
+            print(
+                f"Using local docker image as source for image artifact upload for image artifact: {self.artifact_name}"
+            )
             self._push_image_from_local_registry(
                 local_docker_image=artifact_config.source_local_docker_image,
-                target_username=self.manifest_credentials['username'],
-                target_password=self.manifest_credentials['acr_token'],
+                target_username=self.manifest_credentials["username"],
+                target_password=self.manifest_credentials["acr_token"],
             )
         elif use_manifest_permissions:
             self._check_tool_installed("docker")
-            print(f"Using docker pull and push to copy image artifact: {self.artifact_name}")
+            print(
+                f"Using docker pull and push to copy image artifact: {self.artifact_name}"
+            )
             image_name = (
                 f"{self._clean_name(artifact_config.source_registry)}/"
                 f"{source_registry_namespace}{self.artifact_name}"
                 f":{self.artifact_version}"
             )
             self._pull_image_to_local_registry(
-                source_registry_login_server=self._clean_name(artifact_config.source_registry),
-                source_image=image_name
+                source_registry_login_server=self._clean_name(
+                    artifact_config.source_registry
+                ),
+                source_image=image_name,
             )
             self._push_image_from_local_registry(
                 local_docker_image=image_name,
-                target_username=self.manifest_credentials['username'],
-                target_password=self.manifest_credentials['acr_token'],
+                target_username=self.manifest_credentials["username"],
+                target_password=self.manifest_credentials["acr_token"],
             )
         else:
             print(f"Using az acr import to copy image artifact: {self.artifact_name}")
@@ -361,7 +371,7 @@ class Artifact:
                 source_image=(
                     f"{source_registry_namespace}{self.artifact_name}"
                     f":{self.artifact_version}"
-                )
+                ),
             )
 
     def _push_image_from_local_registry(
@@ -409,7 +419,7 @@ class Artifact:
                 "--username",
                 target_username,
                 "--password",
-                target_password
+                target_password,
             ]
             self._call_subprocess_raise_output(acr_target_login_cmd)
 
@@ -422,9 +432,7 @@ class Artifact:
             self._call_subprocess_raise_output(push_target_image_cmd)
         except CLIError as error:
             logger.error(
-                (
-                    "Failed to tag and push %s to %s."
-                ),
+                ("Failed to tag and push %s to %s."),
                 local_docker_image,
                 target_acr,
             )
@@ -437,7 +445,7 @@ class Artifact:
                 target_acr,
             ]
             self._call_subprocess_raise_output(docker_logout_cmd)
-            
+
     def _pull_image_to_local_registry(
         self,
         source_registry_login_server: str,
@@ -449,7 +457,7 @@ class Artifact:
         Uses the CLI user's context to log in to the source registry.
 
         :param: source_registry_login_server: e.g. uploadacr.azurecr.io
-        :param: source_image: source docker image name 
+        :param: source_image: source docker image name
                               e.g. uploadacr.azurecr.io/samples/nginx:stable
         """
         try:
@@ -482,7 +490,7 @@ class Artifact:
                     " source registry %s."
                 ),
                 source_image,
-                source_registry_login_server
+                source_registry_login_server,
             )
             logger.debug(error, exc_info=True)
             raise error
@@ -490,10 +498,10 @@ class Artifact:
             docker_logout_cmd = [
                 str(shutil.which("docker")),
                 "logout",
-                source_registry_login_server
+                source_registry_login_server,
             ]
             self._call_subprocess_raise_output(docker_logout_cmd)
-            
+
     def _clean_name(self, registry_name: str) -> str:
         """Remove https:// from the registry name."""
         return registry_name.replace("https://", "")
@@ -505,17 +513,17 @@ class Artifact:
     ):
         """
         Copy image from one ACR to another.
-        
+
         Use az acr import to do the import image. Previously we used the python
-        sdk ContainerRegistryManagementClient.registries.begin_import_image 
-        but this requires the source resource group name, which is more faff 
+        sdk ContainerRegistryManagementClient.registries.begin_import_image
+        but this requires the source resource group name, which is more faff
         at configuration time.
-        
+
         Neither az acr import or begin_import_image support using the username
         and acr_token retrieved from the manifest credentials, so this uses the
         CLI users context to access both the source registry and the target
-        Artifact Store registry, which requires either Contributor role or a 
-        custom role that allows the importImage action over the whole subscription.        
+        Artifact Store registry, which requires either Contributor role or a
+        custom role that allows the importImage action over the whole subscription.
 
         :param source_registry: source registry login server e.g. https://uploadacr.azurecr.io
         :param source_image: source image including namespace and tags e.g.
@@ -523,7 +531,6 @@ class Artifact:
         """
         target_acr = self._get_acr()
         try:
-
             print("Copying artifact from source registry")
             source = f"{self._clean_name(source_registry_login_server)}/{source_image}"
             acr_import_image_cmd = [
@@ -536,7 +543,6 @@ class Artifact:
                 source,
                 "--image",
                 self._get_acr_target_image(include_hostname=False),
-                
             ]
             self._call_subprocess_raise_output(acr_import_image_cmd)
         except CLIError as error:
@@ -573,5 +579,3 @@ class Artifact:
                     target_acr,
                     error,
                 )
-
- 

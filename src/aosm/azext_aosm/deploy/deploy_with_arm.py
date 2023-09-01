@@ -248,7 +248,10 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
 
         # This is the first time we have easy access to the number of images to upload
         # so we validate the config file here.
-        if (len(artifact_dictionary.values()) > 1 and self.config.images.source_local_docker_image):
+        if (
+            len(artifact_dictionary.values()) > 1
+            and self.config.images.source_local_docker_image
+        ):
             raise ValidationError(
                 "Multiple image artifacts found to upload and a local docker image"
                 " was specified in the config file. source_local_docker_image is only "
