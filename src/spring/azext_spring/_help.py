@@ -109,6 +109,11 @@ helps['spring test-endpoint renew-key'] = """
     short-summary: Regenerate a test-endpoint key for the Azure Spring Apps.
 """
 
+helps['spring flush-virtualnetwork-dns-settings'] = """
+    type: command
+    short-summary: (Standard and Enterprise Tier Only) Flush Virtual network DNS setting for Azure Spring Apps.
+"""
+
 helps['spring storage'] = """
     type: group
     short-summary: Commands to manage Storages in Azure Spring Apps.
