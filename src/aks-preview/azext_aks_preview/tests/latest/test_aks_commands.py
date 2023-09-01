@@ -7401,7 +7401,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # enable azure service mesh with pluginca
         update_cmd = 'aks mesh enable --resource-group={resource_group} --name={name} ' \
-                     '--key-vault-id my-akv-id ' \
+                     '--key-vault-id /subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo ' \
                      '--ca-cert-object-name my-ca-cert ' \
                      '--ca-key-object-name my-ca-key ' \
                      '--cert-chain-object-name my-cert-chain ' \
@@ -7409,7 +7409,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         self.cmd(update_cmd, checks=[
             self.check('serviceMeshProfile.mode', 'Istio'),
-            self.check('serviceMeshProfile.istio.certificateAuthority.plugin.keyVaultId', 'my-akv-id'),
+            self.check('serviceMeshProfile.istio.certificateAuthority.plugin.keyVaultId', '/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo'),
             self.check('serviceMeshProfile.istio.certificateAuthority.plugin.certObjectName', 'my-ca-cert'),
             self.check('serviceMeshProfile.istio.certificateAuthority.plugin.keyObjectName', 'my-ca-key'),
             self.check('serviceMeshProfile.istio.certificateAuthority.plugin.rootCertObjectName', 'my-root-cert'),
