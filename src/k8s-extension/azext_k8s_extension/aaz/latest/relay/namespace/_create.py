@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "relay namespace create",
-)
 class Create(AAZCommand):
     """Create a Relay Service Namespace.
 

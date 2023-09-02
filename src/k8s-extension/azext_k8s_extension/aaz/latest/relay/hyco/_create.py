@@ -11,9 +11,6 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "relay hyco create",
-)
 class Create(AAZCommand):
     """Create the Relay Service Hybrid Connection.
 
