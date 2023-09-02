@@ -490,7 +490,7 @@ def load_arguments(self, _):
                 'artifact_path', options_list=['--artifact-path',
                                                c.deprecate(target='--jar-path', redirect='--artifact-path', hide=True),
                                                c.deprecate(target='-p', redirect='--artifact-path', hide=True)],
-                help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_jar)
+                help='Deploy the specified pre-built artifact (jar, war or netcore zip, war is in public preview).', validator=validate_jar)
             c.argument(
                 'disable_validation', arg_type=get_three_state_flag(),
                 help='If true, disable jar validation.')
@@ -528,6 +528,7 @@ def load_arguments(self, _):
             c.argument('build_certificates', nargs='*',
                        help='(Enterprise Tier Only) Space-separated certificate names, the certificates are used during build time.',
                        validator=validate_build_cert_reference)
+            c.argument('server_version', help='Tomcat server version. This argument is in public preview.')
 
     with self.argument_context('spring app deploy') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)

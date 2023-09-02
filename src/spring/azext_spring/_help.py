@@ -254,6 +254,8 @@ helps['spring app deploy'] = """
       text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --source-path
     - name: Deploy a pre-built jar to an app with jvm options and environment variables.
       text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --artifact-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
+    - name: Deploy a pre-built war to an app with server version, jvm options and environment variables.
+      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --artifact-path app.war --server-version Tomcat_10 --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
     - name: Deploy source code to a specific deployment of an app.
       text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup -d green-deployment --source-path
     - name: Deploy a container image on Docker Hub to an app.
