@@ -61,6 +61,7 @@ def enable_addons(cmd,
                   rotation_poll_interval=None,
                   no_wait=False,
                   dns_zone_resource_id=None,
+                  dns_zone_resource_ids=None,
                   enable_msi_auth_for_monitoring=True,
                   enable_syslog=False,
                   data_collection_settings=None):
@@ -82,7 +83,7 @@ def enable_addons(cmd,
                              appgw_watch_namespace=appgw_watch_namespace,
                              enable_sgxquotehelper=enable_sgxquotehelper,
                              enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
-                             dns_zone_resource_id=dns_zone_resource_id,
+                             dns_zone_resource_id=dns_zone_resource_id, dns_zone_resource_ids=dns_zone_resource_ids,
                              enable_syslog=enable_syslog,
                              data_collection_settings=data_collection_settings)
 
@@ -183,6 +184,7 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                   enable_secret_rotation=False,
                   rotation_poll_interval=None,
                   dns_zone_resource_id=None,
+                  dns_zone_resource_ids=None,
                   no_wait=False,  # pylint: disable=unused-argument
                   enable_syslog=False,
                   data_collection_settings=None):
@@ -224,8 +226,19 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                 instance.ingress_profile.web_app_routing = ManagedClusterIngressProfileWebAppRouting()
             instance.ingress_profile.web_app_routing.enabled = enable
 
-            if dns_zone_resource_id is not None:
-                instance.ingress_profile.web_app_routing.dns_zone_resource_id = dns_zone_resource_id
+            if dns_zone_resource_ids is not None:
+                instance.ingress_profile.web_app_routing.dns_zone_resource_ids = [
+                    x.strip()
+                    for x in (
+                        dns_zone_resource_ids.split(",")
+                        if dns_zone_resource_ids
+                        else []
+                    )
+                ]
+            # for backward compatibility, if --dns-zone-resource-ids is not specified,
+            # try to read from --dns-zone-resource-id
+            if not instance.ingress_profile.web_app_routing.dns_zone_resource_ids and dns_zone_resource_id:
+                instance.ingress_profile.web_app_routing.dns_zone_resource_ids = [dns_zone_resource_id]
             continue
 
         if addon_arg not in ADDONS:

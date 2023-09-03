@@ -113,10 +113,14 @@ class Update(AAZCommand):
         _args_schema.renewal_properties = AAZObjectArg(
             options=["--renewal-properties"],
             arg_group="RenewProperties",
-            help="renewal purchase properties",
+            help={"short-summary": "renewal purchase properties", "long-summary": "Renewal purchase properties. Sample input: --renewal-properties {applied-scope-type:Shared,billing-plan:Monthly,billing-scope-id:/subscriptions/00000000-0000-0000-0000-000000000000,display-name:newName,instance-flexibility:On,quantity:5,term:P1Y,reserved-resource-type:VirtualMachines,sku:Standard_B1ls,Location:eastus}"},
         )
 
         renewal_properties = cls._args_schema.renewal_properties
+        renewal_properties.location = AAZStrArg(
+            options=["location"],
+            help="The Azure region where the reserved resource lives.",
+        )
         renewal_properties.applied_scope_properties = AAZObjectArg(
             options=["applied-scope-properties"],
         )
@@ -351,6 +355,7 @@ class Update(AAZCommand):
 
             purchase_properties = _builder.get(".properties.renewProperties.purchaseProperties")
             if purchase_properties is not None:
+                purchase_properties.set_prop("location", AAZStrType, ".location")
                 purchase_properties.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
                 purchase_properties.set_prop("sku", AAZObjectType)
 

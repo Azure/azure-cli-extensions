@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "storage-mover agent update",
 )
 class Update(AAZCommand):
-    """Updates an Agent resource, which references a hybrid compute machine that can run jobs.
+    """Update an Agent resource, which references a hybrid compute machine that can run jobs.
 
     :example: agent update
         az storage-mover agent update -g {rg} -n {agent_name} --storage-mover-name {mover_name} --description 123
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents/{}", "2023-07-01-preview"],
         ]
     }
 
@@ -155,7 +155,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }
@@ -242,7 +242,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }

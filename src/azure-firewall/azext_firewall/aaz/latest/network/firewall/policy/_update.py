@@ -56,7 +56,6 @@ class Update(AAZCommand):
         _args_schema.sku = AAZStrArg(
             options=["--sku"],
             help="SKU of Firewall policy.",
-            is_preview=True,
             nullable=True,
             enum={"Basic": "Basic", "Premium": "Premium", "Standard": "Standard"},
         )
@@ -130,6 +129,127 @@ class Update(AAZCommand):
         )
 
         # define Arg Group "IntrusionDetection"
+
+        _args_schema = cls._args_schema
+        _args_schema.configuration = AAZObjectArg(
+            options=["--configuration"],
+            arg_group="IntrusionDetection",
+            help="Intrusion detection configuration properties.",
+            nullable=True,
+        )
+
+        configuration = cls._args_schema.configuration
+        configuration.bypass_traffic_settings = AAZListArg(
+            options=["bypass-traffic-settings"],
+            help="List of rules for traffic to bypass.",
+            nullable=True,
+        )
+        configuration.private_ranges = AAZListArg(
+            options=["private-ranges"],
+            help="IDPS Private IP address ranges are used to identify traffic direction (i.e. inbound, outbound, etc.). By default, only ranges defined by IANA RFC 1918 are considered private IP addresses. To modify default ranges, specify your Private IP address ranges with this property",
+            nullable=True,
+        )
+        configuration.signature_overrides = AAZListArg(
+            options=["signature-overrides"],
+            help="List of specific signatures states.",
+            nullable=True,
+        )
+
+        bypass_traffic_settings = cls._args_schema.configuration.bypass_traffic_settings
+        bypass_traffic_settings.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.configuration.bypass_traffic_settings.Element
+        _element.description = AAZStrArg(
+            options=["description"],
+            help="Description of the bypass traffic rule.",
+            nullable=True,
+        )
+        _element.destination_addresses = AAZListArg(
+            options=["destination-addresses"],
+            help="List of destination IP addresses or ranges for this rule.",
+            nullable=True,
+        )
+        _element.destination_ip_groups = AAZListArg(
+            options=["destination-ip-groups"],
+            help="List of destination IpGroups for this rule.",
+            nullable=True,
+        )
+        _element.destination_ports = AAZListArg(
+            options=["destination-ports"],
+            help="List of destination ports or ranges.",
+            nullable=True,
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="Name of the bypass traffic rule.",
+            nullable=True,
+        )
+        _element.protocol = AAZStrArg(
+            options=["protocol"],
+            help="The rule bypass protocol.",
+            nullable=True,
+            enum={"ANY": "ANY", "ICMP": "ICMP", "TCP": "TCP", "UDP": "UDP"},
+        )
+        _element.source_addresses = AAZListArg(
+            options=["source-addresses"],
+            help="List of source IP addresses or ranges for this rule.",
+            nullable=True,
+        )
+        _element.source_ip_groups = AAZListArg(
+            options=["source-ip-groups"],
+            help="List of source IpGroups for this rule.",
+            nullable=True,
+        )
+
+        destination_addresses = cls._args_schema.configuration.bypass_traffic_settings.Element.destination_addresses
+        destination_addresses.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        destination_ip_groups = cls._args_schema.configuration.bypass_traffic_settings.Element.destination_ip_groups
+        destination_ip_groups.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        destination_ports = cls._args_schema.configuration.bypass_traffic_settings.Element.destination_ports
+        destination_ports.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        source_addresses = cls._args_schema.configuration.bypass_traffic_settings.Element.source_addresses
+        source_addresses.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        source_ip_groups = cls._args_schema.configuration.bypass_traffic_settings.Element.source_ip_groups
+        source_ip_groups.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        private_ranges = cls._args_schema.configuration.private_ranges
+        private_ranges.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        signature_overrides = cls._args_schema.configuration.signature_overrides
+        signature_overrides.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.configuration.signature_overrides.Element
+        _element.id = AAZStrArg(
+            options=["id"],
+            help="Signature id.",
+            nullable=True,
+        )
+        _element.mode = AAZStrArg(
+            options=["mode"],
+            help="The signature state.",
+            nullable=True,
+            enum={"Alert": "Alert", "Deny": "Deny", "Off": "Off"},
+        )
 
         # define Arg Group "Intrustion Detection"
 
@@ -506,7 +626,62 @@ class Update(AAZCommand):
 
             intrusion_detection = _builder.get(".properties.intrusionDetection")
             if intrusion_detection is not None:
+                intrusion_detection.set_prop("configuration", AAZObjectType, ".configuration")
                 intrusion_detection.set_prop("mode", AAZStrType, ".idps_mode")
+
+            configuration = _builder.get(".properties.intrusionDetection.configuration")
+            if configuration is not None:
+                configuration.set_prop("bypassTrafficSettings", AAZListType, ".bypass_traffic_settings")
+                configuration.set_prop("privateRanges", AAZListType, ".private_ranges")
+                configuration.set_prop("signatureOverrides", AAZListType, ".signature_overrides")
+
+            bypass_traffic_settings = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings")
+            if bypass_traffic_settings is not None:
+                bypass_traffic_settings.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings[]")
+            if _elements is not None:
+                _elements.set_prop("description", AAZStrType, ".description")
+                _elements.set_prop("destinationAddresses", AAZListType, ".destination_addresses")
+                _elements.set_prop("destinationIpGroups", AAZListType, ".destination_ip_groups")
+                _elements.set_prop("destinationPorts", AAZListType, ".destination_ports")
+                _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_prop("protocol", AAZStrType, ".protocol")
+                _elements.set_prop("sourceAddresses", AAZListType, ".source_addresses")
+                _elements.set_prop("sourceIpGroups", AAZListType, ".source_ip_groups")
+
+            destination_addresses = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings[].destinationAddresses")
+            if destination_addresses is not None:
+                destination_addresses.set_elements(AAZStrType, ".")
+
+            destination_ip_groups = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings[].destinationIpGroups")
+            if destination_ip_groups is not None:
+                destination_ip_groups.set_elements(AAZStrType, ".")
+
+            destination_ports = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings[].destinationPorts")
+            if destination_ports is not None:
+                destination_ports.set_elements(AAZStrType, ".")
+
+            source_addresses = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings[].sourceAddresses")
+            if source_addresses is not None:
+                source_addresses.set_elements(AAZStrType, ".")
+
+            source_ip_groups = _builder.get(".properties.intrusionDetection.configuration.bypassTrafficSettings[].sourceIpGroups")
+            if source_ip_groups is not None:
+                source_ip_groups.set_elements(AAZStrType, ".")
+
+            private_ranges = _builder.get(".properties.intrusionDetection.configuration.privateRanges")
+            if private_ranges is not None:
+                private_ranges.set_elements(AAZStrType, ".")
+
+            signature_overrides = _builder.get(".properties.intrusionDetection.configuration.signatureOverrides")
+            if signature_overrides is not None:
+                signature_overrides.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.intrusionDetection.configuration.signatureOverrides[]")
+            if _elements is not None:
+                _elements.set_prop("id", AAZStrType, ".id")
+                _elements.set_prop("mode", AAZStrType, ".mode")
 
             sku = _builder.get(".properties.sku")
             if sku is not None:
