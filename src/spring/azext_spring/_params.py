@@ -41,7 +41,7 @@ from ._app_managed_identity_validator import (validate_create_app_with_user_iden
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
-from .vendored_sdks.appplatform.v2023_09_01_preview.models._app_platform_management_client_enums import (ConfigurationServiceGeneration, SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
+from .vendored_sdks.appplatform.v2023_09_01_preview.models._app_platform_management_client_enums import (CustomizedAcceleratorType, ConfigurationServiceGeneration, SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
 
 name_type = CLIArgumentType(options_list=[
@@ -1016,16 +1016,19 @@ def load_arguments(self, _):
             c.argument('description', type=str, help='Description for customized accelerator.')
             c.argument('icon_url', type=str, help='Icon url for customized accelerator.')
             c.argument('accelerator_tags', type=str, help="Comma-separated list of tags on the customized accelerator.")
+            c.argument('type', help='Type of customized accelerator.', default=CustomizedAcceleratorType.ACCELERATOR, 
+                       arg_type=get_enum_type(CustomizedAcceleratorType))
 
-            c.argument('git_url', help='Git URL', validator=validate_acc_git_url)
+            c.argument('git_url', type=str, help='Git URL', validator=validate_acc_git_url)
+            c.argument('git_sub_path', type=str, help='Folder path inside the git repository to consider as the root of the accelerator or fragment.')
             c.argument('git_interval', type=int, help='Interval in seconds for checking for updates to Git or image repository.', validator=validate_git_interval)
             c.argument('git_branch', type=str, help='Git repository branch to be used.', validator=validate_acc_git_refs)
             c.argument('git_commit', type=str, help='Git repository commit to be used.', validator=validate_acc_git_refs)
             c.argument('git_tag', type=str, help='Git repository tag to be used.', validator=validate_acc_git_refs)
 
-            c.argument('ca_cert_name', help='CA certificate name.')
-            c.argument('username', help='Username of git repository basic auth.')
-            c.argument('password', help='Password of git repository basic auth.')
-            c.argument('private_key', help='Private SSH Key algorithm of git repository.')
-            c.argument('host_key', help='Public SSH Key of git repository.')
-            c.argument('host_key_algorithm', help='SSH Key algorithm of git repository.')
+            c.argument('ca_cert_name', type=str, help='CA certificate name.')
+            c.argument('username', type=str, help='Username of git repository basic auth.')
+            c.argument('password', type=str, help='Password of git repository basic auth.')
+            c.argument('private_key', type=str, help='Private SSH Key algorithm of git repository.')
+            c.argument('host_key', type=str, help='Public SSH Key of git repository.')
+            c.argument('host_key_algorithm', type=str, help='SSH Key algorithm of git repository.')
