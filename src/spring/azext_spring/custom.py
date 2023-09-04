@@ -1252,8 +1252,14 @@ def _get_app_log(url, auth, format_json, exceptions, chunk_size=None, stderr=Fal
     with requests.get(url, stream=True, auth=auth) as response:
         try:
             if response.status_code != 200:
+                failure_reason = response.reason
+                if response.content:
+                    if isinstance(response.content, bytes):
+                        failure_reason = "{}:{}".format(failure_reason, response.content.decode('utf-8'))
+                    else:
+                        failure_reason = "{}:{}".format(failure_reason, response.content)
                 raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
-                    response.status_code, response.reason))
+                    response.status_code, failure_reason))
             std_encoding = sys.stdout.encoding
 
             formatter = build_formatter()
