@@ -177,6 +177,8 @@ class TargetHandler:
     user_object_id = ""
     aad_username = ""
 
+    admin_username = ""
+
     identity_name = ""
     identity_client_id = ""
     identity_object_id = ""
@@ -307,8 +309,9 @@ class MysqlFlexibleHandler(TargetHandler):
                 logger.warning(
                     'Unable to check if current user is AAD admin. Please confirm current user as AAD admin manually.')
                 return
-        is_admin = any(ad.get('sid') == user_object_id for ad in admins)
-        if is_admin:
+        admin_info = next((ad for ad in admins if ad.get('sid') == user_object_id), None)
+        if admin_info:
+            self.admin_username = admin_info.get('login')
             return
 
         logger.warning('Set current user as DB Server AAD Administrators.')
@@ -324,8 +327,9 @@ class MysqlFlexibleHandler(TargetHandler):
         if (not mysql_umi) or (not mysql_umi.get("userAssignedIdentities")) or mysql_identity_id not in mysql_umi.get("userAssignedIdentities"):
             run_cli_cmd('az mysql flexible-server identity assign -g {} -s {} --subscription {} --identity {}'.format(
                 self.resource_group, self.server, self.subscription, mysql_identity_id))
-        run_cli_cmd('az mysql flexible-server ad-admin create -g {} -s {} --subscription {} -u {} -i {} --identity {}'.format(
+        admin_info = run_cli_cmd('az mysql flexible-server ad-admin create -g {} -s {} --subscription {} -u {} -i {} --identity {}'.format(
             self.resource_group, self.server, self.subscription, self.login_username, user_object_id, mysql_identity_id))
+        self.admin_username = admin_info.get('login')
 
     def create_aad_user(self):
         query_list = self.get_create_query()
@@ -441,7 +445,7 @@ class MysqlFlexibleHandler(TargetHandler):
         return {
             'host': self.server + self.endpoint,
             'database': self.dbname,
-            'user': self.login_username,
+            'user': self.admin_username,
             'password': password,
             'ssl': {"fake_flag_to_enable_tls": True},
             'autocommit': True
@@ -503,12 +507,13 @@ class SqlHandler(TargetHandler):
                 logger.warning(
                     'Unable to check if current user is AAD admin. Please confirm current user as AAD admin manually.')
                 return
-        is_admin = any(ad.get('sid') == user_object_id for ad in admins)
-        if not is_admin:
+        admin_info = next((ad for ad in admins if ad.get('sid') == user_object_id), None)
+        if not admin_info:
             logger.warning('Setting current user as database server AAD admin:'
                            ' user=%s object id=%s', self.login_username, user_object_id)
-            run_cli_cmd('az sql server ad-admin create -g {} --server-name {} --display-name {} --object-id {} --subscription {}'.format(
+            admin_info = run_cli_cmd('az sql server ad-admin create -g {} --server-name {} --display-name {} --object-id {} --subscription {}'.format(
                 self.resource_group, self.server, self.login_username, user_object_id, self.subscription)).get('objectId')
+        self.admin_username = admin_info.get('login')
 
     def create_aad_user(self):
 
@@ -699,12 +704,12 @@ class PostgresFlexHandler(TargetHandler):
                 logger.warning(
                     'Unable to check if current user is AAD admin. Please confirm current user as AAD admin manually.')
                 return
-        is_admin = any(user_object_id in u.get("objectId", "") for u in admins)
-        if is_admin:
-            return
-        logger.warning('Set current user as DB Server AAD Administrators.')
-        run_cli_cmd('az postgres flexible-server ad-admin create -u {} -i {} -g {} -s {} --subscription {} -t {}'.format(
-            self.login_username, user_object_id, self.resource_group, self.db_server, self.subscription, self.login_usertype))
+        admin_info = next((ad for ad in admins if ad.get('objectId', "") == user_object_id), None)
+        if not admin_info:
+            logger.warning('Set current user as DB Server AAD Administrators.')
+            admin_info = run_cli_cmd('az postgres flexible-server ad-admin create -u {} -i {} -g {} -s {} --subscription {} -t {}'.format(
+                self.login_username, user_object_id, self.resource_group, self.db_server, self.subscription, self.login_usertype))
+        self.admin_username = admin_info.get('principalName')    
 
     def create_aad_user(self):
         query_list = self.get_create_query()
@@ -823,7 +828,7 @@ class PostgresFlexHandler(TargetHandler):
 
         # extension functions require the extension to be available, which is the case for postgres (default) database.
         conn_string = "host={} user={} dbname=postgres password={} sslmode=require".format(
-            self.host, self.login_username, password)
+            self.host, self.admin_username, password)
         return conn_string
 
     def get_create_query(self):
@@ -882,12 +887,13 @@ class PostgresSingleHandler(PostgresFlexHandler):
                 logger.warning(
                     'Unable to check if current user is AAD admin. Please confirm current user as AAD admin manually.')
                 return
-        is_admin = any(ad.get('sid') == user_object_id for ad in admins)
-        if not is_admin:
+        admin_info = next((ad for ad in admins if ad.get('sid') == user_object_id), None)
+        if not admin_info:
             logger.warning('Setting current user as database server AAD admin:'
                            ' user=%s object id=%s', self.login_username, user_object_id)
-            run_cli_cmd('az postgres server ad-admin create -g {} --server-name {} --display-name {} --object-id {}'
+            admin_info = run_cli_cmd('az postgres server ad-admin create -g {} --server-name {} --display-name {} --object-id {}'
                         ' --subscription {}'.format(rg, server, self.login_username, user_object_id, sub)).get('objectId')
+        self.admin_username = admin_info.get('login')
 
     def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
         sub = self.subscription
@@ -928,7 +934,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
 
         # extension functions require the extension to be available, which is the case for postgres (default) database.
         conn_string = "host={} user={} dbname={} password={} sslmode=require".format(
-            self.host, self.login_username + '@' + self.db_server, self.dbname, password)
+            self.host, self.admin_username + '@' + self.db_server, self.dbname, password)
         return conn_string
 
     def get_create_query(self):
