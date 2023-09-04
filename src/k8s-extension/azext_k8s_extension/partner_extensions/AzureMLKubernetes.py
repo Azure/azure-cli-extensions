@@ -346,7 +346,7 @@ class AzureMLKubernetes(DefaultExtension):
                         cmd, subscription_id, resource_group_name, cluster_name, '', self.RELAY_HC_AUTH_NAME, True)
                     configuration_protected_settings[self.RELAY_SERVER_CONNECTION_STRING] = relay_connection_string
                     logger.info("Get relay connection string succeeded.")
-                except HttpOperationError as ex:
+                except azure.core.exceptions.HttpResponseError as ex:
                     if ex.response.status_code == 404:
                         raise ResourceNotFoundError("Relay server not found. "
                                                     "Check {} for more information.".format(self.TSG_LINK)) from ex
@@ -632,8 +632,7 @@ def _get_relay_connection_str(
                                                                    "namespace_name": relay_namespace_name,
                                                                    "hybrid_connection_name": hybrid_connection_name,
                                                                    "name": auth_rule_name})
-
-    except HttpOperationError as e:
+    except azure.core.exceptions.HttpResponseError as e:
         if e.response.status_code != 404 or get_key_only:
             raise e
         # create namespace
