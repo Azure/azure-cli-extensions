@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp update': fix list secret value for populate
 
 0.3.38
 ++++++
