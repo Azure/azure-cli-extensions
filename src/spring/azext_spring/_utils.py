@@ -45,10 +45,10 @@ def _get_file_ext(artifact_path):
 def _get_file_type(runtime_version, artifact_path=None):
     file_type = "Others"
     if _is_java(runtime_version):
-        file_ext = _get_file_ext(artifact_path).lower()
-        if file_ext == ".jar":
+        file_ext = _get_file_ext(artifact_path)
+        if file_ext.casefold() == ".jar".casefold():
             file_type = "Jar"
-        elif file_ext == ".war":
+        elif file_ext.casefold() == ".war".casefold():
             file_type = "War"
     if artifact_path is None:
         file_type = "Source"

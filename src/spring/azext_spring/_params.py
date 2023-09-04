@@ -31,7 +31,7 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_acs_ssh_or_warn, validate_apm_properties, validate_apm_secrets,
                                      validate_apm_not_exist, validate_apm_update, validate_apm_reference,
                                      validate_apm_reference_and_enterprise_tier, validate_cert_reference,
-                                     validate_build_cert_reference, validate_acs_create, not_support_enterprise)
+                                     validate_build_cert_reference, validate_acs_create)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
