@@ -6883,6 +6883,81 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_nodepool_update_with_crg_id(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+        node_pool_name = self.create_random_name('c', 6)
+        node_pool_name_second = self.create_random_name('c', 6)
+        crg_id = '/subscriptions/26fe00f8-9173-4872-9134-bb1d2e00343a/resourceGroups/STAGING-CRG-RG/providers/Microsoft.Compute/capacityReservationGroups/crg-3'
+        vm_size = 'Standard_D4s_v3'
+        count = 1
+        identity = '/subscriptions/26fe00f8-9173-4872-9134-bb1d2e00343a/resourceGroups/staging-crg-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/crg-rg-id'
+
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'count': count,
+            'location': resource_group_location,
+            'crg_id': crg_id,
+            'vm_size': vm_size,
+            'identity': identity,
+            'node_pool_name': node_pool_name,
+            'node_pool_name_second': node_pool_name_second,
+            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
+            'ssh_key_value': self.generate_ssh_keys(),
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--node-vm-size {vm_size} ' \
+                     '--nodepool-name {node_pool_name} -c 1 ' \
+                     '--enable-managed-identity ' \
+                     '--ssh-key-value={ssh_key_value}'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('agentPoolProfiles[0].vmSize', 'Standard_D4s_v3'),
+        ])
+
+        # nodepool added
+        self.cmd('aks nodepool add '
+                 '--resource-group={resource_group} '
+                 '--cluster-name={name} '
+                 '--name={node_pool_name_second} '
+                 '--node-vm-size {vm_size} '
+                 '-c 1 ',
+                 checks=[
+                     self.check('provisioningState', 'Succeeded'),
+                 ])
+
+        # cluster updated with assign-identity
+        self.cmd('aks update '
+                 '--resource-group={resource_group} '
+                 '--name={name} '
+                 '--enable-managed-identity '
+                 '--yes ' 
+                 '--assign-identity {identity} ',
+                 checks=[
+                     self.check('provisioningState', 'Succeeded'),
+                 ])
+
+        # nodepool updated with crg-id
+        self.cmd('aks nodepool update '
+                 '--resource-group={resource_group} '
+                 '--cluster-name={name} '
+                 '--name={node_pool_name_second} '
+                 '--crg-id={crg_id} ',
+                 checks=[
+                     self.check('provisioningState', 'Succeeded'),
+                     self.check('capacityReservationGroupID', '/subscriptions/26fe00f8-9173-4872-9134-bb1d2e00343a/resourceGroups/STAGING-CRG-RG/providers/Microsoft.Compute/capacityReservationGroups/crg-3'),
+                 ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
     def test_aks_nodepool_update_with_nsg_control(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)

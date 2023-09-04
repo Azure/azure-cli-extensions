@@ -1728,6 +1728,9 @@ helps['aks nodepool update'] = """
         - name: --asg-ids
           type: string
           short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
+        - name: --crg-id
+          type: string
+          short-summary: The crg-id used to associate the existing nodepool with a Capacity Reservation Group(CRG) resource.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -1739,6 +1742,8 @@ helps['aks nodepool update'] = """
         text: az aks nodepool update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
       - name: Change a node pool to system mode
         text: az aks nodepool update --mode System -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
+      - name: update an existing agentpool with a Capacity Reservation Group(CRG) ID.
+        text: az aks nodepool update --resource-group tc-rg-1 --cluster-name crg-c16 --name nodepool2 --node-count 2 --node-vm-size Standard_d2s_v3 --crg-id /subscriptions/MySub/resourceGroups/TC-RG-CRG/providers/Microsoft.Compute/capacityReservationGroups/crg-1
 """
 
 helps['aks nodepool get-upgrades'] = """
