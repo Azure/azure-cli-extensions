@@ -2,7 +2,7 @@
 
 Release History
 ===============
-upcoming
+0.3.39
 ++++++
 * 'az containerapp update': fix list secret value for populate
 
