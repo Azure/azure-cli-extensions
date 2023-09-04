@@ -2276,6 +2276,41 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.agentpool_context.get_node_taints()
 
+    def _get_enable_cost_analysis(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_cost_analysis.
+
+        When enabled, if both enable_cost_analysis and disable_cost_analysis are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        enable_cost_analysis = self.raw_param.get("enable_cost_analysis")
+
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if enable_cost_analysis and self.get_disable_cost_analysis():
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-cost-analysis and --disable-cost-analysis at the same time."
+                )
+
+        return enable_cost_analysis
+
+    def get_enable_cost_analysis(self) -> bool:
+        """Obtain the value of enable_cost_analysis.
+
+        :return: bool
+        """
+        return self._get_enable_cost_analysis(enable_validation=True)
+
+    def get_disable_cost_analysis(self) -> bool:
+        """Obtain the value of disable_cost_analysis.
+
+        :return: bool
+        """
+        # Note: No need to check for mutually exclusive parameter with enable-cost-analysis here
+        # because it's already checked in _get_enable_cost_analysis
+        return self.raw_param.get("disable_cost_analysis")
+
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
@@ -2714,6 +2749,29 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             )
         return mc
 
+    def set_up_cost_analysis(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_cost_analysis():
+            if mc.metrics_profile is None:
+                mc.metrics_profile = self.models.ManagedClusterMetricsProfile()
+            if mc.metrics_profile.cost_analysis is None:
+                mc.metrics_profile.cost_analysis = self.models.ManagedClusterCostAnalysis()
+
+            # set enabled
+            mc.metrics_profile.cost_analysis.enabled = True
+
+        # Default is disabled so no need to worry about that here
+
+        return mc
+
+    def set_up_metrics_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        mc = self.set_up_cost_analysis(mc)
+
+        return mc
+
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
 
@@ -2757,6 +2815,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_azure_service_mesh_profile(mc)
         # set up azure monitor profile
         mc = self.set_up_azure_monitor_profile(mc)
+        # set up metrics profile
+        mc = self.set_up_metrics_profile(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -3601,6 +3661,40 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 agent_profile.node_taints = nodepool_taints
         return mc
 
+    def update_cost_analysis(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_cost_analysis():
+            if mc.metrics_profile is None:
+                mc.metrics_profile = self.models.ManagedClusterMetricsProfile()
+            if mc.metrics_profile.cost_analysis is None:
+                mc.metrics_profile.cost_analysis = self.models.ManagedClusterCostAnalysis()
+
+            # set enabled
+            mc.metrics_profile.cost_analysis.enabled = True
+
+        if self.context.get_disable_cost_analysis():
+            if mc.metrics_profile is None:
+                mc.metrics_profile = self.models.ManagedClusterMetricsProfile()
+            if mc.metrics_profile.cost_analysis is None:
+                mc.metrics_profile.cost_analysis = self.models.ManagedClusterCostAnalysis()
+
+            # set disabled
+            mc.metrics_profile.cost_analysis.enabled = False
+
+        return mc
+
+    def update_metrics_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Updates the metricsProfile field of the managed cluster
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        mc = self.update_cost_analysis(mc)
+
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -3656,5 +3750,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nodepool_taints_mc(mc)
         # update network_observability in network_profile
         mc = self.update_enable_network_observability_in_network_profile(mc)
+        # update metrics profile
+        mc = self.update_metrics_profile(mc)
 
         return mc
