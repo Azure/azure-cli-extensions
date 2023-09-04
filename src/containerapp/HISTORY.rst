@@ -4,7 +4,7 @@ Release History
 ===============
 0.3.39
 ++++++
-* 'az containerapp update': fix list secret value for populate
+* 'az containerapp update': fix bug for populating secret value with --yaml
 
 0.3.38
 ++++++
