@@ -1,5 +1,9 @@
 Release History
 ===============
+1.14.4
+---
+* Add arguments `--type` and `--git-sub-path` in `spring application-accelerator customized-accelerator create` and `spring application-accelerator customized-accelerator update` for accelerator fragment support.
+
 1.14.3
 ---
 * Make error message for `az spring app logs` more readable.  
