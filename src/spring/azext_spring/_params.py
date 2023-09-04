@@ -1016,7 +1016,7 @@ def load_arguments(self, _):
             c.argument('description', type=str, help='Description for customized accelerator.')
             c.argument('icon_url', type=str, help='Icon url for customized accelerator.')
             c.argument('accelerator_tags', type=str, help="Comma-separated list of tags on the customized accelerator.")
-            c.argument('type', help='Type of customized accelerator.', default=CustomizedAcceleratorType.ACCELERATOR, 
+            c.argument('type', help='Type of customized accelerator.', default=CustomizedAcceleratorType.ACCELERATOR,
                        arg_type=get_enum_type(CustomizedAcceleratorType))
 
             c.argument('git_url', type=str, help='Git URL', validator=validate_acc_git_url)

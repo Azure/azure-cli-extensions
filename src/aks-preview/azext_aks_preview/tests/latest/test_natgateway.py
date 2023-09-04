@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 import unittest
 
-import azext_aks_preview._natgateway as natgateway
+import azure.cli.command_modules.acs._natgateway as natgateway
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview.managed_cluster_decorator import (

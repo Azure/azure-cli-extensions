@@ -494,3 +494,41 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('name', env_name),
             JMESPathCheck('properties.peerAuthentication.mtls.enabled', False),
         ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_env_usages(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        result = self.cmd('containerapp list-usages').get_output_in_json()
+        usages = result["value"]
+        self.assertEqual(len(usages), 1)
+        self.assertEqual(usages[0]["name"]["value"], "ManagedEnvironmentCount")
+        self.assertGreater(usages[0]["limit"], 0)
+        self.assertGreaterEqual(usages[0]["usage"], 0)
+
+        env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
+
+        self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --enable-mtls'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
+
+        containerapp_env = self.cmd(
+            'containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd(
+                'containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name)
+        ])
+
+        result = self.cmd('containerapp env list-usages --id {}'.format(containerapp_env["id"])).get_output_in_json()
+        usages = result["value"]
+        self.assertEqual(len(usages), 4)
+        self.assertGreater(usages[0]["limit"], 0)
+        self.assertGreaterEqual(usages[0]["usage"], 0)
