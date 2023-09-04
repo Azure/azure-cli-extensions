@@ -19,7 +19,7 @@ from ._utils import (get_vnet_location,
                      load_cert_file,
                      safe_set,
                      get_default_workload_profiles,
-                     _azure_monitor_quickstart)
+                     _azure_monitor_quickstart, safe_get)
 from ._client_factory import handle_raw_exception
 from .base_resource import BaseResource
 from ._models import (
@@ -96,9 +96,6 @@ class ContainerAppEnvDecorator(BaseResource):
     def get_argument_certificate_password(self):
         return self.get_param("certificate_password")
 
-    def get_argument_enable_workload_profiles(self):
-        return self.get_param("enable_workload_profiles")
-
     def get_argument_mtls_enabled(self):
         return self.get_param("mtls_enabled")
 
@@ -167,8 +164,7 @@ class ContainerAppEnvCreateDecorator(ContainerAppEnvDecorator):
         self.managed_env_def["tags"] = self.get_argument_tags()
         self.managed_env_def["properties"]["zoneRedundant"] = self.get_argument_zone_redundant()
 
-        if self.get_argument_enable_workload_profiles() is True:
-            self.managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(self.cmd, self.get_argument_location())
+        self.set_up_workload_profiles()
 
         # Custom domains
         if self.get_argument_hostname():
@@ -187,6 +183,9 @@ class ContainerAppEnvCreateDecorator(ContainerAppEnvDecorator):
 
         if self.get_argument_mtls_enabled() is not None:
             safe_set(self.managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=self.get_argument_mtls_enabled())
+
+    def set_up_workload_profiles(self):
+        self.managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(self.cmd, self.get_argument_location())
 
     def set_up_app_log_configuration(self):
         if (self.get_argument_logs_customer_id() is None or self.get_argument_logs_key() is None) and self.get_argument_logs_destination() == "log-analytics":
@@ -342,3 +341,13 @@ class ContainerAppEnvUpdateDecorator(ContainerAppEnvDecorator):
         _azure_monitor_quickstart(self.cmd, self.get_argument_name(), self.get_argument_resource_group_name(), self.get_argument_storage_account(), self.get_argument_logs_destination())
 
         return r
+
+
+class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
+
+    def set_up_workload_profiles(self):
+        if self.get_argument_enable_workload_profiles():
+            self.managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(self.cmd, self.get_argument_location())
+
+    def get_argument_enable_workload_profiles(self):
+        return self.get_param("enable_workload_profiles")

@@ -103,9 +103,11 @@ class StackHciClientTest(ScenarioTest):
         self.kwargs['tenant_id'] = self.cmd('account show').get_output_in_json()['tenantId']
         self.cmd('stack-hci cluster create -n {cluster_name} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id}')
         self.cmd('stack-hci arc-setting create -n default -g {rg} --cluster-name {cluster_name}')
-        self.cmd('stack-hci extension create -n {type} -g {rg} --cluster-name {cluster_name} --arc-setting-name default --settings {{workspaceId:xx}} --protected-settings {{workspaceKey:xx}} --publisher {publisher} --type {type} --type-handler-version 1.10', checks=[
+        self.cmd('stack-hci extension create -n {type} -g {rg} --cluster-name {cluster_name} --arc-setting-name default --settings "{{\'workspaceId\': \'xx\', \'port\': \'6516\'}}" --protected-settings "{{\'workspaceKey\': \'xx\'}}" --publisher {publisher} --type {type} --type-handler-version 1.10', checks=[
             self.check('name', self.kwargs['type']),
-            self.check('type', 'microsoft.azurestackhci/clusters/arcsettings/extensions')
+            self.check('type', 'microsoft.azurestackhci/clusters/arcsettings/extensions'),
+            self.check('extensionParameters.settings.workspaceId', 'xx'),
+            self.check('extensionParameters.settings.port', '6516')
         ])
         self.cmd('stack-hci extension list -g {rg} --cluster-name {cluster_name} --arc-setting-name default', checks=[
             self.check('length(@)', 1),

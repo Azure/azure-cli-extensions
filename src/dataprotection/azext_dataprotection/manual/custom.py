@@ -80,8 +80,8 @@ def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource
 def dataprotection_backup_instance_initialize_backupconfig(datasource_type, excluded_resource_types=None,
                                                            included_resource_types=None, excluded_namespaces=None,
                                                            included_namespaces=None, label_selectors=None,
-                                                           snapshot_volumes=None,
-                                                           include_cluster_scope_resources=None):
+                                                           snapshot_volumes=None, include_cluster_scope_resources=None,
+                                                           backup_hook_references=None):
     if snapshot_volumes is None:
         snapshot_volumes = True
     if include_cluster_scope_resources is None:
@@ -94,7 +94,8 @@ def dataprotection_backup_instance_initialize_backupconfig(datasource_type, excl
         "included_namespaces": included_namespaces,
         "label_selectors": label_selectors,
         "snapshot_volumes": snapshot_volumes,
-        "include_cluster_scope_resources": include_cluster_scope_resources
+        "include_cluster_scope_resources": include_cluster_scope_resources,
+        "backup_hook_references": backup_hook_references
     }
 
 
@@ -741,7 +742,8 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
                                                             included_namespaces=None, label_selectors=None,
                                                             persistent_volume_restore_mode=None,
                                                             include_cluster_scope_resources=None,
-                                                            namespace_mappings=None, conflict_policy=None):
+                                                            namespace_mappings=None, conflict_policy=None,
+                                                            restore_hook_references=None):
     if datasource_type != "AzureKubernetesService":
         raise InvalidArgumentValueError("This command is currently not supported for datasource types other than AzureKubernetesService")
 
@@ -765,6 +767,7 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
         "include_cluster_scope_resources": include_cluster_scope_resources,
         "conflict_policy": conflict_policy,
         "namespace_mappings": namespace_mappings,
+        "restore_hook_references": restore_hook_references
     }
 
 
