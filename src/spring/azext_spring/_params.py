@@ -16,7 +16,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_ingress_timeout, validate_jar, validate_ingress_send_timeout,
                           validate_ingress_session_max_age, validate_config_server_ssh_or_warn,
                           validate_remote_debugging_port, validate_ingress_client_auth_certificates,
-                          validate_managed_environment, validate_dataplane_public_endpoint)
+                          validate_managed_environment, validate_dataplane_public_endpoint, validate_server_version)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_source_path, validate_artifact_path, validate_build_create,
                                      validate_build_update, validate_container_registry_create,
@@ -31,7 +31,7 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_acs_ssh_or_warn, validate_apm_properties, validate_apm_secrets,
                                      validate_apm_not_exist, validate_apm_update, validate_apm_reference,
                                      validate_apm_reference_and_enterprise_tier, validate_cert_reference,
-                                     validate_build_cert_reference, validate_acs_create)
+                                     validate_build_cert_reference, validate_acs_create, not_support_enterprise)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
@@ -528,7 +528,7 @@ def load_arguments(self, _):
             c.argument('build_certificates', nargs='*',
                        help='(Enterprise Tier Only) Space-separated certificate names, the certificates are used during build time.',
                        validator=validate_build_cert_reference)
-            c.argument('server_version', help='Tomcat server version. This argument is in public preview.')
+            c.argument('server_version', help='(Standard and Basic Tiers Only) Tomcat server version. This feature is in public preview.', validator=validate_server_version)
 
     with self.argument_context('spring app deploy') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)
