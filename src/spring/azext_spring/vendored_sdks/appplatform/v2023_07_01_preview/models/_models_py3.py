@@ -10483,8 +10483,9 @@ class WeeklyMaintenanceScheduleConfiguration(MaintenanceScheduleConfiguration):
     :vartype frequency: str or ~azure.mgmt.appplatform.v2023_07_01_preview.models.Frequency
     :ivar hour: The hour to run the maintenance job. Required.
     :vartype hour: int
-    :ivar duration_hours: The duration time to run the maintenance job.
-    :vartype duration_hours: int
+    :ivar duration: The duration time to run the maintenance job, specified in ISO8601 format, e.g.
+     PT8H.
+    :vartype duration: str
     :ivar day: The day to run the maintenance job. Required. Known values are: "Monday", "Tuesday",
      "Wednesday", "Thursday", "Friday", "Saturday", and "Sunday".
     :vartype day: str or ~azure.mgmt.appplatform.v2023_07_01_preview.models.WeekDay
@@ -10493,14 +10494,14 @@ class WeeklyMaintenanceScheduleConfiguration(MaintenanceScheduleConfiguration):
     _validation = {
         "frequency": {"required": True},
         "hour": {"required": True, "maximum": 23, "minimum": 0},
-        "duration_hours": {"readonly": True},
+        "duration": {"readonly": True},
         "day": {"required": True},
     }
 
     _attribute_map = {
         "frequency": {"key": "frequency", "type": "str"},
         "hour": {"key": "hour", "type": "int"},
-        "duration_hours": {"key": "durationHours", "type": "int"},
+        "duration": {"key": "duration", "type": "str"},
         "day": {"key": "day", "type": "str"},
     }
 
@@ -10515,5 +10516,5 @@ class WeeklyMaintenanceScheduleConfiguration(MaintenanceScheduleConfiguration):
         super().__init__(**kwargs)
         self.frequency: str = "Weekly"
         self.hour = hour
-        self.duration_hours = None
+        self.duration = None
         self.day = day

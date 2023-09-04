@@ -16,6 +16,16 @@ class ActionType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     INTERNAL = "Internal"
 
 
+class ApiPortalApiTryOutEnabledState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Indicates whether the API try-out feature is enabled or disabled. When enabled, users can try
+    out the API by sending requests and viewing responses in API portal. When disabled, users
+    cannot try out the API.
+    """
+
+    ENABLED = "Enabled"
+    DISABLED = "Disabled"
+
+
 class ApiPortalProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """State of the API portal."""
 
@@ -231,6 +241,13 @@ class CustomizedAcceleratorProvisioningState(str, Enum, metaclass=CaseInsensitiv
     SUCCEEDED = "Succeeded"
     FAILED = "Failed"
     DELETING = "Deleting"
+
+
+class CustomizedAcceleratorType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Type of the customized accelerator."""
+
+    ACCELERATOR = "Accelerator"
+    FRAGMENT = "Fragment"
 
 
 class CustomizedAcceleratorValidateResultState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
