@@ -61,8 +61,8 @@ class CnfNsdTest(LiveScenarioTest):
     """
     Integration tests for the aosm extension for cnf definition type.
 
-    This test uses Live Scenario Test because it depends on using the `az login` command which
-    does not work when playing back from the recording.
+    This test uses Live Scenario Test because it depends on using the `az login` command
+    which does not work when playing back from the recording.
     """
 
     @ResourceGroupPreparer(name_prefix="cli_test_cnf_nsd_", location="westcentralus")

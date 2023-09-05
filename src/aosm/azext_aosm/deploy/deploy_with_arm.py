@@ -11,9 +11,11 @@ import tempfile
 import time
 from typing import Any, Dict, Optional
 
+from azure.cli.core.azclierror import ValidationError
 from azure.cli.core.commands import LongRunningOperation
 from azure.mgmt.resource.resources.models import DeploymentExtended
 from knack.log import get_logger
+from knack.util import CLIError
 
 from azext_aosm._configuration import (
     CNFConfiguration,
@@ -31,15 +33,15 @@ from azext_aosm.util.constants import (
     CNF,
     CNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
     CNF_MANIFEST_BICEP_TEMPLATE_FILENAME,
-    DeployableResourceTypes,
     IMAGE_UPLOAD,
     NSD,
     NSD_ARTIFACT_MANIFEST_BICEP_FILENAME,
     NSD_BICEP_FILENAME,
-    SkipSteps,
     VNF,
     VNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
     VNF_MANIFEST_BICEP_TEMPLATE_FILENAME,
+    DeployableResourceTypes,
+    SkipSteps,
 )
 from azext_aosm.util.management_clients import ApiClients
 
@@ -65,6 +67,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         manifest_params_file: Optional[str] = None,
         skip: Optional[SkipSteps] = None,
         cli_ctx: Optional[object] = None,
+        use_manifest_permissions: bool = False,
     ):
         """
         :param api_clients: ApiClients object for AOSM and ResourceManagement
@@ -76,6 +79,13 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         the manifest
         :param skip: options to skip, either publish bicep or upload artifacts
         :param cli_ctx: The CLI context. Used with CNFs and all LongRunningOperations
+        :param use_manifest_permissions:
+            CNF definition_type publish only - ignored for VNF or NSD. Causes the image
+            artifact copy from a source ACR to be done via docker pull and push,
+            rather than `az acr import`. This is slower but does not require
+            Contributor (or importImage action) permissions on the publisher
+            subscription. Also uses manifest permissions for helm chart upload.
+            Requires Docker to be installed locally.
         """
         self.api_clients = api_clients
         self.resource_type = resource_type
@@ -89,6 +99,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         self.pre_deployer = PreDeployerViaSDK(
             self.api_clients, self.config, self.cli_ctx
         )
+        self.use_manifest_permissions = use_manifest_permissions
 
     def deploy_nfd_from_bicep(self) -> None:
         """
@@ -133,9 +144,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
                 file_name = VNF_DEFINITION_BICEP_TEMPLATE_FILENAME
             if self.resource_type == CNF:
                 file_name = CNF_DEFINITION_BICEP_TEMPLATE_FILENAME
-            bicep_path = os.path.join(
-                self.config.output_directory_for_build, file_name
-            )
+            bicep_path = os.path.join(self.config.output_directory_for_build, file_name)
         message = (
             f"Deploy bicep template for NFD {self.config.nf_name} version"
             f" {self.config.version} into"
@@ -188,20 +197,12 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
             artifact_store_name=self.config.acr_artifact_store_name,
         )
         if not acr_properties.storage_resource_id:
-            raise ValueError(
+            raise CLIError(
                 f"Artifact store {self.config.acr_artifact_store_name} "
                 "has no storage resource id linked"
             )
 
-        target_registry_name = acr_properties.storage_resource_id.split("/")[-1]
-        target_registry_resource_group_name = acr_properties.storage_resource_id.split(
-            "/"
-        )[-5]
-        # Check whether the source registry has a namespace in the repository path
-        source_registry_namespace: str = ""
-        if self.config.source_registry_namespace:
-            source_registry_namespace = f"{self.config.source_registry_namespace}/"
-
+        # The artifacts from the manifest which has been deployed by bicep
         acr_manifest = ArtifactManifestOperator(
             self.config,
             self.api_clients,
@@ -209,51 +210,56 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
             self.config.acr_manifest_names[0],
         )
 
+        # Create a new dictionary of artifacts from the manifest, keyed by artifact name
         artifact_dictionary = {}
 
         for artifact in acr_manifest.artifacts:
             artifact_dictionary[artifact.artifact_name] = artifact
 
         for helm_package in self.config.helm_packages:
+            # Go through the helm packages in the config that the user has provided
             helm_package_name = helm_package.name
 
             if helm_package_name not in artifact_dictionary:
-                raise ValueError(
+                # Helm package in the config file but not in the artifact manifest
+                raise CLIError(
                     f"Artifact {helm_package_name} not found in the artifact manifest"
                 )
-
+            # Get the artifact object that came from the manifest
             manifest_artifact = artifact_dictionary[helm_package_name]
 
             print(f"Uploading Helm package: {helm_package_name}")
 
-            manifest_artifact.upload(helm_package)
+            # The artifact object will use the correct client (ORAS) to upload the
+            # artifact
+            manifest_artifact.upload(helm_package, self.use_manifest_permissions)
 
             print(f"Finished uploading Helm package: {helm_package_name}")
 
+            # Remove this helm package artifact from the dictionary.
             artifact_dictionary.pop(helm_package_name)
 
         # All the remaining artifacts are not in the helm_packages list. We assume that
-        # they are images that need to be copied from another ACR.
+        # they are images that need to be copied from another ACR or uploaded from a
+        # local image.
         if self.skip == IMAGE_UPLOAD:
             print("Skipping upload of images")
             return
 
+        # This is the first time we have easy access to the number of images to upload
+        # so we validate the config file here.
+        if (
+            len(artifact_dictionary.values()) > 1
+            and self.config.images.source_local_docker_image
+        ):
+            raise ValidationError(
+                "Multiple image artifacts found to upload and a local docker image"
+                " was specified in the config file. source_local_docker_image is only "
+                "supported if there is a single image artifact to upload."
+            )
         for artifact in artifact_dictionary.values():
             assert isinstance(artifact, Artifact)
-
-            print(f"Copying artifact: {artifact.artifact_name}")
-            artifact.copy_image(
-                cli_ctx=self.cli_ctx,
-                container_registry_client=self.api_clients.container_registry_client,
-                source_registry_id=self.config.source_registry_id,
-                source_image=(
-                    f"{source_registry_namespace}{artifact.artifact_name}"
-                    f":{artifact.artifact_version}"
-                ),
-                target_registry_resource_group_name=target_registry_resource_group_name,
-                target_registry_name=target_registry_name,
-                target_tags=[f"{artifact.artifact_name}:{artifact.artifact_version}"],
-            )
+            artifact.upload(self.config.images, self.use_manifest_permissions)
 
     def nfd_predeploy(self) -> bool:
         """
@@ -267,9 +273,6 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         self.pre_deployer.ensure_acr_artifact_store_exists()
         if self.resource_type == VNF:
             self.pre_deployer.ensure_sa_artifact_store_exists()
-        if self.resource_type == CNF:
-            self.pre_deployer.ensure_config_source_registry_exists()
-
         self.pre_deployer.ensure_config_nfdg_exists()
         return self.pre_deployer.do_config_artifact_manifests_exist()
 
@@ -556,8 +559,9 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         :param template: The JSON contents of the template to deploy
         :param parameters: The JSON contents of the parameters file
         :param resource_group: The name of the resource group that has been deployed
-                :raise RuntimeError if validation or deploy fails
+
         :return: Output dictionary from the bicep template.
+        :raise RuntimeError if validation or deploy fails
         """
         # Get current time from the time module and remove all digits after the decimal
         # point
@@ -572,16 +576,18 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         validation_res = None
         for validation_attempt in range(2):
             try:
-                validation = self.api_clients.resource_client.deployments.begin_validate(
-                    resource_group_name=resource_group,
-                    deployment_name=deployment_name,
-                    parameters={
-                        "properties": {
-                            "mode": "Incremental",
-                            "template": template,
-                            "parameters": parameters,
-                        }
-                    },
+                validation = (
+                    self.api_clients.resource_client.deployments.begin_validate(
+                        resource_group_name=resource_group,
+                        deployment_name=deployment_name,
+                        parameters={
+                            "properties": {
+                                "mode": "Incremental",
+                                "template": template,
+                                "parameters": parameters,
+                            }
+                        },
+                    )
                 )
                 validation_res = LongRunningOperation(
                     self.cli_ctx, "Validating ARM template..."
@@ -666,7 +672,6 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         Convert a bicep template into an ARM template.
 
         :param bicep_template_path: The path to the bicep template to be converted
-
         :return: Output dictionary from the bicep template.
         """
         logger.debug("Converting %s to ARM template", bicep_template_path)

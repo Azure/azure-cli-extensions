@@ -5,8 +5,10 @@
     "version": "1.0.0",
     "acr_artifact_store_name": "nginx-nsd-acr",
     "location": "westcentralus",
-    "source_registry_id": "{{source_registry_id}}",
-    "source_registry_namespace": "",
+    "images":{
+        "source_registry": "{{source_registry_id}}",
+        "source_registry_namespace": ""
+    },
     "helm_packages": [
         {
             "name": "nginxdemo",

@@ -131,7 +131,7 @@ class NFDVs:
 
 class AOSMClient:
     def __init__(self) -> None:
-        self.network_function_definition_versions = NFDVs()
+        self.proxy_network_function_definition_versions = NFDVs()
 
 
 mock_client = AOSMClient()

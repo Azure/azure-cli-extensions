@@ -121,6 +121,21 @@ def load_arguments(self: AzCommandsLoader, _):
                 "container images (for CNFs)."
             ),
         )
+        c.argument(
+            "no_subscription_permissions",
+            options_list=["--no-subscription-permissions", "-u"],
+            arg_type=get_three_state_flag(),
+            help=(
+                "CNF definition_type publish only - ignored for VNF."
+                " Set to True if you do not "
+                "have permission to import to the Publisher subscription (Contributor "
+                "role + AcrPush role, or a custom role that allows the importImage "
+                "action and AcrPush over the "
+                "whole subscription). This means that the image artifacts will be "
+                "pulled to your local machine and then pushed to the Artifact Store. "
+                "Requires Docker to be installed locally."
+            ),
+        )
 
     with self.argument_context("aosm nsd") as c:
         c.argument(

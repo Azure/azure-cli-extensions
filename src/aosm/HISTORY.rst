@@ -27,6 +27,13 @@ upcoming
 * Re-order publish steps so that artifacts are uploaded before the NFD/NSD is published.
 * Add progress information for VHD upload
 * Change optional argument from `manifest_parameters_json_file` to `manifest_params_file` to appease linter.
+* NB CHANGE TO PREVIOUS CONFIG FILE FORMAT FOR NFDS
+  - Add options for CNF image upload. By default CNF images are copied from a source ACR using `az acr import` which is fast but requires subscription-wide permissions.
+  - If permissions are not available then CNF images can be copies from the source ACR using `docker pull` then `docker push`, which is slower and requires Docker to be installed. This is governed by a new --no-subscription-permissions flag.
+  - Also, if only a single image is required, it can be specified in the config file and uploaded from local docker registry using `docker push`
+  - CNF image config has been moved into an `images` section of the config file. Please run `az aosm nfd generate-config --definition-type cnf` to generate a new config file.
+  - Remove pre-deploy check to check source ACR exists. This will be found at the time that images are copied / accessed.
+  - Change from using ContainerRegistryManagementClient to `az acr import` subprocess call, so that we don't need to know the Resource Group.
 
 0.2.0
 ++++++
