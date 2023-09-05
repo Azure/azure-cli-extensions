@@ -61,18 +61,6 @@ helps['containerapp create'] = """
               --image my-app:v1.0 --environment MyContainerappEnv \\
               --secrets mysecret=secretvalue1 anothersecret="secret value 2" \\
               --secret-volume-mount "mnt/secrets"
-    - name: Create a container app from a new GitHub Actions workflow in the provided GitHub repository
-      text: |
-          az containerapp create -n MyContainerapp -g MyResourceGroup \\
-          --environment MyContainerappEnv --registry-server MyRegistryServer \\
-          --registry-user MyRegistryUser --registry-pass MyRegistryPass \\
-          --repo https://github.com/myAccount/myRepo
-    - name: Create a Container App from the provided application source
-      text: |
-          az containerapp create -n MyContainerapp -g MyResourceGroup \\
-          --environment MyContainerappEnv --registry-server MyRegistryServer \\
-          --registry-user MyRegistryUser --registry-pass MyRegistryPass \\
-          --source .
 """
 
 helps['containerapp update'] = """
@@ -100,9 +88,6 @@ helps['containerapp update'] = """
               --scale-rule-type my-custom-type \\
               --scale-rule-metadata key=value key2=value2 \\
               --scale-rule-auth triggerparam=secretref triggerparam=secretref
-    - name: Update a Container App from the provided application source
-      text: |
-          az containerapp update -n MyContainerapp -g MyResourceGroup --source .
 """
 
 helps['containerapp delete'] = """
@@ -1820,6 +1805,28 @@ helps['containerapp create'] = """
           az containerapp create -n MyContainerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappConnectedEnv \\
               --environment-type connected
+    - name: Create a container app from a new GitHub Actions workflow in the provided GitHub repository
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          --environment MyContainerappEnv --registry-server MyRegistryServer \\
+          --registry-user MyRegistryUser --registry-pass MyRegistryPass \\
+          --repo https://github.com/myAccount/myRepo
+    - name: Create a Container App from the provided application source
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          --environment MyContainerappEnv --registry-server MyRegistryServer \\
+          --registry-user MyRegistryUser --registry-pass MyRegistryPass \\
+          --source .
+"""
+
+# containerapp update for preview
+helps['containerapp update'] = """
+    type: command
+    short-summary: Update a container app.
+    examples:
+    - name: Update a Container App from the provided application source
+      text: |
+          az containerapp update -n MyContainerapp -g MyResourceGroup --source .
 """
 
 # containerapp list for preview

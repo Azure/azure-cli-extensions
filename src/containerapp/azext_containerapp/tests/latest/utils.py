@@ -6,7 +6,7 @@
 import time
 import requests
 from azext_containerapp.tests.latest.common import TEST_LOCATION
-from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
+from azure.cli.core.azclierror import MutuallyExclusiveArgumentError, RequiredArgumentMissingError
 from azure.cli.testsdk import (JMESPathCheck)
 
 
@@ -74,6 +74,39 @@ def create_and_verify_containerapp_up(
             up_cmd += f" -l {location.upper()}"
             test_cls.cmd(up_cmd)
 
+def verify_containerapp_create_source_exception_without_ACR_registry_server(
+            test_cls,
+            resource_group,
+            env_name = None,
+            app_name = None,
+            source_path = None):
+        # Configure the default location
+        test_cls.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        # Ensure that the Container App environment is created
+        if env_name is None:
+            env_name = test_cls.create_random_name(prefix='env', length=24)
+            create_containerapp_env(test_cls, env_name, resource_group)
+
+        if app_name is None:
+            # Generate a name for the Container App
+            app_name = test_cls.create_random_name(prefix='containerapp', length=24)
+
+        # Construct the 'az containerapp create' command
+        create_cmd = 'containerapp create -g {} -n {} --environment {}'.format(
+            resource_group, app_name, env_name)
+        if source_path:
+            create_cmd += f" --source \"{source_path}\""
+
+        err = ("Usuage error: --registry-server is required while using --source or --repo")
+
+        # Verify appropriate exception was raised
+        with test_cls.assertRaises(RequiredArgumentMissingError) as cm:
+            # Execute the 'az containerapp create' command
+            test_cls.cmd(create_cmd)
+
+        test_cls.assertEqual(str(cm.exception), err)
+
 def verify_containerapp_create_exception_with_source_and_repo(
             test_cls,
             resource_group,
@@ -87,7 +120,7 @@ def verify_containerapp_create_exception_with_source_and_repo(
         # Ensure that the Container App environment is created
         if env_name is None:
             env_name = test_cls.create_random_name(prefix='env', length=24)
-            test_cls.cmd(f'containerapp env create -g {resource_group} -n {env_name} -l {TEST_LOCATION}')
+            create_containerapp_env(test_cls, env_name, resource_group)
 
         if app_name is None:
             # Generate a name for the Container App
@@ -148,7 +181,31 @@ def create_and_verify_containerapp_create_and_update(
             registry_pass = acr_credentials["passwords"][0]["value"]
         image_name = registry_server + "/" + app_name
 
-        # Construct the 'az containerapp create' command
+        # Construct the 'az containerapp create' command without registry username and password
+        create_cmd = 'containerapp create -g {} -n {} --environment {} --registry-server {}'.format(
+            resource_group, app_name, env_name, registry_server)
+        if source_path:
+            create_cmd += f" --source \"{source_path}\""
+        if image:
+            create_cmd += f" --image {image}"
+            image_name = registry_server + "/" + _reformat_image(image)
+        if ingress:
+            create_cmd += f" --ingress {ingress}"
+        if target_port:
+            create_cmd += f" --target-port {target_port}"
+
+        # Execute the 'az containerapp create' command
+        test_cls.cmd(create_cmd)
+
+         # Verify successful execution
+        app = test_cls.cmd(f"containerapp show -g {resource_group} -n {app_name}", checks=[
+            JMESPathCheck('properties.configuration.registries[0].server', registry_server),
+            JMESPathCheck('properties.configuration.registries[0].username', registry_user),
+            JMESPathCheck('properties.provisioningState', 'Succeeded'),
+        ]).get_output_in_json()
+        test_cls.assertEqual(app["properties"]["template"]["containers"][0]["image"].split(":")[0], image_name)
+
+        # Re-construct the 'az containerapp create' command with registry username and password
         create_cmd = 'containerapp create -g {} -n {} --environment {} --registry-username {} --registry-server {} --registry-password {}'.format(
             resource_group, app_name, env_name, registry_user, registry_server, registry_pass)
         if source_path:
@@ -161,7 +218,7 @@ def create_and_verify_containerapp_create_and_update(
         if target_port:
             create_cmd += f" --target-port {target_port}"
 
-        # Execute the 'az containerapp create' command
+        # Re-execute the 'az containerapp create' command
         test_cls.cmd(create_cmd)
 
         # Verify successful execution
