@@ -100,7 +100,7 @@ class Artifact:
             logger.debug("Failed to run %s with %s", cmd, error)
 
             all_output: str = (
-                f"Command 401: {'' ''.join(cmd)}\n"
+                f"Command: {'' ''.join(cmd)}\n"
                 f"Output: {error.stdout}\n"
                 f"Error output: {error.stderr}\n"
                 f"Return code: {error.returncode}"
@@ -293,10 +293,9 @@ class Artifact:
 
     def _get_acr(self) -> str:
         """
-        _summary_
+        Get the name of the ACR
 
-        :return: _description_
-        :rtype: str
+        :return: The name of the ACR
         """
         if not self.artifact_client.remote.hostname:
             raise ValueError(
@@ -310,7 +309,7 @@ class Artifact:
     ) -> str:
         """Format the acr url, artifact name and version into a target image string."""
         if include_hostname:
-            return f"{self._get_acr()}" f"/{self.artifact_name}:{self.artifact_version}"
+            return f"{self._get_acr()}/{self.artifact_name}:{self.artifact_version}"
 
         return f"{self.artifact_name}:{self.artifact_version}"
 
