@@ -21,7 +21,7 @@ from ._stream_utils import stream_logs
 from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
 from ._utils import (get_portal_uri, get_spring_sku, get_proxy_api_endpoint, BearerAuth)
 from knack.util import CLIError
-from .vendored_sdks.appplatform.v2023_07_01_preview import models, AppPlatformManagementClient
+from .vendored_sdks.appplatform.v2023_09_01_preview import models, AppPlatformManagementClient
 from knack.log import get_logger
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
@@ -1252,8 +1252,14 @@ def _get_app_log(url, auth, format_json, exceptions, chunk_size=None, stderr=Fal
     with requests.get(url, stream=True, auth=auth) as response:
         try:
             if response.status_code != 200:
+                failure_reason = response.reason
+                if response.content:
+                    if isinstance(response.content, bytes):
+                        failure_reason = "{}:{}".format(failure_reason, response.content.decode('utf-8'))
+                    else:
+                        failure_reason = "{}:{}".format(failure_reason, response.content)
                 raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
-                    response.status_code, response.reason))
+                    response.status_code, failure_reason))
             std_encoding = sys.stdout.encoding
 
             formatter = build_formatter()
