@@ -106,7 +106,7 @@ class BaseContainerAppDecorator(BaseResource):
         except CLIError as e:
             handle_raw_exception(e)
 
-    def list_secrets(self):
+    def list_secrets(self, show_values=False):
         containerapp_def = None
         try:
             containerapp_def = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
@@ -116,7 +116,7 @@ class BaseContainerAppDecorator(BaseResource):
         if not containerapp_def:
             raise ResourceNotFoundError("The containerapp '{}' does not exist".format(self.get_argument_name()))
 
-        if not self.get_argument_show_values():
+        if not show_values:
             return safe_get(containerapp_def, "properties", "configuration", "secrets", default=[])
 
         try:
@@ -1193,7 +1193,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         _remove_additional_attributes(self.new_containerapp)
         _remove_readonly_attributes(self.new_containerapp)
 
-        secret_values = self.list_secrets()
+        secret_values = self.list_secrets(show_values=True)
         _populate_secret_values(self.new_containerapp, secret_values)
 
         # Clean null values since this is an update

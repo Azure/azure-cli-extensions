@@ -33,6 +33,7 @@ from knack.prompting import prompt_y_n, prompt as prompt_str
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
+from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
 from .containerapp_job_decorator import ContainerAppJobDecorator, ContainerAppJobPreviewCreateDecorator
 from .containerapp_env_decorator import ContainerAppEnvDecorator, ContainerappEnvPreviewCreateDecorator, ContainerAppEnvUpdateDecorator
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
@@ -51,7 +52,7 @@ from ._clients import (
     AuthPreviewClient,
     SubscriptionPreviewClient,
     ContainerAppsJobPreviewClient,
-    ManagedEnvironmentPreviewClient
+    ManagedEnvironmentPreviewClient, ConnectedEnvironmentClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._github_oauth import get_github_access_token
@@ -5142,3 +5143,67 @@ def patch_cli_call(cmd, resource_group, container_app_name, container_name, targ
     except Exception:
         logger.error("Error: Failed to create new revision with the container app.")
         raise
+
+
+def show_connected_environment(cmd, name, resource_group_name):
+    raw_parameters = locals()
+    connected_env_decorator = ConnectedEnvironmentDecorator(
+        cmd=cmd,
+        client=ConnectedEnvironmentClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    connected_env_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+
+    return connected_env_decorator.show()
+
+
+def list_connected_environments(cmd, resource_group_name=None, custom_location=None):
+    raw_parameters = locals()
+    connected_env_decorator = ConnectedEnvironmentDecorator(
+        cmd=cmd,
+        client=ConnectedEnvironmentClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    connected_env_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+
+    return connected_env_decorator.list()
+
+
+def delete_connected_environment(cmd, name, resource_group_name, no_wait=False):
+    raw_parameters = locals()
+    connected_env_decorator = ConnectedEnvironmentDecorator(
+        cmd=cmd,
+        client=ConnectedEnvironmentClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    connected_env_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+
+    return connected_env_decorator.delete()
+
+
+def create_connected_environment(cmd,
+                                 name,
+                                 resource_group_name,
+                                 custom_location,
+                                 location=None,
+                                 dapr_ai_connection_string=None,
+                                 static_ip=None,
+                                 tags=None,
+                                 no_wait=False):
+    raw_parameters = locals()
+    connected_env_create_decorator = ConnectedEnvironmentCreateDecorator(
+        cmd=cmd,
+        client=ConnectedEnvironmentClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    connected_env_create_decorator.validate_arguments()
+    connected_env_create_decorator.register_provider(CONTAINER_APPS_RP)
+
+    connected_env_create_decorator.construct_payload()
+    r = connected_env_create_decorator.create()
+
+    return r

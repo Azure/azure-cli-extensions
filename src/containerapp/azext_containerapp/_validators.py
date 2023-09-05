@@ -14,7 +14,8 @@ from ._clients import ContainerAppClient
 from ._ssh_utils import ping_container_app
 from ._utils import safe_get, is_registry_msi_system
 from ._constants import ACR_IMAGE_SUFFIX, LOG_TYPE_SYSTEM, CONNECTED_ENVIRONMENT_RESOURCE_TYPE, \
-    CONNECTED_ENVIRONMENT_TYPE, MANAGED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_TYPE, CONTAINER_APPS_RP, MAXIMUM_SECRET_LENGTH
+    CONNECTED_ENVIRONMENT_TYPE, MANAGED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_TYPE, CONTAINER_APPS_RP, \
+    EXTENDED_LOCATION_RP, CUSTOM_LOCATION_RESOURCE_TYPE, MAXIMUM_SECRET_LENGTH
 from urllib.parse import urlparse
 
 logger = get_logger(__name__)
@@ -285,3 +286,20 @@ def validate_env_name_or_id(cmd, namespace):
                 type=MANAGED_ENVIRONMENT_RESOURCE_TYPE,
                 name=namespace.managed_env
             )
+
+
+def validate_custom_location_name_or_id(cmd, namespace):
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    from msrestazure.tools import is_valid_resource_id, resource_id
+
+    if not namespace.custom_location or not namespace.resource_group_name:
+        return
+
+    if not is_valid_resource_id(namespace.custom_location):
+        namespace.custom_location = resource_id(
+            subscription=get_subscription_id(cmd.cli_ctx),
+            resource_group=namespace.resource_group_name,
+            namespace=EXTENDED_LOCATION_RP,
+            type=CUSTOM_LOCATION_RESOURCE_TYPE,
+            name=namespace.custom_location
+        )
