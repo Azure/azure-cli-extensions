@@ -47,9 +47,7 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = ['pycomposefile>=0.0.29',
-                'docker',
-                'azure-mgmt-kubernetesconfiguration==2.0.0']
+DEPENDENCIES = ['pycomposefile>=0.0.29', 'docker']
 
 # Install pack CLI to build runnable application images from source
 _ = get_pack_exec_path()
