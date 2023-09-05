@@ -15,9 +15,11 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
     UnclassifiedUserFault,
 )
+from azure.cli.core.commands import AzCliCommand
+from azure.core import exceptions as azure_exceptions
 from knack.log import get_logger
 
-from azext_aosm._client_factory import cf_resources
+from azext_aosm._client_factory import cf_features, cf_resources
 from azext_aosm._configuration import (
     CNFConfiguration,
     Configuration,
@@ -32,7 +34,15 @@ from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 from azext_aosm.generate_nfd.vnf_nfd_generator import VnfNfdGenerator
 from azext_aosm.generate_nsd.nsd_generator import NSDGenerator
-from azext_aosm.util.constants import CNF, DeployableResourceTypes, NSD, SkipSteps, VNF
+from azext_aosm.util.constants import (
+    AOSM_FEATURE_NAMESPACE,
+    AOSM_REQUIRED_FEATURES,
+    CNF,
+    NSD,
+    VNF,
+    DeployableResourceTypes,
+    SkipSteps,
+)
 from azext_aosm.util.management_clients import ApiClients
 from azext_aosm.vendored_sdks import HybridNetworkManagementClient
 
@@ -49,10 +59,11 @@ def build_definition(
     """
     Build a definition.
 
-    :param cmd:
-    :type cmd: _type_
+    :param definition_type: VNF or CNF
     :param config_file: path to the file
     :param definition_type: VNF, CNF
+    :param interactive - whether to prompt for input when creating deploy parameters
+                         mapping files
     :param force: force the build even if the design has already been built
     """
 
@@ -135,8 +146,54 @@ def _generate_nfd(
     nfd_generator.generate_nfd()
 
 
+def _check_features_enabled(cmd: AzCliCommand):
+    """
+    Check that the required Azure features are enabled on the subscription.
+
+    :param cmd: The AzCLICommand object for the original command that was run, we use
+        this to retrieve the CLI context in order to get the features client for access
+        to the features API.
+    """
+    features_client = cf_features(cmd.cli_ctx)
+    # Check that the required features are enabled on the subscription
+    for feature in AOSM_REQUIRED_FEATURES:
+        try:
+            feature_result = features_client.features.get(
+                resource_provider_namespace=AOSM_FEATURE_NAMESPACE,
+                feature_name=feature,
+            )
+            if (
+                not feature_result
+                or not feature_result.properties.state == "Registered"
+            ):
+                # We don't want to log the name of the feature to the user as it is
+                # a hidden feature.  We do want to log it to the debug log though.
+                logger.debug(
+                    "Feature %s is not registered on the subscription.", feature
+                )
+                raise CLIInternalError(
+                    "Your Azure subscription has not been fully onboarded to AOSM. "
+                    "Please see the AOSM onboarding documentation for more information."
+                )
+        except azure_exceptions.ResourceNotFoundError as rerr:
+            # If the feature is not found, it is not registered, but also something has
+            # gone wrong with the CLI code and onboarding instructions.
+            logger.debug(
+                "Feature not found error - Azure doesn't recognise the feature %s."
+                "This indicates a coding error or error with the AOSM onboarding "
+                "instructions.",
+                feature,
+            )
+            logger.debug(rerr)
+            raise CLIInternalError(
+                "CLI encountered an error checking that your "
+                "subscription has been onboarded to AOSM. Please raise an issue against"
+                " the CLI."
+            ) from rerr
+
+
 def publish_definition(
-    cmd,
+    cmd: AzCliCommand,
     client: HybridNetworkManagementClient,
     definition_type,
     config_file,
@@ -150,8 +207,13 @@ def publish_definition(
     """
     Publish a generated definition.
 
-    :param cmd:
-    :param client:
+    :param cmd: The AzCLICommand object for the command that was run, we use this to
+                find the CLI context (from which, for example, subscription id and
+                credentials can be found, and other clients can be generated.)
+    :param client: The AOSM client. This is created in _client_factory.py and passed
+                   in by commands.py - we could alternatively just use cf_aosm as
+                   we use cf_resources, but other extensions seem to pass a client
+                   around like this.
     :type client: HybridNetworkManagementClient
     :param definition_type: VNF or CNF
     :param config_file: Path to the config file for the NFDV
@@ -173,6 +235,9 @@ def publish_definition(
             Contributor (or importImage action) and AcrPush permissions on the publisher
             subscription. It requires Docker to be installed.
     """
+    # Check that the required features are enabled on the subscription
+    _check_features_enabled(cmd)
+
     print("Publishing definition.")
     api_clients = ApiClients(
         aosm_client=client,
@@ -205,7 +270,7 @@ def publish_definition(
 
 
 def delete_published_definition(
-    cmd,
+    cmd: AzCliCommand,
     client: HybridNetworkManagementClient,
     definition_type,
     config_file,
@@ -215,6 +280,13 @@ def delete_published_definition(
     """
     Delete a published definition.
 
+    :param cmd: The AzCLICommand object for the command that was run, we use this to
+                find the CLI context (from which, for example, subscription id and
+                credentials can be found, and other clients can be generated.)
+    :param client: The AOSM client. This is created in _client_factory.py and passed
+                   in by commands.py - we could alternatively just use cf_aosm as
+                   we use cf_resources, but other extensions seem to pass a client
+                   around like this.
     :param definition_type: CNF or VNF
     :param config_file: Path to the config file
     :param clean: if True, will delete the NFDG, artifact stores and publisher too.
@@ -222,6 +294,9 @@ def delete_published_definition(
         with care.
     :param force: if True, will not prompt for confirmation before deleting the resources.
     """
+    # Check that the required features are enabled on the subscription
+    _check_features_enabled(cmd)
+
     config = _get_config_from_file(
         config_file=config_file, configuration_type=definition_type
     )
@@ -289,14 +364,21 @@ def _generate_config(configuration_type: str, output_file: str = "input.json"):
 
 
 def build_design(
-    cmd, client: HybridNetworkManagementClient, config_file: str, force: bool = False
+    cmd: AzCliCommand,
+    client: HybridNetworkManagementClient,
+    config_file: str,
+    force: bool = False,
 ):
     """
     Build a Network Service Design.
 
-    :param cmd:
-    :type cmd: _type_
-    :param client:
+    :param cmd: The AzCLICommand object for the command that was run, we use this to
+                find the CLI context (from which, for example, subscription id and
+                credentials can be found, and other clients can be generated.)
+    :param client: The AOSM client. This is created in _client_factory.py and passed
+                   in by commands.py - we could alternatively just use cf_aosm as
+                   we use cf_resources, but other extensions seem to pass a client
+                   around like this.
     :type client: HybridNetworkManagementClient
     :param config_file: path to the file
     :param force: force the build, even if the design has already been built
@@ -321,7 +403,7 @@ def build_design(
 
 
 def delete_published_design(
-    cmd,
+    cmd: AzCliCommand,
     client: HybridNetworkManagementClient,
     config_file,
     clean=False,
@@ -330,6 +412,13 @@ def delete_published_design(
     """
     Delete a published NSD.
 
+    :param cmd: The AzCLICommand object for the command that was run, we use this to
+                find the CLI context (from which, for example, subscription id and
+                credentials can be found, and other clients can be generated.)
+    :param client: The AOSM client. This is created in _client_factory.py and passed
+                   in by commands.py - we could alternatively just use cf_aosm as
+                   we use cf_resources, but other extensions seem to pass a client
+                   around like this.
     :param config_file: Path to the config file
     :param clean: if True, will delete the NSDG, artifact stores and publisher too.
                   Defaults to False. Only works if no resources have those as a parent.
@@ -337,6 +426,9 @@ def delete_published_design(
     :param clean: if True, will delete the NSDG on top of the other resources.
     :param force: if True, will not prompt for confirmation before deleting the resources.
     """
+    # Check that the required features are enabled on the subscription
+    _check_features_enabled(cmd)
+
     config = _get_config_from_file(config_file=config_file, configuration_type=NSD)
 
     api_clients = ApiClients(
@@ -348,7 +440,7 @@ def delete_published_design(
 
 
 def publish_design(
-    cmd,
+    cmd: AzCliCommand,
     client: HybridNetworkManagementClient,
     config_file,
     design_file: Optional[str] = None,
@@ -360,8 +452,13 @@ def publish_design(
     """
     Publish a generated design.
 
-    :param cmd:
-    :param client:
+    :param cmd: The AzCLICommand object for the command that was run, we use this to
+                find the CLI context (from which, for example, subscription id and
+                credentials can be found, and other clients can be generated.)
+    :param client: The AOSM client. This is created in _client_factory.py and passed
+                   in by commands.py - we could alternatively just use cf_aosm as
+                   we use cf_resources, but other extensions seem to pass a client
+                   around like this.
     :type client: HybridNetworkManagementClient
     :param config_file: Path to the config file for the NSDV
     :param design_file: Optional path to an override bicep template to deploy the NSDV.
@@ -375,6 +472,8 @@ def publish_design(
                         file for manifest parameters
     :param skip: options to skip, either publish bicep or upload artifacts
     """
+    # Check that the required features are enabled on the subscription
+    _check_features_enabled(cmd)
 
     print("Publishing design.")
     api_clients = ApiClients(

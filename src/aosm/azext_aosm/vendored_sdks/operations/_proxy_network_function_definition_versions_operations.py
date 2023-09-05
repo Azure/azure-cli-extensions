@@ -98,8 +98,8 @@ def build_get_request(
 
     # Construct parameters
     _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    _query_parameters['publisherScopeName'] = _SERIALIZER.query("publisher_scope_name", publisher_scope_name, 'str', max_length=64, min_length=0, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9_-]*$')
-    _query_parameters['publisherLocationName'] = _SERIALIZER.query("publisher_location_name", publisher_location_name, 'str', max_length=64, min_length=0, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9_-]*$')
+    _query_parameters['publisherScope'] = _SERIALIZER.query("publisher_scope_name", publisher_scope_name, 'str', max_length=64, min_length=0, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9_-]*$')
+    _query_parameters['publisherLocation'] = _SERIALIZER.query("publisher_location_name", publisher_location_name, 'str', max_length=64, min_length=0, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9_-]*$')
     _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
 
     # Construct headers
@@ -285,21 +285,18 @@ class ProxyNetworkFunctionDefinitionVersionsOperations(object):
         )
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
-
         pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
             request,
             stream=False,
             **kwargs
         )
         response = pipeline_response.http_response
-
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('NetworkFunctionDefinitionVersionOverview', pipeline_response)
-
         if cls:
             return cls(pipeline_response, deserialized, {})
 

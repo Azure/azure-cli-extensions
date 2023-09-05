@@ -367,6 +367,7 @@ NFD_VERSION = (
 NFD_LOCATION = "The region that the NFDV is published to."
 PUBLISHER_RESOURCE_GROUP = "The resource group that the publisher is hosted in."
 PUBLISHER_NAME = "The name of the publisher that this NFDV is published under."
+PUBLISHER_SCOPE = "The scope that the publisher is published under. Currently, only 'private' is supported."
 NFD_TYPE = "Type of Network Function. Valid values are 'cnf' or 'vnf'"
 MULTIPLE_INSTANCES = (
     "Set to true or false.  Whether the NSD should allow arbitrary numbers of this "
@@ -384,6 +385,7 @@ class NFDRETConfiguration:
     name: str = NFD_NAME
     version: str = NFD_VERSION
     publisher_offering_location: str = NFD_LOCATION
+    publisher_scope: str = PUBLISHER_SCOPE
     type: str = NFD_TYPE
     multiple_instances: Union[str, bool] = MULTIPLE_INSTANCES
 
@@ -412,6 +414,17 @@ class NFDRETConfiguration:
         if self.publisher_offering_location == NFD_LOCATION:
             raise ValidationError(
                 f"Network function definition offering location must be set, for {self.name}"
+            )
+
+        if self.publisher_scope == PUBLISHER_SCOPE:
+            raise ValidationError(
+                f"Network function definition publisher scope must be set, for {self.name}"
+            )
+
+        # Temporary validation while only private publishers exist
+        if self.publisher_scope not in ["private", "Private"]:
+            raise ValidationError(
+                "Only private publishers are currently supported"
             )
 
         if self.type not in [CNF, VNF]:
