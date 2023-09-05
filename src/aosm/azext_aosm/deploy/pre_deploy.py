@@ -440,8 +440,7 @@ class PreDeployerViaSDK:
         :type location: str
         """
         print(
-            "Creating Network Service Design Group %s if it does not exist",
-            nsdg_name,
+            f"Creating Network Service Design Group {nsdg_name} if it does not exist",
         )
         logger.info(
             "Creating Network Service Design Group %s if it does not exist",
