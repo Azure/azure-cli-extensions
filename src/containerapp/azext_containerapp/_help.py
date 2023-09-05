@@ -445,6 +445,11 @@ helps['containerapp service mariadb'] = """
     short-summary: Commands to manage the mariadb service for the Container Apps environment.
 """
 
+helps['containerapp service qdrant'] = """
+    type: group
+    short-summary: Commands to manage the qdrant service for the Container Apps environment.
+"""
+
 helps['containerapp service redis create'] = """
     type: command
     short-summary: Command to create the redis service.
@@ -465,6 +470,11 @@ helps['containerapp service mariadb create'] = """
     short-summary: Command to create the mariadb service.
 """
 
+helps['containerapp service qdrant create'] = """
+    type: command
+    short-summary: Command to create the qdrant service.
+"""
+
 helps['containerapp service redis delete'] = """
     type: command
     short-summary: Command to delete the redis service.
@@ -483,6 +493,11 @@ helps['containerapp service kafka delete'] = """
 helps['containerapp service mariadb delete'] = """
     type: command
     short-summary: Command to delete the mariadb service.
+"""
+
+helps['containerapp service qdrant delete'] = """
+    type: command
+    short-summary: Command to delete the qdrant service.
 """
 
 helps['containerapp env update'] = """

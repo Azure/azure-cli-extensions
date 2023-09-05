@@ -7,6 +7,7 @@ upcoming
 
 0.3.38
 ++++++
+* 'az containerapp service': add support for creation and deletion of Qdrant
 * Add support for binding managed MySQL Flexible server to a containerapp
 * Removed preview tag for some command groups and params (e.g. 'az containerapp job', 'az containerapp env storage', 'az containerapp env workload-profile')
 * 'az containerapp env': --enable-workload-profiles allowed values:true, false
