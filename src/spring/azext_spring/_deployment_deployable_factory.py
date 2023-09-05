@@ -42,9 +42,9 @@ class EmptyDeployableBuilder():
     def get_source_type(self, runtime_version=None, artifact_path=None, **_):
         if self.sku.name == 'E0':
             return 'BuildResult'
-        if runtime_version and runtime_version.casefold() == 'netcore_31'.casefold():
+        if runtime_version and runtime_version.lower() == 'netcore_31':
             return 'NetCoreZip'
-        if _get_file_ext(artifact_path).casefold() == ".war".casefold():
+        if _get_file_ext(artifact_path).lower() == ".war":
             return "War"
         return 'Jar'
 
