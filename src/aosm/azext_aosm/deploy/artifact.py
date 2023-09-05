@@ -297,6 +297,7 @@ class Artifact:
 
         :return: The name of the ACR
         """
+        assert hasattr(self.artifact_client, "remote")
         if not self.artifact_client.remote.hostname:
             raise ValueError(
                 "Cannot upload artifact. Oras client has no remote hostname."
@@ -390,6 +391,7 @@ class Artifact:
         :param target_password: The password to use for the az acr login attempt
         :type target_password: str
         """
+        assert hasattr(self.artifact_client, "remote")
         target_acr = self._get_acr()
         try:
             target = self._get_acr_target_image()

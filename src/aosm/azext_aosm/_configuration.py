@@ -377,7 +377,7 @@ MULTIPLE_INSTANCES = (
 
 
 @dataclass
-class NFDRETConfiguration:
+class NFDRETConfiguration:  # pylint: disable=too-many-instance-attributes
     """The configuration required for an NFDV that you want to include in an NSDV."""
 
     publisher: str = PUBLISHER_NAME
