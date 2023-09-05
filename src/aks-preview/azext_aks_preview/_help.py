@@ -1743,7 +1743,7 @@ helps['aks nodepool update'] = """
       - name: Change a node pool to system mode
         text: az aks nodepool update --mode System -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
       - name: update an existing agentpool with a Capacity Reservation Group(CRG) ID.
-        text: az aks nodepool update --resource-group tc-rg-1 --cluster-name crg-c16 --name nodepool2 --node-count 2 --node-vm-size Standard_d2s_v3 --crg-id /subscriptions/MySub/resourceGroups/TC-RG-CRG/providers/Microsoft.Compute/capacityReservationGroups/crg-1
+        text: az aks nodepool update --resource-group tc-rg-1 --cluster-name crg-c16 --name nodepool2 --crg-id /subscriptions/MySub/resourceGroups/TC-RG-CRG/providers/Microsoft.Compute/capacityReservationGroups/crg-1
 """
 
 helps['aks nodepool get-upgrades'] = """
