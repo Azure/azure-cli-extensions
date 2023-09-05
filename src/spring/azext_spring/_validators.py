@@ -760,3 +760,5 @@ def validate_managed_environment(namespace):
 def validate_server_version(cmd, namespace):
     if is_enterprise_tier(cmd, namespace.resource_group, namespace.service):
         raise ArgumentUsageError("'--server-version' only supports for Standard/Basic tier Spring instance.")
+
+    
