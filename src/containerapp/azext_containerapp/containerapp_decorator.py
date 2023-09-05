@@ -1421,7 +1421,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def set_up_source(self):
         if self.get_argument_source():
             if self.get_argument_yaml():
-                raise MutuallyExclusiveArgumentError("Cannot use --source with --yaml together. Can either deploy from a local directory provide a yaml file")
+                raise MutuallyExclusiveArgumentError("Cannot use --source with --yaml together. Can either deploy from a local directory or provide a yaml file")
             if(self.containerapp_def["properties"]["configuration"]["registries"] is None or len(self.containerapp_def["properties"]["configuration"]["registries"]) == 0):
                 raise ValidationError(
                     "Error: The containerapp '{}' does not have a registry associated with it. Please specify a registry using the --registry-server argument while creating the ContainerApp".format(
@@ -1481,7 +1481,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         else:
             for index, container in enumerate(self.new_containerapp["properties"]["template"]["containers"]):
                 if container["image"].startswith(registry_server):
-                    # Update image for the first sidecar container that has the registry server
+                    # Update image for the first sidecar container that has the registry server in its image name
                     self.containerapp_def["properties"]["template"]["containers"][index]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
                     break
             else:
