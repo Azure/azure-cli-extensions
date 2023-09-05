@@ -891,7 +891,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
             logger.warning('Setting current user as database server AAD admin:'
                            ' user=%s object id=%s', self.login_username, user_object_id)
             admin_info = run_cli_cmd('az postgres server ad-admin create -g {} --server-name {} --display-name {} --object-id {}'
-                        ' --subscription {}'.format(rg, server, self.login_username, user_object_id, sub)).get('objectId')
+                                     ' --subscription {}'.format(rg, server, self.login_username, user_object_id, sub)).get('objectId')
         self.admin_username = admin_info.get('login', self.login_username)
 
     def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
