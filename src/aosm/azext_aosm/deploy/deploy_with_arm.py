@@ -517,8 +517,8 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         Deploy a bicep template.
 
         :param bicep_template_path: Path to the bicep template
-        :param parameters: Parameters for the bicep template :return Any output that the
-            template produces
+        :param parameters: Parameters for the bicep template
+        :return Any output that the template produces
         """
         logger.info("Deploy %s", bicep_template_path)
         logger.debug("Parameters: %s", parameters)
@@ -559,8 +559,9 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         :param template: The JSON contents of the template to deploy
         :param parameters: The JSON contents of the parameters file
         :param resource_group: The name of the resource group that has been deployed
-            :raise RuntimeError if validation or deploy fails
+
         :return: Output dictionary from the bicep template.
+        :raise RuntimeError if validation or deploy fails
         """
         # Get current time from the time module and remove all digits after the decimal
         # point
