@@ -329,7 +329,7 @@ class MysqlFlexibleHandler(TargetHandler):
                 self.resource_group, self.server, self.subscription, mysql_identity_id))
         admin_info = run_cli_cmd('az mysql flexible-server ad-admin create -g {} -s {} --subscription {} -u {} -i {} --identity {}'.format(
             self.resource_group, self.server, self.subscription, self.login_username, user_object_id, mysql_identity_id))
-        self.admin_username = admin_info.get('login')
+        self.admin_username = admin_info.get('login', self.login_username)
 
     def create_aad_user(self):
         query_list = self.get_create_query()
@@ -513,7 +513,7 @@ class SqlHandler(TargetHandler):
                            ' user=%s object id=%s', self.login_username, user_object_id)
             admin_info = run_cli_cmd('az sql server ad-admin create -g {} --server-name {} --display-name {} --object-id {} --subscription {}'.format(
                 self.resource_group, self.server, self.login_username, user_object_id, self.subscription)).get('objectId')
-        self.admin_username = admin_info.get('login')
+        self.admin_username = admin_info.get('login', self.login_username)
 
     def create_aad_user(self):
 
@@ -709,7 +709,7 @@ class PostgresFlexHandler(TargetHandler):
             logger.warning('Set current user as DB Server AAD Administrators.')
             admin_info = run_cli_cmd('az postgres flexible-server ad-admin create -u {} -i {} -g {} -s {} --subscription {} -t {}'.format(
                 self.login_username, user_object_id, self.resource_group, self.db_server, self.subscription, self.login_usertype))
-        self.admin_username = admin_info.get('principalName')    
+        self.admin_username = admin_info.get('principalName', self.login_username)
 
     def create_aad_user(self):
         query_list = self.get_create_query()
@@ -871,7 +871,6 @@ class PostgresSingleHandler(PostgresFlexHandler):
         sub = self.subscription
         rg = self.resource_group
         server = self.db_server
-        is_admin = True
 
         # pylint: disable=not-an-iterable
         admins = run_cli_cmd(
@@ -893,7 +892,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
                            ' user=%s object id=%s', self.login_username, user_object_id)
             admin_info = run_cli_cmd('az postgres server ad-admin create -g {} --server-name {} --display-name {} --object-id {}'
                         ' --subscription {}'.format(rg, server, self.login_username, user_object_id, sub)).get('objectId')
-        self.admin_username = admin_info.get('login')
+        self.admin_username = admin_info.get('login', self.login_username)
 
     def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
         sub = self.subscription
