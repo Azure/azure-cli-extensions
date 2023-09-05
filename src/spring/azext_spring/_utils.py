@@ -41,7 +41,10 @@ def _get_upload_local_file(runtime_version, artifact_path=None, source_path=None
 
 
 def _get_file_ext(artifact_path):
-    return os.path.splitext(artifact_path)[-1]
+    if artifact_path:
+        return os.path.splitext(artifact_path)[-1]
+    else:
+        return ""
 
 
 def _get_file_type(runtime_version, artifact_path=None):
