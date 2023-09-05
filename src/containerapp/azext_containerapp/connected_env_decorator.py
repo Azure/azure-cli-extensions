@@ -5,15 +5,12 @@
 from typing import Any, Dict
 
 from azure.cli.core.commands import AzCliCommand
-from msrestazure.tools import is_valid_resource_id
 
 from ._client_factory import handle_raw_exception
 from .base_resource import BaseResource
-from ._constants import CONNECTED_ENVIRONMENT_RESOURCE_TYPE, CONTAINER_APP_EXTENSION_TYPE
+from ._constants import CONNECTED_ENVIRONMENT_RESOURCE_TYPE
 from ._models import ConnectedEnvironment as ConnectedEnvironmentModel, ExtendedLocation as ExtendedLocationModel
-from ._utils import safe_set, _ensure_location_allowed, list_environment_locations, validate_environment_location, \
-    get_custom_location, get_cluster_extension, validate_custom_location
-from azure.cli.core.azclierror import ArgumentUsageError, ValidationError, ResourceNotFoundError
+from ._utils import validate_environment_location, validate_custom_location
 
 
 class ConnectedEnvironmentDecorator(BaseResource):
