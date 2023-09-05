@@ -8,7 +8,7 @@ import unittest
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
-from azext_containerapp.tests.latest.utils import create_and_verify_containerapp_create_and_update, verify_containerapp_create_exception_with_source_and_repo, verify_containerapp_create_source_exception_without_ACR_registry_server
+from azext_containerapp.tests.latest.utils import create_and_verify_containerapp_create_and_update, verify_containerapp_create_exception_with_source_and_repo, verify_containerapp_create_source_exception_without_ACR_registry_server, verify_containerapp_create_exception_with_source_repo_yaml
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -54,3 +54,15 @@ class ContainerAppCreateTest(ScenarioTest):
     def test_containerapp_create_source_without_ACR_registry_server_e2e(self, resource_group):
         source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_dockerfile"))
         verify_containerapp_create_source_exception_without_ACR_registry_server(self,resource_group, source_path=source_path)
+
+    @ResourceGroupPreparer(location="eastus")
+    def test_containerapp_create_source_and_yaml_e2e(self,resource_group):
+        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_dockerfile"))
+        yaml = "./test.yaml"
+        verify_containerapp_create_exception_with_source_repo_yaml(self,resource_group=resource_group, source_path=source_path, yaml=yaml)
+
+    @ResourceGroupPreparer(location="eastus")
+    def test_containerapp_create_repo_and_yaml_e2e(self,resource_group):
+        repo = "https://github.com/test/repo"
+        yaml = "./test.yaml"
+        verify_containerapp_create_exception_with_source_repo_yaml(self,resource_group=resource_group, repo = repo, yaml=yaml)

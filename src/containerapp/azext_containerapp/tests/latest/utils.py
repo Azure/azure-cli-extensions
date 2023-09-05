@@ -143,6 +143,45 @@ def verify_containerapp_create_exception_with_source_and_repo(
 
         test_cls.assertEqual(str(cm.exception), err)
 
+def verify_containerapp_create_exception_with_source_repo_yaml(
+            test_cls,
+            resource_group,
+            env_name = None,
+            app_name = None,
+            source_path = None,
+            repo = None,
+            yaml = None):
+        # Configure the default location
+        test_cls.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        # Ensure that the Container App environment is created
+        if env_name is None:
+            env_name = test_cls.create_random_name(prefix='env', length=24)
+            create_containerapp_env(test_cls, env_name, resource_group)
+
+        if app_name is None:
+            # Generate a name for the Container App
+            app_name = test_cls.create_random_name(prefix='containerapp', length=24)
+
+        # Construct the 'az containerapp create' command
+        create_cmd = 'containerapp create -g {} -n {} --environment {}'.format(
+            resource_group, app_name, env_name)
+        if source_path:
+            create_cmd += f" --source \"{source_path}\""
+        if repo:
+            create_cmd += f" --repo {repo}"
+        if yaml:
+            create_cmd += f" --yaml {yaml}"
+
+        err = ("Cannot use --source or --repo with --yaml together. Can either deploy from a local directory or provide a yaml file")
+
+        # Verify appropriate exception was raised
+        with test_cls.assertRaises(MutuallyExclusiveArgumentError) as cm:
+            # Execute the 'az containerapp create' command
+            test_cls.cmd(create_cmd)
+
+        test_cls.assertEqual(str(cm.exception), err)
+
 def create_and_verify_containerapp_create_and_update(
             test_cls,
             resource_group,

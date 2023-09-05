@@ -1837,13 +1837,6 @@ helps['containerapp update'] = """
       text: |
           az containerapp update -n MyContainerapp -g MyResourceGroup --source .
 """
-    type: command
-    short-summary: Update a container app.
-    examples:
-    - name: Update a Container App from the provided application source
-      text: |
-          az containerapp update -n MyContainerapp -g MyResourceGroup --source .
-"""
 
 # containerapp list for preview
 helps['containerapp list'] = """

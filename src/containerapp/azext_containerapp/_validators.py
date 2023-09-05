@@ -26,7 +26,7 @@ def validate_create(registry_identity, registry_pass, registry_user, registry_se
     if source and repo:
         raise MutuallyExclusiveArgumentError("Cannot use --source and --repo together. Can either deploy from a local directory or a GitHub repository")
     if (source or repo) and yaml:
-        raise MutuallyExclusiveArgumentError("Cannot use --source or --repo with --yaml together. Can either deploy from a local directory provide a yaml file")
+        raise MutuallyExclusiveArgumentError("Cannot use --source or --repo with --yaml together. Can either deploy from a local directory or provide a yaml file")
     if source or repo:
         if not registry_server:
             raise RequiredArgumentMissingError('Usuage error: --registry-server is required while using --source or --repo')

@@ -1223,10 +1223,14 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         super().construct_payload()
         self.set_up_service_binds()
         self.set_up_extended_location()
+        self.set_up_source()
+        self.set_up_repo()
 
+    def set_up_source(self):
         if self.get_argument_source():
             self._set_up_source_or_repo()
 
+    def set_up_repo(self):
         if self.get_argument_repo():
             container_app = self._get_containerapp_if_exists()
             if container_app:
@@ -1244,9 +1248,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                     raise ValidationError(
                         "The container app '{}' does not have any containers. Please use --image to set the image for the container app".format(
                             self.get_argument_name()))
-                if container_app["properties"]["template"]["containers"][0]["image"] is None or container_app["properties"]["template"]["containers"][0]["image"] == HELLO_WORLD_IMAGE:
+                if container_app["properties"]["template"]["containers"][0]["image"] is None:
                     raise ValidationError(
-                        "The container app '{}' does not have an image or is mcr.microsoft.com/k8se/quickstart:latest. Please use --image to set the image for the container app while creating the container app.".format(
+                        "The container app '{}' does not have an image. Please use --image to set the image for the container app while creating the container app.".format(
                             self.get_argument_name()))
                 if self.containerapp_def["properties"]["template"]["containers"] is None or len(self.containerapp_def["properties"]["template"]["containers"]) == 0:
                     raise ValidationError(
@@ -1254,10 +1258,12 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                             self.get_argument_name()))
                 self.containerapp_def["properties"]["template"]["containers"][0]["image"] = container_app["properties"]["template"]["containers"][0]["image"]
 
+
     def _get_containerapp_if_exists(self):
         try:
             return self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
-        except:
+        except Exception as e:
+            handle_non_404_status_code_exception(e)
             return None
 
     def _set_up_source_or_repo(self):
