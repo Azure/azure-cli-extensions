@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.0.0a1
+1.0.0
 ++++++++++++++++++
 * Migrate manual code to automatic code by aaz tool.
 
