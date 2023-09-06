@@ -4,7 +4,7 @@ Release History
 ===============
 0.3.9
 ++++++
-* Support customizing keys.
+* Support `--customized-keys` and make some improvements.
 
 0.3.8
 ++++++
