@@ -67,7 +67,7 @@ class WarSource(BaseSource):
             relative_path=deployable_path,
             jvm_options=jvm_options,
             runtime_version=runtime_version or 'Java_11',
-            server_version=server_version or 'Tomcat_9',
+            server_version=server_version,
             version=version
         )
 
