@@ -64,6 +64,7 @@ class Delete(AAZCommand):
         _args_schema.force = AAZBoolArg(
             options=["--force"],
             help="Delete the resource even if it is part of a deployed configuration. If the configuration has been deployed, the service will do a cleanup deployment in the background, prior to the delete.",
+            default=False,
         )
         return cls._args_schema
 

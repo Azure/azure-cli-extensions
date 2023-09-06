@@ -119,6 +119,24 @@ helps['containerapp list'] = """
           az containerapp list -g MyResourceGroup
 """
 
+helps['containerapp list-usages'] = """
+    type: command
+    short-summary: List usages of subscription level quotas in specific region.
+    examples:
+    - name: List usages of  quotas in specific region.
+      text: |
+          az containerapp list-usages -l eastus
+"""
+
+helps['containerapp env list-usages'] = """
+    type: command
+    short-summary: List usages of quotas for specific managed environment.
+    examples:
+    - name: List usages of quotas for specific managed environment.
+      text: |
+          az containerapp env list-usages -n MyEnv -g MyResourceGroup
+"""
+
 helps['containerapp exec'] = """
     type: command
     short-summary: Open an SSH-like interactive shell within a container app replica
@@ -199,6 +217,18 @@ helps['containerapp logs show'] = """
     - name: Fetch logs for a particular revision, replica, and container
       text: |
           az containerapp logs show -n MyContainerapp -g MyResourceGroup --replica MyReplica --revision MyRevision --container MyContainer
+"""
+
+helps['containerapp show-custom-domain-verification-id'] = """
+    type: command
+    short-summary: Show the verification id for binding app or environment custom domains
+    examples:
+    - name: Get the verification id, which needs to be added as a TXT record for app custom domain to verify domain ownership
+      text: |
+          az containerapp show-custom-domain-verification-id
+    - name: Get the verification id, which needs to be added as a TXT record for custom environment DNS suffix to verify domain ownership
+      text: |
+          az containerapp show-custom-domain-verification-id
 """
 
 # Replica Commands
@@ -375,6 +405,14 @@ helps['containerapp env create'] = """
               --logs-workspace-id myLogsWorkspaceID \\
               --logs-workspace-key myLogsWorkspaceKey \\
               --location eastus2
+    - name: Create an environment with workload profiles enabled.
+      text: |
+          az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
+              --location eastus2 --enable-workload-profiles
+    - name: Create an environment without workload profiles enabled.
+      text: |
+          az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
+              --location eastus2 --enable-workload-profiles false
 """
 
 helps['containerapp service'] = """
@@ -651,6 +689,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Manual.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
               --trigger-type Manual \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -661,6 +700,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Schedule.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
               --trigger-type Schedule \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -671,6 +711,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Event.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
               --trigger-type Event \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -1768,4 +1809,111 @@ helps['containerapp list'] = """
     - name: List container apps by environment type.
       text: |
           az containerapp list --environment-type connected
+"""
+
+# Connected Environment Commands
+helps['containerapp connected-env'] = """
+    type: group
+    short-summary: Commands to manage Container Apps Connected environments for use with Arc enabled Container Apps.
+"""
+
+helps['containerapp connected-env create'] = """
+    type: command
+    short-summary: Create a Container Apps connected environment.
+    long-summary: Create a Container Apps Connected environment for use with Arc enabled Container Apps.  Environments are an isolation boundary around a collection of container apps.
+    examples:
+    - name: Create a connected environment
+      text: |
+          az containerapp connected-env create -n MyContainerappConnectedEnv -g MyResourceGroup \\
+              --location eastus --custom-location MyCustomLocationResourceID
+"""
+
+helps['containerapp connected-env delete'] = """
+    type: command
+    short-summary: Delete a Container Apps connected environment.
+    examples:
+    - name: Delete a connected environment.
+      text: az containerapp connected-env delete -n MyContainerappConnectedEnv -g MyResourceGroup
+"""
+
+helps['containerapp connected-env show'] = """
+    type: command
+    short-summary: Show details of a Container Apps connected environment.
+    examples:
+    - name: Show the details of a connected environment.
+      text: |
+          az containerapp connected-env show -n MyContainerappConnectedEnv -g MyResourceGroup
+"""
+
+helps['containerapp connected-env list'] = """
+    type: command
+    short-summary: List Container Apps connected environments by subscription or resource group.
+    examples:
+    - name: List connected environments in the current subscription.
+      text: |
+          az containerapp connected-env list
+    - name: List connected environments by resource group.
+      text: |
+          az containerapp connected-env list -g MyResourceGroup
+"""
+
+# Container Apps Job Commands
+
+helps['containerapp job create'] = """
+    type: command
+    short-summary: Create a container apps job.
+    examples:
+    - name: Create a container apps job with Trigger Type as Manual.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
+              --trigger-type Manual \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1 \\
+              --image imageName \\
+              --workload-profile-name my-wlp
+    - name: Create a container apps job with Trigger Type as Schedule.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
+              --trigger-type Schedule \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1 \\
+              --cron-expression \"*/1 * * * *\" \\
+              --image imageName
+    - name: Create a container apps job with Trigger Type as Event.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
+              --trigger-type Event \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1 \\
+              --polling-interval 30 \\
+              --min-executions 0 \\
+              --max-executions 1 \\
+              --scale-rule-name queueJob \\
+              --scale-rule-type azure-queue \\
+              --scale-rule-metadata "accountName=mystorageaccountname" \\
+                                    "cloud=AzurePublicCloud" \\
+                                    "queueLength": "5" "queueName": "foo" \\
+              --scale-rule-auth "connection=my-connection-string-secret-name" \\
+              --image imageName
+    - name: Create a container apps job hosted on a Connected Environment.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappConnectedEnv
+              --environment-type connected
+              --trigger-type Manual \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1 \\
+              --image imageName \\
+              --workload-profile-name my-wlp
 """

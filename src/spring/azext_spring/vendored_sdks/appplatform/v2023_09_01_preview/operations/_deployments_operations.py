@@ -204,6 +204,7 @@ def build_list_request(
     subscription_id: str,
     *,
     version: Optional[List[str]] = None,
+    expand: Optional[str] = None,
     **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -230,6 +231,8 @@ def build_list_request(
     _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
     if version is not None:
         _params["version"] = [_SERIALIZER.query("version", q, "str") if q is not None else "" for q in version]
+    if expand is not None:
+        _params["$expand"] = _SERIALIZER.query("expand", expand, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
@@ -243,6 +246,7 @@ def build_list_for_cluster_request(
     subscription_id: str,
     *,
     version: Optional[List[str]] = None,
+    expand: Optional[str] = None,
     **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -268,6 +272,8 @@ def build_list_for_cluster_request(
     _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
     if version is not None:
         _params["version"] = [_SERIALIZER.query("version", q, "str") if q is not None else "" for q in version]
+    if expand is not None:
+        _params["$expand"] = _SERIALIZER.query("expand", expand, "str")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
@@ -1410,6 +1416,7 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         service_name: str,
         app_name: str,
         version: Optional[List[str]] = None,
+        expand: Optional[str] = None,
         **kwargs: Any
     ) -> Iterable["_models.DeploymentResource"]:
         """Handles requests to list all resources in an App.
@@ -1423,6 +1430,8 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         :type app_name: str
         :param version: Version of the deployments to be listed. Default value is None.
         :type version: list[str]
+        :param expand: The expand expression to apply on the operation. Default value is None.
+        :type expand: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DeploymentResource or the result of cls(response)
         :rtype:
@@ -1454,6 +1463,7 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
                     app_name=app_name,
                     subscription_id=self._config.subscription_id,
                     version=version,
+                    expand=expand,
                     api_version=api_version,
                     template_url=self.list.metadata["url"],
                     headers=_headers,
@@ -1510,7 +1520,12 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
 
     @distributed_trace
     def list_for_cluster(
-        self, resource_group_name: str, service_name: str, version: Optional[List[str]] = None, **kwargs: Any
+        self,
+        resource_group_name: str,
+        service_name: str,
+        version: Optional[List[str]] = None,
+        expand: Optional[str] = None,
+        **kwargs: Any
     ) -> Iterable["_models.DeploymentResource"]:
         """List deployments for a certain service.
 
@@ -1521,6 +1536,8 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         :type service_name: str
         :param version: Version of the deployments to be listed. Default value is None.
         :type version: list[str]
+        :param expand: The expand expression to apply on the operation. Default value is None.
+        :type expand: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DeploymentResource or the result of cls(response)
         :rtype:
@@ -1551,6 +1568,7 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
                     service_name=service_name,
                     subscription_id=self._config.subscription_id,
                     version=version,
+                    expand=expand,
                     api_version=api_version,
                     template_url=self.list_for_cluster.metadata["url"],
                     headers=_headers,
