@@ -34,7 +34,6 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
-from .connected_dapr_component import ConnectedEnvDaprComponentDecorator, ConnectedEnvDaprComponentCreateDecorator
 from .containerapp_job_decorator import ContainerAppJobDecorator, ContainerAppJobPreviewCreateDecorator
 from .containerapp_env_decorator import ContainerAppEnvDecorator, ContainerappEnvPreviewCreateDecorator, ContainerAppEnvUpdateDecorator
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
@@ -5188,52 +5187,66 @@ def create_connected_environment(cmd,
 
 
 def connected_env_list_dapr_components(cmd, resource_group_name, environment_name):
-    raw_parameters = locals()
-    connected_env_dapr_component_decorator = ConnectedEnvDaprComponentDecorator(
-        cmd=cmd,
-        client=ConnectedEnvDaprComponentClient,
-        raw_parameters=raw_parameters,
-        models=CONTAINER_APPS_SDK_MODELS
-    )
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    return connected_env_dapr_component_decorator.list()
+    return ConnectedEnvDaprComponentClient.list(cmd, resource_group_name, environment_name)
 
 
 def connected_env_show_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name):
-    raw_parameters = locals()
-    connected_env_dapr_component_decorator = ConnectedEnvDaprComponentDecorator(
-        cmd=cmd,
-        client=ConnectedEnvDaprComponentClient,
-        raw_parameters=raw_parameters,
-        models=CONTAINER_APPS_SDK_MODELS
-    )
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    return connected_env_dapr_component_decorator.show()
+    return ConnectedEnvDaprComponentClient.show(cmd, resource_group_name, environment_name, name=dapr_component_name)
 
 
 def connected_env_remove_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name):
-    raw_parameters = locals()
-    connected_env_dapr_component_decorator = ConnectedEnvDaprComponentDecorator(
-        cmd=cmd,
-        client=ConnectedEnvDaprComponentClient,
-        raw_parameters=raw_parameters,
-        models=CONTAINER_APPS_SDK_MODELS
-    )
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    return connected_env_dapr_component_decorator.delete()
+    try:
+        ConnectedEnvDaprComponentClient.show(cmd, resource_group_name, environment_name, name=dapr_component_name)
+    except Exception as e:
+        raise ResourceNotFoundError("Dapr component not found.") from e
+
+    try:
+        r = ConnectedEnvDaprComponentClient.delete(cmd, resource_group_name, environment_name, name=dapr_component_name)
+        logger.warning("Dapr componenet successfully deleted.")
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
 
 
 def connected_env_create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml):
-    raw_parameters = locals()
-    connected_env_dapr_component_decorator = ConnectedEnvDaprComponentCreateDecorator(
-        cmd=cmd,
-        client=ConnectedEnvDaprComponentClient,
-        raw_parameters=raw_parameters,
-        models=CONTAINER_APPS_SDK_MODELS
-    )
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    connected_env_dapr_component_decorator.construct_payload()
-    return connected_env_dapr_component_decorator.create_or_update()
+    yaml_containerapp = load_yaml_file(yaml)
+    if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+
+    # Deserialize the yaml into a DaprComponent object. Need this since we're not using SDK
+    try:
+        deserializer = create_deserializer()
+        daprcomponent_def = deserializer('DaprComponent', yaml_containerapp)
+    except DeserializationError as ex:
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.') from ex
+
+    daprcomponent_def = _convert_object_from_snake_to_camel_case(_object_to_dict(daprcomponent_def))
+
+    # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
+    _remove_additional_attributes(daprcomponent_def)
+    _remove_dapr_readonly_attributes(daprcomponent_def)
+
+    if not daprcomponent_def["ignoreErrors"]:
+        daprcomponent_def["ignoreErrors"] = False
+
+    dapr_component_envelope = {"properties": daprcomponent_def}
+
+    try:
+        r = ConnectedEnvDaprComponentClient.create_or_update(cmd, resource_group_name=resource_group_name,
+                                                             environment_name=environment_name,
+                                                             dapr_component_envelope=dapr_component_envelope,
+                                                             name=dapr_component_name)
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
 
 
 def connected_env_list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None):
@@ -5320,7 +5333,7 @@ def connected_env_delete_certificate(cmd, resource_group_name, name, location=No
 
     if not certificate and not thumbprint:
         raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --thumbprint')
-    certs = list_certificates(cmd, name, resource_group_name, location, certificate, thumbprint)
+    certs = connected_env_list_certificates(cmd, name, resource_group_name, location, certificate, thumbprint)
     for cert in certs:
         try:
             ConnectedEnvironmentClient.delete_certificate(cmd, resource_group_name, name, cert["name"])

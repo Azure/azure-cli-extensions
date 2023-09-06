@@ -23,7 +23,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
     @serial_test()
     @ResourceGroupPreparer(location="eastus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
-    def test_containerapp_preview_connected_env_e2e(self, resource_group, infra_cluster, connected_cluster_name):
+    def test_containerapp_preview_connected_env_e2e(self, resource_group, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         custom_location_name = "my-custom-location"
         create_extension_and_custom_location(self, resource_group, connected_cluster_name, custom_location_name)
@@ -76,7 +76,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
     @serial_test()
     @ResourceGroupPreparer(location="eastus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
-    def test_containerapp_preview_connected_env_storage(self, resource_group, infra_cluster, connected_cluster_name):
+    def test_containerapp_preview_connected_env_storage(self, resource_group, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         custom_location_name = "my-custom-location"
         create_extension_and_custom_location(self, resource_group, connected_cluster_name, custom_location_name)
@@ -103,10 +103,16 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         self.cmd('containerapp connected-env storage set -g {} -n {} --storage-name {} --azure-file-account-name {} --azure-file-account-key {} --access-mode ReadOnly --azure-file-share-name {}'
                  .format(resource_group, env_name, storage_name, storage_name, storage_keys["value"], shares_name), checks=[
             JMESPathCheck('name', storage_name),
+            JMESPathCheck('properties.azureFile.accountName', storage_name),
+            JMESPathCheck('properties.azureFile.shareName', shares_name),
+            JMESPathCheck('properties.azureFile.accessMode', 'ReadOnly'),
         ])
 
         self.cmd('containerapp connected-env storage show -g {} -n {} --storage-name {}'.format(resource_group, env_name, storage_name), checks=[
             JMESPathCheck('name', storage_name),
+            JMESPathCheck('properties.azureFile.accountName', storage_name),
+            JMESPathCheck('properties.azureFile.shareName', shares_name),
+            JMESPathCheck('properties.azureFile.accessMode', 'ReadOnly'),
         ])
 
         self.cmd('containerapp connected-env storage list -g {} -n {}'.format(resource_group, env_name), checks=[
@@ -122,7 +128,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
     @serial_test()
     @ResourceGroupPreparer(location="eastus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
-    def test_containerapp_preview_connected_env_dapr_components(self, resource_group, infra_cluster, connected_cluster_name):
+    def test_containerapp_preview_connected_env_dapr_components(self, resource_group, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         custom_location_name = "my-custom-location"
         create_extension_and_custom_location(self, resource_group, connected_cluster_name, custom_location_name)
@@ -196,7 +202,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
     @serial_test()
     @ResourceGroupPreparer(location="eastus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
-    def test_containerapp_preview_connected_env_certificate(self, resource_group, infra_cluster, connected_cluster_name):
+    def test_containerapp_preview_connected_env_certificate(self, resource_group, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         custom_location_name = "my-custom-location"
         create_extension_and_custom_location(self, resource_group, connected_cluster_name, custom_location_name)
@@ -218,17 +224,15 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
 
         # test that non pfx or pem files are not supported
         txt_file = os.path.join(TEST_DIR, 'cert.txt')
-        self.cmd(
-            'containerapp connected-env certificate upload -g {} -n {} --certificate-file "{}"'.format(resource_group, env_name,
-                                                                                             txt_file),
-            expect_failure=True)
+        self.cmd('containerapp connected-env certificate upload -g {} -n {} --certificate-file "{}"'.format(resource_group, env_name, txt_file), expect_failure=True)
 
         # test pfx file with password
         pfx_file = os.path.join(TEST_DIR, 'cert.pfx')
         pfx_password = 'test12'
         cert = self.cmd('containerapp connected-env certificate upload -g {} -n {} --certificate-file "{}" --password {}'.format(
             resource_group, env_name, pfx_file, pfx_password), checks=[
-            JMESPathCheck('type', "Microsoft.App/managedEnvironments/certificates"),
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            # JMESPathCheck('type', "Microsoft.App/connectedEnvironments/certificates"),
         ]).get_output_in_json()
 
         cert_name = cert["name"]

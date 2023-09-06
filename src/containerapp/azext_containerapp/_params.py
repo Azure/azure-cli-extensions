@@ -527,3 +527,34 @@ def load_arguments(self, _):
         c.argument('custom_location', help="Resource ID of custom location. List using 'az customlocation list'.", validator=validate_custom_location_name_or_id)
         c.argument('dapr_ai_connection_string', options_list=['--dapr-ai-connection-string', '-d'], help='Application Insights connection string used by Dapr to export Service to Service communication telemetry.')
         c.argument('static_ip', help='Static IP of the connectedEnvironment.')
+
+    with self.argument_context('containerapp connected-env certificate upload') as c:
+        c.argument('certificate_file', options_list=['--certificate-file', '-f'], help='The filepath of the .pfx or .pem file')
+        c.argument('certificate_name', options_list=['--certificate-name', '-c'], help='Name of the certificate which should be unique within the Container Apps connected environment.')
+        c.argument('certificate_password', options_list=['--password', '-p'], help='The certificate file password')
+        c.argument('prompt', options_list=['--show-prompt'], action='store_true', help='Show prompt to upload an existing certificate.')
+
+    with self.argument_context('containerapp connected-env certificate list') as c:
+        c.argument('name', id_part=None)
+        c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
+        c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
+
+    with self.argument_context('containerapp connected-env certificate delete') as c:
+        c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
+        c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
+
+    with self.argument_context('containerapp connected-env storage') as c:
+        c.argument('name', id_part=None)
+        c.argument('storage_name', help="Name of the storage.")
+        c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]), help="Access mode for the AzureFile storage.")
+        c.argument('azure_file_account_key', options_list=["--azure-file-account-key", "--storage-account-key", "-k"], help="Key of the AzureFile storage account.")
+        c.argument('azure_file_share_name', options_list=["--azure-file-share-name", "--file-share", "-f"], help="Name of the share on the AzureFile storage.")
+        c.argument('azure_file_account_name', options_list=["--azure-file-account-name", "--account-name", "-a"], help="Name of the AzureFile storage account.")
+
+    with self.argument_context('containerapp connected-env dapr-component') as c:
+        c.argument('dapr_app_id', help="The Dapr app ID.")
+        c.argument('dapr_app_port', help="The port of your app.")
+        c.argument('dapr_app_protocol', help="Tell Dapr which protocol your application is using.  Allowed values: grpc, http.")
+        c.argument('dapr_component_name', help="The Dapr component name.")
+        c.argument('environment_name', options_list=['--name', '-n'], help="The environment name.")
+
