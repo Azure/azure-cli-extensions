@@ -1,5 +1,9 @@
 Release History
 ===============
+1.14.4
+---
+* Add argument `--auto-sync` in `az spring certificate add`.
+
 1.14.3
 ---
 * Make error message for `az spring app logs` more readable.  

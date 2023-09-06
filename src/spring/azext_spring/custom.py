@@ -1341,7 +1341,7 @@ def storage_list_persistent_storage(client, resource_group, service, name):
 
 
 def certificate_add(cmd, client, resource_group, service, name, only_public_cert=None,
-                    vault_uri=None, vault_certificate_name=None, public_certificate_file=None):
+                    vault_uri=None, vault_certificate_name=None, public_certificate_file=None, auto_sync=None):
     if vault_uri is None and public_certificate_file is None:
         raise InvalidArgumentValueError("One of --vault-uri and --public-certificate-file should be provided")
     if vault_uri is not None and public_certificate_file is not None:
@@ -1357,7 +1357,8 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
             type="KeyVaultCertificate",
             vault_uri=vault_uri,
             key_vault_cert_name=vault_certificate_name,
-            exclude_private_key=only_public_cert
+            exclude_private_key=only_public_cert,
+            auto_sync=auto_sync if auto_sync is not None else False
         )
     else:
         if os.path.exists(public_certificate_file):
