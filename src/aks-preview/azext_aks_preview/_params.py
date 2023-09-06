@@ -449,6 +449,7 @@ def load_arguments(self, _):
         c.argument('ksm_metric_annotations_allow_list')
         c.argument('grafana_resource_id', validator=validate_grafanaresourceid)
         c.argument('enable_windows_recording_rules', action='store_true')
+        c.argument('enable_cost_analysis', is_preview=True, action='store_true')
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -573,6 +574,8 @@ def load_arguments(self, _):
         c.argument('guardrails_version', help='The guardrails version', is_preview=True)
         c.argument('guardrails_excluded_ns', is_preview=True)
         c.argument('enable_network_observability', action='store_true', is_preview=True, help="enable network observability for cluster")
+        c.argument('enable_cost_analysis', is_preview=True, action='store_true')
+        c.argument('disable_cost_analysis', is_preview=True, action='store_true')
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)

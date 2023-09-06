@@ -1348,6 +1348,9 @@ class ContainerappScaleTests(ScenarioTest):
             properties:
               managedEnvironmentId: {containerapp_env["id"]}
               configuration:
+                secrets:
+                - name: secret1
+                  value: 1
                 activeRevisionsMode: Multiple
                 ingress:
                   external: true
@@ -1404,6 +1407,7 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
+            JMESPathCheck("length(properties.configuration.secrets)", 1),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
             JMESPathCheck("properties.template.terminationGracePeriodSeconds", 90),
@@ -1426,6 +1430,10 @@ class ContainerappScaleTests(ScenarioTest):
                     properties:
                       environmentId: {containerapp_env["id"]}
                       configuration:
+                        secrets:
+                        - name: secret1
+                        - name: secret2
+                          value: 123
                         activeRevisionsMode: Multiple
                         ingress:
                           external: true
@@ -1464,12 +1472,23 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
+            JMESPathCheck("length(properties.configuration.secrets)", 2),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision2"),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
             JMESPathCheck("properties.template.scale.rules", None)
+        ])
+
+        self.cmd(f'containerapp secret show -g {resource_group} -n {app} --secret-name secret1', checks=[
+            JMESPathCheck("name", 'secret1'),
+            JMESPathCheck("value", '1'),
+        ])
+
+        self.cmd(f'containerapp secret show -g {resource_group} -n {app} --secret-name secret2', checks=[
+            JMESPathCheck("name", 'secret2'),
+            JMESPathCheck("value", '123'),
         ])
 
         # test update without environmentId
