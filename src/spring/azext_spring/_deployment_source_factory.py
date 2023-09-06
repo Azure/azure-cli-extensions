@@ -67,18 +67,19 @@ class WarSource(BaseSource):
             relative_path=deployable_path,
             jvm_options=jvm_options,
             runtime_version=runtime_version or 'Java_11',
-            server_version=server_version,
+            server_version=server_version or 'Tomcat_9',
             version=version
         )
 
     def fulfilled_options_from_original_source_info(self, deployment_resource,
-                                                    jvm_options=None, runtime_version=None, **_):
+                                                    jvm_options=None, runtime_version=None, server_version=None, **_):
         if all(x is None for x in [jvm_options, runtime_version]):
             return {}
         original_source = deployment_resource.properties.source
         return {
             'jvm_options': jvm_options if jvm_options is not None else original_source.jvm_options,
             'runtime_version': runtime_version or original_source.runtime_version,
+            'server_version': server_version or original_source.server_version,
             'version': original_source.version,
             'deployable_path': original_source.relative_path
         }
