@@ -2,7 +2,7 @@ Release History
 ===============
 1.15.0
 ---
-* add new argument `--server-version` in `az spring app deploy and az spring app deployment create` to support war file deployment in Standard tier. 
+* Add new argument `--server-version` in `az spring app deploy and az spring app deployment create` to support war file deployment in Standard tier. 
 
 1.14.3
 ---
