@@ -8,6 +8,7 @@ import pty
 import subprocess
 import tempfile
 import time
+import unittest
 
 from azext_aks_preview.tests.latest.custom_preparers import (
     AKSCustomResourceGroupPreparer,
@@ -97,6 +98,35 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check(
                 'type', 'Microsoft.ContainerService/locations/osOptions')
         ])
+
+    @unittest.skipUnless(os.getenv('OPENAI_API_KEY'), 'Skipped as not running with OPENAI_API_KEY')
+    @unittest.skipUnless(os.getenv('OPENAI_API_BASE'), 'Skipped as not running with OPENAI_API_BASE')
+    @unittest.skipUnless(os.getenv('OPENAI_API_DEPLOYMENT'), 'Skipped as not running with OPENAI_API_DEPLOYMENT')
+    @unittest.skipUnless(os.getenv('OPENAI_API_TYPE'), 'Skipped as not running with OPENAI_API_TYPE')
+    def test_aks_ai_azure_openai(self):
+        self.assert_openai_interactive_shell_launched()
+
+    @unittest.skipUnless(os.getenv('OPENAI_API_KEY'), 'Skipped as not running with OPENAI_API_KEY')
+    @unittest.skipUnless(os.getenv('OPENAI_API_MODEL'), 'Skipped as not running with OPENAI_API_MODEL')
+    def test_aks_ai_openai(self):
+        self.assert_openai_interactive_shell_launched()
+
+    def assert_openai_interactive_shell_launched(self):
+        start_ai_cmd = ['az', 'aks', 'copilot']
+        try:
+            # say Hi, and quit (q) the interactive shell
+            result = subprocess.run(start_ai_cmd, input="Hi\nq\n".encode(), stdout=subprocess.PIPE)
+        except subprocess.CalledProcessError as err:
+            raise CliTestError(f"Failed to launch openai interactive shell with error: '{err}'")
+        output = result.stdout.decode()
+        for pattern in [
+            f"Please enter your request below.",
+            f"For example: Create a AKS cluster",
+            f"Prompt",
+        ]:
+            if not pattern in output:
+                raise CliTestError(f"Output from aks copilot did not contain '{pattern}'. Output:\n{output}")
+
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
