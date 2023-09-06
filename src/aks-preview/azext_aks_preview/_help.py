@@ -570,6 +570,9 @@ helps['aks create'] = """
         - name: --nodepool-taints
           type: string
           short-summary: The node taints for all node pools in this cluster.
+        - name: --enable-cost-analysis
+          type: bool
+          short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -1066,6 +1069,12 @@ helps['aks update'] = """
         - name: --enable-network-observability
           type: bool
           short-summary: Enable network observability on a cluster.
+        - name: --enable-cost-analysis
+          type: bool
+          short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
+        - name: --disable-cost-analysis
+          type: bool
+          short-summary: Disable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -2634,4 +2643,21 @@ helps['aks mesh disable-ingress-gateway'] = """
     examples:
       - name: Disable an internal ingress gateway.
         text: az aks mesh disable-ingress-gateway --resource-group MyResourceGroup --name MyManagedCluster --ingress-gateway-type Internal
+"""
+
+helps['aks copilot'] = """
+    type: command
+    short-summary: Start a chat with the Azure Kubernetes Service expert. API keys for OpenAI or Azure are required.
+    long-summary: |-
+                This command initiates a chat assistant with expertise in Azure Kubernetes Service, offering guidance on troubleshooting issues using az commands.
+                You have two options,
+                OpenAI option,
+                    sign in to https://www.openai.com/, navigate to the API key section in your account dashboard (https://platform.openai.com/signup), follow the instructions to create a new API key, and choose models from https://platform.openai.com/docs/models/.
+                    export OPENAI_API_KEY=xxx, export OPENAI_API_MODEL=gpt-3.5-turbo
+                Azure OpenAI option,
+                    after creating a new Cognitive Services resource (https://azure.microsoft.com/en-us/services/cognitive-services/), you can find the OPENAI_API_KEY and OPENAI_API_BASE in the "Keys and Endpoint" section of the resource's management page on the Azure portal (https://portal.azure.com/). OPENAI_API_DEPLOYMENT can be found in the "Model deployments" section, and OPENAI_API_TYPE should be "azure" for this option.
+                    export OPENAI_API_KEY=xxx, export OPENAI_API_BASE=https://xxxinstance.openai.azure.com/, export OPENAI_API_DEPLOYMENT=gpt-4-32k-0314, export OPENAI_API_TYPE=azure
+    examples:
+        - name: How to create a AKS private cluster.
+          text: az aks copilot -p "How to create a private cluster"
 """
