@@ -29,7 +29,7 @@ def validate_create(registry_identity, registry_pass, registry_user, registry_se
         raise MutuallyExclusiveArgumentError("Cannot use --source or --repo with --yaml together. Can either deploy from a local directory or provide a yaml file")
     if source or repo:
         if not registry_server:
-            raise RequiredArgumentMissingError('Usuage error: --registry-server is required while using --source or --repo')
+            raise RequiredArgumentMissingError('Usage error: --registry-server is required while using --source or --repo')
     if repo and registry_server and "azurecr.io" in registry_server:
         parsed = urlparse(registry_server)
         registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]

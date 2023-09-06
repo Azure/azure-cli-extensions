@@ -74,78 +74,10 @@ def create_and_verify_containerapp_up(
             up_cmd += f" -l {location.upper()}"
             test_cls.cmd(up_cmd)
 
-def verify_containerapp_create_source_exception_without_ACR_registry_server(
+def verify_containerapp_create_exception(
             test_cls,
             resource_group,
-            env_name = None,
-            app_name = None,
-            source_path = None):
-        # Configure the default location
-        test_cls.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
-        # Ensure that the Container App environment is created
-        if env_name is None:
-            env_name = test_cls.create_random_name(prefix='env', length=24)
-            create_containerapp_env(test_cls, env_name, resource_group)
-
-        if app_name is None:
-            # Generate a name for the Container App
-            app_name = test_cls.create_random_name(prefix='containerapp', length=24)
-
-        # Construct the 'az containerapp create' command
-        create_cmd = 'containerapp create -g {} -n {} --environment {}'.format(
-            resource_group, app_name, env_name)
-        if source_path:
-            create_cmd += f" --source \"{source_path}\""
-
-        err = ("Usuage error: --registry-server is required while using --source or --repo")
-
-        # Verify appropriate exception was raised
-        with test_cls.assertRaises(RequiredArgumentMissingError) as cm:
-            # Execute the 'az containerapp create' command
-            test_cls.cmd(create_cmd)
-
-        test_cls.assertEqual(str(cm.exception), err)
-
-def verify_containerapp_create_exception_with_source_and_repo(
-            test_cls,
-            resource_group,
-            env_name = None,
-            app_name = None,
-            source_path = None,
-            repo = None):
-        # Configure the default location
-        test_cls.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
-        # Ensure that the Container App environment is created
-        if env_name is None:
-            env_name = test_cls.create_random_name(prefix='env', length=24)
-            create_containerapp_env(test_cls, env_name, resource_group)
-
-        if app_name is None:
-            # Generate a name for the Container App
-            app_name = test_cls.create_random_name(prefix='containerapp', length=24)
-
-        # Construct the 'az containerapp create' command
-        create_cmd = 'containerapp create -g {} -n {} --environment {}'.format(
-            resource_group, app_name, env_name)
-        if source_path:
-            create_cmd += f" --source \"{source_path}\""
-        if repo:
-            create_cmd += f" --repo {repo}"
-
-        err = ("Cannot use --source and --repo together. Can either deploy from a local directory or a GitHub repository")
-
-        # Verify appropriate exception was raised
-        with test_cls.assertRaises(MutuallyExclusiveArgumentError) as cm:
-            # Execute the 'az containerapp create' command
-            test_cls.cmd(create_cmd)
-
-        test_cls.assertEqual(str(cm.exception), err)
-
-def verify_containerapp_create_exception_with_source_repo_yaml(
-            test_cls,
-            resource_group,
+            err,
             env_name = None,
             app_name = None,
             source_path = None,
@@ -173,12 +105,15 @@ def verify_containerapp_create_exception_with_source_repo_yaml(
         if yaml:
             create_cmd += f" --yaml {yaml}"
 
-        err = ("Cannot use --source or --repo with --yaml together. Can either deploy from a local directory or provide a yaml file")
-
         # Verify appropriate exception was raised
-        with test_cls.assertRaises(MutuallyExclusiveArgumentError) as cm:
-            # Execute the 'az containerapp create' command
-            test_cls.cmd(create_cmd)
+        if source_path and not repo and not yaml:
+            with test_cls.assertRaises(RequiredArgumentMissingError) as cm:
+                # Execute the 'az containerapp create' command
+                test_cls.cmd(create_cmd)
+        else:
+            with test_cls.assertRaises(MutuallyExclusiveArgumentError) as cm:
+                # Execute the 'az containerapp create' command
+                test_cls.cmd(create_cmd)
 
         test_cls.assertEqual(str(cm.exception), err)
 
