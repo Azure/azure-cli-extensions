@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.profiles import register_resource_type
 
 from ._help import helps  # pylint: disable=unused-import
 
@@ -13,21 +12,23 @@ class IpGroupsCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from ._client_factory import cf_ip_groups
-        from .profiles import CUSTOM_IP_GROUPS
-
-        register_resource_type('latest', CUSTOM_IP_GROUPS, '2019-09-01')
-
         ip_groups_custom = CliCommandType(
-            operations_tmpl='azext_ip_group.custom#{}',
-            client_factory=cf_ip_groups)
-
-        super(IpGroupsCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                     custom_command_type=ip_groups_custom,
-                                                     resource_type=CUSTOM_IP_GROUPS)
+            operations_tmpl='azext_ip_group.custom#{}')
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=ip_groups_custom)
 
     def load_command_table(self, args):
         from .commands import load_command_table
+        from azure.cli.core.aaz import load_aaz_command_table
+        try:
+            from . import aaz
+        except ImportError:
+            aaz = None
+        if aaz:
+            load_aaz_command_table(
+                loader=self,
+                aaz_pkg_name=aaz.__name__,
+                args=args
+            )
         load_command_table(self, args)
         return self.command_table
 
