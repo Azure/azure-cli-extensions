@@ -1,135 +1,207 @@
-# Azure CLI stack-hci-vm Extension
+# Azure CLI azurestackhci Extension #
+This is the extension for azurestackhci
 
-This is the extension for stack-hci-vm
-
-### How to use
-
+### How to use ###
 Install this extension using the below CLI command
-
 ```
-az extension add --name stack-hci-vm
-```
-
-### Included Features
-
-#### stack-hci-vm arc-setting
-
-##### Create
-
-```
-az stack-hci-vm arc-setting create --name "default" --cluster-name "myCluster" --resource-group "test-rg"
+az extension add --name azurestackhci
 ```
 
-##### Show
-
+### Included Features ###
+#### azurestackhci galleryimage ####
+##### Create #####
 ```
-az stack-hci-vm arc-setting show --name "default" --cluster-name "myCluster" --resource-group "test-rg"
+az azurestackhci galleryimage create \
+    --extended-location name="/subscriptions/a95612cb-f1fa-4daa-a4fd-272844fa512c/resourceGroups/dogfoodarc/providers/Microsoft.ExtendedLocation/customLocations/dogfood-location" type="CustomLocation" \
+    --location "West US2" --container-name "Default_Container" --image-path "C:\\\\test.vhdx" \
+    --galleryimages-name "test-gallery-image" --resource-group "test-rg" 
 ```
-
-##### List
-
+##### List #####
 ```
-az stack-hci-vm arc-setting list --cluster-name "myCluster" --resource-group "test-rg"
+az azurestackhci galleryimage list --resource-group "test-rg"
 ```
-
-##### Update
-
+##### Update #####
 ```
-az stack-hci-vm arc-setting update --connectivity-properties "{\\"enabled\\":true}" --name "default" \
-    --cluster-name "myCluster" --resource-group "test-rg"
+az azurestackhci galleryimage update --tags additionalProperties="sample" --galleryimages-name "test-gallery-image" \
+    --resource-group "test-rg" 
 ```
-
-##### Create-identity
-
+##### Retrieve #####
 ```
-az stack-hci-vm arc-setting create-identity --name "default" --cluster-name "myCluster" --resource-group "test-rg"
+az azurestackhci galleryimage retrieve --galleryimages-name "test-gallery-image" --resource-group "test-rg"
 ```
-
-##### Generate-password
-
+##### Delete #####
 ```
-az stack-hci-vm arc-setting generate-password --name "default" --cluster-name "myCluster" --resource-group "test-rg"
+az azurestackhci galleryimage delete --galleryimages-name "test-gallery-image" --resource-group "test-rg"
 ```
-
-##### Delete
-
+#### azurestackhci networkinterface ####
+##### Create #####
 ```
-az stack-hci-vm arc-setting delete --name "default" --cluster-name "myCluster" --resource-group "test-rg"
+az azurestackhci networkinterface create \
+    --extended-location name="/subscriptions/a95612cb-f1fa-4daa-a4fd-272844fa512c/resourceGroups/dogfoodarc/providers/Microsoft.ExtendedLocation/customLocations/dogfood-location" type="CustomLocation" \
+    --name "test-nic"
+    --location "West US2" \
+    --subnet-id" "test-vnet" --gateway "1.2.3.4" --ip-address "1.2.3.4"
+
+OR
+
+az azurestackhci networkinterface create \
+    --extended-location name="/subscriptions/a95612cb-f1fa-4daa-a4fd-272844fa512c/resourceGroups/dogfoodarc/providers/Microsoft.ExtendedLocation/customLocations/dogfood-location" type="CustomLocation" \
+    --location "West US2" \
+    --ip-configurations "[{\"name\":\"ipconfig-sample\",\"properties\":{\"subnet\":{\"id\":\"test-vnet\"}, \"gateway\":\"1.2.3.4\", \"ip_address\":\"1.2.3.4\"}}]" \
+    --networkinterfaces-name "test-nic"
 ```
-
-#### stack-hci-vm cluster
-
-##### Create
-
+##### List #####
 ```
-az stack-hci-vm cluster create --location "East US" --aad-client-id "24a6e53d-04e5-44d2-b7cc-1b732a847dfc" \
-    --aad-tenant-id "7e589cc1-a8b6-4dff-91bd-5ec0fa18db94" \
-    --endpoint "https://98294836-31be-4668-aeae-698667faf99b.waconazure.com" --name "myCluster" \
-    --resource-group "test-rg"
+az azurestackhci networkinterface list --resource-group "test-rg"
 ```
-
-##### Show
-
+##### Update #####
 ```
-az stack-hci-vm cluster show --name "myCluster" --resource-group "test-rg"
+az azurestackhci networkinterface update --tags additionalProperties="sample" --networkinterfaces-name "test-nic" \
+    --resource-group "test-rg" 
 ```
-
-##### List
-
+##### Retrieve #####
 ```
-az stack-hci-vm cluster list --resource-group "test-rg"
+az azurestackhci networkinterface retrieve --networkinterfaces-name "test-nic" --resource-group "test-rg"
 ```
-
-##### Update
-
+##### Delete #####
 ```
-az stack-hci-vm cluster update --endpoint "https://98294836-31be-4668-aeae-698667faf99b.waconazure.com" \
-    --desired-properties diagnostic-level="Basic" windows-server-subscription="Enabled" \
-    --tags tag1="value1" tag2="value2" --name "myCluster" --resource-group "test-rg"
+az azurestackhci networkinterface delete --networkinterfaces-name "test-nic" --resource-group "test-rg"
 ```
-
-##### Create-identity
-
+#### azurestackhci virtualharddisk ####
+##### Create #####
 ```
-az stack-hci-vm cluster create-identity --name "myCluster" --resource-group "test-rg"
+az azurestackhci virtualharddisk create --resource-group "test-rg" \
+    --extended-location name="/subscriptions/a95612cb-f1fa-4daa-a4fd-272844fa512c/resourceGroups/dogfoodarc/providers/Microsoft.ExtendedLocation/customLocations/dogfood-location" type="CustomLocation" \
+    --location "West US2" --disk-size-gb 32 --virtualharddisks-name "test-vhd" 
 ```
-
-##### Delete
-
+##### List #####
 ```
-az stack-hci-vm cluster delete --name "myCluster" --resource-group "test-rg"
+az azurestackhci virtualharddisk list --resource-group "test-rg"
 ```
-
-#### stack-hci-vm extension
-
-##### Create
-
+##### Update #####
 ```
-az stack-hci-vm extension create --arc-setting-name "default" --cluster-name "myCluster" \
-    --type "MicrosoftMonitoringAgent" --protected-settings "{\\"workspaceKey\\":\\"xx\\"}" \
-    --publisher "Microsoft.Compute" --settings "{\\"workspaceId\\":\\"xx\\"}" --type-handler-version "1.10" \
-    --name "MicrosoftMonitoringAgent" --resource-group "test-rg"
-
-az stack-hci-vm extension wait --created --arc-setting-name "{myArcSetting}" --cluster-name "{myCluster}" \
-    --name "{myExtension}" --resource-group "{rg}"
+az azurestackhci virtualharddisk update --resource-group "test-rg" --tags additionalProperties="sample" \
+    --virtualharddisks-name "test-vhd" 
 ```
-
-##### Show
-
+##### Retrieve #####
 ```
-az stack-hci-vm extension show --arc-setting-name "default" --cluster-name "myCluster" --name "MicrosoftMonitoringAgent" \
-    --resource-group "test-rg"
+az azurestackhci virtualharddisk retrieve --resource-group "test-rg" --virtualharddisks-name "test-vhd"
 ```
-
-##### List
-
+##### Delete #####
 ```
-az stack-hci-vm extension list --arc-setting-name "default" --cluster-name "myCluster" --resource-group "test-rg"
+az azurestackhci virtualharddisk delete --resource-group "test-rg" --virtualharddisks-name "test-vhd"
 ```
-
-##### Delete
-
+#### azurestackhci virtualmachine ####
+##### Create #####
 ```
-az stack-hci-vm extension delete --arc-setting-name "default" --cluster-name "myCluster" \
-    --name "MicrosoftMonitoringAgent" --resource-group "test-rg"
+az azurestackhci virtualmachine create --resource-group "test-rg" \
+    --extended-location name="/subscriptions/a95612cb-f1fa-4daa-a4fd-272844fa512c/resourceGroups/dogfoodarc/providers/Microsoft.ExtendedLocation/customLocations/dogfood-location" type="CustomLocation" \
+    --location "West US2" --hardware-profile vm-size="Default" maximum_memory_mb=1 minimum_memory_mb=1 target_memory_buffer=100  --network-profile network-interfaces={"id":"test-nic"} \
+    --os-profile "{\\"adminPassword\\":\\"password\\",\\"adminUsername\\":\\"localadmin\\",\\"computerName\\":\\"luamaster\\"}" \
+    --storage-profile "{\\"imageReference\\":{\\"id\\":\\"test-gallery-image\\"}}" --virtualmachines-name "test-vm" 
+    ----linux-configuration ssh_keys='{\"key_data\": \"ssh_public_key\"}' ssh_keys='{\"path\": \"/path/to/id_rsa.pub\"}'
+```
+##### List #####
+```
+az azurestackhci virtualmachine list --resource-group "test-rg"
+```
+##### Update #####
+```
+az azurestackhci virtualmachine update --resource-group "test-rg" --tags additionalProperties="sample" \
+    --virtualmachines-name "test-vm" 
+```
+##### Retrieve #####
+```
+az azurestackhci virtualmachine retrieve --resource-group "test-rg" --virtualmachines-name "test-vm"
+```
+##### Start #####
+```
+az azurestackhci virtualmachine start --resource-group "test-rg" --virtualmachines-name "test-vm"
+```
+##### Stop #####
+```
+az azurestackhci virtualmachine stop --resource-group "test-rg" --virtualmachines-name "test-vm"
+```
+##### Delete #####
+```
+az azurestackhci virtualmachine delete --resource-group "test-rg" --virtualmachines-name "test-vm"
+```
+##### Add Vnic #####
+```
+az azurestackhci virtualmachine vnic add --resource-group "test-rg" --virtualmachines-name "test-vm" --vnic-name "test-vnic"
+```
+##### Remove Vnic #####
+```
+az azurestackhci virtualmachine vnic remove --resource-group "test-rg" --virtualmachines-name "test-vm" --vnic-name "test-vnic"
+```
+#### azurestackhci virtualnetwork ####
+##### Create #####
+```
+az azurestackhci virtualnetwork create --resource-group "test-rg" \
+    --extended-location name="/subscriptions/a95612cb-f1fa-4daa-a4fd-272844fa512c/resourceGroups/dogfoodarc/providers/Microsoft.ExtendedLocation/customLocations/dogfood-location" type="CustomLocation" \
+    --location "West US2" --network-type "Transparent" ---name "test-vnet" --address-prefix "10.0.0.0/16" \
+    --ip-allocation-method "Static" --ip-pool-type "Static" --ip-pool-start "10.0.0.0" ip-pool-end "10.0.0.16" --vlan 10"
+```
+##### List #####
+```
+az azurestackhci virtualnetwork list --resource-group "test-rg"
+```
+##### Update #####
+```
+az azurestackhci virtualnetwork update --resource-group "test-rg" --tags additionalProperties="sample" \
+    --virtualnetworks-name "test-vnet" 
+```
+##### Retrieve #####
+```
+az azurestackhci virtualnetwork retrieve --resource-group "test-rg" --virtualnetworks-name "test-vnet"
+```
+##### Delete #####
+```
+az azurestackhci virtualnetwork delete --resource-group "test-rg" --virtualnetworks-name "test-vnet"
+```
+#### azurestackhci storagecontainer ####
+##### Create #####
+```
+az azurestackhci storagecontainer create --resource-group "test-rg" \
+    --extended-location name="/subscriptions/a95612cb-f1fa-4daa-a4fd-272844fa512c/resourceGroups/dogfoodarc/providers/Microsoft.ExtendedLocation/customLocations/dogfood-location" type="CustomLocation" \
+    --location "West US2" --path "C:\\\\container_storage" --storagecontainers-name "Default_Container" 
+```
+##### List #####
+```
+az azurestackhci storagecontainer list --resource-group "test-rg"
+```
+##### Update #####
+```
+az azurestackhci storagecontainer update --resource-group "test-rg" --tags additionalProperties="sample" \
+    --storagecontainers-name "Default_Container" 
+```
+##### Retrieve #####
+```
+az azurestackhci storagecontainer retrieve --resource-group "test-rg" --storagecontainers-name "Default_Container"
+```
+##### Delete #####
+```
+az azurestackhci storagecontainer delete --resource-group "test-rg" --storagecontainers-name "Default_Container"
+```
+#### azurestackhci cluster ####
+##### Create #####
+```
+az azurestackhci cluster create --location "East US" --aad-client-id "24a6e53d-04e5-44d2-b7cc-1b732a847dfc" \
+    --aad-tenant-id "7e589cc1-a8b6-4dff-91bd-5ec0fa18db94" --name "myCluster" --resource-group "test-rg" 
+```
+##### Show #####
+```
+az azurestackhci cluster show --name "myCluster" --resource-group "test-rg"
+```
+##### List #####
+```
+az azurestackhci cluster list --resource-group "test-rg"
+```
+##### Update #####
+```
+az azurestackhci cluster update --tags tag1="value1" tag2="value2" --name "myCluster" --resource-group "test-rg"
+```
+##### Delete #####
+```
+az azurestackhci cluster delete --name "myCluster" --resource-group "test-rg"
 ```
