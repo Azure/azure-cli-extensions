@@ -12,7 +12,7 @@ from time import sleep
 from ._stream_utils import stream_logs
 from ._buildservices_factory import BuildService
 from threading import Timer
-from ._utils import (_is_java, _get_file_ext)
+from ._utils import (_get_file_ext)
 
 logger = get_logger(__name__)
 
