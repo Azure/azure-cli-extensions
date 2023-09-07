@@ -9,7 +9,7 @@ import time
 
 import yaml
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
 from azure.cli.testsdk.decorators import serial_test
 
 from .common import TEST_LOCATION
@@ -126,7 +126,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         ])
 
     @serial_test()
-    @ResourceGroupPreparer(location="eastus", random_name_length=15)
+    @ResourceGroupPreparer(location=TEST_LOCATION, random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
     def test_containerapp_preview_connected_env_dapr_components(self, resource_group, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
@@ -140,7 +140,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         dapr_comp_name = self.create_random_name(prefix='dapr-component', length=24)
 
         self.cmd(
-            f'containerapp connected-env create -g {resource_group} --name {env_name} --custom-location {custom_location_name} -l {TEST_LOCATION}',
+            f'containerapp connected-env create -g {resource_group} --name {env_name} --custom-location {custom_location_name} -l northcentralusstage',
             checks=[
                 JMESPathCheck('name', env_name),
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
@@ -200,6 +200,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         ])
 
     @serial_test()
+    @live_only()  # generate_randomized_cert_name cause No match for the request (<Request (PUT) /my-connected-env/certificates/my-connected-e-clitest.rg0000-8d2d-6528?
     @ResourceGroupPreparer(location="eastus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
     def test_containerapp_preview_connected_env_certificate(self, resource_group, connected_cluster_name):
@@ -272,6 +273,95 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         ])
 
         self.cmd('containerapp connected-env certificate delete -n {} -g {} --thumbprint {} --certificate {} --yes'.format(env_name, resource_group, cert_thumbprint, cert_name), expect_failure=False)
+        self.cmd('containerapp connected-env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+    @serial_test()
+    @ResourceGroupPreparer(location="eastus", random_name_length=15)
+    @ConnectedClusterPreparer(location=TEST_LOCATION)
+    def test_containerapp_preview_connected_env_certificate_upload_with_certificate_name(self, resource_group, connected_cluster_name):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        custom_location_name = "my-custom-location"
+        create_extension_and_custom_location(self, resource_group, connected_cluster_name, custom_location_name)
+
+        # create connected environment with client or create a command for connected?
+        sub_id = self.cmd('az account show').get_output_in_json()['id']
+        env_name = 'my-connected-env'
+        custom_location_id = f"/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/Microsoft.ExtendedLocation/customLocations/{custom_location_name}"
+        self.cmd(
+            f'containerapp connected-env create -g {resource_group} --name {env_name} --custom-location {custom_location_name} -l {TEST_LOCATION}',
+            checks=[
+                JMESPathCheck('name', env_name),
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('extendedLocation.name', custom_location_id)
+            ])
+        self.cmd('containerapp connected-env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        # test that non pfx or pem files are not supported
+        txt_file = os.path.join(TEST_DIR, 'cert.txt')
+        self.cmd('containerapp connected-env certificate upload -g {} -n {} --certificate-file "{}"'.format(resource_group, env_name, txt_file), expect_failure=True)
+
+        # test pfx file with password
+        pfx_file = os.path.join(TEST_DIR, 'cert.pfx')
+        pfx_password = 'test12'
+        cert_pfx_name = self.create_random_name(prefix='cert-pfx', length=24)
+        cert = self.cmd(
+            'containerapp connected-env certificate upload -g {} -n {} -c {} --certificate-file "{}" --password {}'.format(
+                resource_group, env_name, cert_pfx_name, pfx_file, pfx_password), checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('name', cert_pfx_name),
+                # JMESPathCheck('type', "Microsoft.App/connectedEnvironments/certificates"),
+            ]).get_output_in_json()
+
+        cert_name = cert["name"]
+        cert_id = cert["id"]
+        cert_thumbprint = cert["properties"]["thumbprint"]
+        cert_location = cert["location"]
+
+        self.cmd('containerapp connected-env certificate list -n {} -g {} -l "{}"'.format(env_name, resource_group,
+                                                                                          cert_location), checks=[
+            JMESPathCheck('length(@)', 1),
+            JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
+            JMESPathCheck('[0].name', cert_name),
+            JMESPathCheck('[0].id', cert_id),
+        ])
+
+        # list certs with a wrong location
+        self.cmd('containerapp connected-env certificate upload -g {} -n {} --certificate-file "{}"'.format(resource_group, env_name, pfx_file), expect_failure=True)
+
+        self.cmd(
+            'containerapp connected-env certificate list -n {} -g {} --certificate {}'.format(env_name, resource_group,
+                                                                                              cert_name), checks=[
+                JMESPathCheck('length(@)', 1),
+                JMESPathCheck('[0].name', cert_name),
+                JMESPathCheck('[0].id', cert_id),
+                JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
+            ])
+
+        self.cmd(
+            'containerapp connected-env certificate list -n {} -g {} --certificate {}'.format(env_name, resource_group,
+                                                                                              cert_id), checks=[
+                JMESPathCheck('length(@)', 1),
+                JMESPathCheck('[0].name', cert_name),
+                JMESPathCheck('[0].id', cert_id),
+                JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
+            ])
+
+        self.cmd(
+            'containerapp connected-env certificate list -n {} -g {} --thumbprint {}'.format(env_name, resource_group,
+                                                                                             cert_thumbprint), checks=[
+                JMESPathCheck('length(@)', 1),
+                JMESPathCheck('[0].name', cert_name),
+                JMESPathCheck('[0].id', cert_id),
+                JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
+            ])
+
+        self.cmd(
+            'containerapp connected-env certificate delete -n {} -g {} --thumbprint {} --certificate {} --yes'.format(
+                env_name, resource_group, cert_thumbprint, cert_name), expect_failure=False)
         self.cmd('containerapp connected-env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
