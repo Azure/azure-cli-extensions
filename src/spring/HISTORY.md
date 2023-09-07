@@ -1,6 +1,6 @@
 Release History
 ===============
-1.14.4
+Upcoming
 ---
 * Add arguments `--type` and `--git-sub-path` in `spring application-accelerator customized-accelerator create` and `spring application-accelerator customized-accelerator update` for accelerator fragment support.
 
