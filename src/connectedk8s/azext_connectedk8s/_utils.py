@@ -8,7 +8,6 @@ import shutil
 import subprocess
 from subprocess import Popen, PIPE
 import time
-import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import json
@@ -90,8 +89,7 @@ def validate_custom_token(cmd, resource_group_name, location):
         return True, location
     return False, location
 
-
-def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, chart_folder_name='AzureArcCharts', chart_name='azure-arc-k8sagents'):
+def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, chart_folder_name='AzureArcCharts', chart_name='azure-arc-k8sagents', new_path=True):
     # # Pulling helm chart from registry
     # os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
     # pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_name)
@@ -104,7 +102,7 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
     except:
         logger.warning("Unable to cleanup the {} already present on the machine. In case of failure, please cleanup the directory '{}' and try again.".format(chart_folder_name, chart_export_path))
 
-    pull_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name)
+    pull_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, new_path, chart_name)
     # export_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name)
 
     # Returning helm chart path
@@ -119,9 +117,12 @@ def get_chart_path(registry_path, kube_config, kube_context, helm_client_locatio
 
 # def pull_helm_chart(registry_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc-k8sagents', retry_count=5, retry_delay=3):
 #     cmd_helm_chart_pull = [helm_client_location, "chart", "pull", registry_path]
-def pull_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, chart_name='azure-arc-k8sagents', retry_count=5, retry_delay=3):
+def pull_helm_chart(registry_path, chart_export_path, kube_config, kube_context, helm_client_location, new_path, chart_name='azure-arc-k8sagents', retry_count=5, retry_delay=3):
     chart_url = registry_path.split(':')[0]
     chart_version = registry_path.split(':')[1]
+    if new_path:
+        image_name = os.path.basename(chart_url)
+        chart_url = chart_url.replace(".io/", ".io/312/").replace(".com/", ".com/312/") + '/' + image_name
     cmd_helm_chart_pull = [helm_client_location, "pull", "oci://" + chart_url, "--untar", "--untardir", chart_export_path, "--version", chart_version]
     if kube_config:
         cmd_helm_chart_pull.extend(["--kubeconfig", kube_config])
@@ -592,7 +593,8 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
                         "--set", "systemDefaultValues.clusterconnect-agent.enabled=true",
                         "--namespace", "{}".format(consts.Release_Install_Namespace),
                         "--create-namespace",
-                        "--output", "json"]
+                        "--output", "json",
+                        "--debug"]
     # Add custom-locations related params
     if enable_custom_locations and not enable_private_link:
         cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.enabled=true"])
