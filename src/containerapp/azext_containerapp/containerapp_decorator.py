@@ -1232,7 +1232,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
             app, env = self._construct_app_and_env_for_source_or_repo()
             dockerfile = "Dockerfile"
             has_dockerfile = _has_dockerfile(self.get_argument_source(), dockerfile)
-             # Uses buildpacks or an ACR Task to generate image if Dockerfile was not provided by the user
+            # Uses buildpacks or an ACR Task to generate image if Dockerfile was not provided by the user
             app.run_acr_build(dockerfile, self.get_argument_source(), quiet=False, build_from_source=not has_dockerfile)
             # Validate containers exist
             containers = safe_get(self.containerapp_def, "properties", "template", "containers", default=[])
@@ -1282,7 +1282,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
     def _post_process_for_repo(self):
         from ._up_utils import (get_token, _create_github_action)
-        app,env = self._construct_app_and_env_for_source_or_repo()
+        app, env = self._construct_app_and_env_for_source_or_repo()
         # Get GitHub access token
         token = get_token(self.cmd, self.get_argument_repo(), self.get_argument_token())
         _create_github_action(app, env, self.get_argument_service_principal_client_id(), self.get_argument_service_principal_client_secret(),
@@ -1458,7 +1458,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         # Set image to None if it was previously set to the default image (case where image was not provided by the user) else reformat it
         image = None if self.get_argument_image() is None else _reformat_image(source=self.get_argument_source(), image=self.get_argument_image(), repo=None)
 
-         # Parse location
+        # Parse location
         env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
         location = self.containerapp_def["location"] if "location" in self.containerapp_def else env_info['location']
 
