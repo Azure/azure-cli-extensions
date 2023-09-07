@@ -108,7 +108,7 @@ def customized_accelerator_upsert(cmd, client, resource_group, service, name,
                                   no_wait=False):
     auth_setting = None
 
-    if type == None:
+    if type is None:
         type = CustomizedAcceleratorType.ACCELERATOR
 
     caCertResourceId = None
