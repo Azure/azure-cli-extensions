@@ -679,6 +679,10 @@ def load_arguments(self, _):
         c.argument('auto_sync', options_list=['--auto-sync'],
                    help='Whether to automatically synchronize certificate from key vault', default=False)
 
+    with self.argument_context('spring certificate update') as c:
+        c.argument('auto_sync', options_list=['--auto-sync'],
+                   help='Whether to automatically synchronize certificate from key vault')
+
     with self.argument_context('spring certificate list') as c:
         c.argument('certificate_type', help='Type of uploaded certificate',
                    arg_type=get_enum_type(['KeyVaultCertificate', 'ContentCertificate']))
