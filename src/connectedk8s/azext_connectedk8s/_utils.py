@@ -89,6 +89,7 @@ def validate_custom_token(cmd, resource_group_name, location):
         return True, location
     return False, location
 
+
 def get_chart_path(registry_path, kube_config, kube_context, helm_client_location, chart_folder_name='AzureArcCharts', chart_name='azure-arc-k8sagents', new_path=True):
     # # Pulling helm chart from registry
     # os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
@@ -593,8 +594,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
                         "--set", "systemDefaultValues.clusterconnect-agent.enabled=true",
                         "--namespace", "{}".format(consts.Release_Install_Namespace),
                         "--create-namespace",
-                        "--output", "json",
-                        "--debug"]
+                        "--output", "json"]
     # Add custom-locations related params
     if enable_custom_locations and not enable_private_link:
         cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.enabled=true"])
