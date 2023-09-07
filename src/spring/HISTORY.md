@@ -1,6 +1,6 @@
 Release History
 ===============
-1.15.0
+Upcoming
 ---
 * Add new argument `--server-version` in `az spring app deploy and az spring app deployment create` to support war file deployment in Standard tier. 
 
