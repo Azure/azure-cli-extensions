@@ -587,6 +587,16 @@ helps['spring certificate add'] = """
       text: az spring certificate add --name MyCertName --vault-uri MyKeyVaultUri --vault-certificate-name MyKeyVaultCertName --service MyCluster --resource-group MyResourceGroup
 """
 
+helps['spring certificate update'] = """
+    type: command
+    short-summary: Update a certificate in Azure Spring Apps.
+    examples:
+    - name: Enable auto sync feature of a key vault certificate in Azure Spring Apps.
+      text: az spring certificate update --name MyCertName --service MyCluster --resource-group MyResourceGroup --enable-auto-sync true
+    - name: Disable auto sync feature of a key vault certificate in Azure Spring Apps.
+      text: az spring certificate update --name MyCertName --service MyCluster --resource-group MyResourceGroup --enable-auto-sync false
+"""
+
 helps['spring certificate show'] = """
     type: command
     short-summary: Show a certificate in Azure Spring Apps.
