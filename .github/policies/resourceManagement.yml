@@ -2533,6 +2533,7 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
+          - yanzhudd
       - addLabel:
           label: Auto-Assign
       - requestReview:
@@ -5070,6 +5071,8 @@ configuration:
           label: Auto-Assign
       - requestReview:
           reviewer: zhoxing-ms
+      - requestReview:
+          reviewer: bavneetsingh16
       - assignTo:
           users:
           - zhoxing-ms
@@ -5351,6 +5354,9 @@ configuration:
           action: Opened
       - or:
         - titleContains:
+            pattern: '[Spring]'
+            isRegex: False
+        - titleContains:
             pattern: az \b(spring)\b
             isRegex: True
         - bodyContains:
@@ -5537,5 +5543,49 @@ configuration:
           users:
           - kairu-ms
       description: '[Arc Appliance] Auto assign labels and reviewers based on PR title/description.'
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
+            pattern: '\b([Ss]ervice ?[Cc]onnector)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Ss]ervice ?[Cc]onnector)\b'
+            isRegex: True
+      then:
+      - requestReview:
+          reviewer: kairu-ms
+      - requestReview:
+          reviewer: jsntcy
+      - addLabel:
+          label: Auto-Assign
+      - assignTo:
+          users:
+          - kairu-ms
+      description: '[Service Connector] Auto assign labels and reviewers based on PR title/description.'
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
+            pattern: '\b([Cc]onnected ?[Vv]mware)\b'
+            isRegex: True
+        - bodyContains:
+            pattern: '\b([Cc]onnected ?[Vv]mware)\b'
+            isRegex: True
+      then:
+      - requestReview:
+          reviewer: kairu-ms
+      - requestReview:
+          reviewer: jsntcy
+      - addLabel:
+          label: Auto-Assign
+      - assignTo:
+          users:
+          - kairu-ms
+      description: '[Connected Vmware] Auto assign labels and reviewers based on PR title/description.'
 onFailure: 
 onSuccess: 
