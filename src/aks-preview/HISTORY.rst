@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.157
++++++++
+* Add `az aks machine list` command to fetch list of machines in an agentpool.
+* Add `az aks machine show` command to fetch information about a specific machine in an agentpool.
+
 0.5.156
 +++++++
 * Add `az aks copilot` command to start a chat with the Azure Kubernetes Service expert. API keys for OpenAI or Azure are required.

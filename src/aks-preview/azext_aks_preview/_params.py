@@ -674,6 +674,13 @@ def load_arguments(self, _):
                    "--ignore-pod-disruption-budget", "-i"], action=get_three_state_flag(), is_preview=True,
                    help='delete an AKS nodepool by ignoring PodDisruptionBudget setting')
 
+    with self.argument_context('aks machine') as c:
+        c.argumemt('cluster_name', options_list=['--cluster-name'], help='The cluster name.')
+        c.argument('nodepool_name', options_list=['--nodepool-name'], validator=validate_nodepool_name, help='The node pool name.')
+    
+    with self.argument_context('aks machine show') as c:
+        c.argumemt('machine_name',options_list=['--machine-name'], help='to display specific information for all machines.')
+
     with self.argument_context('aks maintenanceconfiguration') as c:
         c.argument('cluster_name', help='The cluster name.')
 
