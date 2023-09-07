@@ -1233,8 +1233,8 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def set_up_repo(self):
         if self.get_argument_repo():
             # Check if container app exists and if it does, set the image to the image of the existing container app
-            container_app = self._get_containerapp_if_exists()
-            if container_app:
+            existing_container_app = self._get_containerapp_if_exists()
+            if existing_container_app:
                 # Executing the create command with --repo makes two ARM calls. The container app is created first
                 # and the source control is set only after the container app is created. This means, when the container app is
                 # first created, the image would be defaulted to mcr.microsoft.com/k8se/quickstart:latest (if --image was not provided)
@@ -1244,20 +1244,21 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                 # If the create command is executed multiple times however, we need to make sure that the image is not defaulted
                 # to mcr.microsoft.com/k8se/quickstart:latest if source control fails the subsequent times by setting the image
                 # to the previously deployed image.
-
-                if container_app["properties"]["template"]["containers"] is None or len(container_app["properties"]["template"]["containers"]) == 0:
+                containers_from_existing_container_app = safe_get(existing_container_app, "properties", "template", "containers", default=[])
+                if containers_from_existing_container_app is None or len(containers_from_existing_container_app) == 0:
                     raise ValidationError(
                         "The container app '{}' does not have any containers. Please use --image to set the image for the container app".format(
                             self.get_argument_name()))
-                if container_app["properties"]["template"]["containers"][0]["image"] is None:
+                if containers_from_existing_container_app[0]["image"] is None:
                     raise ValidationError(
                         "The container app '{}' does not have an image. Please use --image to set the image for the container app while creating the container app.".format(
                             self.get_argument_name()))
-                if self.containerapp_def["properties"]["template"]["containers"] is None or len(self.containerapp_def["properties"]["template"]["containers"]) == 0:
+                containers = safe_get(self.containerapp_def, "properties", "template", "containers", default=[])
+                if containers is None or len(containers) == 0:
                     raise ValidationError(
                         "The container app '{}' does not have any containers. Please use --image to set the image for the container app".format(
                             self.get_argument_name()))
-                self.containerapp_def["properties"]["template"]["containers"][0]["image"] = container_app["properties"]["template"]["containers"][0]["image"]
+                containers[0]["image"] = containers_from_existing_container_app[0]["image"]
 
     def _get_containerapp_if_exists(self):
         try:
@@ -1267,7 +1268,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
             return None
 
     def _set_up_source_or_repo(self):
-        from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image, get_token, _has_dockerfile, _get_dockerfile_content, _get_ingress_and_target_port, _get_registry_details, _create_github_action, get_token)
+        from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image, get_token, _has_dockerfile, _get_dockerfile_content, _get_ingress_and_target_port, _get_registry_details, _create_github_action)
         ingress = self.get_argument_ingress()
         target_port = self.get_argument_target_port()
         dockerfile = "Dockerfile"
@@ -1286,8 +1287,8 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         # Set image to None if it was previously set to the default image (case where image was not provided by the user) else reformat it
         image = None if self.get_argument_image().__eq__(HELLO_WORLD_IMAGE) else _reformat_image(self.get_argument_source(), self.get_argument_repo(), self.get_argument_image())
 
-        has_Dockerfile = _has_dockerfile(self.get_argument_source(), dockerfile)
-        if not self.get_argument_source() or has_Dockerfile:
+        has_dockerfile = _has_dockerfile(self.get_argument_source(), dockerfile)
+        if not self.get_argument_source() or has_dockerfile:
             dockerfile_content = _get_dockerfile_content(self.get_argument_repo(), self.get_argument_branch(), token, self.get_argument_source(), self.get_argument_context_path(), dockerfile)
             ingress, target_port = _get_ingress_and_target_port(self.get_argument_ingress(), self.get_argument_target_port(), dockerfile_content)
 
@@ -1301,13 +1302,14 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
         if self.get_argument_source():
             # Uses buildpacks or an ACR Task to generate image if Dockerfile was not provided by the user
-            app.run_acr_build(dockerfile, self.get_argument_source(), quiet=False, build_from_source=not has_Dockerfile)
+            app.run_acr_build(dockerfile, self.get_argument_source(), quiet=False, build_from_source=not has_dockerfile)
             # Update image
-            if self.containerapp_def["properties"]["template"]["containers"] is None or len(self.containerapp_def["properties"]["template"]["containers"]) == 0:
+            containers = safe_get(self.containerapp_def, "properties", "template", "containers", default=[])
+            if containers is None or len(containers) == 0:
                 raise ValidationError(
                     "The container app '{}' does not have any containers. Please use --image to set the image for the container app".format(
                         self.get_argument_name()))
-            self.containerapp_def["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
+            containers[0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
 
         if self.get_argument_repo():
             # Get GitHub access token
@@ -1315,8 +1317,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
             _create_github_action(app, env, self.get_argument_service_principal_client_id(), self.get_argument_service_principal_client_secret(),
                                   self.get_argument_service_principal_tenant_id(), self.get_argument_branch(), token, self.get_argument_repo(), self.get_argument_context_path())
             cache_github_token(self.cmd, token, self.get_argument_repo())
-            r = self.client.show(cmd=self.cmd, resource_group_name=env_rg, name=app.name)
-            return r
+            return self.client.show(cmd=self.cmd, resource_group_name=env_rg, name=self.get_argument_name())
 
     def post_process(self, r):
         if is_registry_msi_system(self.get_argument_registry_identity()):
@@ -1426,11 +1427,13 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
                 raise ValidationError(
                     "Error: The containerapp '{}' does not have a registry associated with it. Please specify a registry using the --registry-server argument while creating the ContainerApp".format(
                         self.get_argument_name()))
-            registry_server = self.containerapp_def["properties"]["configuration"]["registries"][0]["server"]
-            if registry_server is None:
+            existing_registries = safe_get(self.containerapp_def, "properties", "configuration", "registries", default=[])
+            existing_registries = [r for r in existing_registries if ACR_IMAGE_SUFFIX in r["server"]]
+            if existing_registries is None or len(existing_registries) == 0:
                 raise ValidationError(
-                    "Error: The containerapp '{}' does not have a registry server associated with it. Please specify a registry using the --registry-server argument while creating the ContainerApp".format(
+                    "Error: The containerapp '{}' does not have an ACR registry associated with it. Please specify a registry using the --registry-server argument while creating the ContainerApp".format(
                         self.get_argument_name()))
+            registry_server = existing_registries[0]["server"]
             parsed = urlparse(registry_server)
             registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
             registry_user, registry_pass, _ = _get_acr_cred(self.cmd.cli_ctx, registry_name)
@@ -1453,8 +1456,8 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         image = None if self.get_argument_image() is None else _reformat_image(source=self.get_argument_source(), image=self.get_argument_image(), repo=None)
         location = self.containerapp_def["location"]
 
-        has_Dockerfile = _has_dockerfile(self.get_argument_source(), dockerfile)
-        if has_Dockerfile:
+        has_dockerfile = _has_dockerfile(self.get_argument_source(), dockerfile)
+        if has_dockerfile:
             dockerfile_content = _get_dockerfile_content(repo=None, branch=None, token=None, source=self.get_argument_source(), context_path=None, dockerfile=dockerfile)
             ingress, target_port = _get_ingress_and_target_port(self.get_argument_ingress(), self.get_argument_target_port(), dockerfile_content)
 
@@ -1467,15 +1470,16 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         _get_registry_details(cmd, app, self.get_argument_source())  # fetch ACR creds from arguments registry arguments
 
         # Uses buildpacks or an ACR Task to generate image if Dockerfile was not provided by the user
-        app.run_acr_build(dockerfile, self.get_argument_source(), quiet=False, build_from_source=not has_Dockerfile)
+        app.run_acr_build(dockerfile, self.get_argument_source(), quiet=False, build_from_source=not has_dockerfile)
 
         # Validate an image associated with the container app exists
-        if self.containerapp_def["properties"]["template"]["containers"] is None or len(self.containerapp_def["properties"]["template"]["containers"]) == 0:
+        containers = safe_get(self.containerapp_def, "properties", "template", "containers", default=[])
+        if containers is None or len(containers) == 0:
             raise ValidationError(
-                "Error: The containerapp '{}' does not have containers associated with it. Please specify an image using the --image argument while creating the ContainerApp".format(
+                "The container app '{}' does not have any containers. Please use --image to set the image for the container app".format(
                     self.get_argument_name()))
         self.new_containerapp["properties"]["template"] = {} if "template" not in self.new_containerapp["properties"] else self.new_containerapp["properties"]["template"]
-        self.new_containerapp["properties"]["template"]["containers"] = self.containerapp_def["properties"]["template"]["containers"]
+        self.new_containerapp["properties"]["template"]["containers"] = containers
         # Update image in the container app
         self.new_containerapp["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
 
