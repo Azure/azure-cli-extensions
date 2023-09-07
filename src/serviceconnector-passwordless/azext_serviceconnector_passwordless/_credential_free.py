@@ -327,9 +327,9 @@ class MysqlFlexibleHandler(TargetHandler):
         if (not mysql_umi) or (not mysql_umi.get("userAssignedIdentities")) or mysql_identity_id not in mysql_umi.get("userAssignedIdentities"):
             run_cli_cmd('az mysql flexible-server identity assign -g {} -s {} --subscription {} --identity {}'.format(
                 self.resource_group, self.server, self.subscription, mysql_identity_id))
-        admin_info = run_cli_cmd('az mysql flexible-server ad-admin create -g {} -s {} --subscription {} -u {} -i {} --identity {}'.format(
+        run_cli_cmd('az mysql flexible-server ad-admin create -g {} -s {} --subscription {} -u {} -i {} --identity {}'.format(
             self.resource_group, self.server, self.subscription, self.login_username, user_object_id, mysql_identity_id))
-        self.admin_username = admin_info.get('login', self.login_username)
+        self.admin_username = self.login_username
 
     def create_aad_user(self):
         query_list = self.get_create_query()
