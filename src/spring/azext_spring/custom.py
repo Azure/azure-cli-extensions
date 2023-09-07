@@ -1391,22 +1391,15 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
 def certificate_update(cmd, client, resource_group, service, name, auto_sync=None):
     certificate_resource = client.certificates.get(resource_group, service, name)
 
-    # TODO: remove it
-    logger.info("auto_sync = %s", auto_sync)
-
     if certificate_resource.properties.type == 'KeyVaultCertificate':
         if auto_sync is not None:
             certificate_resource.properties.auto_sync = auto_sync
-
-    def callback(pipeline_response, deserialized, headers):
-        return models.CertificateResource.deserialize(json.loads(pipeline_response.http_response.text()))
 
     return client.certificates.begin_create_or_update(
         resource_group_name=resource_group,
         service_name=service,
         certificate_name=name,
-        certificate_resource=certificate_resource,
-        cls=callback
+        certificate_resource=certificate_resource
     )
 
 

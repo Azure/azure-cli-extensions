@@ -680,7 +680,7 @@ def load_arguments(self, _):
                    help='Whether to automatically synchronize certificate from key vault', default=False)
 
     with self.argument_context('spring certificate update') as c:
-        c.argument('auto_sync', options_list=['--auto-sync'],
+        c.argument('auto_sync', options_list=['--auto-sync'], arg_type=get_three_state_flag(),
                    help='Whether to automatically synchronize certificate from key vault')
 
     with self.argument_context('spring certificate list') as c:
