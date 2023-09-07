@@ -12,6 +12,7 @@
 from knack.util import CLIError
 from .aaz.latest.network.manager.group.static_member import Create as _GroupStaticMemberCreate
 
+
 def network_manager_create(cmd,
                            resource_group_name,
                            network_manager_name,
