@@ -77,7 +77,7 @@ def get_earliest_time(action_iterator):
     earliest_time = None
     for action in action_iterator:
         if action["next"] is not None:
-            action_string = action["next"]["scheduled_time"]
+            action_string = action["next"]["scheduledTime"]
             action_time = datetime.strptime(action_string, "%Y-%m-%dT%H:%M:%S.%fZ")
             if earliest_time is None or action_time < earliest_time:
                 earliest_time = action_time

@@ -462,7 +462,7 @@ interactions:
       - AZURECLI/2.51.0 azsdk-python-azure-mgmt-authorization/3.0.0 Python/3.10.7
         (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amlim-test/providers/Microsoft.KeyVault/vaults/amlim-kv/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Key%20Vault%20Secrets%20Officer%27&api-version=2022-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dummy/providers/Microsoft.KeyVault/vaults/dummy/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Key%20Vault%20Secrets%20Officer%27&api-version=2022-04-01
   response:
     body:
       string: '{"value":[{"properties":{"roleName":"Key Vault Secrets Officer","type":"BuiltInRole","description":"Perform
@@ -519,10 +519,10 @@ interactions:
       - AZURECLI/2.51.0 azsdk-python-azure-mgmt-authorization/3.0.0 Python/3.10.7
         (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amlim-test/providers/Microsoft.KeyVault/vaults/amlim-kv/providers/Microsoft.Authorization/roleAssignments/2d3271ae-dd04-4355-8632-192bb645749c?api-version=2022-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dummy/providers/Microsoft.KeyVault/vaults/dummy/providers/Microsoft.Authorization/roleAssignments/2d3271ae-dd04-4355-8632-192bb645749c?api-version=2022-04-01
   response:
     body:
-      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b86a8fe4-44ce-4948-aee5-eccb2c155cd7","principalId":"83c9a0ae-eb0c-48d7-900f-cc06793862f3","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amlim-test/providers/Microsoft.KeyVault/vaults/amlim-kv","condition":null,"conditionVersion":null,"createdOn":"2023-08-30T02:52:01.3290499Z","updatedOn":"2023-08-30T02:52:01.5050575Z","createdBy":null,"updatedBy":"345ff1ed-a4c2-4499-93e1-7554303e6607","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amlim-test/providers/Microsoft.KeyVault/vaults/amlim-kv/providers/Microsoft.Authorization/roleAssignments/2d3271ae-dd04-4355-8632-192bb645749c","type":"Microsoft.Authorization/roleAssignments","name":"2d3271ae-dd04-4355-8632-192bb645749c"}'
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b86a8fe4-44ce-4948-aee5-eccb2c155cd7","principalId":"83c9a0ae-eb0c-48d7-900f-cc06793862f3","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dummy/providers/Microsoft.KeyVault/vaults/dummy","condition":null,"conditionVersion":null,"createdOn":"2023-08-30T02:52:01.3290499Z","updatedOn":"2023-08-30T02:52:01.5050575Z","createdBy":null,"updatedBy":"345ff1ed-a4c2-4499-93e1-7554303e6607","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dummy/providers/Microsoft.KeyVault/vaults/dummy/providers/Microsoft.Authorization/roleAssignments/2d3271ae-dd04-4355-8632-192bb645749c","type":"Microsoft.Authorization/roleAssignments","name":"2d3271ae-dd04-4355-8632-192bb645749c"}'
     headers:
       cache-control:
       - no-cache

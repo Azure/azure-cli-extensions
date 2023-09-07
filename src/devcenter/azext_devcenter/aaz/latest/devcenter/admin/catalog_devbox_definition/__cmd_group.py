@@ -11,9 +11,9 @@
 from azure.cli.core.aaz import *
 
 
-@register_command_group(
-    "devcenter admin catalog-devbox-definition",
-)
+# @register_command_group(
+#     "devcenter admin catalog-devbox-definition",
+# )
 class __CMDGroup(AAZCommandGroup):
     """Manage catalog dev box definitions.
     """
