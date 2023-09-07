@@ -1341,7 +1341,7 @@ def storage_list_persistent_storage(client, resource_group, service, name):
 
 
 def certificate_add(cmd, client, resource_group, service, name, only_public_cert=None,
-                    vault_uri=None, vault_certificate_name=None, public_certificate_file=None, auto_sync=None):
+                    vault_uri=None, vault_certificate_name=None, public_certificate_file=None, enable_auto_sync=None):
     if vault_uri is None and public_certificate_file is None:
         raise InvalidArgumentValueError("One of --vault-uri and --public-certificate-file should be provided")
     if vault_uri is not None and public_certificate_file is not None:
@@ -1358,7 +1358,7 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
             vault_uri=vault_uri,
             key_vault_cert_name=vault_certificate_name,
             exclude_private_key=only_public_cert,
-            auto_sync=auto_sync if auto_sync is not None else False
+            auto_sync=enable_auto_sync if enable_auto_sync is not None else False
         )
     else:
         if os.path.exists(public_certificate_file):
@@ -1388,12 +1388,12 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
     )
 
 
-def certificate_update(cmd, client, resource_group, service, name, auto_sync=None):
+def certificate_update(cmd, client, resource_group, service, name, enable_auto_sync=None):
     certificate_resource = client.certificates.get(resource_group, service, name)
 
     if certificate_resource.properties.type == 'KeyVaultCertificate':
-        if auto_sync is not None:
-            certificate_resource.properties.auto_sync = auto_sync
+        if enable_auto_sync is not None:
+            certificate_resource.properties.auto_sync = enable_auto_sync
 
     return client.certificates.begin_create_or_update(
         resource_group_name=resource_group,

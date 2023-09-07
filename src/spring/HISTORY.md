@@ -2,7 +2,7 @@ Release History
 ===============
 1.15.0
 ---
-* Add argument `--auto-sync` in `az spring certificate add`.
+* Add argument `--enable-auto-sync` in `az spring certificate add`.
 * Add new command `az spring certificate update` to update a certificate.
 
 1.14.3

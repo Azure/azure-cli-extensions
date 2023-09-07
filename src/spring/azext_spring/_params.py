@@ -676,11 +676,11 @@ def load_arguments(self, _):
                    help='If true, only import public certificate part from key vault.', default=False)
         c.argument('public_certificate_file', options_list=['--public-certificate-file', '-f'],
                    help='A file path for the public certificate to be uploaded')
-        c.argument('auto_sync', options_list=['--auto-sync'],
+        c.argument('enable_auto_sync', options_list=['--enable-auto-sync'],
                    help='Whether to automatically synchronize certificate from key vault', default=False)
 
     with self.argument_context('spring certificate update') as c:
-        c.argument('auto_sync', options_list=['--auto-sync'], arg_type=get_three_state_flag(),
+        c.argument('enable_auto_sync', options_list=['--enable-auto-sync'], arg_type=get_three_state_flag(),
                    help='Whether to automatically synchronize certificate from key vault')
 
     with self.argument_context('spring certificate list') as c:
