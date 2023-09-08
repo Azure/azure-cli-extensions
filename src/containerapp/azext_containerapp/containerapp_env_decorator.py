@@ -110,7 +110,7 @@ class ContainerAppEnvDecorator(BaseResource):
 
     def get_argument_max_nodes(self):
         return self.get_param("max_nodes")
-    
+
     def get_argument_infrastructure_resource_group(self):
         return self.get_param("infrastructure_resource_group")
 
@@ -142,7 +142,7 @@ class ContainerAppEnvCreateDecorator(ContainerAppEnvDecorator):
                                                    "--infrastructure-subnet-resource-id/-s")
             if not self.get_param("enable_workload_profiles"):
                 raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group/ without "
-                                       "--enable-workload-profiles/-w")
+                                                   "--enable-workload-profiles/-w")
         location = validate_environment_location(self.cmd, location)
         _ensure_location_allowed(self.cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
         self.set_argument_location(location)
@@ -357,7 +357,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
     def set_up_workload_profiles(self):
         if self.get_argument_enable_workload_profiles():
             self.managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(self.cmd, self.get_argument_location())
-            
+
             if self.get_argument_infrastructure_subnet_resource_id is not None:
                 self.managed_env_def["properties"]["InfrastructureResourceGroup"] = self.get_argument_infrastructure_resource_group()
 
