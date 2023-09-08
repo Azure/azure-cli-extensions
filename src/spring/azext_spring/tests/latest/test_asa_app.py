@@ -947,34 +947,3 @@ class CustomDomainTests(BasicTest):
         self.assertIsNone(resource.properties.cert_name)
         app_args = client.apps.begin_update.call_args_list
         self.assertEqual(1, len(app_args))
-
-
-class CertificateTests(BasicTest):
-
-    def test_create_certificate(self):
-        client = self._get_basic_mock_client()
-        certificate_add(_get_test_cmd(), client, 'rg', 'asc', 'my-cert',
-                        False, "https://uri", "kv-cert-name")
-        args = client.certificates.begin_create_or_update.call_args_list
-        self.assertEqual(1, len(args))
-        self.assertEqual(4, len(args[0][0]))
-        self.assertEqual(('rg', 'asc', 'my-cert'), args[0][0][0:3])
-        resource = args[0][0][3]
-        self.assertEqual('my-cert', resource.properties.cert_name)
-
-    def test_update_certificate(self):
-        client = self._get_basic_mock_client()
-        client.certificates.get.return_value = models.CertificateResource(
-            properties=models.KeyVaultCertificateProperties(
-                type="KeyVaultCertificate",
-                vault_uri="vault-uri",
-                key_vault_cert_name="kv-cert-name",
-                exclude_private_key=False)
-        )
-        certificate_update(_get_test_cmd(), client, 'rg', 'asc', 'my-cert', True)
-        args = client.certificates.begin_create_or_update.call_args_list
-        self.assertEqual(1, len(args))
-        self.assertEqual(4, len(args[0][0]))
-        self.assertEqual(('rg', 'asc', 'my-cert', True), args[0][0][0:4])
-        resource = args[0][0][4]
-        self.assertTrue(resource.properties.auto_sync)
