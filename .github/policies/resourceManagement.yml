@@ -2525,6 +2525,9 @@ configuration:
         - titleContains:
             pattern: '\b(aks|Aks|AKS|acs|Acs|ACS|openshift|Openshift|OPENSHIFT)\b'
             isRegex: True
+        - bodyContains:
+            pattern: az \b(aks|acs|openshift)\b
+            isRegex: True
       then:
       - requestReview:
           reviewer: zhoxing-ms
@@ -4235,7 +4238,7 @@ configuration:
       - addLabel:
           label: Auto-Assign
       - requestReview:
-          reviewer: wangzelin007
+          reviewer: yanzhudd
       - assignTo:
           users:
           - zhoxing-ms
