@@ -1317,7 +1317,8 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
         # Construct ContainerApp
         resource_group = ResourceGroup(self.cmd, self.get_argument_resource_group_name(), location=location)
-        env = ContainerAppEnvironment(self.cmd, env_name, resource_group, location=location)
+        env_resource_group = ResourceGroup(self.cmd, env_rg, location=location)
+        env = ContainerAppEnvironment(self.cmd, env_name, env_resource_group, location=location)
         app = ContainerApp(self.cmd, self.get_argument_name(), resource_group, None, image, env, target_port, self.get_argument_registry_server(), self.get_argument_registry_user(), self.get_argument_registry_pass(), self.get_argument_env_vars(), self.get_argument_workload_profile_name(), ingress)
 
         # Fetch registry credentials
@@ -1469,7 +1470,8 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
 
         # Construct ContainerApp
         resource_group = ResourceGroup(cmd, self.get_argument_resource_group_name(), location=location)
-        env = ContainerAppEnvironment(cmd, env_name, resource_group, location=location)
+        env_resource_group = ResourceGroup(cmd, env_rg, location=location)
+        env = ContainerAppEnvironment(cmd, env_name, env_resource_group, location=location)
         app = ContainerApp(cmd=cmd, name=self.get_argument_name(), resource_group=resource_group, image=image, env=env, target_port=target_port, workload_profile_name=self.get_argument_workload_profile_name(), ingress=ingress, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
 
         # Fetch registry credentials
