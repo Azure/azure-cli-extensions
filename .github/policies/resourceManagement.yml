@@ -5079,9 +5079,31 @@ configuration:
       - assignTo:
           users:
           - zhoxing-ms
-      - requestReview:
-          reviewer: wangzelin007
       description: '[k8s-extension] Auto assign labels and reviewers based on PR title/description.'
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
+            pattern: k8s-configuration
+            isRegex: True
+        - bodyContains:
+            pattern: k8s-configuration
+            isRegex: True
+      then:
+      - requestReview:
+          reviewer: yonzhan
+      - addLabel:
+          label: Auto-Assign
+      - requestReview:
+          reviewer: zhoxing-ms
+      - requestReview:
+          reviewer: bavneetsingh16
+      - assignTo:
+          users:
+          - zhoxing-ms
+      description: '[k8s-configuration] Auto assign labels and reviewers based on PR title/description.'
     - if:
       - payloadType: Issues
       - or:
