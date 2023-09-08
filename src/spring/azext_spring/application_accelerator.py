@@ -146,7 +146,7 @@ def customized_accelerator_upsert(cmd, client, resource_group, service, name,
         description=description,
         icon_url=icon_url,
         accelerator_tags=accelerator_tags,
-        type=type,
+        accelerator_type=type,
         git_repository=git_repository
     )
     customized_accelerator_resource = models.CustomizedAcceleratorResource(properties=properties)

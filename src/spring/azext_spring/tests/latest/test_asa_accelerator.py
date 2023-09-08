@@ -103,7 +103,7 @@ class ApidAcceleratorTest(ScenarioTest):
 
         self.cmd('spring application-accelerator customized-accelerator create -n {name} -g {rg} -s {serviceName} --type Fragment --display-name {displayName} --git-sub-path {gitSubPath} --git-url {gitUrl} --git-branch {gitBranch} --git-interval 10', 
         checks=[
-            self.check('properties.type', "Fragment"),
+            self.check('properties.acceleratorType', "Fragment"),
             self.check('properties.gitRepository.subPath', "java-version"),
             self.check('properties.imports', ["java-version"]),
             self.check('properties.provisioningState', "Succeeded")
@@ -111,7 +111,7 @@ class ApidAcceleratorTest(ScenarioTest):
 
         self.cmd('spring application-accelerator customized-accelerator update -n {name} -g {rg} -s {serviceName} --type Fragment --display-name {displayName} --git-sub-path {gitSubPath} --git-url {gitUrl} --git-branch {gitBranch} --description desc', 
         checks=[
-            self.check('properties.type', "Fragment"),
+            self.check('properties.acceleratorType', "Fragment"),
             self.check('properties.gitRepository.subPath', "java-version"),
             self.check('properties.imports', ["java-version"]),
             self.check('properties.provisioningState', "Succeeded")
@@ -119,7 +119,7 @@ class ApidAcceleratorTest(ScenarioTest):
 
         self.cmd('spring application-accelerator customized-accelerator show -n {name} -g {rg} -s {serviceName}', 
         checks=[
-            self.check('properties.type', "Fragment"),
+            self.check('properties.acceleratorType', "Fragment"),
             self.check('properties.gitRepository.subPath', "java-version"),
             self.check('properties.imports', ["java-version"]),
             self.check('properties.provisioningState', "Succeeded")

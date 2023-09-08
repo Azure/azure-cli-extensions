@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{"properties": {"type":"Fragment","displayName": "fragment-name", "gitRepository": {"subPath": "java-version", "url": "https://github.com/sample-accelerators/fragments.git",
+    body: '{"properties": {"acceleratorType":"Fragment","displayName": "fragment-name", "gitRepository": {"subPath": "java-version", "url": "https://github.com/sample-accelerators/fragments.git",
       "intervalInSeconds": 10, "branch": "main", "authSetting": {"authType": "Public"}}}}'
     headers:
       Accept:
@@ -23,7 +23,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/fragment-name?api-version=2023-09-01-preview
   response:
     body:
-      string: '{"properties":{"type":"Fragment","provisioningState":"Creating","displayName":"fragment-name","imports": ["java-version"],"gitRepository":{"subPath": "java-version", "url":"https://github.com/sample-accelerators/fragments.git","intervalInSeconds":10,"branch":"main","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/fragment-name","name":"fragment-name","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-24T06:01:15.3720124Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-24T06:01:15.3720124Z"}}'
+      string: '{"properties":{"acceleratorType":"Fragment","provisioningState":"Creating","displayName":"fragment-name","imports": ["java-version"],"gitRepository":{"subPath": "java-version", "url":"https://github.com/sample-accelerators/fragments.git","intervalInSeconds":10,"branch":"main","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/fragment-name","name":"fragment-name","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-24T06:01:15.3720124Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-24T06:01:15.3720124Z"}}'
     headers:
       azure-asyncoperation:
       - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/88b06971-eee4-4a91-a0f7-945fe3088baa?api-version=2023-09-01-preview
@@ -217,7 +217,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/fragment-name?api-version=2023-09-01-preview
   response:
     body:
-      string: '{"properties":{"type":"Fragment","provisioningState":"Succeeded","displayName":"fragment-name","imports": ["java-version"],"gitRepository":{"subPath": "java-version", "url":"https://github.com/sample-accelerators/fragments.git","intervalInSeconds":10,"branch":"main","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/fragment-name","name":"fragment-name","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-24T06:01:15.3720124Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-24T06:01:15.3720124Z"}}'
+      string: '{"properties":{"acceleratorType":"Fragment","provisioningState":"Succeeded","displayName":"fragment-name","imports": ["java-version"],"gitRepository":{"subPath": "java-version", "url":"https://github.com/sample-accelerators/fragments.git","intervalInSeconds":10,"branch":"main","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/fragment-name","name":"fragment-name","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-24T06:01:15.3720124Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-24T06:01:15.3720124Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -247,7 +247,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"type":"Fragment","displayName": "fragment-name", "description": "desc", "gitRepository":
+    body: '{"properties": {"acceleratorType":"Fragment","displayName": "fragment-name", "description": "desc", "gitRepository":
       {"subPath": "java-version", "url": "https://github.com/sample-accelerators/fragments.git", "branch": "main",
       "authSetting": {"authType": "Public"}}}}'
     headers:
@@ -271,7 +271,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/fragment-name?api-version=2023-09-01-preview
   response:
     body:
-      string: '{"properties":{"type":"Fragment","provisioningState":"Updating","displayName":"fragment-name","description":"desc","imports": ["java-version"],"gitRepository":{"subPath": "java-version", "url":"https://github.com/sample-accelerators/fragments.git","branch":"main","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/fragment-name","name":"fragment-name","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-24T06:01:15.3720124Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-24T06:01:39.7977954Z"}}'
+      string: '{"properties":{"acceleratorType":"Fragment","provisioningState":"Updating","displayName":"fragment-name","description":"desc","imports": ["java-version"],"gitRepository":{"subPath": "java-version", "url":"https://github.com/sample-accelerators/fragments.git","branch":"main","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/fragment-name","name":"fragment-name","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-24T06:01:15.3720124Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-24T06:01:39.7977954Z"}}'
     headers:
       azure-asyncoperation:
       - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/e0dabe78-fd08-4eee-8713-a6c049c4037e?api-version=2023-09-01-preview
@@ -417,7 +417,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/fragment-name?api-version=2023-09-01-preview
   response:
     body:
-      string: '{"properties":{"type":"Fragment","provisioningState":"Succeeded","displayName":"fragment-name","description":"desc","imports": ["java-version"],"gitRepository":{"subPath": "java-version", "url":"https://github.com/sample-accelerators/fragments.git","branch":"main","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/fragment-name","name":"fragment-name","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-24T06:01:15.3720124Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-24T06:01:39.7977954Z"}}'
+      string: '{"properties":{"acceleratorType":"Fragment","provisioningState":"Succeeded","displayName":"fragment-name","description":"desc","imports": ["java-version"],"gitRepository":{"subPath": "java-version", "url":"https://github.com/sample-accelerators/fragments.git","branch":"main","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/fragment-name","name":"fragment-name","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-24T06:01:15.3720124Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-24T06:01:39.7977954Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -515,7 +515,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/fragment-name?api-version=2023-09-01-preview
   response:
     body:
-      string: '{"properties":{"type":"Fragment","provisioningState":"Succeeded","displayName":"fragment-name","description":"desc","imports": ["java-version"], "gitRepository":{"subPath": "java-version", "url":"https://github.com/sample-accelerators/fragments.git","branch":"main","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/fragment-name","name":"fragment-name","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-24T06:01:15.3720124Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-24T06:01:39.7977954Z"}}'
+      string: '{"properties":{"acceleratorType":"Fragment","provisioningState":"Succeeded","displayName":"fragment-name","description":"desc","imports": ["java-version"], "gitRepository":{"subPath": "java-version", "url":"https://github.com/sample-accelerators/fragments.git","branch":"main","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/fragment-name","name":"fragment-name","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-24T06:01:15.3720124Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-24T06:01:39.7977954Z"}}'
     headers:
       cache-control:
       - no-cache
