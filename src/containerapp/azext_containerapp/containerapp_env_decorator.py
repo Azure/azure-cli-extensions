@@ -136,7 +136,7 @@ class ContainerAppEnvCreateDecorator(ContainerAppEnvDecorator):
                         "Please change either --location/-l or --infrastructure-subnet-resource-id/-s")
             else:
                 location = vnet_location
-        if self.get_argument_infrastructure_resource_group is not None:
+        if self.get_argument_infrastructure_resource_group() is not None:
             if not self.get_argument_infrastructure_subnet_resource_id():
                 raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group without "
                                                    "--infrastructure-subnet-resource-id/-s")
