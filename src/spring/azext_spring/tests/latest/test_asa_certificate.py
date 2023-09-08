@@ -48,13 +48,14 @@ class CertificateTests(BasicTest):
     def test_create_certificate(self):
         client = self._get_basic_mock_client()
         certificate_add(_get_test_cmd(), client, 'rg', 'asc', 'my-cert',
-                        False, "https://uri", "kv-cert-name")
+                        False, "vault-uri", "kv-cert-name")
         args = client.certificates.begin_create_or_update.call_args_list
         self.assertEqual(1, len(args))
         self.assertEqual(4, len(args[0][0]))
         self.assertEqual(('rg', 'asc', 'my-cert'), args[0][0][0:3])
         resource = args[0][0][3]
-        self.assertEqual('my-cert', resource.properties.cert_name)
+        self.assertEqual('vault-uri', resource.properties.vault_uri)
+        self.assertEqual('kv-cert-name', resource.properties.key_vault_cert_name)
 
     def test_update_certificate(self):
         client = self._get_basic_mock_client()
@@ -69,6 +70,6 @@ class CertificateTests(BasicTest):
         args = client.certificates.begin_create_or_update.call_args_list
         self.assertEqual(1, len(args))
         self.assertEqual(4, len(args[0][0]))
-        self.assertEqual(('rg', 'asc', 'my-cert', True), args[0][0][0:4])
-        resource = args[0][0][4]
+        self.assertEqual(('rg', 'asc', 'my-cert'), args[0][0][0:3])
+        resource = args[0][0][3]
         self.assertTrue(resource.properties.auto_sync)

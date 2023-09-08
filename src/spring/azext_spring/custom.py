@@ -1376,16 +1376,7 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
         )
     certificate_resource = models.CertificateResource(properties=properties)
 
-    def callback(pipeline_response, deserialized, headers):
-        return models.CertificateResource.deserialize(json.loads(pipeline_response.http_response.text()))
-
-    return client.certificates.begin_create_or_update(
-        resource_group_name=resource_group,
-        service_name=service,
-        certificate_name=name,
-        certificate_resource=certificate_resource,
-        cls=callback
-    )
+    return client.certificates.begin_create_or_update(resource_group, service, name, certificate_resource)
 
 
 def certificate_update(cmd, client, resource_group, service, name, enable_auto_sync=None):
@@ -1395,12 +1386,7 @@ def certificate_update(cmd, client, resource_group, service, name, enable_auto_s
         if enable_auto_sync is not None:
             certificate_resource.properties.auto_sync = enable_auto_sync
 
-    return client.certificates.begin_create_or_update(
-        resource_group_name=resource_group,
-        service_name=service,
-        certificate_name=name,
-        certificate_resource=certificate_resource
-    )
+    return client.certificates.begin_create_or_update(resource_group, service, name, certificate_resource)
 
 
 def certificate_show(cmd, client, resource_group, service, name):
