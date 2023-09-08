@@ -1298,10 +1298,13 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         token = get_token(self.cmd, self.get_argument_repo(), self.get_argument_token())
 
         # Parse resource group name and managed env name
-        env_id = self.containerapp_def["properties"]['environmentId']
-        parsed_managed_env = parse_resource_id(env_id)
-        env_name = parsed_managed_env['name']
-        env_rg = parsed_managed_env['resource_group']
+        env_id = safe_get(self.containerapp_def, "properties", "environmentId")
+        parsed_env = parse_resource_id(env_id)
+        if parsed_env.get('resource_type').lower() == CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower() or self.get_argument_environment_type() == CONNECTED_ENVIRONMENT_TYPE:
+            raise MutuallyExclusiveArgumentError(
+                "Usage error: --source or --repo cannot be used with a connected environment. Please provide a managed environment instead")
+        env_name = parsed_env['name']
+        env_rg = parsed_env['resource_group']
 
         # Parse location
         env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
