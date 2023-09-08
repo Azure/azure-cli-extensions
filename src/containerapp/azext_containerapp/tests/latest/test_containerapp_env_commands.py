@@ -461,6 +461,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
 
     @ResourceGroupPreparer(location="eastus")
+    @live_only()  # passes live but hits CannotOverwriteExistingCassetteException when run from recording
     def test_containerapp_env_infrastructure_rg(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
