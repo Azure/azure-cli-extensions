@@ -138,10 +138,10 @@ class ContainerAppEnvCreateDecorator(ContainerAppEnvDecorator):
                 location = vnet_location
         if self.get_argument_infrastructure_resource_group() is not None:
             if not self.get_argument_infrastructure_subnet_resource_id():
-                raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group without "
+                raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group/-i without "
                                                    "--infrastructure-subnet-resource-id/-s")
             if not self.get_param("enable_workload_profiles"):
-                raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group/ without "
+                raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group/-i without "
                                                    "--enable-workload-profiles/-w")
         location = validate_environment_location(self.cmd, location)
         _ensure_location_allowed(self.cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
