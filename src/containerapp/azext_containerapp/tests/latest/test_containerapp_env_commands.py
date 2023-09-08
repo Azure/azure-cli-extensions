@@ -460,6 +460,31 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         ])
 
 
+    @ResourceGroupPreparer(location="eastus")
+    def test_containerapp_env_infrastructure_rg(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env = self.create_random_name(prefix='env', length=24)
+        vnet = self.create_random_name(prefix='name', length=24)
+        infra_rg = self.create_random_name(prefix='irg', length=24)
+
+        self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet}")
+        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' --delegations Microsoft.App/environments -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
+
+        self.cmd(f'containerapp env create -g {resource_group} -n {env} -s {sub_id} -i {infra_rg} --enable-workload-profiles true')
+
+        containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+
+        self.cmd(f'containerapp env show -n {env} -g {resource_group}', checks=[
+            JMESPathCheck('name', env),
+            JMESPathCheck('properties.infrastructureResourceGroup', infra_rg),
+        ])  
+
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_env_mtls(self, resource_group):
