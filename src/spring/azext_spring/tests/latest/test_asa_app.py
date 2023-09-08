@@ -14,8 +14,7 @@ from ...custom import (app_set_deployment, app_unset_deployment,
                        deployment_enable_remote_debugging,
                        deployment_disable_remote_debugging,
                        deployment_get_remote_debugging,
-                       domain_update, domain_unbind,
-                       certificate_add, certificate_update)
+                       domain_update, domain_unbind)
 try:
     import unittest.mock as mock
 except ImportError:
