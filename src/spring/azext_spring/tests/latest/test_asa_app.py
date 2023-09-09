@@ -7,7 +7,7 @@ import os
 from azure.cli.core.azclierror import ResourceNotFoundError
 from knack.util import CLIError
 from msrestazure.tools import resource_id
-from ...vendored_sdks.appplatform.v2023_07_01_preview import models
+from ...vendored_sdks.appplatform.v2023_09_01_preview import models
 from ..._utils import _get_sku_name
 from ...app import (app_create, app_update, app_deploy, deployment_create)
 from ...custom import (app_set_deployment, app_unset_deployment,
@@ -153,6 +153,17 @@ class TestAppDeploy_Patch(BasicTest):
         self.assertEqual('my-relative-path', resource.properties.source.relative_path)
         self.assertIsNone(resource.properties.source.version)
         self.assertEqual('Java_8', resource.properties.source.runtime_version)
+
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
+    def test_app_deploy_war(self, file_mock):
+        file_mock.return_value = mock.MagicMock()
+        self._execute('rg', 'asc', 'app', deployment=self._get_deployment(), artifact_path='my-path/test.war', runtime_version='Java_8', server_version='Tomcat_10')
+        resource = self.patch_deployment_resource
+        self.assertEqual('War', resource.properties.source.type)
+        self.assertEqual('my-relative-path', resource.properties.source.relative_path)
+        self.assertIsNone(resource.properties.source.version)
+        self.assertEqual('Java_8', resource.properties.source.runtime_version)
+        self.assertEqual('Tomcat_10', resource.properties.source.server_version)
 
     @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_net(self, file_mock):
@@ -396,6 +407,26 @@ class TestAppDeploy_Put(BasicTest):
         self.assertEqual('Container', resource.properties.source.type)
         self.assertEqual('my-image', resource.properties.source.custom_container.container_image)
         self.assertIsNone(resource.properties.source.version)
+        self.assertEqual('2', resource.properties.deployment_settings.resource_requests.cpu)
+        self.assertEqual('2Gi', resource.properties.deployment_settings.resource_requests.memory)
+        self.assertEqual(2, resource.sku.capacity)
+
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
+    def test_app_deploy_war_from_container(self, file_mock):
+        file_mock.return_value = mock.MagicMock()
+        deployment = self._get_deployment()
+        deployment.properties.source.type = 'Container'
+        deployment.properties.source.custom_container = mock.MagicMock()
+        deployment.properties.source.relative_path = None
+        deployment.properties.source.runtime_version = None
+        deployment.properties.source.version = '123'
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path/test.war', server_version='Tomcat_9')
+        resource = self.put_deployment_resource
+        self.assertEqual('War', resource.properties.source.type)
+        self.assertEqual('my-relative-path', resource.properties.source.relative_path)
+        self.assertIsNone(resource.properties.source.version)
+        self.assertEqual('Java_11', resource.properties.source.runtime_version)
+        self.assertEqual('Tomcat_9', resource.properties.source.server_version)
         self.assertEqual('2', resource.properties.deployment_settings.resource_requests.cpu)
         self.assertEqual('2Gi', resource.properties.deployment_settings.resource_requests.memory)
         self.assertEqual(2, resource.sku.capacity)

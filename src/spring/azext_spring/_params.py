@@ -16,7 +16,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_ingress_timeout, validate_jar, validate_ingress_send_timeout,
                           validate_ingress_session_max_age, validate_config_server_ssh_or_warn,
                           validate_remote_debugging_port, validate_ingress_client_auth_certificates,
-                          validate_managed_environment, validate_dataplane_public_endpoint)
+                          validate_managed_environment, validate_dataplane_public_endpoint, validate_server_version)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_source_path, validate_artifact_path, validate_build_create,
                                      validate_build_update, validate_container_registry_create,
@@ -41,7 +41,7 @@ from ._app_managed_identity_validator import (validate_create_app_with_user_iden
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
-from .vendored_sdks.appplatform.v2023_07_01_preview.models._app_platform_management_client_enums import (ConfigurationServiceGeneration, SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
+from .vendored_sdks.appplatform.v2023_09_01_preview.models._app_platform_management_client_enums import (ConfigurationServiceGeneration, SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
 
 name_type = CLIArgumentType(options_list=[
@@ -490,7 +490,7 @@ def load_arguments(self, _):
                 'artifact_path', options_list=['--artifact-path',
                                                c.deprecate(target='--jar-path', redirect='--artifact-path', hide=True),
                                                c.deprecate(target='-p', redirect='--artifact-path', hide=True)],
-                help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_jar)
+                help='Deploy the specified pre-built artifact (jar, war or netcore zip, war is in public preview).', validator=validate_jar)
             c.argument(
                 'disable_validation', arg_type=get_three_state_flag(),
                 help='If true, disable jar validation.')
@@ -528,6 +528,7 @@ def load_arguments(self, _):
             c.argument('build_certificates', nargs='*',
                        help='(Enterprise Tier Only) Space-separated certificate names, the certificates are used during build time.',
                        validator=validate_build_cert_reference)
+            c.argument('server_version', help='(Standard and Basic Tiers Only) Tomcat server version. This feature is in public preview.', validator=validate_server_version)
 
     with self.argument_context('spring app deploy') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)

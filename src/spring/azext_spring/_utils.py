@@ -17,7 +17,7 @@ from json import dumps
 from knack.util import CLIError, todict
 from knack.log import get_logger
 from azure.cli.core.azclierror import ValidationError
-from .vendored_sdks.appplatform.v2023_07_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
+from .vendored_sdks.appplatform.v2023_09_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
 from ._client_factory import cf_resource_groups
 
 
@@ -40,8 +40,18 @@ def _get_upload_local_file(runtime_version, artifact_path=None, source_path=None
     return file_type, file_path
 
 
+def _get_file_ext(artifact_path):
+    return os.path.splitext(artifact_path)[-1].lower() if artifact_path else ""
+
+
 def _get_file_type(runtime_version, artifact_path=None):
-    file_type = "Jar" if _is_java(runtime_version) else "Others"
+    file_type = "Others"
+    if _is_java(runtime_version):
+        file_ext = _get_file_ext(artifact_path)
+        if file_ext.lower() == ".jar":
+            file_type = "Jar"
+        elif file_ext.lower() == ".war":
+            file_type = "War"
     if artifact_path is None:
         file_type = "Source"
     return file_type
