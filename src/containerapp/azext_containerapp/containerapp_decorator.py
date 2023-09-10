@@ -1424,6 +1424,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def get_argument_service_principal_tenant_id(self):
         return self.get_param("service_principal_tenant_id")
 
+
 # decorator for preview update
 class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def construct_payload(self):
