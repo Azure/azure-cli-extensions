@@ -158,30 +158,6 @@ class BaseContainerAppDecorator(BaseResource):
     def get_argument_yaml(self):
         return self.get_param("yaml")
 
-    def get_argument_source(self):
-        return self.get_param("source")
-
-    def get_argument_repo(self):
-        return self.get_param("repo")
-
-    def get_argument_branch(self):
-        return self.get_param("branch")
-
-    def get_argument_token(self):
-        return self.get_param("token")
-
-    def get_argument_context_path(self):
-        return self.get_param("context_path")
-
-    def get_argument_service_principal_client_id(self):
-        return self.get_param("service_principal_client_id")
-
-    def get_argument_service_principal_client_secret(self):
-        return self.get_param("service_principal_client_secret")
-
-    def get_argument_service_principal_tenant_id(self):
-        return self.get_param("service_principal_tenant_id")
-
     def get_argument_image(self):
         return self.get_param("image")
 
@@ -372,7 +348,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
 
     def validate_arguments(self):
         validate_container_app_name(self.get_argument_name(), AppType.ContainerApp.name)
-        validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait(), self.get_argument_source(), self.get_argument_repo(), self.get_argument_yaml())
+        validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait())
         validate_revision_suffix(self.get_argument_revision_suffix())
 
     def construct_payload(self):
@@ -1226,6 +1202,10 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         self.set_up_source()
         self.set_up_repo()
 
+    def validate_arguments(self):
+        super().validate_arguments()
+        validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait(), self.get_argument_source(), self.get_argument_repo(), self.get_argument_yaml(), self.get_argument_environment_type())
+
     def set_up_source(self):
         if self.get_argument_source():
             from ._up_utils import _has_dockerfile
@@ -1300,9 +1280,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         # Parse resource group name and managed env name
         env_id = safe_get(self.containerapp_def, "properties", "environmentId")
         parsed_env = parse_resource_id(env_id)
-        if parsed_env.get('resource_type').lower() == CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower() or self.get_argument_environment_type() == CONNECTED_ENVIRONMENT_TYPE:
-            raise MutuallyExclusiveArgumentError(
-                "Usage error: --source or --repo cannot be used with a connected environment. Please provide a managed environment instead")
+        if parsed_env.get('resource_type').lower() == CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower():
+            raise ValidationError(
+                "Usage error: --source or --repo cannot be used with a connected environment. Please provide a managed environment instead.")
         env_name = parsed_env['name']
         env_rg = parsed_env['resource_group']
 
@@ -1420,6 +1400,29 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def set_argument_environment_type(self, environment_type):
         self.set_param("environment_type", environment_type)
 
+    def get_argument_source(self):
+        return self.get_param("source")
+
+    def get_argument_repo(self):
+        return self.get_param("repo")
+
+    def get_argument_branch(self):
+        return self.get_param("branch")
+
+    def get_argument_token(self):
+        return self.get_param("token")
+
+    def get_argument_context_path(self):
+        return self.get_param("context_path")
+
+    def get_argument_service_principal_client_id(self):
+        return self.get_param("service_principal_client_id")
+
+    def get_argument_service_principal_client_secret(self):
+        return self.get_param("service_principal_client_secret")
+
+    def get_argument_service_principal_tenant_id(self):
+        return self.get_param("service_principal_tenant_id")
 
 # decorator for preview update
 class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
@@ -1428,6 +1431,9 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         self.set_up_service_bindings()
         self.set_up_unbind_service_bindings()
         self.set_up_source()
+
+    def get_argument_source(self):
+        return self.get_param("source")
 
     def set_up_source(self):
         if self.get_argument_source():

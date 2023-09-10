@@ -48,7 +48,7 @@ class ContainerAppCreateTest(ScenarioTest):
     def test_containerapp_create_source_and_repo_e2e(self, resource_group):
         source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_dockerfile"))
         repo = "https://github.com/test/repo"
-        err = ("Cannot use --source and --repo together. Can either deploy from a local directory or a GitHub repository")
+        err = ("Usage error: --source and --repo cannot be used together. Can either deploy from a local directory or a GitHub repository")
         verify_containerapp_create_exception(self, resource_group=resource_group, err= err, source_path=source_path, repo=repo)
 
     @ResourceGroupPreparer(location="eastus")
@@ -61,12 +61,24 @@ class ContainerAppCreateTest(ScenarioTest):
     def test_containerapp_create_source_and_yaml_e2e(self,resource_group):
         source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_dockerfile"))
         yaml = "./test.yaml"
-        err = ("Cannot use --source or --repo with --yaml together. Can either deploy from a local directory or provide a yaml file")
+        err = ("Usage error: --source or --repo cannot be used with --yaml together. Can either deploy from a local directory or provide a yaml file")
         verify_containerapp_create_exception(self, resource_group=resource_group, err=err, source_path=source_path, yaml=yaml)
 
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_create_repo_and_yaml_e2e(self,resource_group):
         repo = "https://github.com/test/repo"
         yaml = "./test.yaml"
-        err = ("Cannot use --source or --repo with --yaml together. Can either deploy from a local directory or provide a yaml file")
+        err = ("Usage error: --source or --repo cannot be used with --yaml together. Can either deploy from a local directory or provide a yaml file")
         verify_containerapp_create_exception(self, resource_group=resource_group, err=err, repo = repo, yaml=yaml)
+
+    @ResourceGroupPreparer(location="eastus")
+    def test_containerapp_create_repo_and_connected_environment_e2e(self,resource_group):
+        repo = "https://github.com/test/repo"
+        err = ("Usage error: --source or --repo cannot be used with --environment-type connectedEnvironment together. Please use --environment-type managedEnvironment")
+        verify_containerapp_create_exception(self, resource_group=resource_group, err=err, repo = repo, environment_type="connected")
+
+    @ResourceGroupPreparer(location="eastus")
+    def test_containerapp_create_source_and_connected_environment_e2e(self,resource_group):
+        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_dockerfile"))
+        err = ("Usage error: --source or --repo cannot be used with --environment-type connectedEnvironment together. Please use --environment-type managedEnvironment")
+        verify_containerapp_create_exception(self, resource_group=resource_group, err=err, source_path=source_path, environment_type="connected")

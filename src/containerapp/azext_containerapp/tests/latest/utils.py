@@ -82,7 +82,8 @@ def verify_containerapp_create_exception(
             app_name = None,
             source_path = None,
             repo = None,
-            yaml = None):
+            yaml = None,
+            environment_type = None):
         # Configure the default location
         test_cls.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
@@ -102,11 +103,13 @@ def verify_containerapp_create_exception(
             create_cmd += f" --source \"{source_path}\""
         if repo:
             create_cmd += f" --repo {repo}"
+        if environment_type:
+            create_cmd += f" --environment-type {environment_type}"
         if yaml:
             create_cmd += f" --yaml {yaml}"
 
         # Verify appropriate exception was raised
-        if source_path and not repo and not yaml:
+        if source_path and (not repo and not yaml and not environment_type):
             with test_cls.assertRaises(RequiredArgumentMissingError) as cm:
                 # Execute the 'az containerapp create' command
                 test_cls.cmd(create_cmd)
