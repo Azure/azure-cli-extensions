@@ -34,7 +34,8 @@ upcoming
   - CNF image config has been moved into an `images` section of the config file. Please run `az aosm nfd generate-config --definition-type cnf` to generate a new config file.
   - Remove pre-deploy check to check source ACR exists. This will be found at the time that images are copied / accessed.
   - Change from using ContainerRegistryManagementClient to `az acr import` subprocess call, so that we don't need to know the Resource Group.
-
+* NB CHANGE TO PREVIOUS CONFIG FILE FORMAT FOR NSDs
+  - Added publisher scope and removed publisher resource group from network function object, as now using proxy references
 0.2.0
 ++++++
 Breaking change to commands - now use `nfd` instead of `definition`. Publish option removed from build.
