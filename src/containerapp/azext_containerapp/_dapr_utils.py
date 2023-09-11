@@ -8,7 +8,7 @@ from azure.cli.core.azclierror import ValidationError
 from knack.log import get_logger
 from ._clients import ContainerAppClient
 from ._models import (DaprComponent as DaprComponentModel,
-                      ServiceBinding as ServiceBindingModel)
+                      DaprComponentServiceBinding as DaprComponentServiceBindingModel,)
 from .custom import create_redis_service, safe_get
 
 logger = get_logger(__name__)
@@ -63,7 +63,7 @@ class DaprUtils:
         :param component_version: The version of the component, e.g. "v1".
         :param ignore_errors: Whether to ignore errors while loading the component.
         """
-        serviceBinding = ServiceBindingModel.copy()
+        serviceBinding = DaprComponentServiceBindingModel.copy()
         serviceBinding["name"] = service_component_name
         serviceBinding["serviceId"] = service_component_id
 

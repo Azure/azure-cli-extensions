@@ -312,6 +312,12 @@ DaprComponent = {
     }
 }
 
+DaprComponentServiceBinding = {
+    "name": None,   # str
+    "serviceId": None,  # str
+    "metadata": None,  # dict
+}
+
 DaprMetadata = {
     "name": None,  # str
     "value": None,  # str
