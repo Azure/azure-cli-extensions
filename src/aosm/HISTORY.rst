@@ -27,6 +27,7 @@ upcoming
 * Re-order publish steps so that artifacts are uploaded before the NFD/NSD is published.
 * Add progress information for VHD upload
 * Change optional argument from `manifest_parameters_json_file` to `manifest_params_file` to appease linter.
+ *NB CHANGE TO PREVIOUS CONFIG FILE FORMAT FOR NSDs - Added publisher scope and removed publisher resource group from network function object, as now using proxy references
 
 0.2.0
 ++++++
