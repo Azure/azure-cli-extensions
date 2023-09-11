@@ -3666,7 +3666,7 @@ def init_dapr_component(cmd, resource_group_name, environment_name):
     from ._dapr_utils import DaprUtils
 
     # Create Redis service if not exists
-    redis_capp_def, _is_redis_created = DaprUtils.create_redis_service_if_not_exists(cmd, resource_group_name, environment_name, DAPR_REDIS_SERVICE_NAME)
+    redis_capp_def, _ = DaprUtils.create_redis_service_if_not_exists(cmd, resource_group_name, environment_name, DAPR_REDIS_SERVICE_NAME)
     redis_service_id = safe_get(redis_capp_def, "id", default=None)
     if not redis_service_id:
         raise ValidationError("Service ID for Redis service not found.")
@@ -3690,8 +3690,6 @@ def init_dapr_component(cmd, resource_group_name, environment_name):
     except Exception as e:
         raise ValidationError("Failed to create pubsub component, error: {}.".format(e)) from e
 
-    # Remove potential secrets, and return the result
-    _remove_secret(redis_capp_def, DAPR_REDIS_SECRET_NAME)
     return {
         "message": "Successfully initialized components!",
         "resources": {
