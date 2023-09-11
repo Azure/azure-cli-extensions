@@ -99,56 +99,6 @@ class AddGroupMembers(argparse._AppendAction):
         return d
 
 
-class AddSecurityconfigurationsAppliesToGroups(argparse._AppendAction):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        super(AddSecurityconfigurationsAppliesToGroups, self).__call__(parser, namespace, action, option_string)
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-            if kl == 'network-group-id':
-                d['network_group_id'] = v[0]
-            else:
-                raise CLIError('Unsupported Key {} is provided for parameter applies_to_groups. All possible keys are: '
-                               'network-group-id'.format(k))
-        return d
-
-
-class AddNetworkSecurityGroupImports(argparse._AppendAction):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        super(AddNetworkSecurityGroupImports, self).__call__(parser, namespace, action, option_string)
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-            if kl == 'network-security-group-uri':
-                d['network_security_group_uri'] = v[0]
-            else:
-                raise CLIError('Unsupported Key {} is provided for parameter network_security_group_imports. All '
-                               'possible keys are: network-security-group-uri'.format(k))
-        return d
-
-
 class AddSource(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)

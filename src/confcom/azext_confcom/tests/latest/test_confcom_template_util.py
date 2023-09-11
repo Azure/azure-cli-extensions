@@ -407,7 +407,7 @@ LmZyYW1ld29yay5lcnJvcnN9Cg=="""
                 {
                 "name": "[parameters('containergroupname')]",
                 "type": "Microsoft.ContainerInstance/containerGroups",
-                "apiVersion": "2022-04-01-preview",
+                "apiVersion": "2023-05-01",
                 "location": "[parameters('location')]",
                 "properties": {
                     "containers": [

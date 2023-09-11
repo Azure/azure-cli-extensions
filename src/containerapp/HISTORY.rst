@@ -4,11 +4,26 @@ Release History
 ===============
 upcoming
 ++++++
+* Add command group 'az containerapp connected-env', support show/list/delete/create connected environment
+* 'az containerapp env dapr-component': support initializing Dapr components for development
+
+0.3.39
+++++++
+* 'az containerapp update': fix bug for populating secret value with --yaml
+
+0.3.38
+++++++
+* Add support for binding managed MySQL Flexible server to a containerapp
 * Removed preview tag for some command groups and params (e.g. 'az containerapp job', 'az containerapp env storage', 'az containerapp env workload-profile')
 * 'az containerapp env': --enable-workload-profiles allowed values:true, false
 * 'az containerapp auth': support --token-store, --sas-url-secret, --sas-url-secret-name, --yes
 * 'az containerapp create'/'az containerapp job create': When --environment is provided and the environmentId value does not exist in --yaml, use the value in --environment as environmentId
-* 'az containerapp env dapr-component': add support to initialize Dapr components for development
+* 'az containerapp job create': support --environment-type parameter
+* 'az containerapp show-custom-domain-verification-id': show verfication id used for binding custom domain
+* 'az containerapp list-usages': list usages in subscription
+* 'az containerapp env list-usages': list usages in environment
+* 'az containerapp update': --yaml support property additionalPortMappings for api-version 2023-05-02-preview
+* 'az containerapp create/update': raise ValidationError when value in --yaml is None
 
 0.3.37
 ++++++

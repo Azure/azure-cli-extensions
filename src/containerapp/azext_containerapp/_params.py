@@ -13,7 +13,7 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
 from ._validators import (validate_memory, validate_cpu, validate_managed_env_name_or_id, validate_registry_server,
                           validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress,
                           validate_storage_name_or_id, validate_cors_max_age, validate_env_name_or_id,
-                          validate_allow_insecure)
+                          validate_allow_insecure, validate_custom_location_name_or_id)
 from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION, MAXIMUM_CONTAINER_APP_NAME_LENGTH, LOG_TYPE_CONSOLE, LOG_TYPE_SYSTEM
 
 
@@ -192,7 +192,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env create') as c:
         c.argument('zone_redundant', options_list=["--zone-redundant", "-z"], help="Enable zone redundancy on the environment. Cannot be used without --infrastructure-subnet-resource-id. If used with --location, the subnet's location must match")
-        c.argument('enable_workload_profiles', arg_type=get_three_state_flag(), options_list=["--enable-workload-profiles", "-w"], help="Boolean indicating if the environment is enabled to have workload profiles", is_preview=True)
+        c.argument('enable_workload_profiles', arg_type=get_three_state_flag(), options_list=["--enable-workload-profiles", "-w"], help="Boolean indicating if the environment is enabled to have workload profiles")
 
     with self.argument_context('containerapp env update') as c:
         c.argument('name', name_type, help='Name of the Container Apps environment.')
@@ -394,9 +394,9 @@ def load_arguments(self, _):
         c.argument('consumer_secret_setting_name', options_list=['--consumer-secret-name', '--secret-name'], help='The consumer secret name that contains the app secret.')
         c.argument('provider_name', required=True, help='The name of the custom OpenID Connect provider.')
         c.argument('openid_configuration', help='The endpoint that contains all the configuration endpoints for the provider.')
-        c.argument('token_store', arg_type=get_three_state_flag(), help='Boolean indicating if token store is enabled for the app.')
-        c.argument('sas_url_secret', help='The blob storage SAS URL to be used for token store.')
-        c.argument('sas_url_secret_name', help='The secret name that contains blob storage SAS URL to be used for token store.')
+        c.argument('token_store', arg_type=get_three_state_flag(), help='Boolean indicating if token store is enabled for the app.', is_preview=True)
+        c.argument('sas_url_secret', help='The blob storage SAS URL to be used for token store.', is_preview=True)
+        c.argument('sas_url_secret_name', help='The secret name that contains blob storage SAS URL to be used for token store.', is_preview=True)
 
         # auth update
         c.argument('set_string', options_list=['--set'], help='Value of a specific field within the configuration settings for the Azure App Service Authentication / Authorization feature.')
@@ -519,3 +519,11 @@ def load_arguments(self, _):
     with self.argument_context('containerapp') as c:
         c.argument('managed_env', validator=validate_env_name_or_id, options_list=['--environment'], help="Name or resource ID of the container app's environment.")
         c.argument('environment_type', arg_type=get_enum_type(["managed", "connected"]), help="Type of environment.", is_preview=True)
+
+    with self.argument_context('containerapp connected-env') as c:
+        c.argument('name', name_type, help='Name of the Container Apps connected environment.')
+        c.argument('resource_group_name', arg_type=resource_group_name_type)
+        c.argument('tags', arg_type=tags_type)
+        c.argument('custom_location', help="Resource ID of custom location. List using 'az customlocation list'.", validator=validate_custom_location_name_or_id)
+        c.argument('dapr_ai_connection_string', options_list=['--dapr-ai-connection-string', '-d'], help='Application Insights connection string used by Dapr to export Service to Service communication telemetry.')
+        c.argument('static_ip', help='Static IP of the connectedEnvironment.')

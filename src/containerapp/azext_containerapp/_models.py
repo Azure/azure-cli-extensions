@@ -415,3 +415,20 @@ OryxMarinerRunImgTagProperty = {
     "architectures": None,
     "support": None,
 }
+
+
+# model for preview extension
+ConnectedEnvironment = {
+    "extendedLocation": None,
+    "tags": None,
+    "location": None,
+    "properties": {
+        "staticIp": None,
+        "daprAIConnectionString": None
+    }
+}
+
+ExtendedLocation = {
+    "name": None,
+    "type": None
+}
