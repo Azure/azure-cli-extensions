@@ -28,7 +28,12 @@ def load_command_table(self, _):
         g.custom_command('browse', 'open_containerapp_in_browser')
         g.custom_show_command('show-custom-domain-verification-id', 'show_custom_domain_verification_id', is_preview=True)
         g.custom_command('list-usages', 'list_usages', table_transformer=transform_usages_output, is_preview=True)
-
+    
+    with self.command_group('containerapp new') as g:
+        g.custom_command('nodejs-mongo', 'new_nodejs_mongo_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_command('python-mongo', 'new_python_mongo_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_command('java-mongo', 'new_java_mongo_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory())
+    
     with self.command_group('containerapp replica') as g:
         g.custom_show_command('show', 'get_replica')  # TODO implement the table transformer
         g.custom_command('list', 'list_replicas')

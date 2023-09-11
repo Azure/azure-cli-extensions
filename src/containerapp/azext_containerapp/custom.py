@@ -13,6 +13,8 @@ import re
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
 import requests
+import os
+from git import Repo
 
 from azure.cli.core import telemetry as telemetry_core
 
@@ -3474,6 +3476,35 @@ def open_containerapp_in_browser(cmd, name, resource_group_name):
     if not url.startswith("http"):
         url = f"http://{url}"
     open_page_in_browser(url)
+
+    
+def new_containerapp(cmd, templatePath, destinationPath):
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    
+    try:
+        subprocess.check_call(["git", "--version"], cwd=dir_path)
+    except subprocess.CalledProcessError:
+        # Git command failed
+        return False
+    except FileNotFoundError:
+        # Git executable not found
+        return False
+    
+    if not destinationPath:
+        destinationPath = os.getcwd()
+    
+    Repo.clone_from(templatePath, destinationPath)
+
+def new_nodejs_mongo_containerapp(cmd, path=None):
+    return new_containerapp(cmd, "https://github.com/Azure-Samples/todo-nodejs-mongo-aca", path)
+
+
+def new_python_mongo_containerapp(cmd, path=None):
+    return new_containerapp(cmd, "https://github.com/Azure-Samples/todo-python-mongo-aca", path)
+
+
+def new_java_mongo_containerapp(cmd, path=None):
+    return new_containerapp(cmd, "https://github.com/Azure-Samples/todo-java-mongo-aca" , path)
 
 
 def containerapp_up(cmd,
