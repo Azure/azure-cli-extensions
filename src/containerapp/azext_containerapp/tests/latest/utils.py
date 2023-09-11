@@ -120,8 +120,12 @@ def verify_containerapp_create_exception(
 
         test_cls.assertEqual(str(cm.exception), err)
 
-        test_cls.cmd('containerapp env delete -g {} -n {} --yes'.format(resource_group, env_name))
+        test_cls.cmd('containerapp delete -g {} -n {} --yes'.format(resource_group, app_name))
+        test_cls.cmd('containerapp list -g {}'.format(resource_group), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
 
+        test_cls.cmd('containerapp env delete -g {} -n {} --yes'.format(resource_group, env_name))
         test_cls.cmd('containerapp env list -g {}'.format(resource_group), checks=[
             JMESPathCheck('length(@)', 0),
         ])
@@ -233,8 +237,12 @@ def create_and_verify_containerapp_create_and_update(
         test_cls.assertEqual(app["properties"]["template"]["containers"][0]["image"].split(":")[0], image_name)
         test_cls.assertNotEqual(app["properties"]["template"]["containers"][0]["image"], old_image)
 
-        test_cls.cmd('containerapp env delete -g {} -n {} --yes'.format(resource_group, env_name))
+        test_cls.cmd('containerapp delete -g {} -n {} --yes'.format(resource_group, app_name))
+        test_cls.cmd('containerapp list -g {}'.format(resource_group), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
 
+        test_cls.cmd('containerapp env delete -g {} -n {} --yes'.format(resource_group, env_name))
         test_cls.cmd('containerapp env list -g {}'.format(resource_group), checks=[
             JMESPathCheck('length(@)', 0),
         ])
