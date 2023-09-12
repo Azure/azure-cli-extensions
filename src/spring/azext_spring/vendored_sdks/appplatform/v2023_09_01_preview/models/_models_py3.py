@@ -4662,8 +4662,9 @@ class CustomizedAcceleratorProperties(_serialization.Model):
      "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorProvisioningState
-    :ivar type: Type of the customized accelerator. Known values are: "Accelerator" and "Fragment".
-    :vartype type: str or
+    :ivar accelerator_type: Type of the customized accelerator. Known values are: "Accelerator" and
+     "Fragment".
+    :vartype accelerator_type: str or
      ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorType
     :ivar display_name:
     :vartype display_name: str
@@ -4688,7 +4689,7 @@ class CustomizedAcceleratorProperties(_serialization.Model):
 
     _attribute_map = {
         "provisioning_state": {"key": "provisioningState", "type": "str"},
-        "type": {"key": "type", "type": "str"},
+        "accelerator_type": {"key": "acceleratorType", "type": "str"},
         "display_name": {"key": "displayName", "type": "str"},
         "description": {"key": "description", "type": "str"},
         "icon_url": {"key": "iconUrl", "type": "str"},
@@ -4701,7 +4702,7 @@ class CustomizedAcceleratorProperties(_serialization.Model):
         self,
         *,
         git_repository: "_models.AcceleratorGitRepository",
-        type: Optional[Union[str, "_models.CustomizedAcceleratorType"]] = None,
+        accelerator_type: Optional[Union[str, "_models.CustomizedAcceleratorType"]] = None,
         display_name: Optional[str] = None,
         description: Optional[str] = None,
         icon_url: Optional[str] = None,
@@ -4709,9 +4710,9 @@ class CustomizedAcceleratorProperties(_serialization.Model):
         **kwargs: Any
     ) -> None:
         """
-        :keyword type: Type of the customized accelerator. Known values are: "Accelerator" and
-         "Fragment".
-        :paramtype type: str or
+        :keyword accelerator_type: Type of the customized accelerator. Known values are: "Accelerator"
+         and "Fragment".
+        :paramtype accelerator_type: str or
          ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorType
         :keyword display_name:
         :paramtype display_name: str
@@ -4727,7 +4728,7 @@ class CustomizedAcceleratorProperties(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.provisioning_state = None
-        self.type = type
+        self.accelerator_type = accelerator_type
         self.display_name = display_name
         self.description = description
         self.icon_url = icon_url
