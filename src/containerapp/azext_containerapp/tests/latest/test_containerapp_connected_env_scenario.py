@@ -276,10 +276,11 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         self.cmd('containerapp connected-env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
+        self.cmd('containerapp connected-env delete -g {} -n {} --yes'.format(resource_group, env_name), expect_failure=False)
 
     @serial_test()
     @ResourceGroupPreparer(location="eastus", random_name_length=15)
-    @ConnectedClusterPreparer(location=TEST_LOCATION)
+    @ConnectedClusterPreparer(location=TEST_LOCATION, skip_delete=True)
     def test_containerapp_preview_connected_env_certificate_upload_with_certificate_name(self, resource_group, connected_cluster_name):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         custom_location_name = "my-custom-location"
@@ -313,7 +314,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
                 resource_group, env_name, cert_pfx_name, pfx_file, pfx_password), checks=[
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck('name', cert_pfx_name),
-                # JMESPathCheck('type', "Microsoft.App/connectedEnvironments/certificates"),
+                JMESPathCheck('type', "Microsoft.App/connectedEnvironments/certificates"),
             ]).get_output_in_json()
 
         cert_name = cert["name"]
@@ -365,3 +366,4 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         self.cmd('containerapp connected-env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
+        self.cmd('containerapp connected-env delete -g {} -n {} --yes'.format(resource_group, env_name), expect_failure=False)
