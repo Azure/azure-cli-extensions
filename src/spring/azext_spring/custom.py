@@ -1354,11 +1354,11 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
         if only_public_cert is None:
             only_public_cert = False
         properties = models.KeyVaultCertificateProperties(
-            type="KeyVaultCertificate",
+            type='KeyVaultCertificate',
             vault_uri=vault_uri,
             key_vault_cert_name=vault_certificate_name,
             exclude_private_key=only_public_cert,
-            auto_sync=enable_auto_sync if enable_auto_sync is not None else False
+            auto_sync='Enabled' if enable_auto_sync is True else 'Disabled'
         )
     else:
         if os.path.exists(public_certificate_file):
@@ -1384,7 +1384,7 @@ def certificate_update(cmd, client, resource_group, service, name, enable_auto_s
 
     if certificate_resource.properties.type == 'KeyVaultCertificate':
         if enable_auto_sync is not None:
-            certificate_resource.properties.auto_sync = enable_auto_sync
+            certificate_resource.properties.auto_sync = 'Enabled' if enable_auto_sync is True else 'Disabled'
 
     return client.certificates.begin_create_or_update(resource_group, service, name, certificate_resource)
 
