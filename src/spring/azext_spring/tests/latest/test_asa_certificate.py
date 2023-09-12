@@ -64,9 +64,10 @@ class CertificateTests(BasicTest):
                 type="KeyVaultCertificate",
                 vault_uri="vault-uri",
                 key_vault_cert_name="kv-cert-name",
-                exclude_private_key=False)
+                exclude_private_key=False,
+                auto_sync="Disabled")
         )
-        certificate_update(_get_test_cmd(), client, 'rg', 'asc', 'my-cert', "Enabled")
+        certificate_update(_get_test_cmd(), client, 'rg', 'asc', 'my-cert', True)
         args = client.certificates.begin_create_or_update.call_args_list
         self.assertEqual(1, len(args))
         self.assertEqual(4, len(args[0][0]))
