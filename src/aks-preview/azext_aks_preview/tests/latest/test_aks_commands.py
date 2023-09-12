@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import io
 import pty
 import subprocess
 import tempfile
@@ -136,25 +137,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         expected = AZ_ERROR_FORMATTER.format(code, message)
         self.assertEqual(actual, expected)
 
-    @unittest.skipUnless(os.getenv('OPENAI_API_KEY'), 'Skipped as not running with OPENAI_API_KEY')
-    @unittest.skipUnless(os.getenv('OPENAI_API_BASE'), 'Skipped as not running with OPENAI_API_BASE')
-    @unittest.skipUnless(os.getenv('OPENAI_API_DEPLOYMENT'), 'Skipped as not running with OPENAI_API_DEPLOYMENT')
-    @unittest.skipUnless(os.getenv('OPENAI_API_TYPE'), 'Skipped as not running with OPENAI_API_TYPE')
-    def test_aks_cli_autofix_error(self):
-        start_ai_cmd = ['az', 'aks', 'copilot']
-        try:
-            shell_process = subprocess.Popen(start_ai_cmd,
-                                             stdin=subprocess.PIPE,
-                                             stdout=subprocess.PIPE,
-                                             stderr=subprocess.PIPE,
-                                             universal_newlines=True)
+        actual = detect_az_error(b"Code:1. Creates a resource group in the")
+        self.assertEqual(actual, "")
 
-            # Provide input to the shell
-            input_text = 'Create a cluster with useast as location\nr\n'
-            shell_output, shell_error = shell_process.communicate(input=input_text)
-            print("end")
-        except subprocess.CalledProcessError as err:
-            raise CliTestError(f"Failed to launch openai interactive shell with error: '{err}'")
+    def test_strip_terminal_escapes(self):
+        from azext_aks_preview._openai_wrapper import strip_terminal_escapes
+        colored_string = b'''[91mCode: LocationNotAvailableForResourceGroup
+Message: The provided location 'useast' is not available for resource group. [0m'''
+        actual = strip_terminal_escapes(colored_string)
+        self.assertEqual(actual, '''Code: LocationNotAvailableForResourceGroup
+Message: The provided location 'useast' is not available for resource group. ''')
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')

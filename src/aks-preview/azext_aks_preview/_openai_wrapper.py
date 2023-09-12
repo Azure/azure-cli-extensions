@@ -101,7 +101,7 @@ def detect_az_error(az_output):
                 code = match[0].decode('utf-8').strip()
                 message = match[1].decode('utf-8').strip()
                 return AZ_ERROR_FORMATTER.format(code, message)
-            except:
+            except Exception:
                 pass
     return ""
 
