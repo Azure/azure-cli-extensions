@@ -857,7 +857,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
     def check_db_existence(self):
         try:
             db_info = run_cli_cmd(
-                'az postgres server db show --ids {}'.format(self.target_id))
+                'az postgres db show --ids {} -n {}'.format(self.target_id, self.dbname))
             if db_info is None:
                 e = ResourceNotFoundError(
                     "No database found with name {}".format(self.dbname))
