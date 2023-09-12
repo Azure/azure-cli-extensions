@@ -2552,7 +2552,10 @@ def start_chat(prompt=None):
         if user_input in ('p', 'P'):
             scripts, messages = prompt_chat_gpt(messages, params, insist=False, scripts=scripts)
         elif (user_input in ('r', 'R')) and len(scripts) > 0:
-            prompt_user_to_run_script(scripts)
+            error_output = prompt_user_to_run_script(scripts)
+            if error_output:
+                error_need_help = "I ran into the following error:\n" + error_output
+                scripts, messages = prompt_chat_gpt(messages, params, start_input=error_need_help, scripts=scripts)
         elif user_input in ('q', 'Q'):
             # Exiting the program...
             break

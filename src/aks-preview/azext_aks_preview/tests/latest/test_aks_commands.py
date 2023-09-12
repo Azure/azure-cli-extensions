@@ -127,6 +127,34 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             if not pattern in output:
                 raise CliTestError(f"Output from aks copilot did not contain '{pattern}'. Output:\n{output}")
 
+    def test_detect_az_error(self):
+        from azext_aks_preview._openai_wrapper import detect_az_error, AZ_ERROR_FORMATTER
+        code = "LocationNotAvailableForResourceGroup"
+        message = "The provided location 'useast' is not available."
+        # \x1b is the ASCII for ESCAPE in terminal
+        actual = detect_az_error("Code: {}\nMessage: {}\x1b".format(code, message).encode())
+        expected = AZ_ERROR_FORMATTER.format(code, message)
+        self.assertEqual(actual, expected)
+
+    @unittest.skipUnless(os.getenv('OPENAI_API_KEY'), 'Skipped as not running with OPENAI_API_KEY')
+    @unittest.skipUnless(os.getenv('OPENAI_API_BASE'), 'Skipped as not running with OPENAI_API_BASE')
+    @unittest.skipUnless(os.getenv('OPENAI_API_DEPLOYMENT'), 'Skipped as not running with OPENAI_API_DEPLOYMENT')
+    @unittest.skipUnless(os.getenv('OPENAI_API_TYPE'), 'Skipped as not running with OPENAI_API_TYPE')
+    def test_aks_cli_autofix_error(self):
+        start_ai_cmd = ['az', 'aks', 'copilot']
+        try:
+            shell_process = subprocess.Popen(start_ai_cmd,
+                                             stdin=subprocess.PIPE,
+                                             stdout=subprocess.PIPE,
+                                             stderr=subprocess.PIPE,
+                                             universal_newlines=True)
+
+            # Provide input to the shell
+            input_text = 'Create a cluster with useast as location\nr\n'
+            shell_output, shell_error = shell_process.communicate(input=input_text)
+            print("end")
+        except subprocess.CalledProcessError as err:
+            raise CliTestError(f"Failed to launch openai interactive shell with error: '{err}'")
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
