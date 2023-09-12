@@ -12,29 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "networkcloud defaultcninetwork delete",
-    is_experimental=True,
+    "monitor app-insights component linked-storage unlink",
     confirmation="Are you sure you want to perform this operation?",
 )
-class Delete(AAZCommand):
-    """Delete the provided default CNI network.
-
-    :example: Delete default CNI network
-        az networkcloud defaultcninetwork delete --name "defaultCniNetworkName" --resource-group "resourceGroupName"
+class Unlink(AAZCommand):
+    """Unlink a storage account with an Application Insights component.
     """
 
     _aaz_info = {
-        "version": "2022-12-12-preview",
+        "version": "2020-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/defaultcninetworks/{}", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/components/{}/linkedstorageaccounts/{}", "2020-03-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return None
 
     _args_schema = None
 
@@ -47,23 +42,28 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.default_cni_network_name = AAZStrArg(
-            options=["-n", "--name", "--default-cni-network-name"],
-            help="The name of the default CNI network.",
-            required=True,
-            id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern="^([a-zA-Z0-9][a-zA-Z0-9-_]{0,28}[a-zA-Z0-9])$",
-            ),
-        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+        _args_schema.app = AAZStrArg(
+            options=["-a", "--app"],
+            help="GUID, app name, or fully-qualified Azure resource name of Application                           Insights component. The application GUID may be acquired from the API                           Access menu item on any Application Insights resource in the Azure portal.                           If using an application name, please specify resource group.",
+            required=True,
+            id_part="name",
+        )
+        _args_schema.storage_type = AAZStrArg(
+            options=["--storage-type"],
+            help="The type of the Application Insights component data source for the linked storage account.",
+            required=True,
+            id_part="child_name_1",
+            default="ServiceProfiler",
+            enum={"ServiceProfiler": "ServiceProfiler"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.DefaultCniNetworksDelete(ctx=self.ctx)()
+        self.ComponentLinkedStorageAccountsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -74,46 +74,23 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class DefaultCniNetworksDelete(AAZHttpOperation):
+    class ComponentLinkedStorageAccountsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200(session)
             if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetworkCloud/defaultCniNetworks/{defaultCniNetworkName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.insights/components/{resourceName}/linkedStorageAccounts/{storageType}",
                 **self.url_parameters
             )
 
@@ -123,17 +100,21 @@ class Delete(AAZCommand):
 
         @property
         def error_format(self):
-            return "MgmtErrorFormat"
+            return "ODataV4Format"
 
         @property
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "defaultCniNetworkName", self.ctx.args.default_cni_network_name,
+                    "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "resourceName", self.ctx.args.app,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "storageType", self.ctx.args.storage_type,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -147,7 +128,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2020-03-01-preview",
                     required=True,
                 ),
             }
@@ -160,8 +141,8 @@ class Delete(AAZCommand):
             pass
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
+class _UnlinkHelper:
+    """Helper class for Unlink"""
 
 
-__all__ = ["Delete"]
+__all__ = ["Unlink"]

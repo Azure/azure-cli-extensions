@@ -8,8 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._list import *
-from ._show import *
-from ._update import *
-from ._wait import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "monitor app-insights component billing",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage an Application Insights component billing features.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

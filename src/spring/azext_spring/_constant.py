@@ -9,3 +9,4 @@
 MARKETPLACE_OFFER_ID = 'azure-spring-cloud-vmware-tanzu-2'
 MARKETPLACE_PUBLISHER_ID = 'vmware-inc'
 MARKETPLACE_PLAN_ID = 'asa-ent-hr-mtr'
+AKS_RP = 'Microsoft.ContainerService'

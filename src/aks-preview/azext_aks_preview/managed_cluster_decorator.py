@@ -2162,6 +2162,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             if cert_chain_object_name is None:
                 raise InvalidArgumentValueError('--cert-chain-object-name is required to use Azure Service Mesh plugin CA feature.')
 
+        if key_vault_id is not None and (
+                not is_valid_resource_id(key_vault_id) or "providers/Microsoft.KeyVault/vaults" not in key_vault_id):
+            raise InvalidArgumentValueError(
+                key_vault_id + " is not a valid Azure Keyvault resource ID."
+            )
+
         if enable_asm and all([key_vault_id, ca_cert_object_name, ca_key_object_name, root_cert_object_name, cert_chain_object_name]):
             if new_profile.istio.certificate_authority is None:
                 new_profile.istio.certificate_authority = self.models.IstioCertificateAuthority()

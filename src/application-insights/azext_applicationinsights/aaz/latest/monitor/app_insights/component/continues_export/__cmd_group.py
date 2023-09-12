@@ -12,11 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "networkcloud defaultcninetwork",
-    is_experimental=True,
+    "monitor app-insights component continues-export",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage default CNI network
+    """Manage Continuous Export configurations for an Application Insights component.
     """
     pass
 

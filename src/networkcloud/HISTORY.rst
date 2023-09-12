@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.1.0
+++++++++
+* This version removes the experimental commands for defaultcninetwork and hybridakscluster as these resources are no longer available.
+
 1.0.0
 ++++++++
 * This is the first stable version of the CLI extension that supports NetworkCloud 2023-07-01 stable APIs.
