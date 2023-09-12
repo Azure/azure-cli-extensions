@@ -233,7 +233,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         cert = self.cmd('containerapp connected-env certificate upload -g {} -n {} --certificate-file "{}" --password {}'.format(
             resource_group, env_name, pfx_file, pfx_password), checks=[
             JMESPathCheck('properties.provisioningState', "Succeeded"),
-            # JMESPathCheck('type', "Microsoft.App/connectedEnvironments/certificates"),
+            JMESPathCheck('type', "Microsoft.App/connectedEnvironments/certificates"),
         ]).get_output_in_json()
 
         cert_name = cert["name"]
