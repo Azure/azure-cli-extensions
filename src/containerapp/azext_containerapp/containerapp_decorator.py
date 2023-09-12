@@ -1461,10 +1461,13 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         dockerfile = "Dockerfile"
 
         # Parse resource group name and managed env name
-        env_id = self.containerapp_def["properties"]['environmentId']
-        parsed_managed_env = parse_resource_id(env_id)
-        env_name = parsed_managed_env['name']
-        env_rg = parsed_managed_env['resource_group']
+        env_id = safe_get(self.containerapp_def, "properties", "environmentId")
+        parsed_env = parse_resource_id(env_id)
+        if parsed_env.get('resource_type').lower() == CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower():
+            raise ValidationError(
+                "Usage error: --source cannot be used with a connected environment. Please provide a managed environment instead.")
+        env_name = parsed_env['name']
+        env_rg = parsed_env['resource_group']
 
         # Set image to None if it was previously set to the default image (case where image was not provided by the user) else reformat it
         image = None if self.get_argument_image() is None else _reformat_image(source=self.get_argument_source(), image=self.get_argument_image(), repo=None)
