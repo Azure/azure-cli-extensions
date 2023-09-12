@@ -723,7 +723,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
         mariadb_ca_name = 'mariadb'
         qdrant_ca_name = "qdrant"
 
-        create_containerapp_env(self, env_name, resource_group, location="francecentral")
+        create_containerapp_env(self, env_name, resource_group)
 
         self.cmd('containerapp service redis create -g {} -n {} --environment {}'.format(
             resource_group, redis_ca_name, env_name))
@@ -773,11 +773,19 @@ class ContainerappServiceBindingTests(ScenarioTest):
             resource_group, mariadb_ca_name, env_name))
     
         self.cmd('containerapp service qdrant delete -g {} -n {} --yes'.format(
-            resource_group, qdrant_ca_name, env_name)) 
+            resource_group, qdrant_ca_name, env_name))
+
+        self.cmd(f'containerapp delete -g {resource_group} -n {ca_name} --yes') 
 
         self.cmd('containerapp service list -g {} --environment {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
+
+        self.cmd('containerapp list -g {} --environment {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes')
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
