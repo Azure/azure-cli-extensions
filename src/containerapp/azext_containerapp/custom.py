@@ -3357,15 +3357,22 @@ def list_replicas(cmd, resource_group_name, name, revision=None):
 
 
 def count_replicas(cmd, resource_group_name, name, revision=None):
-    app = ContainerAppClient.show(cmd, resource_group_name, name)
-    if not revision:
-        revision = app["properties"]["latestRevisionName"]
+    
+    try: 
+        app = ContainerAppClient.show(cmd, resource_group_name, name)
+        if not revision:
+            revision = safe_get(app, "properties", "latestRevisionName")
+    except Exception as e:
+        handle_raw_exception(e)        
 
-    count = len(ContainerAppClient.list_replicas(cmd=cmd,
+    try:
+        count = len(ContainerAppClient.list_replicas(cmd=cmd,
                                             resource_group_name=resource_group_name,
                                             container_app_name=name,
                                             revision_name=revision))
-    return count
+        return count
+    except Exception as e:
+        handle_raw_exception(e)
 
 
 def get_replica(cmd, resource_group_name, name, replica, revision=None):
