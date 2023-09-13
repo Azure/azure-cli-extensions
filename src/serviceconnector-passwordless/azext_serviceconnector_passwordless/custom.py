@@ -15,11 +15,11 @@ def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-ma
                           service_endpoint=None,
                           private_endpoint=None,
                           store_in_connection_string=False,
-                          customized_keys=None,
                           new_addon=False, no_wait=False,
                           yes=False,
                           # Resource.KubernetesCluster
                           cluster=None, scope=None, enable_csi=False,
+                          customized_keys=None,
                           site=None,                                             # Resource.WebApp
                           spring=None, app=None, deployment='default',           # Resource.SpringCloud
                           # Resource.*Postgres, Resource.*Sql*
@@ -58,8 +58,8 @@ def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,
                                 secret_auth_info=None, secret_auth_info_auto=None,
                                 user_account_auth_info=None,                      # new auth info
                                 service_principal_auth_info_secret=None,
-                                customized_keys=None,
                                 no_wait=False,
+                                customized_keys=None,
                                 yes=False,
                                 # Resource.*Postgres, Resource.*Sql*
                                 server=None, database=None,
