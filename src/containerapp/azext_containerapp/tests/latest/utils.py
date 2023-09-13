@@ -6,7 +6,7 @@
 import time
 import requests
 from azext_containerapp.tests.latest.common import TEST_LOCATION
-from azure.cli.core.azclierror import MutuallyExclusiveArgumentError, RequiredArgumentMissingError
+from azure.cli.core.azclierror import MutuallyExclusiveArgumentError, RequiredArgumentMissingError, InvalidArgumentValueError
 from azure.cli.testsdk import (JMESPathCheck)
 
 
@@ -83,7 +83,10 @@ def verify_containerapp_create_exception(
             source_path = None,
             repo = None,
             yaml = None,
-            environment_type = None):
+            environment_type = None,
+            registry_server = None,
+            registry_user = None,
+            registry_pass = None):
         # Configure the default location
         test_cls.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
@@ -107,9 +110,19 @@ def verify_containerapp_create_exception(
             create_cmd += f" --environment-type {environment_type}"
         if yaml:
             create_cmd += f" --yaml {yaml}"
+        if registry_server:
+            create_cmd += f" --registry-server {registry_server}"
+        if registry_user:
+            create_cmd += f" --registry-username {registry_user}"
+        if registry_pass:
+            create_cmd += f" --registry-password {registry_pass}"
 
         # Verify appropriate exception was raised
-        if source_path and (not repo and not yaml and not environment_type):
+        if registry_server and registry_user and registry_pass:
+            with test_cls.assertRaises(InvalidArgumentValueError) as cm:
+                # Execute the 'az containerapp create' command
+                test_cls.cmd(create_cmd)
+        elif source_path and (not repo and not yaml and not environment_type):
             with test_cls.assertRaises(RequiredArgumentMissingError) as cm:
                 # Execute the 'az containerapp create' command
                 test_cls.cmd(create_cmd)
