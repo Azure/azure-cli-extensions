@@ -130,9 +130,8 @@ def spawn_and_run_system_script(script_content: str):
     so user can still interact with yes/no answer from script
     """
     if IS_MS_WINDOWS:
-        cmd = ["powershell", "-Command", script_content]
-    else:
-        cmd = ["bash", "-c", script_content]
+        raise Exception('capture child output is not supported on Windows')
+    cmd = ["bash", "-c", script_content]
 
     buffer = io.BytesIO()
 
@@ -274,8 +273,7 @@ def prompt_user_to_run_script(scripts):
             script = scripts[i]
             if IS_MS_WINDOWS:
                 return run_system_script(script)
-            else:
-                return spawn_and_run_system_script(script)
+            return spawn_and_run_system_script(script)
 
 
 USER_INPUT_PROMPT = "Prompt: "
