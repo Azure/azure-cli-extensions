@@ -12,17 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "elastic-san volume show",
+    "elastic-san volume wait",
 )
-class Show(AAZCommand):
-    """Get a Volume.
-
-    :example: Get a Volume.
-        az elastic-san volume show -g {rg} -e {san_name} -v {vg_name} -n {volume_name}
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2023-01-01",
         "resources": [
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2023-01-01"],
         ]
@@ -96,7 +92,7 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
     class VolumesGet(AAZHttpOperation):
@@ -284,8 +280,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
-__all__ = ["Show"]
+__all__ = ["Wait"]

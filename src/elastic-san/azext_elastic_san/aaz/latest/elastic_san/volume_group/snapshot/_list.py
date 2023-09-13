@@ -12,26 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "elastic-san volume show",
+    "elastic-san volume-group snapshot list",
 )
-class Show(AAZCommand):
-    """Get a Volume.
-
-    :example: Get a Volume.
-        az elastic-san volume show -g {rg} -e {san_name} -v {vg_name} -n {volume_name}
+class List(AAZCommand):
+    """List Snapshots in a VolumeGroup or List Snapshots by Volume (name) in a VolumeGroup using filter
     """
 
     _aaz_info = {
         "version": "2023-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/snapshots", "2023-01-01"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -45,10 +43,9 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["-e", "--elastic-san-name"],
+            options=["--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]+((-|_)[a-z0-9A-Z]+)*$",
                 max_length=24,
@@ -59,32 +56,24 @@ class Show(AAZCommand):
             required=True,
         )
         _args_schema.volume_group_name = AAZStrArg(
-            options=["-v", "--volume-group-name"],
+            options=["--volume-group-name"],
             help="The name of the VolumeGroup.",
             required=True,
-            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]+((-|_)[a-z0-9A-Z]+)*$",
                 max_length=63,
                 min_length=3,
             ),
         )
-        _args_schema.volume_name = AAZStrArg(
-            options=["-n", "--name", "--volume-name"],
-            help="The name of the Volume.",
-            required=True,
-            id_part="child_name_2",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-z0-9]+(-[a-z0-9A-Z]+)*$",
-                max_length=63,
-                min_length=3,
-            ),
+        _args_schema.filter = AAZStrArg(
+            options=["--filter"],
+            help="Specify $filter='volumeName eq <volume name>' to filter on volume.",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.VolumesGet(ctx=self.ctx)()
+        self.VolumeSnapshotsListByVolumeGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -96,10 +85,11 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class VolumesGet(AAZHttpOperation):
+    class VolumeSnapshotsListByVolumeGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -113,7 +103,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans/{elasticSanName}/volumegroups/{volumeGroupName}/volumes/{volumeName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans/{elasticSanName}/volumegroups/{volumeGroupName}/snapshots",
                 **self.url_parameters
             )
 
@@ -144,16 +134,15 @@ class Show(AAZCommand):
                     "volumeGroupName", self.ctx.args.volume_group_name,
                     required=True,
                 ),
-                **self.serialize_url_param(
-                    "volumeName", self.ctx.args.volume_name,
-                    required=True,
-                ),
             }
             return parameters
 
         @property
         def query_parameters(self):
             parameters = {
+                **self.serialize_query_param(
+                    "$filter", self.ctx.args.filter,
+                ),
                 **self.serialize_query_param(
                     "api-version", "2023-01-01",
                     required=True,
@@ -188,80 +177,58 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
                 flags={"required": True, "client_flatten": True},
             )
-            _schema_on_200.system_data = AAZObjectType(
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200.value.Element.properties
             properties.creation_data = AAZObjectType(
                 serialized_name="creationData",
-            )
-            properties.managed_by = AAZObjectType(
-                serialized_name="managedBy",
+                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.size_gi_b = AAZIntType(
-                serialized_name="sizeGiB",
-                flags={"required": True},
-            )
-            properties.storage_target = AAZObjectType(
-                serialized_name="storageTarget",
+            properties.source_volume_size_gi_b = AAZIntType(
+                serialized_name="sourceVolumeSizeGiB",
                 flags={"read_only": True},
             )
-            properties.volume_id = AAZStrType(
-                serialized_name="volumeId",
+            properties.volume_name = AAZStrType(
+                serialized_name="volumeName",
                 flags={"read_only": True},
             )
 
-            creation_data = cls._schema_on_200.properties.creation_data
-            creation_data.create_source = AAZStrType(
-                serialized_name="createSource",
-            )
+            creation_data = cls._schema_on_200.value.Element.properties.creation_data
             creation_data.source_id = AAZStrType(
                 serialized_name="sourceId",
+                flags={"required": True},
             )
 
-            managed_by = cls._schema_on_200.properties.managed_by
-            managed_by.resource_id = AAZStrType(
-                serialized_name="resourceId",
-            )
-
-            storage_target = cls._schema_on_200.properties.storage_target
-            storage_target.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            storage_target.status = AAZStrType()
-            storage_target.target_iqn = AAZStrType(
-                serialized_name="targetIqn",
-                flags={"read_only": True},
-            )
-            storage_target.target_portal_hostname = AAZStrType(
-                serialized_name="targetPortalHostname",
-                flags={"read_only": True},
-            )
-            storage_target.target_portal_port = AAZIntType(
-                serialized_name="targetPortalPort",
-                flags={"read_only": True},
-            )
-
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -284,8 +251,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Show"]
+__all__ = ["List"]

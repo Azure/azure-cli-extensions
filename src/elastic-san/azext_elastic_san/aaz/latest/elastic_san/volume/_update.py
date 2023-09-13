@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "elastic-san volume update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a Volume.
@@ -23,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-01-preview",
+        "version": "2023-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2022-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2023-01-01"],
         ]
     }
 
@@ -94,6 +93,12 @@ class Update(AAZCommand):
             help="State of the operation on the resource.",
             nullable=True,
         )
+        _args_schema.managed_by = AAZObjectArg(
+            options=["--managed-by"],
+            arg_group="Properties",
+            help="Parent resource information.",
+            nullable=True,
+        )
         _args_schema.size_gib = AAZIntArg(
             options=["--size-gib"],
             arg_group="Properties",
@@ -105,11 +110,18 @@ class Update(AAZCommand):
             options=["create-source"],
             help="This enumerates the possible sources of a volume creation.",
             nullable=True,
-            enum={"None": "None"},
+            enum={"Disk": "Disk", "DiskRestorePoint": "DiskRestorePoint", "DiskSnapshot": "DiskSnapshot", "None": "None", "VolumeSnapshot": "VolumeSnapshot"},
         )
-        creation_data.source_uri = AAZStrArg(
-            options=["source-uri"],
-            help="If createOption is Copy, this is the ARM id of the source snapshot or disk. If createOption is Restore, this is the ARM-like id of the source disk restore point.",
+        creation_data.source_id = AAZStrArg(
+            options=["source-id"],
+            help="Fully qualified resource ID for the resource. E.g. \"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}\"",
+            nullable=True,
+        )
+
+        managed_by = cls._args_schema.managed_by
+        managed_by.resource_id = AAZStrArg(
+            options=["resource-id"],
+            help="Resource ID of the resource managing the volume.",
             nullable=True,
         )
         return cls._args_schema
@@ -200,7 +212,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01-preview",
+                    "api-version", "2023-01-01",
                     required=True,
                 ),
             }
@@ -307,7 +319,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01-preview",
+                    "api-version", "2023-01-01",
                     required=True,
                 ),
             }
@@ -370,12 +382,17 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("creationData", AAZObjectType, ".creation_data")
+                properties.set_prop("managedBy", AAZObjectType, ".managed_by")
                 properties.set_prop("sizeGiB", AAZIntType, ".size_gib", typ_kwargs={"flags": {"required": True}})
 
             creation_data = _builder.get(".properties.creationData")
             if creation_data is not None:
                 creation_data.set_prop("createSource", AAZStrType, ".create_source")
-                creation_data.set_prop("sourceUri", AAZStrType, ".source_uri")
+                creation_data.set_prop("sourceId", AAZStrType, ".source_id")
+
+            managed_by = _builder.get(".properties.managedBy")
+            if managed_by is not None:
+                managed_by.set_prop("resourceId", AAZStrType, ".resource_id")
 
             return _instance_value
 
@@ -427,6 +444,13 @@ class _UpdateHelper:
         properties.creation_data = AAZObjectType(
             serialized_name="creationData",
         )
+        properties.managed_by = AAZObjectType(
+            serialized_name="managedBy",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
         properties.size_gi_b = AAZIntType(
             serialized_name="sizeGiB",
             flags={"required": True},
@@ -444,8 +468,13 @@ class _UpdateHelper:
         creation_data.create_source = AAZStrType(
             serialized_name="createSource",
         )
-        creation_data.source_uri = AAZStrType(
-            serialized_name="sourceUri",
+        creation_data.source_id = AAZStrType(
+            serialized_name="sourceId",
+        )
+
+        managed_by = _schema_volume_read.properties.managed_by
+        managed_by.resource_id = AAZStrType(
+            serialized_name="resourceId",
         )
 
         storage_target = _schema_volume_read.properties.storage_target

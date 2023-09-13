@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "elastic-san create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create an Elastic SAN.
@@ -23,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-01-preview",
+        "version": "2023-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}", "2022-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}", "2023-01-01"],
         ]
     }
 
@@ -99,6 +98,12 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Extended size of the Elastic San appliance in TiB.",
             required=True,
+        )
+        _args_schema.public_network_access = AAZStrArg(
+            options=["--public-network-access"],
+            arg_group="Properties",
+            help="Allow or disallow public network access to ElasticSan. Value is optional but if passed in, must be 'Enabled' or 'Disabled'.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.sku = AAZObjectArg(
             options=["--sku"],
@@ -205,7 +210,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01-preview",
+                    "api-version", "2023-01-01",
                     required=True,
                 ),
             }
@@ -239,6 +244,7 @@ class Create(AAZCommand):
                 properties.set_prop("availabilityZones", AAZListType, ".availability_zones")
                 properties.set_prop("baseSizeTiB", AAZIntType, ".base_size_tib", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("extendedCapacitySizeTiB", AAZIntType, ".extended_capacity_size_tib", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
                 properties.set_prop("sku", AAZObjectType, ".sku", typ_kwargs={"flags": {"required": True}})
 
             availability_zones = _builder.get(".properties.availabilityZones")
@@ -315,6 +321,9 @@ class Create(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.public_network_access = AAZStrType(
+                serialized_name="publicNetworkAccess",
             )
             properties.sku = AAZObjectType(
                 flags={"required": True},

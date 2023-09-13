@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "elastic-san list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """Get a list of Elastic SANs in a subscription.
@@ -23,10 +22,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-01-preview",
+        "version": "2023-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elasticsan/elasticsans", "2022-12-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans", "2022-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elasticsan/elasticsans", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans", "2023-01-01"],
         ]
     }
 
@@ -117,7 +116,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01-preview",
+                    "api-version", "2023-01-01",
                     required=True,
                 ),
             }
@@ -201,6 +200,9 @@ class List(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.public_network_access = AAZStrType(
+                serialized_name="publicNetworkAccess",
             )
             properties.sku = AAZObjectType(
                 flags={"required": True},
@@ -333,7 +335,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01-preview",
+                    "api-version", "2023-01-01",
                     required=True,
                 ),
             }
@@ -417,6 +419,9 @@ class List(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.public_network_access = AAZStrType(
+                serialized_name="publicNetworkAccess",
             )
             properties.sku = AAZObjectType(
                 flags={"required": True},

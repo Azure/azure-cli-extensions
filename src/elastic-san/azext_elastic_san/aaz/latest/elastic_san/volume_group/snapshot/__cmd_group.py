@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "elastic-san volume",
+    "elastic-san volume-group snapshot",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Elastic SAN Volume.
+    """Manage volume snapshot
     """
     pass
 
