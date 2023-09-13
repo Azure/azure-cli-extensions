@@ -5,14 +5,13 @@ Release History
 upcoming
 ++++++
 * Add command group 'az containerapp connected-env', support show/list/delete/create connected environment
-
+* 'az containerapp service': add support for creation and deletion of Qdrant vector database as a container app dev service
 0.3.39
 ++++++
 * 'az containerapp update': fix bug for populating secret value with --yaml
 
 0.3.38
 ++++++
-* 'az containerapp service': add support for creation and deletion of Qdrant
 * Add support for binding managed MySQL Flexible server to a containerapp
 * Removed preview tag for some command groups and params (e.g. 'az containerapp job', 'az containerapp env storage', 'az containerapp env workload-profile')
 * 'az containerapp env': --enable-workload-profiles allowed values:true, false
