@@ -9,6 +9,7 @@ import os.path
 import platform
 
 from argcomplete.completers import FilesCompleter
+from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview._completers import (
     get_k8s_upgrades_completion_list,
     get_k8s_versions_completion_list,
@@ -261,7 +262,7 @@ ingress_gateway_types = [
 def load_arguments(self, _):
 
     acr_arg_type = CLIArgumentType(metavar='ACR_NAME_OR_RESOURCE_ID')
-    k8s_support_plans = self.get_models("KubernetesSupportPlan", resource_type=ResourceType.MGMT_CONTAINERSERVICE, operation_group='managed_clusters')
+    k8s_support_plans = self.get_models("KubernetesSupportPlan", resource_type=CUSTOM_MGMT_AKS_PREVIEW, operation_group='managed_clusters')
 
     # AKS command argument configuration
     with self.argument_context('aks') as c:
