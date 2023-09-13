@@ -3357,7 +3357,7 @@ def list_replicas(cmd, resource_group_name, name, revision=None):
 
 
 def count_replicas(cmd, resource_group_name, name, revision=None):
-    
+
     try: 
         app = ContainerAppClient.show(cmd, resource_group_name, name)
         if not revision:
