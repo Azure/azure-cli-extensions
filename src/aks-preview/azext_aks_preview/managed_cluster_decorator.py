@@ -2198,7 +2198,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return new_profile
         else:
             return self.mc.service_mesh_profile
-    
+
     def _get_k8s_support_plan(self) -> KubernetesSupportPlan:
         support_plan = self.raw_param.get("k8s_support_plan")
         return support_plan
@@ -2292,7 +2292,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
 
         return tierStr
-    
+
     def get_k8s_support_plan(self) -> Union[str, None]:
         """Obtain the value of kubernetes_support_plan.
 
@@ -2784,7 +2784,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 name="Base",
                 tier="Standard"
             )
-        
+  
         if self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM:
             mc.sku = self.models.ManagedClusterSKU(
                 name="Base",
