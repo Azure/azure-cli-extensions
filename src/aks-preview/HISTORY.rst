@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.157
++++++++
+* Add `--disable-workload-identity` to the `az aks update` command.
+
 0.5.156
 +++++++
 * Add `az aks copilot` command to start a chat with the Azure Kubernetes Service expert. API keys for OpenAI or Azure are required.

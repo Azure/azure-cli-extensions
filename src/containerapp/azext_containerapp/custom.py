@@ -119,8 +119,8 @@ from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, F
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, HELLO_WORLD_IMAGE, LOG_TYPE_SYSTEM, LOG_TYPE_CONSOLE,
                          MANAGED_CERTIFICATE_RT, PRIVATE_CERTIFICATE_RT, PENDING_STATUS, SUCCEEDED_STATUS, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
                          DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
-                         DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_SERVICE_LIST,
-                         CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME)
+                         DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_QDRANT_IMAGE,
+                         DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME)
 
 logger = get_logger(__name__)
 
@@ -248,6 +248,17 @@ def create_mariadb_service(cmd, service_name, environment_name, resource_group_n
 
 def delete_mariadb_service(cmd, service_name, resource_group_name, no_wait=False):
     return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_MARIADB_SERVICE_TYPE)
+
+
+def create_qdrant_service(cmd, service_name, environment_name, resource_group_name, no_wait=False,
+                          disable_warnings=True):
+    return DevServiceUtils.create_service(cmd, service_name, environment_name, resource_group_name, no_wait,
+                                          disable_warnings, DEV_QDRANT_IMAGE, DEV_QDRANT_SERVICE_TYPE,
+                                          DEV_QDRANT_CONTAINER_NAME)
+
+
+def delete_qdrant_service(cmd, service_name, resource_group_name, no_wait=False):
+    return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_QDRANT_SERVICE_TYPE)
 
 
 def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_revision=None, no_wait=False):
@@ -478,7 +489,15 @@ def create_containerapp(cmd,
                         workload_profile_name=None,
                         termination_grace_period=None,
                         secret_volume_mount=None,
-                        environment_type="managed"):
+                        environment_type="managed",
+                        source=None,
+                        repo=None,
+                        token=None,
+                        branch=None,
+                        context_path=None,
+                        service_principal_client_id=None,
+                        service_principal_client_secret=None,
+                        service_principal_tenant_id=None):
     raw_parameters = locals()
 
     containerapp_create_decorator = ContainerAppPreviewCreateDecorator(
@@ -531,7 +550,8 @@ def update_containerapp_logic(cmd,
                               registry_server=None,
                               registry_user=None,
                               registry_pass=None,
-                              secret_volume_mount=None):
+                              secret_volume_mount=None,
+                              source=None):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -577,7 +597,8 @@ def update_containerapp(cmd,
                         workload_profile_name=None,
                         termination_grace_period=None,
                         no_wait=False,
-                        secret_volume_mount=None):
+                        secret_volume_mount=None,
+                        source=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -608,7 +629,8 @@ def update_containerapp(cmd,
                                      workload_profile_name=workload_profile_name,
                                      termination_grace_period=termination_grace_period,
                                      no_wait=no_wait,
-                                     secret_volume_mount=secret_volume_mount)
+                                     secret_volume_mount=secret_volume_mount,
+                                     source=source)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
