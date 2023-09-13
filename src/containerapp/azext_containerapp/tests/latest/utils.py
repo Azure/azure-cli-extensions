@@ -10,6 +10,19 @@ from azure.cli.core.azclierror import MutuallyExclusiveArgumentError, RequiredAr
 from azure.cli.testsdk import (JMESPathCheck)
 
 
+def prepare_containerapp_env_for_app_e2e_tests(test_cls):
+    from azure.cli.core.azclierror import CLIInternalError
+    from .common import TEST_LOCATION
+    rg_name = f'client.env_rg_{TEST_LOCATION}'.lower().replace(" ", "").replace("(", "").replace(")", "")
+    env_name = f'env-{TEST_LOCATION}'.lower().replace(" ", "").replace("(", "").replace(")", "")
+    try:
+        containerapp_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
+    except CLIInternalError as e:
+        if e.error_msg.__contains__('ResourceGroupNotFound') or e.error_msg.__contains__('ResourceNotFound'):
+            test_cls.cmd(f'group create -n {rg_name}')
+            create_containerapp_env(test_cls, env_name=env_name, resource_group=rg_name, location=TEST_LOCATION)
+
+
 def create_containerapp_env(test_cls, env_name, resource_group, location=None):
     logs_workspace_name = test_cls.create_random_name(prefix='containerapp-env', length=24)
     logs_workspace_id = test_cls.cmd('monitor log-analytics workspace create -g {} -n {} -l {}'.format(resource_group, logs_workspace_name, TEST_LOCATION)).get_output_in_json()["customerId"]
