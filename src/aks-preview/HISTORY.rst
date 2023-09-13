@@ -16,6 +16,7 @@ Pending
 +++++++
 * Support `premium` cluster sku tier in `az aks create` and `az aks update` commands
 * Add option `--k8s-support-plan` to `az aks create` and `az aks update` commands
+* Add `--disable-workload-identity` to the `az aks update` command.
 
 0.5.156
 +++++++

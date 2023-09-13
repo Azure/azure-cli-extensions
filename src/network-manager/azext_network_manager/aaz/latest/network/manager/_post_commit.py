@@ -32,7 +32,7 @@ class PostCommit(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -96,10 +96,6 @@ class PostCommit(AAZCommand):
     @register_callback
     def post_operations(self):
         pass
-
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
 
     class NetworkManagerCommitsPost(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -177,9 +173,6 @@ class PostCommit(AAZCommand):
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
             }
             return parameters
 
@@ -205,69 +198,11 @@ class PostCommit(AAZCommand):
             return self.serialize_content(_content_value)
 
         def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-            _PostCommitHelper._build_schema_network_manager_commit_read(cls._schema_on_200)
-
-            return cls._schema_on_200
+            pass
 
 
 class _PostCommitHelper:
     """Helper class for PostCommit"""
-
-    _schema_network_manager_commit_read = None
-
-    @classmethod
-    def _build_schema_network_manager_commit_read(cls, _schema):
-        if cls._schema_network_manager_commit_read is not None:
-            _schema.commit_id = cls._schema_network_manager_commit_read.commit_id
-            _schema.commit_type = cls._schema_network_manager_commit_read.commit_type
-            _schema.configuration_ids = cls._schema_network_manager_commit_read.configuration_ids
-            _schema.target_locations = cls._schema_network_manager_commit_read.target_locations
-            return
-
-        cls._schema_network_manager_commit_read = _schema_network_manager_commit_read = AAZObjectType()
-
-        network_manager_commit_read = _schema_network_manager_commit_read
-        network_manager_commit_read.commit_id = AAZStrType(
-            serialized_name="commitId",
-            flags={"read_only": True},
-        )
-        network_manager_commit_read.commit_type = AAZStrType(
-            serialized_name="commitType",
-            flags={"required": True},
-        )
-        network_manager_commit_read.configuration_ids = AAZListType(
-            serialized_name="configurationIds",
-        )
-        network_manager_commit_read.target_locations = AAZListType(
-            serialized_name="targetLocations",
-            flags={"required": True},
-        )
-
-        configuration_ids = _schema_network_manager_commit_read.configuration_ids
-        configuration_ids.Element = AAZStrType()
-
-        target_locations = _schema_network_manager_commit_read.target_locations
-        target_locations.Element = AAZStrType()
-
-        _schema.commit_id = cls._schema_network_manager_commit_read.commit_id
-        _schema.commit_type = cls._schema_network_manager_commit_read.commit_type
-        _schema.configuration_ids = cls._schema_network_manager_commit_read.configuration_ids
-        _schema.target_locations = cls._schema_network_manager_commit_read.target_locations
 
 
 __all__ = ["PostCommit"]
