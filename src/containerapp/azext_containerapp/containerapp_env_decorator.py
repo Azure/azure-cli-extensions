@@ -136,6 +136,7 @@ class ContainerAppEnvCreateDecorator(ContainerAppEnvDecorator):
                         "Please change either --location/-l or --infrastructure-subnet-resource-id/-s")
             else:
                 location = vnet_location
+
         location = validate_environment_location(self.cmd, location)
         _ensure_location_allowed(self.cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
         self.set_argument_location(location)
@@ -349,8 +350,8 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
 
     def construct_payload(self):
         super().construct_payload()
-        if self.get_argument_enable_workload_profiles() and self.get_argument_infrastructure_subnet_resource_id() is not None:
-            self.set_up_infrastructure_resource_group()
+
+        self.set_up_infrastructure_resource_group()
 
     def validate_arguments(self):
         super().validate_arguments()
@@ -360,12 +361,13 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
             if not self.get_argument_infrastructure_subnet_resource_id():
                 raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group/-i without "
                                                    "--infrastructure-subnet-resource-id/-s")
-            if not self.get_param("enable_workload_profiles"):
+            if not self.get_argument_enable_workload_profiles():
                 raise RequiredArgumentMissingError("Cannot use --infrastructure-resource-group/-i without "
                                                    "--enable-workload-profiles/-w")
 
     def set_up_infrastructure_resource_group(self):
-        self.managed_env_def["properties"]["InfrastructureResourceGroup"] = self.get_argument_infrastructure_resource_group()
+        if self.get_argument_enable_workload_profiles() and self.get_argument_infrastructure_subnet_resource_id() is not None:
+            self.managed_env_def["properties"]["InfrastructureResourceGroup"] = self.get_argument_infrastructure_resource_group()
 
     def set_up_workload_profiles(self):
         if self.get_argument_enable_workload_profiles():
