@@ -5,6 +5,7 @@ Release History
 upcoming
 ++++++
 * Add command group 'az containerapp connected-env', support show/list/delete/create connected environment
+* 'az containerapp replica count', returns the replica count of a container app
 
 0.3.39
 ++++++
