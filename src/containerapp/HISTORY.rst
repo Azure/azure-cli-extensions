@@ -3,6 +3,7 @@
 Release History
 ===============
 upcoming
+* 'az containerapp replica count', returns the replica count of a container app
 
 0.3.41
 ++++++
