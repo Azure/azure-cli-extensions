@@ -13,6 +13,9 @@ from azext_containerapp.tests.latest.utils import create_and_verify_containerapp
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ContainerAppCreateTest(ScenarioTest):
+    # These tests should have the `@live_only`attribute because they
+    # require a docker push operation to push the image built as part of the test to the container registry
+    # and would not execute from the CI pipeline since docker is not installed in the CI.
     @live_only()
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_create_source_with_Dockerfile_e2e(self, resource_group):
