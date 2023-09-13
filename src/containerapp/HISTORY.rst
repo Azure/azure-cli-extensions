@@ -5,6 +5,7 @@ Release History
 upcoming
 ++++++
 * Add command group 'az containerapp connected-env', support show/list/delete/create connected environment
+* 'az containerapp env': --infrastructure-resource-group, supports custom rg name for byovnet env creations in WP enabled envs
 
 0.3.39
 ++++++
