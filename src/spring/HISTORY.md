@@ -1,5 +1,12 @@
 Release History
 ===============
+1.15.0
+---
+* Add arguments `--type` and `--git-sub-path` in `spring application-accelerator customized-accelerator create` and `spring application-accelerator customized-accelerator update` for accelerator fragment support.
+* Add new argument `--server-version` in `az spring app deploy` and `az spring app deployment create` to support WAR file deployment in Standard tier. 
+* Add argument `--enable-auto-sync` in `az spring certificate add`.
+* Add new command `az spring certificate update` to update a certificate.
+
 1.14.3
 ---
 * Make error message for `az spring app logs` more readable.  

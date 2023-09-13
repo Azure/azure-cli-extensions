@@ -6273,7 +6273,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "enable_azure_service_mesh": True,
-                "key_vault_id": "my-akv",
+                "key_vault_id": "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
                 "ca_cert_object_name": "my-ca-cert",
                 "ca_key_object_name": "my-ca-key",
                 "root_cert_object_name": "my-root-cert",
@@ -6293,7 +6293,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 istio=self.models.IstioServiceMesh(
                     certificate_authority=self.models.IstioCertificateAuthority(
                         plugin=self.models.IstioPluginCertificateAuthority(
-                            key_vault_id='my-akv',
+                            key_vault_id='/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo',
                             cert_object_name='my-ca-cert',
                             key_object_name='my-ca-key',
                             root_cert_object_name='my-root-cert',
