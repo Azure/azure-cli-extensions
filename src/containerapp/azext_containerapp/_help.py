@@ -268,7 +268,7 @@ helps['containerapp replica count'] = """
     - name: Count replicas of a particular revision
       text: |
           az containerapp replica count -n MyContainerapp -g MyResourceGroup --revision MyRevision
-    - name: Count replicas across all revisions
+    - name: Count replicas of the latest revision
       text: |
           az containerapp replica count -n MyContainerapp -g MyResourceGroup
 """
