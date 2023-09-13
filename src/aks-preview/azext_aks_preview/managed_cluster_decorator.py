@@ -985,11 +985,22 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # - False: sets by user, to disable the workload identity feature
         # - None: user unspecified, don't set the profile and let server side to backfill
         enable_workload_identity = self.raw_param.get("enable_workload_identity")
+        disable_workload_identity = self.raw_param.get("disable_workload_identity")
 
-        if enable_workload_identity is None:
+        if not enable_workload_identity and not disable_workload_identity:
             return None
 
+        if enable_workload_identity and disable_workload_identity:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-workload-identity and "
+                "--disable-workload-identity at the same time."
+            )
+
+        if not hasattr(self.models, "ManagedClusterSecurityProfileWorkloadIdentity"):
+            raise UnknownError("Workload Identity's data model not found")
+
         profile = self.models.ManagedClusterSecurityProfileWorkloadIdentity()
+
         if self.decorator_mode == DecoratorMode.UPDATE:
             if self.mc.security_profile is not None and self.mc.security_profile.workload_identity is not None:
                 # reuse previous profile is has been set
@@ -2510,15 +2521,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         self._ensure_mc(mc)
 
         profile = self.context.get_workload_identity_profile()
-        if profile is None:
-            if mc.security_profile is not None:
-                # set the value to None to let server side to fill in the default value
-                mc.security_profile.workload_identity = None
-            return mc
-
-        if mc.security_profile is None:
-            mc.security_profile = self.models.ManagedClusterSecurityProfile()
-        mc.security_profile.workload_identity = profile
+        if profile:
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+            mc.security_profile.workload_identity = profile
 
         return mc
 
