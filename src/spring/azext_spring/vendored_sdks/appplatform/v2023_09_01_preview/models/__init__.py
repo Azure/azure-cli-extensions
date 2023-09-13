@@ -238,6 +238,8 @@ from ._models_py3 import SupportedBuildpackResource
 from ._models_py3 import SupportedBuildpackResourceProperties
 from ._models_py3 import SupportedBuildpacksCollection
 from ._models_py3 import SupportedRuntimeVersion
+from ._models_py3 import SupportedServerVersion
+from ._models_py3 import SupportedServerVersions
 from ._models_py3 import SupportedStackResource
 from ._models_py3 import SupportedStackResourceProperties
 from ._models_py3 import SupportedStacksCollection
@@ -256,7 +258,6 @@ from ._models_py3 import WarUploadedUserSourceInfo
 from ._models_py3 import WeeklyMaintenanceScheduleConfiguration
 
 from ._app_platform_management_client_enums import ActionType
-from ._app_platform_management_client_enums import ApiPortalApiTryOutEnabledState
 from ._app_platform_management_client_enums import ApiPortalProvisioningState
 from ._app_platform_management_client_enums import ApmProvisioningState
 from ._app_platform_management_client_enums import ApmType
@@ -294,6 +295,7 @@ from ._app_platform_management_client_enums import GatewayRouteConfigProtocol
 from ._app_platform_management_client_enums import GitImplementation
 from ._app_platform_management_client_enums import HTTPSchemeType
 from ._app_platform_management_client_enums import KPackBuildStageProvisioningState
+from ._app_platform_management_client_enums import KeyVaultCertificateAutoSync
 from ._app_platform_management_client_enums import LastModifiedByType
 from ._app_platform_management_client_enums import ManagedIdentityType
 from ._app_platform_management_client_enums import MonitoringSettingState
@@ -551,6 +553,8 @@ __all__ = [
     "SupportedBuildpackResourceProperties",
     "SupportedBuildpacksCollection",
     "SupportedRuntimeVersion",
+    "SupportedServerVersion",
+    "SupportedServerVersions",
     "SupportedStackResource",
     "SupportedStackResourceProperties",
     "SupportedStacksCollection",
@@ -568,7 +572,6 @@ __all__ = [
     "WarUploadedUserSourceInfo",
     "WeeklyMaintenanceScheduleConfiguration",
     "ActionType",
-    "ApiPortalApiTryOutEnabledState",
     "ApiPortalProvisioningState",
     "ApmProvisioningState",
     "ApmType",
@@ -606,6 +609,7 @@ __all__ = [
     "GitImplementation",
     "HTTPSchemeType",
     "KPackBuildStageProvisioningState",
+    "KeyVaultCertificateAutoSync",
     "LastModifiedByType",
     "ManagedIdentityType",
     "MonitoringSettingState",
