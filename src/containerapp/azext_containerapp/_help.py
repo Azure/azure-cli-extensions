@@ -1793,6 +1793,49 @@ helps['containerapp create'] = """
           az containerapp create -n MyContainerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappConnectedEnv \\
               --environment-type connected
+    - name: Create a container app from a new GitHub Actions workflow in the provided GitHub repository
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          --environment MyContainerappEnv --registry-server MyRegistryServer \\
+          --registry-user MyRegistryUser --registry-pass MyRegistryPass \\
+          --repo https://github.com/myAccount/myRepo
+    - name: Create a Container App from the provided application source
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          --environment MyContainerappEnv --registry-server MyRegistryServer \\
+          --registry-user MyRegistryUser --registry-pass MyRegistryPass \\
+          --source .
+"""
+
+# containerapp update for preview
+helps['containerapp update'] = """
+    type: command
+    short-summary: Update a container app. In multiple revisions mode, create a new revision based on the latest revision.
+    examples:
+    - name: Update a container app's container image.
+      text: |
+          az containerapp update -n MyContainerapp -g MyResourceGroup \\
+              --image myregistry.azurecr.io/my-app:v2.0
+    - name: Update a container app's resource requirements and scale limits.
+      text: |
+          az containerapp update -n MyContainerapp -g MyResourceGroup \\
+              --cpu 0.5 --memory 1.0Gi \\
+              --min-replicas 4 --max-replicas 8
+    - name: Update a container app with an http scale rule
+      text: |
+          az containerapp update -n myapp -g mygroup \\
+              --scale-rule-name my-http-rule \\
+              --scale-rule-http-concurrency 50
+    - name: Update a container app with a custom scale rule
+      text: |
+          az containerapp update -n myapp -g mygroup \\
+              --scale-rule-name my-custom-rule \\
+              --scale-rule-type my-custom-type \\
+              --scale-rule-metadata key=value key2=value2 \\
+              --scale-rule-auth triggerparam=secretref triggerparam=secretref
+    - name: Update a Container App from the provided application source
+      text: |
+          az containerapp update -n MyContainerapp -g MyResourceGroup --source .
 """
 
 # containerapp list for preview

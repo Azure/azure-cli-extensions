@@ -5,6 +5,8 @@ Release History
 upcoming
 ++++++
 * Add command group 'az containerapp connected-env', support show/list/delete/create connected environment
+* 'az containerapp create': support --source and --repo properties
+* 'az containerapp update': support --source property
 
 0.3.39
 ++++++
