@@ -3358,20 +3358,20 @@ def list_replicas(cmd, resource_group_name, name, revision=None):
 
 def count_replicas(cmd, resource_group_name, name, revision=None):
 
-    try: 
+    try:
         app = ContainerAppClient.show(cmd, resource_group_name, name)
         if not revision:
             revision = safe_get(app, "properties", "latestRevisionName")
             if not revision:
                 raise ValidationError("No revision found for containerapp.")
     except Exception as e:
-        handle_raw_exception(e)        
+        handle_raw_exception(e)
 
     try:
         count = len(ContainerAppClient.list_replicas(cmd=cmd,
-                                            resource_group_name=resource_group_name,
-                                            container_app_name=name,
-                                            revision_name=revision))
+                                                     resource_group_name=resource_group_name,
+                                                     container_app_name=name,
+                                                     revision_name=revision))
         return count
     except Exception as e:
         handle_raw_exception(e)
