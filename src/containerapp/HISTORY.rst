@@ -4,8 +4,11 @@ Release History
 ===============
 upcoming
 ++++++
-* Add command group 'az containerapp connected-env', support show/list/delete/create connected environment
 * 'az containerapp service': add support for creation and deletion of Qdrant vector database as a container app dev service
+* Add command group 'az containerapp connected-env', support show/list/delete/create connected environment
+* 'az containerapp create': support --source and --repo properties
+* 'az containerapp update': support --source property
+
 0.3.39
 ++++++
 * 'az containerapp update': fix bug for populating secret value with --yaml
