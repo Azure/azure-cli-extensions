@@ -9,7 +9,7 @@ from codecs import open as open1
 
 from setuptools import setup, find_packages
 
-VERSION = "0.5.154"
+VERSION = "0.5.156"
 
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
@@ -23,7 +23,9 @@ CLASSIFIERS = [
     "License :: OSI Approved :: MIT License",
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    "openai~=0.27.8"
+]
 
 with open1("README.rst", "r", encoding="utf-8") as f:
     README = f.read()

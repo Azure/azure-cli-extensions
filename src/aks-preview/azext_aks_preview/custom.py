@@ -590,6 +590,8 @@ def aks_create(
     ksm_metric_annotations_allow_list=None,
     grafana_resource_id=None,
     enable_windows_recording_rules=False,
+    # metrics profile
+    enable_cost_analysis=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -756,6 +758,9 @@ def aks_update(
     guardrails_version=None,
     guardrails_excluded_ns=None,
     enable_network_observability=None,
+    # metrics profile
+    enable_cost_analysis=False,
+    disable_cost_analysis=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2521,3 +2526,34 @@ def _aks_mesh_update(
         return None
 
     return aks_update_decorator.update_mc(mc)
+
+
+def start_chat(prompt=None):
+    from azext_aks_preview._openai_wrapper import setup_openai, \
+        prompt_chat_gpt, SYSTEM_PROMPT, getch, \
+        prompt_user_to_run_script
+    errors, params = setup_openai()
+    if errors:
+        for e in errors:
+            print(e)
+        return
+
+    print("Please enter your request below.")
+    print("For example: Create a AKS cluster")
+
+    scripts, messages = prompt_chat_gpt([SYSTEM_PROMPT], params, start_input=prompt)
+    while True:
+        print("\nMenu: [p: re-Prompt, ", end="")
+        if len(scripts) > 0:
+            print("r: Run, ", end="")
+        print("q: Quit]", flush=True)
+
+        # Handle user input
+        user_input = getch()
+        if user_input in ('p', 'P'):
+            scripts, messages = prompt_chat_gpt(messages, params, insist=False, scripts=scripts)
+        elif (user_input in ('r', 'R')) and len(scripts) > 0:
+            prompt_user_to_run_script(scripts)
+        elif user_input in ('q', 'Q'):
+            # Exiting the program...
+            break

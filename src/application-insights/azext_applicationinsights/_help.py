@@ -112,85 +112,6 @@ helps['monitor app-insights component delete'] = """
           az monitor app-insights component delete --app demoApp -g demoRg
 """
 
-helps['monitor app-insights component billing'] = """
-    type: group
-    short-summary: Manage an Application Insights component billing features.
-"""
-
-helps['monitor app-insights component billing show'] = """
-    type: command
-    short-summary: Show the billing features of an Application Insights resource.
-    examples:
-      - name: Show the billing features of an application insights component
-        text: |
-          az monitor app-insights component billing show --app demoApp -g demoRg
-"""
-
-helps['monitor app-insights component billing update'] = """
-    type: command
-    short-summary: Update the billing features of an Application Insights resource.
-    examples:
-      - name: Update the daily cap of the billing features
-        text: |
-          az monitor app-insights component billing update --app demoApp -g demoRg --cap 200 --stop
-"""
-
-helps['monitor app-insights api-key'] = """
-    type: group
-    short-summary: Operations on API keys associated with an Application Insights component.
-"""
-
-helps['monitor app-insights api-key show'] = """
-    type: command
-    short-summary: Get all keys or a specific API key associated with an Application Insights resource.
-    parameters:
-      - name: --api-key
-        type: string
-        short-summary: name of the API key to fetch. Can be found using `api-key show`.
-    examples:
-      - name: Fetch API Key.
-        text: |
-          az monitor app-insights api-key show --app demoApp -g demoRg --api-key demo-key
-      - name: Fetch API Keys.
-        text: |
-          az monitor app-insights api-key show --app demoApp -g demoRg
-"""
-
-helps['monitor app-insights api-key delete'] = """
-    type: command
-    short-summary: Delete an API key from an Application Insights resource.
-    parameters:
-      - name: --api-key
-        type: string
-        short-summary: Name of the API key to delete. Can be found using `api-key show`.
-    examples:
-      - name: Delete API Key.
-        text: |
-          az monitor app-insights api-key delete --app demoApp -g demoRg --api-key demo-key
-"""
-
-helps['monitor app-insights api-key create'] = """
-    type: command
-    short-summary: Create a new API key for use with an Application Insights resource.
-    parameters:
-      - name: --api-key
-        type: string
-        short-summary: Name of the API key to create.
-      - name: --read-properties
-        type: list
-        short-summary: A space-separated list of names of read Roles for this API key to inherit. Possible values include ReadTelemetry, AuthenticateSDKControlChannel and "".
-      - name: --write-properties
-        type: list
-        short-summary: A space-separated list of names of write Roles for this API key to inherit. Possible values include WriteAnnotations and "".
-    examples:
-      - name: Create a component with kind web and location.
-        text: |
-          az monitor app-insights api-key create --api-key cli-demo --read-properties ReadTelemetry --write-properties WriteAnnotations -g demoRg --app testApp
-      - name: Create a component with kind web and location without any permission
-        text: |
-          az monitor app-insights api-key create --api-key cli-demo --read-properties '""' --write-properties '""' -g demoRg --app testApp
-"""
-
 helps['monitor app-insights metrics'] = """
     type: group
     short-summary: Retrieve metrics from an application.
@@ -270,44 +191,9 @@ helps['monitor app-insights events show'] = """
           az monitor app-insights events show --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults --offset 24h
 """
 
-helps['monitor app-insights component linked-storage'] = """
-    type: group
-    short-summary: Manage linked storage account for an Application Insights component.
-"""
-
-helps['monitor app-insights component linked-storage show'] = """
-    type: command
-    short-summary: Show the details of linked storage account for an Application Insights component.
-"""
-
-helps['monitor app-insights component linked-storage link'] = """
-    type: command
-    short-summary: Link a storage account with an Application Insights component.
-"""
-
-helps['monitor app-insights component linked-storage update'] = """
-    type: command
-    short-summary: Update the linked storage account for an Application Insights component.
-"""
-
-helps['monitor app-insights component linked-storage unlink'] = """
-    type: command
-    short-summary: Unlink a storage account with an Application Insights component.
-"""
-
 helps['monitor app-insights component continues-export'] = """
     type: group
     short-summary: Manage Continuous Export configurations for an Application Insights component.
-"""
-
-helps['monitor app-insights component continues-export list'] = """
-    type: command
-    short-summary: List Continuous Export configurations for an Application Insights component.
-    examples:
-      - name: ExportConfigurationsList
-        text: |
-            az monitor app-insights component continues-export list -g rg \\
-            --app 578f0e27-12e9-4631-bc02-50b965da2633
 """
 
 helps['monitor app-insights component continues-export create'] = """
@@ -340,28 +226,6 @@ helps['monitor app-insights component continues-export update'] = """
             --id exportid \\
             --dest-account account --dest-container container --dest-sub-id sub-id \\
             --dest-sas se=2020-10-27&sp=w&sv=2018-11-09&sr=c
-"""
-
-helps['monitor app-insights component continues-export show'] = """
-    type: command
-    short-summary: Get a specific Continuous Export configuration of an Application Insights component.
-    examples:
-      - name: Get a Continuous Export configuration by ID.
-        text: |
-            az monitor app-insights component continues-export show -g rg \\
-            --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
-            --id exportid
-"""
-
-helps['monitor app-insights component continues-export delete'] = """
-    type: command
-    short-summary: Delete a specific Continuous Export configuration of an Application Insights component.
-    examples:
-      - name: Delete a Continuous Export configuration by ID.
-        text: |
-            az monitor app-insights component continues-export delete -g rg \\
-            --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
-            --id exportid
 """
 
 helps['monitor app-insights web-test'] = """

@@ -138,6 +138,7 @@ from azext_aks_preview._validators import (
     validate_nodepool_tags,
     validate_nodes_count,
     validate_os_sku,
+    validate_prompt_input,
     validate_pod_identity_pod_labels,
     validate_pod_identity_resource_name,
     validate_pod_identity_resource_namespace,
@@ -449,6 +450,7 @@ def load_arguments(self, _):
         c.argument('ksm_metric_annotations_allow_list')
         c.argument('grafana_resource_id', validator=validate_grafanaresourceid)
         c.argument('enable_windows_recording_rules', action='store_true')
+        c.argument('enable_cost_analysis', is_preview=True, action='store_true')
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -574,6 +576,8 @@ def load_arguments(self, _):
         c.argument('guardrails_version', help='The guardrails version', is_preview=True)
         c.argument('guardrails_excluded_ns', is_preview=True)
         c.argument('enable_network_observability', action='store_true', is_preview=True, help="enable network observability for cluster")
+        c.argument('enable_cost_analysis', is_preview=True, action='store_true')
+        c.argument('disable_cost_analysis', is_preview=True, action='store_true')
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
@@ -920,6 +924,10 @@ def load_arguments(self, _):
         c.argument('ca_key_object_name')
         c.argument('root_cert_object_name')
         c.argument('cert_chain_object_name')
+
+    with self.argument_context('aks copilot') as c:
+        c.argument('prompt', options_list=['--prompt', '-p'], validator=validate_prompt_input,
+                   help='The question you want to ask, e.g: How to create a AKS cluster')
 
 
 def _get_default_install_location(exe_name):
