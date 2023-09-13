@@ -12,10 +12,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-0.5.157
+0.5.158
 +++++++
 * Support `premium` cluster sku tier in `az aks create` and `az aks update` commands
 * Add option `--k8s-support-plan` to `az aks create` and `az aks update` commands
+
+0.5.157
++++++++
 * Add `--disable-workload-identity` to the `az aks update` command.
 
 0.5.156
