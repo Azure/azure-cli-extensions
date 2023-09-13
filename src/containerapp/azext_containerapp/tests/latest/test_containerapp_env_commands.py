@@ -483,7 +483,9 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.cmd(f'containerapp env show -n {env} -g {resource_group}', checks=[
             JMESPathCheck('name', env),
             JMESPathCheck('properties.infrastructureResourceGroup', infra_rg),
-        ])  
+        ])
+
+        self.cmd(f'containerapp env delete -n {env} -g {resource_group} --yes')
 
 
     @AllowLargeResponse(8192)
