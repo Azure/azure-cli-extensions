@@ -2784,7 +2784,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 name="Base",
                 tier="Standard"
             )
-  
+
         if self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM:
             mc.sku = self.models.ManagedClusterSKU(
                 name="Base",
