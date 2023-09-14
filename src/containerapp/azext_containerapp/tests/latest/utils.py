@@ -15,12 +15,14 @@ def prepare_containerapp_env_for_app_e2e_tests(test_cls):
     from .common import TEST_LOCATION
     rg_name = f'client.env_rg_{TEST_LOCATION}'.lower().replace(" ", "").replace("(", "").replace(")", "")
     env_name = f'env-{TEST_LOCATION}'.lower().replace(" ", "").replace("(", "").replace(")", "")
+    managed_env = None
     try:
-        containerapp_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
+        managed_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
     except CLIInternalError as e:
         if e.error_msg.__contains__('ResourceGroupNotFound') or e.error_msg.__contains__('ResourceNotFound'):
             test_cls.cmd(f'group create -n {rg_name}')
-            create_containerapp_env(test_cls, env_name=env_name, resource_group=rg_name, location=TEST_LOCATION)
+            managed_env = create_containerapp_env(test_cls, env_name=env_name, resource_group=rg_name, location=TEST_LOCATION)
+    return managed_env["id"]
 
 
 def create_containerapp_env(test_cls, env_name, resource_group, location=None):

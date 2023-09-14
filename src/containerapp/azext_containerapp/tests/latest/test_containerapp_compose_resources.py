@@ -13,7 +13,7 @@ from azext_containerapp.tests.latest.common import (
     clean_up_test_file,
     TEST_DIR, TEST_LOCATION)
 
-from .utils import create_containerapp_env
+from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 
 class ContainerappComposePreviewResourceSettingsScenarioTest(ContainerappComposePreviewScenarioTest):
@@ -32,14 +32,12 @@ services:
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"
         write_test_file(compose_file_name, compose_text)
-        env_name = self.create_random_name(prefix='containerapp-compose', length=24)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.kwargs.update({
-            'environment': env_name,
+            'environment': env,
             'compose': compose_file_name,
         })
-
-        create_containerapp_env(self, env_name, resource_group)
 
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
@@ -69,14 +67,12 @@ services:
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"
         write_test_file(compose_file_name, compose_text)
-        env_name = self.create_random_name(prefix='containerapp-compose', length=24)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.kwargs.update({
-            'environment': env_name,
+            'environment': env,
             'compose': compose_file_name,
         })
-
-        create_containerapp_env(self, env_name, resource_group)
 
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
@@ -107,14 +103,12 @@ services:
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"
         write_test_file(compose_file_name, compose_text)
-        env_name = self.create_random_name(prefix='containerapp-compose', length=24)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
         self.kwargs.update({
-            'environment': env_name,
+            'environment': env,
             'compose': compose_file_name,
         })
-
-        create_containerapp_env(self, env_name, resource_group)
         
         command_string = 'containerapp compose create'
         command_string += ' --compose-file-path {compose}'
