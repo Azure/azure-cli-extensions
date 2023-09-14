@@ -22,10 +22,8 @@
 |[az maintenance applyupdate list](#ApplyUpdatesList)|List|[Parameters](#ParametersApplyUpdatesList)|[Example](#ExamplesApplyUpdatesList)|
 |[az maintenance applyupdate show](#ApplyUpdatesGet)|Get|[Parameters](#ParametersApplyUpdatesGet)|[Example](#ExamplesApplyUpdatesGet)|
 |[az maintenance applyupdate create](#ApplyUpdatesCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersApplyUpdatesCreateOrUpdate#Create)|[Example](#ExamplesApplyUpdatesCreateOrUpdate#Create)|
-|[az maintenance applyupdate update](#ApplyUpdatesCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersApplyUpdatesCreateOrUpdate#Update)|Not Found|
 |[az maintenance applyupdate create-or-update-parent](#ApplyUpdatesCreateOrUpdateParent)|CreateOrUpdateParent|[Parameters](#ParametersApplyUpdatesCreateOrUpdateParent)|[Example](#ExamplesApplyUpdatesCreateOrUpdateParent)|
 |[az maintenance applyupdate show-parent](#ApplyUpdatesGetParent)|GetParent|[Parameters](#ParametersApplyUpdatesGetParent)|[Example](#ExamplesApplyUpdatesGetParent)|
-|[az maintenance applyupdate get-parent](#ApplyUpdatesGetParentAlias)|GetParent|[Parameters](#ParametersApplyUpdatesGetParentAlias)|[Example](#ExamplesApplyUpdatesGetParentAlias)|
 
 ### <a name="CommandsInConfigurationAssignments">Commands in `az maintenance assignment` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
@@ -105,17 +103,6 @@ az maintenance applyupdate create --provider-name "Microsoft.Compute" --resource
 |**--resource-type**|string|Resource type|resource_type|resourceType|
 |**--resource-name**|string|Resource identifier|resource_name|resourceName|
 
-#### <a name="ApplyUpdatesCreateOrUpdate#Update">Command `az maintenance applyupdate update`</a>
-
-
-##### <a name="ParametersApplyUpdatesCreateOrUpdate#Update">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Resource group name|resource_group_name|resourceGroupName|
-|**--provider-name**|string|Resource provider name|provider_name|providerName|
-|**--resource-type**|string|Resource type|resource_type|resourceType|
-|**--resource-name**|string|Resource identifier|resource_name|resourceName|
-
 #### <a name="ApplyUpdatesCreateOrUpdateParent">Command `az maintenance applyupdate create-or-update-parent`</a>
 
 ##### <a name="ExamplesApplyUpdatesCreateOrUpdateParent">Example</a>
@@ -143,25 +130,6 @@ az maintenance applyupdate show-parent --name "e9b9685d-78e4-44c4-a81c-64a14f9b8
 --resource-parent-type "virtualMachineScaleSets" --resource-type "virtualMachines"
 ```
 ##### <a name="ParametersApplyUpdatesGetParent">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Resource group name|resource_group_name|resourceGroupName|
-|**--resource-parent-type**|string|Resource parent type|resource_parent_type|resourceParentType|
-|**--resource-parent-name**|string|Resource parent identifier|resource_parent_name|resourceParentName|
-|**--provider-name**|string|Resource provider name|provider_name|providerName|
-|**--resource-type**|string|Resource type|resource_type|resourceType|
-|**--resource-name**|string|Resource identifier|resource_name|resourceName|
-|**--apply-update-name**|string|applyUpdate Id|apply_update_name|applyUpdateName|
-
-#### <a name="ApplyUpdatesGetParentAlias">Command `az maintenance applyupdate get-parent`</a>
-
-##### <a name="ExamplesApplyUpdatesGetParentAlias">Example</a>
-```
-az maintenance applyupdate get-parent --name "e9b9685d-78e4-44c4-a81c-64a14f9b87b6" --provider-name \
-"Microsoft.Compute" --resource-group "examplerg" --resource-name "smdvm1" --resource-parent-name "smdtest1" \
---resource-parent-type "virtualMachineScaleSets" --resource-type "virtualMachines"
-```
-##### <a name="ParametersApplyUpdatesGetParentAlias">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|Resource group name|resource_group_name|resourceGroupName|

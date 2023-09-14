@@ -6,12 +6,13 @@
 from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 from azure.cli.core.commands.client_factory import get_subscription_id
-from .vendored_sdks.appplatform.v2023_05_01_preview import models
+from .vendored_sdks.appplatform.v2023_09_01_preview import models
 from .dev_tool_portal import (is_updatable as is_dev_tool_portal_updatable,
                               try_get as get_dev_tool_portal,
                               create_or_update as create_or_update_dev_tool_portal,
                               _get_desired_state as get_dev_tool_portal_desired_state)
 from ._utils import (wait_till_end)
+from .vendored_sdks.appplatform.v2023_09_01_preview.models._app_platform_management_client_enums import (CustomizedAcceleratorType)
 
 DEFAULT_NAME = "default"
 logger = get_logger(__name__)
@@ -90,12 +91,14 @@ def customized_accelerator_upsert(cmd, client, resource_group, service, name,
                                   display_name,
                                   git_url,
                                   description=None,
+                                  type=None,
                                   icon_url=None,
                                   accelerator_tags=None,
                                   git_interval=None,
                                   git_branch=None,
                                   git_commit=None,
                                   git_tag=None,
+                                  git_sub_path=None,
                                   ca_cert_name=None,
                                   username=None,
                                   password=None,
@@ -104,6 +107,9 @@ def customized_accelerator_upsert(cmd, client, resource_group, service, name,
                                   host_key_algorithm=None,
                                   no_wait=False):
     auth_setting = None
+
+    if type is None:
+        type = CustomizedAcceleratorType.ACCELERATOR
 
     caCertResourceId = None
     if ca_cert_name:
@@ -132,13 +138,15 @@ def customized_accelerator_upsert(cmd, client, resource_group, service, name,
         interval_in_seconds=git_interval,
         branch=git_branch,
         commit=git_commit,
-        git_tag=git_tag
+        git_tag=git_tag,
+        sub_path=git_sub_path,
     )
     properties = models.CustomizedAcceleratorProperties(
         display_name=display_name,
         description=description,
         icon_url=icon_url,
         accelerator_tags=accelerator_tags,
+        accelerator_type=type,
         git_repository=git_repository
     )
     customized_accelerator_resource = models.CustomizedAcceleratorResource(properties=properties)

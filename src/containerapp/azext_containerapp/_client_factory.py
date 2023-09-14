@@ -90,6 +90,29 @@ def handle_non_404_exception(e):
     raise e
 
 
+def handle_non_404_status_code_exception(e):
+    import json
+
+    if hasattr(e, 'status_code') and e.status_code == 404:
+        return e
+
+    string_err = str(e)
+    if "{" in string_err and "}" in string_err:
+        json_error = string_err[string_err.index("{"):string_err.rindex("}") + 1]
+        json_error = json.loads(json_error)
+        if 'error' in json_error:
+            json_error = json_error['error']
+            if 'code' in json_error and 'message' in json_error:
+                return json_error
+        elif "Message" in json_error:
+            message = json_error["Message"]
+            raise CLIInternalError(message)
+        elif "message" in json_error:
+            message = json_error["message"]
+            raise CLIInternalError(message)
+    raise e
+
+
 def providers_client_factory(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id).providers
 
@@ -109,3 +132,18 @@ def log_analytics_shared_key_client_factory(cli_ctx):
     from azure.mgmt.loganalytics import LogAnalyticsManagementClient
 
     return get_mgmt_service_client(cli_ctx, LogAnalyticsManagementClient).shared_keys
+
+
+def custom_location_client_factory(cli_ctx, api_version=None, subscription_id=None, **_):
+    from azure.cli.core.profiles import ResourceType
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_CUSTOMLOCATION, api_version=api_version,
+                                   subscription_id=subscription_id).custom_locations
+
+
+def k8s_extension_client_factory(cli_ctx, subscription_id=None):
+    from azext_containerapp.vendored_sdks.kubernetesconfiguration import SourceControlConfigurationClient
+
+    r = get_mgmt_service_client(cli_ctx, SourceControlConfigurationClient, subscription_id=subscription_id)
+    return r.extensions

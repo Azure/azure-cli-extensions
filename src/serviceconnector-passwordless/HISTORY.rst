@@ -2,6 +2,18 @@
 
 Release History
 ===============
+0.3.10
+++++++
+* make some improvements.
+
+0.3.9
+++++++
+* Support `--customized-keys` and make some improvements.
+
+0.3.8
+++++++
+* Make some improvements.
+
 0.3.6
 ++++++
 * Make some improvements.

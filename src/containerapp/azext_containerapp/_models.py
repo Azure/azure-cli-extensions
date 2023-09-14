@@ -169,6 +169,7 @@ Ingress = {
     "targetPort": None,
     "transport": None,  # 'auto', 'http', 'http2', 'tcp'
     "exposedPort": None,
+    "allowInsecure": False,
     "traffic": None,  # TrafficWeight
     "customDomains": None,  # [CustomDomain]
     "ipSecurityRestrictions": None,  # [IPSecurityRestrictions]
@@ -405,4 +406,21 @@ OryxMarinerRunImgTagProperty = {
     "marinerVersion": None,
     "architectures": None,
     "support": None,
+}
+
+
+# model for preview extension
+ConnectedEnvironment = {
+    "extendedLocation": None,
+    "tags": None,
+    "location": None,
+    "properties": {
+        "staticIp": None,
+        "daprAIConnectionString": None
+    }
+}
+
+ExtendedLocation = {
+    "name": None,
+    "type": None
 }

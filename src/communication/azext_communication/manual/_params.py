@@ -255,7 +255,7 @@ def _load_email_arguments(self):
         c.argument('subject', options_list=['--subject'], type=str, help='Subject of the email message.')
         c.argument('text', options_list=['--text'], type=str, help='Plain text version of the email message. Optional.')
         c.argument('html', options_list=['--html'], type=str, help='Html version of the email message. Optional.')
-        c.argument('recipients_to', options_list=['--to'], nargs='+', help='Recepients email addresses.')
+        c.argument('recipients_to', options_list=['--to'], nargs='+', help='Recepients email addresses comma seperated if more than one.')
         c.argument('importance', options_list=['--importance'], arg_type=get_enum_type(['normal', 'low', 'high']),
                    help='The importance type for the email. Known values are: high,'
                    ' normal, and low. Default is normal. Optional')
