@@ -31,7 +31,7 @@ from ._transformers import (transform_spring_table_output,
                             transform_support_server_versions_output)
 from ._validators import validate_app_insights_command_not_supported_tier
 from ._marketplace import (transform_marketplace_plan_output)
-from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update, validate_dev_tool_portal, validate_customized_accelerator, validate_central_build_instance, not_support_enterprise)
+from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update, validate_dev_tool_portal, validate_customized_accelerator, validate_central_build_instance)
 from ._app_managed_identity_validator import (validate_app_identity_remove_or_warning,
                                               validate_app_identity_assign_or_warning)
 
@@ -125,7 +125,7 @@ def load_command_table(self, _):
                          is_preview=True,
                          table_transformer=transform_marketplace_plan_output)
         g.custom_command('list-support-server-versions', 'spring_list_support_server_versions',
-                         is_preview=True, validator=not_support_enterprise,
+                         is_preview=True,
                          table_transformer=transform_support_server_versions_output)
 
     with self.command_group('spring', client_factory=cf_spring,
