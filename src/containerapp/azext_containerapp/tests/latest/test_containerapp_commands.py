@@ -16,9 +16,10 @@ from msrestazure.tools import parse_resource_id
 
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
 from .common import TEST_LOCATION
-from .utils import create_containerapp_env
+from .utils import create_containerapp_env, prepare_containerapp_env_for_app_e2e_tests
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+
 
 class ContainerappIdentityTests(ScenarioTest):
     @AllowLargeResponse(8192)
@@ -26,13 +27,12 @@ class ContainerappIdentityTests(ScenarioTest):
     def test_containerapp_identity_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         user_identity_name = self.create_random_name(prefix='containerapp', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env))
 
         self.cmd('containerapp identity assign --system-assigned -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('type', 'SystemAssigned'),
@@ -63,6 +63,7 @@ class ContainerappIdentityTests(ScenarioTest):
         self.cmd('containerapp identity show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('type', 'None'),
         ])
+        self.cmd('containerapp delete  -g {} -n {} --yes'.format(resource_group, ca_name), expect_failure=False)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="canadacentral")
@@ -107,14 +108,13 @@ class ContainerappIdentityTests(ScenarioTest):
     def test_containerapp_identity_user(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         user_identity_name1 = self.create_random_name(prefix='containerapp-user1', length=24)
         user_identity_name2 = self.create_random_name(prefix='containerapp-user2', length=24)
 
-        create_containerapp_env(self, env_name, resource_group)
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
 
-        self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {}'.format(resource_group, ca_name, env))
 
         self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name1))
 
