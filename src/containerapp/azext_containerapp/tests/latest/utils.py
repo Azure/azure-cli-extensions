@@ -76,6 +76,7 @@ def create_and_verify_containerapp_up(
             up_cmd += f" -l {location.upper()}"
             test_cls.cmd(up_cmd)
 
+
 def create_extension_and_custom_location(test_cls, resource_group, connected_cluster_name, custom_location_name):
     try:
         connected_cluster = test_cls.cmd(f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
