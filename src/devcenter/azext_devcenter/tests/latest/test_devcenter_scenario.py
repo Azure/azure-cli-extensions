@@ -69,7 +69,6 @@ class DevcenterScenarioTest(ScenarioTest):
             ],
         )
 
-        #TODO: add devcenter create with encryption
         self.cmd(
             "az devcenter admin devcenter create "
             '--location "{location}" '
@@ -576,7 +575,6 @@ class DevcenterScenarioTest(ScenarioTest):
             ],
         )
 
-        #TODO: add validation error details and validation status
         self.cmd(
             "az devcenter admin devbox-definition show "
             '--dev-center "{devcenterName}" '
@@ -907,8 +905,6 @@ class DevcenterScenarioTest(ScenarioTest):
             ],
         )
 
-        # TODO: Add health check and health check details in return type when API available
-        # TODO: Add stopOnDisconnect idle back when available
         self.cmd(
             "az devcenter admin pool create "
             '-d "{devBoxDefinitionName}" '
@@ -967,14 +963,6 @@ class DevcenterScenarioTest(ScenarioTest):
                 self.check("devBoxCount", 0)
             ],
         )
-
-        # TODO: Uncomment once feature is complete
-        # self.cmd(
-        #     "az devcenter admin pool run-health-check "
-        #     '--name "{poolName}" '
-        #     '--project-name "{projectName}" '
-        #     '--resource-group "{rg}" '
-        # )
 
         self.cmd(
             "az devcenter admin schedule create "
@@ -1146,16 +1134,6 @@ class DevcenterScenarioTest(ScenarioTest):
             '--resource-group "{rg}" '
         )
 
-        #TODO: uncomment this when API works
-        # self.cmd(
-        #     "az devcenter admin catalog connect "
-        #     '--dev-center "{devcenterName}" '
-        #     '--name "{catalogName}" '
-        #     '--resource-group "{rg}" '
-        # )
-
-
-        #TODO: add connection state and last connection time
         self.cmd(
             "az devcenter admin catalog show "
             '--dev-center "{devcenterName}" '
@@ -1204,80 +1182,7 @@ class DevcenterScenarioTest(ScenarioTest):
                 self.check("length(@)", 0),
             ],
         )
-    
-    #TODO: complete when rolled out
-    # @ResourceGroupPreparer(
-    #     name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
-    # )
-    # def test_catalog_devbox_def_scenario(self):
-    #     self.kwargs.update(
-    #         {
-    #             "catalogName": self.create_random_name(prefix="c2", length=12),
-    #             "branch": "main",
-    #             "secretIdentifier": "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
-    #             "uri": "https://domain.com/dummy/dummy.git",
-    #         }
-    #     )
 
-    #     create_dev_center_with_identity(self)
-
-    #     imageRefId = f"{self.kwargs.get('devCenterId', '')}/galleries/Default/images/microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2"
-        
-    #     self.kwargs.update(
-    #         {
-    #             "imageRefId": imageRefId,
-    #         }
-    #     )
-        
-    #     create_kv_policy(self)
-
-    #     self.cmd(
-    #         "az devcenter admin catalog create "
-    #         '--dev-center "{devcenterName}" '
-    #         '--name "{catalogName}" '
-    #         '--git-hub path="{path}" branch="{branch}" '
-    #         'secret-identifier="{secretIdentifier}" uri="{uri}" '
-    #         '--resource-group "{rg}" ',
-    #         checks=[
-    #             self.check("name", "{catalogName}"),
-    #             self.check("resourceGroup", "{rg}"),
-    #             self.check("gitHub.branch", "{branch}"),
-    #             self.check("gitHub.path", "{path}"),
-    #             self.check("gitHub.secretIdentifier", "{secretIdentifier}"),
-    #             self.check("gitHub.uri", "{uri}"),
-    #         ],
-    #     )
-
-    #     self.cmd(
-    #         "az devcenter admin catalog sync "
-    #         '--dev-center "{devcenterName}" '
-    #         '--name "{catalogName}" '
-    #         '--resource-group "{rg}" '
-    #     )
-
-    #     self.cmd(
-    #         "az devcenter admin catalog-devbox-definition list "
-    #         '--resource-group "{rg}" '
-    #         '--dev-center "{devcenterName}" ',
-    #         checks=[
-    #             self.check("length(@)", 2),
-    #         ],
-    #     )
-
-    #     self.cmd(
-    #         "az devcenter admin catalog-devbox-definition show "
-    #         '--dev-center "{devcenterName}" '
-    #         '--name "first" '
-    #         '--resource-group "{rg}" ',
-    #         checks=[
-    #             self.check("name", "first"),
-    #             self.check("activeImageReference.id", "{imageRefId}"),
-    #             self.check("hibernateSupport", "Enabled"),
-    #             self.check("imageReference.id", "{imageRefId}"),
-    #             self.check("sku.name", "general_i_16c64gb512ssd_v2"),
-    #             self.check("gitHub.uri", "{uri}"),
-    #         ],
-    #     )
 
     @ResourceGroupPreparer(
         name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
@@ -1608,8 +1513,6 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                 self.check("[0].name", "{poolName}"),
             ],
         )
-
-        # TODO Add back idle parameters and checks once feature is complete
 
         self.cmd(
             "az devcenter dev pool show "
@@ -2060,7 +1963,6 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--dev-center "{devcenterName}" '
         ).get_output_in_json()
 
-        # TODO: Recheck for idle once feature is complete
         self.kwargs.update(
             {
                 "actionName": stopAction[0]["name"],
@@ -2104,7 +2006,6 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             ],
         )
 
-        #TODO: switch to just check for property
         self.cmd(
             "az devcenter dev dev-box delay-all-actions "
             '--name "{devBoxName}" '

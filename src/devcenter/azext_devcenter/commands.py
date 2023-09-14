@@ -157,10 +157,6 @@ def load_command_table(self, _):
     self.command_table["devcenter admin pool create"] = PoolCreate(loader=self)
     self.command_table["devcenter admin pool delete"] = PoolDelete(loader=self)
     self.command_table["devcenter admin pool list"] = PoolList(loader=self)
-    # TODO: Uncomment once feature is complete
-    # self.command_table["devcenter admin pool run-health-check"] = PoolRunHealthCheck(
-    #     loader=self
-    # )
     self.command_table["devcenter admin pool show"] = PoolShow(loader=self)
     self.command_table["devcenter admin pool update"] = PoolUpdate(loader=self)
     self.command_table["devcenter admin pool wait"] = PoolWait(loader=self)
@@ -276,8 +272,6 @@ def load_command_table(self, _):
             supports_no_wait=True,
             confirmation=True,
         )
-        # g.custom_command("list-operation", "devcenter_environment_operation_list")
-        # g.custom_command("show-operation", "devcenter_environment_operation_show")
 
     with self.command_group("devcenter dev catalog", environments_dp) as g:
         g.custom_command("list", "devcenter_catalog_list_dp")
