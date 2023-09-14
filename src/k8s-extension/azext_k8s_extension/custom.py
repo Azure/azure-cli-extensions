@@ -59,6 +59,8 @@ def ExtensionFactory(extension_name):
 
 def show_k8s_extension(client, resource_group_name, cluster_name, name, cluster_type, cluster_resource_provider=None):
     """Get an existing K8s Extension."""
+    print("hello")
+    return
     # Determine ClusterRP
     cluster_rp, _ = get_cluster_rp_api_version(cluster_type=cluster_type, cluster_rp=cluster_resource_provider)
 

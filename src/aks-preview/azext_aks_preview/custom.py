@@ -787,6 +787,12 @@ def aks_update(
 
 # pylint: disable=unused-argument
 def aks_show(cmd, client, resource_group_name, name, aks_custom_headers=None):
+    from azext_k8s_extension._client_factory import cf_k8s_extension
+    from azext_k8s_extension.custom import show_k8s_extension
+    client = cf_k8s_extension(cmd.cli_ctx)
+    show_k8s_extension(client, "", "", "", "")
+    print("world")
+    return
     headers = get_aks_custom_headers(aks_custom_headers)
     mc = client.get(resource_group_name, name, headers=headers)
     return _remove_nulls([mc])[0]
