@@ -84,7 +84,7 @@ class Update(AAZCommand):
         _args_schema.devbox_definition_name = AAZStrArg(
             options=["-d", "--devbox-definition-name"],
             arg_group="Properties",
-            help="Name of a dev box definition in parent project of this pool.",
+            help="Name of a dev box definition in parent project of this pool..",
         )
         _args_schema.local_administrator = AAZStrArg(
             options=["--local-administrator"],
