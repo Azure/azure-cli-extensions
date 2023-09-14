@@ -54,7 +54,7 @@ helps['spring list-support-server-versions'] = """
     short-summary: (Standard and Basic Tier Only) List supported server versions.
     examples:
     - name: List supported server versions.
-      text: az spring list-support-server-versions -o table
+      text: az spring list-support-server-versions -o table -n MyService -g MyResourceGroup
 """
 
 helps['spring update'] = """
