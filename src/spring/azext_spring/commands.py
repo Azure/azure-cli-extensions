@@ -249,6 +249,7 @@ def load_command_table(self, _):
     with self.command_group('spring certificate', client_factory=cf_spring,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('add', 'certificate_add')
+        g.custom_command('update', 'certificate_update')
         g.custom_show_command('show', 'certificate_show', table_transformer=transform_spring_certificate_output)
         g.custom_command('list', 'certificate_list', table_transformer=transform_spring_certificate_output)
         g.custom_command('remove', 'certificate_remove')

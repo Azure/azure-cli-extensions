@@ -224,7 +224,7 @@ def _prompt_public_ip(namespace):
     from knack.prompting import prompt_y_n, NoTTYException
     try:
         if prompt_y_n('Does repair vm requires public ip?'):
-            namespace.associate_public_ip = "yes"
+            namespace.associate_public_ip = namespace.repair_vm_name + "PublicIP"
         else:
             namespace.associate_public_ip = '""'
 
