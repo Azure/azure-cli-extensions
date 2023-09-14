@@ -1717,6 +1717,10 @@ class ConnectedEnvironmentClient():
 
         return env_list
 
+
+class ConnectedEnvCertificateClient():
+    api_version = ARC_PREVIEW_API_VERSION
+
     @classmethod
     def show_certificate(cls, cmd, resource_group_name, name, certificate_name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager

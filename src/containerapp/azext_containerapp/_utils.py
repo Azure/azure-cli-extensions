@@ -42,7 +42,7 @@ from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
 
 from ._clients import ContainerAppClient, ManagedEnvironmentClient, WorkloadProfileClient, ContainerAppsJobClient, \
-    ConnectedEnvironmentClient
+    ConnectedEnvCertificateClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, \
     log_analytics_client_factory, log_analytics_shared_key_client_factory, custom_location_client_factory, \
     k8s_extension_client_factory
@@ -1623,7 +1623,7 @@ def connected_env_check_cert_name_availability(cmd, resource_group_name, name, c
     name_availability_request["name"] = cert_name
     name_availability_request["type"] = CONNECTED_ENV_CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE
     try:
-        r = ConnectedEnvironmentClient.check_name_availability(cmd, resource_group_name, name, name_availability_request)
+        r = ConnectedEnvCertificateClient.check_name_availability(cmd, resource_group_name, name, name_availability_request)
     except CLIError as e:
         handle_raw_exception(e)
     return r

@@ -33,7 +33,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         static_ip = '1.1.1.1'
         env_name = 'my-connected-env'
         custom_location_id = f"/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/Microsoft.ExtendedLocation/customLocations/{custom_location_name}"
-        self.cmd(f'containerapp connected-env create -g {resource_group} --name {env_name} --custom-location {custom_location_name} --static-ip {static_ip} -d "InstrumentationKey=TestInstrumentationKey;IngestionEndpoint=https://ingestion.com/;LiveEndpoint=https://abc.com/" -l {TEST_LOCATION}', checks=[
+        self.cmd(f'containerapp connected-env create -g {resource_group} --name {env_name} --custom-location {custom_location_name} --static-ip {static_ip} -d "InstrumentationKey=TestInstrumentationKey;IngestionEndpoint=https://ingestion.com/;LiveEndpoint=https://abc.com/"', checks=[
             JMESPathCheck('name', env_name),
             JMESPathCheck('properties.provisioningState', "Succeeded"),
             JMESPathCheck('extendedLocation.name', custom_location_id),
@@ -86,7 +86,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         env_name = 'my-connected-env'
         custom_location_id = f"/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/Microsoft.ExtendedLocation/customLocations/{custom_location_name}"
         self.cmd(
-            f'containerapp connected-env create -g {resource_group} --name {env_name} --custom-location {custom_location_name} -l {TEST_LOCATION}',
+            f'containerapp connected-env create -g {resource_group} --name {env_name} --custom-location {custom_location_name}',
             checks=[
                 JMESPathCheck('name', env_name),
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
@@ -140,7 +140,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         dapr_comp_name = self.create_random_name(prefix='dapr-component', length=24)
 
         self.cmd(
-            f'containerapp connected-env create -g {resource_group} --name {env_name} --custom-location {custom_location_name} -l northcentralusstage',
+            f'containerapp connected-env create -g {resource_group} --name {env_name} --custom-location {custom_location_name}',
             checks=[
                 JMESPathCheck('name', env_name),
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
@@ -213,7 +213,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         env_name = 'my-connected-env'
         custom_location_id = f"/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/Microsoft.ExtendedLocation/customLocations/{custom_location_name}"
         self.cmd(
-            f'containerapp connected-env create -g {resource_group} --name {env_name} --custom-location {custom_location_name} -l {TEST_LOCATION}',
+            f'containerapp connected-env create -g {resource_group} --name {env_name} --custom-location {custom_location_name}',
             checks=[
                 JMESPathCheck('name', env_name),
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
@@ -239,9 +239,8 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         cert_name = cert["name"]
         cert_id = cert["id"]
         cert_thumbprint = cert["properties"]["thumbprint"]
-        cert_location = cert["location"]
 
-        self.cmd('containerapp connected-env certificate list -n {} -g {} -l "{}"'.format(env_name, resource_group, cert_location), checks=[
+        self.cmd('containerapp connected-env certificate list -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('length(@)', 1),
             JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
             JMESPathCheck('[0].name', cert_name),
@@ -291,7 +290,7 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         env_name = 'my-connected-env'
         custom_location_id = f"/subscriptions/{sub_id}/resourceGroups/{resource_group}/providers/Microsoft.ExtendedLocation/customLocations/{custom_location_name}"
         self.cmd(
-            f'containerapp connected-env create -g {resource_group} --name {env_name} --custom-location {custom_location_name} -l {TEST_LOCATION}',
+            f'containerapp connected-env create -g {resource_group} --name {env_name} --custom-location {custom_location_name}',
             checks=[
                 JMESPathCheck('name', env_name),
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
@@ -320,10 +319,8 @@ class ContainerappPreviewScenarioTest(ScenarioTest):
         cert_name = cert["name"]
         cert_id = cert["id"]
         cert_thumbprint = cert["properties"]["thumbprint"]
-        cert_location = cert["location"]
 
-        self.cmd('containerapp connected-env certificate list -n {} -g {} -l "{}"'.format(env_name, resource_group,
-                                                                                          cert_location), checks=[
+        self.cmd('containerapp connected-env certificate list -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('length(@)', 1),
             JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
             JMESPathCheck('[0].name', cert_name),

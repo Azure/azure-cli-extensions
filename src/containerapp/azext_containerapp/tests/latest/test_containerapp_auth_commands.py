@@ -12,6 +12,10 @@ from .utils import create_containerapp_env
 
 
 class ContainerAppAuthTest(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location=TEST_LOCATION)
     def test_containerapp_auth_e2e(self, resource_group):

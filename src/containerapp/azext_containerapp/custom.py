@@ -55,7 +55,7 @@ from ._clients import (
     ManagedEnvironmentPreviewClient,
     ConnectedEnvDaprComponentClient,
     ConnectedEnvironmentClient,
-    ConnectedEnvStorageClient
+    ConnectedEnvStorageClient, ConnectedEnvCertificateClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._github_oauth import get_github_access_token
@@ -3274,18 +3274,18 @@ def show_dapr_component(cmd, resource_group_name, dapr_component_name, environme
 def create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    yaml_containerapp = load_yaml_file(yaml)
-    if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+    yaml_dapr_component = load_yaml_file(yaml)
+    if type(yaml_dapr_component) != dict:  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.')
 
     # Deserialize the yaml into a DaprComponent object. Need this since we're not using SDK
     daprcomponent_def = None
     try:
         deserializer = create_deserializer()
 
-        daprcomponent_def = deserializer('DaprComponent', yaml_containerapp)
+        daprcomponent_def = deserializer('DaprComponent', yaml_dapr_component)
     except DeserializationError as ex:
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.') from ex
+        raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.') from ex
 
     daprcomponent_def = _convert_object_from_snake_to_camel_case(_object_to_dict(daprcomponent_def))
 
@@ -5202,11 +5202,6 @@ def connected_env_remove_dapr_component(cmd, resource_group_name, dapr_component
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     try:
-        ConnectedEnvDaprComponentClient.show(cmd, resource_group_name, environment_name, name=dapr_component_name)
-    except Exception as e:
-        raise ResourceNotFoundError("Dapr component not found.") from e
-
-    try:
         r = ConnectedEnvDaprComponentClient.delete(cmd, resource_group_name, environment_name, name=dapr_component_name)
         logger.warning("Dapr componenet successfully deleted.")
         return r
@@ -5217,16 +5212,16 @@ def connected_env_remove_dapr_component(cmd, resource_group_name, dapr_component
 def connected_env_create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    yaml_containerapp = load_yaml_file(yaml)
-    if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+    yaml_dapr_component = load_yaml_file(yaml)
+    if type(yaml_dapr_component) != dict:  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.')
 
     # Deserialize the yaml into a DaprComponent object. Need this since we're not using SDK
     try:
         deserializer = create_deserializer()
-        daprcomponent_def = deserializer('DaprComponent', yaml_containerapp)
+        daprcomponent_def = deserializer('DaprComponent', yaml_dapr_component)
     except DeserializationError as ex:
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.') from ex
+        raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.') from ex
 
     daprcomponent_def = _convert_object_from_snake_to_camel_case(_object_to_dict(daprcomponent_def))
 
@@ -5267,13 +5262,13 @@ def connected_env_list_certificates(cmd, name, resource_group_name, location=Non
         else:
             certificate_name = certificate
         try:
-            r = ConnectedEnvironmentClient.show_certificate(cmd, resource_group_name, name, certificate_name)
+            r = ConnectedEnvCertificateClient.show_certificate(cmd, resource_group_name, name, certificate_name)
             return [r] if both_match(r) else []
         except Exception as e:
             handle_raw_exception(e)
     else:
         try:
-            r = ConnectedEnvironmentClient.list_certificates(cmd, resource_group_name, name)
+            r = ConnectedEnvCertificateClient.list_certificates(cmd, resource_group_name, name)
             return list(filter(both_match, r))
         except Exception as e:
             handle_raw_exception(e)
@@ -5322,7 +5317,7 @@ def connected_env_upload_certificate(cmd, name, resource_group_name, certificate
             handle_raw_exception(e)
 
     try:
-        r = ConnectedEnvironmentClient.create_or_update_certificate(cmd, resource_group_name, name, cert_name, certificate)
+        r = ConnectedEnvCertificateClient.create_or_update_certificate(cmd, resource_group_name, name, cert_name, certificate)
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -5336,7 +5331,7 @@ def connected_env_delete_certificate(cmd, resource_group_name, name, location=No
     certs = connected_env_list_certificates(cmd, name, resource_group_name, location, certificate, thumbprint)
     for cert in certs:
         try:
-            ConnectedEnvironmentClient.delete_certificate(cmd, resource_group_name, name, cert["name"])
+            ConnectedEnvCertificateClient.delete_certificate(cmd, resource_group_name, name, cert["name"])
             logger.warning('Successfully deleted certificate: {}'.format(cert["name"]))
         except Exception as e:
             handle_raw_exception(e)
@@ -5362,12 +5357,6 @@ def connected_env_list_storages(cmd, name, resource_group_name):
 
 def connected_env_create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name=None, azure_file_share_name=None, azure_file_account_key=None, access_mode=None):  # pylint: disable=redefined-builtin
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-
-    if azure_file_share_name and len(azure_file_share_name) < 3:
-        raise ValidationError("File share name must be longer than 2 characters.")
-
-    if azure_file_account_name and len(azure_file_account_name) < 3:
-        raise ValidationError("Account name must be longer than 2 characters.")
 
     r = None
 
