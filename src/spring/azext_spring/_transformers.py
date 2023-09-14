@@ -376,6 +376,6 @@ def transform_support_server_versions_output(result):
     for item in result:
         item['Value'] = item['value']
         item['Server'] = item['server']
-        item['version'] = item['version']
+        item['Version'] = item['version']
 
     return result if is_list else result[0]
