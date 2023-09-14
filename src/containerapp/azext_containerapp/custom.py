@@ -5345,12 +5345,12 @@ def connected_env_upload_certificate(cmd, name, resource_group_name, certificate
         handle_raw_exception(e)
 
 
-def connected_env_delete_certificate(cmd, resource_group_name, name, location=None, certificate=None, thumbprint=None):
+def connected_env_delete_certificate(cmd, resource_group_name, name, certificate=None, thumbprint=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     if not certificate and not thumbprint:
         raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --thumbprint')
-    certs = connected_env_list_certificates(cmd, name, resource_group_name, location, certificate, thumbprint)
+    certs = connected_env_list_certificates(cmd, name, resource_group_name, certificate=certificate, thumbprint=thumbprint)
     for cert in certs:
         try:
             ConnectedEnvCertificateClient.delete_certificate(cmd, resource_group_name, name, cert["name"])
