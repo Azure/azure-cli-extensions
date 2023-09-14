@@ -16,16 +16,6 @@ class ActionType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     INTERNAL = "Internal"
 
 
-class ApiPortalApiTryOutEnabledState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Indicates whether the API try-out feature is enabled or disabled. When enabled, users can try
-    out the API by sending requests and viewing responses in API portal. When disabled, users
-    cannot try out the API.
-    """
-
-    ENABLED = "Enabled"
-    DISABLED = "Disabled"
-
-
 class ApiPortalProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """State of the API portal."""
 
@@ -364,6 +354,13 @@ class HTTPSchemeType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     HTTP = "HTTP"
     HTTPS = "HTTPS"
+
+
+class KeyVaultCertificateAutoSync(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Indicates whether to automatically synchronize certificate from key vault or not."""
+
+    DISABLED = "Disabled"
+    ENABLED = "Enabled"
 
 
 class KPackBuildStageProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
