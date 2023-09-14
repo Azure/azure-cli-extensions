@@ -19,13 +19,10 @@ from azext_containerapp.tests.latest.common import (
     TEST_DIR, TEST_LOCATION)
 
 class ContainerAppMountAzureFileTest(ScenarioTest):
-    def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
-
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location='westeurope')
+    @ResourceGroupPreparer(location=TEST_LOCATION)
     def test_container_app_mount_azurefile_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format('westeurope'))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='app1', length=24)
