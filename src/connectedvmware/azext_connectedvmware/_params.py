@@ -201,9 +201,20 @@ def load_arguments(self, _):
     with self.argument_context('connectedvmware vm delete') as c:
         c.argument('force', action='store_true', help="Whether force delete or not.")
         c.argument(
+            'delete_from_host',
+            action='store_true',
+            help='Delete the VM from the VMware host.',
+        )
+        c.argument(
+            'delete_machine',
+            action='store_true',
+            help='Delete the parent Microsoft.HybridCompute Machine resource',
+        )
+        c.argument(
             'retain',
             action='store_true',
-            help='Disable the VM from azure; delete the ARM resource but retain the VM in VMware.',
+            help='Retain the VM in the VMWare host',
+            deprecate_info=c.deprecate(hide=True),
         )
 
     with self.argument_context('connectedvmware vm stop') as c:

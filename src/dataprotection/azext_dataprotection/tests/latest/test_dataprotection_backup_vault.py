@@ -24,11 +24,12 @@ class BackupVaultScenarioTest(ScenarioTest):
         test.cmd('az dataprotection backup-vault create '
                 '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
                 '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type "SystemAssigned" '
-                '--soft-delete-state "Off" --immutability-state "Locked"',
+                '--immutability-state "Locked"',
                 checks=[
                     test.check('name', "{vaultName}"),
                     test.check('identity.type', "SystemAssigned"),
-                    test.check('properties.securitySettings.softDeleteSettings.state', "Off"),
+                    test.check('properties.securitySettings.softDeleteSettings.state', "On"),
+                    test.check('properties.securitySettings.softDeleteSettings.retentionDurationInDays', 14.0),
                     test.check('properties.securitySettings.immutabilitySettings.state', "Locked"),
                     test.check('properties.storageSettings[0].datastoreType', "VaultStore"),
                     test.check('properties.storageSettings[0].type', "LocallyRedundant")

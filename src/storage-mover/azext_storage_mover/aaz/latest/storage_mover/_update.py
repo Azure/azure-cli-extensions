@@ -15,18 +15,20 @@ from azure.cli.core.aaz import *
     "storage-mover update",
 )
 class Update(AAZCommand):
-    """Update properties for a Storage Mover resource. Properties not specified in the request body will be unchanged.
+    """Update a top-level Storage Mover resource.
 
     :example: storage-mover update
         az storage-mover update -g {rg} -n {mover_name} --tags {{key2:value2}} --description ExampleDesc2
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}", "2023-07-01-preview"],
         ]
     }
+
+    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -61,6 +63,7 @@ class Update(AAZCommand):
             options=["--description"],
             arg_group="Properties",
             help="A description for the Storage Mover.",
+            nullable=True,
         )
 
         # define Arg Group "StorageMover"
@@ -70,15 +73,23 @@ class Update(AAZCommand):
             options=["--tags"],
             arg_group="StorageMover",
             help="Resource tags.",
+            nullable=True,
         )
 
         tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
+        tags.Element = AAZStrArg(
+            nullable=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.StorageMoversUpdate(ctx=self.ctx)()
+        self.StorageMoversGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
+        self.InstanceUpdateByJson(ctx=self.ctx)()
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
+        self.StorageMoversCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -89,11 +100,19 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class StorageMoversUpdate(AAZHttpOperation):
+    class StorageMoversGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -113,7 +132,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PATCH"
+            return "GET"
 
         @property
         def error_format(self):
@@ -141,7 +160,90 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-07-01-preview",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+            _UpdateHelper._build_schema_storage_mover_read(cls._schema_on_200)
+
+            return cls._schema_on_200
+
+    class StorageMoversCreateOrUpdate(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StorageMover/storageMovers/{storageMoverName}",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "PUT"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "storageMoverName", self.ctx.args.storage_mover_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }
@@ -163,19 +265,8 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+                value=self.ctx.vars.instance,
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("description", AAZStrType, ".description")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -195,64 +286,121 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.description = AAZStrType()
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
+            _UpdateHelper._build_schema_storage_mover_read(cls._schema_on_200)
 
             return cls._schema_on_200
+
+    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance(self.ctx.vars.instance)
+
+        def _update_instance(self, instance):
+            _instance_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                value=instance,
+                typ=AAZObjectType
+            )
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("tags", AAZDictType, ".tags")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("description", AAZStrType, ".description")
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
+
+            return _instance_value
+
+    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance_by_generic(
+                self.ctx.vars.instance,
+                self.ctx.generic_update_args
+            )
 
 
 class _UpdateHelper:
     """Helper class for Update"""
+
+    _schema_storage_mover_read = None
+
+    @classmethod
+    def _build_schema_storage_mover_read(cls, _schema):
+        if cls._schema_storage_mover_read is not None:
+            _schema.id = cls._schema_storage_mover_read.id
+            _schema.location = cls._schema_storage_mover_read.location
+            _schema.name = cls._schema_storage_mover_read.name
+            _schema.properties = cls._schema_storage_mover_read.properties
+            _schema.system_data = cls._schema_storage_mover_read.system_data
+            _schema.tags = cls._schema_storage_mover_read.tags
+            _schema.type = cls._schema_storage_mover_read.type
+            return
+
+        cls._schema_storage_mover_read = _schema_storage_mover_read = AAZObjectType()
+
+        storage_mover_read = _schema_storage_mover_read
+        storage_mover_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        storage_mover_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        storage_mover_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        storage_mover_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        storage_mover_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        storage_mover_read.tags = AAZDictType()
+        storage_mover_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_storage_mover_read.properties
+        properties.description = AAZStrType()
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+
+        system_data = _schema_storage_mover_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        tags = _schema_storage_mover_read.tags
+        tags.Element = AAZStrType()
+
+        _schema.id = cls._schema_storage_mover_read.id
+        _schema.location = cls._schema_storage_mover_read.location
+        _schema.name = cls._schema_storage_mover_read.name
+        _schema.properties = cls._schema_storage_mover_read.properties
+        _schema.system_data = cls._schema_storage_mover_read.system_data
+        _schema.tags = cls._schema_storage_mover_read.tags
+        _schema.type = cls._schema_storage_mover_read.type
 
 
 __all__ = ["Update"]

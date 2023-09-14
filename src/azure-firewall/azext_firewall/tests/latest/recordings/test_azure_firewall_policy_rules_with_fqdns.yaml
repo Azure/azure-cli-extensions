@@ -13,21 +13,21 @@ interactions:
       ParameterSetName:
       - -n -g --ip-addresses
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_firewall_policy000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001","name":"cli_test_azure_firewall_policy000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","test":"test_azure_firewall_policy_rules_with_fqdns","date":"2023-05-09T01:52:14Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001","name":"cli_test_azure_firewall_policy000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","test":"test_azure_firewall_policy_rules_with_fqdns","date":"2023-08-04T08:55:58Z","module":"azure-firewall"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '404'
+      - '430'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:52:20 GMT
+      - Fri, 04 Aug 2023 08:56:01 GMT
       expires:
       - '-1'
       pragma:
@@ -59,22 +59,24 @@ interactions:
       ParameterSetName:
       - -n -g --ip-addresses
       User-Agent:
-      - python/3.9.5 (Windows-10-10.0.22621-SP0) msrest/0.7.1 msrest_azure/0.6.4 azure-mgmt-network/7.0.0
-        Azure-SDK-For-Python AZURECLI/2.48.1
+      - python/3.10.9 (Windows-10-10.0.22621-SP0) msrest/0.7.1 msrest_azure/0.6.4
+        azure-mgmt-network/7.0.0 Azure-SDK-For-Python AZURECLI/2.50.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup?api-version=2019-09-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"firewalls\": [],\r\n    \"firewallPolicies\":
-        [],\r\n    \"ipAddresses\": [\r\n      \"10.0.0.0\",\r\n      \"10.0.0.1\"\r\n
-        \   ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\",\r\n
-        \ \"name\": \"sourceipgroup\",\r\n  \"type\": \"Microsoft.Network/IpGroups\",\r\n
-        \ \"etag\": \"373edc77-696f-4207-99fa-81c981df57a4\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"firewalls\": [],\r\n    \"firewallPolicies\"\
+        : [],\r\n    \"ipAddresses\": [\r\n      \"10.0.0.0\",\r\n      \"10.0.0.1\"\
+        \r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\"\
+        : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        ,\r\n  \"name\": \"sourceipgroup\",\r\n  \"type\": \"Microsoft.Network/IpGroups\"\
+        ,\r\n  \"etag\": \"0c7560d0-2323-4596-b2c3-d995acd9f466\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/68389175-552b-42fe-81c1-336179dcd3bf?api-version=2019-09-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/4b543122-12c8-42a5-8a26-94ffe771e7c0?api-version=2019-09-01
       cache-control:
       - no-cache
       content-length:
@@ -82,7 +84,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:52:25 GMT
+      - Fri, 04 Aug 2023 08:56:05 GMT
       expires:
       - '-1'
       pragma:
@@ -94,7 +96,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1195'
     status:
       code: 201
       message: Created
@@ -112,10 +114,10 @@ interactions:
       ParameterSetName:
       - -n -g --ip-addresses
       User-Agent:
-      - python/3.9.5 (Windows-10-10.0.22621-SP0) msrest/0.7.1 msrest_azure/0.6.4 azure-mgmt-network/7.0.0
-        Azure-SDK-For-Python AZURECLI/2.48.1
+      - python/3.10.9 (Windows-10-10.0.22621-SP0) msrest/0.7.1 msrest_azure/0.6.4
+        azure-mgmt-network/7.0.0 Azure-SDK-For-Python AZURECLI/2.50.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/68389175-552b-42fe-81c1-336179dcd3bf?api-version=2019-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/4b543122-12c8-42a5-8a26-94ffe771e7c0?api-version=2019-09-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -127,7 +129,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:52:36 GMT
+      - Fri, 04 Aug 2023 08:56:16 GMT
       expires:
       - '-1'
       pragma:
@@ -159,17 +161,19 @@ interactions:
       ParameterSetName:
       - -n -g --ip-addresses
       User-Agent:
-      - python/3.9.5 (Windows-10-10.0.22621-SP0) msrest/0.7.1 msrest_azure/0.6.4 azure-mgmt-network/7.0.0
-        Azure-SDK-For-Python AZURECLI/2.48.1
+      - python/3.10.9 (Windows-10-10.0.22621-SP0) msrest/0.7.1 msrest_azure/0.6.4
+        azure-mgmt-network/7.0.0 Azure-SDK-For-Python AZURECLI/2.50.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup?api-version=2019-09-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"firewalls\": [],\r\n    \"firewallPolicies\":
-        [],\r\n    \"ipAddresses\": [\r\n      \"10.0.0.0\",\r\n      \"10.0.0.1\"\r\n
-        \   ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\",\r\n
-        \ \"name\": \"sourceipgroup\",\r\n  \"type\": \"Microsoft.Network/IpGroups\",\r\n
-        \ \"etag\": \"373edc77-696f-4207-99fa-81c981df57a4\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"firewalls\": [],\r\n    \"firewallPolicies\"\
+        : [],\r\n    \"ipAddresses\": [\r\n      \"10.0.0.0\",\r\n      \"10.0.0.1\"\
+        \r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\"\
+        : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        ,\r\n  \"name\": \"sourceipgroup\",\r\n  \"type\": \"Microsoft.Network/IpGroups\"\
+        ,\r\n  \"etag\": \"0c7560d0-2323-4596-b2c3-d995acd9f466\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -178,9 +182,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:52:36 GMT
+      - Fri, 04 Aug 2023 08:56:16 GMT
       etag:
-      - '"373edc77-696f-4207-99fa-81c981df57a4"'
+      - '"0c7560d0-2323-4596-b2c3-d995acd9f466"'
       expires:
       - '-1'
       pragma:
@@ -217,22 +221,23 @@ interactions:
       ParameterSetName:
       - --resource-group --location --name --dns-servers --enable-dns-proxy
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
-        \   },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n
-        \   \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\":
-        {\r\n      \"servers\": [\r\n        \"10.0.0.2\",\r\n        \"10.0.0.3\"\r\n
-        \     ],\r\n      \"enableProxy\": true\r\n    },\r\n    \"provisioningState\":
-        \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"eed97db5-ed99-4c59-ba42-8c8c35e047c7\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":\
+        \ [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n\
+        \    \"dnsSettings\": {\r\n      \"servers\": [\r\n        \"10.0.0.2\",\r\
+        \n        \"10.0.0.3\"\r\n      ],\r\n      \"enableProxy\": true\r\n    },\r\
+        \n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
+        ,\r\n  \"etag\": \"e015fc9e-3d99-45d6-9fdd-679fd7265f60\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/ed1e53c9-9834-4909-9e53-3988f59ba894?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/7cce394d-a0d1-472d-97bd-a782b479606d?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -240,7 +245,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:52:39 GMT
+      - Fri, 04 Aug 2023 08:56:22 GMT
       expires:
       - '-1'
       pragma:
@@ -270,9 +275,9 @@ interactions:
       ParameterSetName:
       - --resource-group --location --name --dns-servers --enable-dns-proxy
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/ed1e53c9-9834-4909-9e53-3988f59ba894?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/7cce394d-a0d1-472d-97bd-a782b479606d?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -284,7 +289,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:52:40 GMT
+      - Fri, 04 Aug 2023 08:56:22 GMT
       expires:
       - '-1'
       pragma:
@@ -316,19 +321,20 @@ interactions:
       ParameterSetName:
       - --resource-group --location --name --dns-servers --enable-dns-proxy
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
-        \   },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n
-        \   \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\":
-        {\r\n      \"servers\": [\r\n        \"10.0.0.2\",\r\n        \"10.0.0.3\"\r\n
-        \     ],\r\n      \"enableProxy\": true\r\n    },\r\n    \"provisioningState\":
-        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"eed97db5-ed99-4c59-ba42-8c8c35e047c7\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":\
+        \ [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n\
+        \    \"dnsSettings\": {\r\n      \"servers\": [\r\n        \"10.0.0.2\",\r\
+        \n        \"10.0.0.3\"\r\n      ],\r\n      \"enableProxy\": true\r\n    },\r\
+        \n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
+        ,\r\n  \"etag\": \"e015fc9e-3d99-45d6-9fdd-679fd7265f60\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -337,9 +343,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:52:40 GMT
+      - Fri, 04 Aug 2023 08:56:22 GMT
       etag:
-      - '"eed97db5-ed99-4c59-ba42-8c8c35e047c7"'
+      - '"e015fc9e-3d99-45d6-9fdd-679fd7265f60"'
       expires:
       - '-1'
       pragma:
@@ -375,18 +381,19 @@ interactions:
       ParameterSetName:
       - -g --priority --policy-name -n
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
-        [],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
-        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"49057f4c-161f-49ea-8577-6d807115a2d1\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\"\
+        : [],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
+        ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
+        ,\r\n  \"etag\": \"6e38a7fa-48fc-4e07-b029-601ba7ba7855\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/d8e9b427-05e3-44a2-a655-10faf1d2b64b?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/c9f0fde7-76c7-4276-9387-923fa5da2e37?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -394,7 +401,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:52:42 GMT
+      - Fri, 04 Aug 2023 08:56:25 GMT
       expires:
       - '-1'
       pragma:
@@ -406,7 +413,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1196'
     status:
       code: 201
       message: Created
@@ -424,9 +431,9 @@ interactions:
       ParameterSetName:
       - -g --priority --policy-name -n
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/d8e9b427-05e3-44a2-a655-10faf1d2b64b?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/c9f0fde7-76c7-4276-9387-923fa5da2e37?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -438,7 +445,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:52:42 GMT
+      - Fri, 04 Aug 2023 08:56:25 GMT
       expires:
       - '-1'
       pragma:
@@ -470,9 +477,9 @@ interactions:
       ParameterSetName:
       - -g --priority --policy-name -n
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/d8e9b427-05e3-44a2-a655-10faf1d2b64b?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/c9f0fde7-76c7-4276-9387-923fa5da2e37?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -484,7 +491,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:52:53 GMT
+      - Fri, 04 Aug 2023 08:56:35 GMT
       expires:
       - '-1'
       pragma:
@@ -516,15 +523,17 @@ interactions:
       ParameterSetName:
       - -g --priority --policy-name -n
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
-        [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
-        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"37ca4f9a-05ab-44e5-b747-2e42b54abd7b\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\"\
+        : [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"\
+        /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
+        ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
+        ,\r\n  \"etag\": \"f15f6d96-08f4-4029-9d43-1f8ec90cc4e1\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -533,9 +542,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:52:54 GMT
+      - Fri, 04 Aug 2023 08:56:36 GMT
       etag:
-      - '"37ca4f9a-05ab-44e5-b747-2e42b54abd7b"'
+      - '"f15f6d96-08f4-4029-9d43-1f8ec90cc4e1"'
       expires:
       - '-1'
       pragma:
@@ -569,15 +578,17 @@ interactions:
         --rule-name --rule-type --description --destination-fqdns --source-ip-groups
         --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
-        [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
-        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"37ca4f9a-05ab-44e5-b747-2e42b54abd7b\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\"\
+        : [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"\
+        /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
+        ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
+        ,\r\n  \"etag\": \"f15f6d96-08f4-4029-9d43-1f8ec90cc4e1\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -586,9 +597,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:52:54 GMT
+      - Fri, 04 Aug 2023 08:56:38 GMT
       etag:
-      - '"37ca4f9a-05ab-44e5-b747-2e42b54abd7b"'
+      - '"f15f6d96-08f4-4029-9d43-1f8ec90cc4e1"'
       expires:
       - '-1'
       pragma:
@@ -609,11 +620,10 @@ interactions:
 - request:
     body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup",
       "name": "myclirulecollectiongroup", "properties": {"priority": 10000, "ruleCollections":
-      [{"ruleCollectionType": "FirewallPolicyFilterRuleCollection", "name": "filter-collection-1",
-      "priority": 15000, "action": {"type": "Allow"}, "rules": [{"name": "network-rule",
-      "description": "test", "ruleType": "NetworkRule", "ipProtocols": ["Any", "ICMP"],
-      "destinationPorts": ["12003", "12004"], "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
-      "destinationFqdns": ["www.bing.com"]}]}]}}'
+      [{"name": "filter-collection-1", "priority": 15000, "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
+      "action": {"type": "Allow"}, "rules": [{"description": "test", "name": "network-rule",
+      "ruleType": "NetworkRule", "destinationFqdns": ["www.bing.com"], "destinationPorts":
+      ["12003", "12004"], "ipProtocols": ["Any", "ICMP"], "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"]}]}]}}'
     headers:
       Accept:
       - application/json
@@ -632,31 +642,33 @@ interactions:
         --rule-name --rule-type --description --destination-fqdns --source-ip-groups
         --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
-        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
-        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
-        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\":
-        false,\r\n            \"name\": \"network-rule\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
-        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
-        \     }\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
-        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"0bc66eda-1913-47b5-bb8b-bbc96aea5594\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\"\
+        : [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.bing.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          }\r\n        ],\r\n        \"name\": \"filter-collection-1\"\
+        ,\r\n        \"priority\": 15000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
+        : \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
+        ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
+        ,\r\n  \"etag\": \"4703cbb3-24c2-443d-8bfc-8d654c115744\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/5fc0bcce-2d3f-4915-8f22-c6ff706f6fa9?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/4dc88e83-78a6-40c4-a105-376a6dbcf909?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -664,7 +676,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:52:55 GMT
+      - Fri, 04 Aug 2023 08:56:39 GMT
       expires:
       - '-1'
       pragma:
@@ -680,7 +692,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -700,9 +712,9 @@ interactions:
         --rule-name --rule-type --description --destination-fqdns --source-ip-groups
         --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/5fc0bcce-2d3f-4915-8f22-c6ff706f6fa9?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/4dc88e83-78a6-40c4-a105-376a6dbcf909?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -714,7 +726,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:52:55 GMT
+      - Fri, 04 Aug 2023 08:56:39 GMT
       expires:
       - '-1'
       pragma:
@@ -748,9 +760,9 @@ interactions:
         --rule-name --rule-type --description --destination-fqdns --source-ip-groups
         --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/5fc0bcce-2d3f-4915-8f22-c6ff706f6fa9?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/4dc88e83-78a6-40c4-a105-376a6dbcf909?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -762,7 +774,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:53:05 GMT
+      - Fri, 04 Aug 2023 08:56:49 GMT
       expires:
       - '-1'
       pragma:
@@ -796,28 +808,30 @@ interactions:
         --rule-name --rule-type --description --destination-fqdns --source-ip-groups
         --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
-        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
-        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
-        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\":
-        false,\r\n            \"name\": \"network-rule\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
-        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
-        \     }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
-        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"12e34e2a-bd9b-4ed1-a684-ecf862d1231f\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\"\
+        : [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.bing.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          }\r\n        ],\r\n        \"name\": \"filter-collection-1\"\
+        ,\r\n        \"priority\": 15000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
+        : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
+        ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
+        ,\r\n  \"etag\": \"8102b9da-218f-4e64-aacb-3917771697b6\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -826,9 +840,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:53:06 GMT
+      - Fri, 04 Aug 2023 08:56:49 GMT
       etag:
-      - '"12e34e2a-bd9b-4ed1-a684-ecf862d1231f"'
+      - '"8102b9da-218f-4e64-aacb-3917771697b6"'
       expires:
       - '-1'
       pragma:
@@ -861,28 +875,30 @@ interactions:
       - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
         --description --destination-fqdns --source-ip-groups --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
-        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
-        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
-        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\":
-        false,\r\n            \"name\": \"network-rule\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
-        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
-        \     }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
-        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"12e34e2a-bd9b-4ed1-a684-ecf862d1231f\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\"\
+        : [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.bing.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          }\r\n        ],\r\n        \"name\": \"filter-collection-1\"\
+        ,\r\n        \"priority\": 15000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
+        : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
+        ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
+        ,\r\n  \"etag\": \"8102b9da-218f-4e64-aacb-3917771697b6\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -891,9 +907,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:53:07 GMT
+      - Fri, 04 Aug 2023 08:56:50 GMT
       etag:
-      - '"12e34e2a-bd9b-4ed1-a684-ecf862d1231f"'
+      - '"8102b9da-218f-4e64-aacb-3917771697b6"'
       expires:
       - '-1'
       pragma:
@@ -914,15 +930,14 @@ interactions:
 - request:
     body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup",
       "name": "myclirulecollectiongroup", "properties": {"priority": 10000, "ruleCollections":
-      [{"ruleCollectionType": "FirewallPolicyFilterRuleCollection", "name": "filter-collection-1",
-      "priority": 15000, "action": {"type": "Allow"}, "rules": [{"name": "network-rule",
-      "description": "test", "ruleType": "NetworkRule", "ipProtocols": ["Any", "ICMP"],
-      "sourceAddresses": [], "destinationAddresses": [], "destinationPorts": ["12003",
-      "12004"], "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
-      "destinationIpGroups": [], "destinationFqdns": ["www.bing.com"]}, {"name": "network-rule-2",
-      "description": "test", "ruleType": "NetworkRule", "ipProtocols": ["Any", "ICMP"],
-      "destinationPorts": ["12003", "12004"], "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
-      "destinationFqdns": ["www.google.com"]}]}]}}'
+      [{"name": "filter-collection-1", "priority": 15000, "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
+      "action": {"type": "Allow"}, "rules": [{"description": "test", "name": "network-rule",
+      "ruleType": "NetworkRule", "destinationAddresses": [], "destinationFqdns": ["www.bing.com"],
+      "destinationIpGroups": [], "destinationPorts": ["12003", "12004"], "ipProtocols":
+      ["Any", "ICMP"], "sourceAddresses": [], "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"]},
+      {"description": "test", "name": "network-rule-2", "ruleType": "NetworkRule",
+      "destinationFqdns": ["www.google.com"], "destinationPorts": ["12003", "12004"],
+      "ipProtocols": ["Any", "ICMP"], "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"]}]}]}}'
     headers:
       Accept:
       - application/json
@@ -940,40 +955,43 @@ interactions:
       - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
         --description --destination-fqdns --source-ip-groups --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
-        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
-        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
-        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\":
-        false,\r\n            \"name\": \"network-rule\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          },\r\n          {\r\n
-        \           \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\": false,\r\n
-        \           \"name\": \"network-rule-2\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.google.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
-        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
-        \     }\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
-        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"3919b81d-e4d6-49ef-8f41-cda16fff1165\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\"\
+        : [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.bing.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          },\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule-2\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.google.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          }\r\n        ],\r\n        \"name\": \"filter-collection-1\"\
+        ,\r\n        \"priority\": 15000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
+        : \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
+        ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
+        ,\r\n  \"etag\": \"84b1da5c-5719-4f42-83f3-77e816f292c5\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/5aa53bb2-b2e1-4405-8fa9-397987c3e245?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/2cccc458-b6de-41e6-ad16-74b4feb2a2c4?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -981,7 +999,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:53:08 GMT
+      - Fri, 04 Aug 2023 08:56:52 GMT
       expires:
       - '-1'
       pragma:
@@ -997,7 +1015,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -1016,9 +1034,9 @@ interactions:
       - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
         --description --destination-fqdns --source-ip-groups --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/5aa53bb2-b2e1-4405-8fa9-397987c3e245?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/2cccc458-b6de-41e6-ad16-74b4feb2a2c4?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1030,7 +1048,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:53:08 GMT
+      - Fri, 04 Aug 2023 08:56:52 GMT
       expires:
       - '-1'
       pragma:
@@ -1063,9 +1081,9 @@ interactions:
       - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
         --description --destination-fqdns --source-ip-groups --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/5aa53bb2-b2e1-4405-8fa9-397987c3e245?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/2cccc458-b6de-41e6-ad16-74b4feb2a2c4?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1077,7 +1095,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:53:19 GMT
+      - Fri, 04 Aug 2023 08:57:03 GMT
       expires:
       - '-1'
       pragma:
@@ -1110,37 +1128,40 @@ interactions:
       - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
         --description --destination-fqdns --source-ip-groups --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
-        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
-        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
-        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\":
-        false,\r\n            \"name\": \"network-rule\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          },\r\n          {\r\n
-        \           \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\": false,\r\n
-        \           \"name\": \"network-rule-2\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.google.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
-        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
-        \     }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
-        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"246f1528-3694-4bee-8f34-09a41352ace1\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\"\
+        : [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.bing.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          },\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule-2\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.google.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          }\r\n        ],\r\n        \"name\": \"filter-collection-1\"\
+        ,\r\n        \"priority\": 15000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
+        : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
+        ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
+        ,\r\n  \"etag\": \"45c4a6ca-5d0b-4804-a797-954a6fe85af7\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1149,9 +1170,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:53:20 GMT
+      - Fri, 04 Aug 2023 08:57:03 GMT
       etag:
-      - '"246f1528-3694-4bee-8f34-09a41352ace1"'
+      - '"45c4a6ca-5d0b-4804-a797-954a6fe85af7"'
       expires:
       - '-1'
       pragma:
@@ -1185,37 +1206,40 @@ interactions:
         --rule-name --description --destination-addresses --source-ip-groups --translated-address
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
-        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
-        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
-        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\":
-        false,\r\n            \"name\": \"network-rule\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          },\r\n          {\r\n
-        \           \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\": false,\r\n
-        \           \"name\": \"network-rule-2\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.google.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
-        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
-        \     }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
-        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"246f1528-3694-4bee-8f34-09a41352ace1\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\"\
+        : [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.bing.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          },\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule-2\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.google.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          }\r\n        ],\r\n        \"name\": \"filter-collection-1\"\
+        ,\r\n        \"priority\": 15000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
+        : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
+        ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
+        ,\r\n  \"etag\": \"45c4a6ca-5d0b-4804-a797-954a6fe85af7\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1224,9 +1248,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:53:20 GMT
+      - Fri, 04 Aug 2023 08:57:04 GMT
       etag:
-      - '"246f1528-3694-4bee-8f34-09a41352ace1"'
+      - '"45c4a6ca-5d0b-4804-a797-954a6fe85af7"'
       expires:
       - '-1'
       pragma:
@@ -1247,21 +1271,20 @@ interactions:
 - request:
     body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup",
       "name": "myclirulecollectiongroup", "properties": {"priority": 10000, "ruleCollections":
-      [{"ruleCollectionType": "FirewallPolicyFilterRuleCollection", "name": "filter-collection-1",
-      "priority": 15000, "action": {"type": "Allow"}, "rules": [{"name": "network-rule",
-      "description": "test", "ruleType": "NetworkRule", "ipProtocols": ["Any", "ICMP"],
-      "sourceAddresses": [], "destinationAddresses": [], "destinationPorts": ["12003",
-      "12004"], "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
-      "destinationIpGroups": [], "destinationFqdns": ["www.bing.com"]}, {"name": "network-rule-2",
-      "description": "test", "ruleType": "NetworkRule", "ipProtocols": ["Any", "ICMP"],
-      "sourceAddresses": [], "destinationAddresses": [], "destinationPorts": ["12003",
-      "12004"], "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
-      "destinationIpGroups": [], "destinationFqdns": ["www.google.com"]}]}, {"ruleCollectionType":
-      "FirewallPolicyNatRuleCollection", "name": "nat-collection", "priority": 10005,
-      "action": {"type": "DNAT"}, "rules": [{"name": "nat-rule", "description": "test",
-      "ruleType": "NatRule", "ipProtocols": ["TCP", "UDP"], "destinationAddresses":
-      ["202.120.36.15"], "destinationPorts": ["12001"], "translatedAddress": "128.1.1.1",
-      "translatedPort": "1234", "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"]}]}]}}'
+      [{"name": "filter-collection-1", "priority": 15000, "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
+      "action": {"type": "Allow"}, "rules": [{"description": "test", "name": "network-rule",
+      "ruleType": "NetworkRule", "destinationAddresses": [], "destinationFqdns": ["www.bing.com"],
+      "destinationIpGroups": [], "destinationPorts": ["12003", "12004"], "ipProtocols":
+      ["Any", "ICMP"], "sourceAddresses": [], "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"]},
+      {"description": "test", "name": "network-rule-2", "ruleType": "NetworkRule",
+      "destinationAddresses": [], "destinationFqdns": ["www.google.com"], "destinationIpGroups":
+      [], "destinationPorts": ["12003", "12004"], "ipProtocols": ["Any", "ICMP"],
+      "sourceAddresses": [], "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"]}]},
+      {"name": "nat-collection", "priority": 10005, "ruleCollectionType": "FirewallPolicyNatRuleCollection",
+      "action": {"type": "DNAT"}, "rules": [{"description": "test", "name": "nat-rule",
+      "ruleType": "NatRule", "destinationAddresses": ["202.120.36.15"], "destinationPorts":
+      ["12001"], "ipProtocols": ["TCP", "UDP"], "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
+      "translatedAddress": "128.1.1.1", "translatedPort": "1234"}]}]}}'
     headers:
       Accept:
       - application/json
@@ -1280,51 +1303,56 @@ interactions:
         --rule-name --description --destination-addresses --source-ip-groups --translated-address
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
-        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
-        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
-        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\":
-        false,\r\n            \"name\": \"network-rule\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          },\r\n          {\r\n
-        \           \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\": false,\r\n
-        \           \"name\": \"network-rule-2\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.google.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
-        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
-        \     },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\",\r\n
-        \       \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\n        \"rules\":
-        [\r\n          {\r\n            \"ruleType\": \"NatRule\",\r\n            \"name\":
-        \"nat-rule\",\r\n            \"description\": \"test\",\r\n            \"translatedAddress\":
-        \"128.1.1.1\",\r\n            \"translatedPort\": \"1234\",\r\n            \"ipProtocols\":
-        [\r\n              \"TCP\",\r\n              \"UDP\"\r\n            ],\r\n
-        \           \"sourceAddresses\": [],\r\n            \"sourceIpGroups\": [\r\n
-        \             \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [\r\n              \"202.120.36.15\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12001\"\r\n
-        \           ]\r\n          }\r\n        ],\r\n        \"name\": \"nat-collection\",\r\n
-        \       \"priority\": 10005\r\n      }\r\n    ],\r\n    \"provisioningState\":
-        \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
-        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"2ff2662f-ed9d-488b-8c12-446edc183994\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\"\
+        : [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.bing.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          },\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule-2\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.google.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          }\r\n        ],\r\n        \"name\": \"filter-collection-1\"\
+        ,\r\n        \"priority\": 15000\r\n      },\r\n      {\r\n        \"ruleCollectionType\"\
+        : \"FirewallPolicyNatRuleCollection\",\r\n        \"action\": {\r\n      \
+        \    \"type\": \"Dnat\"\r\n        },\r\n        \"rules\": [\r\n        \
+        \  {\r\n            \"ruleType\": \"NatRule\",\r\n            \"name\": \"\
+        nat-rule\",\r\n            \"description\": \"test\",\r\n            \"translatedAddress\"\
+        : \"128.1.1.1\",\r\n            \"translatedPort\": \"1234\",\r\n        \
+        \    \"ipProtocols\": [\r\n              \"TCP\",\r\n              \"UDP\"\
+        \r\n            ],\r\n            \"sourceAddresses\": [],\r\n           \
+        \ \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
+        \      \"202.120.36.15\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12001\"\r\n            ]\r\n          }\r\n       \
+        \ ],\r\n        \"name\": \"nat-collection\",\r\n        \"priority\": 10005\r\
+        \n      }\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n\
+        \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
+        ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
+        ,\r\n  \"etag\": \"676b1d31-d203-49b9-b13b-c01545dee26e\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/cdc59836-d447-47c7-9f77-81da7e597eef?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/33c84a38-41b6-4841-a090-1be3bce696eb?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -1332,7 +1360,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:53:21 GMT
+      - Fri, 04 Aug 2023 08:57:05 GMT
       expires:
       - '-1'
       pragma:
@@ -1348,7 +1376,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1190'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -1368,9 +1396,9 @@ interactions:
         --rule-name --description --destination-addresses --source-ip-groups --translated-address
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/cdc59836-d447-47c7-9f77-81da7e597eef?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/33c84a38-41b6-4841-a090-1be3bce696eb?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1382,7 +1410,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:53:21 GMT
+      - Fri, 04 Aug 2023 08:57:06 GMT
       expires:
       - '-1'
       pragma:
@@ -1416,9 +1444,9 @@ interactions:
         --rule-name --description --destination-addresses --source-ip-groups --translated-address
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/cdc59836-d447-47c7-9f77-81da7e597eef?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/33c84a38-41b6-4841-a090-1be3bce696eb?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1430,7 +1458,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:53:32 GMT
+      - Fri, 04 Aug 2023 08:57:16 GMT
       expires:
       - '-1'
       pragma:
@@ -1464,48 +1492,53 @@ interactions:
         --rule-name --description --destination-addresses --source-ip-groups --translated-address
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
-        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
-        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
-        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\":
-        false,\r\n            \"name\": \"network-rule\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          },\r\n          {\r\n
-        \           \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\": false,\r\n
-        \           \"name\": \"network-rule-2\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.google.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
-        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
-        \     },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\",\r\n
-        \       \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\n        \"rules\":
-        [\r\n          {\r\n            \"ruleType\": \"NatRule\",\r\n            \"name\":
-        \"nat-rule\",\r\n            \"description\": \"test\",\r\n            \"translatedAddress\":
-        \"128.1.1.1\",\r\n            \"translatedPort\": \"1234\",\r\n            \"ipProtocols\":
-        [\r\n              \"TCP\",\r\n              \"UDP\"\r\n            ],\r\n
-        \           \"sourceAddresses\": [],\r\n            \"sourceIpGroups\": [\r\n
-        \             \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [\r\n              \"202.120.36.15\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12001\"\r\n
-        \           ]\r\n          }\r\n        ],\r\n        \"name\": \"nat-collection\",\r\n
-        \       \"priority\": 10005\r\n      }\r\n    ],\r\n    \"provisioningState\":
-        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
-        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"227adb50-0d7e-4a04-9894-67525beebaa6\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\"\
+        : [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.bing.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          },\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule-2\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.google.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          }\r\n        ],\r\n        \"name\": \"filter-collection-1\"\
+        ,\r\n        \"priority\": 15000\r\n      },\r\n      {\r\n        \"ruleCollectionType\"\
+        : \"FirewallPolicyNatRuleCollection\",\r\n        \"action\": {\r\n      \
+        \    \"type\": \"Dnat\"\r\n        },\r\n        \"rules\": [\r\n        \
+        \  {\r\n            \"ruleType\": \"NatRule\",\r\n            \"name\": \"\
+        nat-rule\",\r\n            \"description\": \"test\",\r\n            \"translatedAddress\"\
+        : \"128.1.1.1\",\r\n            \"translatedPort\": \"1234\",\r\n        \
+        \    \"ipProtocols\": [\r\n              \"TCP\",\r\n              \"UDP\"\
+        \r\n            ],\r\n            \"sourceAddresses\": [],\r\n           \
+        \ \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
+        \      \"202.120.36.15\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12001\"\r\n            ]\r\n          }\r\n       \
+        \ ],\r\n        \"name\": \"nat-collection\",\r\n        \"priority\": 10005\r\
+        \n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n\
+        \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
+        ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
+        ,\r\n  \"etag\": \"ce5e2fb6-5c96-49fb-9844-3d621c0af55b\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1514,9 +1547,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:53:33 GMT
+      - Fri, 04 Aug 2023 08:57:16 GMT
       etag:
-      - '"227adb50-0d7e-4a04-9894-67525beebaa6"'
+      - '"ce5e2fb6-5c96-49fb-9844-3d621c0af55b"'
       expires:
       - '-1'
       pragma:
@@ -1550,48 +1583,53 @@ interactions:
         --description --destination-addresses --source-ip-groups --translated-fqdn
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
-        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
-        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
-        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\":
-        false,\r\n            \"name\": \"network-rule\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          },\r\n          {\r\n
-        \           \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\": false,\r\n
-        \           \"name\": \"network-rule-2\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.google.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
-        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
-        \     },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\",\r\n
-        \       \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\n        \"rules\":
-        [\r\n          {\r\n            \"ruleType\": \"NatRule\",\r\n            \"name\":
-        \"nat-rule\",\r\n            \"description\": \"test\",\r\n            \"translatedAddress\":
-        \"128.1.1.1\",\r\n            \"translatedPort\": \"1234\",\r\n            \"ipProtocols\":
-        [\r\n              \"TCP\",\r\n              \"UDP\"\r\n            ],\r\n
-        \           \"sourceAddresses\": [],\r\n            \"sourceIpGroups\": [\r\n
-        \             \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [\r\n              \"202.120.36.15\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12001\"\r\n
-        \           ]\r\n          }\r\n        ],\r\n        \"name\": \"nat-collection\",\r\n
-        \       \"priority\": 10005\r\n      }\r\n    ],\r\n    \"provisioningState\":
-        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
-        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"227adb50-0d7e-4a04-9894-67525beebaa6\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\"\
+        : [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.bing.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          },\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule-2\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.google.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          }\r\n        ],\r\n        \"name\": \"filter-collection-1\"\
+        ,\r\n        \"priority\": 15000\r\n      },\r\n      {\r\n        \"ruleCollectionType\"\
+        : \"FirewallPolicyNatRuleCollection\",\r\n        \"action\": {\r\n      \
+        \    \"type\": \"Dnat\"\r\n        },\r\n        \"rules\": [\r\n        \
+        \  {\r\n            \"ruleType\": \"NatRule\",\r\n            \"name\": \"\
+        nat-rule\",\r\n            \"description\": \"test\",\r\n            \"translatedAddress\"\
+        : \"128.1.1.1\",\r\n            \"translatedPort\": \"1234\",\r\n        \
+        \    \"ipProtocols\": [\r\n              \"TCP\",\r\n              \"UDP\"\
+        \r\n            ],\r\n            \"sourceAddresses\": [],\r\n           \
+        \ \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
+        \      \"202.120.36.15\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12001\"\r\n            ]\r\n          }\r\n       \
+        \ ],\r\n        \"name\": \"nat-collection\",\r\n        \"priority\": 10005\r\
+        \n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n\
+        \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
+        ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
+        ,\r\n  \"etag\": \"ce5e2fb6-5c96-49fb-9844-3d621c0af55b\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1600,9 +1638,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:53:34 GMT
+      - Fri, 04 Aug 2023 08:57:18 GMT
       etag:
-      - '"227adb50-0d7e-4a04-9894-67525beebaa6"'
+      - '"ce5e2fb6-5c96-49fb-9844-3d621c0af55b"'
       expires:
       - '-1'
       pragma:
@@ -1623,25 +1661,25 @@ interactions:
 - request:
     body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup",
       "name": "myclirulecollectiongroup", "properties": {"priority": 10000, "ruleCollections":
-      [{"ruleCollectionType": "FirewallPolicyFilterRuleCollection", "name": "filter-collection-1",
-      "priority": 15000, "action": {"type": "Allow"}, "rules": [{"name": "network-rule",
-      "description": "test", "ruleType": "NetworkRule", "ipProtocols": ["Any", "ICMP"],
-      "sourceAddresses": [], "destinationAddresses": [], "destinationPorts": ["12003",
-      "12004"], "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
-      "destinationIpGroups": [], "destinationFqdns": ["www.bing.com"]}, {"name": "network-rule-2",
-      "description": "test", "ruleType": "NetworkRule", "ipProtocols": ["Any", "ICMP"],
-      "sourceAddresses": [], "destinationAddresses": [], "destinationPorts": ["12003",
-      "12004"], "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
-      "destinationIpGroups": [], "destinationFqdns": ["www.google.com"]}]}, {"ruleCollectionType":
-      "FirewallPolicyNatRuleCollection", "name": "nat-collection", "priority": 10005,
-      "action": {"type": "Dnat"}, "rules": [{"name": "nat-rule", "description": "test",
-      "ruleType": "NatRule", "ipProtocols": ["TCP", "UDP"], "sourceAddresses": [],
-      "destinationAddresses": ["202.120.36.15"], "destinationPorts": ["12001"], "translatedAddress":
-      "128.1.1.1", "translatedPort": "1234", "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"]},
-      {"name": "nat-rule-2", "description": "test", "ruleType": "NatRule", "ipProtocols":
-      ["TCP", "UDP"], "destinationAddresses": ["202.120.36.16"], "destinationPorts":
-      ["12000"], "translatedPort": "1234", "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
-      "translatedFqdn": "www.bing2.com"}]}]}}'
+      [{"name": "filter-collection-1", "priority": 15000, "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
+      "action": {"type": "Allow"}, "rules": [{"description": "test", "name": "network-rule",
+      "ruleType": "NetworkRule", "destinationAddresses": [], "destinationFqdns": ["www.bing.com"],
+      "destinationIpGroups": [], "destinationPorts": ["12003", "12004"], "ipProtocols":
+      ["Any", "ICMP"], "sourceAddresses": [], "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"]},
+      {"description": "test", "name": "network-rule-2", "ruleType": "NetworkRule",
+      "destinationAddresses": [], "destinationFqdns": ["www.google.com"], "destinationIpGroups":
+      [], "destinationPorts": ["12003", "12004"], "ipProtocols": ["Any", "ICMP"],
+      "sourceAddresses": [], "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"]}]},
+      {"name": "nat-collection", "priority": 10005, "ruleCollectionType": "FirewallPolicyNatRuleCollection",
+      "action": {"type": "Dnat"}, "rules": [{"description": "test", "name": "nat-rule",
+      "ruleType": "NatRule", "destinationAddresses": ["202.120.36.15"], "destinationPorts":
+      ["12001"], "ipProtocols": ["TCP", "UDP"], "sourceAddresses": [], "sourceIpGroups":
+      ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
+      "translatedAddress": "128.1.1.1", "translatedPort": "1234"}, {"description":
+      "test", "name": "nat-rule-2", "ruleType": "NatRule", "destinationAddresses":
+      ["202.120.36.16"], "destinationPorts": ["12000"], "ipProtocols": ["TCP", "UDP"],
+      "sourceIpGroups": ["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup"],
+      "translatedFqdn": "www.bing2.com", "translatedPort": "1234"}]}]}}'
     headers:
       Accept:
       - application/json
@@ -1660,59 +1698,65 @@ interactions:
         --description --destination-addresses --source-ip-groups --translated-fqdn
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
-        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
-        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
-        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\":
-        false,\r\n            \"name\": \"network-rule\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          },\r\n          {\r\n
-        \           \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\": false,\r\n
-        \           \"name\": \"network-rule-2\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.google.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
-        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
-        \     },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\",\r\n
-        \       \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\n        \"rules\":
-        [\r\n          {\r\n            \"ruleType\": \"NatRule\",\r\n            \"name\":
-        \"nat-rule\",\r\n            \"description\": \"test\",\r\n            \"translatedAddress\":
-        \"128.1.1.1\",\r\n            \"translatedPort\": \"1234\",\r\n            \"ipProtocols\":
-        [\r\n              \"TCP\",\r\n              \"UDP\"\r\n            ],\r\n
-        \           \"sourceAddresses\": [],\r\n            \"sourceIpGroups\": [\r\n
-        \             \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [\r\n              \"202.120.36.15\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12001\"\r\n
-        \           ]\r\n          },\r\n          {\r\n            \"ruleType\":
-        \"NatRule\",\r\n            \"name\": \"nat-rule-2\",\r\n            \"description\":
-        \"test\",\r\n            \"translatedFqdn\": \"www.bing2.com\",\r\n            \"translatedPort\":
-        \"1234\",\r\n            \"ipProtocols\": [\r\n              \"TCP\",\r\n
-        \             \"UDP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [\r\n              \"202.120.36.16\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12000\"\r\n
-        \           ]\r\n          }\r\n        ],\r\n        \"name\": \"nat-collection\",\r\n
-        \       \"priority\": 10005\r\n      }\r\n    ],\r\n    \"provisioningState\":
-        \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
-        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"e6a292fa-5072-4d2b-9447-c80051358fc6\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\"\
+        : [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.bing.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          },\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule-2\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.google.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          }\r\n        ],\r\n        \"name\": \"filter-collection-1\"\
+        ,\r\n        \"priority\": 15000\r\n      },\r\n      {\r\n        \"ruleCollectionType\"\
+        : \"FirewallPolicyNatRuleCollection\",\r\n        \"action\": {\r\n      \
+        \    \"type\": \"Dnat\"\r\n        },\r\n        \"rules\": [\r\n        \
+        \  {\r\n            \"ruleType\": \"NatRule\",\r\n            \"name\": \"\
+        nat-rule\",\r\n            \"description\": \"test\",\r\n            \"translatedAddress\"\
+        : \"128.1.1.1\",\r\n            \"translatedPort\": \"1234\",\r\n        \
+        \    \"ipProtocols\": [\r\n              \"TCP\",\r\n              \"UDP\"\
+        \r\n            ],\r\n            \"sourceAddresses\": [],\r\n           \
+        \ \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
+        \      \"202.120.36.15\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12001\"\r\n            ]\r\n          },\r\n      \
+        \    {\r\n            \"ruleType\": \"NatRule\",\r\n            \"name\":\
+        \ \"nat-rule-2\",\r\n            \"description\": \"test\",\r\n          \
+        \  \"translatedFqdn\": \"www.bing2.com\",\r\n            \"translatedPort\"\
+        : \"1234\",\r\n            \"ipProtocols\": [\r\n              \"TCP\",\r\n\
+        \              \"UDP\"\r\n            ],\r\n            \"sourceAddresses\"\
+        : [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
+        \      \"202.120.36.16\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12000\"\r\n            ]\r\n          }\r\n       \
+        \ ],\r\n        \"name\": \"nat-collection\",\r\n        \"priority\": 10005\r\
+        \n      }\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n\
+        \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
+        ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
+        ,\r\n  \"etag\": \"e4913a09-57af-49a4-90ca-2a51437d2ded\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/d5ee0723-b0e0-4b9f-a8e9-ac33363d3d38?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/11ec59e0-3c1b-46d3-a2f5-9c27b4185221?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -1720,7 +1764,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:53:35 GMT
+      - Fri, 04 Aug 2023 08:57:19 GMT
       expires:
       - '-1'
       pragma:
@@ -1736,7 +1780,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1193'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -1756,9 +1800,9 @@ interactions:
         --description --destination-addresses --source-ip-groups --translated-fqdn
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/d5ee0723-b0e0-4b9f-a8e9-ac33363d3d38?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/11ec59e0-3c1b-46d3-a2f5-9c27b4185221?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1770,7 +1814,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:53:35 GMT
+      - Fri, 04 Aug 2023 08:57:19 GMT
       expires:
       - '-1'
       pragma:
@@ -1804,9 +1848,9 @@ interactions:
         --description --destination-addresses --source-ip-groups --translated-fqdn
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/d5ee0723-b0e0-4b9f-a8e9-ac33363d3d38?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/11ec59e0-3c1b-46d3-a2f5-9c27b4185221?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1818,7 +1862,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:53:45 GMT
+      - Fri, 04 Aug 2023 08:57:29 GMT
       expires:
       - '-1'
       pragma:
@@ -1852,56 +1896,62 @@ interactions:
         --description --destination-addresses --source-ip-groups --translated-fqdn
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\":
-        [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\",\r\n
-        \       \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\n        \"rules\":
-        [\r\n          {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\":
-        false,\r\n            \"name\": \"network-rule\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.bing.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          },\r\n          {\r\n
-        \           \"ruleType\": \"NetworkRule\",\r\n            \"ipv6Rule\": false,\r\n
-        \           \"name\": \"network-rule-2\",\r\n            \"description\":
-        \"test\",\r\n            \"ipProtocols\": [\r\n              \"Any\",\r\n
-        \             \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [],\r\n            \"destinationIpGroups\":
-        [],\r\n            \"destinationFqdns\": [\r\n              \"www.google.com\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\n
-        \             \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n
-        \       \"name\": \"filter-collection-1\",\r\n        \"priority\": 15000\r\n
-        \     },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\",\r\n
-        \       \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\n        \"rules\":
-        [\r\n          {\r\n            \"ruleType\": \"NatRule\",\r\n            \"name\":
-        \"nat-rule\",\r\n            \"description\": \"test\",\r\n            \"translatedAddress\":
-        \"128.1.1.1\",\r\n            \"translatedPort\": \"1234\",\r\n            \"ipProtocols\":
-        [\r\n              \"TCP\",\r\n              \"UDP\"\r\n            ],\r\n
-        \           \"sourceAddresses\": [],\r\n            \"sourceIpGroups\": [\r\n
-        \             \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [\r\n              \"202.120.36.15\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12001\"\r\n
-        \           ]\r\n          },\r\n          {\r\n            \"ruleType\":
-        \"NatRule\",\r\n            \"name\": \"nat-rule-2\",\r\n            \"description\":
-        \"test\",\r\n            \"translatedFqdn\": \"www.bing2.com\",\r\n            \"translatedPort\":
-        \"1234\",\r\n            \"ipProtocols\": [\r\n              \"TCP\",\r\n
-        \             \"UDP\"\r\n            ],\r\n            \"sourceAddresses\":
-        [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\r\n
-        \           ],\r\n            \"destinationAddresses\": [\r\n              \"202.120.36.16\"\r\n
-        \           ],\r\n            \"destinationPorts\": [\r\n              \"12000\"\r\n
-        \           ]\r\n          }\r\n        ],\r\n        \"name\": \"nat-collection\",\r\n
-        \       \"priority\": 10005\r\n      }\r\n    ],\r\n    \"provisioningState\":
-        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\",\r\n
-        \ \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\",\r\n
-        \ \"etag\": \"b2b7b628-d600-45af-8da1-0b6683e72358\",\r\n  \"location\": \"westus2\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\"\
+        : [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.bing.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          },\r\n          {\r\n            \"ruleType\": \"NetworkRule\"\
+        ,\r\n            \"ipv6Rule\": false,\r\n            \"name\": \"network-rule-2\"\
+        ,\r\n            \"description\": \"test\",\r\n            \"ipProtocols\"\
+        : [\r\n              \"Any\",\r\n              \"ICMP\"\r\n            ],\r\
+        \n            \"sourceAddresses\": [],\r\n            \"sourceIpGroups\":\
+        \ [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [],\r\n      \
+        \      \"destinationIpGroups\": [],\r\n            \"destinationFqdns\": [\r\
+        \n              \"www.google.com\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12003\",\r\n              \"12004\"\r\n           \
+        \ ]\r\n          }\r\n        ],\r\n        \"name\": \"filter-collection-1\"\
+        ,\r\n        \"priority\": 15000\r\n      },\r\n      {\r\n        \"ruleCollectionType\"\
+        : \"FirewallPolicyNatRuleCollection\",\r\n        \"action\": {\r\n      \
+        \    \"type\": \"Dnat\"\r\n        },\r\n        \"rules\": [\r\n        \
+        \  {\r\n            \"ruleType\": \"NatRule\",\r\n            \"name\": \"\
+        nat-rule\",\r\n            \"description\": \"test\",\r\n            \"translatedAddress\"\
+        : \"128.1.1.1\",\r\n            \"translatedPort\": \"1234\",\r\n        \
+        \    \"ipProtocols\": [\r\n              \"TCP\",\r\n              \"UDP\"\
+        \r\n            ],\r\n            \"sourceAddresses\": [],\r\n           \
+        \ \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
+        \      \"202.120.36.15\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12001\"\r\n            ]\r\n          },\r\n      \
+        \    {\r\n            \"ruleType\": \"NatRule\",\r\n            \"name\":\
+        \ \"nat-rule-2\",\r\n            \"description\": \"test\",\r\n          \
+        \  \"translatedFqdn\": \"www.bing2.com\",\r\n            \"translatedPort\"\
+        : \"1234\",\r\n            \"ipProtocols\": [\r\n              \"TCP\",\r\n\
+        \              \"UDP\"\r\n            ],\r\n            \"sourceAddresses\"\
+        : [],\r\n            \"sourceIpGroups\": [\r\n              \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/ipGroups/sourceipgroup\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
+        \      \"202.120.36.16\"\r\n            ],\r\n            \"destinationPorts\"\
+        : [\r\n              \"12000\"\r\n            ]\r\n          }\r\n       \
+        \ ],\r\n        \"name\": \"nat-collection\",\r\n        \"priority\": 10005\r\
+        \n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n\
+        \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
+        ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
+        ,\r\n  \"etag\": \"3e639bab-91a1-4100-ad3f-8bd76cb74267\",\r\n  \"location\"\
+        : \"westus2\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1910,9 +1960,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 09 May 2023 01:53:46 GMT
+      - Fri, 04 Aug 2023 08:57:30 GMT
       etag:
-      - '"b2b7b628-d600-45af-8da1-0b6683e72358"'
+      - '"3e639bab-91a1-4100-ad3f-8bd76cb74267"'
       expires:
       - '-1'
       pragma:
