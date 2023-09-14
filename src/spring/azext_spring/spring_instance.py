@@ -266,4 +266,4 @@ def spring_list_marketplace_plan(cmd, client):
 
 
 def spring_list_support_server_versions(cmd, client, resource_group, service):
-    return client.services.list_supported_server_versions(resource_group, service);
+    return client.services.list_supported_server_versions(resource_group, service)
