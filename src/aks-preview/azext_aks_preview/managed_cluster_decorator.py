@@ -2114,7 +2114,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         enable_egress_gateway = self.raw_param.get("enable_egress_gateway", False)
         disable_egress_gateway = self.raw_param.get("disable_egress_gateway", False)
-        egress_gateway_nodeselector = self.raw_param.get("egress_gateway_nodeselector", None)
+        egx_gtw_nodeselector = self.raw_param.get("egx_gtw_nodeselector", None)
 
         if enable_ingress_gateway and disable_ingress_gateway:
             raise MutuallyExclusiveArgumentError(
@@ -2164,7 +2164,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 "Cannot both enable and disable azure service mesh egress gateway at the same time.",
             )
 
-        if not enable_egress_gateway and egress_gateway_nodeselector:
+        if not enable_egress_gateway and egx_gtw_nodeselector:
             raise MutuallyExclusiveArgumentError(
                 "Cannot set egress gateway nodeselector without enabling an egress gateway.",
             )
@@ -2187,19 +2187,19 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             egress_gateway_exists = False
             for egress in new_profile.istio.components.egress_gateways:
                 egress.enabled = enable_egress_gateway
-                if egress_gateway_nodeselector and egress_gateway_nodeselector != "":
-                    egress.node_selector = egress_gateway_nodeselector
+                if egx_gtw_nodeselector and egx_gtw_nodeselector != "":
+                    egress.node_selector = egx_gtw_nodeselector
                 egress_gateway_exists = True
                 updated = True
                 break
 
             # egress gateway doesn't exist, append
             if not egress_gateway_exists:
-                if egress_gateway_nodeselector and egress_gateway_nodeselector != "":
+                if egx_gtw_nodeselector and egx_gtw_nodeselector != "":
                     new_profile.istio.components.egress_gateways.append(
                         self.models.IstioEgressGateway(
                             enabled=enable_egress_gateway,
-                            node_selector=egress_gateway_nodeselector,
+                            node_selector=egx_gtw_nodeselector,
                         )
                     )
                 else:

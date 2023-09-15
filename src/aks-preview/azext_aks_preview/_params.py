@@ -920,7 +920,7 @@ def load_arguments(self, _):
                    arg_type=get_enum_type(ingress_gateway_types))
 
     with self.argument_context('aks mesh enable-egress-gateway') as c:
-        c.argument('egress_gateway_nodeselector', nargs='*', validator=validate_egress_gtw_nodeselector, required=False, default=None)
+        c.argument('egx_gtw_nodeselector', nargs='*', validator=validate_egress_gtw_nodeselector, required=False, default=None)
 
     with self.argument_context('aks mesh enable') as c:
         c.argument('key_vault_id')

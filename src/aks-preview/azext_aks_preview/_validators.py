@@ -344,14 +344,14 @@ def validate_node_public_ip_tags(ns):
 def validate_egress_gtw_nodeselector(namespace):
     """Validates that provided node selector is a valid format"""
 
-    if not hasattr(namespace, 'egress_gateway_nodeselector'):
+    if not hasattr(namespace, 'egx_gtw_nodeselector'):
         return
 
-    labels = namespace.egress_gateway_nodeselector
+    labels = namespace.egx_gtw_nodeselector
 
     if labels is None:
         # no specify any labels
-        namespace.egress_gateway_nodeselector = {}
+        namespace.egx_gtw_nodeselector = {}
         return
 
     if isinstance(labels, list):
@@ -362,7 +362,7 @@ def validate_egress_gtw_nodeselector(namespace):
     else:
         after_validation_labels = validate_label(labels)
 
-    namespace.egress_gateway_nodeselector = after_validation_labels
+    namespace.egx_gtw_nodeselector = after_validation_labels
 
 
 def validate_nodepool_labels(namespace):
