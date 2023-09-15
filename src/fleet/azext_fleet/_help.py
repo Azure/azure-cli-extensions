@@ -23,6 +23,27 @@ helps['fleet create'] = """
           type: string
           short-summary: Prefix for hostnames that are created. If not specified, generate a hostname using the
                          managed cluster and resource group names.
+        - name: --enable-private-cluster
+          type: bool
+          short-summary: Prevents the Fleet's API server from be publicly accessed.
+        - name: --enable-vnet-integration
+          type: bool
+          short-summary: Enables the Fleet to communicate on a virtual network.
+        - name: --apiserver-subnet-id
+          type: string
+          short-summary: The sub network that the Fleet will use.
+        - name: --identity-type
+          type: string
+          short-summary: The type of assigned identity: System, User, System & User, that the Fleet will utilize.
+        - name: --identity-tenant-id
+          type: string
+          short-summary: The tenant ID for which the identity exists within.
+        - name: --identity-principal-id
+          type: string
+          short-summary: The principal ID of the identity.
+        - name: --identity-client-id 
+          type: string
+          short-summary: the client ID of the identity.
 """
 
 helps['fleet update'] = """

@@ -26,12 +26,20 @@ def load_arguments(self, _):
     with self.argument_context('fleet create') as c:
         c.argument('tags', tags_type)
         c.argument('dns_name_prefix', options_list=['--dns-name-prefix', '-p'])
-        c.argument('enable_private_cluster', arg_type=get_three_state_flag(), is_preview=True, help='???')
-        c.argument('enable_vnet_integration', arg_type=get_three_state_flag(), is_preview=True, help='???')
-        c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True, help='???')
+        c.argument('enable_private_cluster', arg_type=get_three_state_flag(), is_preview=True, help='If set, Fleet API is not publicly accessible.')
+        c.argument('enable_vnet_integration', arg_type=get_three_state_flag(), is_preview=True, help='If set, Fleet utilizes the supplied vNet.')
+        c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True, help='The subnet resourceId the Fleet should use.')
+        c.argument('type', options_list=['--identity-type'], is_preview=True, help='The type of identity to be used by the Fleet.')
+        c.argument('tenant_id',options_list=['--identity-tenant-id'],is_preview=True, help='The tenant ID for the Managed Service Identity.')
+        c.argument('principal_id', options_list=['--identity-principal-id'], is_preview=True, help='The principal ID for the Managed Service Identity.')
+        c.argument('client_id',options_list=['--identity-client-id'],  is_preview=True, help='The client ID for the Managed Service Identity.')
 
     with self.argument_context('fleet update') as c:
         c.argument('tags', tags_type)
+        c.argument('type', options_list=['--identity-type'], is_preview=True, help='The type of identity to be used by the Fleet.')
+        c.argument('tenant_id',options_list=['--identity-tenant-id'],is_preview=True, help='The tenant ID for the Managed Service Identity.')
+        c.argument('principal_id', options_list=['--identity-principal-id'], is_preview=True, help='The principal ID for the Managed Service Identity.')
+        c.argument('client_id',options_list=['--identity-client-id'],  is_preview=True, help='The client ID for the Managed Service Identity.')
 
     with self.argument_context('fleet get-credentials') as c:
         c.argument('context_name', options_list=['--context'], help='If specified, overwrite the default context name.')
