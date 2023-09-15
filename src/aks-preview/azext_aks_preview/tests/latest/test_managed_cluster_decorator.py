@@ -6333,7 +6333,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         mc_4 = self.models.ManagedCluster(
             location="test_location",
         )
-        dec_4.context.attach_mc(mc_2)
+        dec_4.context.attach_mc(mc_4)
         dec_mc_4 = dec_4.update_azure_service_mesh_profile(mc_4)
         ground_truth_mc_4 = self.models.ManagedCluster(
             location="test_location",
