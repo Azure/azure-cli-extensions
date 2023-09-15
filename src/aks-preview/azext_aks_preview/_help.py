@@ -2650,12 +2650,12 @@ helps['aks mesh enable-egress-gateway'] = """
     short-summary: Enable an Azure Service Mesh egress gateway.
     long-summary: This command enables an Azure Service Mesh egress gateway in given cluster.
     parameters:
-      - name: --egress-gateway-nodeselector
+      - name: --egx-gtw-nodeselector
         type: string
         short-summary: Specify the node selector for the egress gateway with space-separated, key-value pairs (key1=value1, key2=value2).
     examples:
       - name: Enable an egress gateway.
-        text: az aks mesh enable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster --egress-gateway-nodeselector istio=egress
+        text: az aks mesh enable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster --egx-gateway-nodeselector istio=egress
 """
 
 helps['aks mesh disable-egress-gateway'] = """
