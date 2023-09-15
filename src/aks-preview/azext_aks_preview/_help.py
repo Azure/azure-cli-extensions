@@ -2645,6 +2645,29 @@ helps['aks mesh disable-ingress-gateway'] = """
         text: az aks mesh disable-ingress-gateway --resource-group MyResourceGroup --name MyManagedCluster --ingress-gateway-type Internal
 """
 
+helps['aks mesh enable-egress-gateway'] = """
+    type: command
+    short-summary: Enable an Azure Service Mesh egress gateway.
+    long-summary: This command enables an Azure Service Mesh egress gateway in given cluster.
+    parameters:
+      - name: --egress-gateway-nodeselector
+        type: string
+        short-summary: Specify the node selector for the egress gateway.
+        long-summary: Specify the node selector for the egress gateway with key value pairs (key1=value1, key2=value2).
+    examples:
+      - name: Enable an egress gateway.
+        text: az aks mesh enable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster --egress-gateway-nodeselector istio=egress
+"""
+
+helps['aks mesh disable-egress-gateway'] = """
+    type: command
+    short-summary: Disable an Azure Service Mesh egress gateway.
+    long-summary: This command disables an Azure Service Mesh egress gateway in given cluster.
+    examples:
+      - name: Disable an egress gateway.
+        text: az aks mesh disable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
 helps['aks copilot'] = """
     type: command
     short-summary: Start a chat with the Azure Kubernetes Service expert. API keys for OpenAI or Azure are required.

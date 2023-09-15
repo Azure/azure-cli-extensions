@@ -2490,6 +2490,37 @@ def aks_mesh_disable_ingress_gateway(
         disable_ingress_gateway=True,
         ingress_gateway_type=ingress_gateway_type)
 
+def aks_mesh_enable_egress_gateway(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        egress_gateway_nodeselector,
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_azure_service_mesh=True,
+        enable_egress_gateway=True,
+        egress_gateway_nodeselector=egress_gateway_nodeselector)
+
+def aks_mesh_enable_egress_gateway(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        egress_gateway_nodeselector,
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_azure_service_mesh=True,
+        disable_egress_gateway=True)
+
 
 def _aks_mesh_update(
         cmd,
@@ -2506,6 +2537,8 @@ def _aks_mesh_update(
         enable_ingress_gateway=None,
         disable_ingress_gateway=None,
         ingress_gateway_type=None,
+        enable_egress_gateway=None,
+        egress_gateway_nodeselector=None,
 ):
     raw_parameters = locals()
 
