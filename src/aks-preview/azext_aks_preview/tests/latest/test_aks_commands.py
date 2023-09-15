@@ -7445,7 +7445,7 @@ Message: The provided location 'useast' is not available for resource group. '''
 
         # enable egress gateway
         update_cmd = 'aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} ' \
-                     '--egress-gateway-nodeselector istio=egress'
+                     '--egx-gtw-nodeselector istio=egress'
         self.cmd(update_cmd, checks=[
             self.check('serviceMeshProfile.mode', 'Istio'),
             self.check('serviceMeshProfile.istio.components.egressGateways[0].nodeSelector', 'istio=egress'),
