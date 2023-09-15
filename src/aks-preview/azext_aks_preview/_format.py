@@ -31,7 +31,7 @@ def aks_addon_list_table_format(result):
 
 
 def aks_addon_show_table_format(result):
-    def parser(entry): 
+    def parser(entry):
         config = ""
         for k, v in entry["config"].items():
             config += k + "=" + v + ";"
