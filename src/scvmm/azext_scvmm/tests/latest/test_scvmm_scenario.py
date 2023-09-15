@@ -30,7 +30,7 @@ class ScVmmScenarioTest(ScenarioTest):
                 'vnet_name': 'azcli-test-virtual-network',
                 'avset_string': 'avset1',
                 'avset_name': 'azcli-test-avset1',
-                'vm_name': 'azcli-test-vm-1',
+                'vm_name': 'azcli-test-vm-0',
                 'disk_name': 'disk_1',
                 'nic_name': 'nic_1',
                 'checkpoint_name': 'azcli-test-checkpoint',
