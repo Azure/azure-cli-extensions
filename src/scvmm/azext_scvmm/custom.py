@@ -830,6 +830,20 @@ def show_vm(
     return client.get(machine_id)
 
 
+def wait_vm(
+    cmd,
+    client: VirtualMachineInstancesOperations,
+    resource_group_name,
+    virtual_machine_name,
+):
+    machine_id = get_hcrp_machine_id(
+        cmd,
+        resource_group_name,
+        virtual_machine_name,
+    )
+    return client.get(machine_id)
+
+
 def list_vm(
     cmd,
     resource_group_name=None,

@@ -54,6 +54,11 @@ def load_arguments(self: AzCommandsLoader, _):
         action='store_true',
     )
 
+    virtualmachine_name_type = CLIArgumentType(
+        options_list=['--virtual-machine-name'],
+        help='Name of the VirtualMachine.',
+    )
+
     with self.argument_context('scvmm') as c:
         c.argument('tags', tags_type)
         c.argument('location', validator=get_default_location_from_resource_group)
@@ -88,6 +93,9 @@ def load_arguments(self: AzCommandsLoader, _):
             options_list=['--vm-template-name'],
             help="Name of the VirtualMachineTemplate.",
         )
+
+    with self.argument_context('scvmm vm wait') as c:
+        c.argument('virtual_machine_name', arg_type=virtualmachine_name_type)
 
     for scope in ['create', 'update']:
         with self.argument_context(f'scvmm vm {scope}') as c:
@@ -233,6 +241,7 @@ def load_arguments(self: AzCommandsLoader, _):
         c.argument(
             'nic_names', options_list=['--nics'], nargs='+', help="Names of the NICs."
         )
+        c.argument('virtual_machine_name', arg_type=virtualmachine_name_type)
 
     with self.argument_context('scvmm vm disk') as c:
         c.argument('disk_name', options_list=['--name', '-n'], help="Name of the Disk.")
@@ -272,6 +281,7 @@ def load_arguments(self: AzCommandsLoader, _):
             nargs='+',
             help="Names of the Disks.",
         )
+        c.argument('virtual_machine_name', arg_type=virtualmachine_name_type)
 
     with self.argument_context('scvmm vm delete') as c:
         c.argument(

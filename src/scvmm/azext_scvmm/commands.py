@@ -173,7 +173,7 @@ def load_command_table(self: AzCommandsLoader, _):
         g.custom_command('create-checkpoint', 'create_vm_checkpoint', supports_no_wait=True)
         g.custom_command('delete-checkpoint', 'delete_vm_checkpoint', supports_no_wait=True)
         g.custom_command('restore-checkpoint', 'restore_vm_checkpoint', supports_no_wait=True)
-        g.wait_command('wait')
+        g.custom_wait_command('wait', 'wait_vm')
 
     with self.command_group(
         'scvmm vm nic',
@@ -187,7 +187,7 @@ def load_command_table(self: AzCommandsLoader, _):
         )
         g.custom_show_command('show', 'show_nic')
         g.custom_command('list', 'list_nics')
-        g.wait_command('wait')
+        g.custom_wait_command('wait', 'wait_vm')
 
     with self.command_group(
         'scvmm vm disk',
@@ -201,7 +201,7 @@ def load_command_table(self: AzCommandsLoader, _):
         )
         g.custom_show_command('show', 'show_disk')
         g.custom_command('list', 'list_disks')
-        g.wait_command('wait')
+        g.custom_wait_command('wait', 'wait_vm')
 
     with self.command_group(
         'scvmm avset',
