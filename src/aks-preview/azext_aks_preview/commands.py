@@ -30,6 +30,8 @@ from azext_aks_preview._format import (
     aks_show_table_format,
     aks_upgrades_table_format,
     aks_versions_table_format,
+    aks_mesh_revisions_table_format,
+    aks_mesh_upgrades_table_format,
 )
 from knack.log import get_logger
 
@@ -274,8 +276,8 @@ def load_command_table(self, _):
         g.custom_command(
             'get-revisions',
             'aks_mesh_get_revisions',
-            table_transformer = aks_versions_table_format)
+            table_transformer = aks_mesh_revisions_table_format)
         g.custom_command(
             'get-upgrades',
             'aks_mesh_get_upgrades',
-            table_transformer = aks_versions_table_format)
+            table_transformer = aks_mesh_upgrades_table_format)
