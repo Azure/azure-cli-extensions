@@ -88,8 +88,8 @@ class VmwareScenarioTest(ScenarioTest):
         count = len(self.cmd('vmware cluster list -g {rg} -c {privatecloud}').get_output_in_json())
         self.assertEqual(count, 1, 'cluster count expected to be 1')
 
-        # # cluster update
-        # self.cmd('vmware cluster update -g {rg} -c {privatecloud} -n {cluster} --size 4')
+        # cluster update
+        self.cmd('vmware cluster update -g {rg} -c {privatecloud} -n {cluster} --size 4')
 
         # cluster delete
         self.cmd('vmware cluster delete -g {rg} -c {privatecloud} -n {cluster} --yes')
