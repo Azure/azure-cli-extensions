@@ -31,7 +31,10 @@ helps['fleet create'] = """
           short-summary: Enables the Fleet to communicate on a virtual network.
         - name: --apiserver-subnet-id
           type: string
-          short-summary: The sub network that the Fleet will use.
+          short-summary: The sub network that the Fleet's API server will use.
+        - name: --agent-subnet-id
+          type: string
+          short-summary: The sub network that the Fleet's agents will use.
         - name: --identity-type
           type: string
           short-summary: The type of assigned identity: System, User, System & User, that the Fleet will utilize.
@@ -41,7 +44,7 @@ helps['fleet create'] = """
         - name: --identity-principal-id
           type: string
           short-summary: The principal ID of the identity.
-        - name: --identity-client-id 
+        - name: --identity-client-id
           type: string
           short-summary: the client ID of the identity.
 """

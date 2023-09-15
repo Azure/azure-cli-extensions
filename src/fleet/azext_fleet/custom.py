@@ -26,6 +26,7 @@ def create_fleet(cmd,
                  enable_private_cluster=None,
                  enable_vnet_integration=None,
                  apiserver_subnet_id=None,
+                 agent_subnet_id=None,
                  type=None,
                  tenant_id=None,
                  principal_id=None,
@@ -43,6 +44,11 @@ def create_fleet(cmd,
     )
     api_server_access_profile_model = cmd.get_models(
         "APIServerAccessProfile",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleets"
+    )
+    agent_profile_model = cmd.get_models(
+        "AgentProfile",
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleets"
     )
@@ -71,7 +77,13 @@ def create_fleet(cmd,
             enable_vnet_integration=enable_vnet_integration,
             apiserver_subnet_id=apiserver_subnet_id
         )
-    fleet_hub_profile = fleet_hub_profile_model(dns_prefix=dns_name_prefix, api_server_access_profile=api_server_access_profile)
+    agent_profile = agent_profile_model(
+        subnet_id=agent_subnet_id
+    )
+    fleet_hub_profile = fleet_hub_profile_model(
+        dns_prefix=dns_name_prefix,
+        api_server_access_profile=api_server_access_profile,
+        agent_profile=agent_profile)
 
     user_assigned_identity = user_assigned_identity_model(
         principal_id=principal_id,
