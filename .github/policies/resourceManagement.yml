@@ -891,7 +891,7 @@ configuration:
         - hasLabel:
             label: Service Attention
         - hasLabel:
-            label: Cosmos
+            label: CosmosDB
         then:
         - mentionUsers:
             mentionees:
@@ -3070,7 +3070,7 @@ configuration:
       - addLabel:
           label: CXP Attention
       - addLabel:
-          label: Cosmos
+          label: CosmosDB
       description: '[cosmosdb] auto assign labels and users based on issue description.'
     - if:
       - payloadType: Pull_Request
@@ -3085,7 +3085,7 @@ configuration:
             isRegex: True
       then:
       - addLabel:
-          label: Cosmos
+          label: CosmosDB
       - addLabel:
           label: Auto-Assign
       - requestReview:
