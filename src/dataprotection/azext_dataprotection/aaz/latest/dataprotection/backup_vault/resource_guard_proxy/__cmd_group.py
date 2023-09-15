@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "dataprotection backup-vault",
+    "dataprotection backup-vault resource-guard-proxy",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage backup vault with dataprotection.
+    """Manage ResourceGuardProxies for a backup vault.
     """
     pass
 

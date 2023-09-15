@@ -16,6 +16,8 @@ critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContaine
                           "getSecurityPIN": "/backupSecurityPIN/action",
                           "disableSoftDelete": "/backupconfig/write"}
 
+operation_request_map = {"DisableMUA": "/deleteResourceGuardProxyRequests/default",
+                         "DeleteBackupInstance": "/deleteBackupInstanceRequests/default"}
 
 def load_manifest(datasource_type):
     module = import_module('azext_dataprotection.manual.Manifests.' + datasource_type)

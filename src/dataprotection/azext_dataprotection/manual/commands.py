@@ -74,3 +74,6 @@ def load_command_table(self, _):
 
     from .aaz_operations.resource_guard import Update as ResourceGuardUpdate
     self.command_table['dataprotection resource-guard update'] = ResourceGuardUpdate(loader=self)
+
+    from .aaz_operations.resource_guard import Unlock as ResouceGuardProxyUnlock
+    self.command_table['dataprotection backup-vault resource-guard-proxy unlock'] = ResouceGuardProxyUnlock(loader=self)
