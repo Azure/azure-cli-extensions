@@ -242,4 +242,3 @@ def load_command_table(self, _):
         from .custom import CaCertificateCreate, CaCertificateUpdate
         self.command_table['eventgrid namespace ca-certificate create'] = CaCertificateCreate(loader=self)
         self.command_table['eventgrid namespace ca-certificate update'] = CaCertificateUpdate(loader=self)
-
