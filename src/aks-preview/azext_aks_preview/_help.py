@@ -2645,6 +2645,29 @@ helps['aks mesh disable-ingress-gateway'] = """
         text: az aks mesh disable-ingress-gateway --resource-group MyResourceGroup --name MyManagedCluster --ingress-gateway-type Internal
 """
 
+helps['aks mesh get-revisions'] = """
+    type: command
+    short-summary: Discover available Azure Service Mesh revisions.
+    long-summary: This command discovers available Azure Service Mesh revisions and their compatibility for the given location.
+    parameters:
+      - name: --location
+        type: string
+        short-summary: Specify the location.
+        long-summary: Location to discover available Azure Service Mesh revisions.
+    examples:
+      - name: Discover Azure Service Mesh revisions.
+        text: az aks mesh get-revisions --location westus2
+"""
+
+helps['aks mesh get-upgrades'] = """
+    type: command
+    short-summary: Discover available Azure Service Mesh upgrades.
+    long-summary: This command discovers available Azure Service Mesh upgrades for all the installed revisions for the cluster.
+    examples:
+      - name: Discover Azure Service Mesh upgrades.
+        text: az aks mesh get-upgrades --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
 helps['aks copilot'] = """
     type: command
     short-summary: Start a chat with the Azure Kubernetes Service expert. API keys for OpenAI or Azure are required.

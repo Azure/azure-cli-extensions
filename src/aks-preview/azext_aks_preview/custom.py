@@ -2527,6 +2527,20 @@ def _aks_mesh_update(
 
     return aks_update_decorator.update_mc(mc)
 
+def aks_mesh_get_revisions(
+        cmd,
+        client,
+        location
+):
+    return client.list_mesh_revision_profiles(location)
+
+def aks_mesh_get_upgrades(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    return client.list_mesh_upgrade_profiles(resource_group_name, name)
 
 def start_chat(prompt=None):
     from azext_aks_preview._openai_wrapper import setup_openai, \

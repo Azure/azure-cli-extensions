@@ -271,3 +271,11 @@ def load_command_table(self, _):
             'aks_mesh_disable_ingress_gateway',
             supports_no_wait=True,
             confirmation=True)
+        g.custom_command(
+            'get-revisions',
+            'aks_mesh_get_revisions',
+            table_transformer = aks_versions_table_format)
+        g.custom_command(
+            'get-upgrades',
+            'aks_mesh_get_upgrades',
+            table_transformer = aks_versions_table_format)
