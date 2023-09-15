@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update a Volume Group.
 
     :example: Update a Volume Group.
-        az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} --tags "{key2011:cccc}" --protocol-type None --network-acls "{virtual-network-rules:["{id:{subnet_id_2},action:Allow}"]}"
+        az elastic-san volume-group update -e "san_name" -n "vg_name" -g "rg" --protocol-type None --network-acls '{virtual-network-rules:[{id:"subnet_id_2",action:Allow}]}'
     """
 
     _aaz_info = {
@@ -48,7 +48,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["-e", "--elastic-san-name"],
+            options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             id_part="name",

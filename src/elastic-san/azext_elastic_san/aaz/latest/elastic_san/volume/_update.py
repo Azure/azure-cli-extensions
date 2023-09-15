@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update a Volume.
 
     :example: Update a Volume.
-        az elastic-san volume update -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 3
+        az elastic-san volume update -g "rg" -e "san_name" -v "vg_name" -n "volume_name" --size-gib 3
     """
 
     _aaz_info = {
@@ -48,7 +48,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["-e", "--elastic-san-name"],
+            options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             id_part="name",
@@ -62,7 +62,7 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.volume_group_name = AAZStrArg(
-            options=["-v", "--volume-group-name"],
+            options=["-v", "--volume-group", "--volume-group-name"],
             help="The name of the VolumeGroup.",
             required=True,
             id_part="child_name_1",

@@ -12,10 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "elastic-san volume-group snapshot create",
+    "elastic-san volume snapshot create",
 )
 class Create(AAZCommand):
     """Create a Volume Snapshot.
+
+    :example: snapshot create
+        az elastic-san volume snapshot create -g "rg" -e "san_name" -v "vg_name" -n "snapshot_name" --creation-data '{source-id:"volume_id"}'
     """
 
     _aaz_info = {
@@ -43,7 +46,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["--elastic-san-name"],
+            options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -66,7 +69,7 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.volume_group_name = AAZStrArg(
-            options=["--volume-group-name"],
+            options=["-v", "--volume-group", "--volume-group-name"],
             help="The name of the VolumeGroup.",
             required=True,
             fmt=AAZStrArgFormat(

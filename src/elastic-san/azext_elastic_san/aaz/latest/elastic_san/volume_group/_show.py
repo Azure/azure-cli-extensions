@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get a Volume Group.
 
     :example: Get a Volume Group.
-        az elastic-san volume-group show -g {rg} -e {san_name} -n {vg_name}
+        az elastic-san volume-group show -g "rg" -e "san_name" -n "vg_name"
     """
 
     _aaz_info = {
@@ -45,7 +45,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["-e", "--elastic-san-name"],
+            options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             id_part="name",

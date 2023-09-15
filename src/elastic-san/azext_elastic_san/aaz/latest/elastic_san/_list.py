@@ -18,7 +18,7 @@ class List(AAZCommand):
     """Get a list of Elastic SANs in a subscription.
 
     :example: Get a list of Elastic SANs in a subscription.
-        az elastic-san list -g {rg}
+        az elastic-san list -g "rg"
     """
 
     _aaz_info = {

@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List Volumes in a Volume Group.
 
     :example: List Volumes in a Volume Group.
-        az elastic-san volume list -g {rg} -e {san_name} -v {vg_name}
+        az elastic-san volume list -g "rg" -e "san_name" -v "vg_name"
     """
 
     _aaz_info = {
@@ -46,7 +46,7 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["-e", "--elastic-san-name"],
+            options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -59,7 +59,7 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.volume_group_name = AAZStrArg(
-            options=["-v", "--volume-group-name"],
+            options=["-v", "--volume-group", "--volume-group-name"],
             help="The name of the VolumeGroup.",
             required=True,
             fmt=AAZStrArgFormat(
