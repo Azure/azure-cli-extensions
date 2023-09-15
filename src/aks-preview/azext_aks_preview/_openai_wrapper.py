@@ -6,6 +6,7 @@ import re
 import os
 import sys
 import subprocess
+import io
 
 import openai
 from colorama import Fore, Style
@@ -18,7 +19,10 @@ IS_MS_WINDOWS = os.name == 'nt'
 if IS_MS_WINDOWS:
     SCRIPT_TYPE = "Windows PowerShell"
 else:
+    import pty
     SCRIPT_TYPE = "Bash Script"
+
+AZ_ERROR_FORMATTER = "{} : {}"
 
 AKS_EXPERT = f'''
 You are a microsoft Azure Kubernetes Service expert.
@@ -82,8 +86,69 @@ def run_system_script(script_content: str):
         cmd = ["powershell", "-Command", script_content]
     else:
         cmd = ["bash", "-c", script_content]
-    result = subprocess.run(cmd, text=True)
-    return result.returncode
+    subprocess.run(cmd, text=True)
+    return ""
+
+
+def detect_az_error(az_output):
+    # this is based on how azure cli is logging the error to output (message_details)
+    # https://github.com/Azure/azure-cli/blob/dev/src/azure-cli-core/azure/cli/core/aaz/_error_format.py#L78
+    pattern = rb'Code:([^\n]+)\nMessage:([^\x1b]+)\x1b'
+    matches = re.findall(pattern, az_output)
+    if matches:
+        for match in matches:
+            try:
+                code = match[0].decode('utf-8').strip()
+                message = match[1].decode('utf-8').strip()
+                return AZ_ERROR_FORMATTER.format(code, message)
+            except Exception:
+                pass
+    return ""
+
+
+def strip_terminal_escapes(byte_string):
+    # Regular expression pattern to match various terminal escape sequences
+    patterns = [
+        b'\033\[[0-9;]*m',  # Color/style changes
+        b'\033\[[0-9]+[ABCD]',  # Cursor movements
+        b'\033\[[0-9;]+[Hf]',  # Cursor positioning
+        b'\033\[2J',  # Clear entire screen
+        b'\033\[K'  # Clear from cursor to end of line
+    ]
+
+    cleaned = byte_string
+    for pattern in patterns:
+        cleaned = re.sub(pattern, b'', cleaned)
+
+    return cleaned.decode('utf-8', 'replace')
+
+
+def spawn_and_run_system_script(script_content: str):
+    """
+    Note: this doesn't work on Windows because there's no pty support
+    we use spawn to capture child output,
+    so user can still interact with yes/no answer from script
+    """
+    if IS_MS_WINDOWS:
+        raise Exception('capture child output is not supported on Windows')
+    cmd = ["bash", "-c", script_content]
+
+    buffer = io.BytesIO()
+
+    def read_child_output(fd):
+        data = os.read(fd, 1024)
+        buffer.write(data)
+        return data
+    return_status = pty.spawn(cmd, read_child_output)
+    exit_code = os.waitstatus_to_exitcode(return_status)
+    script_output = buffer.getvalue()
+    # Enhancement: remove known repetitive text output
+    az_error = detect_az_error(script_output)
+    if az_error:
+        return az_error
+    if exit_code != 0:
+        return strip_terminal_escapes(script_output)
+    return ""
 
 
 def extract_backticks_commands(text):
@@ -206,7 +271,9 @@ def prompt_user_to_run_script(scripts):
         if ord_0 <= ord_code < ord_0 + n_scripts:
             i = ord_code - ord_0
             script = scripts[i]
-            return run_system_script(script)
+            if IS_MS_WINDOWS:
+                return run_system_script(script)
+            return spawn_and_run_system_script(script)
 
 
 USER_INPUT_PROMPT = "Prompt: "
