@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "eventgrid namespace permission-binding list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List all the permission bindings under a namespace.

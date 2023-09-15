@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "eventgrid namespace topic regenerate-key",
+    is_preview=True,
 )
 class RegenerateKey(AAZCommand):
     """Regenerate a shared access key for a namespace topic.

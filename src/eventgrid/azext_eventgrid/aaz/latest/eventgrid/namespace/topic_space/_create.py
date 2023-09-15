@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "eventgrid namespace topic-space create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a topic space.

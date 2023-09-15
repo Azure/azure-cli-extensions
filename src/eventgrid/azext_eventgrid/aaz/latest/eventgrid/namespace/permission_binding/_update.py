@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "eventgrid namespace permission-binding update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a permission binding.

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "eventgrid namespace ca-certificate show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Show a CA certificate.

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "eventgrid namespace ca-certificate create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a CA certificate.

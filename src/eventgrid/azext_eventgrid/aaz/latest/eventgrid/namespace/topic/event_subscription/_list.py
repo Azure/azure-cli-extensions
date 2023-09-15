@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "eventgrid namespace topic event-subscription list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List event subscriptions that belong to a specific namespace topic.

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "eventgrid namespace ca-certificate list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List all the CA certificates under a namespace.

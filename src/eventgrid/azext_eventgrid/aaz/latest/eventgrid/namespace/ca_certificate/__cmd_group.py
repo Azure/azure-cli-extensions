@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "eventgrid namespace ca-certificate",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage eventgrid namespace ca-certificate.

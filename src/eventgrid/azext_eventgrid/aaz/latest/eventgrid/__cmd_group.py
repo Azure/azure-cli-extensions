@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "eventgrid",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Azure Event Grid topics, domains, domain topics, system topics partner     topics, event subscriptions, system topic event subscriptions and partner topic event     subscriptions.

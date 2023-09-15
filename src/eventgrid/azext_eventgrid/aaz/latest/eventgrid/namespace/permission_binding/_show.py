@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "eventgrid namespace permission-binding show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Show a permission binding.

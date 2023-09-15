@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "eventgrid namespace topic-space update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a topic space.

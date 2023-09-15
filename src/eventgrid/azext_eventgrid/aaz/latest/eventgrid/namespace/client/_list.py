@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "eventgrid namespace client list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List all the client under a namespace.

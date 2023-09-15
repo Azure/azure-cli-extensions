@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "eventgrid namespace list-key",
+    is_preview=True,
 )
 class ListKey(AAZCommand):
     """List the two keys used to publish to a namespace.
