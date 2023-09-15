@@ -121,7 +121,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.extended_network_blocks = AAZListArg(
-            options=["--extended-network-blocks"],
+            options=["--ext-nw-blocks", "--extended-network-blocks"],
             arg_group="Properties",
             help="Array of additional networks noncontiguous with networkBlock. Networks must be unique and non-overlapping across VNet in your subscription, on-premise, and this privateCloud networkBlock attribute. Make sure the CIDR format conforms to (A.B.C.D/X).",
         )

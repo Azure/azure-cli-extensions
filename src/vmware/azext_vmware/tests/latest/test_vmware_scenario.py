@@ -140,6 +140,18 @@ class VmwareScenarioTest(ScenarioTest):
         # delete authorization
         self.cmd('vmware authorization delete -g {rg} -c {privatecloud} -n myauthname --yes')
 
+        # create extended network blocks
+        self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --ext-nw-blocks 10.0.8.0/23 10.1.8.0/23')
+
+        # update the second extended network blocks
+        self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --ext-nw-blocks [1]=10.2.8.0/23')
+
+        # delete the second extended network blocks
+        self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --ext-nw-blocks [1]=null')
+
+        # delete all extended network blocks
+        self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --ext-nw-blocks null')
+
         # set managed identity
         self.cmd('vmware private-cloud identity assign -g {rg} -c {privatecloud} --system-assigned')
 
