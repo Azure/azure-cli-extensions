@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.2.2
+++++++
+* Updated create software update configuration cmdlet to address the bug to allow multiple values for classifications.
 
 0.2.1
 ++++++
