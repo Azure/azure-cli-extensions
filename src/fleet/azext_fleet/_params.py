@@ -8,11 +8,13 @@ from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import (
     tags_type,
     file_type,
-    get_location_type
+    get_location_type,
+    get_three_state_flag
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
 from azext_fleet._validators import validate_member_cluster_id, validate_upgrade_type, validate_kubernetes_version
+from azext_fleet._validators import validate_member_cluster_id, validate_upgrade_type, validate_kubernetes_version, validate_apiserver_subnet_id
 
 
 def load_arguments(self, _):
@@ -24,6 +26,9 @@ def load_arguments(self, _):
     with self.argument_context('fleet create') as c:
         c.argument('tags', tags_type)
         c.argument('dns_name_prefix', options_list=['--dns-name-prefix', '-p'])
+        c.argument('enable_private_cluster', arg_type=get_three_state_flag(), is_preview=True, help='???')
+        c.argument('enable_vnet_integration', arg_type=get_three_state_flag(), is_preview=True, help='???')
+        c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True, help='???')
 
     with self.argument_context('fleet update') as c:
         c.argument('tags', tags_type)
