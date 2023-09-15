@@ -1890,7 +1890,7 @@ class ConnectedEnvDaprComponentClient():
 
 
 class ConnectedEnvStorageClient():
-    api_version = CURRENT_API_VERSION
+    api_version = ARC_PREVIEW_API_VERSION
 
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, env_name, name, storage_envelope):
