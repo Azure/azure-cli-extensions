@@ -2490,6 +2490,7 @@ def aks_mesh_disable_ingress_gateway(
         disable_ingress_gateway=True,
         ingress_gateway_type=ingress_gateway_type)
 
+
 def aks_mesh_enable_egress_gateway(
         cmd,
         client,
@@ -2506,7 +2507,8 @@ def aks_mesh_enable_egress_gateway(
         enable_egress_gateway=True,
         egress_gateway_nodeselector=egress_gateway_nodeselector)
 
-def aks_mesh_enable_egress_gateway(
+
+def aks_mesh_disable_egress_gateway(
         cmd,
         client,
         resource_group_name,

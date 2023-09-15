@@ -2652,8 +2652,7 @@ helps['aks mesh enable-egress-gateway'] = """
     parameters:
       - name: --egress-gateway-nodeselector
         type: string
-        short-summary: Specify the node selector for the egress gateway.
-        long-summary: Specify the node selector for the egress gateway with key value pairs (key1=value1, key2=value2).
+        short-summary: Specify the node selector for the egress gateway with space-separated, key-value pairs (key1=value1, key2=value2).
     examples:
       - name: Enable an egress gateway.
         text: az aks mesh enable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster --egress-gateway-nodeselector istio=egress

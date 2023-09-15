@@ -2113,7 +2113,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         ingress_gateway_type = self.raw_param.get("ingress_gateway_type", None)
 
         enable_egress_gateway = self.raw_param.get("enable_egress_gateway", False)
-        enable_egress_gateway = self.raw_param.get("disable_egress_gateway", False)
+        disable_egress_gateway = self.raw_param.get("disable_egress_gateway", False)
         egress_gateway_nodeselector = self.raw_param.get("egress_gateway_nodeselector", None)
 
         if enable_ingress_gateway and disable_ingress_gateway:
@@ -2163,7 +2163,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             raise MutuallyExclusiveArgumentError(
                 "Cannot both enable and disable azure service mesh egress gateway at the same time.",
             )
-        
+
         if not enable_egress_gateway and egress_gateway_nodeselector:
             raise MutuallyExclusiveArgumentError(
                 "Cannot set egress gateway nodeselector without enabling an egress gateway.",
