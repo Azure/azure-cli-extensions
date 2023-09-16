@@ -6344,7 +6344,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                         egress_gateways=[
                             self.models.IstioEgressGateway(
                                 enabled=True,
-                                nodeSelector="{\'istio\': \'egress\'}"
+                                nodeSelector={"istio": "egress"}                                
                             )
                         ]
                     )

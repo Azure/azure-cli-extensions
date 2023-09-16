@@ -2187,7 +2187,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             egress_gateway_exists = False
             for egress in new_profile.istio.components.egress_gateways:
                 egress.enabled = enable_egress_gateway
-                if egx_gtw_nodeselector and egx_gtw_nodeselector != "":
+                if egx_gtw_nodeselector:
                     egress.node_selector = egx_gtw_nodeselector
                 egress_gateway_exists = True
                 updated = True
@@ -2195,7 +2195,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
             # egress gateway doesn't exist, append
             if not egress_gateway_exists:
-                if egx_gtw_nodeselector and egx_gtw_nodeselector != "":
+                if egx_gtw_nodeselector:
                     new_profile.istio.components.egress_gateways.append(
                         self.models.IstioEgressGateway(
                             enabled=enable_egress_gateway,
