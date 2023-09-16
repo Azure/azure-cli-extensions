@@ -2520,7 +2520,8 @@ def aks_mesh_disable_egress_gateway(
         resource_group_name,
         name,
         enable_azure_service_mesh=True,
-        disable_egress_gateway=True)
+        disable_egress_gateway=True,
+        egx_gtw_nodeselector=None)
 
 
 def _aks_mesh_update(
