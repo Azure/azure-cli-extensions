@@ -2540,6 +2540,7 @@ def _aks_mesh_update(
         ingress_gateway_type=None,
         enable_egress_gateway=None,
         egx_gtw_nodeselector=None,
+        disable_egress_gateway=None,
 ):
     raw_parameters = locals()
 
