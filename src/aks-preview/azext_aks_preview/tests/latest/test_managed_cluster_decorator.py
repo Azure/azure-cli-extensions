@@ -6342,9 +6342,9 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 istio=self.models.IstioServiceMesh(
                     components=self.models.IstioComponents(
                         egress_gateways=[
-                            self.models.IstioIngressGateway(
+                            self.models.IstioEgressGateway(
                                 enabled=True,
-                                nodeSelector="istio=egress"
+                                nodeSelector="{\'istio\': \'egress\'}"
                             )
                         ]
                     )

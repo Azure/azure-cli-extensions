@@ -7448,7 +7448,7 @@ Message: The provided location 'useast' is not available for resource group. '''
                      '--egx-gtw-nodeselector istio=egress'
         self.cmd(update_cmd, checks=[
             self.check('serviceMeshProfile.mode', 'Istio'),
-            self.check('serviceMeshProfile.istio.components.egressGateways[0].nodeSelector', 'istio=egress'),
+            self.check('serviceMeshProfile.istio.components.egressGateways[0].nodeSelector', '{\'istio\': \'egress\'}'),
             self.check('serviceMeshProfile.istio.components.egressGateways[0].enabled', True)
         ])
 
