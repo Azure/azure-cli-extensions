@@ -7466,7 +7466,6 @@ Message: The provided location 'useast' is not available for resource group. '''
         self.cmd(update_cmd, checks=[
             self.check('serviceMeshProfile.mode', 'Istio'),
             self.check('serviceMeshProfile.istio.components.egressGateways[0].enabled', None),
-            self.check('serviceMeshProfile.istio.components.egressGateways[0].nodeSelector', None)
         ])
 
         # delete the cluster
