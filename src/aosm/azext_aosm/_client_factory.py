@@ -5,7 +5,6 @@
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
-from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 
 from .vendored_sdks import HybridNetworkManagementClient
 
@@ -20,13 +19,8 @@ def cf_resources(cli_ctx, subscription_id=None):
     )
 
 
-def cf_acr_registries(cli_ctx, *_) -> ContainerRegistryManagementClient:
-    """
-    Returns the client for managing container registries.
-
-    :param cli_ctx: CLI context
-    :return: ContainerRegistryManagementClient object
-    """
+def cf_features(cli_ctx, subscription_id=None):
+    """Return the client for checking feature enablement."""
     return get_mgmt_service_client(
-        cli_ctx, ResourceType.MGMT_CONTAINERREGISTRY
-    ).registries
+        cli_ctx, ResourceType.MGMT_RESOURCE_FEATURES, subscription_id=subscription_id
+    )

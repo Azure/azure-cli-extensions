@@ -90,11 +90,8 @@ IMAGE_NAME_AND_VERSION_REGEX = r"\/(?P<name>[^\s]*):(?P<version>[^\s)\"}]*)"
 
 DEPLOYMENT_PARAMETER_MAPPING_REGEX = r"\{deployParameters.(.+?)\}"
 
-# Assume that the registry id is of the form:
-# /subscriptions/<sub_id>/resourceGroups/<rg_name>/providers/
-#   Microsoft.ContainerRegistry/registries/<registry_name>
-# This returns groups for the resource group name and registry name
-SOURCE_ACR_REGEX = (
-    r".*\/resourceGroups\/(?P<resource_group>[^\/]*)\/providers\/Microsoft."
-    r"ContainerRegistry\/registries\/(?P<registry_name>[^\/]*)"
-)
+# Required features for AOSM publish aka deploy
+AOSM_FEATURE_NAMESPACE = "Microsoft.HybridNetwork"
+AOSM_REQUIRED_FEATURES = [
+    "Allow-2023-09-01",
+]

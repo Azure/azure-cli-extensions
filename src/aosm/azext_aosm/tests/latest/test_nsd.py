@@ -3,20 +3,32 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
-from dataclasses import dataclass
-from distutils.dir_util import copy_tree
 import json
+import os
 import shutil
 import subprocess
+from dataclasses import dataclass
+from distutils.dir_util import copy_tree
 from filecmp import dircmp
 from pathlib import Path
-from unittest.mock import patch
 from tempfile import TemporaryDirectory
+from typing import Any
+from unittest.mock import Mock, patch
 
 import jsonschema
+import pytest
+from azure.cli.core.azclierror import CLIInternalError
+from azure.core import exceptions as azure_exceptions
+from azure.mgmt.resource.features.v2015_12_01.models import (
+    FeatureProperties,
+    FeatureResult,
+)
 
-from azext_aosm.custom import generate_design_config, build_design
+from azext_aosm.custom import (
+    _check_features_enabled,
+    build_design,
+    generate_design_config,
+)
 
 mock_nsd_folder = ((Path(__file__).parent) / "mock_nsd").resolve()
 output_folder = ((Path(__file__).parent) / "nsd_output").resolve()
@@ -119,10 +131,56 @@ class NFDVs:
 
 class AOSMClient:
     def __init__(self) -> None:
-        self.network_function_definition_versions = NFDVs()
+        self.proxy_network_function_definition_versions = NFDVs()
 
 
 mock_client = AOSMClient()
+
+
+class MockFeatures:
+    """Mock class for _check_features_enabled."""
+
+    def __init__(self) -> None:
+        """Mock init."""
+        self.mock_state = "NotRegistered"
+
+    def get(
+        self, resource_provider_namespace: str, feature_name: str, **kwargs: Any
+    ) -> FeatureResult:
+        """Mock Features get function."""
+        return FeatureResult(
+            name=feature_name, properties=FeatureProperties(state=self.mock_state)
+        )
+
+
+class MockMissingFeatures:
+    """Mock class for _check_features_enabled."""
+
+    def __init__(self) -> None:
+        """Fake init."""
+        pass
+
+    def get(
+        self, resource_provider_namespace: str, feature_name: str, **kwargs: Any
+    ) -> FeatureResult:
+        """Mock features get function that raises an exception."""
+        raise azure_exceptions.ResourceNotFoundError()
+
+
+class FeaturesClient:
+    """Mock class for _check_features_enabled."""
+
+    def __init__(self) -> None:
+        """Mock class for _check_features_enabled."""
+        self.features = MockFeatures()
+
+
+class MissingFeaturesClient:
+    """Mock class for _check_features_enabled."""
+
+    def __init__(self) -> None:
+        """Mock class for _check_features_enabled."""
+        self.features = MockMissingFeatures()
 
 
 class FakeCmd:
@@ -301,3 +359,32 @@ class TestNSDGenerator:
                 compare_to_expected_output("test_build_multiple_nfs")
             finally:
                 os.chdir(starting_directory)
+
+    def test_check_features(self, caplog):
+        """
+        Test the _check_features_enabled function.
+
+        Does not test the actual feature check, just that the function logs and raises
+        exceptions appropriately.
+        """
+        mock_features_client = FeaturesClient()
+        mock_missing_features_client = MissingFeaturesClient()
+        caplog.set_level("DEBUG")
+        with patch("azext_aosm.custom.cf_features", return_value=mock_features_client):
+            mock_features_client.features.mock_state = "NotRegistered"
+
+            with pytest.raises(CLIInternalError):
+                _check_features_enabled(mock_cmd)
+                assert "is not registered on the subscription" in caplog.text
+            mock_features_client.features.mock_state = "Registered"
+            _check_features_enabled(mock_cmd)
+
+        with patch(
+            "azext_aosm.custom.cf_features", return_value=mock_missing_features_client
+        ):
+            with pytest.raises(CLIInternalError):
+                _check_features_enabled(mock_cmd)
+                assert (
+                    "CLI encountered an error checking that your "
+                    "subscription has been onboarded to AOSM." in caplog.text
+                )
