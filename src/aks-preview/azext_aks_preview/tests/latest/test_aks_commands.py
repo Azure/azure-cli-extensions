@@ -7465,7 +7465,7 @@ Message: The provided location 'useast' is not available for resource group. '''
         update_cmd = 'aks mesh disable-egress-gateway --resource-group={resource_group} --name={name}'
         self.cmd(update_cmd, checks=[
             self.check('serviceMeshProfile.mode', 'Istio'),
-            self.check('serviceMeshProfile.istio.components.egressGateways[0].enabled', None),
+            self.check('serviceMeshProfile.istio.components.egressGateways[0].enabled', None)
         ])
 
         # delete the cluster
