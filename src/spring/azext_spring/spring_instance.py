@@ -263,3 +263,7 @@ def _enable_app_insights(cmd, client, resource_group, name, location, app_insigh
 
 def spring_list_marketplace_plan(cmd, client):
     return _spring_list_marketplace_plan(cmd, client)
+
+
+def spring_list_support_server_versions(cmd, client, resource_group, service):
+    return client.services.list_supported_server_versions(resource_group, service)

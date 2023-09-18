@@ -52,66 +52,54 @@ from ._clients import (
     AuthPreviewClient,
     SubscriptionPreviewClient,
     ContainerAppsJobPreviewClient,
-    ManagedEnvironmentPreviewClient, ConnectedEnvironmentClient
+    ManagedEnvironmentPreviewClient,
+    ConnectedEnvDaprComponentClient,
+    ConnectedEnvironmentClient,
+    ConnectedEnvStorageClient, ConnectedEnvCertificateClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._github_oauth import get_github_access_token
 from ._models import (
-    ManagedEnvironment as ManagedEnvironmentModel,
-    VnetConfiguration as VnetConfigurationModel,
-    AppLogsConfiguration as AppLogsConfigurationModel,
-    LogAnalyticsConfiguration as LogAnalyticsConfigurationModel,
     Ingress as IngressModel,
-    Configuration as ConfigurationModel,
-    JobConfiguration as JobConfigurationModel,
-    ManualTriggerConfig as ManualTriggerModel,
-    ScheduleTriggerConfig as ScheduleTriggerModel,
-    EventTriggerConfig as EventTriggerModel,
-    Template as TemplateModel,
-    JobTemplate as JobTemplateModel,
     JobExecutionTemplate as JobExecutionTemplateModel,
     RegistryCredentials as RegistryCredentialsModel,
-    ContainerApp as ContainerAppModel,
-    ContainerAppsJob as ContainerAppsJobModel,
-    Dapr as DaprModel,
     ContainerResources as ContainerResourcesModel,
-    Scale as ScaleModel,
-    Service as ServiceModel,
     JobScale as JobScaleModel,
     Container as ContainerModel,
     GitHubActionConfiguration,
     RegistryInfo as RegistryInfoModel,
     AzureCredentials as AzureCredentialsModel,
     SourceControl as SourceControlModel,
-    ManagedServiceIdentity as ManagedServiceIdentityModel,
     ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
     ContainerAppCustomDomain as ContainerAppCustomDomainModel,
     AzureFileProperties as AzureFilePropertiesModel,
-    CustomDomainConfiguration as CustomDomainConfigurationModel,
-    ScaleRule as ScaleRuleModel,
-    Volume as VolumeModel,
-    VolumeMount as VolumeMountModel)
+    ScaleRule as ScaleRuleModel)
 
-from ._utils import (_validate_subscription_registered, _ensure_location_allowed,
+from ._utils import (_validate_subscription_registered,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
-                     _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
-                     _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
+                     _get_existing_secrets,
+                     _convert_object_from_snake_to_camel_case,
+                     _object_to_dict, _add_or_update_secrets, _remove_additional_attributes,
+                     _remove_readonly_attributes,
                      _add_or_update_env_vars, _add_or_update_tags, _update_revision_weights, _append_label_weights,
-                     _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret,
-                     _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars, _validate_traffic_sum,
+                     _get_app_from_revision, raise_missing_token_suggestion,
+                     _remove_registry_secret, _remove_secret,
+                     _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars,
+                     _validate_traffic_sum,
                      _update_revision_env_secretrefs, _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
-                     validate_container_app_name, _update_weights, get_vnet_location, register_provider_if_needed,
+                     validate_container_app_name, _update_weights, register_provider_if_needed,
                      generate_randomized_cert_name, _get_name, load_cert_file, check_cert_name_availability,
-                     validate_hostname, patch_new_custom_domain, get_custom_domains, _validate_revision_name, set_managed_identity,
-                     create_acrpull_role_assignment, is_registry_msi_system, clean_null_values, _populate_secret_values,
-                     validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags, _azure_monitor_quickstart,
-                     set_ip_restrictions, certificate_location_matches, certificate_matches, generate_randomized_managed_cert_name,
+                     validate_hostname, patch_new_custom_domain, get_custom_domains, _validate_revision_name,
+                     set_managed_identity,
+                     is_registry_msi_system, clean_null_values, _populate_secret_values,
+                     safe_set, parse_metadata_flags, parse_auth_flags,
+                     set_ip_restrictions, certificate_location_matches, certificate_matches,
+                     generate_randomized_managed_cert_name,
                      check_managed_cert_name_availability, prepare_managed_certificate_envelop,
-                     get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported, _generate_secret_volume_name,
-                     parse_service_bindings, get_linker_client, check_unique_bindings,
-                     get_current_mariner_tags, patchable_check, get_pack_exec_path, is_docker_running, trigger_workflow, AppType,
-                     format_location)
-from ._validators import validate_create, validate_revision_suffix
+                     ensure_workload_profile_supported,
+                     get_current_mariner_tags, patchable_check, get_pack_exec_path, is_docker_running, trigger_workflow,
+                     AppType,
+                     format_location, connected_env_check_cert_name_availability)
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
 from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, FACEBOOK_SECRET_SETTING_NAME, GITHUB_SECRET_SETTING_NAME,
@@ -3309,18 +3297,18 @@ def show_dapr_component(cmd, resource_group_name, dapr_component_name, environme
 def create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    yaml_containerapp = load_yaml_file(yaml)
-    if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+    yaml_dapr_component = load_yaml_file(yaml)
+    if type(yaml_dapr_component) != dict:  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.')
 
     # Deserialize the yaml into a DaprComponent object. Need this since we're not using SDK
     daprcomponent_def = None
     try:
         deserializer = create_deserializer()
 
-        daprcomponent_def = deserializer('DaprComponent', yaml_containerapp)
+        daprcomponent_def = deserializer('DaprComponent', yaml_dapr_component)
     except DeserializationError as ex:
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.') from ex
+        raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.') from ex
 
     daprcomponent_def = _convert_object_from_snake_to_camel_case(_object_to_dict(daprcomponent_def))
 
@@ -5219,3 +5207,209 @@ def create_connected_environment(cmd,
     r = connected_env_create_decorator.create()
 
     return r
+
+
+def connected_env_list_dapr_components(cmd, resource_group_name, environment_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    return ConnectedEnvDaprComponentClient.list(cmd, resource_group_name, environment_name)
+
+
+def connected_env_show_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    return ConnectedEnvDaprComponentClient.show(cmd, resource_group_name, environment_name, name=dapr_component_name)
+
+
+def connected_env_remove_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        r = ConnectedEnvDaprComponentClient.delete(cmd, resource_group_name, environment_name, name=dapr_component_name)
+        logger.warning("Dapr componenet successfully deleted.")
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def connected_env_create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    yaml_dapr_component = load_yaml_file(yaml)
+    if type(yaml_dapr_component) != dict:  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.')
+
+    # Deserialize the yaml into a DaprComponent object. Need this since we're not using SDK
+    try:
+        deserializer = create_deserializer()
+        daprcomponent_def = deserializer('DaprComponent', yaml_dapr_component)
+    except DeserializationError as ex:
+        raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.') from ex
+
+    daprcomponent_def = _convert_object_from_snake_to_camel_case(_object_to_dict(daprcomponent_def))
+
+    # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
+    _remove_additional_attributes(daprcomponent_def)
+    _remove_dapr_readonly_attributes(daprcomponent_def)
+
+    if not daprcomponent_def["ignoreErrors"]:
+        daprcomponent_def["ignoreErrors"] = False
+
+    dapr_component_envelope = {"properties": daprcomponent_def}
+
+    try:
+        r = ConnectedEnvDaprComponentClient.create_or_update(cmd, resource_group_name=resource_group_name,
+                                                             environment_name=environment_name,
+                                                             dapr_component_envelope=dapr_component_envelope,
+                                                             name=dapr_component_name)
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def connected_env_list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    def location_match(c):
+        return c["location"] == location or not location
+
+    def thumbprint_match(c):
+        return c["properties"]["thumbprint"] == thumbprint or not thumbprint
+
+    def both_match(c):
+        return location_match(c) and thumbprint_match(c)
+
+    if certificate:
+        if is_valid_resource_id(certificate):
+            certificate_name = parse_resource_id(certificate)["resource_name"]
+        else:
+            certificate_name = certificate
+        try:
+            r = ConnectedEnvCertificateClient.show_certificate(cmd, resource_group_name, name, certificate_name)
+            return [r] if both_match(r) else []
+        except Exception as e:
+            handle_raw_exception(e)
+    else:
+        try:
+            r = ConnectedEnvCertificateClient.list_certificates(cmd, resource_group_name, name)
+            return list(filter(both_match, r))
+        except Exception as e:
+            handle_raw_exception(e)
+
+
+def connected_env_upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    blob, thumbprint = load_cert_file(certificate_file, certificate_password)
+
+    cert_name = None
+    if certificate_name:
+        name_availability = connected_env_check_cert_name_availability(cmd, resource_group_name, name, certificate_name)
+        if not name_availability["nameAvailable"]:
+            if name_availability["reason"] == NAME_ALREADY_EXISTS:
+                msg = '{}. If continue with this name, it will be overwritten by the new certificate file.\nOverwrite?'
+                overwrite = True
+                if prompt:
+                    overwrite = prompt_y_n(msg.format(name_availability["message"]))
+                else:
+                    logger.warning('{}. It will be overwritten by the new certificate file.'.format(name_availability["message"]))
+                if overwrite:
+                    cert_name = certificate_name
+            else:
+                raise ValidationError(name_availability["message"])
+        else:
+            cert_name = certificate_name
+
+    while not cert_name:
+        random_name = generate_randomized_cert_name(thumbprint, name, resource_group_name)
+        check_result = connected_env_check_cert_name_availability(cmd, resource_group_name, name, random_name)
+        if check_result["nameAvailable"]:
+            cert_name = random_name
+        elif not check_result["nameAvailable"] and (check_result["reason"] == NAME_INVALID):
+            raise ValidationError(check_result["message"])
+
+    certificate = ContainerAppCertificateEnvelopeModel
+    certificate["properties"]["password"] = certificate_password
+    certificate["properties"]["value"] = blob
+    certificate["location"] = location
+    if not certificate["location"]:
+        try:
+            env = ConnectedEnvironmentClient.show(cmd, resource_group_name, name)
+            certificate["location"] = env["location"]
+        except Exception as e:
+            handle_raw_exception(e)
+
+    try:
+        r = ConnectedEnvCertificateClient.create_or_update_certificate(cmd, resource_group_name, name, cert_name, certificate)
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def connected_env_delete_certificate(cmd, resource_group_name, name, certificate=None, thumbprint=None):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    if not certificate and not thumbprint:
+        raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --thumbprint')
+    certs = connected_env_list_certificates(cmd, name, resource_group_name, certificate=certificate, thumbprint=thumbprint)
+    for cert in certs:
+        try:
+            ConnectedEnvCertificateClient.delete_certificate(cmd, resource_group_name, name, cert["name"])
+            logger.warning('Successfully deleted certificate: {}'.format(cert["name"]))
+        except Exception as e:
+            handle_raw_exception(e)
+
+
+def connected_env_show_storage(cmd, name, storage_name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        return ConnectedEnvStorageClient.show(cmd, resource_group_name, name, storage_name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def connected_env_list_storages(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        return ConnectedEnvStorageClient.list(cmd, resource_group_name, name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def connected_env_create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name=None, azure_file_share_name=None, azure_file_account_key=None, access_mode=None):  # pylint: disable=redefined-builtin
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    r = None
+
+    try:
+        r = ConnectedEnvStorageClient.show(cmd, resource_group_name, name, storage_name)
+    except:
+        pass
+
+    if r:
+        logger.warning("Only AzureFile account keys can be updated. In order to change the AzureFile share name or account name, please delete this storage and create a new one.")
+
+    storage_def = AzureFilePropertiesModel
+    storage_def["accountKey"] = azure_file_account_key
+    storage_def["accountName"] = azure_file_account_name
+    storage_def["shareName"] = azure_file_share_name
+    storage_def["accessMode"] = access_mode
+    storage_envelope = {}
+    storage_envelope["properties"] = {}
+    storage_envelope["properties"]["azureFile"] = storage_def
+
+    try:
+        return ConnectedEnvStorageClient.create_or_update(cmd, resource_group_name, name, storage_name, storage_envelope)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def connected_env_remove_storage(cmd, storage_name, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        return ConnectedEnvStorageClient.delete(cmd, resource_group_name, name, storage_name)
+    except CLIError as e:
+        handle_raw_exception(e)
