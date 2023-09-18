@@ -42,8 +42,8 @@ class Update(_Update):
                     self.ctx.args.critical_operation_exclusion_list,
                     self.ctx.args.critical_operation_exclusion_list,
                     element_transformer=lambda _, e:
-                        resource_type + critical_operation_map.get(str(e), str(e)) \
-                            if str(e) in critical_operation_map else e
+                        resource_type + critical_operation_map.get(str(e), str(e))
+                        if str(e) in critical_operation_map else e
                 )
             else:
                 # Issue a warning if --resource-type not given but --critical-operation-exclusion-list is given.
@@ -51,6 +51,7 @@ class Update(_Update):
                 logger.warning("WARNING: --resource-type argument is required to update "
                                "--critical-operation-exclusion-list.")
                 self.ctx.args.critical_operation_exclusion_list = AAZUndefined
+
 
 class Unlock(_Unlock):
 
@@ -89,7 +90,7 @@ class Unlock(_Unlock):
                 "resource_guard_mapping_name": "DppResourceGuardProxy",
             })
 
-            formatted_operation_list = [item['defaultResourceRequest'] for 
+            formatted_operation_list = [item['defaultResourceRequest'] for
                                         item in resource_guard_mapping["properties"]["resourceGuardOperationDetails"]]
             formatted_operation = [op for op in formatted_operation_list if
                                    operation_request_map[str(operation)] in op]
@@ -97,6 +98,6 @@ class Unlock(_Unlock):
             if(len(formatted_operation) != 1):
                 raise CLIError("Unable to proceed with shorthand argument {}. "
                                "Please retry the command with the full payload".format(operation))
-            
+
             return formatted_operation[0]
         return operation
