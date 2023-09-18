@@ -38,15 +38,6 @@ helps['fleet create'] = """
         - name: --identity-type
           type: string
           short-summary: Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).
-        - name: --identity-tenant-id
-          type: string
-          short-summary: The tenant ID of the system assigned identity. This property will only be provided for a system assigned identity.
-        - name: --identity-principal-id
-          type: string
-          short-summary: The service principal ID of the system assigned identity. This property will only be provided for a system assigned identity.
-        - name: --identity-client-id
-          type: string
-          short-summary: The client ID of the assigned identity.
 """
 
 helps['fleet update'] = """
