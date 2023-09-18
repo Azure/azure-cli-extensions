@@ -42,15 +42,30 @@ class Update(_Update):
                     self.ctx.args.critical_operation_exclusion_list,
                     self.ctx.args.critical_operation_exclusion_list,
                     element_transformer=lambda _, e:
-                        resource_type + critical_operation_map.get(str(e), str(e)) if str(e) in critical_operation_map else e
+                        resource_type + critical_operation_map.get(str(e), str(e)) \
+                            if str(e) in critical_operation_map else e
                 )
             else:
                 # Issue a warning if --resource-type not given but --critical-operation-exclusion-list is given.
                 # List can be empty as well.
-                logger.warning("WARNING: --resource-type argument is required to update --critical-operation-exclusion-list.")
+                logger.warning("WARNING: --resource-type argument is required to update "
+                               "--critical-operation-exclusion-list.")
                 self.ctx.args.critical_operation_exclusion_list = AAZUndefined
 
 class Unlock(_Unlock):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        if cls._args_schema is not None:
+            return cls._args_schema
+        cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        _args_schema = cls._args_schema
+        _args_schema.tenant_id = AAZStrArg(
+            options=["--tenant-id"],
+            help="Tenant ID for cross-tenant calls"
+        )
+        return cls._args_schema
 
     def pre_operations(self):
         # Allow users to enter predefined shorthand instead of the full path, if necessary
@@ -60,21 +75,28 @@ class Unlock(_Unlock):
                 self.ctx.args.resource_guard_operation_requests,
                 element_transformer=self._transform_resource_guard_operation_request
             )
+        if has_value(self.ctx.args.tenant_id):
+            # ValueError is raised when providing an incorrect tenant ID. Capturing it in a try block does not work.
+            self.ctx.update_aux_tenants(str(self.ctx.args.tenant_id))
 
     def _transform_resource_guard_operation_request(self, _, operation):
         if str(operation) in operation_request_map:
-            from azext_dataprotection.aaz.latest.dataprotection.backup_vault.resource_guard_mapping import Show as ResourceGuardMappingGet
+            from azext_dataprotection.aaz.latest.dataprotection.backup_vault.resource_guard_mapping \
+                import Show as ResourceGuardMappingGet
             resource_guard_mapping = ResourceGuardMappingGet(cli_ctx=self.cli_ctx)(command_args={
                 "resource_group": str(self.ctx.args.resource_group),
                 "vault_name": str(self.ctx.args.vault_name),
                 "resource_guard_mapping_name": "DppResourceGuardProxy",
             })
 
-            formatted_operation_list = [item['defaultResourceRequest'] for item in resource_guard_mapping["properties"]["resourceGuardOperationDetails"]]
-            formatted_operation = [op for op in formatted_operation_list if operation_request_map[str(operation)] in op]
+            formatted_operation_list = [item['defaultResourceRequest'] for 
+                                        item in resource_guard_mapping["properties"]["resourceGuardOperationDetails"]]
+            formatted_operation = [op for op in formatted_operation_list if
+                                   operation_request_map[str(operation)] in op]
 
             if(len(formatted_operation) != 1):
-                raise CLIError("Unable to proceed with shorthand argument {}. Please retry the command with the full payload".format(operation))
+                raise CLIError("Unable to proceed with shorthand argument {}. "
+                               "Please retry the command with the full payload".format(operation))
             
             return formatted_operation[0]
         return operation
