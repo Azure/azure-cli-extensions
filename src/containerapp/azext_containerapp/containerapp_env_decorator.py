@@ -111,9 +111,6 @@ class ContainerAppEnvDecorator(BaseResource):
     def get_argument_max_nodes(self):
         return self.get_param("max_nodes")
 
-    def get_argument_infrastructure_resource_group(self):
-        return self.get_param("infrastructure_resource_group")
-
 
 class ContainerAppEnvCreateDecorator(ContainerAppEnvDecorator):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
@@ -347,6 +344,8 @@ class ContainerAppEnvUpdateDecorator(ContainerAppEnvDecorator):
 
 
 class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
+    def get_argument_infrastructure_resource_group(self):
+        return self.get_param("infrastructure_resource_group")
 
     def construct_payload(self):
         super().construct_payload()
