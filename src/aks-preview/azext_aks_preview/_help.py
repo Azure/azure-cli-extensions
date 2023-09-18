@@ -2693,7 +2693,7 @@ helps['aks mesh upgrade complete'] = """
     long-summary: This command completes Azure Service Mesh upgrade in progress.
     examples:
       - name: Complete Azure Service Mesh upgrade.
-        az aks mesh upgrade complete --resource-group MyResourceGroup --name MyManagedCluster
+        text: az aks mesh upgrade complete --resource-group MyResourceGroup --name MyManagedCluster
 """
 
 helps['aks mesh upgrade rollback'] = """
