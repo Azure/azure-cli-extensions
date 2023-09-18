@@ -31,7 +31,7 @@ helps['fleet create'] = """
           short-summary: Whether to enable apiserver vnet integration for the Fleet hub or not.
         - name: --apiserver-subnet-id
           type: string
-          short-summary: he subnet to be used when apiserver vnet integration is enabled. It is required when creating a new Fleet with BYO vnet.
+          short-summary: the subnet to be used when apiserver vnet integration is enabled. It is required when creating a new Fleet with BYO vnet.
         - name: --agent-subnet-id
           type: string
           short-summary: The ID of the subnet which the Fleet hub node will join on startup. If this is not specified, a vnet and subnet will be generated and used.
