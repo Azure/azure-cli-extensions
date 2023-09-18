@@ -2085,7 +2085,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: updated service mesh profile
         """
-
         updated = False
         new_profile = self.models.ServiceMeshProfile(mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED) \
             if self.mc.service_mesh_profile is None else copy.deepcopy(self.mc.service_mesh_profile)
@@ -2189,6 +2188,25 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             new_profile.istio.certificate_authority.plugin.key_object_name = ca_key_object_name
             new_profile.istio.certificate_authority.plugin.root_cert_object_name = root_cert_object_name
             new_profile.istio.certificate_authority.plugin.cert_chain_object_name = cert_chain_object_name
+            updated = True
+
+        # deal with mesh upgrade commands
+        mesh_upgrade_command = self.raw_param.get("mesh_upgrade_command", None)
+        if mesh_upgrade_command is not None:
+            if len(new_profile.istio.revisions) < 2:
+                raise ArgumentUsageError('Azure Service Mesh upgrade is not in progress.')
+
+            if mesh_upgrade_command is not None and mesh_upgrade_command == "complete":
+                new_profile.istio.revisions.remove(min(new_profile.istio.revisions))
+            if mesh_upgrade_command is not None and mesh_upgrade_command == "rollback":
+                new_profile.istio.revisions.remove(max(new_profile.istio.revisions))
+            updated = True
+
+        revision = self.raw_param.get("revision", None)
+        if revision is not None:
+            if new_profile.istio.revisions is None:
+                new_profile.istio.revisions = []
+            new_profile.istio.revisions.append(revision)
             updated = True
 
         if updated:

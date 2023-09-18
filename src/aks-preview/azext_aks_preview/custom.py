@@ -2491,6 +2491,66 @@ def aks_mesh_disable_ingress_gateway(
         ingress_gateway_type=ingress_gateway_type)
 
 
+def aks_mesh_get_revisions(
+        cmd,
+        client,
+        location
+):
+    return client.list_mesh_revision_profiles(location)
+
+
+def aks_mesh_get_upgrades(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    return client.list_mesh_upgrade_profiles(resource_group_name, name)
+
+
+def aks_mesh_upgrade_start(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        revision
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        revision=revision)
+
+
+def aks_mesh_upgrade_complete(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        mesh_upgrade_command="complete")
+
+
+def aks_mesh_upgrade_rollback(
+        cmd,
+        client,
+        resource_group_name,
+        name
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        mesh_upgrade_command="rollback")
+
+
 def _aks_mesh_update(
         cmd,
         client,
@@ -2506,6 +2566,8 @@ def _aks_mesh_update(
         enable_ingress_gateway=None,
         disable_ingress_gateway=None,
         ingress_gateway_type=None,
+        revision=None,
+        mesh_upgrade_command=None,
 ):
     raw_parameters = locals()
 
@@ -2526,21 +2588,6 @@ def _aks_mesh_update(
         return None
 
     return aks_update_decorator.update_mc(mc)
-
-def aks_mesh_get_revisions(
-        cmd,
-        client,
-        location
-):
-    return client.list_mesh_revision_profiles(location)
-
-def aks_mesh_get_upgrades(
-        cmd,
-        client,
-        resource_group_name,
-        name
-):
-    return client.list_mesh_upgrade_profiles(resource_group_name, name)
 
 def start_chat(prompt=None):
     from azext_aks_preview._openai_wrapper import setup_openai, \

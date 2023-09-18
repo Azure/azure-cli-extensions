@@ -2668,6 +2668,45 @@ helps['aks mesh get-upgrades'] = """
         text: az aks mesh get-upgrades --resource-group MyResourceGroup --name MyManagedCluster
 """
 
+helps['aks mesh upgrade start'] = """
+    type: command
+    short-summary: Initiate Azure Service Mesh upgrade.
+    long-summary: This command initiates Azure Service Mesh upgrade to the specified revision.
+    parameters:
+      - name: --revision
+        type: string
+        short-summary: Azure Service Mesh revision to upgrade to.
+    examples:
+      - name: Initiate Azure Service Mesh upgrade.
+        text: az aks mesh upgrade start --resource-group MyResourceGroup --name MyManagedCluster --revision asm-1-18
+"""
+
+helps['aks mesh upgrade complete'] = """
+    type: command
+    short-summary: Complete Azure Service Mesh upgrade.
+    long-summary: This command completes Azure Service Mesh upgrade in progress.
+    parameters:
+      - name: --force
+        type: bool
+        short-summary: Force upgrade complete.
+    examples:
+      - name: Complete Azure Service Mesh upgrade.
+        text: az aks mesh upgrade start --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+helps['aks mesh upgrade rollback'] = """
+    type: command
+    short-summary: Rollback Azure Service Mesh upgrade.
+    long-summary: This command rolls back Azure Service Mesh upgrade in progress.
+    parameters:
+      - name: --force
+        type: bool
+        short-summary: Force upgrade rollback.
+    examples:
+      - name: Rollback Azure Service Mesh upgrade.
+        text: az aks mesh upgrade rollback --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
 helps['aks copilot'] = """
     type: command
     short-summary: Start a chat with the Azure Kubernetes Service expert. API keys for OpenAI or Azure are required.

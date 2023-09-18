@@ -7457,6 +7457,56 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_azure_service_mesh_upgrade_commands(self, resource_group, resource_group_location):
+        """ This test case exercises upgrading/rollback and completing upgrades.
+
+        It creates a cluster, enables azure service mesh, upgrades, completes an existing upgrade
+        and rolls back an existing upgrade.
+        """
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+        })
+
+        # create cluster
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureServiceMeshPreview ' \
+                     '--ssh-key-value={ssh_key_value}'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        # enable azure service mesh
+        enable_cmd = 'aks mesh enable --resource-group={resource_group} --name={name}'
+        self.cmd(enable_cmd, checks=[
+            self.check('serviceMeshProfile.mode', 'Istio'),
+        ])
+
+        # start an upgrade
+        upgrade_start_cmd = 'aks mesh upgrade start --resource-group={resource_group} --name={name} --revision asm-1-17'
+        self.cmd(upgrade_start_cmd, checks=[
+            self.check('serviceMeshProfile.istio.revisions[0]', 'asm-1-17'),
+        ])
+
+        # since we do not support any other revision other than asm-1-17 at this time, testing for the following commands is not possible
+        # az aks mesh upgrade rollover --resource-group={resource_group} --name={name}
+        # az aks mesh upgrade complete --resource-group={resource_group} --name={name}
+
+        # delete the cluster
+        delete_cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(delete_cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_standard_sku(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0

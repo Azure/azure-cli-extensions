@@ -276,8 +276,25 @@ def load_command_table(self, _):
         g.custom_command(
             'get-revisions',
             'aks_mesh_get_revisions',
-            table_transformer = aks_mesh_revisions_table_format)
+            table_transformer=aks_mesh_revisions_table_format)
         g.custom_command(
             'get-upgrades',
             'aks_mesh_get_upgrades',
-            table_transformer = aks_mesh_upgrades_table_format)
+            table_transformer=aks_mesh_upgrades_table_format)
+
+    # AKS mesh upgrade commands
+    with self.command_group('aks mesh upgrade', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
+        g.custom_command(
+            'start',
+            'aks_mesh_upgrade_start',
+            supports_no_wait=True)
+        g.custom_command(
+            'complete',
+            'aks_mesh_upgrade_complete',
+            supports_no_wait=True,
+            confirmation='Are you sure you want to complete the upgrade?')
+        g.custom_command(
+            'rollback',
+            'aks_mesh_upgrade_rollback',
+            supports_no_wait=True,
+            confirmation='Are you sure you want to rollback the upgrade?')
