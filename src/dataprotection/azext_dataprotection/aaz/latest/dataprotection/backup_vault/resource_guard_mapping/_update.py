@@ -52,7 +52,6 @@ class Update(AAZCommand):
             help="The name of the resource guard mapping",
             required=True,
             id_part="child_name_1",
-            default="DppResourceGuardProxy",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]*$",
             ),
@@ -83,7 +82,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.resource_guard_resource_id = AAZStrArg(
-            options=["--resource-guard-resource-id"],
+            options=["--resource-guard-id", "--resource-guard-resource-id"],
             arg_group="Properties",
             help="ARM Id of the resource guard to be mapped to",
             nullable=True,

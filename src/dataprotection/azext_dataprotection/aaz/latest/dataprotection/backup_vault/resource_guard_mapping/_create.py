@@ -64,7 +64,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_guard_resource_id = AAZStrArg(
-            options=["--resource-guard-resource-id"],
+            options=["--resource-guard-id", "--resource-guard-resource-id"],
             arg_group="Properties",
             help="ARM Id of the resource guard to be mapped to",
         )
