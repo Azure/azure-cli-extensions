@@ -19,7 +19,7 @@ from ._validators import (
     validate_firewall_policy, validate_rule_group_collection, process_private_ranges,
     process_threat_intel_allowlist_ip_addresses, process_threat_intel_allowlist_fqdns,
     validate_virtual_hub, get_management_subnet_validator, get_management_public_ip_validator,
-    validate_ip_groups)
+    validate_ip_groups, validate_custom_http_headers)
 
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
@@ -260,6 +260,8 @@ def load_arguments(self, _):
 
     with self.argument_context('network firewall policy rule-collection-group collection add-filter-collection') as c:
         c.argument('filter_action', options_list=['--action'], arg_type=get_enum_type(['Allow', 'Deny']), help='The action type of a rule collection.')
+        c.argument('http_headers_to_insert', nargs='+', validator=validate_custom_http_headers, help='Space-separated list of custom http headers consisting of name and value, in Name=Value format.')
+
 
     with self.argument_context('network firewall policy rule-collection-group collection add-nat-collection') as c:
         c.argument('nat_action', options_list=['--action'], arg_type=get_enum_type(['DNAT', 'SNAT']), help='The action type of a rule collection.')
@@ -267,4 +269,5 @@ def load_arguments(self, _):
     with self.argument_context('network firewall policy rule-collection-group collection rule') as c:
         c.argument('rule_collection_name', options_list=['--collection-name'], help='The name of the rule collection in Firewall Policy Rule Collection Group.')
         c.argument('rule_name', options_list=['--name', '-n'], arg_group='Common Rule', help='The name of rule')
+        c.argument('http_headers_to_insert', nargs='+', validator=validate_custom_http_headers, help='Space-separated list of custom http headers consisting of name and value, in Name=Value format.')
     # endregion

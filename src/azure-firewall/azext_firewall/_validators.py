@@ -242,3 +242,17 @@ def process_threat_intel_allowlist_ip_addresses(namespace):
 def process_threat_intel_allowlist_fqdns(namespace):
     if namespace.fqdns is not None:
         namespace.fqdns = ', '.join(namespace.fqdns)
+
+def validate_custom_http_headers(namespace):
+    if not hasattr(namespace, 'http_headers_to_insert'):
+        return
+
+    http_header_list = []
+    for item in namespace.http_header_list or []:
+        from knack.util import CLIError
+        usage_error = CLIError('usage error: --http_headers_to_insert Name=Value')
+        item_comps = item.split('=')
+        if len(item_comps) != 2:
+            raise usage_error
+        http_header_list.append({'http_header_name': item_comps[0], 'http_header_value': item_comps[1]})
+    namespace.http_headers_to_insert = http_header_list
