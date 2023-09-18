@@ -348,31 +348,31 @@ def load_arguments(self: AzCommandsLoader, _):
         )
 
     with self.argument_context('scvmm vm extension list') as c:
-        c.argument('vm_name', type=str, help='The name of the vm containing the extension.')
+        c.argument('vm_name', help='The name of the vm containing the extension.')
         c.argument(
             'expand', help='The expand expression to apply on the operation.')
 
     with self.argument_context('scvmm vm extension show') as c:
         c.argument(
-            'vm_name', type=str, help='The name of the vm containing the extension.',
+            'vm_name', help='The name of the vm containing the extension.',
             id_part='name')
-        c.argument('name', type=str, help='The name of the vm extension.', id_part='child_name_1')
+        c.argument('name', help='The name of the vm extension.', id_part='child_name_1')
 
     for scope in ['scvmm vm extension update', 'scvmm vm extension create']:
         with self.argument_context(scope) as c:
             c.argument(
-                'vm_name', type=str, help='The name of the vm where the extension '
+                'vm_name', help='The name of the vm where the extension '
                 'should be created or updated.')
-            c.argument('name', type=str, help='The name of the vm extension.')
+            c.argument('name', help='The name of the vm extension.')
             c.argument('tags', tags_type)
             c.argument(
-                'force_update_tag', type=str, help='How the extension handler should be forced to update even if '
+                'force_update_tag', help='How the extension handler should be forced to update even if '
                 'the extension configuration has not changed.')
-            c.argument('publisher', type=str, help='The name of the extension handler publisher.')
+            c.argument('publisher', help='The name of the extension handler publisher.')
             c.argument(
-                'type_', options_list=['--type'], type=str, help='Specify the type of the extension; an example '
+                'type_', options_list=['--type'], help='Specify the type of the extension; an example '
                 'is "CustomScriptExtension".')
-            c.argument('type_handler_version', type=str, help='Specifies the version of the script handler.')
+            c.argument('type_handler_version', help='Specifies the version of the script handler.')
             c.argument(
                 'enable_auto_upgrade', arg_type=get_three_state_flag(), help='Indicates whether the extension '
                 'should be automatically upgraded by the platform if there is a newer version available.')
@@ -389,6 +389,6 @@ def load_arguments(self: AzCommandsLoader, _):
                 'value: json-string/json-file/@json-file.')
 
     with self.argument_context('scvmm vm extension delete') as c:
-        c.argument('vm_name', type=str, help='The name of the vm where the extension '
+        c.argument('vm_name', help='The name of the vm where the extension '
                    'should be deleted.', id_part='name')
-        c.argument('name', type=str, help='The name of the vm extension.', id_part='child_name_1')
+        c.argument('name', help='The name of the vm extension.', id_part='child_name_1')
