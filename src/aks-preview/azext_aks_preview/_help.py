@@ -2662,7 +2662,7 @@ helps['aks mesh get-revisions'] = """
 helps['aks mesh get-upgrades'] = """
     type: command
     short-summary: Discover available Azure Service Mesh upgrades.
-    long-summary: This command discovers available Azure Service Mesh upgrades for all the installed revisions for the cluster.
+    long-summary: This command discovers available Azure Service Mesh upgrades for all the installed revisions on the cluster.
     examples:
       - name: Discover Azure Service Mesh upgrades.
         text: az aks mesh get-upgrades --resource-group MyResourceGroup --name MyManagedCluster
@@ -2681,27 +2681,25 @@ helps['aks mesh upgrade start'] = """
         text: az aks mesh upgrade start --resource-group MyResourceGroup --name MyManagedCluster --revision asm-1-18
 """
 
+helps['aks mesh upgrade'] = """
+    type: group
+    short-summary: Commands to manage the upgrades for Azure Service Mesh.
+    long-summary: A group of commands to manage the upgrades for Azure Service Mesh in given cluster.
+"""
+
 helps['aks mesh upgrade complete'] = """
     type: command
     short-summary: Complete Azure Service Mesh upgrade.
     long-summary: This command completes Azure Service Mesh upgrade in progress.
-    parameters:
-      - name: --force
-        type: bool
-        short-summary: Force upgrade complete.
     examples:
       - name: Complete Azure Service Mesh upgrade.
-        text: az aks mesh upgrade start --resource-group MyResourceGroup --name MyManagedCluster
+        az aks mesh upgrade complete --resource-group MyResourceGroup --name MyManagedCluster
 """
 
 helps['aks mesh upgrade rollback'] = """
     type: command
     short-summary: Rollback Azure Service Mesh upgrade.
     long-summary: This command rolls back Azure Service Mesh upgrade in progress.
-    parameters:
-      - name: --force
-        type: bool
-        short-summary: Force upgrade rollback.
     examples:
       - name: Rollback Azure Service Mesh upgrade.
         text: az aks mesh upgrade rollback --resource-group MyResourceGroup --name MyManagedCluster
