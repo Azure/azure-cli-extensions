@@ -6,6 +6,7 @@ Release History
 * Add new argument `--server-version` in `az spring app deploy` and `az spring app deployment create` to support WAR file deployment in Standard tier. 
 * Add argument `--enable-auto-sync` in `az spring certificate add`.
 * Add new command `az spring certificate update` to update a certificate.
+* Add new command `az spring list-support-server-versions` to list all supported server versions.
 
 1.14.3
 ---

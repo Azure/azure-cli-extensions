@@ -49,6 +49,14 @@ helps['spring list-marketplace-plan'] = """
       text: az spring list-marketplace-plan -o table
 """
 
+helps['spring list-support-server-versions'] = """
+    type: command
+    short-summary: (Standard and Basic Tier Only) List supported server versions.
+    examples:
+    - name: List supported server versions.
+      text: az spring list-support-server-versions -o table -s MyService -g MyResourceGroup
+"""
+
 helps['spring update'] = """
     type: command
     short-summary: Update an Azure Spring Apps.

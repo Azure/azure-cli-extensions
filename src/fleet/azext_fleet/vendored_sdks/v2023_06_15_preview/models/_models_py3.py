@@ -17,6 +17,71 @@ if TYPE_CHECKING:
     from .. import models as _models
 
 
+class AgentProfile(_serialization.Model):
+    """Agent profile for the Fleet hub.
+
+    :ivar subnet_id: The ID of the subnet which the Fleet hub node will join on startup. If this is
+     not specified, a vnet and subnet will be generated and used.
+    :vartype subnet_id: str
+    """
+
+    _attribute_map = {
+        "subnet_id": {"key": "subnetId", "type": "str"},
+    }
+
+    def __init__(self, *, subnet_id: Optional[str] = None, **kwargs: Any) -> None:
+        """
+        :keyword subnet_id: The ID of the subnet which the Fleet hub node will join on startup. If this
+         is not specified, a vnet and subnet will be generated and used.
+        :paramtype subnet_id: str
+        """
+        super().__init__(**kwargs)
+        self.subnet_id = subnet_id
+
+
+class APIServerAccessProfile(_serialization.Model):
+    """Access profile for the Fleet hub API server.
+
+    :ivar enable_private_cluster: Whether to create the Fleet hub as a private cluster or not.
+    :vartype enable_private_cluster: bool
+    :ivar enable_vnet_integration: Whether to enable apiserver vnet integration for the Fleet hub
+     or not.
+    :vartype enable_vnet_integration: bool
+    :ivar subnet_id: The subnet to be used when apiserver vnet integration is enabled. It is
+     required when creating a new Fleet with BYO vnet.
+    :vartype subnet_id: str
+    """
+
+    _attribute_map = {
+        "enable_private_cluster": {"key": "enablePrivateCluster", "type": "bool"},
+        "enable_vnet_integration": {"key": "enableVnetIntegration", "type": "bool"},
+        "subnet_id": {"key": "subnetId", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        enable_private_cluster: Optional[bool] = None,
+        enable_vnet_integration: Optional[bool] = None,
+        subnet_id: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword enable_private_cluster: Whether to create the Fleet hub as a private cluster or not.
+        :paramtype enable_private_cluster: bool
+        :keyword enable_vnet_integration: Whether to enable apiserver vnet integration for the Fleet
+         hub or not.
+        :paramtype enable_vnet_integration: bool
+        :keyword subnet_id: The subnet to be used when apiserver vnet integration is enabled. It is
+         required when creating a new Fleet with BYO vnet.
+        :paramtype subnet_id: str
+        """
+        super().__init__(**kwargs)
+        self.enable_private_cluster = enable_private_cluster
+        self.enable_vnet_integration = enable_vnet_integration
+        self.subnet_id = subnet_id
+
+
 class ErrorAdditionalInfo(_serialization.Model):
     """The resource management error additional info.
 
@@ -58,10 +123,10 @@ class ErrorDetail(_serialization.Model):
     :vartype target: str
     :ivar details: The error details.
     :vartype details:
-     list[~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.ErrorDetail]
+     list[~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.ErrorDetail]
     :ivar additional_info: The error additional info.
     :vartype additional_info:
-     list[~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.ErrorAdditionalInfo]
+     list[~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.ErrorAdditionalInfo]
     """
 
     _validation = {
@@ -95,7 +160,7 @@ class ErrorResponse(_serialization.Model):
     operations. (This also follows the OData error response format.).
 
     :ivar error: The error object.
-    :vartype error: ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.ErrorDetail
+    :vartype error: ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.ErrorDetail
     """
 
     _attribute_map = {
@@ -105,7 +170,7 @@ class ErrorResponse(_serialization.Model):
     def __init__(self, *, error: Optional["_models.ErrorDetail"] = None, **kwargs: Any) -> None:
         """
         :keyword error: The error object.
-        :paramtype error: ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.ErrorDetail
+        :paramtype error: ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.ErrorDetail
         """
         super().__init__(**kwargs)
         self.error = error
@@ -126,7 +191,7 @@ class Resource(_serialization.Model):
     :vartype type: str
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
-    :vartype system_data: ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.SystemData
     """
 
     _validation = {
@@ -170,7 +235,7 @@ class TrackedResource(Resource):
     :vartype type: str
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
-    :vartype system_data: ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.SystemData
     :ivar tags: Resource tags.
     :vartype tags: dict[str, str]
     :ivar location: The geo-location where the resource lives. Required.
@@ -223,7 +288,7 @@ class Fleet(TrackedResource):
     :vartype type: str
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
-    :vartype system_data: ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.SystemData
     :ivar tags: Resource tags.
     :vartype tags: dict[str, str]
     :ivar location: The geo-location where the resource lives. Required.
@@ -233,13 +298,16 @@ class Fleet(TrackedResource):
      same requested resource. HTTP/1.1 uses entity tags in the etag (section 14.19), If-Match
      (section 14.24), If-None-Match (section 14.26), and If-Range (section 14.27) header fields.
     :vartype e_tag: str
+    :ivar identity: Managed identity.
+    :vartype identity:
+     ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.ManagedServiceIdentity
     :ivar provisioning_state: The status of the last operation. Known values are: "Succeeded",
      "Failed", "Canceled", "Creating", "Updating", and "Deleting".
     :vartype provisioning_state: str or
-     ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.FleetProvisioningState
+     ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.FleetProvisioningState
     :ivar hub_profile: The FleetHubProfile configures the Fleet's hub.
     :vartype hub_profile:
-     ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.FleetHubProfile
+     ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.FleetHubProfile
     """
 
     _validation = {
@@ -260,6 +328,7 @@ class Fleet(TrackedResource):
         "tags": {"key": "tags", "type": "{str}"},
         "location": {"key": "location", "type": "str"},
         "e_tag": {"key": "eTag", "type": "str"},
+        "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
         "hub_profile": {"key": "properties.hubProfile", "type": "FleetHubProfile"},
     }
@@ -269,6 +338,7 @@ class Fleet(TrackedResource):
         *,
         location: str,
         tags: Optional[Dict[str, str]] = None,
+        identity: Optional["_models.ManagedServiceIdentity"] = None,
         hub_profile: Optional["_models.FleetHubProfile"] = None,
         **kwargs: Any
     ) -> None:
@@ -277,12 +347,16 @@ class Fleet(TrackedResource):
         :paramtype tags: dict[str, str]
         :keyword location: The geo-location where the resource lives. Required.
         :paramtype location: str
+        :keyword identity: Managed identity.
+        :paramtype identity:
+         ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.ManagedServiceIdentity
         :keyword hub_profile: The FleetHubProfile configures the Fleet's hub.
         :paramtype hub_profile:
-         ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.FleetHubProfile
+         ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.FleetHubProfile
         """
         super().__init__(tags=tags, location=location, **kwargs)
         self.e_tag = None
+        self.identity = identity
         self.provisioning_state = None
         self.hub_profile = hub_profile
 
@@ -322,7 +396,7 @@ class FleetCredentialResults(_serialization.Model):
 
     :ivar kubeconfigs: Array of base64-encoded Kubernetes configuration files.
     :vartype kubeconfigs:
-     list[~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.FleetCredentialResult]
+     list[~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.FleetCredentialResult]
     """
 
     _validation = {
@@ -346,6 +420,12 @@ class FleetHubProfile(_serialization.Model):
 
     :ivar dns_prefix: DNS prefix used to create the FQDN for the Fleet hub.
     :vartype dns_prefix: str
+    :ivar api_server_access_profile: The access profile for the Fleet hub API server.
+    :vartype api_server_access_profile:
+     ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.APIServerAccessProfile
+    :ivar agent_profile: The agent profile for the Fleet hub.
+    :vartype agent_profile:
+     ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.AgentProfile
     :ivar fqdn: The FQDN of the Fleet hub.
     :vartype fqdn: str
     :ivar kubernetes_version: The Kubernetes version of the Fleet hub.
@@ -364,17 +444,34 @@ class FleetHubProfile(_serialization.Model):
 
     _attribute_map = {
         "dns_prefix": {"key": "dnsPrefix", "type": "str"},
+        "api_server_access_profile": {"key": "apiServerAccessProfile", "type": "APIServerAccessProfile"},
+        "agent_profile": {"key": "agentProfile", "type": "AgentProfile"},
         "fqdn": {"key": "fqdn", "type": "str"},
         "kubernetes_version": {"key": "kubernetesVersion", "type": "str"},
     }
 
-    def __init__(self, *, dns_prefix: Optional[str] = None, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        *,
+        dns_prefix: Optional[str] = None,
+        api_server_access_profile: Optional["_models.APIServerAccessProfile"] = None,
+        agent_profile: Optional["_models.AgentProfile"] = None,
+        **kwargs: Any
+    ) -> None:
         """
         :keyword dns_prefix: DNS prefix used to create the FQDN for the Fleet hub.
         :paramtype dns_prefix: str
+        :keyword api_server_access_profile: The access profile for the Fleet hub API server.
+        :paramtype api_server_access_profile:
+         ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.APIServerAccessProfile
+        :keyword agent_profile: The agent profile for the Fleet hub.
+        :paramtype agent_profile:
+         ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.AgentProfile
         """
         super().__init__(**kwargs)
         self.dns_prefix = dns_prefix
+        self.api_server_access_profile = api_server_access_profile
+        self.agent_profile = agent_profile
         self.fqdn = None
         self.kubernetes_version = None
 
@@ -385,7 +482,7 @@ class FleetListResult(_serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :ivar value: The Fleet items on this page. Required.
-    :vartype value: list[~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.Fleet]
+    :vartype value: list[~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.Fleet]
     :ivar next_link: The link to the next page of items.
     :vartype next_link: str
     """
@@ -402,7 +499,7 @@ class FleetListResult(_serialization.Model):
     def __init__(self, *, value: List["_models.Fleet"], next_link: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword value: The Fleet items on this page. Required.
-        :paramtype value: list[~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.Fleet]
+        :paramtype value: list[~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.Fleet]
         :keyword next_link: The link to the next page of items.
         :paramtype next_link: str
         """
@@ -427,7 +524,7 @@ class ProxyResource(Resource):
     :vartype type: str
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
-    :vartype system_data: ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.SystemData
     """
 
     _validation = {
@@ -464,7 +561,7 @@ class FleetMember(ProxyResource):
     :vartype type: str
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
-    :vartype system_data: ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.SystemData
     :ivar e_tag: If eTag is provided in the response body, it may also be provided as a header per
      the normal etag convention.  Entity tags are used for comparing two or more entities from the
      same requested resource. HTTP/1.1 uses entity tags in the etag (section 14.19), If-Match
@@ -479,7 +576,7 @@ class FleetMember(ProxyResource):
     :ivar provisioning_state: The status of the last operation. Known values are: "Succeeded",
      "Failed", "Canceled", "Joining", "Leaving", and "Updating".
     :vartype provisioning_state: str or
-     ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.FleetMemberProvisioningState
+     ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.FleetMemberProvisioningState
     """
 
     _validation = {
@@ -527,7 +624,7 @@ class FleetMemberListResult(_serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :ivar value: The FleetMember items on this page. Required.
-    :vartype value: list[~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.FleetMember]
+    :vartype value: list[~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.FleetMember]
     :ivar next_link: The link to the next page of items.
     :vartype next_link: str
     """
@@ -545,7 +642,7 @@ class FleetMemberListResult(_serialization.Model):
         """
         :keyword value: The FleetMember items on this page. Required.
         :paramtype value:
-         list[~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.FleetMember]
+         list[~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.FleetMember]
         :keyword next_link: The link to the next page of items.
         :paramtype next_link: str
         """
@@ -583,19 +680,33 @@ class FleetPatch(_serialization.Model):
 
     :ivar tags: Resource tags.
     :vartype tags: dict[str, str]
+    :ivar identity: Managed identity.
+    :vartype identity:
+     ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.ManagedServiceIdentity
     """
 
     _attribute_map = {
         "tags": {"key": "tags", "type": "{str}"},
+        "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
     }
 
-    def __init__(self, *, tags: Optional[Dict[str, str]] = None, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        *,
+        tags: Optional[Dict[str, str]] = None,
+        identity: Optional["_models.ManagedServiceIdentity"] = None,
+        **kwargs: Any
+    ) -> None:
         """
         :keyword tags: Resource tags.
         :paramtype tags: dict[str, str]
+        :keyword identity: Managed identity.
+        :paramtype identity:
+         ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.ManagedServiceIdentity
         """
         super().__init__(**kwargs)
         self.tags = tags
+        self.identity = identity
 
 
 class ManagedClusterUpdate(_serialization.Model):
@@ -605,7 +716,7 @@ class ManagedClusterUpdate(_serialization.Model):
 
     :ivar upgrade: The upgrade to apply to the ManagedClusters. Required.
     :vartype upgrade:
-     ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.ManagedClusterUpgradeSpec
+     ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.ManagedClusterUpgradeSpec
     """
 
     _validation = {
@@ -620,7 +731,7 @@ class ManagedClusterUpdate(_serialization.Model):
         """
         :keyword upgrade: The upgrade to apply to the ManagedClusters. Required.
         :paramtype upgrade:
-         ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.ManagedClusterUpgradeSpec
+         ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.ManagedClusterUpgradeSpec
         """
         super().__init__(**kwargs)
         self.upgrade = upgrade
@@ -636,7 +747,7 @@ class ManagedClusterUpgradeSpec(_serialization.Model):
      NodeImageOnly requires the KubernetesVersion property not to be set. Required. Known values
      are: "Full" and "NodeImageOnly".
     :vartype type: str or
-     ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.ManagedClusterUpgradeType
+     ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.ManagedClusterUpgradeType
     :ivar kubernetes_version: The Kubernetes version to upgrade the member clusters to.
     :vartype kubernetes_version: str
     """
@@ -663,7 +774,7 @@ class ManagedClusterUpgradeSpec(_serialization.Model):
          NodeImageOnly requires the KubernetesVersion property not to be set. Required. Known values
          are: "Full" and "NodeImageOnly".
         :paramtype type: str or
-         ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.ManagedClusterUpgradeType
+         ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.ManagedClusterUpgradeType
         :keyword kubernetes_version: The Kubernetes version to upgrade the member clusters to.
         :paramtype kubernetes_version: str
         """
@@ -672,13 +783,79 @@ class ManagedClusterUpgradeSpec(_serialization.Model):
         self.kubernetes_version = kubernetes_version
 
 
+class ManagedServiceIdentity(_serialization.Model):
+    """Managed service identity (system assigned and/or user assigned identities).
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar principal_id: The service principal ID of the system assigned identity. This property
+     will only be provided for a system assigned identity.
+    :vartype principal_id: str
+    :ivar tenant_id: The tenant ID of the system assigned identity. This property will only be
+     provided for a system assigned identity.
+    :vartype tenant_id: str
+    :ivar type: Type of managed service identity (where both SystemAssigned and UserAssigned types
+     are allowed). Required. Known values are: "None", "SystemAssigned", "UserAssigned", and
+     "SystemAssigned, UserAssigned".
+    :vartype type: str or
+     ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.ManagedServiceIdentityType
+    :ivar user_assigned_identities: The set of user assigned identities associated with the
+     resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form:
+     '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}.
+     The dictionary values can be empty objects ({}) in requests.
+    :vartype user_assigned_identities: dict[str,
+     ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UserAssignedIdentity]
+    """
+
+    _validation = {
+        "principal_id": {"readonly": True},
+        "tenant_id": {"readonly": True},
+        "type": {"required": True},
+    }
+
+    _attribute_map = {
+        "principal_id": {"key": "principalId", "type": "str"},
+        "tenant_id": {"key": "tenantId", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "user_assigned_identities": {"key": "userAssignedIdentities", "type": "{UserAssignedIdentity}"},
+    }
+
+    def __init__(
+        self,
+        *,
+        type: Union[str, "_models.ManagedServiceIdentityType"],
+        user_assigned_identities: Optional[Dict[str, "_models.UserAssignedIdentity"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword type: Type of managed service identity (where both SystemAssigned and UserAssigned
+         types are allowed). Required. Known values are: "None", "SystemAssigned", "UserAssigned", and
+         "SystemAssigned, UserAssigned".
+        :paramtype type: str or
+         ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.ManagedServiceIdentityType
+        :keyword user_assigned_identities: The set of user assigned identities associated with the
+         resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form:
+         '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}.
+         The dictionary values can be empty objects ({}) in requests.
+        :paramtype user_assigned_identities: dict[str,
+         ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UserAssignedIdentity]
+        """
+        super().__init__(**kwargs)
+        self.principal_id = None
+        self.tenant_id = None
+        self.type = type
+        self.user_assigned_identities = user_assigned_identities
+
+
 class MemberUpdateStatus(_serialization.Model):
     """The status of a member update operation.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar status: The status of the MemberUpdate operation.
-    :vartype status: ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.UpdateStatus
+    :vartype status: ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UpdateStatus
     :ivar name: The name of the FleetMember.
     :vartype name: str
     :ivar cluster_resource_id: The Azure resource id of the target Kubernetes cluster.
@@ -722,15 +899,15 @@ class Operation(_serialization.Model):
      data-plane operations and "false" for ARM/control-plane operations.
     :vartype is_data_action: bool
     :ivar display: Localized display information for this particular operation.
-    :vartype display: ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.OperationDisplay
+    :vartype display: ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.OperationDisplay
     :ivar origin: The intended executor of the operation; as in Resource Based Access Control
      (RBAC) and audit logs UX. Default value is "user,system". Known values are: "user", "system",
      and "user,system".
-    :vartype origin: str or ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.Origin
+    :vartype origin: str or ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.Origin
     :ivar action_type: Enum. Indicates the action type. "Internal" refers to actions that are for
      internal only APIs. "Internal"
     :vartype action_type: str or
-     ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.ActionType
+     ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.ActionType
     """
 
     _validation = {
@@ -752,7 +929,7 @@ class Operation(_serialization.Model):
         """
         :keyword display: Localized display information for this particular operation.
         :paramtype display:
-         ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.OperationDisplay
+         ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.OperationDisplay
         """
         super().__init__(**kwargs)
         self.name = None
@@ -811,7 +988,7 @@ class OperationListResult(_serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: List of operations supported by the resource provider.
-    :vartype value: list[~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.Operation]
+    :vartype value: list[~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.Operation]
     :ivar next_link: URL to get the next set of operation list results (if there are any).
     :vartype next_link: str
     """
@@ -841,7 +1018,7 @@ class SystemData(_serialization.Model):
     :ivar created_by_type: The type of identity that created the resource. Known values are:
      "User", "Application", "ManagedIdentity", and "Key".
     :vartype created_by_type: str or
-     ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.CreatedByType
+     ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.CreatedByType
     :ivar created_at: The timestamp of resource creation (UTC).
     :vartype created_at: ~datetime.datetime
     :ivar last_modified_by: The identity that last modified the resource.
@@ -849,7 +1026,7 @@ class SystemData(_serialization.Model):
     :ivar last_modified_by_type: The type of identity that last modified the resource. Known values
      are: "User", "Application", "ManagedIdentity", and "Key".
     :vartype last_modified_by_type: str or
-     ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.CreatedByType
+     ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.CreatedByType
     :ivar last_modified_at: The timestamp of resource last modification (UTC).
     :vartype last_modified_at: ~datetime.datetime
     """
@@ -880,7 +1057,7 @@ class SystemData(_serialization.Model):
         :keyword created_by_type: The type of identity that created the resource. Known values are:
          "User", "Application", "ManagedIdentity", and "Key".
         :paramtype created_by_type: str or
-         ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.CreatedByType
+         ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.CreatedByType
         :keyword created_at: The timestamp of resource creation (UTC).
         :paramtype created_at: ~datetime.datetime
         :keyword last_modified_by: The identity that last modified the resource.
@@ -888,7 +1065,7 @@ class SystemData(_serialization.Model):
         :keyword last_modified_by_type: The type of identity that last modified the resource. Known
          values are: "User", "Application", "ManagedIdentity", and "Key".
         :paramtype last_modified_by_type: str or
-         ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.CreatedByType
+         ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.CreatedByType
         :keyword last_modified_at: The timestamp of resource last modification (UTC).
         :paramtype last_modified_at: ~datetime.datetime
         """
@@ -937,12 +1114,12 @@ class UpdateGroupStatus(_serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar status: The status of the UpdateGroup.
-    :vartype status: ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.UpdateStatus
+    :vartype status: ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UpdateStatus
     :ivar name: The name of the UpdateGroup.
     :vartype name: str
     :ivar members: The list of member this UpdateGroup updates.
     :vartype members:
-     list[~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.MemberUpdateStatus]
+     list[~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.MemberUpdateStatus]
     """
 
     _validation = {
@@ -980,7 +1157,7 @@ class UpdateRun(ProxyResource):
     :vartype type: str
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
-    :vartype system_data: ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.SystemData
+    :vartype system_data: ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.SystemData
     :ivar e_tag: If eTag is provided in the response body, it may also be provided as a header per
      the normal etag convention.  Entity tags are used for comparing two or more entities from the
      same requested resource. HTTP/1.1 uses entity tags in the etag (section 14.19), If-Match
@@ -989,19 +1166,19 @@ class UpdateRun(ProxyResource):
     :ivar provisioning_state: The provisioning state of the UpdateRun resource. Known values are:
      "Succeeded", "Failed", and "Canceled".
     :vartype provisioning_state: str or
-     ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.UpdateRunProvisioningState
+     ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UpdateRunProvisioningState
     :ivar strategy: The strategy defines the order in which the clusters will be updated.
      If not set, all members will be updated sequentially. The UpdateRun status will show a single
      UpdateStage and a single UpdateGroup targeting all members.
      The strategy of the UpdateRun can be modified until the run is started.
     :vartype strategy:
-     ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.UpdateRunStrategy
+     ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UpdateRunStrategy
     :ivar managed_cluster_update: The update to be applied to all clusters in the UpdateRun. The
      managedClusterUpdate can be modified until the run is started.
     :vartype managed_cluster_update:
-     ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.ManagedClusterUpdate
+     ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.ManagedClusterUpdate
     :ivar status: The status of the UpdateRun.
-    :vartype status: ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.UpdateRunStatus
+    :vartype status: ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UpdateRunStatus
     """
 
     _validation = {
@@ -1039,11 +1216,11 @@ class UpdateRun(ProxyResource):
          UpdateStage and a single UpdateGroup targeting all members.
          The strategy of the UpdateRun can be modified until the run is started.
         :paramtype strategy:
-         ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.UpdateRunStrategy
+         ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UpdateRunStrategy
         :keyword managed_cluster_update: The update to be applied to all clusters in the UpdateRun. The
          managedClusterUpdate can be modified until the run is started.
         :paramtype managed_cluster_update:
-         ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.ManagedClusterUpdate
+         ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.ManagedClusterUpdate
         """
         super().__init__(**kwargs)
         self.e_tag = None
@@ -1059,7 +1236,7 @@ class UpdateRunListResult(_serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :ivar value: The UpdateRun items on this page. Required.
-    :vartype value: list[~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.UpdateRun]
+    :vartype value: list[~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UpdateRun]
     :ivar next_link: The link to the next page of items.
     :vartype next_link: str
     """
@@ -1076,7 +1253,7 @@ class UpdateRunListResult(_serialization.Model):
     def __init__(self, *, value: List["_models.UpdateRun"], next_link: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword value: The UpdateRun items on this page. Required.
-        :paramtype value: list[~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.UpdateRun]
+        :paramtype value: list[~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UpdateRun]
         :keyword next_link: The link to the next page of items.
         :paramtype next_link: str
         """
@@ -1091,11 +1268,11 @@ class UpdateRunStatus(_serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar status: The status of the UpdateRun.
-    :vartype status: ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.UpdateStatus
+    :vartype status: ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UpdateStatus
     :ivar stages: The stages composing an update run. Stages are run sequentially withing an
      UpdateRun.
     :vartype stages:
-     list[~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.UpdateStageStatus]
+     list[~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UpdateStageStatus]
     """
 
     _validation = {
@@ -1122,7 +1299,7 @@ class UpdateRunStrategy(_serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :ivar stages: The list of stages that compose this update run. Required.
-    :vartype stages: list[~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.UpdateStage]
+    :vartype stages: list[~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UpdateStage]
     """
 
     _validation = {
@@ -1137,7 +1314,7 @@ class UpdateRunStrategy(_serialization.Model):
         """
         :keyword stages: The list of stages that compose this update run. Required.
         :paramtype stages:
-         list[~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.UpdateStage]
+         list[~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UpdateStage]
         """
         super().__init__(**kwargs)
         self.stages = stages
@@ -1148,7 +1325,7 @@ class UpdateStage(_serialization.Model):
     Update order:
 
 
-    * Sequential between stage: Stages run sequentially. The previous stage must complete before
+    * Sequential between stages: Stages run sequentially. The previous stage must complete before
     the next one starts.
     * Parallel within a stage: Groups within a stage run in parallel.
     * Sequential within a group: Clusters within a group are updated sequentially.
@@ -1159,7 +1336,7 @@ class UpdateStage(_serialization.Model):
     :vartype name: str
     :ivar groups: A list of group names that compose the stage.
      The groups will be updated in parallel. Each group name can only appear once in the UpdateRun.
-    :vartype groups: list[~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.UpdateGroup]
+    :vartype groups: list[~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UpdateGroup]
     :ivar after_stage_wait_in_seconds: The time in seconds to wait at the end of this stage before
      starting the next one. Defaults to 0 seconds if unspecified.
     :vartype after_stage_wait_in_seconds: int
@@ -1189,7 +1366,7 @@ class UpdateStage(_serialization.Model):
         :keyword groups: A list of group names that compose the stage.
          The groups will be updated in parallel. Each group name can only appear once in the UpdateRun.
         :paramtype groups:
-         list[~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.UpdateGroup]
+         list[~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UpdateGroup]
         :keyword after_stage_wait_in_seconds: The time in seconds to wait at the end of this stage
          before starting the next one. Defaults to 0 seconds if unspecified.
         :paramtype after_stage_wait_in_seconds: int
@@ -1206,15 +1383,15 @@ class UpdateStageStatus(_serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar status: The status of the UpdateStage.
-    :vartype status: ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.UpdateStatus
+    :vartype status: ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UpdateStatus
     :ivar name: The name of the UpdateStage.
     :vartype name: str
     :ivar groups: The list of groups to be updated as part of this UpdateStage.
     :vartype groups:
-     list[~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.UpdateGroupStatus]
+     list[~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UpdateGroupStatus]
     :ivar after_stage_wait_status: The status of the wait period configured on the UpdateStage.
     :vartype after_stage_wait_status:
-     ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.WaitStatus
+     ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.WaitStatus
     """
 
     _validation = {
@@ -1251,9 +1428,9 @@ class UpdateStatus(_serialization.Model):
     :vartype completed_time: ~datetime.datetime
     :ivar state: The State of the operation or group. Known values are: "NotStarted", "Running",
      "Stopping", "Stopped", "Failed", and "Completed".
-    :vartype state: str or ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.UpdateState
+    :vartype state: str or ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UpdateState
     :ivar error: The error details when a failure is encountered.
-    :vartype error: ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.ErrorDetail
+    :vartype error: ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.ErrorDetail
     """
 
     _validation = {
@@ -1279,13 +1456,41 @@ class UpdateStatus(_serialization.Model):
         self.error = None
 
 
+class UserAssignedIdentity(_serialization.Model):
+    """User assigned identity properties.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar principal_id: The principal ID of the assigned identity.
+    :vartype principal_id: str
+    :ivar client_id: The client ID of the assigned identity.
+    :vartype client_id: str
+    """
+
+    _validation = {
+        "principal_id": {"readonly": True},
+        "client_id": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "principal_id": {"key": "principalId", "type": "str"},
+        "client_id": {"key": "clientId", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.principal_id = None
+        self.client_id = None
+
+
 class WaitStatus(_serialization.Model):
     """The status of the wait duration.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar status: The status of the wait duration.
-    :vartype status: ~azure.mgmt.containerservicefleet.v2023_03_15_preview.models.UpdateStatus
+    :vartype status: ~azure.mgmt.containerservicefleet.v2023_06_15_preview.models.UpdateStatus
     :ivar wait_duration_in_seconds: The wait duration configured in seconds.
     :vartype wait_duration_in_seconds: int
     """
