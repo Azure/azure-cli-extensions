@@ -924,7 +924,7 @@ def load_arguments(self, _):
         c.argument('cert_chain_object_name')
 
     with self.argument_context('aks mesh get-revisions') as c:
-        c.argument('location')
+        c.argument('location', required=True, help='Location to discover available Azure Service Mesh revisions.')
 
     with self.argument_context('aks mesh upgrade start') as c:
         c.argument('revision', required=True)

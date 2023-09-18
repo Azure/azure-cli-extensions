@@ -2649,14 +2649,10 @@ helps['aks mesh get-revisions'] = """
     type: command
     short-summary: Discover available Azure Service Mesh revisions.
     long-summary: This command discovers available Azure Service Mesh revisions and their compatibility for the given location.
-    parameters:
-      - name: --location
-        type: string
-        short-summary: Specify the location.
-        long-summary: Location to discover available Azure Service Mesh revisions.
     examples:
       - name: Discover Azure Service Mesh revisions.
         text: az aks mesh get-revisions --location westus2
+        crafted: true
 """
 
 helps['aks mesh get-upgrades'] = """
