@@ -32,7 +32,7 @@ class VirtualMachinesOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure_arc_vmware_management_service_api.models
+    :type models: ~azure.mgmt.connectedvmware.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -84,11 +84,16 @@ class VirtualMachinesOperations:
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize('VirtualMachineAssessPatchesResult', pipeline_response)
 
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -119,7 +124,7 @@ class VirtualMachinesOperations:
         :return: An instance of AsyncLROPoller that returns either VirtualMachineAssessPatchesResult or
          the result of cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure_arc_vmware_management_service_api.models.VirtualMachineAssessPatchesResult]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.connectedvmware.models.VirtualMachineAssessPatchesResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
@@ -204,11 +209,16 @@ class VirtualMachinesOperations:
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize('VirtualMachineInstallPatchesResult', pipeline_response)
 
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -231,7 +241,7 @@ class VirtualMachinesOperations:
         :type virtual_machine_name: str
         :param install_patches_input: Input for InstallPatches as directly received by the API.
         :type install_patches_input:
-         ~azure_arc_vmware_management_service_api.models.VirtualMachineInstallPatchesParameters
+         ~azure.mgmt.connectedvmware.models.VirtualMachineInstallPatchesParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
@@ -243,7 +253,7 @@ class VirtualMachinesOperations:
         :return: An instance of AsyncLROPoller that returns either VirtualMachineInstallPatchesResult
          or the result of cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure_arc_vmware_management_service_api.models.VirtualMachineInstallPatchesResult]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.connectedvmware.models.VirtualMachineInstallPatchesResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
@@ -364,7 +374,7 @@ class VirtualMachinesOperations:
         :param virtual_machine_name: Name of the virtual machine resource.
         :type virtual_machine_name: str
         :param body: Request payload.
-        :type body: ~azure_arc_vmware_management_service_api.models.VirtualMachine
+        :type body: ~azure.mgmt.connectedvmware.models.VirtualMachine
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
@@ -375,8 +385,7 @@ class VirtualMachinesOperations:
          Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either VirtualMachine or the result of
          cls(response)
-        :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure_arc_vmware_management_service_api.models.VirtualMachine]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.connectedvmware.models.VirtualMachine]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
@@ -439,7 +448,7 @@ class VirtualMachinesOperations:
         :type virtual_machine_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VirtualMachine, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.VirtualMachine
+        :rtype: ~azure.mgmt.connectedvmware.models.VirtualMachine
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VirtualMachine"]
@@ -528,14 +537,19 @@ class VirtualMachinesOperations:
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         deserialized = None
+        response_headers = {}
         if response.status_code == 200:
             deserialized = self._deserialize('VirtualMachine', pipeline_response)
 
         if response.status_code == 201:
             deserialized = self._deserialize('VirtualMachine', pipeline_response)
 
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            
+
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, response_headers)
 
         return deserialized
 
@@ -559,7 +573,7 @@ class VirtualMachinesOperations:
         :param virtual_machine_name: Name of the virtual machine resource.
         :type virtual_machine_name: str
         :param body: Resource properties to update.
-        :type body: ~azure_arc_vmware_management_service_api.models.VirtualMachineUpdate
+        :type body: ~azure.mgmt.connectedvmware.models.VirtualMachineUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
@@ -570,8 +584,7 @@ class VirtualMachinesOperations:
          Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either VirtualMachine or the result of
          cls(response)
-        :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure_arc_vmware_management_service_api.models.VirtualMachine]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.connectedvmware.models.VirtualMachine]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
@@ -657,8 +670,13 @@ class VirtualMachinesOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _delete_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}"}  # type: ignore
 
@@ -779,8 +797,13 @@ class VirtualMachinesOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _stop_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/stop"}  # type: ignore
 
@@ -802,7 +825,7 @@ class VirtualMachinesOperations:
         :param virtual_machine_name: Name of the virtual machine resource.
         :type virtual_machine_name: str
         :param body: Virtualmachine stop action payload.
-        :type body: ~azure_arc_vmware_management_service_api.models.StopVirtualMachineOptions
+        :type body: ~azure.mgmt.connectedvmware.models.StopVirtualMachineOptions
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
@@ -891,8 +914,13 @@ class VirtualMachinesOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _start_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/start"}  # type: ignore
 
@@ -997,8 +1025,13 @@ class VirtualMachinesOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _restart_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/{virtualMachineName}/restart"}  # type: ignore
 
@@ -1079,7 +1112,7 @@ class VirtualMachinesOperations:
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either VirtualMachinesList or the result of cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure_arc_vmware_management_service_api.models.VirtualMachinesList]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.VirtualMachinesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
@@ -1157,7 +1190,7 @@ class VirtualMachinesOperations:
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either VirtualMachinesList or the result of cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure_arc_vmware_management_service_api.models.VirtualMachinesList]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.VirtualMachinesList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str

@@ -238,6 +238,8 @@ from ._models_py3 import SupportedBuildpackResource
 from ._models_py3 import SupportedBuildpackResourceProperties
 from ._models_py3 import SupportedBuildpacksCollection
 from ._models_py3 import SupportedRuntimeVersion
+from ._models_py3 import SupportedServerVersion
+from ._models_py3 import SupportedServerVersions
 from ._models_py3 import SupportedStackResource
 from ._models_py3 import SupportedStackResourceProperties
 from ._models_py3 import SupportedStacksCollection
@@ -252,6 +254,7 @@ from ._models_py3 import UploadedUserSourceInfo
 from ._models_py3 import UserAssignedManagedIdentity
 from ._models_py3 import UserSourceInfo
 from ._models_py3 import ValidationMessages
+from ._models_py3 import WarUploadedUserSourceInfo
 from ._models_py3 import WeeklyMaintenanceScheduleConfiguration
 
 from ._app_platform_management_client_enums import ActionType
@@ -277,6 +280,7 @@ from ._app_platform_management_client_enums import ContainerRegistryProvisioning
 from ._app_platform_management_client_enums import CreatedByType
 from ._app_platform_management_client_enums import CustomDomainResourceProvisioningState
 from ._app_platform_management_client_enums import CustomizedAcceleratorProvisioningState
+from ._app_platform_management_client_enums import CustomizedAcceleratorType
 from ._app_platform_management_client_enums import CustomizedAcceleratorValidateResultState
 from ._app_platform_management_client_enums import DeploymentResourceProvisioningState
 from ._app_platform_management_client_enums import DeploymentResourceStatus
@@ -291,6 +295,7 @@ from ._app_platform_management_client_enums import GatewayRouteConfigProtocol
 from ._app_platform_management_client_enums import GitImplementation
 from ._app_platform_management_client_enums import HTTPSchemeType
 from ._app_platform_management_client_enums import KPackBuildStageProvisioningState
+from ._app_platform_management_client_enums import KeyVaultCertificateAutoSync
 from ._app_platform_management_client_enums import LastModifiedByType
 from ._app_platform_management_client_enums import ManagedIdentityType
 from ._app_platform_management_client_enums import MonitoringSettingState
@@ -548,6 +553,8 @@ __all__ = [
     "SupportedBuildpackResourceProperties",
     "SupportedBuildpacksCollection",
     "SupportedRuntimeVersion",
+    "SupportedServerVersion",
+    "SupportedServerVersions",
     "SupportedStackResource",
     "SupportedStackResourceProperties",
     "SupportedStacksCollection",
@@ -562,6 +569,7 @@ __all__ = [
     "UserAssignedManagedIdentity",
     "UserSourceInfo",
     "ValidationMessages",
+    "WarUploadedUserSourceInfo",
     "WeeklyMaintenanceScheduleConfiguration",
     "ActionType",
     "ApiPortalProvisioningState",
@@ -586,6 +594,7 @@ __all__ = [
     "CreatedByType",
     "CustomDomainResourceProvisioningState",
     "CustomizedAcceleratorProvisioningState",
+    "CustomizedAcceleratorType",
     "CustomizedAcceleratorValidateResultState",
     "DeploymentResourceProvisioningState",
     "DeploymentResourceStatus",
@@ -600,6 +609,7 @@ __all__ = [
     "GitImplementation",
     "HTTPSchemeType",
     "KPackBuildStageProvisioningState",
+    "KeyVaultCertificateAutoSync",
     "LastModifiedByType",
     "ManagedIdentityType",
     "MonitoringSettingState",

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud storageappliance list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List storage appliances in the provided resource group or subscription.

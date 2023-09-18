@@ -536,6 +536,13 @@ def validate_assign_kubelet_identity(namespace):
                 "--assign-kubelet-identity is not a valid Azure resource ID.")
 
 
+def validate_prompt_input(namespace):
+    if namespace.prompt is None:
+        return
+    if not re.search(r'[a-zA-Z]', namespace.prompt):
+        raise InvalidArgumentValueError('--prompt does not contain any alphabet character')
+
+
 def validate_snapshot_name(namespace):
     """Validates a nodepool snapshot name to be alphanumeric and dashes."""
     rfc1123_regex = re.compile(
@@ -658,6 +665,11 @@ def validate_defender_config_parameter(namespace):
 def validate_defender_disable_and_enable_parameters(namespace):
     if namespace.disable_defender and namespace.enable_defender:
         raise ArgumentUsageError('Providing both --disable-defender and --enable-defender flags is invalid')
+
+
+def validate_force_upgrade_disable_and_enable_parameters(namespace):
+    if namespace.disable_force_upgrade and namespace.enable_force_upgrade:
+        raise MutuallyExclusiveArgumentError('Providing both --disable-force-upgrade and --enable-force-upgrade flags is invalid')
 
 
 def sanitize_resource_id(resource_id):

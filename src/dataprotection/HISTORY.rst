@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.10.0
+++++++
+* Add complete support for Soft Delete
+* `az dataprotection backup-instance deleted-backup-instance`: Add support to list, show, and undelete soft deleted backed up instances
+
 0.9.2
 ++++++
 * Updated API version to 2023-05-01 across the board

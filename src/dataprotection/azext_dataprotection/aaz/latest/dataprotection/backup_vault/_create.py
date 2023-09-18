@@ -155,11 +155,13 @@ class Create(AAZCommand):
             options=["--soft-delete-retention", "--retention-duration-in-days"],
             arg_group="SoftDeleteSettings",
             help="Soft delete retention duration",
+            default=14.0,
         )
         _args_schema.soft_delete_state = AAZStrArg(
             options=["--soft-delete-state"],
             arg_group="SoftDeleteSettings",
             help="State of soft delete",
+            default="On",
             enum={"AlwaysOn": "AlwaysOn", "Off": "Off", "On": "On"},
         )
         return cls._args_schema

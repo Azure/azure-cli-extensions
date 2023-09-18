@@ -233,6 +233,13 @@ class CustomizedAcceleratorProvisioningState(str, Enum, metaclass=CaseInsensitiv
     DELETING = "Deleting"
 
 
+class CustomizedAcceleratorType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Type of the customized accelerator."""
+
+    ACCELERATOR = "Accelerator"
+    FRAGMENT = "Fragment"
+
+
 class CustomizedAcceleratorValidateResultState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """State of the customized accelerator validation result."""
 
@@ -347,6 +354,13 @@ class HTTPSchemeType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     HTTP = "HTTP"
     HTTPS = "HTTPS"
+
+
+class KeyVaultCertificateAutoSync(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Indicates whether to automatically synchronize certificate from key vault or not."""
+
+    DISABLED = "Disabled"
+    ENABLED = "Enabled"
 
 
 class KPackBuildStageProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):

@@ -121,6 +121,9 @@ class AcceleratorGitRepository(_serialization.Model):
     :ivar auth_setting: Properties of the auth setting payload. Required.
     :vartype auth_setting:
      ~azure.mgmt.appplatform.v2023_09_01_preview.models.AcceleratorAuthSetting
+    :ivar sub_path: Folder path inside the git repository to consider as the root of the
+     accelerator or fragment.
+    :vartype sub_path: str
     """
 
     _validation = {
@@ -135,6 +138,7 @@ class AcceleratorGitRepository(_serialization.Model):
         "commit": {"key": "commit", "type": "str"},
         "git_tag": {"key": "gitTag", "type": "str"},
         "auth_setting": {"key": "authSetting", "type": "AcceleratorAuthSetting"},
+        "sub_path": {"key": "subPath", "type": "str"},
     }
 
     def __init__(
@@ -146,6 +150,7 @@ class AcceleratorGitRepository(_serialization.Model):
         branch: Optional[str] = None,
         commit: Optional[str] = None,
         git_tag: Optional[str] = None,
+        sub_path: Optional[str] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -162,6 +167,9 @@ class AcceleratorGitRepository(_serialization.Model):
         :keyword auth_setting: Properties of the auth setting payload. Required.
         :paramtype auth_setting:
          ~azure.mgmt.appplatform.v2023_09_01_preview.models.AcceleratorAuthSetting
+        :keyword sub_path: Folder path inside the git repository to consider as the root of the
+         accelerator or fragment.
+        :paramtype sub_path: str
         """
         super().__init__(**kwargs)
         self.url = url
@@ -170,6 +178,7 @@ class AcceleratorGitRepository(_serialization.Model):
         self.commit = commit
         self.git_tag = git_tag
         self.auth_setting = auth_setting
+        self.sub_path = sub_path
 
 
 class AcceleratorPublicSetting(AcceleratorAuthSetting):
@@ -4638,6 +4647,10 @@ class CustomizedAcceleratorProperties(_serialization.Model):
      "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorProvisioningState
+    :ivar accelerator_type: Type of the customized accelerator. Known values are: "Accelerator" and
+     "Fragment".
+    :vartype accelerator_type: str or
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorType
     :ivar display_name:
     :vartype display_name: str
     :ivar description:
@@ -4646,6 +4659,8 @@ class CustomizedAcceleratorProperties(_serialization.Model):
     :vartype icon_url: str
     :ivar accelerator_tags:
     :vartype accelerator_tags: list[str]
+    :ivar imports: Imports references all imports that this accelerator/fragment depends upon.
+    :vartype imports: list[str]
     :ivar git_repository: Required.
     :vartype git_repository:
      ~azure.mgmt.appplatform.v2023_09_01_preview.models.AcceleratorGitRepository
@@ -4653,15 +4668,18 @@ class CustomizedAcceleratorProperties(_serialization.Model):
 
     _validation = {
         "provisioning_state": {"readonly": True},
+        "imports": {"readonly": True},
         "git_repository": {"required": True},
     }
 
     _attribute_map = {
         "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "accelerator_type": {"key": "acceleratorType", "type": "str"},
         "display_name": {"key": "displayName", "type": "str"},
         "description": {"key": "description", "type": "str"},
         "icon_url": {"key": "iconUrl", "type": "str"},
         "accelerator_tags": {"key": "acceleratorTags", "type": "[str]"},
+        "imports": {"key": "imports", "type": "[str]"},
         "git_repository": {"key": "gitRepository", "type": "AcceleratorGitRepository"},
     }
 
@@ -4669,6 +4687,7 @@ class CustomizedAcceleratorProperties(_serialization.Model):
         self,
         *,
         git_repository: "_models.AcceleratorGitRepository",
+        accelerator_type: Optional[Union[str, "_models.CustomizedAcceleratorType"]] = None,
         display_name: Optional[str] = None,
         description: Optional[str] = None,
         icon_url: Optional[str] = None,
@@ -4676,6 +4695,10 @@ class CustomizedAcceleratorProperties(_serialization.Model):
         **kwargs: Any
     ) -> None:
         """
+        :keyword accelerator_type: Type of the customized accelerator. Known values are: "Accelerator"
+         and "Fragment".
+        :paramtype accelerator_type: str or
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorType
         :keyword display_name:
         :paramtype display_name: str
         :keyword description:
@@ -4690,10 +4713,12 @@ class CustomizedAcceleratorProperties(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.provisioning_state = None
+        self.accelerator_type = accelerator_type
         self.display_name = display_name
         self.description = description
         self.icon_url = icon_url
         self.accelerator_tags = accelerator_tags
+        self.imports = None
         self.git_repository = git_repository
 
 
@@ -6322,6 +6347,8 @@ class GatewayProperties(_serialization.Model):  # pylint: disable=too-many-insta
      ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayPropertiesClientAuth
     :ivar apm_types: Collection of APM type used in Spring Cloud Gateway.
     :vartype apm_types: list[str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApmType]
+    :ivar apms: Collection of ApmReferences in service level.
+    :vartype apms: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApmReference]
     :ivar environment_variables: Environment variables of Spring Cloud Gateway.
     :vartype environment_variables:
      ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayPropertiesEnvironmentVariables
@@ -6355,6 +6382,7 @@ class GatewayProperties(_serialization.Model):  # pylint: disable=too-many-insta
         "cors_properties": {"key": "corsProperties", "type": "GatewayCorsProperties"},
         "client_auth": {"key": "clientAuth", "type": "GatewayPropertiesClientAuth"},
         "apm_types": {"key": "apmTypes", "type": "[str]"},
+        "apms": {"key": "apms", "type": "[ApmReference]"},
         "environment_variables": {"key": "environmentVariables", "type": "GatewayPropertiesEnvironmentVariables"},
         "resource_requests": {"key": "resourceRequests", "type": "GatewayResourceRequests"},
         "addon_configs": {"key": "addonConfigs", "type": "{object}"},
@@ -6372,6 +6400,7 @@ class GatewayProperties(_serialization.Model):  # pylint: disable=too-many-insta
         cors_properties: Optional["_models.GatewayCorsProperties"] = None,
         client_auth: Optional["_models.GatewayPropertiesClientAuth"] = None,
         apm_types: Optional[List[Union[str, "_models.ApmType"]]] = None,
+        apms: Optional[List["_models.ApmReference"]] = None,
         environment_variables: Optional["_models.GatewayPropertiesEnvironmentVariables"] = None,
         resource_requests: Optional["_models.GatewayResourceRequests"] = None,
         addon_configs: Optional[Dict[str, JSON]] = None,
@@ -6395,6 +6424,8 @@ class GatewayProperties(_serialization.Model):  # pylint: disable=too-many-insta
          ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayPropertiesClientAuth
         :keyword apm_types: Collection of APM type used in Spring Cloud Gateway.
         :paramtype apm_types: list[str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApmType]
+        :keyword apms: Collection of ApmReferences in service level.
+        :paramtype apms: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApmReference]
         :keyword environment_variables: Environment variables of Spring Cloud Gateway.
         :paramtype environment_variables:
          ~azure.mgmt.appplatform.v2023_09_01_preview.models.GatewayPropertiesEnvironmentVariables
@@ -6414,6 +6445,7 @@ class GatewayProperties(_serialization.Model):  # pylint: disable=too-many-insta
         self.cors_properties = cors_properties
         self.client_auth = client_auth
         self.apm_types = apm_types
+        self.apms = apms
         self.environment_variables = environment_variables
         self.resource_requests = resource_requests
         self.addon_configs = addon_configs
@@ -7146,7 +7178,8 @@ class UploadedUserSourceInfo(UserSourceInfo):
     """Source with uploaded location.
 
     You probably want to use the sub-classes and not this class directly. Known sub-classes are:
-    JarUploadedUserSourceInfo, NetCoreZipUploadedUserSourceInfo, SourceUploadedUserSourceInfo
+    JarUploadedUserSourceInfo, NetCoreZipUploadedUserSourceInfo, SourceUploadedUserSourceInfo,
+    WarUploadedUserSourceInfo
 
     All required parameters must be populated in order to send to Azure.
 
@@ -7173,6 +7206,7 @@ class UploadedUserSourceInfo(UserSourceInfo):
             "Jar": "JarUploadedUserSourceInfo",
             "NetCoreZip": "NetCoreZipUploadedUserSourceInfo",
             "Source": "SourceUploadedUserSourceInfo",
+            "War": "WarUploadedUserSourceInfo",
         }
     }
 
@@ -7278,6 +7312,10 @@ class KeyVaultCertificateProperties(CertificateProperties):  # pylint: disable=t
     :ivar exclude_private_key: Optional. If set to true, it will not import private key from key
      vault.
     :vartype exclude_private_key: bool
+    :ivar auto_sync: Indicates whether to automatically synchronize certificate from key vault or
+     not. Known values are: "Disabled" and "Enabled".
+    :vartype auto_sync: str or
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.KeyVaultCertificateAutoSync
     """
 
     _validation = {
@@ -7308,6 +7346,7 @@ class KeyVaultCertificateProperties(CertificateProperties):  # pylint: disable=t
         "key_vault_cert_name": {"key": "keyVaultCertName", "type": "str"},
         "cert_version": {"key": "certVersion", "type": "str"},
         "exclude_private_key": {"key": "excludePrivateKey", "type": "bool"},
+        "auto_sync": {"key": "autoSync", "type": "str"},
     }
 
     def __init__(
@@ -7317,6 +7356,7 @@ class KeyVaultCertificateProperties(CertificateProperties):  # pylint: disable=t
         key_vault_cert_name: str,
         cert_version: Optional[str] = None,
         exclude_private_key: bool = False,
+        auto_sync: Union[str, "_models.KeyVaultCertificateAutoSync"] = "Disabled",
         **kwargs: Any
     ) -> None:
         """
@@ -7329,6 +7369,10 @@ class KeyVaultCertificateProperties(CertificateProperties):  # pylint: disable=t
         :keyword exclude_private_key: Optional. If set to true, it will not import private key from key
          vault.
         :paramtype exclude_private_key: bool
+        :keyword auto_sync: Indicates whether to automatically synchronize certificate from key vault
+         or not. Known values are: "Disabled" and "Enabled".
+        :paramtype auto_sync: str or
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.KeyVaultCertificateAutoSync
         """
         super().__init__(**kwargs)
         self.type: str = "KeyVaultCertificate"
@@ -7336,6 +7380,7 @@ class KeyVaultCertificateProperties(CertificateProperties):  # pylint: disable=t
         self.key_vault_cert_name = key_vault_cert_name
         self.cert_version = cert_version
         self.exclude_private_key = exclude_private_key
+        self.auto_sync = auto_sync
 
 
 class LoadedCertificate(_serialization.Model):
@@ -10085,6 +10130,76 @@ class SupportedRuntimeVersion(_serialization.Model):
         self.version = version
 
 
+class SupportedServerVersion(_serialization.Model):
+    """Supported server version.
+
+    :ivar value: The raw server version value which could be passed to deployment CRUD operations.
+    :vartype value: str
+    :ivar server: The server name.
+    :vartype server: str
+    :ivar version: The Server version.
+    :vartype version: str
+    """
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "str"},
+        "server": {"key": "server", "type": "str"},
+        "version": {"key": "version", "type": "str"},
+    }
+
+    def __init__(
+        self, *, value: Optional[str] = None, server: Optional[str] = None, version: Optional[str] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword value: The raw server version value which could be passed to deployment CRUD
+         operations.
+        :paramtype value: str
+        :keyword server: The server name.
+        :paramtype server: str
+        :keyword version: The Server version.
+        :paramtype version: str
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.server = server
+        self.version = version
+
+
+class SupportedServerVersions(_serialization.Model):
+    """Supported server versions.
+
+    :ivar value: Collection of the supported server versions.
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedServerVersion]
+    :ivar next_link: URL client should use to fetch the next page (per server side paging).
+     It's null for now, added for future use.
+    :vartype next_link: str
+    """
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[SupportedServerVersion]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["_models.SupportedServerVersion"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword value: Collection of the supported server versions.
+        :paramtype value:
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedServerVersion]
+        :keyword next_link: URL client should use to fetch the next page (per server side paging).
+         It's null for now, added for future use.
+        :paramtype next_link: str
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
 class SupportedStackResource(ProxyResource):
     """Supported stack resource payload.
 
@@ -10472,6 +10587,67 @@ class ValidationMessages(_serialization.Model):
         self.messages = messages
 
 
+class WarUploadedUserSourceInfo(UploadedUserSourceInfo):
+    """Uploaded War binary for a deployment.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar type: Type of the source uploaded. Required.
+    :vartype type: str
+    :ivar version: Version of the source.
+    :vartype version: str
+    :ivar relative_path: Relative path of the storage which stores the source.
+    :vartype relative_path: str
+    :ivar runtime_version: Runtime version of the war file.
+    :vartype runtime_version: str
+    :ivar jvm_options: JVM parameter.
+    :vartype jvm_options: str
+    :ivar server_version: Server version, currently only Apache Tomcat is supported.
+    :vartype server_version: str
+    """
+
+    _validation = {
+        "type": {"required": True},
+    }
+
+    _attribute_map = {
+        "type": {"key": "type", "type": "str"},
+        "version": {"key": "version", "type": "str"},
+        "relative_path": {"key": "relativePath", "type": "str"},
+        "runtime_version": {"key": "runtimeVersion", "type": "str"},
+        "jvm_options": {"key": "jvmOptions", "type": "str"},
+        "server_version": {"key": "serverVersion", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        version: Optional[str] = None,
+        relative_path: Optional[str] = None,
+        runtime_version: Optional[str] = None,
+        jvm_options: Optional[str] = None,
+        server_version: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword version: Version of the source.
+        :paramtype version: str
+        :keyword relative_path: Relative path of the storage which stores the source.
+        :paramtype relative_path: str
+        :keyword runtime_version: Runtime version of the war file.
+        :paramtype runtime_version: str
+        :keyword jvm_options: JVM parameter.
+        :paramtype jvm_options: str
+        :keyword server_version: Server version, currently only Apache Tomcat is supported.
+        :paramtype server_version: str
+        """
+        super().__init__(version=version, relative_path=relative_path, **kwargs)
+        self.type: str = "War"
+        self.runtime_version = runtime_version
+        self.jvm_options = jvm_options
+        self.server_version = server_version
+
+
 class WeeklyMaintenanceScheduleConfiguration(MaintenanceScheduleConfiguration):
     """Weekly planned maintenance.
 
@@ -10483,8 +10659,9 @@ class WeeklyMaintenanceScheduleConfiguration(MaintenanceScheduleConfiguration):
     :vartype frequency: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.Frequency
     :ivar hour: The hour to run the maintenance job. Required.
     :vartype hour: int
-    :ivar duration_hours: The duration time to run the maintenance job.
-    :vartype duration_hours: int
+    :ivar duration: The duration time to run the maintenance job, specified in ISO8601 format, e.g.
+     PT8H.
+    :vartype duration: str
     :ivar day: The day to run the maintenance job. Required. Known values are: "Monday", "Tuesday",
      "Wednesday", "Thursday", "Friday", "Saturday", and "Sunday".
     :vartype day: str or ~azure.mgmt.appplatform.v2023_09_01_preview.models.WeekDay
@@ -10493,14 +10670,14 @@ class WeeklyMaintenanceScheduleConfiguration(MaintenanceScheduleConfiguration):
     _validation = {
         "frequency": {"required": True},
         "hour": {"required": True, "maximum": 23, "minimum": 0},
-        "duration_hours": {"readonly": True},
+        "duration": {"readonly": True},
         "day": {"required": True},
     }
 
     _attribute_map = {
         "frequency": {"key": "frequency", "type": "str"},
         "hour": {"key": "hour", "type": "int"},
-        "duration_hours": {"key": "durationHours", "type": "int"},
+        "duration": {"key": "duration", "type": "str"},
         "day": {"key": "day", "type": "str"},
     }
 
@@ -10515,5 +10692,5 @@ class WeeklyMaintenanceScheduleConfiguration(MaintenanceScheduleConfiguration):
         super().__init__(**kwargs)
         self.frequency: str = "Weekly"
         self.hour = hour
-        self.duration_hours = None
+        self.duration = None
         self.day = day
