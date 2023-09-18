@@ -166,7 +166,7 @@ def load_command_table(self: AzCommandsLoader, _):
         g.custom_command('update', 'update_vm', supports_no_wait=True)
         g.custom_show_command('show', 'show_vm')
         g.custom_command('list', 'list_vm',
-                         deprecate_info=g.deprecate(redirect='az scvmm vm show', hide=True))
+                         deprecate_info=g.deprecate(redirect='scvmm vm show', hide=True))
         g.custom_command('start', 'start_vm', supports_no_wait=True)
         g.custom_command('stop', 'stop_vm', supports_no_wait=True)
         g.custom_command('restart', 'restart_vm', supports_no_wait=True)
