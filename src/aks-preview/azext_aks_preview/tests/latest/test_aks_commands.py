@@ -1446,10 +1446,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded')
         ])
 
-        list_cmd = 'aks machine list --resource-group={resource_group} --cluster-name={name} --nodepool-name={node_pool_name}' \
-                   '-o json'
-        machine_list = self.cmd(list_available_cmd).get_output_in_json()
-    
+        list_cmd = 'aks machine list --resource-group={resource_group} --cluster-name={name} --nodepool-name={node_pool_name}' 
+        machine_list = self.cmd(list_cmd)
+        assert len(machine_list) > 0
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')

@@ -1807,9 +1807,21 @@ helps['aks nodepool operation-abort'] = """
           text: az aks nodepool operation-abort -g myResourceGroup --nodepool-name nodepool1 --cluster-name myAKSCluster
 """
 
+helps['aks machine'] = """
+   type: group
+   short-summary: Get information about machines in a nodepool of a managed clusters
+"""
+
 helps['aks machine list'] = """
    type: command
    short-summary: Get information about IP Addresses, Hostname for all machines in an agentpool
+   parameters:
+       - name: --cluster-name
+         type: string
+         short-summary: Name of the managed cluster
+       - name: --nodepool-name
+         type: string
+         short-summary: Name of the agentpool of a managed cluster      
    exmaples: 
        - name: Get information about IP Addresses, Hostname for all machines in an agentpool
          text: az aks machine list --cluster-name <clusterName> --nodepool-name <apName>
@@ -1819,6 +1831,12 @@ helps['aks machine show'] = """
    type: command
    short-summary: show IP Addresses, Hostname for a specific machine in an agentpool for a managedcluster.
    parameters:
+       - name: --cluster-name
+         type: string
+         short-summary: Name of the managed cluster
+       - name: --nodepool-name
+         type: string
+         short-summary: Name of the agentpool of a managed cluster
        - name: --machine-name
          type: string
          short-summary: Get IP Addresses, Hostname for a specific machine in an agentpool

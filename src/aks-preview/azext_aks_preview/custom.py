@@ -1426,11 +1426,11 @@ def aks_operation_abort(cmd,   # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.begin_abort_latest_operation, resource_group_name, name, headers=headers)
 
 
-def aks_machine_list(cmd, client, resource_group_name, cluster_name, agentpool_name):
-    return client.list(resource_group_name, cluster_name, agentpool_name)
+def aks_machine_list(cmd, client, resource_group_name, cluster_name, nodepool_name):
+    return client.list(resource_group_name, cluster_name, nodepool_name)
 
-def aks_machine_get(cmd, client, resource_group_name, cluster_name, agentpool_name, machine_name):
-    return client.get(resource_group_name, cluster_name, agentpool_name, machine_name)
+def aks_machine_show(cmd, client, resource_group_name, cluster_name, nodepool_name, machine_name):
+    return client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
 
 def aks_addon_list_available():
     available_addons = []
