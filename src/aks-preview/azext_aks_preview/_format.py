@@ -300,7 +300,6 @@ def _aks_snapshot_table_format(result):
 
 def aks_mesh_revisions_table_format(result):
     """Format a list of mesh revisions as summary results for display with "-o table". """
-    print(result[0]['properties']['meshRevisions'])
     revision_table = flatten_mesh_revision_table(result[0]['properties']['meshRevisions'])
     parsed = compile_jmes("""[].{
         revision: revision,
