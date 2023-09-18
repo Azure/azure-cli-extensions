@@ -12,24 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dataprotection backup-vault resource-guard-proxy list",
+    "dataprotection backup-vault resource-guard-mapping show",
+    is_experimental=True,
 )
-class List(AAZCommand):
-    """List the list of ResourceGuardProxies associated with the vault
+class Show(AAZCommand):
+    """Get the ResourceGuard mapping object associated with the vault, and that matches the name in the request
     """
 
     _aaz_info = {
         "version": "2023-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupresourceguardproxies", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupresourceguardproxies/{}", "2023-05-01"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -45,16 +45,27 @@ class List(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+        _args_schema.resource_guard_mapping_name = AAZStrArg(
+            options=["-n", "--name", "--resource-guard-mapping-name"],
+            help="The name of the resource guard mapping",
+            required=True,
+            id_part="child_name_1",
+            default="DppResourceGuardProxy",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9]*$",
+            ),
+        )
         _args_schema.vault_name = AAZStrArg(
             options=["-v", "--vault-name"],
             help="The name of the backup vault.",
             required=True,
+            id_part="name",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.DppResourceGuardProxyList(ctx=self.ctx)()
+        self.DppResourceGuardProxyGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -66,11 +77,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class DppResourceGuardProxyList(AAZHttpOperation):
+    class DppResourceGuardProxyGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -84,7 +94,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupResourceGuardProxies",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupResourceGuardProxies/{resourceGuardProxyName}",
                 **self.url_parameters
             )
 
@@ -101,6 +111,10 @@ class List(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGuardProxyName", self.ctx.args.resource_guard_mapping_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -151,31 +165,22 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
-            )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
-            _element.system_data = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.type = AAZStrType(
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
+            properties = cls._schema_on_200.properties
             properties.description = AAZStrType()
             properties.last_updated_time = AAZStrType(
                 serialized_name="lastUpdatedTime",
@@ -187,10 +192,10 @@ class List(AAZCommand):
                 serialized_name="resourceGuardResourceId",
             )
 
-            resource_guard_operation_details = cls._schema_on_200.value.Element.properties.resource_guard_operation_details
+            resource_guard_operation_details = cls._schema_on_200.properties.resource_guard_operation_details
             resource_guard_operation_details.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.resource_guard_operation_details.Element
+            _element = cls._schema_on_200.properties.resource_guard_operation_details.Element
             _element.default_resource_request = AAZStrType(
                 serialized_name="defaultResourceRequest",
             )
@@ -198,7 +203,7 @@ class List(AAZCommand):
                 serialized_name="vaultCriticalOperation",
             )
 
-            system_data = cls._schema_on_200.value.Element.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -221,8 +226,8 @@ class List(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["List"]
+__all__ = ["Show"]

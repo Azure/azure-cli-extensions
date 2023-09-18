@@ -12,11 +12,12 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dataprotection backup-vault resource-guard-proxy delete",
+    "dataprotection backup-vault resource-guard-mapping delete",
+    is_experimental=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete the ResourceGuardProxy
+    """Delete the ResourceGuard mapping
     """
 
     _aaz_info = {
@@ -45,11 +46,12 @@ class Delete(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.resource_guard_proxy_name = AAZStrArg(
-            options=["-n", "--name", "--resource-guard-proxy-name"],
-            help="The name of the resource guard proxy",
+        _args_schema.resource_guard_mapping_name = AAZStrArg(
+            options=["-n", "--name", "--resource-guard-mapping-name"],
+            help="The name of the resource guard mapping",
             required=True,
             id_part="child_name_1",
+            default="DppResourceGuardProxy",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]*$",
             ),
@@ -111,7 +113,7 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGuardProxyName", self.ctx.args.resource_guard_proxy_name,
+                    "resourceGuardProxyName", self.ctx.args.resource_guard_mapping_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

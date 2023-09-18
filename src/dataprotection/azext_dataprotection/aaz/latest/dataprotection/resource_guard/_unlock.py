@@ -12,16 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dataprotection backup-vault resource-guard-proxy show",
+    "dataprotection resource-guard unlock",
+    is_experimental=True,
 )
-class Show(AAZCommand):
-    """Get the ResourceGuardProxy object associated with the vault, and that matches the name in the request
+class Unlock(AAZCommand):
+    """Unlocks the critical operation which is protected by the resource guard
     """
 
     _aaz_info = {
         "version": "2023-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupresourceguardproxies/{}", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupresourceguardproxies/{}/unlockdelete", "2023-05-01"],
         ]
     }
 
@@ -44,11 +45,12 @@ class Show(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.resource_guard_proxy_name = AAZStrArg(
-            options=["-n", "--name", "--resource-guard-proxy-name"],
-            help="The name of the resource guard proxy",
+        _args_schema.resource_guard_mapping_name = AAZStrArg(
+            options=["-n", "--name", "--resource-guard-mapping-name"],
+            help="The name of the resource guard mapping",
             required=True,
             id_part="child_name_1",
+            default="DppResourceGuardProxy",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]*$",
             ),
@@ -59,11 +61,29 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
         )
+
+        # define Arg Group "Parameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.resource_guard_operation_requests = AAZListArg(
+            options=["--resource-guard-operation-requests"],
+            singular_options=["--resource-guard-operation-request"],
+            arg_group="Parameters",
+            help="List of critical operations which are protected by the resourceGuard and need to be unlocked. Supported values are DeleteBackupInstance, DisableMUA",
+        )
+        _args_schema.resource_to_be_deleted = AAZStrArg(
+            options=["--resource-to-be-deleted"],
+            arg_group="Parameters",
+            help="ARM Id of the resource that need to be unlocked for performing critical operation",
+        )
+
+        resource_guard_operation_requests = cls._args_schema.resource_guard_operation_requests
+        resource_guard_operation_requests.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.DppResourceGuardProxyGet(ctx=self.ctx)()
+        self.DppResourceGuardProxyUnlockDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -78,7 +98,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class DppResourceGuardProxyGet(AAZHttpOperation):
+    class DppResourceGuardProxyUnlockDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -92,13 +112,13 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupResourceGuardProxies/{resourceGuardProxyName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupResourceGuardProxies/{resourceGuardProxyName}/unlockDelete",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -112,7 +132,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGuardProxyName", self.ctx.args.resource_guard_proxy_name,
+                    "resourceGuardProxyName", self.ctx.args.resource_guard_mapping_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -140,10 +160,29 @@ class Show(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("resourceGuardOperationRequests", AAZListType, ".resource_guard_operation_requests")
+            _builder.set_prop("resourceToBeDeleted", AAZStrType, ".resource_to_be_deleted")
+
+            resource_guard_operation_requests = _builder.get(".resourceGuardOperationRequests")
+            if resource_guard_operation_requests is not None:
+                resource_guard_operation_requests.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -163,69 +202,15 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.description = AAZStrType()
-            properties.last_updated_time = AAZStrType(
-                serialized_name="lastUpdatedTime",
-            )
-            properties.resource_guard_operation_details = AAZListType(
-                serialized_name="resourceGuardOperationDetails",
-            )
-            properties.resource_guard_resource_id = AAZStrType(
-                serialized_name="resourceGuardResourceId",
-            )
-
-            resource_guard_operation_details = cls._schema_on_200.properties.resource_guard_operation_details
-            resource_guard_operation_details.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.resource_guard_operation_details.Element
-            _element.default_resource_request = AAZStrType(
-                serialized_name="defaultResourceRequest",
-            )
-            _element.vault_critical_operation = AAZStrType(
-                serialized_name="vaultCriticalOperation",
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
+            _schema_on_200.unlock_delete_expiry_time = AAZStrType(
+                serialized_name="unlockDeleteExpiryTime",
             )
 
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _UnlockHelper:
+    """Helper class for Unlock"""
 
 
-__all__ = ["Show"]
+__all__ = ["Unlock"]

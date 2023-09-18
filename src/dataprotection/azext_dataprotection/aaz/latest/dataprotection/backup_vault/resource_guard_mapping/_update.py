@@ -12,10 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dataprotection backup-vault resource-guard-proxy update",
+    "dataprotection backup-vault resource-guard-mapping update",
+    is_experimental=True,
 )
 class Update(AAZCommand):
-    """Update a ResourceGuardProxy
+    """Update a ResourceGuard mapping
     """
 
     _aaz_info = {
@@ -46,11 +47,12 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.resource_guard_proxy_name = AAZStrArg(
-            options=["-n", "--name", "--resource-guard-proxy-name"],
-            help="The name of the resource guard proxy",
+        _args_schema.resource_guard_mapping_name = AAZStrArg(
+            options=["-n", "--name", "--resource-guard-mapping-name"],
+            help="The name of the resource guard mapping",
             required=True,
             id_part="child_name_1",
+            default="DppResourceGuardProxy",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]*$",
             ),
@@ -167,7 +169,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGuardProxyName", self.ctx.args.resource_guard_proxy_name,
+                    "resourceGuardProxyName", self.ctx.args.resource_guard_mapping_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -254,7 +256,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGuardProxyName", self.ctx.args.resource_guard_proxy_name,
+                    "resourceGuardProxyName", self.ctx.args.resource_guard_mapping_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

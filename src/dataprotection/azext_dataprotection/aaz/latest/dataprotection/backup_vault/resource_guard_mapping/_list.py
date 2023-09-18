@@ -11,24 +11,22 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "dataprotection backup-vault resource-guard-proxy unlock",
-)
-class Unlock(AAZCommand):
-    """Unlocks the critical operation which is protected by the resource guard
+class List(AAZCommand):
+    """List the list of ResourceGuard mappings associated with the vault
     """
 
     _aaz_info = {
         "version": "2023-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupresourceguardproxies/{}/unlockdelete", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupresourceguardproxies", "2023-05-01"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -44,44 +42,16 @@ class Unlock(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.resource_guard_proxy_name = AAZStrArg(
-            options=["-n", "--name", "--resource-guard-proxy-name"],
-            help="The name of the resource guard proxy",
-            required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]*$",
-            ),
-        )
         _args_schema.vault_name = AAZStrArg(
             options=["-v", "--vault-name"],
             help="The name of the backup vault.",
             required=True,
-            id_part="name",
         )
-
-        # define Arg Group "Parameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.resource_guard_operation_requests = AAZListArg(
-            options=["--resource-guard-operation-requests"],
-            singular_options=["--resource-guard-operation-request"],
-            arg_group="Parameters",
-            help="List of critical operations which are protected by the resourceGuard and need to be unlocked. Supported values are DeleteBackupInstance, DisableMUA",
-        )
-        _args_schema.resource_to_be_deleted = AAZStrArg(
-            options=["--resource-to-be-deleted"],
-            arg_group="Parameters",
-            help="ARM Id of the resource that need to be unlocked for performing critical operation",
-        )
-
-        resource_guard_operation_requests = cls._args_schema.resource_guard_operation_requests
-        resource_guard_operation_requests.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.DppResourceGuardProxyUnlockDelete(ctx=self.ctx)()
+        self.DppResourceGuardProxyList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -93,10 +63,11 @@ class Unlock(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class DppResourceGuardProxyUnlockDelete(AAZHttpOperation):
+    class DppResourceGuardProxyList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -110,13 +81,13 @@ class Unlock(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupResourceGuardProxies/{resourceGuardProxyName}/unlockDelete",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupResourceGuardProxies",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "GET"
 
         @property
         def error_format(self):
@@ -127,10 +98,6 @@ class Unlock(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGuardProxyName", self.ctx.args.resource_guard_proxy_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -158,29 +125,10 @@ class Unlock(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("resourceGuardOperationRequests", AAZListType, ".resource_guard_operation_requests")
-            _builder.set_prop("resourceToBeDeleted", AAZStrType, ".resource_to_be_deleted")
-
-            resource_guard_operation_requests = _builder.get(".resourceGuardOperationRequests")
-            if resource_guard_operation_requests is not None:
-                resource_guard_operation_requests.set_elements(AAZStrType, ".")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -200,15 +148,78 @@ class Unlock(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.unlock_delete_expiry_time = AAZStrType(
-                serialized_name="unlockDeleteExpiryTime",
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.description = AAZStrType()
+            properties.last_updated_time = AAZStrType(
+                serialized_name="lastUpdatedTime",
+            )
+            properties.resource_guard_operation_details = AAZListType(
+                serialized_name="resourceGuardOperationDetails",
+            )
+            properties.resource_guard_resource_id = AAZStrType(
+                serialized_name="resourceGuardResourceId",
+            )
+
+            resource_guard_operation_details = cls._schema_on_200.value.Element.properties.resource_guard_operation_details
+            resource_guard_operation_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.resource_guard_operation_details.Element
+            _element.default_resource_request = AAZStrType(
+                serialized_name="defaultResourceRequest",
+            )
+            _element.vault_critical_operation = AAZStrType(
+                serialized_name="vaultCriticalOperation",
+            )
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
             )
 
             return cls._schema_on_200
 
 
-class _UnlockHelper:
-    """Helper class for Unlock"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Unlock"]
+__all__ = ["List"]

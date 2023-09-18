@@ -12,10 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dataprotection backup-vault resource-guard-proxy create",
+    "dataprotection backup-vault resource-guard-mapping create",
+    is_experimental=True,
 )
 class Create(AAZCommand):
-    """Create a ResourceGuardProxy
+    """Create a ResourceGuard mapping
     """
 
     _aaz_info = {
@@ -44,10 +45,11 @@ class Create(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.resource_guard_proxy_name = AAZStrArg(
-            options=["-n", "--name", "--resource-guard-proxy-name"],
-            help="The name of the resource guard proxy",
+        _args_schema.resource_guard_mapping_name = AAZStrArg(
+            options=["-n", "--name", "--resource-guard-mapping-name"],
+            help="The name of the resource guard mapping",
             required=True,
+            default="DppResourceGuardProxy",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]*$",
             ),
@@ -61,33 +63,10 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.description = AAZStrArg(
-            options=["--description"],
-            arg_group="Properties",
-        )
-        _args_schema.last_updated_time = AAZStrArg(
-            options=["--last-updated-time"],
-            arg_group="Properties",
-        )
-        _args_schema.resource_guard_operation_details = AAZListArg(
-            options=["--resource-guard-operation-details"],
-            arg_group="Properties",
-        )
         _args_schema.resource_guard_resource_id = AAZStrArg(
             options=["--resource-guard-resource-id"],
             arg_group="Properties",
             help="ARM Id of the resource guard to be mapped to",
-        )
-
-        resource_guard_operation_details = cls._args_schema.resource_guard_operation_details
-        resource_guard_operation_details.Element = AAZObjectArg()
-
-        _element = cls._args_schema.resource_guard_operation_details.Element
-        _element.default_resource_request = AAZStrArg(
-            options=["default-resource-request"],
-        )
-        _element.vault_critical_operation = AAZStrArg(
-            options=["vault-critical-operation"],
         )
         return cls._args_schema
 
@@ -142,7 +121,7 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGuardProxyName", self.ctx.args.resource_guard_proxy_name,
+                    "resourceGuardProxyName", self.ctx.args.resource_guard_mapping_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -189,19 +168,7 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("lastUpdatedTime", AAZStrType, ".last_updated_time")
-                properties.set_prop("resourceGuardOperationDetails", AAZListType, ".resource_guard_operation_details")
                 properties.set_prop("resourceGuardResourceId", AAZStrType, ".resource_guard_resource_id")
-
-            resource_guard_operation_details = _builder.get(".properties.resourceGuardOperationDetails")
-            if resource_guard_operation_details is not None:
-                resource_guard_operation_details.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.resourceGuardOperationDetails[]")
-            if _elements is not None:
-                _elements.set_prop("defaultResourceRequest", AAZStrType, ".default_resource_request")
-                _elements.set_prop("vaultCriticalOperation", AAZStrType, ".vault_critical_operation")
 
             return self.serialize_content(_content_value)
 
