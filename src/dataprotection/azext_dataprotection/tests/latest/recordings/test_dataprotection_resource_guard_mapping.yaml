@@ -1,0 +1,211 @@
+interactions:
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "centraluseuap", "properties":
+      {"securitySettings": {"immutabilitySettings": {"state": "Disabled"}, "softDeleteSettings":
+      {"retentionDurationInDays": 14.0, "state": "Off"}}, "storageSettings": [{"datastoreType":
+      "VaultStore", "type": "LocallyRedundant"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-vault create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '309'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --vault-name -g -l --storage-settings --type --soft-delete-state --immutability-state
+      User-Agent:
+      - AZURECLI/2.52.0 (PIP) (AAZ) azsdk-python-core/1.29.3 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-resourceguard-vault-000002?api-version=2023-05-01
+  response:
+    body:
+      string: '{"location":"centraluseuap","identity":{"type":"SystemAssigned","principalId":"fc360bb2-ddec-4161-ac6a-46a779113cc7","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"properties":{"provisioningState":"Provisioning","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":14.0},"immutabilitySettings":{"state":"Disabled"}},"secureScore":"None"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-resourceguard-vault-000002","name":"clitest-dpp-resourceguard-vault-000002","type":"Microsoft.DataProtection/backupVaults"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-resourceguard-vault-000002/operationStatus/N2RmOGQxMTktNGZhYi00NGU3LTk5YTEtODJlY2JkNTg2NTRiO2Q0ZGViOWU3LTE4NmYtNGMxNC1hMzI5LTY3ZWMyOTEwNmY1OQ==?api-version=2023-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '778'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 09:04:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-resource-system-data:
+      - '{"createdBy":"zubairabid@microsoft.com","createdByType":"User","createdAt":"2023-09-19T09:04:21.2485691Z","lastModifiedBy":"zubairabid@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-09-19T09:04:21.2485691Z"}'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=12f8ea5c-1212-449e-b31c-0a574f43076e/centraluseuap/43f606af-26f0-4943-9c2d-9b06be4d385f
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-vault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --vault-name -g -l --storage-settings --type --soft-delete-state --immutability-state
+      User-Agent:
+      - AZURECLI/2.52.0 (PIP) (AAZ) azsdk-python-core/1.29.3 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-resourceguard-vault-000002/operationStatus/N2RmOGQxMTktNGZhYi00NGU3LTk5YTEtODJlY2JkNTg2NTRiO2Q0ZGViOWU3LTE4NmYtNGMxNC1hMzI5LTY3ZWMyOTEwNmY1OQ==?api-version=2023-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-resourceguard-vault-000002/operationStatus/N2RmOGQxMTktNGZhYi00NGU3LTk5YTEtODJlY2JkNTg2NTRiO2Q0ZGViOWU3LTE4NmYtNGMxNC1hMzI5LTY3ZWMyOTEwNmY1OQ==","name":"N2RmOGQxMTktNGZhYi00NGU3LTk5YTEtODJlY2JkNTg2NTRiO2Q0ZGViOWU3LTE4NmYtNGMxNC1hMzI5LTY3ZWMyOTEwNmY1OQ==","status":"Inprogress","startTime":"2023-09-19T09:04:22.0210113Z","endTime":"0001-01-01T00:00:00Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '520'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 09:04:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '999'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-vault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --vault-name -g -l --storage-settings --type --soft-delete-state --immutability-state
+      User-Agent:
+      - AZURECLI/2.52.0 (PIP) (AAZ) azsdk-python-core/1.29.3 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-resourceguard-vault-000002/operationStatus/N2RmOGQxMTktNGZhYi00NGU3LTk5YTEtODJlY2JkNTg2NTRiO2Q0ZGViOWU3LTE4NmYtNGMxNC1hMzI5LTY3ZWMyOTEwNmY1OQ==?api-version=2023-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-resourceguard-vault-000002/operationStatus/N2RmOGQxMTktNGZhYi00NGU3LTk5YTEtODJlY2JkNTg2NTRiO2Q0ZGViOWU3LTE4NmYtNGMxNC1hMzI5LTY3ZWMyOTEwNmY1OQ==","name":"N2RmOGQxMTktNGZhYi00NGU3LTk5YTEtODJlY2JkNTg2NTRiO2Q0ZGViOWU3LTE4NmYtNGMxNC1hMzI5LTY3ZWMyOTEwNmY1OQ==","status":"Succeeded","startTime":"2023-09-19T09:04:22.0210113Z","endTime":"2023-09-19T09:04:22Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '519'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 09:04:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '998'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-vault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --vault-name -g -l --storage-settings --type --soft-delete-state --immutability-state
+      User-Agent:
+      - AZURECLI/2.52.0 (PIP) (AAZ) azsdk-python-core/1.29.3 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-resourceguard-vault-000002?api-version=2023-05-01
+  response:
+    body:
+      string: '{"location":"centraluseuap","identity":{"type":"SystemAssigned","principalId":"fc360bb2-ddec-4161-ac6a-46a779113cc7","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"properties":{"provisioningState":"Succeeded","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":14.0},"immutabilitySettings":{"state":"Disabled"}},"secureScore":"None"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest-dpp-resourceguard-000001/providers/Microsoft.DataProtection/backupVaults/clitest-dpp-resourceguard-vault-000002","name":"clitest-dpp-resourceguard-vault-000002","type":"Microsoft.DataProtection/backupVaults"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '775'
+      content-type:
+      - application/json
+      date:
+      - Tue, 19 Sep 2023 09:04:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '499'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1
