@@ -24,6 +24,10 @@ Pending
 +++++++
 * Add `--disable-workload-identity` to the `az aks update` command.
 
+0.5.156
++++++++
+* Add `az aks copilot` command to start a chat with the Azure Kubernetes Service expert. API keys for OpenAI or Azure are required.
+
 0.5.155
 +++++++
 * Add `--enable-cost-analysis` and `--disable-cost-analysis` to the `az aks update` command.
