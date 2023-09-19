@@ -27,10 +27,8 @@ def create_fleet(cmd,
                  enable_vnet_integration=None,
                  apiserver_subnet_id=None,
                  agent_subnet_id=None,
-                 type=None,
-                 tenant_id=None,
-                 principal_id=None,
-                 client_id=None,
+                 enable_managed_identity=None,
+                 assign_identity=None,
                  no_wait=False):
     fleet_hub_profile_model = cmd.get_models(
         "FleetHubProfile",
@@ -57,11 +55,6 @@ def create_fleet(cmd,
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleets"
     )
-    user_assigned_identity_model = cmd.get_models(
-        "UserAssignedIdentity",
-        resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="fleets"
-    )
 
     if dns_name_prefix is None:
         subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -85,17 +78,14 @@ def create_fleet(cmd,
         api_server_access_profile=api_server_access_profile,
         agent_profile=agent_profile)
 
-    user_assigned_identity = user_assigned_identity_model(
-        principal_id=principal_id,
-        client_id=client_id
-    )
-
-    managed_service_identity = fleet_managed_service_identity_model(
-        type=type,
-        tenant_id=tenant_id,
-        principal_id=principal_id,
-        user_assigned_identities=user_assigned_identity
-    )
+    managed_service_identity = fleet_managed_service_identity_model()
+    if enable_managed_identity is True:
+        managed_service_identity.type="SystemAssigned"
+        if assign_identity is not None:
+            managed_service_identity.type="UserAssigned"
+            managed_service_identity.user_assigned_identities = {assign_identity,None}
+    else:
+        managed_service_identity.type="None"
 
     fleet = fleet_model(
         location=location,
@@ -111,10 +101,8 @@ def update_fleet(cmd,
                  client,
                  resource_group_name,
                  name,
-                 type=None,
-                 tenant_id=None,
-                 principal_id=None,
-                 client_id=None,
+                 enable_managed_identity=None,
+                 assign_identity=None,
                  tags=None):
     fleet_patch_model = cmd.get_models(
         "FleetPatch",
@@ -126,23 +114,15 @@ def update_fleet(cmd,
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleets"
     )
-    user_assigned_identity_model = cmd.get_models(
-        "UserAssignedIdentity",
-        resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="fleets"
-    )
 
-    user_assigned_identity = user_assigned_identity_model(
-        principal_id=principal_id,
-        client_id=client_id
-    )
-
-    managed_service_identity = fleet_managed_service_identity_model(
-        type=type,
-        tenant_id=tenant_id,
-        principal_id=principal_id,
-        user_assigned_identities=user_assigned_identity
-    )
+    managed_service_identity = fleet_managed_service_identity_model()
+    if enable_managed_identity is True:
+        managed_service_identity.type="SystemAssigned"
+        if assign_identity is not None:
+            managed_service_identity.type="UserAssigned"
+            managed_service_identity.user_assigned_identities = {assign_identity,None}
+    else:
+        managed_service_identity.type="None"
 
     fleet_patch = fleet_patch_model(
         tags=tags,
