@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.159
++++++++
+* Revert `az aks copilot` Command
+
 0.5.158
 +++++++
 * Add `enable-egress-gateway` and `disable-egress-gateway` to the `az aks mesh` command.
