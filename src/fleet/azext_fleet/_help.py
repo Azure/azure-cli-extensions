@@ -23,21 +23,6 @@ helps['fleet create'] = """
           type: string
           short-summary: Prefix for hostnames that are created. If not specified, generate a hostname using the
                          managed cluster and resource group names.
-        - name: --enable-private-cluster
-          type: bool
-          short-summary: Whether to create the Fleet hub as a private cluster or not.
-        - name: --enable-vnet-integration
-          type: bool
-          short-summary: Whether to enable apiserver vnet integration for the Fleet hub or not.
-        - name: --apiserver-subnet-id
-          type: string
-          short-summary: the subnet to be used when apiserver vnet integration is enabled. It is required when creating a new Fleet with BYO vnet.
-        - name: --agent-subnet-id
-          type: string
-          short-summary: The ID of the subnet which the Fleet hub node will join on startup. If this is not specified, a vnet and subnet will be generated and used.
-        - name: --identity-type
-          type: string
-          short-summary: Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).
 """
 
 helps['fleet update'] = """
