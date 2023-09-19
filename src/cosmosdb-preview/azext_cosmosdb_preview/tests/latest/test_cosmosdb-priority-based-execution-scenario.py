@@ -17,7 +17,7 @@ class Cosmosdb_previewPriorityBasedExecutionScenarioTest(ScenarioTest):
         db_name = self.create_random_name(prefix='cli', length=15)
         # Assumption: There exists a cosmosTest rg.
         self.kwargs.update({
-            'rg' : 'achint-test',
+            'rg' : 'cosmosTest',
             'acc': 'priority-based-execution-test',
             'loc': 'westus',
             'tar': '0=1200 1=1200',

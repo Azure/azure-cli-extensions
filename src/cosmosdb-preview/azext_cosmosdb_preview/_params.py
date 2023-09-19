@@ -289,7 +289,7 @@ def load_arguments(self, _):
 
     # CosmosDB account create with gremlin and tables to restore
     with self.argument_context('cosmosdb create') as c:
-        c.argument('account_name', completer=None)        
+        c.argument('account_name', completer=None)
         c.argument('enable_free_tier', arg_type=get_three_state_flag(), help="If enabled the account is free-tier.", is_preview=True)
         c.argument('assign_identity', nargs='*', help="Assign system or user assigned identities separated by spaces. Use '[system]' to refer system assigned identity.")
         c.argument('key_uri', help="The URI of the key vault")
@@ -335,7 +335,7 @@ def load_arguments(self, _):
 
     with self.argument_context('cosmosdb update') as c:
         c.argument('key_uri', help="The URI of the key vault", is_preview=True)
-        
+
     with self.argument_context('cosmosdb restore') as c:
         c.argument('target_database_account_name', options_list=['--target-database-account-name', '-n'], help='Name of the new target Cosmos DB database account after the restore')
         c.argument('account_name', completer=None, options_list=['--account-name', '-a'], help='Name of the source Cosmos DB database account for the restore', id_part=None)
