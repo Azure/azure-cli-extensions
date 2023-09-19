@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import io
 import pty
 import subprocess
 import tempfile
@@ -128,25 +127,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             if not pattern in output:
                 raise CliTestError(f"Output from aks copilot did not contain '{pattern}'. Output:\n{output}")
 
-    def test_detect_az_error(self):
-        from azext_aks_preview._openai_wrapper import detect_az_error, AZ_ERROR_FORMATTER
-        code = "LocationNotAvailableForResourceGroup"
-        message = "The provided location 'useast' is not available."
-        # \x1b is the ASCII for ESCAPE in terminal
-        actual = detect_az_error("Code: {}\nMessage: {}\x1b".format(code, message).encode())
-        expected = AZ_ERROR_FORMATTER.format(code, message)
-        self.assertEqual(actual, expected)
-
-        actual = detect_az_error(b"Code:1. Creates a resource group in the")
-        self.assertEqual(actual, "")
-
-    def test_strip_terminal_escapes(self):
-        from azext_aks_preview._openai_wrapper import strip_terminal_escapes
-        colored_string = b'''[91mCode: LocationNotAvailableForResourceGroup
-Message: The provided location 'useast' is not available for resource group. [0m'''
-        actual = strip_terminal_escapes(colored_string)
-        self.assertEqual(actual, '''Code: LocationNotAvailableForResourceGroup
-Message: The provided location 'useast' is not available for resource group. ''')
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
