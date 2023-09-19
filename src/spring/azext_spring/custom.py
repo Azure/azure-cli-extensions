@@ -21,7 +21,7 @@ from ._stream_utils import stream_logs
 from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
 from ._utils import (get_portal_uri, get_spring_sku, get_proxy_api_endpoint, BearerAuth)
 from knack.util import CLIError
-from .vendored_sdks.appplatform.v2023_07_01_preview import models, AppPlatformManagementClient
+from .vendored_sdks.appplatform.v2023_09_01_preview import models, AppPlatformManagementClient
 from knack.log import get_logger
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
@@ -203,6 +203,15 @@ def spring_stop(cmd, client, resource_group, name, no_wait=False):
     if state != "Succeeded" or power_state != "Running":
         raise ClientRequestError("Service is in Provisioning State({}) and Power State({}), stopping cannot be performed.".format(state, power_state))
     return sdk_no_wait(no_wait, client.services.begin_stop, resource_group_name=resource_group, service_name=name)
+
+
+def spring_flush_vnet_dns_setting(cmd, client, resource_group, name, no_wait=False):
+    resource = client.services.get(resource_group, name)
+    state = resource.properties.provisioning_state
+    power_state = resource.properties.power_state
+    if state != "Succeeded" or power_state != "Running":
+        raise ClientRequestError("Service is in Provisioning State({}) and Power State({}), flush vnet dns setting cannot be performed.".format(state, power_state))
+    return sdk_no_wait(no_wait, client.services.begin_flush_vnet_dns_setting, resource_group_name=resource_group, service_name=name)
 
 
 def spring_list(cmd, client, resource_group=None):
@@ -1243,8 +1252,14 @@ def _get_app_log(url, auth, format_json, exceptions, chunk_size=None, stderr=Fal
     with requests.get(url, stream=True, auth=auth) as response:
         try:
             if response.status_code != 200:
+                failure_reason = response.reason
+                if response.content:
+                    if isinstance(response.content, bytes):
+                        failure_reason = "{}:{}".format(failure_reason, response.content.decode('utf-8'))
+                    else:
+                        failure_reason = "{}:{}".format(failure_reason, response.content)
                 raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
-                    response.status_code, response.reason))
+                    response.status_code, failure_reason))
             std_encoding = sys.stdout.encoding
 
             formatter = build_formatter()
@@ -1326,7 +1341,7 @@ def storage_list_persistent_storage(client, resource_group, service, name):
 
 
 def certificate_add(cmd, client, resource_group, service, name, only_public_cert=None,
-                    vault_uri=None, vault_certificate_name=None, public_certificate_file=None):
+                    vault_uri=None, vault_certificate_name=None, public_certificate_file=None, enable_auto_sync=None):
     if vault_uri is None and public_certificate_file is None:
         raise InvalidArgumentValueError("One of --vault-uri and --public-certificate-file should be provided")
     if vault_uri is not None and public_certificate_file is not None:
@@ -1339,10 +1354,11 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
         if only_public_cert is None:
             only_public_cert = False
         properties = models.KeyVaultCertificateProperties(
-            type="KeyVaultCertificate",
+            type='KeyVaultCertificate',
             vault_uri=vault_uri,
             key_vault_cert_name=vault_certificate_name,
-            exclude_private_key=only_public_cert
+            exclude_private_key=only_public_cert,
+            auto_sync='Enabled' if enable_auto_sync is True else 'Disabled'
         )
     else:
         if os.path.exists(public_certificate_file):
@@ -1360,16 +1376,17 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
         )
     certificate_resource = models.CertificateResource(properties=properties)
 
-    def callback(pipeline_response, deserialized, headers):
-        return models.CertificateResource.deserialize(json.loads(pipeline_response.http_response.text()))
+    return client.certificates.begin_create_or_update(resource_group, service, name, certificate_resource)
 
-    return client.certificates.begin_create_or_update(
-        resource_group_name=resource_group,
-        service_name=service,
-        certificate_name=name,
-        certificate_resource=certificate_resource,
-        cls=callback
-    )
+
+def certificate_update(cmd, client, resource_group, service, name, enable_auto_sync=None):
+    certificate_resource = client.certificates.get(resource_group, service, name)
+
+    if certificate_resource.properties.type == 'KeyVaultCertificate':
+        if enable_auto_sync is not None:
+            certificate_resource.properties.auto_sync = 'Enabled' if enable_auto_sync is True else 'Disabled'
+
+    return client.certificates.begin_create_or_update(resource_group, service, name, certificate_resource)
 
 
 def certificate_show(cmd, client, resource_group, service, name):

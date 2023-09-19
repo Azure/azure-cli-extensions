@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.1.0
+++++++
+* Fix #27401 `az palo-alto cloudngfw local-rulestack commit` command failing.
 
 1.0.0b1
 ++++++

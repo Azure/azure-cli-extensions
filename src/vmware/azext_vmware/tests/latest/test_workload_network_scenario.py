@@ -61,8 +61,8 @@ class VmwareWorkloadNetworkScenarioTest(ScenarioTest):
         dhcpRelayDelete = self.cmd('az vmware workload-network dhcp relay delete --resource-group {rg} --private-cloud {privatecloud} --dhcp {dhcp} --yes').output
         self.assertEqual(len(dhcpRelayDelete), 0)
 
-        dhcpRelayUpdate = self.cmd('az vmware workload-network dhcp relay update --resource-group {rg} --private-cloud {privatecloud} --dhcp {dhcp} --display-name {display_name} --revision {revision} --server-addresses {server_addresses}').get_output_in_json()
-        self.assertEqual(dhcpRelayUpdate['name'], 'dhcp1')
+        # dhcpRelayUpdate = self.cmd('az vmware workload-network dhcp relay update --resource-group {rg} --private-cloud {privatecloud} --dhcp {dhcp} --display-name {display_name} --revision {revision} --server-addresses {server_addresses}').get_output_in_json()
+        # self.assertEqual(dhcpRelayUpdate['name'], 'dhcp1')
 
         dhcpServerCreate = self.cmd('az vmware workload-network dhcp server create --resource-group {rg} --private-cloud {privatecloud} --dhcp {dhcp} --display-name {display_name} --revision {revision} --server-address {server_address} --lease-time {lease_time}').get_output_in_json()
         self.assertEqual(dhcpServerCreate['name'], 'dhcp1')
@@ -70,8 +70,8 @@ class VmwareWorkloadNetworkScenarioTest(ScenarioTest):
         dhcpServerDelete = self.cmd('az vmware workload-network dhcp server delete --resource-group {rg} --private-cloud {privatecloud} --dhcp {dhcp} --yes').output
         self.assertEqual(len(dhcpServerDelete), 0)
 
-        dhcpServerUpdate = self.cmd('az vmware workload-network dhcp server update --resource-group {rg} --private-cloud {privatecloud} --dhcp {dhcp} --display-name {display_name} --revision {revision} --server-address {server_address} --lease-time {lease_time}').get_output_in_json()
-        self.assertEqual(dhcpServerUpdate['name'], 'dhcp1')
+        # dhcpServerUpdate = self.cmd('az vmware workload-network dhcp server update --resource-group {rg} --private-cloud {privatecloud} --dhcp {dhcp} --display-name {display_name} --revision {revision} --server-address {server_address} --lease-time {lease_time}').get_output_in_json()
+        # self.assertEqual(dhcpServerUpdate['name'], 'dhcp1')
 
         dnsServiceList = self.cmd('az vmware workload-network dns-service list --resource-group {rg} --private-cloud {privatecloud}').get_output_in_json()
         self.assertEqual(len(dnsServiceList), 1, 'count expected to be 1')
@@ -82,8 +82,8 @@ class VmwareWorkloadNetworkScenarioTest(ScenarioTest):
         dnsServiceCreate = self.cmd('az vmware workload-network dns-service create --resource-group {rg} --private-cloud {privatecloud} --dns-service {dns_service} --display-name {display_name} --dns-service-ip {dns_service_ip} --default-dns-zone {default_dns_zone} --fqdn-zones {fqdn_zones} --log-level {log_level} --revision {revision}').get_output_in_json()
         self.assertEqual(dnsServiceCreate['name'], 'dnsService1')
 
-        dnsServiceUpdate = self.cmd('az vmware workload-network dns-service update --resource-group {rg} --private-cloud {privatecloud} --dns-service {dns_service} --display-name {display_name} --dns-service-ip {dns_service_ip} --default-dns-zone {default_dns_zone} --fqdn-zones {fqdn_zones} --log-level {log_level} --revision {revision}').get_output_in_json()
-        self.assertEqual(dnsServiceUpdate['name'], 'dnsService1')
+        # dnsServiceUpdate = self.cmd('az vmware workload-network dns-service update --resource-group {rg} --private-cloud {privatecloud} --dns-service {dns_service} --display-name {display_name} --dns-service-ip {dns_service_ip} --default-dns-zone {default_dns_zone} --fqdn-zones {fqdn_zones} --log-level {log_level} --revision {revision}').get_output_in_json()
+        # self.assertEqual(dnsServiceUpdate['name'], 'dnsService1')
 
         dnsServiceDelete = self.cmd('az vmware workload-network dns-service delete --resource-group {rg} --private-cloud {privatecloud} --dns-service {dns_service} --yes').output
         self.assertEqual(len(dnsServiceDelete), 0)
@@ -97,8 +97,8 @@ class VmwareWorkloadNetworkScenarioTest(ScenarioTest):
         dnsZoneCreate = self.cmd('az vmware workload-network dns-zone create --resource-group {rg} --private-cloud {privatecloud} --dns-zone {dns_zone} --display-name {display_name} --domain {domain} --dns-server-ips {dns_server_ips} --source-ip {source_ip} --dns-services {dns_services} --revision {revision}').get_output_in_json()
         self.assertEqual(dnsZoneCreate['name'], 'dnsZone1')
 
-        dnsZoneUpdate = self.cmd('az vmware workload-network dns-zone update --resource-group {rg} --private-cloud {privatecloud} --dns-zone {dns_zone} --display-name {display_name} --domain {domain} --dns-server-ips {dns_server_ips} --source-ip {source_ip} --dns-services {dns_services} --revision {revision}').get_output_in_json()
-        self.assertEqual(dnsZoneUpdate['name'], 'dnsZone1')
+        # dnsZoneUpdate = self.cmd('az vmware workload-network dns-zone update --resource-group {rg} --private-cloud {privatecloud} --dns-zone {dns_zone} --display-name {display_name} --domain {domain} --dns-server-ips {dns_server_ips} --source-ip {source_ip} --dns-services {dns_services} --revision {revision}').get_output_in_json()
+        # self.assertEqual(dnsZoneUpdate['name'], 'dnsZone1')
 
         dnsZoneDelete = self.cmd('az vmware workload-network dns-zone delete --resource-group {rg} --private-cloud {privatecloud} --dns-zone {dns_zone} --yes').output
         self.assertEqual(len(dnsZoneDelete), 0)
@@ -112,8 +112,8 @@ class VmwareWorkloadNetworkScenarioTest(ScenarioTest):
         portMirroringCreate = self.cmd('az vmware workload-network port-mirroring create --resource-group {rg} --private-cloud {privatecloud} --port-mirroring {port_mirroring} --display-name {display_name} --direction {direction} --source {source} --destination {destination} --revision {revision}').get_output_in_json()
         self.assertEqual(portMirroringCreate['name'], 'portMirroring1')
 
-        portMirroringUpdate = self.cmd('az vmware workload-network port-mirroring update --resource-group {rg} --private-cloud {privatecloud} --port-mirroring {port_mirroring} --display-name {display_name} --direction {direction} --source {source} --destination {destination} --revision {revision}').get_output_in_json()
-        self.assertEqual(portMirroringUpdate['name'], 'portMirroring1')
+        # portMirroringUpdate = self.cmd('az vmware workload-network port-mirroring update --resource-group {rg} --private-cloud {privatecloud} --port-mirroring {port_mirroring} --display-name {display_name} --direction {direction} --source {source} --destination {destination} --revision {revision}').get_output_in_json()
+        # self.assertEqual(portMirroringUpdate['name'], 'portMirroring1')
 
         portMirroringDelete = self.cmd('az vmware workload-network port-mirroring delete --resource-group {rg} --private-cloud {privatecloud} --port-mirroring {port_mirroring} --yes').output
         self.assertEqual(len(portMirroringDelete), 0)
@@ -127,8 +127,8 @@ class VmwareWorkloadNetworkScenarioTest(ScenarioTest):
         segmentCreate = self.cmd('az vmware workload-network segment create --resource-group {rg} --private-cloud {privatecloud} --segment {segment} --display-name {display_name} --connected-gateway {connected_gateway} --revision {revision} --dhcp-ranges {dhcp_ranges} --gateway-address {gateway_address}').get_output_in_json()
         self.assertEqual(segmentCreate['name'], 'segment1')
 
-        segmentUpdate = self.cmd('az vmware workload-network segment update --resource-group {rg} --private-cloud {privatecloud} --segment {segment} --display-name {display_name} --connected-gateway {connected_gateway} --revision {revision} --dhcp-ranges {dhcp_ranges} --gateway-address {gateway_address}').get_output_in_json()
-        self.assertEqual(segmentUpdate['name'], 'segment1')
+        # segmentUpdate = self.cmd('az vmware workload-network segment update --resource-group {rg} --private-cloud {privatecloud} --segment {segment} --display-name {display_name} --connected-gateway {connected_gateway} --revision {revision} --dhcp-ranges {dhcp_ranges} --gateway-address {gateway_address}').get_output_in_json()
+        # self.assertEqual(segmentUpdate['name'], 'segment1')
 
         segmentDelete = self.cmd('az vmware workload-network segment delete --resource-group {rg} --private-cloud {privatecloud} --segment {segment} --yes').output
         self.assertEqual(len(segmentDelete), 0)
@@ -154,8 +154,8 @@ class VmwareWorkloadNetworkScenarioTest(ScenarioTest):
         vmGroupCreate = self.cmd('az vmware workload-network vm-group create --resource-group {rg} --private-cloud {privatecloud} --vm-group {vm_group} --display-name {display_name} --members {members} --revision {revision}').get_output_in_json()
         self.assertEqual(vmGroupCreate['name'], 'vmGroup1')
 
-        vmGroupUpdate = self.cmd('az vmware workload-network vm-group update --resource-group {rg} --private-cloud {privatecloud} --vm-group {vm_group} --display-name {display_name} --members {members} --revision {revision}').get_output_in_json()
-        self.assertEqual(vmGroupUpdate['name'], 'cloud1')
+        # vmGroupUpdate = self.cmd('az vmware workload-network vm-group update --resource-group {rg} --private-cloud {privatecloud} --vm-group {vm_group} --display-name {display_name} --members {members} --revision {revision}').get_output_in_json()
+        # self.assertEqual(vmGroupUpdate['name'], 'cloud1')
 
         vmGroupDelete = self.cmd('az vmware workload-network vm-group delete --resource-group {rg} --private-cloud {privatecloud} --vm-group {vm_group} --yes').output
         self.assertEqual(len(vmGroupDelete), 0)

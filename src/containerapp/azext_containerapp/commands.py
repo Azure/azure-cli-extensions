@@ -13,7 +13,7 @@ from ._transformers import (transform_containerapp_output,
                             transform_job_execution_list_output,
                             transform_job_execution_show_output,
                             transform_revision_list_output,
-                            transform_revision_output)
+                            transform_revision_output, transform_usages_output)
 
 
 def load_command_table(self, _):
@@ -26,6 +26,8 @@ def load_command_table(self, _):
         g.custom_command('exec', 'containerapp_ssh', validator=validate_ssh)
         g.custom_command('up', 'containerapp_up', supports_no_wait=False, exception_handler=ex_handler_factory())
         g.custom_command('browse', 'open_containerapp_in_browser')
+        g.custom_show_command('show-custom-domain-verification-id', 'show_custom_domain_verification_id', is_preview=True)
+        g.custom_command('list-usages', 'list_usages', table_transformer=transform_usages_output, is_preview=True)
 
     with self.command_group('containerapp replica') as g:
         g.custom_show_command('show', 'get_replica')  # TODO implement the table transformer
@@ -42,6 +44,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('delete', 'delete_managed_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
         g.custom_command('update', 'update_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_command('list-usages', 'list_environment_usages', table_transformer=transform_usages_output, is_preview=True)
 
     with self.command_group('containerapp job') as g:
         g.custom_show_command('show', 'show_containerappsjob')
@@ -103,6 +106,10 @@ def load_command_table(self, _):
     with self.command_group('containerapp service mariadb') as g:
         g.custom_command('create', 'create_mariadb_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_mariadb_service', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp service qdrant') as g:
+        g.custom_command('create', 'create_qdrant_service', supports_no_wait=True)
+        g.custom_command('delete', 'delete_qdrant_service', confirmation=True, supports_no_wait=True)
 
     with self.command_group('containerapp identity') as g:
         g.custom_command('assign', 'assign_managed_identity', supports_no_wait=True, exception_handler=ex_handler_factory())
@@ -228,3 +235,26 @@ def load_command_table(self, _):
         g.custom_command('list', 'patch_list')
         g.custom_command('apply', 'patch_apply')
         g.custom_command('interactive', 'patch_interactive')
+
+    with self.command_group('containerapp connected-env', is_preview=True) as g:
+        g.custom_show_command('show', 'show_connected_environment')
+        g.custom_command('list', 'list_connected_environments')
+        g.custom_command('create', 'create_connected_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_command('delete', 'delete_connected_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp connected-env dapr-component', is_preview=True) as g:
+        g.custom_command('list', 'connected_env_list_dapr_components')
+        g.custom_show_command('show', 'connected_env_show_dapr_component')
+        g.custom_command('set', 'connected_env_create_or_update_dapr_component')
+        g.custom_command('remove', 'connected_env_remove_dapr_component')
+
+    with self.command_group('containerapp connected-env certificate', is_preview=True) as g:
+        g.custom_command('list', 'connected_env_list_certificates')
+        g.custom_command('upload', 'connected_env_upload_certificate')
+        g.custom_command('delete', 'connected_env_delete_certificate', confirmation=True, exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp connected-env storage', is_preview=True) as g:
+        g.custom_show_command('show', 'connected_env_show_storage')
+        g.custom_command('list', 'connected_env_list_storages')
+        g.custom_command('set', 'connected_env_create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_command('remove', 'connected_env_remove_storage', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())

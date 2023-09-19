@@ -181,19 +181,16 @@ helps['aks create'] = """
           short-summary: Enable the Kubernetes addons in a comma-separated list.
           long-summary: |-
             These addons are available:
-                http_application_routing        - configure ingress with automatic public DNS name creation.
-                monitoring                      - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
-                                                  If monitoring addon is enabled --no-wait argument will have no effect
-                virtual-node                    - enable AKS Virtual Node. Requires --aci-subnet-name to provide the name of an existing subnet for the Virtual Node to use.
-                                                  aci-subnet-name must be in the same vnet which is specified by --vnet-subnet-id (required as well).
-                azure-policy                    - enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner. Required if enabling Guardrails
-                                                  Learn more at aka.ms/aks/policy.
-                ingress-appgw                   - enable Application Gateway Ingress Controller addon (PREVIEW).
-                confcom                         - enable confcom addon, this will enable SGX device plugin by default(PREVIEW).
-                open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
-                gitops                          - enable GitOps (PREVIEW).
-                azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon.
-                web_application_routing         - enable Web Application Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
+            - http_application_routing        : configure ingress with automatic public DNS name creation.
+            - monitoring                      :  turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring addon is enabled --no-wait argument will have no effect
+            - virtual-node                    : enable AKS Virtual Node. Requires --aci-subnet-name to provide the name of an existing subnet for the Virtual Node to use. aci-subnet-name must be in the same vnet which is specified by --vnet-subnet-id (required as well).
+            - azure-policy                    : enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner. Required if enabling Guardrails. Learn more at aka.ms/aks/policy.
+            - ingress-appgw                   : enable Application Gateway Ingress Controller addon (PREVIEW).
+            - confcom                         : enable confcom addon, this will enable SGX device plugin by default(PREVIEW).
+            - open-service-mesh               : enable Open Service Mesh addon (PREVIEW).
+            - gitops                          : enable GitOps (PREVIEW).
+            - azure-keyvault-secrets-provider : enable Azure Keyvault Secrets Provider addon.
+            - web_application_routing         : enable Web Application Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -500,6 +497,9 @@ helps['aks create'] = """
         - name: --dns-zone-resource-id
           type: string
           short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+        - name: --dns-zone-resource-ids
+          type: string
+          short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the web_application_routing addon.
         - name: --enable-custom-ca-trust
           type: bool
           short-summary: Enable Custom CA Trust on agent node pool.
@@ -567,6 +567,9 @@ helps['aks create'] = """
         - name: --nodepool-taints
           type: string
           short-summary: The node taints for all node pools in this cluster.
+        - name: --enable-cost-analysis
+          type: bool
+          short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -796,13 +799,15 @@ helps['aks update'] = """
         - name: --node-os-upgrade-channel
           type: string
           short-summary: Manner in which the OS on your nodes is updated. It could be NodeImage, None, SecurityPatch or Unmanaged.
-        - name: --upgrade-settings
-          type: string
-          short-summary: A comma separated list of supported cluster upgrade settings. E.g., IgnoreKubernetesDeprecations.
-          long-summary: Allowed value is "IgnoreKubernetesDeprecations". If set as "", upgrade settings will be set to default and the existing overrides will no longer be effective.
+        - name: --enable-force-upgrade
+          type: bool
+          short-summary: Enable forceUpgrade cluster upgrade settings override.
+        - name: --disable-force-upgrade
+          type: bool
+          short-summary: Disable forceUpgrade cluster upgrade settings override.
         - name: --upgrade-override-until
           type: string
-          short-summary: Until when the cluster upgradeSettings overrides are effective. It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --upgrade-settings is set to IgnoreKubernetesDeprecations and --upgrade-override-until is not set, by default it will be set to 3 days from now.
+          short-summary: Until when the cluster upgradeSettings overrides are effective. It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --force-upgrade is set to true and --upgrade-override-until is not set, by default it will be set to 3 days from now.
         - name: --enable-managed-identity
           type: bool
           short-summary: Update current cluster to managed identity to manage cluster resource group.
@@ -824,6 +829,9 @@ helps['aks update'] = """
         - name: --enable-workload-identity
           type: bool
           short-summary: (PREVIEW) Enable Workload Identity addon for cluster.
+        - name: --disable-workload-identity
+          type: bool
+          short-summary: (PREVIEW) Disable Workload Identity addon for cluster.
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
@@ -1061,6 +1069,12 @@ helps['aks update'] = """
         - name: --enable-network-observability
           type: bool
           short-summary: Enable network observability on a cluster.
+        - name: --enable-cost-analysis
+          type: bool
+          short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
+        - name: --disable-cost-analysis
+          type: bool
+          short-summary: Disable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1911,6 +1925,9 @@ parameters:
   - name: --dns-zone-resource-id
     type: string
     short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+  - name: --dns-zone-resource-ids
+    type: string
+    short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the web_application_routing addon.
 examples:
   - name: Enable a Kubernetes addon. (autogenerated)
     text: az aks addon enable --addon virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
@@ -1975,6 +1992,9 @@ parameters:
   - name: --dns-zone-resource-id
     type: string
     short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+  - name: --dns-zone-resource-ids
+    type: string
+    short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the web_application_routing addon.
 examples:
   - name: Update a Kubernetes addon. (autogenerated)
     text: az aks addon update --addon virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
@@ -2053,6 +2073,9 @@ parameters:
   - name: --dns-zone-resource-id
     type: string
     short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+  - name: --dns-zone-resource-ids
+    type: string
+    short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the web_application_routing addon.
   - name: --aks-custom-headers
     type: string
     short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
@@ -2584,7 +2607,7 @@ helps['aks mesh enable'] = """
       - name: Enable Azure Service Mesh with selfsigned CA.
         text: az aks mesh enable --resource-group MyResourceGroup --name MyManagedCluster
       - name: Enable Azure Service Mesh with plugin CA.
-        text: az aks mesh enable --resource-group MyResourceGroup --name MyManagedCluster --key-vault-id my-akv-id --ca-cert-object-name my-ca-cert --ca-key-object-name my-ca-key --cert-chain-object-name my-cert-chain --root-cert-object-name my-root-cert
+        text: az aks mesh enable --resource-group MyResourceGroup --name MyManagedCluster --key-vault-id /subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo --ca-cert-object-name my-ca-cert --ca-key-object-name my-ca-key --cert-chain-object-name my-cert-chain --root-cert-object-name my-root-cert
 
 """
 
@@ -2620,4 +2643,26 @@ helps['aks mesh disable-ingress-gateway'] = """
     examples:
       - name: Disable an internal ingress gateway.
         text: az aks mesh disable-ingress-gateway --resource-group MyResourceGroup --name MyManagedCluster --ingress-gateway-type Internal
+"""
+
+helps['aks mesh enable-egress-gateway'] = """
+    type: command
+    short-summary: Enable an Azure Service Mesh egress gateway.
+    long-summary: This command enables an Azure Service Mesh egress gateway in given cluster.
+    parameters:
+      - name: --egress-gateway-nodeselector --egx-gtw-ns
+        type: string
+        short-summary: Specify the node selector for the egress gateway with space-separated, key-value pairs (key1=value1 key2=value2).
+    examples:
+      - name: Enable an egress gateway.
+        text: az aks mesh enable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster --egress-gateway-nodeselector istio=egress
+"""
+
+helps['aks mesh disable-egress-gateway'] = """
+    type: command
+    short-summary: Disable an Azure Service Mesh egress gateway.
+    long-summary: This command disables an Azure Service Mesh egress gateway in given cluster.
+    examples:
+      - name: Disable an egress gateway.
+        text: az aks mesh disable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster
 """

@@ -341,6 +341,30 @@ def validate_node_public_ip_tags(ns):
         ns.node_public_ip_tags = tags_dict
 
 
+def validate_egress_gtw_nodeselector(namespace):
+    """Validates that provided node selector is a valid format"""
+
+    if not hasattr(namespace, 'egx_gtw_nodeselector'):
+        return
+
+    labels = namespace.egx_gtw_nodeselector
+
+    if labels is None:
+        # no specify any labels
+        namespace.egx_gtw_nodeselector = {}
+        return
+
+    if isinstance(labels, list):
+        labels_dict = {}
+        for item in labels:
+            labels_dict.update(validate_label(item))
+        after_validation_labels = labels_dict
+    else:
+        after_validation_labels = validate_label(labels)
+
+    namespace.egx_gtw_nodeselector = after_validation_labels
+
+
 def validate_nodepool_labels(namespace):
     """Validates that provided node labels is a valid format"""
 
@@ -658,6 +682,11 @@ def validate_defender_config_parameter(namespace):
 def validate_defender_disable_and_enable_parameters(namespace):
     if namespace.disable_defender and namespace.enable_defender:
         raise ArgumentUsageError('Providing both --disable-defender and --enable-defender flags is invalid')
+
+
+def validate_force_upgrade_disable_and_enable_parameters(namespace):
+    if namespace.disable_force_upgrade and namespace.enable_force_upgrade:
+        raise MutuallyExclusiveArgumentError('Providing both --disable-force-upgrade and --enable-force-upgrade flags is invalid')
 
 
 def sanitize_resource_id(resource_id):
