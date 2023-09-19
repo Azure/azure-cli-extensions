@@ -14,9 +14,9 @@ except ImportError:
 
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-# TODO: Confirm this is the right version number you want and it matches your
+# Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = "0.2.0"
+VERSION = "1.0.0b1"
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers

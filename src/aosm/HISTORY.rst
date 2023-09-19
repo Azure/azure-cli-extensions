@@ -3,47 +3,8 @@
 Release History
 ===============
 
-upcoming
-++++++++++
-* Added a `--clean` flag to the NSD `delete` command. This flag will delete the NSDG on top of the other resources deleted by the `delete` command.
-* Added integration tests for `publish` and `delete` commands.
-* Added a `--force` flag to the aosm `build` and `delete` commands. This command will force the `build` or `delete` commands to proceed without waiting on user input to confirm.
-* `az aosm nfd build` options `--order-params` and `--interactive` to help users choose which NF parameters to expose as deployParameters. Feature added that allows CNF value mappings file to be generated if none is supplied.
-* NFDV version exposed as a CGV on an SNS.
-* `az aosm nfd publish` option added for `--definition-type cnf` to publish the CNF bicep templates, upload helm charts from disk to the ACR and copy the images from a source ACR to the target ACR.
-* Managed Identity added to VNF NF templates - requires subscription to be registered for the feature flag.
-* Various fixes to NFD build of deployParameters schema and interactive mode create of deployParameters mappings file.
-* Fix CNF NFD publish so that it doesn't render the ACR unuseable for future Artifact publishing.
-* Allow CNF NFD image copy from a source ACR using a namespace.
-* Fix - Add new CGSchema parameters not from the NFD to the `required` section of the schema.
-* Add the ability to skip bicep publish or artifact upload during publish commands.
-* Fix Manifest name for NSDs so it isn't the same as that for NFDs
-* Add validation of source_registry_id format for CNF configuration
-* Workaround Oras client bug (#90) on Windows for Artifact upload to ACR
-* Take Oras 0.1.18 so above Workaround could be removed
-* Take Oras 0.1.19 to fix NSD Artifact upload on Windows
-* Support deploying multiple instances of the same NF in an SNS
-* Fix CNF publish on Windows by using Linux style paths in rendered NFD bicep templates (bicep always requires Linux style paths).
-* Re-order publish steps so that artifacts are uploaded before the NFD/NSD is published.
-* Add progress information for VHD upload
-* Change optional argument from `manifest_parameters_json_file` to `manifest_params_file` to appease linter.
-* NB CHANGE TO PREVIOUS CONFIG FILE FORMAT FOR NFDS
-  - Add options for CNF image upload. By default CNF images are copied from a source ACR using `az acr import` which is fast but requires subscription-wide permissions.
-  - If permissions are not available then CNF images can be copies from the source ACR using `docker pull` then `docker push`, which is slower and requires Docker to be installed. This is governed by a new --no-subscription-permissions flag.
-  - Also, if only a single image is required, it can be specified in the config file and uploaded from local docker registry using `docker push`
-  - CNF image config has been moved into an `images` section of the config file. Please run `az aosm nfd generate-config --definition-type cnf` to generate a new config file.
-  - Remove pre-deploy check to check source ACR exists. This will be found at the time that images are copied / accessed.
-  - Change from using ContainerRegistryManagementClient to `az acr import` subprocess call, so that we don't need to know the Resource Group.
-* NB CHANGE TO PREVIOUS CONFIG FILE FORMAT FOR NSDs
-  - Added publisher scope and removed publisher resource group from network function object, as now using proxy references
-0.2.0
-++++++
-Breaking change to commands - now use `nfd` instead of `definition`. Publish option removed from build.
-* `az aosm nfd generate-config` for vnf and cnf. This is for NFDVs
-* `az aosm nfd build|publish|delete --definition-type vnf|cnf` for vnf and `build` only for cnf. This is for NFDVs
-
-0.1.0
-++++++
-* Initial release - alpha quality
-    * `az aosm definition generate-config` for vnf and cnf. This is for NFDVs
-    * `az aosm definition build|publish|delete` for vnf and `build` only for cnf. This is for NFDVs
+1.0.0b1
+++++++++
+* Initial release - beta quality
+    * `az aosm nfd|nsd generate-config` to generate an example config file to fill in for an NFD or NSD
+    * `az aosm nfd|nsd build|publish|delete` to prepare files for, publish or delete an NFD or NSD
