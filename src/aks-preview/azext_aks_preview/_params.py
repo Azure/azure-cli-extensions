@@ -138,7 +138,6 @@ from azext_aks_preview._validators import (
     validate_nodepool_tags,
     validate_nodes_count,
     validate_os_sku,
-    validate_prompt_input,
     validate_pod_identity_pod_labels,
     validate_pod_identity_resource_name,
     validate_pod_identity_resource_namespace,
@@ -924,10 +923,6 @@ def load_arguments(self, _):
         c.argument('ca_key_object_name')
         c.argument('root_cert_object_name')
         c.argument('cert_chain_object_name')
-
-    with self.argument_context('aks copilot') as c:
-        c.argument('prompt', options_list=['--prompt', '-p'], validator=validate_prompt_input,
-                   help='The question you want to ask, e.g: How to create a AKS cluster')
 
 
 def _get_default_install_location(exe_name):
