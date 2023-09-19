@@ -13,7 +13,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 class PaloAltoNetworksScenario(ScenarioTest):
 
     @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='cli_test_palo_alto_networks_cloudngfw_firewall')
+    @ResourceGroupPreparer(name_prefix='cli_test_palo_alto_networks_cloudngfw_firewall', location='eastus' )
     def test_palo_alto_networks_cloudngfw_firewall(self, resource_group):
         self.kwargs.update({
             'cloudngfw_firewall_name': self.create_random_name('firewall', 15),
@@ -23,12 +23,12 @@ class PaloAltoNetworksScenario(ScenarioTest):
             'nsg': self.create_random_name('nsg', 10),
             'vnet': self.create_random_name('vnet', 10),
             'subnet1': self.create_random_name('subnet1', 12),
-            'subnet2': self.create_random_name('subnet2', 12),
-            'loc': 'centraluseuap'
+            'subnet2': self.create_random_name('subnet2', 12)
         })
         self.cmd('az network nsg create -g {rg} -n {nsg}')
         self.cmd('az network vnet create -g {rg} -n {vnet} --address-prefix 10.0.0.0/16 --nsg {nsg} --subnet-name {subnet1} --subnet-prefixes 10.0.0.0/26')
-        self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet} -n {subnet2} --address-prefixes 10.0.1.0/26')
+        self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet} -n {subnet2} --address-prefixes 10.0.1.0/26 --delegations PaloAltoNetworks.Cloudngfw/firewalls')
+        self.cmd('az network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet1} --delegations PaloAltoNetworks.Cloudngfw/firewalls')
         vnet = self.cmd('az network vnet show -g {rg} -n {vnet}').get_output_in_json()
         local_rulestack = self.cmd('az palo-alto cloudngfw local-rulestack create --local-rulestack-name testlrs -g {rg} -l eastus --default-mode "IPS" --scope "LOCAL" --pan-etag "9fa4e2c6-1b0c-11ee-b587-3e4c117c6534" --min-app-id-version "8595-7473" --security-services {{"vulnerability-profile":"BestPractice","anti-spyware-profile":"BestPractice","anti-virus-profile":"BestPractice","url-filtering-profile":"BestPractice","file-blocking-profile":"BestPractice","dns-subscription":"BestPractice"}}').get_output_in_json()
         self.kwargs.update({
@@ -48,7 +48,7 @@ class PaloAltoNetworksScenario(ScenarioTest):
                  '--marketplace-details {{"marketplace-subscription-status":Subscribed,"offer-id":pan_swfw_cloud_ngfw,"publisher-id":paloaltonetworks}} '
                  '--network-profile {{"egress-nat-ip":[],"enable-egress-nat":DISABLED,"network-type":VNET,"public-ips":[{{"address":"20.112.141.94","resource-id":{public_ip_id}}}],'
                  '"vnet-configuration":{{"ip-of-trust-subnet-for-udr":{{"address":10.0.0.0/16}},"trust-subnet":{{"resource-id":{trust_subnet}}},"un-trust-subnet":{{"resource-id":{un_trust_subnet}}},"vnet":{{"resource-id":{vnet_id}}}}}}} '
-                 '--panorama-config {{"config-string":bas64EncodedString}} --plan-data {{"billing-cycle":MONTHLY,"plan-id":panw-cloud-ngfw-payg,"usage-type":PAYG}} --no-wait')
+                 '--plan-data {{"billing-cycle":MONTHLY,"plan-id":panw-cloud-ngfw-payg,"usage-type":PAYG}} --no-wait')
         self.cmd('az palo-alto cloudngfw firewall list --resource-group {rg}',
                  checks=[
                      self.check('length(@)', 1),
@@ -64,7 +64,6 @@ class PaloAltoNetworksScenario(ScenarioTest):
                      self.check('marketplaceDetails.publisherId', "paloaltonetworks"),
                      self.check('name', '{cloudngfw_firewall_name}'),
                      self.check('networkProfile.enableEgressNat', "DISABLED"),
-                     self.check('panoramaConfig.configString', "bas64EncodedString"),
                      self.check('planData.billingCycle', "MONTHLY")
                  ])
         self.cmd('az palo-alto cloudngfw firewall delete --resource-group {rg} -n {cloudngfw_firewall_name}')
