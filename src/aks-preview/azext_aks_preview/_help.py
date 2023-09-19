@@ -2658,7 +2658,7 @@ helps['aks mesh get-revisions'] = """
 helps['aks mesh get-upgrades'] = """
     type: command
     short-summary: Discover available Azure Service Mesh upgrades.
-    long-summary: This command discovers available Azure Service Mesh upgrades for all the installed revisions on the cluster.
+    long-summary: This command discovers available Azure Service Mesh upgrades for the mesh revision installed on the cluster.
     examples:
       - name: Discover Azure Service Mesh upgrades.
         text: az aks mesh get-upgrades --resource-group MyResourceGroup --name MyManagedCluster
