@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a ResourceGuard mapping
+
+    :example: Update a ResourceGuard mapping
+        az dataprotection backup-vault resource-guard-mapping update -n "DppResourceGuardProxy" -g "sampleRG" --vault-name "sampleVault" --resource-guard-id "/subscription/00000000-0000-0000-0000-000000000000/resourcegroups/sampleRG/providers/Microsoft.DataProtection/resourceGuards/sampleResourceGuard"
     """
 
     _aaz_info = {
@@ -66,40 +69,10 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.description = AAZStrArg(
-            options=["--description"],
-            arg_group="Properties",
-            nullable=True,
-        )
-        _args_schema.last_updated_time = AAZStrArg(
-            options=["--last-updated-time"],
-            arg_group="Properties",
-            nullable=True,
-        )
-        _args_schema.resource_guard_operation_details = AAZListArg(
-            options=["--resource-guard-operation-details"],
-            arg_group="Properties",
-            nullable=True,
-        )
         _args_schema.resource_guard_resource_id = AAZStrArg(
             options=["--resource-guard-id", "--resource-guard-resource-id"],
             arg_group="Properties",
             help="ARM Id of the resource guard to be mapped to",
-            nullable=True,
-        )
-
-        resource_guard_operation_details = cls._args_schema.resource_guard_operation_details
-        resource_guard_operation_details.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.resource_guard_operation_details.Element
-        _element.default_resource_request = AAZStrArg(
-            options=["default-resource-request"],
-            nullable=True,
-        )
-        _element.vault_critical_operation = AAZStrArg(
-            options=["vault-critical-operation"],
             nullable=True,
         )
         return cls._args_schema
@@ -335,19 +308,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("lastUpdatedTime", AAZStrType, ".last_updated_time")
-                properties.set_prop("resourceGuardOperationDetails", AAZListType, ".resource_guard_operation_details")
                 properties.set_prop("resourceGuardResourceId", AAZStrType, ".resource_guard_resource_id")
-
-            resource_guard_operation_details = _builder.get(".properties.resourceGuardOperationDetails")
-            if resource_guard_operation_details is not None:
-                resource_guard_operation_details.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.resourceGuardOperationDetails[]")
-            if _elements is not None:
-                _elements.set_prop("defaultResourceRequest", AAZStrType, ".default_resource_request")
-                _elements.set_prop("vaultCriticalOperation", AAZStrType, ".vault_critical_operation")
 
             return _instance_value
 

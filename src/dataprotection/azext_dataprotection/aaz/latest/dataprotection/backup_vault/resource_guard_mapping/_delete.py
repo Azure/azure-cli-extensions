@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete the ResourceGuard mapping
+
+    :example: Delete a ResourceGuard Mapping
+        az dataprotection backup-vault resource-guard-mapping delete -n "DppResourceGuardProxy" -g "sampleRG" -v "sampleVault"
     """
 
     _aaz_info = {

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a ResourceGuard mapping
+
+    :example: Create a ResourceGuard mapping
+        az dataprotection backup-vault resource-guard-mapping create -n "DppResourceGuardProxy" -g "sampleRG" --vault-name "sampleVault" --resource-guard-id "/subscription/00000000-0000-0000-0000-000000000000/resourcegroups/sampleRG/providers/Microsoft.DataProtection/resourceGuards/sampleResourceGuard"
     """
 
     _aaz_info = {

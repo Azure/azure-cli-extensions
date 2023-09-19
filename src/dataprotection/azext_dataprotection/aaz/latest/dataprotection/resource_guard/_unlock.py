@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Unlock(AAZCommand):
     """Unlocks the critical operation which is protected by the resource guard
+
+    :example: Unlock deletion of the ResourceGuard mapping to disable MUA on the vault
+        az dataprotection resource-guard unlock -n "DppResourceGuardProxy" -g "sampleRG" -v "sampleVault" --resource-guard-operation-requests "DisableMUA" --resource-to-be-deleted "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sampleRG/providers/Microsoft.DataProtection/backupVaults/sampleVault/backupResourceGuardProxies/DppResourceGuardProxy"
     """
 
     _aaz_info = {
@@ -67,7 +70,7 @@ class Unlock(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_guard_operation_requests = AAZListArg(
             options=["--resource-guard-operation-requests"],
-            singular_options=["--resource-guard-operation-request"],
+            singular_options=["--resource-guard-operations"],
             arg_group="Parameters",
             help="List of critical operations which are protected by the resourceGuard and need to be unlocked. Supported values are DeleteBackupInstance, DisableMUA",
         )

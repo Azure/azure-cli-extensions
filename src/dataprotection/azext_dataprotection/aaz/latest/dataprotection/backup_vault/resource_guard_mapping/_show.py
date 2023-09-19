@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the ResourceGuard mapping object associated with the vault, and that matches the name in the request
+
+    :example: Show a ResourceGuard Mapping associated with a vault
+        az dataprotection backup-vault resource-guard-mapping show -n "DppResourceGuardProxy" -g "sampleRG" -v "sampleVault"
     """
 
     _aaz_info = {

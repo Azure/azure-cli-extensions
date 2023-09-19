@@ -13,6 +13,9 @@ from azure.cli.core.aaz import *
 
 class List(AAZCommand):
     """List the list of ResourceGuard mappings associated with the vault
+
+    :example: List all ResourceGuard Mappings associated with a vault
+        az dataprotection backup-vault resource-guard-mapping list -g "sampleRG" -v "sampleVault"
     """
 
     _aaz_info = {
