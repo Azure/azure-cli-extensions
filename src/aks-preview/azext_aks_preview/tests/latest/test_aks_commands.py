@@ -1428,7 +1428,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys()
         })
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity' \
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --enable-managed-identity ' \
             '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -1445,14 +1445,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # add nodepool
         self.cmd('aks nodepool add ' \
-                 ' --resource-group={resource_group}' \
-                 ' --cluster-name={name}' \
+                 ' --resource-group={resource_group} ' \
+                 ' --cluster-name={name} ' \
                  ' --name={node_pool_name} --node-count=2', checks=[
             self.check('provisioningState', 'Succeeded')
         ])
 
         list_cmd = 'aks machine list ' \
-                   ' --resource-group={resource_group}' \
+                   ' --resource-group={resource_group} ' \
                    ' --cluster-name={name} --nodepool-name={node_pool_name} -o json'
         machine_list = self.cmd(list_cmd).get_output_in_json()
         assert len(machine_list) == 2
