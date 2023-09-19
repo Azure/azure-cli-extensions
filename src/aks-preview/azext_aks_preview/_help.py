@@ -2686,7 +2686,7 @@ helps['aks mesh upgrade'] = """
 helps['aks mesh upgrade complete'] = """
     type: command
     short-summary: Complete Azure Service Mesh upgrade.
-    long-summary: This command completes Azure Service Mesh upgrade in progress.
+    long-summary: This command completes Azure Service Mesh canary upgrade by removing the previous revision.
     examples:
       - name: Complete Azure Service Mesh upgrade.
         text: az aks mesh upgrade complete --resource-group MyResourceGroup --name MyManagedCluster
