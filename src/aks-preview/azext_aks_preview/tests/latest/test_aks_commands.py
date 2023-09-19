@@ -7366,6 +7366,68 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_azure_service_mesh_with_egress_gateway(self, resource_group, resource_group_location):
+        """ This test case exercises enabling and disabling an egress gateway.
+
+        It creates a cluster with azure service mesh profile. After that, we enable an egress
+        gateway, then disable it.
+        """
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+        })
+
+        # create cluster with --enable-azure-service-mesh
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureServiceMeshPreview ' \
+                     '--ssh-key-value={ssh_key_value} ' \
+                     '--enable-azure-service-mesh --output=json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('serviceMeshProfile.mode', 'Istio'),
+        ])
+
+        # enable egress gateway
+        update_cmd = 'aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} ' \
+                     '--egress-gateway-nodeselector istio=egress'
+        self.cmd(update_cmd, checks=[
+            self.check('serviceMeshProfile.mode', 'Istio'),
+            self.check('serviceMeshProfile.istio.components.egressGateways[0].nodeSelector.istio', 'egress'),
+            self.check('serviceMeshProfile.istio.components.egressGateways[0].enabled', True)
+        ])
+
+        # remove egress gateway nodeselector
+        update_cmd = 'aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} ' \
+                     '--egress-gateway-nodeselector '
+        self.cmd(update_cmd, checks=[
+            self.check('serviceMeshProfile.mode', 'Istio'),
+            self.check('serviceMeshProfile.istio.components.egressGateways[0].nodeSelector.istio', None),
+            self.check('serviceMeshProfile.istio.components.egressGateways[0].enabled', True)
+        ])
+
+        # disable egress gateway
+        update_cmd = 'aks mesh disable-egress-gateway --resource-group={resource_group} --name={name} --yes'
+        self.cmd(update_cmd, checks=[
+            self.check('serviceMeshProfile.mode', 'Istio'),
+            self.check('serviceMeshProfile.istio.components.egressGateways[0].enabled', None),
+            self.check('serviceMeshProfile.istio.components.egressGateways[0].nodeSelector', None)
+        ])
+
+        # delete the cluster
+        delete_cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(delete_cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_azure_service_mesh_with_pluginca(self, resource_group, resource_group_location):
         """ This test case exercises providing plugin ca params with mesh enable command.
 

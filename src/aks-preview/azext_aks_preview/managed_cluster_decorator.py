@@ -2112,14 +2112,18 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         disable_ingress_gateway = self.raw_param.get("disable_ingress_gateway", False)
         ingress_gateway_type = self.raw_param.get("ingress_gateway_type", None)
 
+        enable_egress_gateway = self.raw_param.get("enable_egress_gateway", False)
+        disable_egress_gateway = self.raw_param.get("disable_egress_gateway", False)
+        egx_gtw_nodeselector = self.raw_param.get("egx_gtw_nodeselector", None)
+
         if enable_ingress_gateway and disable_ingress_gateway:
             raise MutuallyExclusiveArgumentError(
                 "Cannot both enable and disable azure service mesh ingress gateway at the same time.",
             )
 
-        # deal with gateways
+        # deal with ingress gateways
         if enable_ingress_gateway or disable_ingress_gateway:
-            # if a gateway is enabled, enable the mesh
+            # if an ingress gateway is enabled, enable the mesh
             if enable_ingress_gateway:
                 new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
                 updated = True
@@ -2135,23 +2139,74 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 new_profile.istio.components.ingress_gateways = []
                 updated = True
 
-            # make update if the gateway already exist
-            gateway_exists = False
+            # make update if the ingress gateway already exist
+            ingress_gateway_exists = False
             for ingress in new_profile.istio.components.ingress_gateways:
                 if ingress.mode == ingress_gateway_type:
                     ingress.enabled = enable_ingress_gateway
-                    gateway_exists = True
+                    ingress_gateway_exists = True
                     updated = True
                     break
 
-            # gateway not exist, append
-            if not gateway_exists:
+            # ingress gateway not exist, append
+            if not ingress_gateway_exists:
                 new_profile.istio.components.ingress_gateways.append(
                     self.models.IstioIngressGateway(
                         mode=ingress_gateway_type,
                         enabled=enable_ingress_gateway,
                     )
                 )
+                updated = True
+
+        # deal with egress gateways
+        if enable_egress_gateway and disable_egress_gateway:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot both enable and disable azure service mesh egress gateway at the same time.",
+            )
+
+        if not enable_egress_gateway and egx_gtw_nodeselector:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot set egress gateway nodeselector without enabling an egress gateway.",
+            )
+
+        if enable_egress_gateway or disable_egress_gateway:
+            # if a gateway is enabled, enable the mesh
+            if enable_egress_gateway:
+                new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
+                updated = True
+
+            # ensure necessary fields
+            if new_profile.istio.components is None:
+                new_profile.istio.components = self.models.IstioComponents()
+                updated = True
+            if new_profile.istio.components.egress_gateways is None:
+                new_profile.istio.components.egress_gateways = []
+                updated = True
+
+            # make update if the egress gateway already exists
+            egress_gateway_exists = False
+            for egress in new_profile.istio.components.egress_gateways:
+                egress.enabled = enable_egress_gateway
+                egress.node_selector = egx_gtw_nodeselector
+                egress_gateway_exists = True
+                updated = True
+                break
+
+            # egress gateway doesn't exist, append
+            if not egress_gateway_exists:
+                if egx_gtw_nodeselector:
+                    new_profile.istio.components.egress_gateways.append(
+                        self.models.IstioEgressGateway(
+                            enabled=enable_egress_gateway,
+                            node_selector=egx_gtw_nodeselector,
+                        )
+                    )
+                else:
+                    new_profile.istio.components.egress_gateways.append(
+                        self.models.IstioEgressGateway(
+                            enabled=enable_egress_gateway,
+                        )
+                    )
                 updated = True
 
         # deal with plugin ca
