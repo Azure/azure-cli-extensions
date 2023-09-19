@@ -509,12 +509,6 @@ class ApiPortalProperties(_serialization.Model):
      ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApiPortalResourceRequests
     :ivar instances: Collection of instances belong to API portal.
     :vartype instances: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.ApiPortalInstance]
-    :ivar api_try_out_enabled_state: Indicates whether the API try-out feature is enabled or
-     disabled. When enabled, users can try out the API by sending requests and viewing responses in
-     API portal. When disabled, users cannot try out the API. Known values are: "Enabled" and
-     "Disabled".
-    :vartype api_try_out_enabled_state: str or
-     ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApiPortalApiTryOutEnabledState
     """
 
     _validation = {
@@ -534,7 +528,6 @@ class ApiPortalProperties(_serialization.Model):
         "sso_properties": {"key": "ssoProperties", "type": "SsoProperties"},
         "resource_requests": {"key": "resourceRequests", "type": "ApiPortalResourceRequests"},
         "instances": {"key": "instances", "type": "[ApiPortalInstance]"},
-        "api_try_out_enabled_state": {"key": "apiTryOutEnabledState", "type": "str"},
     }
 
     def __init__(
@@ -545,7 +538,6 @@ class ApiPortalProperties(_serialization.Model):
         gateway_ids: Optional[List[str]] = None,
         source_urls: Optional[List[str]] = None,
         sso_properties: Optional["_models.SsoProperties"] = None,
-        api_try_out_enabled_state: Union[str, "_models.ApiPortalApiTryOutEnabledState"] = "Enabled",
         **kwargs: Any
     ) -> None:
         """
@@ -559,12 +551,6 @@ class ApiPortalProperties(_serialization.Model):
         :paramtype source_urls: list[str]
         :keyword sso_properties: Single sign-on related configuration.
         :paramtype sso_properties: ~azure.mgmt.appplatform.v2023_09_01_preview.models.SsoProperties
-        :keyword api_try_out_enabled_state: Indicates whether the API try-out feature is enabled or
-         disabled. When enabled, users can try out the API by sending requests and viewing responses in
-         API portal. When disabled, users cannot try out the API. Known values are: "Enabled" and
-         "Disabled".
-        :paramtype api_try_out_enabled_state: str or
-         ~azure.mgmt.appplatform.v2023_09_01_preview.models.ApiPortalApiTryOutEnabledState
         """
         super().__init__(**kwargs)
         self.provisioning_state = None
@@ -576,7 +562,6 @@ class ApiPortalProperties(_serialization.Model):
         self.sso_properties = sso_properties
         self.resource_requests = None
         self.instances = None
-        self.api_try_out_enabled_state = api_try_out_enabled_state
 
 
 class ApiPortalResource(ProxyResource):
@@ -4662,8 +4647,9 @@ class CustomizedAcceleratorProperties(_serialization.Model):
      "Updating", "Succeeded", "Failed", and "Deleting".
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorProvisioningState
-    :ivar type: Type of the customized accelerator. Known values are: "Accelerator" and "Fragment".
-    :vartype type: str or
+    :ivar accelerator_type: Type of the customized accelerator. Known values are: "Accelerator" and
+     "Fragment".
+    :vartype accelerator_type: str or
      ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorType
     :ivar display_name:
     :vartype display_name: str
@@ -4688,7 +4674,7 @@ class CustomizedAcceleratorProperties(_serialization.Model):
 
     _attribute_map = {
         "provisioning_state": {"key": "provisioningState", "type": "str"},
-        "type": {"key": "type", "type": "str"},
+        "accelerator_type": {"key": "acceleratorType", "type": "str"},
         "display_name": {"key": "displayName", "type": "str"},
         "description": {"key": "description", "type": "str"},
         "icon_url": {"key": "iconUrl", "type": "str"},
@@ -4701,7 +4687,7 @@ class CustomizedAcceleratorProperties(_serialization.Model):
         self,
         *,
         git_repository: "_models.AcceleratorGitRepository",
-        type: Optional[Union[str, "_models.CustomizedAcceleratorType"]] = None,
+        accelerator_type: Optional[Union[str, "_models.CustomizedAcceleratorType"]] = None,
         display_name: Optional[str] = None,
         description: Optional[str] = None,
         icon_url: Optional[str] = None,
@@ -4709,9 +4695,9 @@ class CustomizedAcceleratorProperties(_serialization.Model):
         **kwargs: Any
     ) -> None:
         """
-        :keyword type: Type of the customized accelerator. Known values are: "Accelerator" and
-         "Fragment".
-        :paramtype type: str or
+        :keyword accelerator_type: Type of the customized accelerator. Known values are: "Accelerator"
+         and "Fragment".
+        :paramtype accelerator_type: str or
          ~azure.mgmt.appplatform.v2023_09_01_preview.models.CustomizedAcceleratorType
         :keyword display_name:
         :paramtype display_name: str
@@ -4727,7 +4713,7 @@ class CustomizedAcceleratorProperties(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.provisioning_state = None
-        self.type = type
+        self.accelerator_type = accelerator_type
         self.display_name = display_name
         self.description = description
         self.icon_url = icon_url
@@ -7326,8 +7312,10 @@ class KeyVaultCertificateProperties(CertificateProperties):  # pylint: disable=t
     :ivar exclude_private_key: Optional. If set to true, it will not import private key from key
      vault.
     :vartype exclude_private_key: bool
-    :ivar auto_sync: Indicates whether to automatically synchronize certificate from key vault.
-    :vartype auto_sync: bool
+    :ivar auto_sync: Indicates whether to automatically synchronize certificate from key vault or
+     not. Known values are: "Disabled" and "Enabled".
+    :vartype auto_sync: str or
+     ~azure.mgmt.appplatform.v2023_09_01_preview.models.KeyVaultCertificateAutoSync
     """
 
     _validation = {
@@ -7358,7 +7346,7 @@ class KeyVaultCertificateProperties(CertificateProperties):  # pylint: disable=t
         "key_vault_cert_name": {"key": "keyVaultCertName", "type": "str"},
         "cert_version": {"key": "certVersion", "type": "str"},
         "exclude_private_key": {"key": "excludePrivateKey", "type": "bool"},
-        "auto_sync": {"key": "autoSync", "type": "bool"},
+        "auto_sync": {"key": "autoSync", "type": "str"},
     }
 
     def __init__(
@@ -7368,7 +7356,7 @@ class KeyVaultCertificateProperties(CertificateProperties):  # pylint: disable=t
         key_vault_cert_name: str,
         cert_version: Optional[str] = None,
         exclude_private_key: bool = False,
-        auto_sync: bool = False,
+        auto_sync: Union[str, "_models.KeyVaultCertificateAutoSync"] = "Disabled",
         **kwargs: Any
     ) -> None:
         """
@@ -7381,8 +7369,10 @@ class KeyVaultCertificateProperties(CertificateProperties):  # pylint: disable=t
         :keyword exclude_private_key: Optional. If set to true, it will not import private key from key
          vault.
         :paramtype exclude_private_key: bool
-        :keyword auto_sync: Indicates whether to automatically synchronize certificate from key vault.
-        :paramtype auto_sync: bool
+        :keyword auto_sync: Indicates whether to automatically synchronize certificate from key vault
+         or not. Known values are: "Disabled" and "Enabled".
+        :paramtype auto_sync: str or
+         ~azure.mgmt.appplatform.v2023_09_01_preview.models.KeyVaultCertificateAutoSync
         """
         super().__init__(**kwargs)
         self.type: str = "KeyVaultCertificate"
@@ -10138,6 +10128,76 @@ class SupportedRuntimeVersion(_serialization.Model):
         self.value = value
         self.platform = platform
         self.version = version
+
+
+class SupportedServerVersion(_serialization.Model):
+    """Supported server version.
+
+    :ivar value: The raw server version value which could be passed to deployment CRUD operations.
+    :vartype value: str
+    :ivar server: The server name.
+    :vartype server: str
+    :ivar version: The Server version.
+    :vartype version: str
+    """
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "str"},
+        "server": {"key": "server", "type": "str"},
+        "version": {"key": "version", "type": "str"},
+    }
+
+    def __init__(
+        self, *, value: Optional[str] = None, server: Optional[str] = None, version: Optional[str] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword value: The raw server version value which could be passed to deployment CRUD
+         operations.
+        :paramtype value: str
+        :keyword server: The server name.
+        :paramtype server: str
+        :keyword version: The Server version.
+        :paramtype version: str
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.server = server
+        self.version = version
+
+
+class SupportedServerVersions(_serialization.Model):
+    """Supported server versions.
+
+    :ivar value: Collection of the supported server versions.
+    :vartype value: list[~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedServerVersion]
+    :ivar next_link: URL client should use to fetch the next page (per server side paging).
+     It's null for now, added for future use.
+    :vartype next_link: str
+    """
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[SupportedServerVersion]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        value: Optional[List["_models.SupportedServerVersion"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword value: Collection of the supported server versions.
+        :paramtype value:
+         list[~azure.mgmt.appplatform.v2023_09_01_preview.models.SupportedServerVersion]
+        :keyword next_link: URL client should use to fetch the next page (per server side paging).
+         It's null for now, added for future use.
+        :paramtype next_link: str
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
 
 
 class SupportedStackResource(ProxyResource):

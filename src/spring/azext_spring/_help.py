@@ -49,6 +49,14 @@ helps['spring list-marketplace-plan'] = """
       text: az spring list-marketplace-plan -o table
 """
 
+helps['spring list-support-server-versions'] = """
+    type: command
+    short-summary: (Standard and Basic Tier Only) List supported server versions.
+    examples:
+    - name: List supported server versions.
+      text: az spring list-support-server-versions -o table -s MyService -g MyResourceGroup
+"""
+
 helps['spring update'] = """
     type: command
     short-summary: Update an Azure Spring Apps.
@@ -587,6 +595,16 @@ helps['spring certificate add'] = """
     examples:
     - name: Import certificate from key vault.
       text: az spring certificate add --name MyCertName --vault-uri MyKeyVaultUri --vault-certificate-name MyKeyVaultCertName --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring certificate update'] = """
+    type: command
+    short-summary: Update a certificate in Azure Spring Apps.
+    examples:
+    - name: Enable auto sync feature of a key vault certificate in Azure Spring Apps.
+      text: az spring certificate update --name MyCertName --service MyCluster --resource-group MyResourceGroup --enable-auto-sync true
+    - name: Disable auto sync feature of a key vault certificate in Azure Spring Apps.
+      text: az spring certificate update --name MyCertName --service MyCluster --resource-group MyResourceGroup --enable-auto-sync false
 """
 
 helps['spring certificate show'] = """

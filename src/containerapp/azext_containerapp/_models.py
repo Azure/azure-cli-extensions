@@ -20,7 +20,8 @@ ManagedEnvironment = {
         "vnetConfiguration": None,  # VnetConfiguration
         "appLogsConfiguration": None,
         "customDomainConfiguration": None,  # CustomDomainConfiguration,
-        "workloadProfiles": None
+        "workloadProfiles": None,
+        "InfrastructureResourceGroup": None
     }
 }
 

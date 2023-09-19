@@ -118,6 +118,7 @@ from azext_aks_preview._validators import (
     validate_defender_config_parameter,
     validate_defender_disable_and_enable_parameters,
     validate_disable_windows_outbound_nat,
+    validate_egress_gtw_nodeselector,
     validate_enable_custom_ca_trust,
     validate_eviction_policy,
     validate_grafanaresourceid,
@@ -138,7 +139,6 @@ from azext_aks_preview._validators import (
     validate_nodepool_tags,
     validate_nodes_count,
     validate_os_sku,
-    validate_prompt_input,
     validate_pod_identity_pod_labels,
     validate_pod_identity_resource_name,
     validate_pod_identity_resource_namespace,
@@ -409,7 +409,7 @@ def load_arguments(self, _):
         c.argument('enable_pod_security_policy', action='store_true', deprecate_info=c.deprecate(target='--enable-pod-security-policy', hide=True))
         c.argument('enable_pod_identity', action='store_true')
         c.argument('enable_pod_identity_with_kubenet', action='store_true')
-        c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_workload_identity', action='store_true', is_preview=True)
         c.argument('enable_image_cleaner', action='store_true', is_preview=True)
         c.argument('enable_azure_service_mesh',
                    options_list=["--enable-azure-service-mesh", "--enable-asm"],
@@ -544,7 +544,8 @@ def load_arguments(self, _):
         c.argument('enable_pod_identity', action='store_true')
         c.argument('enable_pod_identity_with_kubenet', action='store_true')
         c.argument('disable_pod_identity', action='store_true')
-        c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_workload_identity', action='store_true', is_preview=True)
+        c.argument('disable_workload_identity', action='store_true', is_preview=True)
         c.argument('enable_image_cleaner', action='store_true', is_preview=True)
         c.argument('disable_image_cleaner', action='store_true', validator=validate_image_cleaner_enable_disable_mutually_exclusive, is_preview=True)
         c.argument('image_cleaner_interval_hours', type=int, is_preview=True)
@@ -924,16 +925,16 @@ def load_arguments(self, _):
         c.argument('ingress_gateway_type',
                    arg_type=get_enum_type(ingress_gateway_types))
 
+    with self.argument_context('aks mesh enable-egress-gateway') as c:
+        c.argument('egx_gtw_nodeselector', nargs='*', validator=validate_egress_gtw_nodeselector, required=False, default=None,
+                   options_list=["--egress-gateway-nodeselector", "--egx-gtw-ns"])
+
     with self.argument_context('aks mesh enable') as c:
         c.argument('key_vault_id')
         c.argument('ca_cert_object_name')
         c.argument('ca_key_object_name')
         c.argument('root_cert_object_name')
         c.argument('cert_chain_object_name')
-
-    with self.argument_context('aks copilot') as c:
-        c.argument('prompt', options_list=['--prompt', '-p'], validator=validate_prompt_input,
-                   help='The question you want to ask, e.g: How to create a AKS cluster')
 
 
 def _get_default_install_location(exe_name):
