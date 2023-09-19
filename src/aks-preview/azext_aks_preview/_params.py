@@ -933,6 +933,7 @@ def load_arguments(self, _):
     with self.argument_context('aks mesh upgrade start') as c:
         c.argument('revision', required=True)
 
+
 def _get_default_install_location(exe_name):
     system = platform.system()
     if system == 'Windows':
