@@ -14,7 +14,7 @@ Pending
 
 0.5.158
 +++++++
-* Add `get-upgrades` and `get-versions` to the `az aks mesh` command.
+* Add `get-upgrades` and `get-revisions` to the `az aks mesh` command.
 * Add `az aks mesh upgrade` commands to manage upgrades for Azure Service Mesh.
 
 0.5.157
