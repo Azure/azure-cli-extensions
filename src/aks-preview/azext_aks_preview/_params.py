@@ -933,6 +933,7 @@ def load_arguments(self, _):
         c.argument('prompt', options_list=['--prompt', '-p'], validator=validate_prompt_input,
                    help='The question you want to ask, e.g: How to create a AKS cluster')
 
+
 def _get_default_install_location(exe_name):
     system = platform.system()
     if system == 'Windows':

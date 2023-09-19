@@ -2589,6 +2589,7 @@ def _aks_mesh_update(
 
     return aks_update_decorator.update_mc(mc)
 
+
 def start_chat(prompt=None):
     from azext_aks_preview._openai_wrapper import setup_openai, \
         prompt_chat_gpt, SYSTEM_PROMPT, getch, \
