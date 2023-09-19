@@ -99,35 +99,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 'type', 'Microsoft.ContainerService/locations/osOptions')
         ])
 
-    @unittest.skipUnless(os.getenv('OPENAI_API_KEY'), 'Skipped as not running with OPENAI_API_KEY')
-    @unittest.skipUnless(os.getenv('OPENAI_API_BASE'), 'Skipped as not running with OPENAI_API_BASE')
-    @unittest.skipUnless(os.getenv('OPENAI_API_DEPLOYMENT'), 'Skipped as not running with OPENAI_API_DEPLOYMENT')
-    @unittest.skipUnless(os.getenv('OPENAI_API_TYPE'), 'Skipped as not running with OPENAI_API_TYPE')
-    def test_aks_ai_azure_openai(self):
-        self.assert_openai_interactive_shell_launched()
-
-    @unittest.skipUnless(os.getenv('OPENAI_API_KEY'), 'Skipped as not running with OPENAI_API_KEY')
-    @unittest.skipUnless(os.getenv('OPENAI_API_MODEL'), 'Skipped as not running with OPENAI_API_MODEL')
-    def test_aks_ai_openai(self):
-        self.assert_openai_interactive_shell_launched()
-
-    def assert_openai_interactive_shell_launched(self):
-        start_ai_cmd = ['az', 'aks', 'copilot']
-        try:
-            # say Hi, and quit (q) the interactive shell
-            result = subprocess.run(start_ai_cmd, input="Hi\nq\n".encode(), stdout=subprocess.PIPE)
-        except subprocess.CalledProcessError as err:
-            raise CliTestError(f"Failed to launch openai interactive shell with error: '{err}'")
-        output = result.stdout.decode()
-        for pattern in [
-            f"Please enter your request below.",
-            f"For example: Create a AKS cluster",
-            f"Prompt",
-        ]:
-            if not pattern in output:
-                raise CliTestError(f"Output from aks copilot did not contain '{pattern}'. Output:\n{output}")
-
-
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
     def test_aks_create_and_update_with_managed_nat_gateway_outbound(self, resource_group, resource_group_location):
@@ -7385,6 +7356,68 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('serviceMeshProfile.mode', 'Istio'),
             self.check('serviceMeshProfile.istio.components.ingressGateways[0].mode', 'Internal'),
             self.check('serviceMeshProfile.istio.components.ingressGateways[0].enabled', None)
+        ])
+
+        # delete the cluster
+        delete_cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(delete_cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_azure_service_mesh_with_egress_gateway(self, resource_group, resource_group_location):
+        """ This test case exercises enabling and disabling an egress gateway.
+
+        It creates a cluster with azure service mesh profile. After that, we enable an egress
+        gateway, then disable it.
+        """
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+        })
+
+        # create cluster with --enable-azure-service-mesh
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureServiceMeshPreview ' \
+                     '--ssh-key-value={ssh_key_value} ' \
+                     '--enable-azure-service-mesh --output=json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('serviceMeshProfile.mode', 'Istio'),
+        ])
+
+        # enable egress gateway
+        update_cmd = 'aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} ' \
+                     '--egress-gateway-nodeselector istio=egress'
+        self.cmd(update_cmd, checks=[
+            self.check('serviceMeshProfile.mode', 'Istio'),
+            self.check('serviceMeshProfile.istio.components.egressGateways[0].nodeSelector.istio', 'egress'),
+            self.check('serviceMeshProfile.istio.components.egressGateways[0].enabled', True)
+        ])
+
+        # remove egress gateway nodeselector
+        update_cmd = 'aks mesh enable-egress-gateway --resource-group={resource_group} --name={name} ' \
+                     '--egress-gateway-nodeselector '
+        self.cmd(update_cmd, checks=[
+            self.check('serviceMeshProfile.mode', 'Istio'),
+            self.check('serviceMeshProfile.istio.components.egressGateways[0].nodeSelector.istio', None),
+            self.check('serviceMeshProfile.istio.components.egressGateways[0].enabled', True)
+        ])
+
+        # disable egress gateway
+        update_cmd = 'aks mesh disable-egress-gateway --resource-group={resource_group} --name={name} --yes'
+        self.cmd(update_cmd, checks=[
+            self.check('serviceMeshProfile.mode', 'Istio'),
+            self.check('serviceMeshProfile.istio.components.egressGateways[0].enabled', None),
+            self.check('serviceMeshProfile.istio.components.egressGateways[0].nodeSelector', None)
         ])
 
         # delete the cluster
