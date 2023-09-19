@@ -33,10 +33,11 @@ from knack.prompting import prompt_y_n, prompt as prompt_str
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
-from .containerapp_job_decorator import ContainerAppJobDecorator, ContainerAppJobCreateDecorator
-from .containerapp_env_decorator import ContainerAppEnvDecorator, ContainerAppEnvCreateDecorator, ContainerAppEnvUpdateDecorator
+from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
+from .containerapp_job_decorator import ContainerAppJobDecorator, ContainerAppJobPreviewCreateDecorator
+from .containerapp_env_decorator import ContainerAppEnvDecorator, ContainerappEnvPreviewCreateDecorator, ContainerAppEnvUpdateDecorator
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
-from .containerapp_decorator import BaseContainerAppDecorator, ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator
+from .containerapp_decorator import BaseContainerAppDecorator, ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_exception
 from ._clients import (
     ManagedEnvironmentClient,
@@ -48,66 +49,57 @@ from ._clients import (
     WorkloadProfileClient,
     ContainerAppsJobClient,
     ContainerAppPreviewClient,
-    AuthPreviewClient
+    AuthPreviewClient,
+    SubscriptionPreviewClient,
+    ContainerAppsJobPreviewClient,
+    ManagedEnvironmentPreviewClient,
+    ConnectedEnvDaprComponentClient,
+    ConnectedEnvironmentClient,
+    ConnectedEnvStorageClient, ConnectedEnvCertificateClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._github_oauth import get_github_access_token
 from ._models import (
-    ManagedEnvironment as ManagedEnvironmentModel,
-    VnetConfiguration as VnetConfigurationModel,
-    AppLogsConfiguration as AppLogsConfigurationModel,
-    LogAnalyticsConfiguration as LogAnalyticsConfigurationModel,
     Ingress as IngressModel,
-    Configuration as ConfigurationModel,
-    JobConfiguration as JobConfigurationModel,
-    ManualTriggerConfig as ManualTriggerModel,
-    ScheduleTriggerConfig as ScheduleTriggerModel,
-    EventTriggerConfig as EventTriggerModel,
-    Template as TemplateModel,
-    JobTemplate as JobTemplateModel,
     JobExecutionTemplate as JobExecutionTemplateModel,
     RegistryCredentials as RegistryCredentialsModel,
-    ContainerApp as ContainerAppModel,
-    ContainerAppsJob as ContainerAppsJobModel,
-    Dapr as DaprModel,
     ContainerResources as ContainerResourcesModel,
-    Scale as ScaleModel,
-    Service as ServiceModel,
     JobScale as JobScaleModel,
     Container as ContainerModel,
     GitHubActionConfiguration,
     RegistryInfo as RegistryInfoModel,
     AzureCredentials as AzureCredentialsModel,
     SourceControl as SourceControlModel,
-    ManagedServiceIdentity as ManagedServiceIdentityModel,
     ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
     ContainerAppCustomDomain as ContainerAppCustomDomainModel,
     AzureFileProperties as AzureFilePropertiesModel,
-    CustomDomainConfiguration as CustomDomainConfigurationModel,
-    ScaleRule as ScaleRuleModel,
-    Volume as VolumeModel,
-    VolumeMount as VolumeMountModel)
+    ScaleRule as ScaleRuleModel)
 
-from ._utils import (_validate_subscription_registered, _ensure_location_allowed,
+from ._utils import (_validate_subscription_registered,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
-                     _generate_log_analytics_if_not_provided, _get_existing_secrets, _convert_object_from_snake_to_camel_case,
-                     _object_to_dict, _add_or_update_secrets, _remove_additional_attributes, _remove_readonly_attributes,
+                     _get_existing_secrets,
+                     _convert_object_from_snake_to_camel_case,
+                     _object_to_dict, _add_or_update_secrets, _remove_additional_attributes,
+                     _remove_readonly_attributes,
                      _add_or_update_env_vars, _add_or_update_tags, _update_revision_weights, _append_label_weights,
-                     _get_app_from_revision, raise_missing_token_suggestion, _infer_acr_credentials, _remove_registry_secret, _remove_secret,
-                     _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars, _validate_traffic_sum,
+                     _get_app_from_revision, raise_missing_token_suggestion,
+                     _remove_registry_secret, _remove_secret,
+                     _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars,
+                     _validate_traffic_sum,
                      _update_revision_env_secretrefs, _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
-                     validate_container_app_name, _update_weights, get_vnet_location, register_provider_if_needed,
+                     validate_container_app_name, _update_weights, register_provider_if_needed,
                      generate_randomized_cert_name, _get_name, load_cert_file, check_cert_name_availability,
-                     validate_hostname, patch_new_custom_domain, get_custom_domains, _validate_revision_name, set_managed_identity,
-                     create_acrpull_role_assignment, is_registry_msi_system, clean_null_values, _populate_secret_values,
-                     validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags, _azure_monitor_quickstart,
-                     set_ip_restrictions, certificate_location_matches, certificate_matches, generate_randomized_managed_cert_name,
+                     validate_hostname, patch_new_custom_domain, get_custom_domains, _validate_revision_name,
+                     set_managed_identity,
+                     is_registry_msi_system, clean_null_values, _populate_secret_values,
+                     safe_set, parse_metadata_flags, parse_auth_flags,
+                     set_ip_restrictions, certificate_location_matches, certificate_matches,
+                     generate_randomized_managed_cert_name,
                      check_managed_cert_name_availability, prepare_managed_certificate_envelop,
-                     get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported, _generate_secret_volume_name,
-                     parse_service_bindings, get_linker_client, check_unique_bindings,
-                     get_current_mariner_tags, patchable_check, get_pack_exec_path, is_docker_running, trigger_workflow, AppType,
-                     format_location)
-from ._validators import validate_create, validate_revision_suffix
+                     ensure_workload_profile_supported,
+                     get_current_mariner_tags, patchable_check, get_pack_exec_path, is_docker_running, trigger_workflow,
+                     AppType,
+                     format_location, connected_env_check_cert_name_availability)
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
 from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, FACEBOOK_SECRET_SETTING_NAME, GITHUB_SECRET_SETTING_NAME,
@@ -115,14 +107,16 @@ from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, F
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, HELLO_WORLD_IMAGE, LOG_TYPE_SYSTEM, LOG_TYPE_CONSOLE,
                          MANAGED_CERTIFICATE_RT, PRIVATE_CERTIFICATE_RT, PENDING_STATUS, SUCCEEDED_STATUS, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
                          DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
-                         DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_SERVICE_LIST,
-                         CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME)
+                         DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_QDRANT_IMAGE,
+                         DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME)
 
 logger = get_logger(__name__)
 
 
 # These properties should be under the "properties" attribute. Move the properties under "properties" attribute
 def process_loaded_yaml(yaml_containerapp):
+    if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
     if not yaml_containerapp.get('properties'):
         yaml_containerapp['properties'] = {}
 
@@ -244,10 +238,19 @@ def delete_mariadb_service(cmd, service_name, resource_group_name, no_wait=False
     return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_MARIADB_SERVICE_TYPE)
 
 
+def create_qdrant_service(cmd, service_name, environment_name, resource_group_name, no_wait=False,
+                          disable_warnings=True):
+    return DevServiceUtils.create_service(cmd, service_name, environment_name, resource_group_name, no_wait,
+                                          disable_warnings, DEV_QDRANT_IMAGE, DEV_QDRANT_SERVICE_TYPE,
+                                          DEV_QDRANT_CONTAINER_NAME)
+
+
+def delete_qdrant_service(cmd, service_name, resource_group_name, no_wait=False):
+    return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_QDRANT_SERVICE_TYPE)
+
+
 def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_revision=None, no_wait=False):
     yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
-    if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
     if not yaml_containerapp.get('name'):
         yaml_containerapp['name'] = name
@@ -336,8 +339,6 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
 
 def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=False):
     yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
-    if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
     if not yaml_containerapp.get('name'):
         yaml_containerapp['name'] = name
@@ -476,7 +477,15 @@ def create_containerapp(cmd,
                         workload_profile_name=None,
                         termination_grace_period=None,
                         secret_volume_mount=None,
-                        environment_type="managed"):
+                        environment_type="managed",
+                        source=None,
+                        repo=None,
+                        token=None,
+                        branch=None,
+                        context_path=None,
+                        service_principal_client_id=None,
+                        service_principal_client_secret=None,
+                        service_principal_tenant_id=None):
     raw_parameters = locals()
 
     containerapp_create_decorator = ContainerAppPreviewCreateDecorator(
@@ -529,435 +538,23 @@ def update_containerapp_logic(cmd,
                               registry_server=None,
                               registry_user=None,
                               registry_pass=None,
-                              secret_volume_mount=None):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    validate_revision_suffix(revision_suffix)
+                              secret_volume_mount=None,
+                              source=None):
+    raw_parameters = locals()
 
-    # Validate that max_replicas is set to 0-1000
-    if max_replicas is not None:
-        if max_replicas < 1 or max_replicas > 1000:
-            raise ArgumentUsageError('--max-replicas must be in the range [1,1000]')
+    containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
+        cmd=cmd,
+        client=ContainerAppPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_update_decorator.register_provider(CONTAINER_APPS_RP)
+    containerapp_update_decorator.validate_arguments()
 
-    if yaml:
-        if image or min_replicas or max_replicas or\
-            set_env_vars or remove_env_vars or replace_env_vars or remove_all_env_vars or cpu or memory or\
-                startup_command or args or tags:
-            logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
-        return update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait, from_revision=from_revision)
-
-    containerapp_def = None
-    try:
-        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
-    except:
-        pass
-
-    if not containerapp_def:
-        raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
-
-    new_containerapp = {}
-    new_containerapp["properties"] = {}
-    if from_revision:
-        try:
-            r = ContainerAppClient.show_revision(cmd=cmd, resource_group_name=resource_group_name, container_app_name=name, name=from_revision)
-        except CLIError as e:
-            # Error handle the case where revision not found?
-            handle_raw_exception(e)
-
-        _update_revision_env_secretrefs(r["properties"]["template"]["containers"], name)
-        new_containerapp["properties"]["template"] = r["properties"]["template"]
-
-    # Doing this while API has bug. If env var is an empty string, API doesn't return "value" even though the "value" should be an empty string
-    if "properties" in containerapp_def and "template" in containerapp_def["properties"] and "containers" in containerapp_def["properties"]["template"]:
-        for container in containerapp_def["properties"]["template"]["containers"]:
-            if "env" in container:
-                for e in container["env"]:
-                    if "value" not in e:
-                        e["value"] = ""
-
-    update_map = {}
-    update_map['scale'] = min_replicas or max_replicas or scale_rule_name
-    update_map['container'] = image or container_name or set_env_vars is not None or remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or cpu or memory or startup_command is not None or args is not None or secret_volume_mount is not None
-    update_map['ingress'] = ingress or target_port
-    update_map['registry'] = registry_server or registry_user or registry_pass
-
-    linker_client = get_linker_client(cmd)
-    service_connectors_def_list = []
-
-    if service_bindings is not None:
-        service_connectors_def_list, service_bindings_def_list = parse_service_bindings(
-            cmd, service_bindings, resource_group_name, name)
-
-        service_bindings_used_map = {update_item["name"]: False for update_item in service_bindings_def_list}
-
-        safe_set(new_containerapp, "properties", "template", "serviceBinds", value=containerapp_def["properties"]["template"]["serviceBinds"])
-
-        if new_containerapp["properties"]["template"]["serviceBinds"] is None:
-            new_containerapp["properties"]["template"]["serviceBinds"] = []
-
-        for item in new_containerapp["properties"]["template"]["serviceBinds"]:
-            for update_item in service_bindings_def_list:
-                if update_item["name"] in item.values():
-                    item["serviceId"] = update_item["serviceId"]
-                    service_bindings_used_map[update_item["name"]] = True
-
-        for update_item in service_bindings_def_list:
-            if service_bindings_used_map[update_item["name"]] is False:
-                # Check if it doesn't exist in existing service linkers
-                managed_bindings = linker_client.linker.list(resource_uri=containerapp_def["id"])
-                if managed_bindings:
-                    managed_bindings_list = [item.name for item in managed_bindings]
-                    if update_item["name"] in managed_bindings_list:
-                        raise ValidationError("Binding names across managed and dev services should be unique.")
-
-                new_containerapp["properties"]["template"]["serviceBinds"].append(update_item)
-
-        if service_connectors_def_list is not None:
-            for item in service_connectors_def_list:
-                # Check if it doesn't exist in existing service bindings
-                service_bindings_list = []
-                for binds in new_containerapp["properties"]["template"]["serviceBinds"]:
-                    service_bindings_list.append(binds["name"])
-                    if item["linker_name"] in service_bindings_list:
-                        raise ValidationError("Binding names across managed and dev services should be unique.")
-
-    if unbind_service_bindings:
-        new_template = new_containerapp.setdefault("properties", {}).setdefault("template", {})
-        existing_template = containerapp_def["properties"]["template"]
-
-        if not service_bindings:
-            new_template["serviceBinds"] = existing_template.get("serviceBinds", [])
-
-        service_bindings_dict = {}
-        if new_template["serviceBinds"]:
-            service_bindings_dict = {service_binding["name"]: index for index, service_binding in
-                                     enumerate(new_template.get("serviceBinds", []))}
-
-        for item in unbind_service_bindings:
-            if item in service_bindings_dict:
-                new_template["serviceBinds"] = [binding for binding in new_template["serviceBinds"] if
-                                                binding["name"] != item]
-
-    if tags:
-        _add_or_update_tags(new_containerapp, tags)
-
-    if revision_suffix is not None:
-        new_containerapp["properties"]["template"] = {} if "template" not in new_containerapp["properties"] else new_containerapp["properties"]["template"]
-        new_containerapp["properties"]["template"]["revisionSuffix"] = revision_suffix
-
-    if termination_grace_period is not None:
-        safe_set(new_containerapp, "properties", "template", "terminationGracePeriodSeconds", value=termination_grace_period)
-
-    if workload_profile_name:
-        new_containerapp["properties"]["workloadProfileName"] = workload_profile_name
-
-        parsed_managed_env = parse_resource_id(containerapp_def["properties"]["managedEnvironmentId"])
-        managed_env_name = parsed_managed_env['name']
-        managed_env_rg = parsed_managed_env['resource_group']
-        managed_env_info = None
-        try:
-            managed_env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=managed_env_rg, name=managed_env_name)
-        except:
-            pass
-
-        if not managed_env_info:
-            raise ValidationError("Error parsing the managed environment '{}' from the specified containerapp".format(managed_env_name))
-
-        ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile_name, managed_env_info)
-
-    # Containers
-    if update_map["container"]:
-        new_containerapp["properties"]["template"] = {} if "template" not in new_containerapp["properties"] else new_containerapp["properties"]["template"]
-        new_containerapp["properties"]["template"]["containers"] = containerapp_def["properties"]["template"]["containers"]
-        if not container_name:
-            if len(new_containerapp["properties"]["template"]["containers"]) == 1:
-                container_name = new_containerapp["properties"]["template"]["containers"][0]["name"]
-            else:
-                raise ValidationError("Usage error: --container-name is required when adding or updating a container")
-
-        # Check if updating existing container
-        updating_existing_container = False
-        for c in new_containerapp["properties"]["template"]["containers"]:
-            if c["name"].lower() == container_name.lower():
-                updating_existing_container = True
-
-                if image is not None:
-                    c["image"] = image
-
-                if set_env_vars is not None:
-                    if "env" not in c or not c["env"]:
-                        c["env"] = []
-                    # env vars
-                    _add_or_update_env_vars(c["env"], parse_env_var_flags(set_env_vars))
-
-                if replace_env_vars is not None:
-                    # Remove other existing env_vars, then add them
-                    c["env"] = []
-                    _add_or_update_env_vars(c["env"], parse_env_var_flags(replace_env_vars))
-
-                if remove_env_vars is not None:
-                    if "env" not in c or not c["env"]:
-                        c["env"] = []
-                    # env vars
-                    _remove_env_vars(c["env"], remove_env_vars)
-
-                if remove_all_env_vars:
-                    c["env"] = []
-
-                if startup_command is not None:
-                    if isinstance(startup_command, list) and not startup_command:
-                        c["command"] = None
-                    else:
-                        c["command"] = startup_command
-                if args is not None:
-                    if isinstance(args, list) and not args:
-                        c["args"] = None
-                    else:
-                        c["args"] = args
-                if cpu is not None or memory is not None:
-                    if "resources" in c and c["resources"]:
-                        if cpu is not None:
-                            c["resources"]["cpu"] = cpu
-                        if memory is not None:
-                            c["resources"]["memory"] = memory
-                    else:
-                        c["resources"] = {
-                            "cpu": cpu,
-                            "memory": memory
-                        }
-                if secret_volume_mount is not None:
-                    new_containerapp["properties"]["template"]["volumes"] = containerapp_def["properties"]["template"]["volumes"]
-                    if "volumeMounts" not in c or not c["volumeMounts"]:
-                        # if no volume mount exists, create a new volume and then mount
-                        volume_def = VolumeModel
-                        volume_mount_def = VolumeMountModel
-                        volume_def["name"] = _generate_secret_volume_name()
-                        volume_def["storageType"] = "Secret"
-
-                        volume_mount_def["volumeName"] = volume_def["name"]
-                        volume_mount_def["mountPath"] = secret_volume_mount
-
-                        if "volumes" not in new_containerapp["properties"]["template"]:
-                            new_containerapp["properties"]["template"]["volumes"] = [volume_def]
-                        else:
-                            new_containerapp["properties"]["template"]["volumes"].append(volume_def)
-                        c["volumeMounts"] = volume_mount_def
-                    else:
-                        if len(c["volumeMounts"]) > 1:
-                            raise ValidationError("Usage error: --secret-volume-mount can only be used with a container that has a single volume mount, to define multiple volumes and mounts please use --yaml")
-                        else:
-                            # check that the only volume is of type secret
-                            volume_name = c["volumeMounts"][0]["volumeName"]
-                            for v in new_containerapp["properties"]["template"]["volumes"]:
-                                if v["name"].lower() == volume_name.lower():
-                                    if v["storageType"] != "Secret":
-                                        raise ValidationError("Usage error: --secret-volume-mount can only be used to update volume mounts with volumes of type secret. To update other types of volumes please use --yaml")
-                                    break
-                            c["volumeMounts"][0]["mountPath"] = secret_volume_mount
-
-        # If not updating existing container, add as new container
-        if not updating_existing_container:
-            if image is None:
-                raise ValidationError("Usage error: --image is required when adding a new container")
-
-            resources_def = None
-            if cpu is not None or memory is not None:
-                resources_def = ContainerResourcesModel
-                resources_def["cpu"] = cpu
-                resources_def["memory"] = memory
-
-            container_def = ContainerModel
-            container_def["name"] = container_name
-            container_def["image"] = image
-            container_def["env"] = []
-
-            if set_env_vars is not None:
-                # env vars
-                _add_or_update_env_vars(container_def["env"], parse_env_var_flags(set_env_vars))
-
-            if replace_env_vars is not None:
-                # env vars
-                _add_or_update_env_vars(container_def["env"], parse_env_var_flags(replace_env_vars))
-
-            if remove_env_vars is not None:
-                # env vars
-                _remove_env_vars(container_def["env"], remove_env_vars)
-
-            if remove_all_env_vars:
-                container_def["env"] = []
-
-            if startup_command is not None:
-                if isinstance(startup_command, list) and not startup_command:
-                    container_def["command"] = None
-                else:
-                    container_def["command"] = startup_command
-            if args is not None:
-                if isinstance(args, list) and not args:
-                    container_def["args"] = None
-                else:
-                    container_def["args"] = args
-            if resources_def is not None:
-                container_def["resources"] = resources_def
-            if secret_volume_mount is not None:
-                new_containerapp["properties"]["template"]["volumes"] = containerapp_def["properties"]["template"]["volumes"]
-                # generate a new volume name
-                volume_def = VolumeModel
-                volume_mount_def = VolumeMountModel
-                volume_def["name"] = _generate_secret_volume_name()
-                volume_def["storageType"] = "Secret"
-
-                # mount the volume to the container
-                volume_mount_def["volumeName"] = volume_def["name"]
-                volume_mount_def["mountPath"] = secret_volume_mount
-                container_def["volumeMounts"] = [volume_mount_def]
-                if "volumes" not in new_containerapp["properties"]["template"]:
-                    new_containerapp["properties"]["template"]["volumes"] = [volume_def]
-                else:
-                    new_containerapp["properties"]["template"]["volumes"].append(volume_def)
-
-            new_containerapp["properties"]["template"]["containers"].append(container_def)
-    # Scale
-    if update_map["scale"]:
-        new_containerapp["properties"]["template"] = {} if "template" not in new_containerapp["properties"] else new_containerapp["properties"]["template"]
-        if "scale" not in new_containerapp["properties"]["template"]:
-            new_containerapp["properties"]["template"]["scale"] = {}
-        if min_replicas is not None:
-            new_containerapp["properties"]["template"]["scale"]["minReplicas"] = min_replicas
-        if max_replicas is not None:
-            new_containerapp["properties"]["template"]["scale"]["maxReplicas"] = max_replicas
-
-    scale_def = None
-    if min_replicas is not None or max_replicas is not None:
-        scale_def = ScaleModel
-        scale_def["minReplicas"] = min_replicas
-        scale_def["maxReplicas"] = max_replicas
-    # so we don't overwrite rules
-    if safe_get(new_containerapp, "properties", "template", "scale", "rules"):
-        new_containerapp["properties"]["template"]["scale"].pop(["rules"])
-    if scale_rule_name:
-        if not scale_rule_type:
-            scale_rule_type = "http"
-        scale_rule_type = scale_rule_type.lower()
-        scale_rule_def = ScaleRuleModel
-        curr_metadata = {}
-        if scale_rule_http_concurrency:
-            if scale_rule_type in ('http', 'tcp'):
-                curr_metadata["concurrentRequests"] = str(scale_rule_http_concurrency)
-        metadata_def = parse_metadata_flags(scale_rule_metadata, curr_metadata)
-        auth_def = parse_auth_flags(scale_rule_auth)
-        if scale_rule_type == "http":
-            scale_rule_def["name"] = scale_rule_name
-            scale_rule_def["custom"] = None
-            scale_rule_def["http"] = {}
-            scale_rule_def["http"]["metadata"] = metadata_def
-            scale_rule_def["http"]["auth"] = auth_def
-        else:
-            scale_rule_def["name"] = scale_rule_name
-            scale_rule_def["http"] = None
-            scale_rule_def["custom"] = {}
-            scale_rule_def["custom"]["type"] = scale_rule_type
-            scale_rule_def["custom"]["metadata"] = metadata_def
-            scale_rule_def["custom"]["auth"] = auth_def
-        if not scale_def:
-            scale_def = ScaleModel
-        scale_def["rules"] = [scale_rule_def]
-        new_containerapp["properties"]["template"]["scale"]["rules"] = scale_def["rules"]
-    # Ingress
-    if update_map["ingress"]:
-        new_containerapp["properties"]["configuration"] = {} if "configuration" not in new_containerapp["properties"] else new_containerapp["properties"]["configuration"]
-        if target_port is not None or ingress is not None:
-            new_containerapp["properties"]["configuration"]["ingress"] = {}
-            if ingress:
-                new_containerapp["properties"]["configuration"]["ingress"]["external"] = ingress.lower() == "external"
-            if target_port:
-                new_containerapp["properties"]["configuration"]["ingress"]["targetPort"] = target_port
-
-    # Registry
-    if update_map["registry"]:
-        new_containerapp["properties"]["configuration"] = {} if "configuration" not in new_containerapp["properties"] else new_containerapp["properties"]["configuration"]
-        if "registries" in containerapp_def["properties"]["configuration"]:
-            new_containerapp["properties"]["configuration"]["registries"] = containerapp_def["properties"]["configuration"]["registries"]
-        if "registries" not in containerapp_def["properties"]["configuration"] or containerapp_def["properties"]["configuration"]["registries"] is None:
-            new_containerapp["properties"]["configuration"]["registries"] = []
-
-        registries_def = new_containerapp["properties"]["configuration"]["registries"]
-
-        _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
-        if "secrets" in containerapp_def["properties"]["configuration"] and containerapp_def["properties"]["configuration"]["secrets"]:
-            new_containerapp["properties"]["configuration"]["secrets"] = containerapp_def["properties"]["configuration"]["secrets"]
-        else:
-            new_containerapp["properties"]["configuration"]["secrets"] = []
-
-        if registry_server:
-            if not registry_pass or not registry_user:
-                if ACR_IMAGE_SUFFIX not in registry_server:
-                    raise RequiredArgumentMissingError('Registry url is required if using Azure Container Registry, otherwise Registry username and password are required if using Dockerhub')
-                logger.warning('No credential was provided to access Azure Container Registry. Trying to look up...')
-                parsed = urlparse(registry_server)
-                registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
-                registry_user, registry_pass, _ = _get_acr_cred(cmd.cli_ctx, registry_name)
-            # Check if updating existing registry
-            updating_existing_registry = False
-            for r in registries_def:
-                if r['server'].lower() == registry_server.lower():
-                    updating_existing_registry = True
-                    if registry_user:
-                        r["username"] = registry_user
-                    if registry_pass:
-                        r["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
-                            new_containerapp["properties"]["configuration"]["secrets"],
-                            r["username"],
-                            r["server"],
-                            registry_pass,
-                            update_existing_secret=True,
-                            disable_warnings=True)
-
-            # If not updating existing registry, add as new registry
-            if not updating_existing_registry:
-                registry = RegistryCredentialsModel
-                registry["server"] = registry_server
-                registry["username"] = registry_user
-                registry["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
-                    new_containerapp["properties"]["configuration"]["secrets"],
-                    registry_user,
-                    registry_server,
-                    registry_pass,
-                    update_existing_secret=True,
-                    disable_warnings=True)
-
-                registries_def.append(registry)
-
-    if not revision_suffix:
-        new_containerapp["properties"]["template"] = {} if "template" not in new_containerapp["properties"] else new_containerapp["properties"]["template"]
-        new_containerapp["properties"]["template"]["revisionSuffix"] = None
-
-    try:
-        r = ContainerAppClient.update(
-            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=new_containerapp, no_wait=no_wait)
-
-        if not no_wait and "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting":
-            logger.warning('Containerapp update in progress. Please monitor the update using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
-
-        # Delete managed bindings
-        if unbind_service_bindings:
-            for item in unbind_service_bindings:
-                while r["properties"]["provisioningState"].lower() == "inprogress":
-                    r = ContainerAppClient.show(cmd, resource_group_name, name)
-                    time.sleep(1)
-                linker_client.linker.begin_delete(resource_uri=r["id"], linker_name=item).result()
-
-        # Update managed bindings
-        if service_connectors_def_list is not None:
-            for item in service_connectors_def_list:
-                while r["properties"]["provisioningState"].lower() == "inprogress":
-                    r = ContainerAppClient.show(cmd, resource_group_name, name)
-                    time.sleep(1)
-                linker_client.linker.begin_create_or_update(resource_uri=r["id"],
-                                                            parameters=item["parameters"],
-                                                            linker_name=item["linker_name"]).result()
-
-        return r
-    except Exception as e:
-        handle_raw_exception(e)
+    containerapp_update_decorator.construct_payload()
+    r = containerapp_update_decorator.update()
+    r = containerapp_update_decorator.post_process(r)
+    return r
 
 
 def update_containerapp(cmd,
@@ -988,7 +585,8 @@ def update_containerapp(cmd,
                         workload_profile_name=None,
                         termination_grace_period=None,
                         no_wait=False,
-                        secret_volume_mount=None):
+                        secret_volume_mount=None,
+                        source=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -1019,7 +617,8 @@ def update_containerapp(cmd,
                                      workload_profile_name=workload_profile_name,
                                      termination_grace_period=termination_grace_period,
                                      no_wait=no_wait,
-                                     secret_volume_mount=secret_volume_mount)
+                                     secret_volume_mount=secret_volume_mount,
+                                     source=source)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
@@ -1048,6 +647,33 @@ def list_containerapp(cmd, resource_group_name=None, managed_env=None, environme
     return containerapp_list_decorator.list()
 
 
+def show_custom_domain_verification_id(cmd):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        r = SubscriptionPreviewClient.show_custom_domain_verification_id(cmd)
+        return r
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def list_usages(cmd, location):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        r = SubscriptionPreviewClient.list_usages(cmd, location)
+        return r
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def list_environment_usages(cmd, resource_group_name, name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    try:
+        r = ManagedEnvironmentPreviewClient.list_usages(cmd, resource_group_name, name)
+        return r
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
 def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
     raw_parameters = locals()
     containerapp_base_decorator = BaseContainerAppDecorator(
@@ -1071,6 +697,7 @@ def create_managed_environment(cmd,
                                location=None,
                                instrumentation_key=None,
                                infrastructure_subnet_resource_id=None,
+                               infrastructure_resource_group=None,
                                docker_bridge_cidr=None,
                                platform_reserved_cidr=None,
                                platform_reserved_dns_ip=None,
@@ -1085,7 +712,7 @@ def create_managed_environment(cmd,
                                mtls_enabled=None,
                                no_wait=False):
     raw_parameters = locals()
-    containerapp_env_create_decorator = ContainerAppEnvCreateDecorator(
+    containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
         cmd=cmd,
         client=ManagedEnvironmentClient,
         raw_parameters=raw_parameters,
@@ -1207,11 +834,12 @@ def create_containerappsjob(cmd,
                             disable_warnings=False,
                             user_assigned=None,
                             registry_identity=None,
-                            workload_profile_name=None):
+                            workload_profile_name=None,
+                            environment_type="managed"):
     raw_parameters = locals()
-    containerapp_job_create_decorator = ContainerAppJobCreateDecorator(
+    containerapp_job_create_decorator = ContainerAppJobPreviewCreateDecorator(
         cmd=cmd,
-        client=ContainerAppsJobClient,
+        client=ContainerAppsJobPreviewClient,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
@@ -1668,8 +1296,6 @@ def update_containerappsjob_logic(cmd,
 
 def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_wait=False):
     yaml_containerappsjob = process_loaded_yaml(load_yaml_file(file_name))
-    if type(yaml_containerappsjob) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
 
     if not yaml_containerappsjob.get('name'):
         yaml_containerappsjob['name'] = name
@@ -1756,8 +1382,6 @@ def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_w
 
 def update_containerappjob_yaml(cmd, name, resource_group_name, file_name, from_revision=None, no_wait=False):
     yaml_containerappsjob = process_loaded_yaml(load_yaml_file(file_name))
-    if type(yaml_containerappsjob) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
 
     if not yaml_containerappsjob.get('name'):
         yaml_containerappsjob['name'] = name
@@ -3673,18 +3297,18 @@ def show_dapr_component(cmd, resource_group_name, dapr_component_name, environme
 def create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    yaml_containerapp = load_yaml_file(yaml)
-    if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+    yaml_dapr_component = load_yaml_file(yaml)
+    if type(yaml_dapr_component) != dict:  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.')
 
     # Deserialize the yaml into a DaprComponent object. Need this since we're not using SDK
     daprcomponent_def = None
     try:
         deserializer = create_deserializer()
 
-        daprcomponent_def = deserializer('DaprComponent', yaml_containerapp)
+        daprcomponent_def = deserializer('DaprComponent', yaml_dapr_component)
     except DeserializationError as ex:
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.') from ex
+        raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.') from ex
 
     daprcomponent_def = _convert_object_from_snake_to_camel_case(_object_to_dict(daprcomponent_def))
 
@@ -5281,7 +4905,7 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
             id_parts = parse_resource_id(ca["id"])
             resource_group_name = id_parts.get('resource_group')
             container_app_name = id_parts.get('name')
-            managed_env_id_parts = parse_resource_id(ca["properties"]["managedEnvironmentId"])
+            managed_env_id_parts = parse_resource_id(ca["properties"]["environmentId"])
             managed_env_name = managed_env_id_parts.get('name')
             containers = safe_get(ca, "properties", "template", "containers")
             for container in containers:
@@ -5519,3 +5143,273 @@ def patch_cli_call(cmd, resource_group, container_app_name, container_name, targ
     except Exception:
         logger.error("Error: Failed to create new revision with the container app.")
         raise
+
+
+def show_connected_environment(cmd, name, resource_group_name):
+    raw_parameters = locals()
+    connected_env_decorator = ConnectedEnvironmentDecorator(
+        cmd=cmd,
+        client=ConnectedEnvironmentClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    connected_env_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+
+    return connected_env_decorator.show()
+
+
+def list_connected_environments(cmd, resource_group_name=None, custom_location=None):
+    raw_parameters = locals()
+    connected_env_decorator = ConnectedEnvironmentDecorator(
+        cmd=cmd,
+        client=ConnectedEnvironmentClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    connected_env_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+
+    return connected_env_decorator.list()
+
+
+def delete_connected_environment(cmd, name, resource_group_name, no_wait=False):
+    raw_parameters = locals()
+    connected_env_decorator = ConnectedEnvironmentDecorator(
+        cmd=cmd,
+        client=ConnectedEnvironmentClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    connected_env_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+
+    return connected_env_decorator.delete()
+
+
+def create_connected_environment(cmd,
+                                 name,
+                                 resource_group_name,
+                                 custom_location,
+                                 location=None,
+                                 dapr_ai_connection_string=None,
+                                 static_ip=None,
+                                 tags=None,
+                                 no_wait=False):
+    raw_parameters = locals()
+    connected_env_create_decorator = ConnectedEnvironmentCreateDecorator(
+        cmd=cmd,
+        client=ConnectedEnvironmentClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    connected_env_create_decorator.validate_arguments()
+    connected_env_create_decorator.register_provider(CONTAINER_APPS_RP)
+
+    connected_env_create_decorator.construct_payload()
+    r = connected_env_create_decorator.create()
+
+    return r
+
+
+def connected_env_list_dapr_components(cmd, resource_group_name, environment_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    return ConnectedEnvDaprComponentClient.list(cmd, resource_group_name, environment_name)
+
+
+def connected_env_show_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    return ConnectedEnvDaprComponentClient.show(cmd, resource_group_name, environment_name, name=dapr_component_name)
+
+
+def connected_env_remove_dapr_component(cmd, resource_group_name, dapr_component_name, environment_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        r = ConnectedEnvDaprComponentClient.delete(cmd, resource_group_name, environment_name, name=dapr_component_name)
+        logger.warning("Dapr componenet successfully deleted.")
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def connected_env_create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    yaml_dapr_component = load_yaml_file(yaml)
+    if type(yaml_dapr_component) != dict:  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.')
+
+    # Deserialize the yaml into a DaprComponent object. Need this since we're not using SDK
+    try:
+        deserializer = create_deserializer()
+        daprcomponent_def = deserializer('DaprComponent', yaml_dapr_component)
+    except DeserializationError as ex:
+        raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.') from ex
+
+    daprcomponent_def = _convert_object_from_snake_to_camel_case(_object_to_dict(daprcomponent_def))
+
+    # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
+    _remove_additional_attributes(daprcomponent_def)
+    _remove_dapr_readonly_attributes(daprcomponent_def)
+
+    if not daprcomponent_def["ignoreErrors"]:
+        daprcomponent_def["ignoreErrors"] = False
+
+    dapr_component_envelope = {"properties": daprcomponent_def}
+
+    try:
+        r = ConnectedEnvDaprComponentClient.create_or_update(cmd, resource_group_name=resource_group_name,
+                                                             environment_name=environment_name,
+                                                             dapr_component_envelope=dapr_component_envelope,
+                                                             name=dapr_component_name)
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def connected_env_list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    def location_match(c):
+        return c["location"] == location or not location
+
+    def thumbprint_match(c):
+        return c["properties"]["thumbprint"] == thumbprint or not thumbprint
+
+    def both_match(c):
+        return location_match(c) and thumbprint_match(c)
+
+    if certificate:
+        if is_valid_resource_id(certificate):
+            certificate_name = parse_resource_id(certificate)["resource_name"]
+        else:
+            certificate_name = certificate
+        try:
+            r = ConnectedEnvCertificateClient.show_certificate(cmd, resource_group_name, name, certificate_name)
+            return [r] if both_match(r) else []
+        except Exception as e:
+            handle_raw_exception(e)
+    else:
+        try:
+            r = ConnectedEnvCertificateClient.list_certificates(cmd, resource_group_name, name)
+            return list(filter(both_match, r))
+        except Exception as e:
+            handle_raw_exception(e)
+
+
+def connected_env_upload_certificate(cmd, name, resource_group_name, certificate_file, certificate_name=None, certificate_password=None, location=None, prompt=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    blob, thumbprint = load_cert_file(certificate_file, certificate_password)
+
+    cert_name = None
+    if certificate_name:
+        name_availability = connected_env_check_cert_name_availability(cmd, resource_group_name, name, certificate_name)
+        if not name_availability["nameAvailable"]:
+            if name_availability["reason"] == NAME_ALREADY_EXISTS:
+                msg = '{}. If continue with this name, it will be overwritten by the new certificate file.\nOverwrite?'
+                overwrite = True
+                if prompt:
+                    overwrite = prompt_y_n(msg.format(name_availability["message"]))
+                else:
+                    logger.warning('{}. It will be overwritten by the new certificate file.'.format(name_availability["message"]))
+                if overwrite:
+                    cert_name = certificate_name
+            else:
+                raise ValidationError(name_availability["message"])
+        else:
+            cert_name = certificate_name
+
+    while not cert_name:
+        random_name = generate_randomized_cert_name(thumbprint, name, resource_group_name)
+        check_result = connected_env_check_cert_name_availability(cmd, resource_group_name, name, random_name)
+        if check_result["nameAvailable"]:
+            cert_name = random_name
+        elif not check_result["nameAvailable"] and (check_result["reason"] == NAME_INVALID):
+            raise ValidationError(check_result["message"])
+
+    certificate = ContainerAppCertificateEnvelopeModel
+    certificate["properties"]["password"] = certificate_password
+    certificate["properties"]["value"] = blob
+    certificate["location"] = location
+    if not certificate["location"]:
+        try:
+            env = ConnectedEnvironmentClient.show(cmd, resource_group_name, name)
+            certificate["location"] = env["location"]
+        except Exception as e:
+            handle_raw_exception(e)
+
+    try:
+        r = ConnectedEnvCertificateClient.create_or_update_certificate(cmd, resource_group_name, name, cert_name, certificate)
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def connected_env_delete_certificate(cmd, resource_group_name, name, certificate=None, thumbprint=None):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    if not certificate and not thumbprint:
+        raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --thumbprint')
+    certs = connected_env_list_certificates(cmd, name, resource_group_name, certificate=certificate, thumbprint=thumbprint)
+    for cert in certs:
+        try:
+            ConnectedEnvCertificateClient.delete_certificate(cmd, resource_group_name, name, cert["name"])
+            logger.warning('Successfully deleted certificate: {}'.format(cert["name"]))
+        except Exception as e:
+            handle_raw_exception(e)
+
+
+def connected_env_show_storage(cmd, name, storage_name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        return ConnectedEnvStorageClient.show(cmd, resource_group_name, name, storage_name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def connected_env_list_storages(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        return ConnectedEnvStorageClient.list(cmd, resource_group_name, name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def connected_env_create_or_update_storage(cmd, storage_name, resource_group_name, name, azure_file_account_name=None, azure_file_share_name=None, azure_file_account_key=None, access_mode=None):  # pylint: disable=redefined-builtin
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    r = None
+
+    try:
+        r = ConnectedEnvStorageClient.show(cmd, resource_group_name, name, storage_name)
+    except:
+        pass
+
+    if r:
+        logger.warning("Only AzureFile account keys can be updated. In order to change the AzureFile share name or account name, please delete this storage and create a new one.")
+
+    storage_def = AzureFilePropertiesModel
+    storage_def["accountKey"] = azure_file_account_key
+    storage_def["accountName"] = azure_file_account_name
+    storage_def["shareName"] = azure_file_share_name
+    storage_def["accessMode"] = access_mode
+    storage_envelope = {}
+    storage_envelope["properties"] = {}
+    storage_envelope["properties"]["azureFile"] = storage_def
+
+    try:
+        return ConnectedEnvStorageClient.create_or_update(cmd, resource_group_name, name, storage_name, storage_envelope)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def connected_env_remove_storage(cmd, storage_name, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        return ConnectedEnvStorageClient.delete(cmd, resource_group_name, name, storage_name)
+    except CLIError as e:
+        handle_raw_exception(e)

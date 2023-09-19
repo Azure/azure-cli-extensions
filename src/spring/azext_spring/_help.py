@@ -49,6 +49,14 @@ helps['spring list-marketplace-plan'] = """
       text: az spring list-marketplace-plan -o table
 """
 
+helps['spring list-support-server-versions'] = """
+    type: command
+    short-summary: (Standard and Basic Tier Only) List supported server versions.
+    examples:
+    - name: List supported server versions.
+      text: az spring list-support-server-versions -o table -s MyService -g MyResourceGroup
+"""
+
 helps['spring update'] = """
     type: command
     short-summary: Update an Azure Spring Apps.
@@ -107,6 +115,11 @@ helps['spring test-endpoint list'] = """
 helps['spring test-endpoint renew-key'] = """
     type: command
     short-summary: Regenerate a test-endpoint key for the Azure Spring Apps.
+"""
+
+helps['spring flush-virtualnetwork-dns-settings'] = """
+    type: command
+    short-summary: (Standard and Enterprise Tier Only) Flush Virtual network DNS setting for Azure Spring Apps.
 """
 
 helps['spring storage'] = """
@@ -249,6 +262,8 @@ helps['spring app deploy'] = """
       text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --source-path
     - name: Deploy a pre-built jar to an app with jvm options and environment variables.
       text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --artifact-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
+    - name: Deploy a pre-built war to an app with server version, jvm options and environment variables (Standard and Basic Tiers Only).
+      text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup --artifact-path app.war --server-version Tomcat_10 --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
     - name: Deploy source code to a specific deployment of an app.
       text: az spring app deploy -n MyApp -s MyCluster -g MyResourceGroup -d green-deployment --source-path
     - name: Deploy a container image on Docker Hub to an app.
@@ -580,6 +595,16 @@ helps['spring certificate add'] = """
     examples:
     - name: Import certificate from key vault.
       text: az spring certificate add --name MyCertName --vault-uri MyKeyVaultUri --vault-certificate-name MyKeyVaultCertName --service MyCluster --resource-group MyResourceGroup
+"""
+
+helps['spring certificate update'] = """
+    type: command
+    short-summary: Update a certificate in Azure Spring Apps.
+    examples:
+    - name: Enable auto sync feature of a key vault certificate in Azure Spring Apps.
+      text: az spring certificate update --name MyCertName --service MyCluster --resource-group MyResourceGroup --enable-auto-sync true
+    - name: Disable auto sync feature of a key vault certificate in Azure Spring Apps.
+      text: az spring certificate update --name MyCertName --service MyCluster --resource-group MyResourceGroup --enable-auto-sync false
 """
 
 helps['spring certificate show'] = """

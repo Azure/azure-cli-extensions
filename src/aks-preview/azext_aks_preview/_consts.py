@@ -91,9 +91,6 @@ CONST_NODE_OS_CHANNEL_NONE = "None"
 CONST_NODE_OS_CHANNEL_SECURITY_PATCH = "SecurityPatch"
 CONST_NODE_OS_CHANNEL_UNMANAGED = "Unmanaged"
 
-# consts for cluster upgrade settings
-CONST_IGNORE_KUBERNETES_DEPRECATIONS = "IgnoreKubernetesDeprecations"
-
 # consts for nrg-lockdown restriction level
 CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY = "ReadOnly"
 CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED = "Unrestricted"

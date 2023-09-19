@@ -9,7 +9,7 @@ from knack.help_files import helps
 
 helps['webapp scale'] = """
 type: command
-short-summary: Modify the number of instances of a webapp.
+short-summary: Modify the number of instances of a webapp on Arc enabled Kubernetes workloads .
 examples:
   - name: Change the number of instances of MyApp to 2.
     text: >

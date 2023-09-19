@@ -554,13 +554,14 @@ def aks_create(
     enable_pod_security_policy=False,
     enable_pod_identity=False,
     enable_pod_identity_with_kubenet=False,
-    enable_workload_identity=None,
+    enable_workload_identity=False,
     enable_image_cleaner=False,
     image_cleaner_interval_hours=None,
     cluster_snapshot_id=None,
     enable_apiserver_vnet_integration=False,
     apiserver_subnet_id=None,
     dns_zone_resource_id=None,
+    dns_zone_resource_ids=None,
     enable_keda=False,
     enable_vpa=False,
     enable_node_restriction=False,
@@ -589,6 +590,8 @@ def aks_create(
     ksm_metric_annotations_allow_list=None,
     grafana_resource_id=None,
     enable_windows_recording_rules=False,
+    # metrics profile
+    enable_cost_analysis=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -647,7 +650,8 @@ def aks_update(
     kube_proxy_config=None,
     auto_upgrade_channel=None,
     node_os_upgrade_channel=None,
-    upgrade_settings=None,
+    enable_force_upgrade=False,
+    disable_force_upgrade=False,
     upgrade_override_until=None,
     cluster_autoscaler_profile=None,
     uptime_sla=False,
@@ -721,7 +725,8 @@ def aks_update(
     enable_pod_identity=False,
     enable_pod_identity_with_kubenet=False,
     disable_pod_identity=False,
-    enable_workload_identity=None,
+    enable_workload_identity=False,
+    disable_workload_identity=False,
     enable_image_cleaner=False,
     disable_image_cleaner=False,
     image_cleaner_interval_hours=None,
@@ -753,6 +758,9 @@ def aks_update(
     guardrails_version=None,
     guardrails_excluded_ns=None,
     enable_network_observability=None,
+    # metrics profile
+    enable_cost_analysis=False,
+    disable_cost_analysis=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1494,14 +1502,14 @@ def aks_addon_enable(cmd, client, resource_group_name, name, addon, workspace_re
                      appgw_subnet_id=None,
                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None,
                      no_wait=False, enable_msi_auth_for_monitoring=True,
-                     dns_zone_resource_id=None, enable_syslog=False, data_collection_settings=None):
+                     dns_zone_resource_id=None, dns_zone_resource_ids=None, enable_syslog=False, data_collection_settings=None):
     return enable_addons(cmd, client, resource_group_name, name, addon, workspace_resource_id=workspace_resource_id,
                          subnet_name=subnet_name, appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix,
                          appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id,
                          appgw_watch_namespace=appgw_watch_namespace, enable_sgxquotehelper=enable_sgxquotehelper,
                          enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
                          enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring,
-                         dns_zone_resource_id=dns_zone_resource_id, enable_syslog=enable_syslog,
+                         dns_zone_resource_id=dns_zone_resource_id, dns_zone_resource_ids=dns_zone_resource_ids, enable_syslog=enable_syslog,
                          data_collection_settings=data_collection_settings)
 
 
@@ -1514,7 +1522,7 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
                      appgw_subnet_id=None,
                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None,
                      no_wait=False, enable_msi_auth_for_monitoring=None,
-                     dns_zone_resource_id=None, enable_syslog=False, data_collection_settings=None):
+                     dns_zone_resource_id=None, dns_zone_resource_ids=None, enable_syslog=False, data_collection_settings=None):
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles
 
@@ -1540,7 +1548,7 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
                          appgw_watch_namespace=appgw_watch_namespace, enable_sgxquotehelper=enable_sgxquotehelper,
                          enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
                          enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring,
-                         dns_zone_resource_id=dns_zone_resource_id,
+                         dns_zone_resource_id=dns_zone_resource_id, dns_zone_resource_ids=dns_zone_resource_ids,
                          enable_syslog=enable_syslog, data_collection_settings=data_collection_settings)
 
 
@@ -1589,7 +1597,7 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
                       subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None, appgw_subnet_id=None,
                       appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None, no_wait=False, enable_msi_auth_for_monitoring=True,
-                      dns_zone_resource_id=None, enable_syslog=False, data_collection_settings=None, aks_custom_headers=None):
+                      dns_zone_resource_id=None, dns_zone_resource_ids=None, enable_syslog=False, data_collection_settings=None, aks_custom_headers=None):
     headers = get_aks_custom_headers(aks_custom_headers)
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here
@@ -1604,7 +1612,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                               workspace_resource_id=workspace_resource_id, enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring, subnet_name=subnet_name,
                               appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_watch_namespace=appgw_watch_namespace,
                               enable_sgxquotehelper=enable_sgxquotehelper, enable_secret_rotation=enable_secret_rotation, rotation_poll_interval=rotation_poll_interval, no_wait=no_wait,
-                              dns_zone_resource_id=dns_zone_resource_id, enable_syslog=enable_syslog, data_collection_settings=data_collection_settings)
+                              dns_zone_resource_id=dns_zone_resource_id, dns_zone_resource_ids=dns_zone_resource_ids, enable_syslog=enable_syslog, data_collection_settings=data_collection_settings)
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled:
         if CONST_MONITORING_USING_AAD_MSI_AUTH in instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and \
@@ -1703,6 +1711,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    disable_secret_rotation=False,
                    rotation_poll_interval=None,
                    dns_zone_resource_id=None,
+                   dns_zone_resource_ids=None,
                    no_wait=False,  # pylint: disable=unused-argument
                    enable_syslog=False,
                    data_collection_settings=None):
@@ -1740,8 +1749,19 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                 instance.ingress_profile.web_app_routing = ManagedClusterIngressProfileWebAppRouting()
             instance.ingress_profile.web_app_routing.enabled = enable
 
-            if dns_zone_resource_id is not None:
-                instance.ingress_profile.web_app_routing.dns_zone_resource_id = dns_zone_resource_id
+            if dns_zone_resource_ids is not None:
+                instance.ingress_profile.web_app_routing.dns_zone_resource_ids = [
+                    x.strip()
+                    for x in (
+                        dns_zone_resource_ids.split(",")
+                        if dns_zone_resource_ids
+                        else []
+                    )
+                ]
+            # for backward compatibility, if --dns-zone-resource-ids is not specified,
+            # try to read from --dns-zone-resource-id
+            if not instance.ingress_profile.web_app_routing.dns_zone_resource_ids and dns_zone_resource_id:
+                instance.ingress_profile.web_app_routing.dns_zone_resource_ids = [dns_zone_resource_id]
             continue
 
         if addon_arg not in ADDONS:
@@ -2471,6 +2491,39 @@ def aks_mesh_disable_ingress_gateway(
         ingress_gateway_type=ingress_gateway_type)
 
 
+def aks_mesh_enable_egress_gateway(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        egx_gtw_nodeselector,
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_azure_service_mesh=True,
+        enable_egress_gateway=True,
+        egx_gtw_nodeselector=egx_gtw_nodeselector)
+
+
+def aks_mesh_disable_egress_gateway(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_azure_service_mesh=True,
+        disable_egress_gateway=True,
+        egx_gtw_nodeselector=None)
+
+
 def _aks_mesh_update(
         cmd,
         client,
@@ -2486,6 +2539,9 @@ def _aks_mesh_update(
         enable_ingress_gateway=None,
         disable_ingress_gateway=None,
         ingress_gateway_type=None,
+        enable_egress_gateway=None,
+        egx_gtw_nodeselector=None,
+        disable_egress_gateway=None,
 ):
     raw_parameters = locals()
 

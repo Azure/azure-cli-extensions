@@ -119,6 +119,24 @@ helps['containerapp list'] = """
           az containerapp list -g MyResourceGroup
 """
 
+helps['containerapp list-usages'] = """
+    type: command
+    short-summary: List usages of subscription level quotas in specific region.
+    examples:
+    - name: List usages of  quotas in specific region.
+      text: |
+          az containerapp list-usages -l eastus
+"""
+
+helps['containerapp env list-usages'] = """
+    type: command
+    short-summary: List usages of quotas for specific managed environment.
+    examples:
+    - name: List usages of quotas for specific managed environment.
+      text: |
+          az containerapp env list-usages -n MyEnv -g MyResourceGroup
+"""
+
 helps['containerapp exec'] = """
     type: command
     short-summary: Open an SSH-like interactive shell within a container app replica
@@ -199,6 +217,18 @@ helps['containerapp logs show'] = """
     - name: Fetch logs for a particular revision, replica, and container
       text: |
           az containerapp logs show -n MyContainerapp -g MyResourceGroup --replica MyReplica --revision MyRevision --container MyContainer
+"""
+
+helps['containerapp show-custom-domain-verification-id'] = """
+    type: command
+    short-summary: Show the verification id for binding app or environment custom domains
+    examples:
+    - name: Get the verification id, which needs to be added as a TXT record for app custom domain to verify domain ownership
+      text: |
+          az containerapp show-custom-domain-verification-id
+    - name: Get the verification id, which needs to be added as a TXT record for custom environment DNS suffix to verify domain ownership
+      text: |
+          az containerapp show-custom-domain-verification-id
 """
 
 # Replica Commands
@@ -375,6 +405,14 @@ helps['containerapp env create'] = """
               --logs-workspace-id myLogsWorkspaceID \\
               --logs-workspace-key myLogsWorkspaceKey \\
               --location eastus2
+    - name: Create an environment with workload profiles enabled.
+      text: |
+          az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
+              --location eastus2 --enable-workload-profiles
+    - name: Create an environment without workload profiles enabled.
+      text: |
+          az containerapp env create -n MyContainerappEnvironment -g MyResourceGroup \\
+              --location eastus2 --enable-workload-profiles false
 """
 
 helps['containerapp service'] = """
@@ -407,6 +445,11 @@ helps['containerapp service mariadb'] = """
     short-summary: Commands to manage the mariadb service for the Container Apps environment.
 """
 
+helps['containerapp service qdrant'] = """
+    type: group
+    short-summary: Commands to manage the qdrant service for the Container Apps environment.
+"""
+
 helps['containerapp service redis create'] = """
     type: command
     short-summary: Command to create the redis service.
@@ -427,6 +470,11 @@ helps['containerapp service mariadb create'] = """
     short-summary: Command to create the mariadb service.
 """
 
+helps['containerapp service qdrant create'] = """
+    type: command
+    short-summary: Command to create the qdrant service.
+"""
+
 helps['containerapp service redis delete'] = """
     type: command
     short-summary: Command to delete the redis service.
@@ -445,6 +493,11 @@ helps['containerapp service kafka delete'] = """
 helps['containerapp service mariadb delete'] = """
     type: command
     short-summary: Command to delete the mariadb service.
+"""
+
+helps['containerapp service qdrant delete'] = """
+    type: command
+    short-summary: Command to delete the qdrant service.
 """
 
 helps['containerapp env update'] = """
@@ -651,6 +704,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Manual.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
               --trigger-type Manual \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -661,6 +715,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Schedule.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
               --trigger-type Schedule \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -671,6 +726,7 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Event.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
               --trigger-type Event \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
@@ -1752,6 +1808,49 @@ helps['containerapp create'] = """
           az containerapp create -n MyContainerapp -g MyResourceGroup \\
               --image my-app:v1.0 --environment MyContainerappConnectedEnv \\
               --environment-type connected
+    - name: Create a container app from a new GitHub Actions workflow in the provided GitHub repository
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          --environment MyContainerappEnv --registry-server MyRegistryServer \\
+          --registry-user MyRegistryUser --registry-pass MyRegistryPass \\
+          --repo https://github.com/myAccount/myRepo
+    - name: Create a Container App from the provided application source
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          --environment MyContainerappEnv --registry-server MyRegistryServer \\
+          --registry-user MyRegistryUser --registry-pass MyRegistryPass \\
+          --source .
+"""
+
+# containerapp update for preview
+helps['containerapp update'] = """
+    type: command
+    short-summary: Update a container app. In multiple revisions mode, create a new revision based on the latest revision.
+    examples:
+    - name: Update a container app's container image.
+      text: |
+          az containerapp update -n MyContainerapp -g MyResourceGroup \\
+              --image myregistry.azurecr.io/my-app:v2.0
+    - name: Update a container app's resource requirements and scale limits.
+      text: |
+          az containerapp update -n MyContainerapp -g MyResourceGroup \\
+              --cpu 0.5 --memory 1.0Gi \\
+              --min-replicas 4 --max-replicas 8
+    - name: Update a container app with an http scale rule
+      text: |
+          az containerapp update -n myapp -g mygroup \\
+              --scale-rule-name my-http-rule \\
+              --scale-rule-http-concurrency 50
+    - name: Update a container app with a custom scale rule
+      text: |
+          az containerapp update -n myapp -g mygroup \\
+              --scale-rule-name my-custom-rule \\
+              --scale-rule-type my-custom-type \\
+              --scale-rule-metadata key=value key2=value2 \\
+              --scale-rule-auth triggerparam=secretref triggerparam=secretref
+    - name: Update a Container App from the provided application source
+      text: |
+          az containerapp update -n MyContainerapp -g MyResourceGroup --source .
 """
 
 # containerapp list for preview
@@ -1768,4 +1867,244 @@ helps['containerapp list'] = """
     - name: List container apps by environment type.
       text: |
           az containerapp list --environment-type connected
+"""
+
+# Connected Environment Commands
+helps['containerapp connected-env'] = """
+    type: group
+    short-summary: Commands to manage Container Apps Connected environments for use with Arc enabled Container Apps.
+"""
+
+helps['containerapp connected-env create'] = """
+    type: command
+    short-summary: Create a Container Apps connected environment.
+    long-summary: Create a Container Apps Connected environment for use with Arc enabled Container Apps.  Environments are an isolation boundary around a collection of container apps.
+    examples:
+    - name: Create a connected environment
+      text: |
+          az containerapp connected-env create -n MyContainerappConnectedEnv -g MyResourceGroup \\
+              --location eastus --custom-location MyCustomLocationResourceID
+"""
+
+helps['containerapp connected-env delete'] = """
+    type: command
+    short-summary: Delete a Container Apps connected environment.
+    examples:
+    - name: Delete a connected environment.
+      text: az containerapp connected-env delete -n MyContainerappConnectedEnv -g MyResourceGroup
+"""
+
+helps['containerapp connected-env show'] = """
+    type: command
+    short-summary: Show details of a Container Apps connected environment.
+    examples:
+    - name: Show the details of a connected environment.
+      text: |
+          az containerapp connected-env show -n MyContainerappConnectedEnv -g MyResourceGroup
+"""
+
+helps['containerapp connected-env list'] = """
+    type: command
+    short-summary: List Container Apps connected environments by subscription or resource group.
+    examples:
+    - name: List connected environments in the current subscription.
+      text: |
+          az containerapp connected-env list
+    - name: List connected environments by resource group.
+      text: |
+          az containerapp connected-env list -g MyResourceGroup
+"""
+
+helps['containerapp connected-env dapr-component'] = """
+    type: group
+    short-summary: Commands to manage Dapr components for Container Apps connected environments.
+"""
+
+helps['containerapp connected-env dapr-component list'] = """
+    type: command
+    short-summary: List Dapr components for a connected environment.
+    examples:
+    - name: List Dapr components for a connected environment.
+      text: |
+          az containerapp connected-env dapr-component list -g MyResourceGroup --name MyConnectedEnv
+"""
+
+helps['containerapp connected-env dapr-component show'] = """
+    type: command
+    short-summary: Show the details of a Dapr component.
+    examples:
+    - name: Show the details of a Dapr component.
+      text: |
+          az containerapp connected-env dapr-component show -g MyResourceGroup --dapr-component-name MyDaprComponentName --name MyConnectedEnv
+"""
+
+helps['containerapp connected-env dapr-component set'] = """
+    type: command
+    short-summary: Create or update a Dapr component.
+    examples:
+    - name: Create a Dapr component.
+      text: |
+          az containerapp connected-env dapr-component set -g MyResourceGroup --name MyEnv --yaml MyYAMLPath --dapr-component-name MyDaprComponentName
+"""
+
+helps['containerapp connected-env dapr-component remove'] = """
+    type: command
+    short-summary: Remove a Dapr component from a connected environment.
+    examples:
+    - name: Remove a Dapr component from a Container Apps connected environment.
+      text: |
+          az containerapp connected-env dapr-component remove -g MyResourceGroup --dapr-component-name MyDaprComponentName --name MyConnectedEnv
+"""
+
+helps['containerapp connected-env storage'] = """
+    type: group
+    short-summary: Commands to manage storage for the Container Apps connected environment.
+"""
+
+helps['containerapp connected-env storage list'] = """
+    type: command
+    short-summary: List the storages for a connected environment.
+    examples:
+    - name: List the storages for a connected environment.
+      text: |
+          az containerapp connected-env storage list -g MyResourceGroup -n MyConnectedEnv
+"""
+
+helps['containerapp connected-env storage show'] = """
+    type: command
+    short-summary: Show the details of a storage.
+    examples:
+    - name: Show the details of a storage.
+      text: |
+          az containerapp connected-env storage show -g MyResourceGroup --storage-name MyStorageName -n MyConnectedEnv
+"""
+
+helps['containerapp connected-env storage set'] = """
+    type: command
+    short-summary: Create or update a storage.
+    examples:
+    - name: Create a storage.
+      text: |
+          az containerapp connected-env storage set -g MyResourceGroup -n MyEnv --storage-name MyStorageName --access-mode ReadOnly --azure-file-account-key MyAccountKey --azure-file-account-name MyAccountName --azure-file-share-name MyShareName
+"""
+
+helps['containerapp connected-env storage remove'] = """
+    type: command
+    short-summary: Remove a storage from a connected environment.
+    examples:
+    - name: Remove a storage from a Container Apps connected environment.
+      text: |
+          az containerapp connected-env storage remove -g MyResourceGroup --storage-name MyStorageName -n MyConnectedEnv
+"""
+
+# Certificates Commands
+helps['containerapp connected-env certificate'] = """
+    type: group
+    short-summary: Commands to manage certificates for the Container Apps connected environment.
+"""
+
+helps['containerapp connected-env certificate list'] = """
+    type: command
+    short-summary: List certificates for a connected environment.
+    examples:
+    - name: List certificates for a connected environment.
+      text: |
+          az containerapp connected-env certificate list -g MyResourceGroup --name MyConnectedEnv
+    - name: List certificates by certificate id.
+      text: |
+          az containerapp connected-env certificate list -g MyResourceGroup --name MyConnectedEnv --certificate MyCertificateId
+    - name: List certificates by certificate name.
+      text: |
+          az containerapp connected-env certificate list -g MyResourceGroup --name MyConnectedEnv --certificate MyCertificateName
+    - name: List certificates by certificate thumbprint.
+      text: |
+          az containerapp connected-env certificate list -g MyResourceGroup --name MyConnectedEnv --thumbprint MyCertificateThumbprint
+"""
+
+helps['containerapp connected-env certificate upload'] = """
+    type: command
+    short-summary: Add or update a certificate.
+    examples:
+    - name: Add or update a certificate.
+      text: |
+          az containerapp connected-env certificate upload -g MyResourceGroup --name MyConnectedEnv --certificate-file MyFilepath
+    - name: Add or update a certificate with a user-provided certificate name.
+      text: |
+          az containerapp connected-env certificate upload -g MyResourceGroup --name MyConnectedEnv --certificate-file MyFilepath --certificate-name MyCertificateName
+"""
+
+helps['containerapp connected-env certificate delete'] = """
+    type: command
+    short-summary: Delete a certificate from the Container Apps connected environment.
+    examples:
+    - name: Delete a certificate from the Container Apps connected environment by certificate name
+      text: |
+          az containerapp connected-env certificate delete -g MyResourceGroup --name MyConnectedEnv --certificate MyCertificateName
+    - name: Delete a certificate from the Container Apps connected environment by certificate id
+      text: |
+          az containerapp connected-env certificate delete -g MyResourceGroup --name MyConnectedEnv --certificate MyCertificateId
+    - name: Delete a certificate from the Container Apps connected environment by certificate thumbprint
+      text: |
+          az containerapp connected-env certificate delete -g MyResourceGroup --name MyConnectedEnv --thumbprint MyCertificateThumbprint
+"""
+
+# Container Apps Job Commands
+
+helps['containerapp job create'] = """
+    type: command
+    short-summary: Create a container apps job.
+    examples:
+    - name: Create a container apps job with Trigger Type as Manual.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
+              --trigger-type Manual \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1 \\
+              --image imageName \\
+              --workload-profile-name my-wlp
+    - name: Create a container apps job with Trigger Type as Schedule.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
+              --trigger-type Schedule \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1 \\
+              --cron-expression \"*/1 * * * *\" \\
+              --image imageName
+    - name: Create a container apps job with Trigger Type as Event.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappEnv
+              --trigger-type Event \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1 \\
+              --polling-interval 30 \\
+              --min-executions 0 \\
+              --max-executions 1 \\
+              --scale-rule-name queueJob \\
+              --scale-rule-type azure-queue \\
+              --scale-rule-metadata "accountName=mystorageaccountname" \\
+                                    "cloud=AzurePublicCloud" \\
+                                    "queueLength": "5" "queueName": "foo" \\
+              --scale-rule-auth "connection=my-connection-string-secret-name" \\
+              --image imageName
+    - name: Create a container apps job hosted on a Connected Environment.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --environment MyContainerappConnectedEnv
+              --environment-type connected
+              --trigger-type Manual \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1 \\
+              --image imageName \\
+              --workload-profile-name my-wlp
 """
