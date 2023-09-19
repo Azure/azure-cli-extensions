@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.4.1
+++++++
+* Skip Onboarding prechecks for AKS-HCI.
+
 1.4.0
 ++++++
 * Added support for reading ARM metadata 2022-09-01.
