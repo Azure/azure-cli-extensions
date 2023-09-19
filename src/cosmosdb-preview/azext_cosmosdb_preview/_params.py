@@ -28,7 +28,7 @@ from azext_cosmosdb_preview.actions import (
     CreatePhysicalPartitionIdListAction)
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
-    ContinuousTier
+    ContinuousTier, DefaultPriorityLevel
 )
 
 from azure.cli.core.util import shell_safe_json_parse
@@ -37,7 +37,7 @@ from azure.cli.core.commands.parameters import (
     tags_type, get_resource_name_completion_list, name_type, get_enum_type, get_three_state_flag, get_location_type)
 
 from azure.mgmt.cosmosdb.models import (
-    DefaultConsistencyLevel, DatabaseAccountKind, ServerVersion, NetworkAclBypass, BackupPolicyType, AnalyticalStorageSchemaType, BackupStorageRedundancy, DefaultPriorityLevel)
+    DefaultConsistencyLevel, DatabaseAccountKind, ServerVersion, NetworkAclBypass, BackupPolicyType, AnalyticalStorageSchemaType, BackupStorageRedundancy)
 
 from azure.cli.command_modules.cosmosdb.actions import (
     CreateLocation, CreateDatabaseRestoreResource, UtcDatetimeAction)
