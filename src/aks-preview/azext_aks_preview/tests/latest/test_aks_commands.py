@@ -7516,7 +7516,7 @@ Message: The provided location 'useast' is not available for resource group. '''
         ])
 
         # since we do not support any other revision other than asm-1-17 at this time, testing for the following commands is not possible
-        # az aks mesh upgrade rollover --resource-group={resource_group} --name={name}
+        # az aks mesh upgrade rollback --resource-group={resource_group} --name={name}
         # az aks mesh upgrade complete --resource-group={resource_group} --name={name}
 
         # delete the cluster
