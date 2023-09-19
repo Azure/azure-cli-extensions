@@ -2667,7 +2667,7 @@ helps['aks mesh get-upgrades'] = """
 helps['aks mesh upgrade start'] = """
     type: command
     short-summary: Initiate Azure Service Mesh upgrade.
-    long-summary: This command initiates Azure Service Mesh upgrade to the specified revision.
+    long-summary: This command initiates upgrade of Azure Service Mesh to the specified revision.
     parameters:
       - name: --revision
         type: string
