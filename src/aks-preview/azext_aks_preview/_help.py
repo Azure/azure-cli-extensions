@@ -2695,7 +2695,7 @@ helps['aks mesh upgrade complete'] = """
 helps['aks mesh upgrade rollback'] = """
     type: command
     short-summary: Rollback Azure Service Mesh upgrade.
-    long-summary: This command rolls back Azure Service Mesh upgrade in progress.
+    long-summary: This command rolls back Azure Service Mesh upgrade to the previous stable revision.
     examples:
       - name: Rollback Azure Service Mesh upgrade.
         text: az aks mesh upgrade rollback --resource-group MyResourceGroup --name MyManagedCluster
