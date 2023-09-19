@@ -184,3 +184,24 @@ class PaloAltoNetworksScenario(ScenarioTest):
         self.cmd('az palo-alto cloudngfw local-rulestack local-rule show-counter -g {resource_group} --local-rulestack-name {local_rulestack_name} --priority {priority}')
         self.cmd('az palo-alto cloudngfw local-rulestack local-rule refresh-counter -g {resource_group} --local-rulestack-name {local_rulestack_name} --priority {priority}')
         self.cmd('az palo-alto cloudngfw local-rulestack local-rule reset-counter -g {resource_group} --local-rulestack-name {local_rulestack_name} --priority {priority}')
+
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_palo_alto_cloudngfw_local_rulestackcommit', location='eastus' )
+    def test_palo_alto_cloudngfw_local_rulestack_commit(self, resource_group):
+        self.kwargs.update({
+            'rg2': self.create_random_name('rg', 10),
+            'local_rulestack1': self.create_random_name('lr', 10),
+            'local_rulestack2': self.create_random_name('lr', 10),
+            'fqdn_name': self.create_random_name('fqdn', 10),
+            'loc': "eastus",
+            })
+        self.cmd('az group create -n {rg2} -l {loc}')
+        self.cmd('az palo-alto cloudngfw local-rulestack create -g {rg} -n {local_rulestack1} --location {loc} --default-mode IPS --description "local rulestacks" --min-app-id-version 8595-7473 --scope "LOCAL"',
+                 self.check('name', '{local_rulestack1}'))
+        self.cmd('az palo-alto cloudngfw local-rulestack create -g {rg2} -n {local_rulestack2} --location {loc} --default-mode IPS --description "test"',
+                 self.check('name', '{local_rulestack2}'))
+
+        # Then add FQDN to Rulestack
+        self.cmd('az palo-alto cloudngfw local-rulestack fqdnlist create --local-rulestack-name {local_rulestack2} --name {fqdn_name} --fqdn-list microsoft.com -g {rg2}')
+        self.cmd('az palo-alto cloudngfw local-rulestack commit --local-rulestack-name {local_rulestack2} -g {rg2}',
+                 self.check('status', 'Succeeded'))
