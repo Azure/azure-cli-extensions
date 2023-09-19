@@ -4,6 +4,18 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp service': add support for creation and deletion of Qdrant vector database as a container app dev service
+* Add command group 'az containerapp connected-env', support show/list/delete/create connected environment
+* 'az containerapp create': support --source and --repo properties
+* 'az containerapp update': support --source property
+* Add command group 'az containerapp connected-env certificate', support list/upload/delete connectedEnvironments certificate
+* Add command group 'az containerapp connected-env dapr-component', support list/show/set/remove connectedEnvironments daprComponents
+* Add command group 'az containerapp connected-env storage', support list/show/set/remove connectedEnvironments storage
+* 'az containerapp env': --infrastructure-resource-group, supports custom rg name for byovnet env creations in WP enabled envs
+
+0.3.39
+++++++
+* 'az containerapp update': fix bug for populating secret value with --yaml
 
 0.3.38
 ++++++

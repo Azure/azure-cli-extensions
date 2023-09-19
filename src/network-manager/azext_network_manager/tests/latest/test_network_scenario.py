@@ -390,7 +390,16 @@ class NetworkScenarioTest(ScenarioTest):
                  'is-global=false use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub '
                  'resource-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network} '
                  'resource-type="Microsoft.Network/virtualNetworks" --description "Sample Configuration" --is-global true')
-        self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}')
+        config_id = self.cmd('network manager connect-config show --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}').get_output_in_json()["id"]
+        self.kwargs.update({"config_id": config_id})
+
+        # test nm connect-config commit
+        self.cmd('network manager post-commit --network-manager-name {manager_name} --commit-type "Connectivity" '
+                 '--target-locations "eastus2" -g {rg} --configuration-ids {config_id}')
+        # test nm connect-config  uncommit
+        self.cmd('network manager post-commit --network-manager-name {manager_name} --commit-type "Connectivity" '
+                 '--target-locations "eastus2" -g {rg}')
+
         self.cmd('network manager connect-config update --configuration-name {config_name} --network-manager-name {manager_name} -g {rg}')
         self.cmd('network manager connect-config list --network-manager-name {manager_name} -g {rg}')
         self.cmd('network manager connect-config delete --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} --force --yes')

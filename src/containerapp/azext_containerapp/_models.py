@@ -20,7 +20,8 @@ ManagedEnvironment = {
         "vnetConfiguration": None,  # VnetConfiguration
         "appLogsConfiguration": None,
         "customDomainConfiguration": None,  # CustomDomainConfiguration,
-        "workloadProfiles": None
+        "workloadProfiles": None,
+        "InfrastructureResourceGroup": None
     }
 }
 
@@ -406,4 +407,21 @@ OryxMarinerRunImgTagProperty = {
     "marinerVersion": None,
     "architectures": None,
     "support": None,
+}
+
+
+# model for preview extension
+ConnectedEnvironment = {
+    "extendedLocation": None,
+    "tags": None,
+    "location": None,
+    "properties": {
+        "staticIp": None,
+        "daprAIConnectionString": None
+    }
+}
+
+ExtendedLocation = {
+    "name": None,
+    "type": None
 }

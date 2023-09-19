@@ -1172,6 +1172,21 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         ctx.attach_mc(self.models.ManagedCluster(location="test_location"))
         self.assertIsNone(ctx.get_workload_identity_profile())
 
+    def test_get_workload_identity_profile__update_with_enable_and_disable(self):
+        ctx = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_workload_identity": True,
+                    "disable_workload_identity": True,
+                }
+            ),
+            self.models, decorator_mode=DecoratorMode.UPDATE
+        )
+        ctx.attach_mc(self.models.ManagedCluster(location="test_location"))
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx.get_workload_identity_profile()
+
     def test_get_workload_identity_profile__update_with_enable_without_oidc_issuer(self):
         ctx = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -1227,7 +1242,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
                 self.cmd,
                 AKSManagedClusterParamDict(
                     {
-                        "enable_workload_identity": False,
+                        "disable_workload_identity": True,
                     }
                 ),
                 self.models,
@@ -5485,7 +5500,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "enable_workload_identity": False,
+                "disable_workload_identity": True,
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -6273,7 +6288,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "enable_azure_service_mesh": True,
-                "key_vault_id": "my-akv",
+                "key_vault_id": "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo",
                 "ca_cert_object_name": "my-ca-cert",
                 "ca_key_object_name": "my-ca-key",
                 "root_cert_object_name": "my-root-cert",
@@ -6293,7 +6308,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 istio=self.models.IstioServiceMesh(
                     certificate_authority=self.models.IstioCertificateAuthority(
                         plugin=self.models.IstioPluginCertificateAuthority(
-                            key_vault_id='my-akv',
+                            key_vault_id='/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo',
                             cert_object_name='my-ca-cert',
                             key_object_name='my-ca-key',
                             root_cert_object_name='my-root-cert',
@@ -6304,6 +6319,39 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             )
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+        dec_4 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_service_mesh": True,
+                "enable_egress_gateway": True,
+                "egress_gateway_nodeselector": "istio=egress",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_4 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_4.context.attach_mc(mc_4)
+        dec_mc_4 = dec_4.update_azure_service_mesh_profile(mc_4)
+        ground_truth_mc_4 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    components=self.models.IstioComponents(
+                        egress_gateways=[
+                            self.models.IstioEgressGateway(
+                                enabled=True,
+                                nodeSelector={"istio": "egress"}                                
+                            )
+                        ]
+                    )
+                )
+            )
+        )
+        self.assertEqual(dec_mc_4, ground_truth_mc_4)
 
     def test_update_upgrade_settings(self):
         # Should not update mc if unset
@@ -6472,6 +6520,38 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_6.context.attach_mc(mc_6)
         with self.assertRaises(InvalidArgumentValueError):
             dec_6.update_upgrade_settings(mc_6)
+
+    def test_enable_disable_cost_analysis(self):
+        # Should not update mc if unset
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_metrics_profile(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # Should error if both set
+        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"disable_cost_analysis": True, "enable_cost_analysis": True},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_6 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_6.context.attach_mc(mc_6)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_6.update_metrics_profile(mc_6)
 
     def test_update_mc_profile_preview(self):
         import inspect

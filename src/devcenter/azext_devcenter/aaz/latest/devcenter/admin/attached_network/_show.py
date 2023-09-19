@@ -17,18 +17,18 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Get an attached network connection configured for a dev center or project.
 
-    :example: Get dev center attached network connection
-        az devcenter admin attached-network show --name "{attachedNetworkConnectionName}" --dev-center-name "Contoso" --resource-group "rg1"
+    :example: Get a dev center attached network connection
+        az devcenter admin attached-network show --name" network-uswest3" --dev-center-name "Contoso" --resource-group "rg1"
 
-    :example: Get project attached network connection
-        az devcenter admin attached-network show --name "{attachedNetworkConnectionName}" --project-name "{projectName}" --resource-group "rg1"
+    :example: Get a project attached network connection
+        az devcenter admin attached-network show --name "network-uswest3" --project-name "ContosoProject" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/attachednetworks/{}", "2023-04-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/attachednetworks/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/attachednetworks/{}", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/attachednetworks/{}", "2023-06-01-preview"],
         ]
     }
 
@@ -144,7 +144,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-06-01-preview",
                     required=True,
                 ),
             }
@@ -288,7 +288,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-06-01-preview",
                     required=True,
                 ),
             }

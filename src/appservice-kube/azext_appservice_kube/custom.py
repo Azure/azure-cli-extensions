@@ -981,6 +981,10 @@ def set_webapp(cmd, resource_group_name, name, slot=None, **kwargs):  # pylint: 
 
 
 def scale_webapp(cmd, resource_group_name, name, instance_count, slot=None):
+    client = web_client_factory(cmd.cli_ctx)
+    webapp = client.web_apps.get(resource_group_name, name)
+    if not webapp.extended_location:
+        raise ValidationError("The web app {} is not on Arc enabled Kubernetes. Please use `az appservice plan update` to scale for non-arc enabled app service.".format(name))
     return update_site_configs(cmd, resource_group_name, name,
                                number_of_workers=instance_count, slot=slot)
 

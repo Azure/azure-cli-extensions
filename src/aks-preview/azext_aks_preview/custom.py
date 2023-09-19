@@ -554,7 +554,7 @@ def aks_create(
     enable_pod_security_policy=False,
     enable_pod_identity=False,
     enable_pod_identity_with_kubenet=False,
-    enable_workload_identity=None,
+    enable_workload_identity=False,
     enable_image_cleaner=False,
     image_cleaner_interval_hours=None,
     cluster_snapshot_id=None,
@@ -590,6 +590,8 @@ def aks_create(
     ksm_metric_annotations_allow_list=None,
     grafana_resource_id=None,
     enable_windows_recording_rules=False,
+    # metrics profile
+    enable_cost_analysis=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -723,7 +725,8 @@ def aks_update(
     enable_pod_identity=False,
     enable_pod_identity_with_kubenet=False,
     disable_pod_identity=False,
-    enable_workload_identity=None,
+    enable_workload_identity=False,
+    disable_workload_identity=False,
     enable_image_cleaner=False,
     disable_image_cleaner=False,
     image_cleaner_interval_hours=None,
@@ -755,6 +758,9 @@ def aks_update(
     guardrails_version=None,
     guardrails_excluded_ns=None,
     enable_network_observability=None,
+    # metrics profile
+    enable_cost_analysis=False,
+    disable_cost_analysis=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -2485,6 +2491,39 @@ def aks_mesh_disable_ingress_gateway(
         ingress_gateway_type=ingress_gateway_type)
 
 
+def aks_mesh_enable_egress_gateway(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        egx_gtw_nodeselector,
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_azure_service_mesh=True,
+        enable_egress_gateway=True,
+        egx_gtw_nodeselector=egx_gtw_nodeselector)
+
+
+def aks_mesh_disable_egress_gateway(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_azure_service_mesh=True,
+        disable_egress_gateway=True,
+        egx_gtw_nodeselector=None)
+
+
 def _aks_mesh_update(
         cmd,
         client,
@@ -2500,6 +2539,9 @@ def _aks_mesh_update(
         enable_ingress_gateway=None,
         disable_ingress_gateway=None,
         ingress_gateway_type=None,
+        enable_egress_gateway=None,
+        egx_gtw_nodeselector=None,
+        disable_egress_gateway=None,
 ):
     raw_parameters = locals()
 
