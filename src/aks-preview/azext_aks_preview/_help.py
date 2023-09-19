@@ -2647,7 +2647,7 @@ helps['aks mesh disable-ingress-gateway'] = """
 
 helps['aks mesh get-revisions'] = """
     type: command
-    short-summary: Discover available Azure Service Mesh revisions.
+    short-summary: Discover available Azure Service Mesh revisions and their compatibility.
     long-summary: This command discovers available Azure Service Mesh revisions and their compatibility for the given location.
     examples:
       - name: Discover Azure Service Mesh revisions.
