@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.5.0
+++++++++++++++++++
+* add support for extensionsType api
+* microsoft.openservicemesh: Update OSM-Arc version check for beta and CI tags
+
 1.4.5
 ++++++++++++++++++
 * fix bugs while dropping 'azure-mgmt-relay'
