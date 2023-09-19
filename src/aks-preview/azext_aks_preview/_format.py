@@ -51,9 +51,9 @@ def aks_machine_list_table_format(results):
 def aks_machine_show_table_format(result):
     def parser(entry): 
         ip_addresses = ""
-        for k in entry["properties"]["network"]["ip_addresses"].items():
+        for k in entry["properties"]["network"]["ipAddresses"]:
             ip_addresses += "ip:" + k["ip"] + "," + "family:" + k["family"] + ";"
-        entry["ip"] = config
+        entry["ip"] = ip_addresses
         parsed = compile_jmes("""{
                 name: name,
                 ip: ip

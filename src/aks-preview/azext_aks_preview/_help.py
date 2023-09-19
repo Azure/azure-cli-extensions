@@ -1842,7 +1842,7 @@ helps['aks machine show'] = """
          short-summary: Get IP Addresses, Hostname for a specific machine in an agentpool
    exmaples:
        - name: Get IP Addresses, Hostname for a specific machine in an agentpool
-         text: az aks machine show --cluster-name <clusterName> --nodepool-name <apName> --machine-name
+         text: az aks machine show --cluster-name <clusterName> --nodepool-name <apName> --machine-name <machineName>
 """
                 
 helps['aks operation-abort'] = """
