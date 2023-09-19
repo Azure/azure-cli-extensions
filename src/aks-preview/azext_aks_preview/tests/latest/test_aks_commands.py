@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import io
 import pty
 import subprocess
 import tempfile
@@ -99,54 +98,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check(
                 'type', 'Microsoft.ContainerService/locations/osOptions')
         ])
-
-    @unittest.skipUnless(os.getenv('OPENAI_API_KEY'), 'Skipped as not running with OPENAI_API_KEY')
-    @unittest.skipUnless(os.getenv('OPENAI_API_BASE'), 'Skipped as not running with OPENAI_API_BASE')
-    @unittest.skipUnless(os.getenv('OPENAI_API_DEPLOYMENT'), 'Skipped as not running with OPENAI_API_DEPLOYMENT')
-    @unittest.skipUnless(os.getenv('OPENAI_API_TYPE'), 'Skipped as not running with OPENAI_API_TYPE')
-    def test_aks_ai_azure_openai(self):
-        self.assert_openai_interactive_shell_launched()
-
-    @unittest.skipUnless(os.getenv('OPENAI_API_KEY'), 'Skipped as not running with OPENAI_API_KEY')
-    @unittest.skipUnless(os.getenv('OPENAI_API_MODEL'), 'Skipped as not running with OPENAI_API_MODEL')
-    def test_aks_ai_openai(self):
-        self.assert_openai_interactive_shell_launched()
-
-    def assert_openai_interactive_shell_launched(self):
-        start_ai_cmd = ['az', 'aks', 'copilot']
-        try:
-            # say Hi, and quit (q) the interactive shell
-            result = subprocess.run(start_ai_cmd, input="Hi\nq\n".encode(), stdout=subprocess.PIPE)
-        except subprocess.CalledProcessError as err:
-            raise CliTestError(f"Failed to launch openai interactive shell with error: '{err}'")
-        output = result.stdout.decode()
-        for pattern in [
-            f"Please enter your request below.",
-            f"For example: Create a AKS cluster",
-            f"Prompt",
-        ]:
-            if not pattern in output:
-                raise CliTestError(f"Output from aks copilot did not contain '{pattern}'. Output:\n{output}")
-
-    def test_detect_az_error(self):
-        from azext_aks_preview._openai_wrapper import detect_az_error, AZ_ERROR_FORMATTER
-        code = "LocationNotAvailableForResourceGroup"
-        message = "The provided location 'useast' is not available."
-        # \x1b is the ASCII for ESCAPE in terminal
-        actual = detect_az_error("Code: {}\nMessage: {}\x1b".format(code, message).encode())
-        expected = AZ_ERROR_FORMATTER.format(code, message)
-        self.assertEqual(actual, expected)
-
-        actual = detect_az_error(b"Code:1. Creates a resource group in the")
-        self.assertEqual(actual, "")
-
-    def test_strip_terminal_escapes(self):
-        from azext_aks_preview._openai_wrapper import strip_terminal_escapes
-        colored_string = b'''[91mCode: LocationNotAvailableForResourceGroup
-Message: The provided location 'useast' is not available for resource group. [0m'''
-        actual = strip_terminal_escapes(colored_string)
-        self.assertEqual(actual, '''Code: LocationNotAvailableForResourceGroup
-Message: The provided location 'useast' is not available for resource group. ''')
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
