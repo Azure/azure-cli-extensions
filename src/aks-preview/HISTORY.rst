@@ -12,10 +12,19 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-0.5.158
+0.5.160
 +++++++
 * Add `get-upgrades` and `get-revisions` to the `az aks mesh` command.
 * Add `az aks mesh upgrade` commands to manage upgrades for Azure Service Mesh.
+
+=======
+0.5.159
++++++++
+* Revert `az aks copilot` Command
+
+0.5.158
++++++++
+* Add `enable-egress-gateway` and `disable-egress-gateway` to the `az aks mesh` command.
 
 0.5.157
 +++++++

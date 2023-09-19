@@ -6320,14 +6320,13 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
-        # aks mesh upgrade start
         dec_4 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
             {
                 "enable_azure_service_mesh": True,
-                "mesh_upgrade_command": None,
-                "revision": "asm-1-17"
+                "enable_egress_gateway": True,
+                "egress_gateway_nodeselector": "istio=egress",
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -6341,19 +6340,27 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             service_mesh_profile=self.models.ServiceMeshProfile(
                 mode="Istio",
                 istio=self.models.IstioServiceMesh(
-                    revisions=["asm-1-17"]
+                    components=self.models.IstioComponents(
+                        egress_gateways=[
+                            self.models.IstioEgressGateway(
+                                enabled=True,
+                                nodeSelector={"istio": "egress"}
+                            )
+                        ]
+                    )
                 )
             )
         )
         self.assertEqual(dec_mc_4, ground_truth_mc_4)
 
-        # aks mesh upgrade complete
+        # aks mesh upgrade start
         dec_5 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
             {
                 "enable_azure_service_mesh": True,
-                "mesh_upgrade_command": "complete"
+                "mesh_upgrade_command": None,
+                "revision": "asm-1-18"
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -6362,7 +6369,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             service_mesh_profile=self.models.ServiceMeshProfile(
                 mode="Istio",
                 istio=self.models.IstioServiceMesh(
-                    revisions=["asm-1-17", "asm-1-18"]
+                    revisions=["asm-1-17"]
                 )
             )
         )
@@ -6373,19 +6380,19 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             service_mesh_profile=self.models.ServiceMeshProfile(
                 mode="Istio",
                 istio=self.models.IstioServiceMesh(
-                    revisions=["asm-1-18"]
+                    revisions=["asm-1-17", "asm-1-18"]
                 )
             )
         )
         self.assertEqual(dec_mc_5, ground_truth_mc_5)
 
-        # aks mesh upgrade rollback
+        # aks mesh upgrade complete
         dec_6 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
             {
                 "enable_azure_service_mesh": True,
-                "mesh_upgrade_command": "rollback"
+                "mesh_upgrade_command": "complete"
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -6405,11 +6412,44 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             service_mesh_profile=self.models.ServiceMeshProfile(
                 mode="Istio",
                 istio=self.models.IstioServiceMesh(
-                    revisions=["asm-1-17"]
+                    revisions=["asm-1-18"]
                 )
             )
         )
         self.assertEqual(dec_mc_6, ground_truth_mc_6)
+
+        # aks mesh upgrade rollback
+        dec_7 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_service_mesh": True,
+                "mesh_upgrade_command": "rollback"
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_7 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    revisions=["asm-1-17", "asm-1-18"]
+                )
+            )
+        )
+        dec_7.context.attach_mc(mc_7)
+        dec_mc_7 = dec_7.update_azure_service_mesh_profile(mc_7)
+        ground_truth_mc_7 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    revisions=["asm-1-17"]
+                )
+            )
+        )
+        self.assertEqual(dec_mc_7, ground_truth_mc_7)
+
 
     def test_update_upgrade_settings(self):
         # Should not update mc if unset

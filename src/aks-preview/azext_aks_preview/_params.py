@@ -116,6 +116,7 @@ from azext_aks_preview._validators import (
     validate_defender_config_parameter,
     validate_defender_disable_and_enable_parameters,
     validate_disable_windows_outbound_nat,
+    validate_egress_gtw_nodeselector,
     validate_enable_custom_ca_trust,
     validate_eviction_policy,
     validate_grafanaresourceid,
@@ -136,7 +137,6 @@ from azext_aks_preview._validators import (
     validate_nodepool_tags,
     validate_nodes_count,
     validate_os_sku,
-    validate_prompt_input,
     validate_pod_identity_pod_labels,
     validate_pod_identity_resource_name,
     validate_pod_identity_resource_namespace,
@@ -916,6 +916,10 @@ def load_arguments(self, _):
         c.argument('ingress_gateway_type',
                    arg_type=get_enum_type(ingress_gateway_types))
 
+    with self.argument_context('aks mesh enable-egress-gateway') as c:
+        c.argument('egx_gtw_nodeselector', nargs='*', validator=validate_egress_gtw_nodeselector, required=False, default=None,
+                   options_list=["--egress-gateway-nodeselector", "--egx-gtw-ns"])
+
     with self.argument_context('aks mesh enable') as c:
         c.argument('key_vault_id')
         c.argument('ca_cert_object_name')
@@ -928,11 +932,6 @@ def load_arguments(self, _):
 
     with self.argument_context('aks mesh upgrade start') as c:
         c.argument('revision', required=True)
-
-    with self.argument_context('aks copilot') as c:
-        c.argument('prompt', options_list=['--prompt', '-p'], validator=validate_prompt_input,
-                   help='The question you want to ask, e.g: How to create a AKS cluster')
-
 
 def _get_default_install_location(exe_name):
     system = platform.system()
