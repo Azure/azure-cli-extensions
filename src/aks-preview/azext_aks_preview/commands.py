@@ -22,7 +22,7 @@ from azext_aks_preview._format import (
     aks_agentpool_list_table_format,
     aks_agentpool_show_table_format,
     aks_machine_list_table_format,
-    aks_machine_show_table_format, 
+    aks_machine_show_table_format,
     aks_list_nodepool_snapshot_table_format,
     aks_list_snapshot_table_format,
     aks_list_table_format,
@@ -198,7 +198,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'aks_machine_list',
                          table_transformer=aks_machine_list_table_format)
         g.custom_show_command('show', 'aks_machine_show',
-                              table_transformer=aks_machine_show_table_format)    
+                              table_transformer=aks_machine_show_table_format)   
 
     # AKS draft commands
     with self.command_group('aks draft', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:

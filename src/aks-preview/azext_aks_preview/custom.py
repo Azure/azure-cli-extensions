@@ -1419,7 +1419,7 @@ def aks_operation_abort(cmd,   # pylint: disable=unused-argument
     )
 
     instance = client.get(resource_group_name, name)
-    power_state = PowerState(code="Running")
+    power_state = PowerState(code="Running")   
     if instance is None:
         raise InvalidArgumentValueError("Cluster {} doesnt exist, use 'aks list' to get current cluster list".format(name))
     instance.power_state = power_state
@@ -1430,8 +1430,10 @@ def aks_operation_abort(cmd,   # pylint: disable=unused-argument
 def aks_machine_list(cmd, client, resource_group_name, cluster_name, nodepool_name):
     return client.list(resource_group_name, cluster_name, nodepool_name)
 
+
 def aks_machine_show(cmd, client, resource_group_name, cluster_name, nodepool_name, machine_name):
     return client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
+
 
 def aks_addon_list_available():
     available_addons = []

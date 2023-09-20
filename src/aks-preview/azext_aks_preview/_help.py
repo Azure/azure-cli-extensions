@@ -1821,8 +1821,8 @@ helps['aks machine list'] = """
          short-summary: Name of the managed cluster
        - name: --nodepool-name
          type: string
-         short-summary: Name of the agentpool of a managed cluster      
-   exmaples: 
+         short-summary: Name of the agentpool of a managed cluster
+   exmaples:
        - name: Get information about IP Addresses, Hostname for all machines in an agentpool
          text: az aks machine list --cluster-name <clusterName> --nodepool-name <apName>
 """
@@ -1844,7 +1844,7 @@ helps['aks machine show'] = """
        - name: Get IP Addresses, Hostname for a specific machine in an agentpool
          text: az aks machine show --cluster-name <clusterName> --nodepool-name <apName> --machine-name <machineName>
 """
-                
+               
 helps['aks operation-abort'] = """
     type: command
     short-summary: Abort last running operation on managed cluster.
