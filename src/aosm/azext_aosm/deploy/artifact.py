@@ -1,5 +1,7 @@
+# --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
-# Highly Confidential Material
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
 
 # pylint: disable=unidiomatic-typecheck
 """A module to handle interacting with artifacts."""

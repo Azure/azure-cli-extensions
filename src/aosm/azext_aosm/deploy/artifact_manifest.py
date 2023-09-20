@@ -1,5 +1,7 @@
+# --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
-# Highly Confidential Material
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
 """A module to handle interacting with artifact manifests."""
 from functools import cached_property, lru_cache
 from typing import Any, List, Union
