@@ -3536,9 +3536,7 @@ def containerapp_up(cmd,
             target_port = 80
             logger.warning("No ingress provided, defaulting to port 80. Try `az containerapp up --ingress %s --target-port <port>` to set a custom port.", ingress)
 
-    if source and not _has_dockerfile(source, dockerfile):
-        pass
-    else:
+    if _has_dockerfile(source, dockerfile):
         dockerfile_content = _get_dockerfile_content(repo, branch, token, source, context_path, dockerfile)
         ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
 
