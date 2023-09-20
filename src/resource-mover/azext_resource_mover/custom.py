@@ -17,6 +17,27 @@ from .aaz.latest.resource_mover.move_resource import Add as _MoveResourceAdd
 logger = get_logger(__name__)
 
 
+def _to_snake(s):
+    import re
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', s)
+
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+
+
+def _convert_to_snake_case(element):
+    if isinstance(element, dict):
+        ret = dict()
+        for k, v in element.items():
+            ret[_to_snake(k)] = _convert_to_snake_case(v)
+
+        return ret
+
+    if isinstance(element, list):
+        return [_convert_to_snake_case(i) for i in element]
+
+    return element
+
+
 class MoveResourceAdd(_MoveResourceAdd):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -43,7 +64,9 @@ class MoveResourceAdd(_MoveResourceAdd):
         }
 
         args = self.ctx.args
-        settings = args_schema.resource_settings.to_serialized_data()
+        settings = args.resource_settings.to_serialized_data()
+        settings = _convert_to_snake_case(settings)
+
         props = {
             "target_resource_name": settings.pop("target_resource_name", None),
             "target_resource_group_name": settings.pop("target_resource_group_name", None)
