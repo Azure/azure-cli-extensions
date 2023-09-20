@@ -10,10 +10,10 @@
 
 from azure.cli.core.aaz import *
 
-#TODO: Uncomment once feature is complete
-# @register_command(
-#     "devcenter admin pool run-health-check",
-# )
+
+@register_command(
+    "devcenter admin pool run-health-check",
+)
 class RunHealthCheck(AAZCommand):
     """Triggers a refresh of the pool status.
 
@@ -22,9 +22,9 @@ class RunHealthCheck(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/runhealthchecks", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/runhealthchecks", "2023-06-01-preview"],
         ]
     }
 
@@ -58,7 +58,6 @@ class RunHealthCheck(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         return cls._args_schema
@@ -144,7 +143,7 @@ class RunHealthCheck(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-06-01-preview",
                     required=True,
                 ),
             }

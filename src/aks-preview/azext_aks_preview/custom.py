@@ -2491,6 +2491,39 @@ def aks_mesh_disable_ingress_gateway(
         ingress_gateway_type=ingress_gateway_type)
 
 
+def aks_mesh_enable_egress_gateway(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        egx_gtw_nodeselector,
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_azure_service_mesh=True,
+        enable_egress_gateway=True,
+        egx_gtw_nodeselector=egx_gtw_nodeselector)
+
+
+def aks_mesh_disable_egress_gateway(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_azure_service_mesh=True,
+        disable_egress_gateway=True,
+        egx_gtw_nodeselector=None)
+
+
 def _aks_mesh_update(
         cmd,
         client,
@@ -2506,6 +2539,9 @@ def _aks_mesh_update(
         enable_ingress_gateway=None,
         disable_ingress_gateway=None,
         ingress_gateway_type=None,
+        enable_egress_gateway=None,
+        egx_gtw_nodeselector=None,
+        disable_egress_gateway=None,
 ):
     raw_parameters = locals()
 
@@ -2526,37 +2562,3 @@ def _aks_mesh_update(
         return None
 
     return aks_update_decorator.update_mc(mc)
-
-
-def start_chat(prompt=None):
-    from azext_aks_preview._openai_wrapper import setup_openai, \
-        prompt_chat_gpt, SYSTEM_PROMPT, getch, \
-        prompt_user_to_run_script
-    errors, params = setup_openai()
-    if errors:
-        for e in errors:
-            print(e)
-        return
-
-    print("Please enter your request below.")
-    print("For example: Create a AKS cluster")
-
-    scripts, messages = prompt_chat_gpt([SYSTEM_PROMPT], params, start_input=prompt)
-    while True:
-        print("\nMenu: [p: re-Prompt, ", end="")
-        if len(scripts) > 0:
-            print("r: Run, ", end="")
-        print("q: Quit]", flush=True)
-
-        # Handle user input
-        user_input = getch()
-        if user_input in ('p', 'P'):
-            scripts, messages = prompt_chat_gpt(messages, params, insist=False, scripts=scripts)
-        elif (user_input in ('r', 'R')) and len(scripts) > 0:
-            error_output = prompt_user_to_run_script(scripts)
-            if error_output:
-                error_need_help = "I ran into the following error:\n" + error_output
-                scripts, messages = prompt_chat_gpt(messages, params, start_input=error_need_help, scripts=scripts)
-        elif user_input in ('q', 'Q'):
-            # Exiting the program...
-            break
