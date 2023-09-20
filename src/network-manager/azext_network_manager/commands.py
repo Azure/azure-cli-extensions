@@ -28,3 +28,7 @@ def load_command_table(self, _):
     with self.command_group('network manager security-admin-config rule-collection') as g:
         g.custom_command('create', 'network_manager_admin_rule_collection_create')
         g.custom_command('update', 'network_manager_admin_rule_collection_update')
+
+    with self.command_group("network manager group static-member") as g:
+        from .custom import GroupStaticMemberCreate
+        self.command_table["network manager group static-member create"] = GroupStaticMemberCreate(loader=self)

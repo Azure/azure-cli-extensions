@@ -3,18 +3,22 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+
 import subprocess
 from typing import List
 import os
+import sys
 import stat
 from pathlib import Path
 import platform
 import requests
+from knack.log import get_logger
 from azext_confcom.errors import eprint
 
 
 host_os = platform.system()
 machine = platform.machine()
+logger = get_logger(__name__)
 
 
 class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
@@ -106,30 +110,31 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
         # add the image to the end of the parameter list
         arg_list += ["roothash", "-i", f"{image_name}"]
 
-        outputlines = None
-        err = None
-
-        with subprocess.Popen(
+        item = subprocess.run(
             arg_list,
-            executable=policy_bin_str,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        ) as layers:
-            outputlines, err = layers.communicate()
+            capture_output=True,
+            check=False,
+        )
 
         output = []
-        if outputlines is None:
-            eprint("Null pointer detected.")
-        elif len(outputlines) > 0:
-            output = outputlines.decode("utf8").strip("\n").split("\n")
+        if item.returncode != 0:
+            if item.stderr.decode("utf-8") != "" and item.stderr.decode("utf-8") is not None:
+                logger.warning(item.stderr.decode("utf-8"))
+            if item.returncode == -9:
+                logger.warning(
+                    "System does not have enough memory to calculate layer hashes for image: %s. %s",
+                    image_name,
+                    "Please try increasing the amount of system memory."
+                )
+            sys.exit(item.returncode)
+        elif len(item.stdout) > 0:
+            output = item.stdout.decode("utf8").strip("\n").split("\n")
             output = [i.split(": ", 1)[1] for i in output if len(i.split(": ", 1)) > 1]
         else:
             eprint(
-                "Cannot get layer hashes"
+                "Could not get layer hashes"
             )
 
-        if err.decode("utf8") != "":
-            eprint(err.decode("utf8"))
         # cache output layers
         self.layer_cache[image_name] = output
         return output

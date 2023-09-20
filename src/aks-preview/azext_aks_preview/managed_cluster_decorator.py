@@ -985,11 +985,22 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # - False: sets by user, to disable the workload identity feature
         # - None: user unspecified, don't set the profile and let server side to backfill
         enable_workload_identity = self.raw_param.get("enable_workload_identity")
+        disable_workload_identity = self.raw_param.get("disable_workload_identity")
 
-        if enable_workload_identity is None:
+        if not enable_workload_identity and not disable_workload_identity:
             return None
 
+        if enable_workload_identity and disable_workload_identity:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-workload-identity and "
+                "--disable-workload-identity at the same time."
+            )
+
+        if not hasattr(self.models, "ManagedClusterSecurityProfileWorkloadIdentity"):
+            raise UnknownError("Workload Identity's data model not found")
+
         profile = self.models.ManagedClusterSecurityProfileWorkloadIdentity()
+
         if self.decorator_mode == DecoratorMode.UPDATE:
             if self.mc.security_profile is not None and self.mc.security_profile.workload_identity is not None:
                 # reuse previous profile is has been set
@@ -2101,14 +2112,18 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         disable_ingress_gateway = self.raw_param.get("disable_ingress_gateway", False)
         ingress_gateway_type = self.raw_param.get("ingress_gateway_type", None)
 
+        enable_egress_gateway = self.raw_param.get("enable_egress_gateway", False)
+        disable_egress_gateway = self.raw_param.get("disable_egress_gateway", False)
+        egx_gtw_nodeselector = self.raw_param.get("egx_gtw_nodeselector", None)
+
         if enable_ingress_gateway and disable_ingress_gateway:
             raise MutuallyExclusiveArgumentError(
                 "Cannot both enable and disable azure service mesh ingress gateway at the same time.",
             )
 
-        # deal with gateways
+        # deal with ingress gateways
         if enable_ingress_gateway or disable_ingress_gateway:
-            # if a gateway is enabled, enable the mesh
+            # if an ingress gateway is enabled, enable the mesh
             if enable_ingress_gateway:
                 new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
                 updated = True
@@ -2124,23 +2139,74 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 new_profile.istio.components.ingress_gateways = []
                 updated = True
 
-            # make update if the gateway already exist
-            gateway_exists = False
+            # make update if the ingress gateway already exist
+            ingress_gateway_exists = False
             for ingress in new_profile.istio.components.ingress_gateways:
                 if ingress.mode == ingress_gateway_type:
                     ingress.enabled = enable_ingress_gateway
-                    gateway_exists = True
+                    ingress_gateway_exists = True
                     updated = True
                     break
 
-            # gateway not exist, append
-            if not gateway_exists:
+            # ingress gateway not exist, append
+            if not ingress_gateway_exists:
                 new_profile.istio.components.ingress_gateways.append(
                     self.models.IstioIngressGateway(
                         mode=ingress_gateway_type,
                         enabled=enable_ingress_gateway,
                     )
                 )
+                updated = True
+
+        # deal with egress gateways
+        if enable_egress_gateway and disable_egress_gateway:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot both enable and disable azure service mesh egress gateway at the same time.",
+            )
+
+        if not enable_egress_gateway and egx_gtw_nodeselector:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot set egress gateway nodeselector without enabling an egress gateway.",
+            )
+
+        if enable_egress_gateway or disable_egress_gateway:
+            # if a gateway is enabled, enable the mesh
+            if enable_egress_gateway:
+                new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
+                updated = True
+
+            # ensure necessary fields
+            if new_profile.istio.components is None:
+                new_profile.istio.components = self.models.IstioComponents()
+                updated = True
+            if new_profile.istio.components.egress_gateways is None:
+                new_profile.istio.components.egress_gateways = []
+                updated = True
+
+            # make update if the egress gateway already exists
+            egress_gateway_exists = False
+            for egress in new_profile.istio.components.egress_gateways:
+                egress.enabled = enable_egress_gateway
+                egress.node_selector = egx_gtw_nodeselector
+                egress_gateway_exists = True
+                updated = True
+                break
+
+            # egress gateway doesn't exist, append
+            if not egress_gateway_exists:
+                if egx_gtw_nodeselector:
+                    new_profile.istio.components.egress_gateways.append(
+                        self.models.IstioEgressGateway(
+                            enabled=enable_egress_gateway,
+                            node_selector=egx_gtw_nodeselector,
+                        )
+                    )
+                else:
+                    new_profile.istio.components.egress_gateways.append(
+                        self.models.IstioEgressGateway(
+                            enabled=enable_egress_gateway,
+                        )
+                    )
                 updated = True
 
         # deal with plugin ca
@@ -2161,6 +2227,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 raise InvalidArgumentValueError('--root-cert-object-name is required to use Azure Service Mesh plugin CA feature.')
             if cert_chain_object_name is None:
                 raise InvalidArgumentValueError('--cert-chain-object-name is required to use Azure Service Mesh plugin CA feature.')
+
+        if key_vault_id is not None and (
+                not is_valid_resource_id(key_vault_id) or "providers/Microsoft.KeyVault/vaults" not in key_vault_id):
+            raise InvalidArgumentValueError(
+                key_vault_id + " is not a valid Azure Keyvault resource ID."
+            )
 
         if enable_asm and all([key_vault_id, ca_cert_object_name, ca_key_object_name, root_cert_object_name, cert_chain_object_name]):
             if new_profile.istio.certificate_authority is None:
@@ -2275,6 +2347,41 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: dictionary or None
         """
         return self.agentpool_context.get_node_taints()
+
+    def _get_enable_cost_analysis(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_cost_analysis.
+
+        When enabled, if both enable_cost_analysis and disable_cost_analysis are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        enable_cost_analysis = self.raw_param.get("enable_cost_analysis")
+
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if enable_cost_analysis and self.get_disable_cost_analysis():
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-cost-analysis and --disable-cost-analysis at the same time."
+                )
+
+        return enable_cost_analysis
+
+    def get_enable_cost_analysis(self) -> bool:
+        """Obtain the value of enable_cost_analysis.
+
+        :return: bool
+        """
+        return self._get_enable_cost_analysis(enable_validation=True)
+
+    def get_disable_cost_analysis(self) -> bool:
+        """Obtain the value of disable_cost_analysis.
+
+        :return: bool
+        """
+        # Note: No need to check for mutually exclusive parameter with enable-cost-analysis here
+        # because it's already checked in _get_enable_cost_analysis
+        return self.raw_param.get("disable_cost_analysis")
 
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -2469,15 +2576,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         self._ensure_mc(mc)
 
         profile = self.context.get_workload_identity_profile()
-        if profile is None:
-            if mc.security_profile is not None:
-                # set the value to None to let server side to fill in the default value
-                mc.security_profile.workload_identity = None
-            return mc
-
-        if mc.security_profile is None:
-            mc.security_profile = self.models.ManagedClusterSecurityProfile()
-        mc.security_profile.workload_identity = profile
+        if profile:
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+            mc.security_profile.workload_identity = profile
 
         return mc
 
@@ -2714,6 +2816,29 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             )
         return mc
 
+    def set_up_cost_analysis(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_cost_analysis():
+            if mc.metrics_profile is None:
+                mc.metrics_profile = self.models.ManagedClusterMetricsProfile()
+            if mc.metrics_profile.cost_analysis is None:
+                mc.metrics_profile.cost_analysis = self.models.ManagedClusterCostAnalysis()
+
+            # set enabled
+            mc.metrics_profile.cost_analysis.enabled = True
+
+        # Default is disabled so no need to worry about that here
+
+        return mc
+
+    def set_up_metrics_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        mc = self.set_up_cost_analysis(mc)
+
+        return mc
+
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
 
@@ -2757,6 +2882,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_azure_service_mesh_profile(mc)
         # set up azure monitor profile
         mc = self.set_up_azure_monitor_profile(mc)
+        # set up metrics profile
+        mc = self.set_up_metrics_profile(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -3601,6 +3728,40 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 agent_profile.node_taints = nodepool_taints
         return mc
 
+    def update_cost_analysis(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_cost_analysis():
+            if mc.metrics_profile is None:
+                mc.metrics_profile = self.models.ManagedClusterMetricsProfile()
+            if mc.metrics_profile.cost_analysis is None:
+                mc.metrics_profile.cost_analysis = self.models.ManagedClusterCostAnalysis()
+
+            # set enabled
+            mc.metrics_profile.cost_analysis.enabled = True
+
+        if self.context.get_disable_cost_analysis():
+            if mc.metrics_profile is None:
+                mc.metrics_profile = self.models.ManagedClusterMetricsProfile()
+            if mc.metrics_profile.cost_analysis is None:
+                mc.metrics_profile.cost_analysis = self.models.ManagedClusterCostAnalysis()
+
+            # set disabled
+            mc.metrics_profile.cost_analysis.enabled = False
+
+        return mc
+
+    def update_metrics_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Updates the metricsProfile field of the managed cluster
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        mc = self.update_cost_analysis(mc)
+
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -3656,5 +3817,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nodepool_taints_mc(mc)
         # update network_observability in network_profile
         mc = self.update_enable_network_observability_in_network_profile(mc)
+        # update metrics profile
+        mc = self.update_metrics_profile(mc)
 
         return mc
