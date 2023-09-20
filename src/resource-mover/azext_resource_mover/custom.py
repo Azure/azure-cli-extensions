@@ -41,12 +41,13 @@ def _convert_to_snake_case(element):
 class MoveResourceAdd(_MoveResourceAdd):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZDictArg
+        from azure.cli.core.aaz import AAZFreeFormDictArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.resource_settings = AAZDictArg(
+        args_schema.resource_settings = AAZFreeFormDictArg(
             options=["--resource-settings"],
             help="The resource settings. Expected value: json-string/@json-file."
         )
+        args_schema.resource_settings_generated._registered = False
 
         return args_schema
 
