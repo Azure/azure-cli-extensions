@@ -1,3 +1,8 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 from azure.cli.testsdk import CliTestError, ResourceGroupPreparer
 from azure.cli.testsdk.preparers import AbstractPreparer, SingleValueReplacer
 from azure.cli.testsdk.base import execute
