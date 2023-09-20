@@ -158,7 +158,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     # check if this is AKS_HCI
     aks_hci = False
-    if distribution =='aks_workload' and infrastructure == 'azure_stack_hci':
+    if distribution == 'aks_workload' and infrastructure == 'azure_stack_hci':
         aks_hci = True
 
     # Install kubectl and helm
