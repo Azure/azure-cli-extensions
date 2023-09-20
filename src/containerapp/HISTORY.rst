@@ -12,6 +12,7 @@ upcoming
 * Add command group 'az containerapp connected-env dapr-component', support list/show/set/remove connectedEnvironments daprComponents
 * Add command group 'az containerapp connected-env storage', support list/show/set/remove connectedEnvironments storage
 * 'az containerapp env': --infrastructure-resource-group, supports custom rg name for byovnet env creations in WP enabled envs
+* 'az containerapp job create': update default properties
 
 0.3.39
 ++++++
