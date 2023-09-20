@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "network manager security-admin-config rule-collection rule",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage security admin rules with network.
+    """Manage admin rule with network.
     """
     pass
 
