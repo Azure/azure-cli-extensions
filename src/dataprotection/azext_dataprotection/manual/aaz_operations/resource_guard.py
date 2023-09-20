@@ -8,11 +8,11 @@
 
 from azure.cli.core.aaz import AAZStrArg, AAZUndefined, has_value
 from azure.cli.core.aaz.utils import assign_aaz_list_arg
+from knack.log import get_logger
+from knack.util import CLIError
 from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Update as _Update
 from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Unlock as _Unlock
 from azext_dataprotection.manual.enums import get_resource_type_values
-from knack.log import get_logger
-from knack.util import CLIError
 from ..helpers import critical_operation_map, operation_request_map
 
 logger = get_logger(__name__)
@@ -95,7 +95,7 @@ class Unlock(_Unlock):
             formatted_operation = [op for op in formatted_operation_list if
                                    operation_request_map[str(operation)] in op]
 
-            if(len(formatted_operation) != 1):
+            if len(formatted_operation) != 1:
                 raise CLIError("Unable to proceed with shorthand argument {}. "
                                "Please retry the command with the full payload".format(operation))
 

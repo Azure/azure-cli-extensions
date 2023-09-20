@@ -25,7 +25,6 @@ class VaultPreparer(AbstractPreparer, SingleValueReplacer):
         self.immutability_state = immutability_state
 
     def create_resource(self, name, **kwargs):
-        print("In preparer's create_resource")
         self.resource_group = self._get_resource_group(**kwargs)
         self.location = self._get_resource_group_location(**kwargs)
 
@@ -43,7 +42,7 @@ class VaultPreparer(AbstractPreparer, SingleValueReplacer):
 
     def remove_resource(self, name, **kwargs):
         # Should get cleaned up with Resource Group cleanup
-        print("In preparer's remove_resource")
+        pass
 
     def _get_resource_group(self, **kwargs):
         try:
