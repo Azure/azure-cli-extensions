@@ -119,6 +119,11 @@ def load_arguments(self, _):
         c.argument("vpn_site_link", help='The resource ID of VPN Site Link.')
         c.argument('with_link', help='Create VpnConnection with default link.', arg_type=get_three_state_flag())
 
+    for item in ['network vpn-gateway connection create', 'network vpn-gateway connection update']:
+        with self.argument_context(item) as c:
+            c.argument('associated_inbound_routemap', help='Resource uri of inbound routemap for this connection’s routing configuration')
+            c.argument('associated_outbound_routemap', help='Resource uri of outbound routemap for this connection’s routing configuration')
+
     with self.argument_context('network vpn-gateway connection list') as c:
         # List commands cannot use --ids flag
         c.argument('resource_name', vpn_gateway_name_type, id_part=None)
@@ -243,6 +248,11 @@ def load_arguments(self, _):
         c.argument('virtual_hub', options_list='--vhub', help='Name or ID of a virtual hub.', validator=get_network_resource_name_or_id('virtual_hub', 'virtualHubs'))
         c.argument('vpn_server_config', help='Name or ID of a vpn server configuration.', validator=get_network_resource_name_or_id('vpn_server_config', 'vpnServerConfigurations'))
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
+
+    for item in ['network p2s-vpn-gateway create', 'network p2s-vpn-gateway update']:
+        with self.argument_context(item) as c:
+            c.argument('associated_inbound_routemap', help='Resource uri of inbound routemap for this connection’s routing configuration')
+            c.argument('associated_outbound_routemap', help='Resource uri of outbound routemap for this connection’s routing configuration')
 
     with self.argument_context('network p2s-vpn-gateway connection') as c:
         for dest in ['gateway_name', 'resource_name']:

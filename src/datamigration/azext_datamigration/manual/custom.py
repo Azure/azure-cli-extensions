@@ -14,6 +14,7 @@
 import os
 import signal
 import subprocess
+from knack.prompting import prompt_pass
 from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
 from azure.cli.core.azclierror import RequiredArgumentMissingError
 from azure.cli.core.azclierror import UnclassifiedUserFault
@@ -233,3 +234,178 @@ def datamigration_register_ir(auth_key,
 
     # register or re-register Dms on ir
     helper.register_ir(auth_key, installed_ir_path)
+
+
+# -----------------------------------------------------------------------------------------------------------------
+#  Migrate logins from the source Sql Servers to the target Azure Sql Servers.
+# -----------------------------------------------------------------------------------------------------------------
+def datamigration_login_migration(src_sql_connection_str=None,
+                                  tgt_sql_connection_str=None,
+                                  csv_file_path=None,
+                                  list_of_login=None,
+                                  output_folder=None,
+                                  aad_domain_name=None,
+                                  config_file_path=None):
+
+    try:
+
+        # Setup the console app
+        defaultOutputFolder, exePath = helper.loginMigration_console_app_setup()
+
+        if src_sql_connection_str is not None and config_file_path is not None:
+            raise MutuallyExclusiveArgumentError("Both src_sql_connection_str and config_file_path are mutually exclusive arguments. Please provide only one of these arguments.")
+
+        # When Connection string.
+        if src_sql_connection_str is not None and tgt_sql_connection_str is not None:
+            # Formating for multiple source connection string
+            src_sql_connection_str = " ".join(f"\"{i}\"" for i in src_sql_connection_str)
+
+            # parameter set for Perfornace data collection
+            parameterList = {
+                "--targetSqlConnectionString": tgt_sql_connection_str,
+                "--csvFilePath": csv_file_path,
+                "--listOfLogin": list_of_login,
+                "--outputFolder": output_folder,
+                "--aadDomainName": aad_domain_name
+            }
+
+            # joining paramaters together in a string
+            cmd = f'{exePath} LoginsMigration --sourceSqlConnectionString {src_sql_connection_str}'
+
+            # formating the parameter list into a string
+            for param in parameterList:
+                if parameterList[param] is not None and not param.__contains__("list"):
+                    cmd += f' {param} "{parameterList[param]}"'
+
+                # in case the parameter input is list format it accordingly
+                elif param.__contains__("list") and parameterList[param] is not None:
+                    parameterList[param] = " ".join(f"\"{i}\"" for i in parameterList[param])
+                    cmd += f' {param} {parameterList[param]}'
+            subprocess.call(cmd, shell=False)
+
+        # When Config file.
+        elif config_file_path is not None:
+            helper.test_path_exist(config_file_path)
+            cmd = f'{exePath} --configFile "{config_file_path}"'
+            subprocess.call(cmd, shell=False)
+
+        else:
+            raise RequiredArgumentMissingError('No valid parameter set used. Please provide config_file_path or required prameters: src_sql_connection_str, tgt_sql_connection_str, csv_file_path or list_of_login.')
+
+        # Printing log file path
+        logFilePath = os.path.join(defaultOutputFolder, "LoginsMigrationLogs")
+        from knack.log import get_logger
+        logger = get_logger(__name__)
+        logger.warning(f"If outputFolder parameter is not provided, the default event and error logs folder path: {logFilePath}")
+
+    except Exception as e:
+        raise e
+
+
+# -----------------------------------------------------------------------------------------------------------------
+#  Migrate TDE certificate from source SQL Server to the target Azure SQL Server.
+# -----------------------------------------------------------------------------------------------------------------
+def datamigration_tde_migration(source_sql_connection_string=None,
+                                target_subscription_id=None,
+                                target_resource_group_name=None,
+                                target_managed_instance_name=None,
+                                network_share_path=None,
+                                network_share_domain=None,
+                                network_share_user_name=None,
+                                network_share_password=None,
+                                database_name=None):
+
+    if source_sql_connection_string is None:
+        source_sql_connection_string = prompt_pass('Connection String:', confirm=False)
+
+    if network_share_password is None:
+        network_share_password = prompt_pass('Network Share Password:', confirm=False)
+
+    try:
+        # Setup the console app
+        exePath = helper.tdeMigration_console_app_setup()
+
+        if exePath is None:
+            return
+
+        if os.path.exists(exePath) is False:
+            print("Failed to locate executable.")
+            return
+
+        cmd = f'{exePath} --sourceSqlConnectionString "{source_sql_connection_string}" --targetSubscriptionId "{target_subscription_id}" --targetResourceGroupName "{target_resource_group_name}" --targetManagedInstanceName "{target_managed_instance_name}" --networkSharePath "{network_share_path}" --networkShareDomain "{network_share_domain}" --networkShareUserName "{network_share_user_name}" --networkSharePassword "{network_share_password}" --clientType "CLI" --databaseName'
+
+        for db in database_name:
+            cmd += " \"" + db + "\""
+
+        subprocess.call(cmd, shell=False)
+
+    except Exception as e:
+        raise e
+
+
+# -----------------------------------------------------------------------------------------------------------------
+#  Migrate schema from the source Sql Servers to the target Azure Sql Servers.
+# -----------------------------------------------------------------------------------------------------------------
+def datamigration_sql_server_schema(action=None,
+                                    src_sql_connection_str=None,
+                                    tgt_sql_connection_str=None,
+                                    input_script_file_path=None,
+                                    output_folder=None,
+                                    config_file_path=None):
+
+    # Error message strings
+    actionError = "Please provide valid action value."
+    srcConnectionError = "Please provide src_sql_connection_str value."
+    tgtConnectionError = "Please provide tgt_sql_connection_str value."
+    inputFilePathError = "Please provide input_script_file_path value for the action of DeploySchema."
+
+    try:
+        # Setup the console app
+        defaultOutputFolder, exePath = helper.sqlServerSchema_console_app_setup()
+
+        if config_file_path is not None:
+            helper.test_path_exist(config_file_path)
+            print(f"Run through the provided config file:")
+            cmd = f'{exePath} --configFile "{config_file_path}"'
+            subprocess.call(cmd, shell=False)
+        else:
+            if action is None:
+                raise RequiredArgumentMissingError(actionError)
+
+            if src_sql_connection_str is None:
+                raise RequiredArgumentMissingError(srcConnectionError)
+
+            if tgt_sql_connection_str is None:
+                raise RequiredArgumentMissingError(tgtConnectionError)
+
+            if action == "DeploySchema":
+                if input_script_file_path is None:
+                    raise RequiredArgumentMissingError(inputFilePathError)
+                else:
+                    helper.test_path_exist(input_script_file_path)
+
+            # parameter set for Perfornace data collection
+            parameterList = {
+                "--sourceConnectionString": src_sql_connection_str,
+                "--targetConnectionString": tgt_sql_connection_str,
+                "--inputScriptFilePath": input_script_file_path,
+                "--outputFolder": output_folder
+            }
+
+            # joining paramaters together in a string
+            cmd = f'{exePath} {action}'
+
+            # formating the parameter list into a string
+            for param in parameterList:
+                if parameterList[param] is not None and not param.__contains__("list"):
+                    cmd += f' {param} "{parameterList[param]}"'
+
+                # in case the parameter input is list format it accordingly
+                elif param.__contains__("list") and parameterList[param] is not None:
+                    parameterList[param] = " ".join(f"\"{i}\"" for i in parameterList[param])
+                    cmd += f' {param} {parameterList[param]}'
+
+            subprocess.call(cmd, shell=False)
+
+    except Exception as e:
+        raise e

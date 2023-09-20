@@ -41,6 +41,9 @@ setupAZ(){
         azdev setup -c "${cli_repo}" -r "${ext_repo}"
     fi
 
+    # fix the issue that vcrpy>=4.3.0 is not compatible with urllib3
+    pip install vcrpy==4.2.1
+
     # post-install-az: check installation result
     which az && az version
 }
@@ -48,7 +51,7 @@ setupAZ(){
 # need to be executed in a venv
 installTestPackages(){
     # install pytest plugins
-    pip install pytest-json-report pytest-rerunfailures pytest-cov pytest-forked --upgrade
+    pip install pytest-json-report==1.5.0 pytest-rerunfailures==11.0 pytest-cov==4.0.0 pytest-forked==1.6.0
 
     # install coverage for measuring code coverage
     pip install coverage

@@ -7,8 +7,9 @@
 
 import datetime
 import json
+import re
 
-from ..utils import get_cluster_rp_api_version
+from ..utils import get_cluster_rp_api_version, is_skip_prerequisites_specified
 from .. import consts
 
 from knack.log import get_logger
@@ -30,13 +31,15 @@ from .._client_factory import (
     cf_resources, cf_resource_groups, cf_log_analytics)
 
 logger = get_logger(__name__)
+DCR_API_VERSION = "2022-06-01"
 
 
 class ContainerInsights(DefaultExtension):
     def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp,
                extension_type, scope, auto_upgrade_minor_version, release_train, version, target_namespace,
                release_namespace, configuration_settings, configuration_protected_settings,
-               configuration_settings_file, configuration_protected_settings_file):
+               configuration_settings_file, configuration_protected_settings_file,
+               plan_name, plan_publisher, plan_product):
         """ExtensionType 'microsoft.azuremonitor.containers' specific validations & defaults for Create
            Must create and return a valid 'Extension' object.
 
@@ -57,8 +60,11 @@ class ContainerInsights(DefaultExtension):
                        'only supports cluster scope and single instance of this extension.', extension_type)
         logger.warning("Defaulting to extension name '%s' and release-namespace '%s'", name, release_namespace)
 
-        _get_container_insights_settings(cmd, resource_group_name, cluster_rp, cluster_type, cluster_name, configuration_settings,
-                                         configuration_protected_settings, is_ci_extension_type)
+        if not is_skip_prerequisites_specified(configuration_settings):
+            _get_container_insights_settings(cmd, resource_group_name, cluster_rp, cluster_type, cluster_name, configuration_settings,
+                                             configuration_protected_settings, is_ci_extension_type)
+        else:
+            logger.info("Provisioning of prerequisites is skipped")
 
         # NOTE-2: Return a valid Extension object, Instance name and flag for Identity
         create_identity = True
@@ -83,6 +89,11 @@ class ContainerInsights(DefaultExtension):
         except Exception:
             pass  # its OK to ignore the exception since MSI auth in preview
 
+        if (extension is not None) and (extension.configuration_settings is not None):
+            if is_skip_prerequisites_specified(extension.configuration_settings):
+                logger.info("Deprovisioning of prerequisites is skipped")
+                return
+
         subscription_id = get_subscription_id(cmd.cli_ctx)
         # handle cluster type here
         cluster_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/{2}/{3}/{4}'.format(subscription_id, resource_group_name, cluster_rp, cluster_type, cluster_name)
@@ -98,7 +109,7 @@ class ContainerInsights(DefaultExtension):
                 if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
                     useAADAuth = True
         if useAADAuth:
-            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2021-04-01"
+            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version={DCR_API_VERSION}"
             for _ in range(3):
                 try:
                     send_raw_request(cmd.cli_ctx, "GET", association_url,)
@@ -112,7 +123,7 @@ class ContainerInsights(DefaultExtension):
                     pass  # its OK to ignore the exception since MSI auth in preview
 
         if isDCRAExists:
-            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2021-04-01"
+            association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version={DCR_API_VERSION}"
             for _ in range(3):
                 try:
                     send_raw_request(cmd.cli_ctx, "DELETE", association_url,)
@@ -452,7 +463,10 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
     workspace_resource_id = ''
-    useAADAuth = False
+    useAADAuth = True
+    if 'amalogs.useAADAuth' not in configuration_settings:
+        configuration_settings['amalogs.useAADAuth'] = "true"
+    extensionSettings = {}
 
     if configuration_settings is not None:
         if 'loganalyticsworkspaceresourceid' in configuration_settings:
@@ -468,11 +482,43 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
             logger.info("provided useAADAuth flag is : %s", useAADAuthSetting)
             if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
                 useAADAuth = True
+            else:
+                useAADAuth = False
         elif 'amalogs.useAADAuth' in configuration_settings:
             useAADAuthSetting = configuration_settings['amalogs.useAADAuth']
             logger.info("provided useAADAuth flag is : %s", useAADAuthSetting)
             if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
                 useAADAuth = True
+            else:
+                useAADAuth = False
+        if useAADAuth and ('dataCollectionSettings' in configuration_settings):
+            dataCollectionSettingsString = configuration_settings["dataCollectionSettings"]
+            logger.info("provided dataCollectionSettings  is : %s", dataCollectionSettingsString)
+            dataCollectionSettings = json.loads(dataCollectionSettingsString)
+            if 'interval' in dataCollectionSettings.keys():
+                intervalValue = dataCollectionSettings["interval"]
+                if (bool(re.match(r'^[0-9]+[m]$', intervalValue))) is False:
+                    raise InvalidArgumentValueError('interval format must be in <number>m')
+                intervalValue = int(intervalValue.rstrip("m"))
+                if intervalValue <= 0 or intervalValue > 30:
+                    raise InvalidArgumentValueError('interval value MUST be in the range from 1m to 30m')
+            if 'namespaceFilteringMode' in dataCollectionSettings.keys():
+                namespaceFilteringModeValue = dataCollectionSettings["namespaceFilteringMode"].lower()
+                if namespaceFilteringModeValue not in ["off", "exclude", "include"]:
+                    raise InvalidArgumentValueError('namespaceFilteringMode value MUST be either Off or Exclude or Include')
+            if 'namespaces' in dataCollectionSettings.keys():
+                namspaces = dataCollectionSettings["namespaces"]
+                if isinstance(namspaces, list) is False:
+                    raise InvalidArgumentValueError('namespaces must be an array type')
+            if 'enableContainerLogV2' in dataCollectionSettings.keys():
+                enableContainerLogV2Value = dataCollectionSettings["enableContainerLogV2"]
+                if not isinstance(enableContainerLogV2Value, bool):
+                    raise InvalidArgumentValueError('enableContainerLogV2Value value MUST be either true or false')
+            if 'streams' in dataCollectionSettings.keys():
+                streams = dataCollectionSettings["streams"]
+                if isinstance(streams, list) is False:
+                    raise InvalidArgumentValueError('streams must be an array type')
+            extensionSettings["dataCollectionSettings"] = dataCollectionSettings
 
     workspace_resource_id = workspace_resource_id.strip()
 
@@ -502,7 +548,7 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
     if is_ci_extension_type:
         if useAADAuth:
             logger.info("creating data collection rule and association")
-            _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name, workspace_resource_id)
+            _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name, workspace_resource_id, extensionSettings)
         elif not _is_container_insights_solution_exists(cmd, workspace_resource_id):
             logger.info("Creating ContainerInsights solution resource, since it doesn't exist and it is using legacy authentication")
             _ensure_container_insights_for_monitoring(cmd, workspace_resource_id).result()
@@ -520,6 +566,7 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
 
     # workspace key not used in case of AAD MSI auth
     configuration_protected_settings['omsagent.secret.key'] = "<not_used>"
+    configuration_protected_settings['amalogs.secret.key'] = "<not_used>"
     if not useAADAuth:
         shared_keys = log_analytics_client.shared_keys.get_shared_keys(
             workspace_rg_name, workspace_name)
@@ -570,7 +617,7 @@ def get_existing_container_insights_extension_dcr_tags(cmd, dcr_url):
     return tags
 
 
-def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name, workspace_resource_id):
+def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name, workspace_resource_id, extensionSettings):
     from azure.core.exceptions import HttpResponseError
 
     cluster_region = ''
@@ -600,7 +647,9 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
     except HttpResponseError as ex:
         raise ex
 
-    dataCollectionRuleName = f"MSCI-{cluster_name}-{cluster_region}"
+    dataCollectionRuleName = f"MSCI-{workspace_region}-{cluster_name}"
+    # Max length of the DCR name is 64 chars
+    dataCollectionRuleName = dataCollectionRuleName[0:64]
     dcr_resource_id = f"/subscriptions/{subscription_id}/resourceGroups/{cluster_resource_group_name}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
 
     # first get the association between region display names and region IDs (because for some reason
@@ -647,33 +696,35 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
             if (cluster_region not in region_ids):
                 raise ClientRequestError(f"Data Collection Rule Associations are not supported for cluster region {cluster_region}")
 
-    dcr_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{dcr_resource_id}?api-version=2021-04-01"
+    dcr_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{dcr_resource_id}?api-version={DCR_API_VERSION}"
     # get existing tags on the container insights extension DCR if the customer added any
     existing_tags = get_existing_container_insights_extension_dcr_tags(cmd, dcr_url)
+    streams = ["Microsoft-ContainerInsights-Group-Default"]
+    if extensionSettings is not None and 'dataCollectionSettings' in extensionSettings.keys():
+        dataCollectionSettings = extensionSettings["dataCollectionSettings"]
+        if dataCollectionSettings is not None and 'streams' in dataCollectionSettings.keys():
+            streams = dataCollectionSettings["streams"]
 
     # create the DCR
     dcr_creation_body = json.dumps(
         {
             "location": workspace_region,
             "tags": existing_tags,
+            "kind": "Linux",
             "properties": {
                 "dataSources": {
                     "extensions": [
                         {
                             "name": "ContainerInsightsExtension",
-                            "streams": [
-                                "Microsoft-ContainerInsights-Group-Default"
-                            ],
+                            "streams": streams,
                             "extensionName": "ContainerInsights",
+                            "extensionSettings": extensionSettings
                         }
                     ]
                 },
                 "dataFlows": [
                     {
-                        "streams": [
-                            "Microsoft-ContainerInsights-Group-Default"
-
-                        ],
+                        "streams": streams,
                         "destinations": ["la-workspace"],
                     }
                 ],
@@ -708,7 +759,7 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
             },
         }
     )
-    association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version=2021-04-01"
+    association_url = cmd.cli_ctx.cloud.endpoints.resource_manager + f"{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/ContainerInsightsExtension?api-version={DCR_API_VERSION}"
     for _ in range(3):
         try:
             send_raw_request(cmd.cli_ctx, "PUT", association_url, body=association_body,)

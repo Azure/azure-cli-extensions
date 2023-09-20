@@ -5,7 +5,7 @@ This package is for the 'resource-graph' extension, i.e. 'az graph'.
 ### How to use ###
 Install this extension using the below CLI command
 ```
-az extension add --name resoure-graph
+az extension add --name resource-graph
 ```
 
 ### Included Features

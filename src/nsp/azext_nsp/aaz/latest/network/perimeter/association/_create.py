@@ -48,13 +48,11 @@ class Create(AAZCommand):
             options=["-n", "--name", "--association-name"],
             help="The name of the NSP association.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.perimeter_name = AAZStrArg(
             options=["--perimeter-name"],
             help="The name of the network security perimeter.",
             required=True,
-            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -121,7 +119,17 @@ class Create(AAZCommand):
         _schema.id = cls._args_sub_resource_create.id
 
     def _execute_operations(self):
+        self.pre_operations()
         self.NspAssociationsCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -212,8 +220,8 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("accessMode", AAZStrType, ".access_mode")
-                _build_schema_sub_resource_create(properties.set_prop("privateLinkResource", AAZObjectType, ".private_link_resource"))
-                _build_schema_sub_resource_create(properties.set_prop("profile", AAZObjectType, ".profile"))
+                _CreateHelper._build_schema_sub_resource_create(properties.set_prop("privateLinkResource", AAZObjectType, ".private_link_resource"))
+                _CreateHelper._build_schema_sub_resource_create(properties.set_prop("profile", AAZObjectType, ".profile"))
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -261,9 +269,9 @@ class Create(AAZCommand):
             properties.private_link_resource = AAZObjectType(
                 serialized_name="privateLinkResource",
             )
-            _build_schema_sub_resource_read(properties.private_link_resource)
+            _CreateHelper._build_schema_sub_resource_read(properties.private_link_resource)
             properties.profile = AAZObjectType()
-            _build_schema_sub_resource_read(properties.profile)
+            _CreateHelper._build_schema_sub_resource_read(properties.profile)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -275,27 +283,29 @@ class Create(AAZCommand):
             return cls._schema_on_200_201
 
 
-def _build_schema_sub_resource_create(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("id", AAZStrType, ".id")
+class _CreateHelper:
+    """Helper class for Create"""
 
+    @classmethod
+    def _build_schema_sub_resource_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("id", AAZStrType, ".id")
 
-_schema_sub_resource_read = None
+    _schema_sub_resource_read = None
 
+    @classmethod
+    def _build_schema_sub_resource_read(cls, _schema):
+        if cls._schema_sub_resource_read is not None:
+            _schema.id = cls._schema_sub_resource_read.id
+            return
 
-def _build_schema_sub_resource_read(_schema):
-    global _schema_sub_resource_read
-    if _schema_sub_resource_read is not None:
-        _schema.id = _schema_sub_resource_read.id
-        return
+        cls._schema_sub_resource_read = _schema_sub_resource_read = AAZObjectType()
 
-    _schema_sub_resource_read = AAZObjectType()
+        sub_resource_read = _schema_sub_resource_read
+        sub_resource_read.id = AAZStrType()
 
-    sub_resource_read = _schema_sub_resource_read
-    sub_resource_read.id = AAZStrType()
-
-    _schema.id = _schema_sub_resource_read.id
+        _schema.id = cls._schema_sub_resource_read.id
 
 
 __all__ = ["Create"]

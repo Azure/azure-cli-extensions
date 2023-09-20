@@ -13,13 +13,14 @@ from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union
 
 from ... import _serialization
 
-if TYPE_CHECKING:
-    # pylint: disable=unused-import,ungrouped-imports
-    from .. import models as _models
 if sys.version_info >= (3, 9):
     from collections.abc import MutableMapping
 else:
     from typing import MutableMapping  # type: ignore  # pylint: disable=ungrouped-imports
+
+if TYPE_CHECKING:
+    # pylint: disable=unused-import,ungrouped-imports
+    from .. import models as _models
 JSON = MutableMapping[str, Any]  # pylint: disable=unsubscriptable-object
 
 
@@ -34,7 +35,7 @@ class ActiveDeploymentCollection(_serialization.Model):
         "active_deployment_names": {"key": "activeDeploymentNames", "type": "[str]"},
     }
 
-    def __init__(self, *, active_deployment_names: Optional[List[str]] = None, **kwargs):
+    def __init__(self, *, active_deployment_names: Optional[List[str]] = None, **kwargs: Any) -> None:
         """
         :keyword active_deployment_names: Collection of Deployment name.
         :paramtype active_deployment_names: list[str]
@@ -54,7 +55,7 @@ class ApiPortalCustomDomainProperties(_serialization.Model):
         "thumbprint": {"key": "thumbprint", "type": "str"},
     }
 
-    def __init__(self, *, thumbprint: Optional[str] = None, **kwargs):
+    def __init__(self, *, thumbprint: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword thumbprint: The thumbprint of bound certificate.
         :paramtype thumbprint: str
@@ -92,7 +93,7 @@ class Resource(_serialization.Model):
         "system_data": {"key": "systemData", "type": "SystemData"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.id = None
@@ -102,7 +103,8 @@ class Resource(_serialization.Model):
 
 
 class ProxyResource(Resource):
-    """The resource model definition for a ARM proxy resource. It will have everything other than required location and tags.
+    """The resource model definition for a ARM proxy resource. It will have everything other than
+    required location and tags.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -130,7 +132,7 @@ class ProxyResource(Resource):
         "system_data": {"key": "systemData", "type": "SystemData"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
 
@@ -168,7 +170,9 @@ class ApiPortalCustomDomainResource(ProxyResource):
         "properties": {"key": "properties", "type": "ApiPortalCustomDomainProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.ApiPortalCustomDomainProperties"] = None, **kwargs):
+    def __init__(
+        self, *, properties: Optional["_models.ApiPortalCustomDomainProperties"] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword properties: The properties of custom domain for API portal.
         :paramtype properties:
@@ -179,7 +183,8 @@ class ApiPortalCustomDomainResource(ProxyResource):
 
 
 class ApiPortalCustomDomainResourceCollection(_serialization.Model):
-    """Object that includes an array of API portal custom domain resources and a possible link for next set.
+    """Object that includes an array of API portal custom domain resources and a possible link for
+    next set.
 
     :ivar value: Collection of API portal custom domain resources.
     :vartype value:
@@ -199,8 +204,8 @@ class ApiPortalCustomDomainResourceCollection(_serialization.Model):
         *,
         value: Optional[List["_models.ApiPortalCustomDomainResource"]] = None,
         next_link: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of API portal custom domain resources.
         :paramtype value:
@@ -235,7 +240,7 @@ class ApiPortalInstance(_serialization.Model):
         "status": {"key": "status", "type": "str"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.name = None
@@ -297,8 +302,8 @@ class ApiPortalProperties(_serialization.Model):
         gateway_ids: Optional[List[str]] = None,
         source_urls: Optional[List[str]] = None,
         sso_properties: Optional["_models.SsoProperties"] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword public: Indicates whether the API portal exposes endpoint.
         :paramtype public: bool
@@ -363,8 +368,8 @@ class ApiPortalResource(ProxyResource):
         *,
         properties: Optional["_models.ApiPortalProperties"] = None,
         sku: Optional["_models.Sku"] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword properties: API portal properties payload.
         :paramtype properties: ~azure.mgmt.appplatform.v2022_05_01_preview.models.ApiPortalProperties
@@ -392,8 +397,12 @@ class ApiPortalResourceCollection(_serialization.Model):
     }
 
     def __init__(
-        self, *, value: Optional[List["_models.ApiPortalResource"]] = None, next_link: Optional[str] = None, **kwargs
-    ):
+        self,
+        *,
+        value: Optional[List["_models.ApiPortalResource"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of API portal resources.
         :paramtype value: list[~azure.mgmt.appplatform.v2022_05_01_preview.models.ApiPortalResource]
@@ -427,7 +436,7 @@ class ApiPortalResourceRequests(_serialization.Model):
         "memory": {"key": "memory", "type": "str"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.cpu = None
@@ -451,7 +460,7 @@ class ApplicationInsightsAgentVersions(_serialization.Model):
         "java": {"key": "java", "type": "str"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.java = None
@@ -501,8 +510,8 @@ class AppResource(ProxyResource):
         properties: Optional["_models.AppResourceProperties"] = None,
         identity: Optional["_models.ManagedIdentityProperties"] = None,
         location: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword properties: Properties of the App resource.
         :paramtype properties: ~azure.mgmt.appplatform.v2022_05_01_preview.models.AppResourceProperties
@@ -535,8 +544,8 @@ class AppResourceCollection(_serialization.Model):
     }
 
     def __init__(
-        self, *, value: Optional[List["_models.AppResource"]] = None, next_link: Optional[str] = None, **kwargs
-    ):
+        self, *, value: Optional[List["_models.AppResource"]] = None, next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of App resources.
         :paramtype value: list[~azure.mgmt.appplatform.v2022_05_01_preview.models.AppResource]
@@ -617,8 +626,8 @@ class AppResourceProperties(_serialization.Model):  # pylint: disable=too-many-i
         enable_end_to_end_tls: bool = False,
         loaded_certificates: Optional[List["_models.LoadedCertificate"]] = None,
         vnet_addons: Optional["_models.AppVNetAddons"] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword public: Indicates whether the App exposes public endpoint.
         :paramtype public: bool
@@ -680,7 +689,7 @@ class AppVNetAddons(_serialization.Model):
         "public_endpoint_url": {"key": "publicEndpointUrl", "type": "str"},
     }
 
-    def __init__(self, *, public_endpoint: bool = False, **kwargs):
+    def __init__(self, *, public_endpoint: bool = False, **kwargs: Any) -> None:
         """
         :keyword public_endpoint: Indicates whether the App in vnet injection instance exposes endpoint
          which could be accessed from internet.
@@ -707,8 +716,8 @@ class AvailableOperations(_serialization.Model):
     }
 
     def __init__(
-        self, *, value: Optional[List["_models.OperationDetail"]] = None, next_link: Optional[str] = None, **kwargs
-    ):
+        self, *, value: Optional[List["_models.OperationDetail"]] = None, next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of available operation details.
         :paramtype value: list[~azure.mgmt.appplatform.v2022_05_01_preview.models.OperationDetail]
@@ -739,7 +748,7 @@ class AvailableRuntimeVersions(_serialization.Model):
         "value": {"key": "value", "type": "[SupportedRuntimeVersion]"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.value = None
@@ -779,8 +788,13 @@ class CustomPersistentDiskProperties(_serialization.Model):
     _subtype_map = {"type": {"AzureFileVolume": "AzureFileVolume"}}
 
     def __init__(
-        self, *, mount_path: str, read_only: Optional[bool] = None, mount_options: Optional[List[str]] = None, **kwargs
-    ):
+        self,
+        *,
+        mount_path: str,
+        read_only: Optional[bool] = None,
+        mount_options: Optional[List[str]] = None,
+        **kwargs: Any
+    ) -> None:
         """
         :keyword mount_path: The mount path of the persistent disk. Required.
         :paramtype mount_path: str
@@ -790,7 +804,7 @@ class CustomPersistentDiskProperties(_serialization.Model):
         :paramtype mount_options: list[str]
         """
         super().__init__(**kwargs)
-        self.type = None  # type: Optional[str]
+        self.type: Optional[str] = None
         self.mount_path = mount_path
         self.read_only = read_only
         self.mount_options = mount_options
@@ -835,8 +849,8 @@ class AzureFileVolume(CustomPersistentDiskProperties):
         share_name: str,
         read_only: Optional[bool] = None,
         mount_options: Optional[List[str]] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword mount_path: The mount path of the persistent disk. Required.
         :paramtype mount_path: str
@@ -848,7 +862,7 @@ class AzureFileVolume(CustomPersistentDiskProperties):
         :paramtype share_name: str
         """
         super().__init__(mount_path=mount_path, read_only=read_only, mount_options=mount_options, **kwargs)
-        self.type = "AzureFileVolume"  # type: str
+        self.type: str = "AzureFileVolume"
         self.share_name = share_name
 
 
@@ -885,7 +899,7 @@ class BindingResource(ProxyResource):
         "properties": {"key": "properties", "type": "BindingResourceProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.BindingResourceProperties"] = None, **kwargs):
+    def __init__(self, *, properties: Optional["_models.BindingResourceProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: Properties of the Binding resource.
         :paramtype properties:
@@ -911,8 +925,8 @@ class BindingResourceCollection(_serialization.Model):
     }
 
     def __init__(
-        self, *, value: Optional[List["_models.BindingResource"]] = None, next_link: Optional[str] = None, **kwargs
-    ):
+        self, *, value: Optional[List["_models.BindingResource"]] = None, next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of Binding resources.
         :paramtype value: list[~azure.mgmt.appplatform.v2022_05_01_preview.models.BindingResource]
@@ -974,8 +988,8 @@ class BindingResourceProperties(_serialization.Model):
         resource_id: Optional[str] = None,
         key: Optional[str] = None,
         binding_parameters: Optional[Dict[str, JSON]] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword resource_id: The Azure resource id of the bound resource.
         :paramtype resource_id: str
@@ -1027,7 +1041,7 @@ class Build(ProxyResource):
         "properties": {"key": "properties", "type": "BuildProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.BuildProperties"] = None, **kwargs):
+    def __init__(self, *, properties: Optional["_models.BuildProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: Properties of the build resource.
         :paramtype properties: ~azure.mgmt.appplatform.v2022_05_01_preview.models.BuildProperties
@@ -1051,7 +1065,9 @@ class BuildCollection(_serialization.Model):
         "next_link": {"key": "nextLink", "type": "str"},
     }
 
-    def __init__(self, *, value: Optional[List["_models.Build"]] = None, next_link: Optional[str] = None, **kwargs):
+    def __init__(
+        self, *, value: Optional[List["_models.Build"]] = None, next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of Build resources.
         :paramtype value: list[~azure.mgmt.appplatform.v2022_05_01_preview.models.Build]
@@ -1095,8 +1111,8 @@ class BuilderProperties(_serialization.Model):
         *,
         stack: Optional["_models.StackProperties"] = None,
         buildpack_groups: Optional[List["_models.BuildpacksGroupProperties"]] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword stack: Builder cluster stack property.
         :paramtype stack: ~azure.mgmt.appplatform.v2022_05_01_preview.models.StackProperties
@@ -1142,7 +1158,7 @@ class BuilderResource(ProxyResource):
         "properties": {"key": "properties", "type": "BuilderProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.BuilderProperties"] = None, **kwargs):
+    def __init__(self, *, properties: Optional["_models.BuilderProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: Property of the Builder resource.
         :paramtype properties: ~azure.mgmt.appplatform.v2022_05_01_preview.models.BuilderProperties
@@ -1167,8 +1183,8 @@ class BuilderResourceCollection(_serialization.Model):
     }
 
     def __init__(
-        self, *, value: Optional[List["_models.BuilderResource"]] = None, next_link: Optional[str] = None, **kwargs
-    ):
+        self, *, value: Optional[List["_models.BuilderResource"]] = None, next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of Builder resources.
         :paramtype value: list[~azure.mgmt.appplatform.v2022_05_01_preview.models.BuilderResource]
@@ -1196,8 +1212,8 @@ class BuildpackBindingLaunchProperties(_serialization.Model):
     }
 
     def __init__(
-        self, *, properties: Optional[Dict[str, str]] = None, secrets: Optional[Dict[str, str]] = None, **kwargs
-    ):
+        self, *, properties: Optional[Dict[str, str]] = None, secrets: Optional[Dict[str, str]] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword properties: Non-sensitive properties for launchProperties.
         :paramtype properties: dict[str, str]
@@ -1241,8 +1257,8 @@ class BuildpackBindingProperties(_serialization.Model):
         *,
         binding_type: Optional[Union[str, "_models.BindingType"]] = None,
         launch_properties: Optional["_models.BuildpackBindingLaunchProperties"] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword binding_type: Buildpack Binding Type. Known values are: "ApplicationInsights",
          "ApacheSkyWalking", "AppDynamics", "Dynatrace", "NewRelic", and "ElasticAPM".
@@ -1290,7 +1306,7 @@ class BuildpackBindingResource(ProxyResource):
         "properties": {"key": "properties", "type": "BuildpackBindingProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.BuildpackBindingProperties"] = None, **kwargs):
+    def __init__(self, *, properties: Optional["_models.BuildpackBindingProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: Properties of a buildpack binding.
         :paramtype properties:
@@ -1321,8 +1337,8 @@ class BuildpackBindingResourceCollection(_serialization.Model):
         *,
         value: Optional[List["_models.BuildpackBindingResource"]] = None,
         next_link: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of BuildpackBinding resources.
         :paramtype value:
@@ -1347,7 +1363,7 @@ class BuildpackProperties(_serialization.Model):
         "id": {"key": "id", "type": "str"},
     }
 
-    def __init__(self, *, id: Optional[str] = None, **kwargs):  # pylint: disable=redefined-builtin
+    def __init__(self, *, id: Optional[str] = None, **kwargs: Any) -> None:  # pylint: disable=redefined-builtin
         """
         :keyword id: Id of the buildpack.
         :paramtype id: str
@@ -1372,8 +1388,12 @@ class BuildpacksGroupProperties(_serialization.Model):
     }
 
     def __init__(
-        self, *, name: Optional[str] = None, buildpacks: Optional[List["_models.BuildpackProperties"]] = None, **kwargs
-    ):
+        self,
+        *,
+        name: Optional[str] = None,
+        buildpacks: Optional[List["_models.BuildpackProperties"]] = None,
+        **kwargs: Any
+    ) -> None:
         """
         :keyword name: Buildpack group name.
         :paramtype name: str
@@ -1434,8 +1454,8 @@ class BuildProperties(_serialization.Model):
         agent_pool: Optional[str] = None,
         env: Optional[Dict[str, str]] = None,
         resource_requests: Optional["_models.BuildResourceRequests"] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword relative_path: The relative path of source code.
         :paramtype relative_path: str
@@ -1477,7 +1497,7 @@ class BuildResourceRequests(_serialization.Model):
         "memory": {"key": "memory", "type": "str"},
     }
 
-    def __init__(self, *, cpu: str = "1", memory: str = "2Gi", **kwargs):
+    def __init__(self, *, cpu: str = "1", memory: str = "2Gi", **kwargs: Any) -> None:
         """
         :keyword cpu: Optional Cpu allocated to the build resource. 1 core can be represented by 1 or
          1000m.
@@ -1525,7 +1545,7 @@ class BuildResult(ProxyResource):
         "properties": {"key": "properties", "type": "BuildResultProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.BuildResultProperties"] = None, **kwargs):
+    def __init__(self, *, properties: Optional["_models.BuildResultProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: Properties of the build result resource.
         :paramtype properties: ~azure.mgmt.appplatform.v2022_05_01_preview.models.BuildResultProperties
@@ -1550,8 +1570,8 @@ class BuildResultCollection(_serialization.Model):
     }
 
     def __init__(
-        self, *, value: Optional[List["_models.BuildResult"]] = None, next_link: Optional[str] = None, **kwargs
-    ):
+        self, *, value: Optional[List["_models.BuildResult"]] = None, next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of Build result resources.
         :paramtype value: list[~azure.mgmt.appplatform.v2022_05_01_preview.models.BuildResult]
@@ -1575,7 +1595,7 @@ class BuildResultLog(_serialization.Model):
         "blob_url": {"key": "blobUrl", "type": "str"},
     }
 
-    def __init__(self, *, blob_url: Optional[str] = None, **kwargs):
+    def __init__(self, *, blob_url: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword blob_url: The public download URL of this build result log.
         :paramtype blob_url: str
@@ -1615,7 +1635,7 @@ class BuildResultProperties(_serialization.Model):
         "build_stages": {"key": "buildStages", "type": "[BuildStageProperties]"},
     }
 
-    def __init__(self, *, name: Optional[str] = None, build_pod_name: Optional[str] = None, **kwargs):
+    def __init__(self, *, name: Optional[str] = None, build_pod_name: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword name: The name of this build result.
         :paramtype name: str
@@ -1660,13 +1680,13 @@ class UserSourceInfo(_serialization.Model):
         }
     }
 
-    def __init__(self, *, version: Optional[str] = None, **kwargs):
+    def __init__(self, *, version: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword version: Version of the source.
         :paramtype version: str
         """
         super().__init__(**kwargs)
-        self.type = None  # type: Optional[str]
+        self.type: Optional[str] = None
         self.version = version
 
 
@@ -1694,7 +1714,7 @@ class BuildResultUserSourceInfo(UserSourceInfo):
         "build_result_id": {"key": "buildResultId", "type": "str"},
     }
 
-    def __init__(self, *, version: Optional[str] = None, build_result_id: Optional[str] = None, **kwargs):
+    def __init__(self, *, version: Optional[str] = None, build_result_id: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword version: Version of the source.
         :paramtype version: str
@@ -1703,7 +1723,7 @@ class BuildResultUserSourceInfo(UserSourceInfo):
         :paramtype build_result_id: str
         """
         super().__init__(version=version, **kwargs)
-        self.type = "BuildResult"  # type: str
+        self.type: str = "BuildResult"
         self.build_result_id = build_result_id
 
 
@@ -1739,7 +1759,7 @@ class BuildService(ProxyResource):
         "properties": {"key": "properties", "type": "BuildServiceProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.BuildServiceProperties"] = None, **kwargs):
+    def __init__(self, *, properties: Optional["_models.BuildServiceProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: Properties of the build resource.
         :paramtype properties:
@@ -1770,7 +1790,9 @@ class BuildServiceAgentPoolProperties(_serialization.Model):
         "pool_size": {"key": "poolSize", "type": "BuildServiceAgentPoolSizeProperties"},
     }
 
-    def __init__(self, *, pool_size: Optional["_models.BuildServiceAgentPoolSizeProperties"] = None, **kwargs):
+    def __init__(
+        self, *, pool_size: Optional["_models.BuildServiceAgentPoolSizeProperties"] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword pool_size: build service agent pool size properties.
         :paramtype pool_size:
@@ -1814,7 +1836,9 @@ class BuildServiceAgentPoolResource(ProxyResource):
         "properties": {"key": "properties", "type": "BuildServiceAgentPoolProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.BuildServiceAgentPoolProperties"] = None, **kwargs):
+    def __init__(
+        self, *, properties: Optional["_models.BuildServiceAgentPoolProperties"] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword properties: build service agent pool properties.
         :paramtype properties:
@@ -1825,7 +1849,8 @@ class BuildServiceAgentPoolResource(ProxyResource):
 
 
 class BuildServiceAgentPoolResourceCollection(_serialization.Model):
-    """Object that includes an array of build service agent pool resources and a possible link for next set.
+    """Object that includes an array of build service agent pool resources and a possible link for
+    next set.
 
     :ivar value: Collection of build service agent pool resource.
     :vartype value:
@@ -1845,8 +1870,8 @@ class BuildServiceAgentPoolResourceCollection(_serialization.Model):
         *,
         value: Optional[List["_models.BuildServiceAgentPoolResource"]] = None,
         next_link: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of build service agent pool resource.
         :paramtype value:
@@ -1884,7 +1909,7 @@ class BuildServiceAgentPoolSizeProperties(_serialization.Model):
         "memory": {"key": "memory", "type": "str"},
     }
 
-    def __init__(self, *, name: Optional[str] = None, **kwargs):
+    def __init__(self, *, name: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword name: The name of build service agent pool size.
         :paramtype name: str
@@ -1911,8 +1936,8 @@ class BuildServiceCollection(_serialization.Model):
     }
 
     def __init__(
-        self, *, value: Optional[List["_models.BuildService"]] = None, next_link: Optional[str] = None, **kwargs
-    ):
+        self, *, value: Optional[List["_models.BuildService"]] = None, next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of Build service resources.
         :paramtype value: list[~azure.mgmt.appplatform.v2022_05_01_preview.models.BuildService]
@@ -1956,8 +1981,8 @@ class BuildServiceProperties(_serialization.Model):
         *,
         k_pack_version: Optional[str] = None,
         resource_requests: Optional["_models.BuildServicePropertiesResourceRequests"] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword k_pack_version: The installed KPack version in this build service.
         :paramtype k_pack_version: str
@@ -1992,7 +2017,7 @@ class BuildServicePropertiesResourceRequests(_serialization.Model):
         "memory": {"key": "memory", "type": "str"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.cpu = None
@@ -2022,7 +2047,7 @@ class BuildStageProperties(_serialization.Model):
         "status": {"key": "status", "type": "str"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.name = None
@@ -2092,10 +2117,10 @@ class CertificateProperties(_serialization.Model):
         }
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.type = None  # type: Optional[str]
+        self.type: Optional[str] = None
         self.thumbprint = None
         self.issuer = None
         self.issued_date = None
@@ -2138,7 +2163,7 @@ class CertificateResource(ProxyResource):
         "properties": {"key": "properties", "type": "CertificateProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.CertificateProperties"] = None, **kwargs):
+    def __init__(self, *, properties: Optional["_models.CertificateProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: Properties of the certificate resource payload.
         :paramtype properties: ~azure.mgmt.appplatform.v2022_05_01_preview.models.CertificateProperties
@@ -2162,8 +2187,12 @@ class CertificateResourceCollection(_serialization.Model):
     }
 
     def __init__(
-        self, *, value: Optional[List["_models.CertificateResource"]] = None, next_link: Optional[str] = None, **kwargs
-    ):
+        self,
+        *,
+        value: Optional[List["_models.CertificateResource"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
         """
         :keyword value: The certificate resources list.
         :paramtype value: list[~azure.mgmt.appplatform.v2022_05_01_preview.models.CertificateResource]
@@ -2205,8 +2234,8 @@ class CloudErrorBody(_serialization.Model):
         message: Optional[str] = None,
         target: Optional[str] = None,
         details: Optional[List["_models.CloudErrorBody"]] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword code: An identifier for the error. Codes are invariant and are intended to be consumed
          programmatically.
@@ -2243,7 +2272,7 @@ class ClusterResourceProperties(_serialization.Model):
     :vartype vnet_addons: ~azure.mgmt.appplatform.v2022_05_01_preview.models.ServiceVNetAddons
     :ivar version: Version of the Service.
     :vartype version: int
-    :ivar service_id: ServiceInstanceEntity GUID which uniquely identifies a created resource.
+    :ivar service_id: ServiceInstanceEntity Id which uniquely identifies a created resource.
     :vartype service_id: str
     :ivar power_state: Power state of the Service. Known values are: "Running" and "Stopped".
     :vartype power_state: str or ~azure.mgmt.appplatform.v2022_05_01_preview.models.PowerState
@@ -2283,8 +2312,8 @@ class ClusterResourceProperties(_serialization.Model):
         vnet_addons: Optional["_models.ServiceVNetAddons"] = None,
         zone_redundant: bool = False,
         marketplace_resource: Optional["_models.MarketplaceResource"] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword network_profile: Network profile of the Service.
         :paramtype network_profile: ~azure.mgmt.appplatform.v2022_05_01_preview.models.NetworkProfile
@@ -2366,8 +2395,8 @@ class ConfigServerGitProperty(_serialization.Model):
         host_key_algorithm: Optional[str] = None,
         private_key: Optional[str] = None,
         strict_host_key_checking: Optional[bool] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword repositories: Repositories of git.
         :paramtype repositories:
@@ -2434,8 +2463,8 @@ class ConfigServerProperties(_serialization.Model):
         *,
         error: Optional["_models.Error"] = None,
         config_server: Optional["_models.ConfigServerSettings"] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword error: Error when apply config server settings.
         :paramtype error: ~azure.mgmt.appplatform.v2022_05_01_preview.models.Error
@@ -2481,7 +2510,7 @@ class ConfigServerResource(ProxyResource):
         "properties": {"key": "properties", "type": "ConfigServerProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.ConfigServerProperties"] = None, **kwargs):
+    def __init__(self, *, properties: Optional["_models.ConfigServerProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: Properties of the Config Server resource.
         :paramtype properties:
@@ -2503,7 +2532,7 @@ class ConfigServerSettings(_serialization.Model):
         "git_property": {"key": "gitProperty", "type": "ConfigServerGitProperty"},
     }
 
-    def __init__(self, *, git_property: Optional["_models.ConfigServerGitProperty"] = None, **kwargs):
+    def __init__(self, *, git_property: Optional["_models.ConfigServerGitProperty"] = None, **kwargs: Any) -> None:
         """
         :keyword git_property: Property of git environment.
         :paramtype git_property:
@@ -2531,8 +2560,13 @@ class ConfigServerSettingsErrorRecord(_serialization.Model):
     }
 
     def __init__(
-        self, *, name: Optional[str] = None, uri: Optional[str] = None, messages: Optional[List[str]] = None, **kwargs
-    ):
+        self,
+        *,
+        name: Optional[str] = None,
+        uri: Optional[str] = None,
+        messages: Optional[List[str]] = None,
+        **kwargs: Any
+    ) -> None:
         """
         :keyword name: The name of the config server settings error record.
         :paramtype name: str
@@ -2567,8 +2601,8 @@ class ConfigServerSettingsValidateResult(_serialization.Model):
         *,
         is_valid: Optional[bool] = None,
         details: Optional[List["_models.ConfigServerSettingsErrorRecord"]] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword is_valid: Indicate if the config server settings are valid.
         :paramtype is_valid: bool
@@ -2593,7 +2627,9 @@ class ConfigurationServiceGitProperty(_serialization.Model):
         "repositories": {"key": "repositories", "type": "[ConfigurationServiceGitRepository]"},
     }
 
-    def __init__(self, *, repositories: Optional[List["_models.ConfigurationServiceGitRepository"]] = None, **kwargs):
+    def __init__(
+        self, *, repositories: Optional[List["_models.ConfigurationServiceGitRepository"]] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword repositories: Repositories of Application Configuration Service git property.
         :paramtype repositories:
@@ -2623,8 +2659,8 @@ class ConfigurationServiceGitPropertyValidateResult(_serialization.Model):
         *,
         is_valid: Optional[bool] = None,
         git_repos_validation_result: Optional[List["_models.ValidationMessages"]] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword is_valid: Indicate if the configuration service settings are valid.
         :paramtype is_valid: bool
@@ -2701,8 +2737,8 @@ class ConfigurationServiceGitRepository(_serialization.Model):  # pylint: disabl
         host_key_algorithm: Optional[str] = None,
         private_key: Optional[str] = None,
         strict_host_key_checking: Optional[bool] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword name: Name of the repository. Required.
         :paramtype name: str
@@ -2762,7 +2798,7 @@ class ConfigurationServiceInstance(_serialization.Model):
         "status": {"key": "status", "type": "str"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.name = None
@@ -2802,7 +2838,7 @@ class ConfigurationServiceProperties(_serialization.Model):
         "settings": {"key": "settings", "type": "ConfigurationServiceSettings"},
     }
 
-    def __init__(self, *, settings: Optional["_models.ConfigurationServiceSettings"] = None, **kwargs):
+    def __init__(self, *, settings: Optional["_models.ConfigurationServiceSettings"] = None, **kwargs: Any) -> None:
         """
         :keyword settings: The settings of Application Configuration Service.
         :paramtype settings:
@@ -2848,7 +2884,7 @@ class ConfigurationServiceResource(ProxyResource):
         "properties": {"key": "properties", "type": "ConfigurationServiceProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.ConfigurationServiceProperties"] = None, **kwargs):
+    def __init__(self, *, properties: Optional["_models.ConfigurationServiceProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: Application Configuration Service properties payload.
         :paramtype properties:
@@ -2859,7 +2895,8 @@ class ConfigurationServiceResource(ProxyResource):
 
 
 class ConfigurationServiceResourceCollection(_serialization.Model):
-    """Object that includes an array of configuration service resources and a possible link for next set.
+    """Object that includes an array of configuration service resources and a possible link for next
+    set.
 
     :ivar value: Collection of configuration service resources.
     :vartype value:
@@ -2879,8 +2916,8 @@ class ConfigurationServiceResourceCollection(_serialization.Model):
         *,
         value: Optional[List["_models.ConfigurationServiceResource"]] = None,
         next_link: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of configuration service resources.
         :paramtype value:
@@ -2919,7 +2956,7 @@ class ConfigurationServiceResourceRequests(_serialization.Model):
         "instance_count": {"key": "instanceCount", "type": "int"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.cpu = None
@@ -2939,7 +2976,9 @@ class ConfigurationServiceSettings(_serialization.Model):
         "git_property": {"key": "gitProperty", "type": "ConfigurationServiceGitProperty"},
     }
 
-    def __init__(self, *, git_property: Optional["_models.ConfigurationServiceGitProperty"] = None, **kwargs):
+    def __init__(
+        self, *, git_property: Optional["_models.ConfigurationServiceGitProperty"] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword git_property: Property of git environment.
         :paramtype git_property:
@@ -2968,8 +3007,8 @@ class ConfigurationServiceSettingsValidateResult(_serialization.Model):
         self,
         *,
         git_property_validation_result: Optional["_models.ConfigurationServiceGitPropertyValidateResult"] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword git_property_validation_result: Validation result for configuration service settings.
         :paramtype git_property_validation_result:
@@ -2990,7 +3029,7 @@ class ContainerProbeSettings(_serialization.Model):
         "disable_probe": {"key": "disableProbe", "type": "bool"},
     }
 
-    def __init__(self, *, disable_probe: Optional[bool] = None, **kwargs):
+    def __init__(self, *, disable_probe: Optional[bool] = None, **kwargs: Any) -> None:
         """
         :keyword disable_probe: Indicates whether disable the liveness and readiness probe.
         :paramtype disable_probe: bool
@@ -3055,13 +3094,13 @@ class ContentCertificateProperties(CertificateProperties):
         "content": {"key": "content", "type": "str"},
     }
 
-    def __init__(self, *, content: Optional[str] = None, **kwargs):
+    def __init__(self, *, content: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword content: The content of uploaded certificate.
         :paramtype content: str
         """
         super().__init__(**kwargs)
-        self.type = "ContentCertificate"  # type: str
+        self.type: str = "ContentCertificate"
         self.content = content
 
 
@@ -3104,8 +3143,8 @@ class CustomContainer(_serialization.Model):
         args: Optional[List[str]] = None,
         image_registry_credential: Optional["_models.ImageRegistryCredential"] = None,
         language_framework: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword server: The name of the registry that contains the container image.
         :paramtype server: str
@@ -3157,8 +3196,12 @@ class CustomContainerUserSourceInfo(UserSourceInfo):
     }
 
     def __init__(
-        self, *, version: Optional[str] = None, custom_container: Optional["_models.CustomContainer"] = None, **kwargs
-    ):
+        self,
+        *,
+        version: Optional[str] = None,
+        custom_container: Optional["_models.CustomContainer"] = None,
+        **kwargs: Any
+    ) -> None:
         """
         :keyword version: Version of the source.
         :paramtype version: str
@@ -3166,7 +3209,7 @@ class CustomContainerUserSourceInfo(UserSourceInfo):
         :paramtype custom_container: ~azure.mgmt.appplatform.v2022_05_01_preview.models.CustomContainer
         """
         super().__init__(version=version, **kwargs)
-        self.type = "Container"  # type: str
+        self.type: str = "Container"
         self.custom_container = custom_container
 
 
@@ -3199,7 +3242,7 @@ class CustomDomainProperties(_serialization.Model):
         "provisioning_state": {"key": "provisioningState", "type": "str"},
     }
 
-    def __init__(self, *, thumbprint: Optional[str] = None, cert_name: Optional[str] = None, **kwargs):
+    def __init__(self, *, thumbprint: Optional[str] = None, cert_name: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword thumbprint: The thumbprint of bound certificate.
         :paramtype thumbprint: str
@@ -3245,7 +3288,7 @@ class CustomDomainResource(ProxyResource):
         "properties": {"key": "properties", "type": "CustomDomainProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.CustomDomainProperties"] = None, **kwargs):
+    def __init__(self, *, properties: Optional["_models.CustomDomainProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: Properties of the custom domain resource.
         :paramtype properties:
@@ -3270,8 +3313,12 @@ class CustomDomainResourceCollection(_serialization.Model):
     }
 
     def __init__(
-        self, *, value: Optional[List["_models.CustomDomainResource"]] = None, next_link: Optional[str] = None, **kwargs
-    ):
+        self,
+        *,
+        value: Optional[List["_models.CustomDomainResource"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
         """
         :keyword value: The custom domain resources list.
         :paramtype value: list[~azure.mgmt.appplatform.v2022_05_01_preview.models.CustomDomainResource]
@@ -3300,7 +3347,7 @@ class CustomDomainValidatePayload(_serialization.Model):
         "name": {"key": "name", "type": "str"},
     }
 
-    def __init__(self, *, name: str, **kwargs):
+    def __init__(self, *, name: str, **kwargs: Any) -> None:
         """
         :keyword name: Name to be validated. Required.
         :paramtype name: str
@@ -3323,7 +3370,7 @@ class CustomDomainValidateResult(_serialization.Model):
         "message": {"key": "message", "type": "str"},
     }
 
-    def __init__(self, *, is_valid: Optional[bool] = None, message: Optional[str] = None, **kwargs):
+    def __init__(self, *, is_valid: Optional[bool] = None, message: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword is_valid: Indicates if domain name is valid.
         :paramtype is_valid: bool
@@ -3365,8 +3412,8 @@ class CustomPersistentDiskResource(_serialization.Model):
         *,
         storage_id: str,
         custom_persistent_disk_properties: Optional["_models.CustomPersistentDiskProperties"] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword custom_persistent_disk_properties: Properties of the custom persistent disk resource
          payload.
@@ -3417,7 +3464,7 @@ class DeploymentInstance(_serialization.Model):
         "zone": {"key": "zone", "type": "str"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.name = None
@@ -3469,8 +3516,8 @@ class DeploymentResource(ProxyResource):
         *,
         properties: Optional["_models.DeploymentResourceProperties"] = None,
         sku: Optional["_models.Sku"] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword properties: Properties of the Deployment resource.
         :paramtype properties:
@@ -3499,8 +3546,12 @@ class DeploymentResourceCollection(_serialization.Model):
     }
 
     def __init__(
-        self, *, value: Optional[List["_models.DeploymentResource"]] = None, next_link: Optional[str] = None, **kwargs
-    ):
+        self,
+        *,
+        value: Optional[List["_models.DeploymentResource"]] = None,
+        next_link: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of Deployment resources.
         :paramtype value: list[~azure.mgmt.appplatform.v2022_05_01_preview.models.DeploymentResource]
@@ -3557,8 +3608,8 @@ class DeploymentResourceProperties(_serialization.Model):
         source: Optional["_models.UserSourceInfo"] = None,
         deployment_settings: Optional["_models.DeploymentSettings"] = None,
         active: Optional[bool] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword source: Uploaded source information of the deployment.
         :paramtype source: ~azure.mgmt.appplatform.v2022_05_01_preview.models.UserSourceInfo
@@ -3639,8 +3690,8 @@ class DeploymentSettings(_serialization.Model):
         startup_probe: Optional["_models.Probe"] = None,
         termination_grace_period_seconds: int = 90,
         container_probe_settings: Optional["_models.ContainerProbeSettings"] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword resource_requests: The requested resource quantity for required CPU and Memory. It is
          recommended that using this field to represent the required CPU and Memory, the old field cpu
@@ -3713,8 +3764,8 @@ class DiagnosticParameters(_serialization.Model):
         app_instance: Optional[str] = None,
         file_path: Optional[str] = None,
         duration: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword app_instance: App instance name.
         :paramtype app_instance: str
@@ -3743,7 +3794,7 @@ class Error(_serialization.Model):
         "message": {"key": "message", "type": "str"},
     }
 
-    def __init__(self, *, code: Optional[str] = None, message: Optional[str] = None, **kwargs):
+    def __init__(self, *, code: Optional[str] = None, message: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword code: The code of error.
         :paramtype code: str
@@ -3780,10 +3831,10 @@ class ProbeAction(_serialization.Model):
         "type": {"ExecAction": "ExecAction", "HTTPGetAction": "HTTPGetAction", "TCPSocketAction": "TCPSocketAction"}
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.type = None  # type: Optional[str]
+        self.type: Optional[str] = None
 
 
 class ExecAction(ProbeAction):
@@ -3811,7 +3862,7 @@ class ExecAction(ProbeAction):
         "command": {"key": "command", "type": "[str]"},
     }
 
-    def __init__(self, *, command: Optional[List[str]] = None, **kwargs):
+    def __init__(self, *, command: Optional[List[str]] = None, **kwargs: Any) -> None:
         """
         :keyword command: Command is the command line to execute inside the container, the working
          directory for the command is root ('/') in the container's filesystem. The command is not run
@@ -3821,7 +3872,7 @@ class ExecAction(ProbeAction):
         :paramtype command: list[str]
         """
         super().__init__(**kwargs)
-        self.type = "ExecAction"  # type: str
+        self.type: str = "ExecAction"
         self.command = command
 
 
@@ -3859,8 +3910,8 @@ class GatewayApiMetadataProperties(_serialization.Model):
         documentation: Optional[str] = None,
         version: Optional[str] = None,
         server_url: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword title: Title describing the context of the APIs available on the Gateway instance
          (default: ``Spring Cloud Gateway for K8S``\ ).
@@ -3939,8 +3990,8 @@ class GatewayApiRoute(_serialization.Model):
         filters: Optional[List[str]] = None,
         order: Optional[int] = None,
         tags: Optional[List[str]] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword title: A title, will be applied to methods in the generated OpenAPI documentation.
         :paramtype title: str
@@ -4019,8 +4070,8 @@ class GatewayCorsProperties(_serialization.Model):
         max_age: Optional[int] = None,
         allow_credentials: Optional[bool] = None,
         exposed_headers: Optional[List[str]] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword allowed_origins: Allowed origins to make cross-site requests. The special value ``*``
          allows all domains.
@@ -4060,7 +4111,7 @@ class GatewayCustomDomainProperties(_serialization.Model):
         "thumbprint": {"key": "thumbprint", "type": "str"},
     }
 
-    def __init__(self, *, thumbprint: Optional[str] = None, **kwargs):
+    def __init__(self, *, thumbprint: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword thumbprint: The thumbprint of bound certificate.
         :paramtype thumbprint: str
@@ -4102,7 +4153,7 @@ class GatewayCustomDomainResource(ProxyResource):
         "properties": {"key": "properties", "type": "GatewayCustomDomainProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.GatewayCustomDomainProperties"] = None, **kwargs):
+    def __init__(self, *, properties: Optional["_models.GatewayCustomDomainProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: The properties of custom domain for Spring Cloud Gateway.
         :paramtype properties:
@@ -4113,7 +4164,8 @@ class GatewayCustomDomainResource(ProxyResource):
 
 
 class GatewayCustomDomainResourceCollection(_serialization.Model):
-    """Object that includes an array of Spring Cloud Gateway custom domain resources and a possible link for next set.
+    """Object that includes an array of Spring Cloud Gateway custom domain resources and a possible
+    link for next set.
 
     :ivar value: Collection of Spring Cloud Gateway custom domain resources.
     :vartype value:
@@ -4133,8 +4185,8 @@ class GatewayCustomDomainResourceCollection(_serialization.Model):
         *,
         value: Optional[List["_models.GatewayCustomDomainResource"]] = None,
         next_link: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of Spring Cloud Gateway custom domain resources.
         :paramtype value:
@@ -4169,7 +4221,7 @@ class GatewayInstance(_serialization.Model):
         "status": {"key": "status", "type": "str"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.name = None
@@ -4198,7 +4250,7 @@ class GatewayOperatorProperties(_serialization.Model):
         "instances": {"key": "instances", "type": "[GatewayInstance]"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.resource_requests = None
@@ -4230,7 +4282,7 @@ class GatewayOperatorResourceRequests(_serialization.Model):
         "instance_count": {"key": "instanceCount", "type": "int"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.cpu = None
@@ -4300,8 +4352,8 @@ class GatewayProperties(_serialization.Model):
         api_metadata_properties: Optional["_models.GatewayApiMetadataProperties"] = None,
         cors_properties: Optional["_models.GatewayCorsProperties"] = None,
         resource_requests: Optional["_models.GatewayResourceRequests"] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword public: Indicates whether the Spring Cloud Gateway exposes endpoint.
         :paramtype public: bool
@@ -4368,8 +4420,12 @@ class GatewayResource(ProxyResource):
     }
 
     def __init__(
-        self, *, properties: Optional["_models.GatewayProperties"] = None, sku: Optional["_models.Sku"] = None, **kwargs
-    ):
+        self,
+        *,
+        properties: Optional["_models.GatewayProperties"] = None,
+        sku: Optional["_models.Sku"] = None,
+        **kwargs: Any
+    ) -> None:
         """
         :keyword properties: Spring Cloud Gateway properties payload.
         :paramtype properties: ~azure.mgmt.appplatform.v2022_05_01_preview.models.GatewayProperties
@@ -4397,8 +4453,8 @@ class GatewayResourceCollection(_serialization.Model):
     }
 
     def __init__(
-        self, *, value: Optional[List["_models.GatewayResource"]] = None, next_link: Optional[str] = None, **kwargs
-    ):
+        self, *, value: Optional[List["_models.GatewayResource"]] = None, next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of gateway resources.
         :paramtype value: list[~azure.mgmt.appplatform.v2022_05_01_preview.models.GatewayResource]
@@ -4425,7 +4481,7 @@ class GatewayResourceRequests(_serialization.Model):
         "memory": {"key": "memory", "type": "str"},
     }
 
-    def __init__(self, *, cpu: str = "1", memory: str = "2Gi", **kwargs):
+    def __init__(self, *, cpu: str = "1", memory: str = "2Gi", **kwargs: Any) -> None:
         """
         :keyword cpu: Cpu allocated to each Spring Cloud Gateway instance.
         :paramtype cpu: str
@@ -4448,7 +4504,7 @@ class GatewayRouteConfigOpenApiProperties(_serialization.Model):
         "uri": {"key": "uri", "type": "str"},
     }
 
-    def __init__(self, *, uri: Optional[str] = None, **kwargs):
+    def __init__(self, *, uri: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword uri: The URI of OpenAPI specification.
         :paramtype uri: str
@@ -4494,8 +4550,8 @@ class GatewayRouteConfigProperties(_serialization.Model):
         app_resource_id: Optional[str] = None,
         open_api: Optional["_models.GatewayRouteConfigOpenApiProperties"] = None,
         routes: Optional[List["_models.GatewayApiRoute"]] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword app_resource_id: The resource Id of the Azure Spring Apps app, required unless route
          defines ``uri``.
@@ -4547,7 +4603,7 @@ class GatewayRouteConfigResource(ProxyResource):
         "properties": {"key": "properties", "type": "GatewayRouteConfigProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.GatewayRouteConfigProperties"] = None, **kwargs):
+    def __init__(self, *, properties: Optional["_models.GatewayRouteConfigProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: API route config of the Spring Cloud Gateway.
         :paramtype properties:
@@ -4558,7 +4614,8 @@ class GatewayRouteConfigResource(ProxyResource):
 
 
 class GatewayRouteConfigResourceCollection(_serialization.Model):
-    """Object that includes an array of Spring Cloud Gateway route config resources and a possible link for next set.
+    """Object that includes an array of Spring Cloud Gateway route config resources and a possible
+    link for next set.
 
     :ivar value: Collection of Spring Cloud Gateway route config resources.
     :vartype value:
@@ -4578,8 +4635,8 @@ class GatewayRouteConfigResourceCollection(_serialization.Model):
         *,
         value: Optional[List["_models.GatewayRouteConfigResource"]] = None,
         next_link: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of Spring Cloud Gateway route config resources.
         :paramtype value:
@@ -4655,8 +4712,8 @@ class GitPatternRepository(_serialization.Model):  # pylint: disable=too-many-in
         host_key_algorithm: Optional[str] = None,
         private_key: Optional[str] = None,
         strict_host_key_checking: Optional[bool] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword name: Name of the repository. Required.
         :paramtype name: str
@@ -4727,8 +4784,12 @@ class HTTPGetAction(ProbeAction):
     }
 
     def __init__(
-        self, *, path: Optional[str] = None, scheme: Optional[Union[str, "_models.HTTPSchemeType"]] = None, **kwargs
-    ):
+        self,
+        *,
+        path: Optional[str] = None,
+        scheme: Optional[Union[str, "_models.HTTPSchemeType"]] = None,
+        **kwargs: Any
+    ) -> None:
         """
         :keyword path: Path to access on the HTTP server.
         :paramtype path: str
@@ -4743,7 +4804,7 @@ class HTTPGetAction(ProbeAction):
         :paramtype scheme: str or ~azure.mgmt.appplatform.v2022_05_01_preview.models.HTTPSchemeType
         """
         super().__init__(**kwargs)
-        self.type = "HTTPGetAction"  # type: str
+        self.type: str = "HTTPGetAction"
         self.path = path
         self.scheme = scheme
 
@@ -4762,7 +4823,7 @@ class ImageRegistryCredential(_serialization.Model):
         "password": {"key": "password", "type": "str"},
     }
 
-    def __init__(self, *, username: Optional[str] = None, password: Optional[str] = None, **kwargs):
+    def __init__(self, *, username: Optional[str] = None, password: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword username: The username of the image registry credential.
         :paramtype username: str
@@ -4785,7 +4846,7 @@ class IngressConfig(_serialization.Model):
         "read_timeout_in_seconds": {"key": "readTimeoutInSeconds", "type": "int"},
     }
 
-    def __init__(self, *, read_timeout_in_seconds: Optional[int] = None, **kwargs):
+    def __init__(self, *, read_timeout_in_seconds: Optional[int] = None, **kwargs: Any) -> None:
         """
         :keyword read_timeout_in_seconds: Ingress read time out in seconds.
         :paramtype read_timeout_in_seconds: int
@@ -4828,7 +4889,7 @@ class UploadedUserSourceInfo(UserSourceInfo):
         }
     }
 
-    def __init__(self, *, version: Optional[str] = None, relative_path: Optional[str] = None, **kwargs):
+    def __init__(self, *, version: Optional[str] = None, relative_path: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword version: Version of the source.
         :paramtype version: str
@@ -4836,7 +4897,7 @@ class UploadedUserSourceInfo(UserSourceInfo):
         :paramtype relative_path: str
         """
         super().__init__(version=version, **kwargs)
-        self.type = "UploadedUserSourceInfo"  # type: str
+        self.type: str = "UploadedUserSourceInfo"
         self.relative_path = relative_path
 
 
@@ -4876,8 +4937,8 @@ class JarUploadedUserSourceInfo(UploadedUserSourceInfo):
         relative_path: Optional[str] = None,
         runtime_version: Optional[str] = None,
         jvm_options: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword version: Version of the source.
         :paramtype version: str
@@ -4889,7 +4950,7 @@ class JarUploadedUserSourceInfo(UploadedUserSourceInfo):
         :paramtype jvm_options: str
         """
         super().__init__(version=version, relative_path=relative_path, **kwargs)
-        self.type = "Jar"  # type: str
+        self.type: str = "Jar"
         self.runtime_version = runtime_version
         self.jvm_options = jvm_options
 
@@ -4969,8 +5030,8 @@ class KeyVaultCertificateProperties(CertificateProperties):  # pylint: disable=t
         key_vault_cert_name: str,
         cert_version: Optional[str] = None,
         exclude_private_key: bool = False,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword vault_uri: The vault uri of user key vault. Required.
         :paramtype vault_uri: str
@@ -4983,7 +5044,7 @@ class KeyVaultCertificateProperties(CertificateProperties):  # pylint: disable=t
         :paramtype exclude_private_key: bool
         """
         super().__init__(**kwargs)
-        self.type = "KeyVaultCertificate"  # type: str
+        self.type: str = "KeyVaultCertificate"
         self.vault_uri = vault_uri
         self.key_vault_cert_name = key_vault_cert_name
         self.cert_version = cert_version
@@ -5011,7 +5072,7 @@ class LoadedCertificate(_serialization.Model):
         "load_trust_store": {"key": "loadTrustStore", "type": "bool"},
     }
 
-    def __init__(self, *, resource_id: str, load_trust_store: bool = False, **kwargs):
+    def __init__(self, *, resource_id: str, load_trust_store: bool = False, **kwargs: Any) -> None:
         """
         :keyword resource_id: Resource Id of loaded certificate. Required.
         :paramtype resource_id: str
@@ -5041,7 +5102,7 @@ class LogFileUrlResponse(_serialization.Model):
         "url": {"key": "url", "type": "str"},
     }
 
-    def __init__(self, *, url: str, **kwargs):
+    def __init__(self, *, url: str, **kwargs: Any) -> None:
         """
         :keyword url: URL of the log file. Required.
         :paramtype url: str
@@ -5073,8 +5134,8 @@ class LogSpecification(_serialization.Model):
         name: Optional[str] = None,
         display_name: Optional[str] = None,
         blob_duration: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword name: Name of the log.
         :paramtype name: str
@@ -5118,8 +5179,8 @@ class ManagedIdentityProperties(_serialization.Model):
         principal_id: Optional[str] = None,
         tenant_id: Optional[str] = None,
         user_assigned_identities: Optional[Dict[str, "_models.UserAssignedManagedIdentity"]] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword type: Type of the managed identity. Known values are: "None", "SystemAssigned",
          "UserAssigned", and "SystemAssigned,UserAssigned".
@@ -5157,8 +5218,13 @@ class MarketplaceResource(_serialization.Model):
     }
 
     def __init__(
-        self, *, plan: Optional[str] = None, publisher: Optional[str] = None, product: Optional[str] = None, **kwargs
-    ):
+        self,
+        *,
+        plan: Optional[str] = None,
+        publisher: Optional[str] = None,
+        product: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
         """
         :keyword plan: The plan id of the 3rd Party Artifact that is being procured.
         :paramtype plan: str
@@ -5197,8 +5263,8 @@ class MetricDimension(_serialization.Model):
         name: Optional[str] = None,
         display_name: Optional[str] = None,
         to_be_exported_for_shoebox: Optional[bool] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword name: Name of the dimension.
         :paramtype name: str
@@ -5272,8 +5338,8 @@ class MetricSpecification(_serialization.Model):  # pylint: disable=too-many-ins
         fill_gap_with_zero: Optional[bool] = None,
         dimensions: Optional[List["_models.MetricDimension"]] = None,
         source_mdm_namespace: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword name: Name of the metric.
         :paramtype name: str
@@ -5363,8 +5429,8 @@ class MonitoringSettingProperties(_serialization.Model):
         app_insights_instrumentation_key: Optional[str] = None,
         app_insights_sampling_rate: Optional[float] = None,
         app_insights_agent_versions: Optional["_models.ApplicationInsightsAgentVersions"] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword error: Error when apply Monitoring Setting changes.
         :paramtype error: ~azure.mgmt.appplatform.v2022_05_01_preview.models.Error
@@ -5424,7 +5490,7 @@ class MonitoringSettingResource(ProxyResource):
         "properties": {"key": "properties", "type": "MonitoringSettingProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.MonitoringSettingProperties"] = None, **kwargs):
+    def __init__(self, *, properties: Optional["_models.MonitoringSettingProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: Properties of the Monitoring Setting resource.
         :paramtype properties:
@@ -5457,8 +5523,8 @@ class NameAvailability(_serialization.Model):
         name_available: Optional[bool] = None,
         reason: Optional[str] = None,
         message: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword name_available: Indicates whether the name is available.
         :paramtype name_available: bool
@@ -5494,7 +5560,7 @@ class NameAvailabilityParameters(_serialization.Model):
         "name": {"key": "name", "type": "str"},
     }
 
-    def __init__(self, *, type: str, name: str, **kwargs):
+    def __init__(self, *, type: str, name: str, **kwargs: Any) -> None:
         """
         :keyword type: Type of the resource to check name availability. Required.
         :paramtype type: str
@@ -5542,8 +5608,8 @@ class NetCoreZipUploadedUserSourceInfo(UploadedUserSourceInfo):
         relative_path: Optional[str] = None,
         net_core_main_entry_path: Optional[str] = None,
         runtime_version: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword version: Version of the source.
         :paramtype version: str
@@ -5555,7 +5621,7 @@ class NetCoreZipUploadedUserSourceInfo(UploadedUserSourceInfo):
         :paramtype runtime_version: str
         """
         super().__init__(version=version, relative_path=relative_path, **kwargs)
-        self.type = "NetCoreZip"  # type: str
+        self.type: str = "NetCoreZip"
         self.net_core_main_entry_path = net_core_main_entry_path
         self.runtime_version = runtime_version
 
@@ -5614,8 +5680,8 @@ class NetworkProfile(_serialization.Model):
         service_runtime_network_resource_group: Optional[str] = None,
         app_network_resource_group: Optional[str] = None,
         ingress_config: Optional["_models.IngressConfig"] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword service_runtime_subnet_id: Fully qualified resource Id of the subnet to host Azure
          Spring Apps Service Runtime.
@@ -5662,7 +5728,7 @@ class NetworkProfileOutboundIPs(_serialization.Model):
         "public_i_ps": {"key": "publicIPs", "type": "[str]"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.public_i_ps = None
@@ -5709,8 +5775,8 @@ class OperationDetail(_serialization.Model):
         display: Optional["_models.OperationDisplay"] = None,
         origin: Optional[str] = None,
         properties: Optional["_models.OperationProperties"] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword name: Name of the operation.
         :paramtype name: str
@@ -5759,8 +5825,8 @@ class OperationDisplay(_serialization.Model):
         resource: Optional[str] = None,
         operation: Optional[str] = None,
         description: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword provider: Resource provider of the operation.
         :paramtype provider: str
@@ -5790,7 +5856,9 @@ class OperationProperties(_serialization.Model):
         "service_specification": {"key": "serviceSpecification", "type": "ServiceSpecification"},
     }
 
-    def __init__(self, *, service_specification: Optional["_models.ServiceSpecification"] = None, **kwargs):
+    def __init__(
+        self, *, service_specification: Optional["_models.ServiceSpecification"] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword service_specification: Service specifications of the operation.
         :paramtype service_specification:
@@ -5824,7 +5892,7 @@ class PersistentDisk(_serialization.Model):
         "mount_path": {"key": "mountPath", "type": "str"},
     }
 
-    def __init__(self, *, size_in_gb: Optional[int] = None, mount_path: Optional[str] = None, **kwargs):
+    def __init__(self, *, size_in_gb: Optional[int] = None, mount_path: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword size_in_gb: Size of the persistent disk in GB.
         :paramtype size_in_gb: int
@@ -5838,7 +5906,8 @@ class PersistentDisk(_serialization.Model):
 
 
 class Probe(_serialization.Model):
-    """Probe describes a health check to be performed against an App Instance to determine whether it is alive or ready to receive traffic.
+    """Probe describes a health check to be performed against an App Instance to determine whether it
+    is alive or ready to receive traffic.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -5886,8 +5955,8 @@ class Probe(_serialization.Model):
         timeout_seconds: Optional[int] = None,
         failure_threshold: Optional[int] = None,
         success_threshold: Optional[int] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword probe_action: The action of the probe.
         :paramtype probe_action: ~azure.mgmt.appplatform.v2022_05_01_preview.models.ProbeAction
@@ -5936,7 +6005,7 @@ class RegenerateTestKeyRequestPayload(_serialization.Model):
         "key_type": {"key": "keyType", "type": "str"},
     }
 
-    def __init__(self, *, key_type: Union[str, "_models.TestKeyType"], **kwargs):
+    def __init__(self, *, key_type: Union[str, "_models.TestKeyType"], **kwargs: Any) -> None:
         """
         :keyword key_type: Type of the test key. Required. Known values are: "Primary" and "Secondary".
         :paramtype key_type: str or ~azure.mgmt.appplatform.v2022_05_01_preview.models.TestKeyType
@@ -5978,7 +6047,7 @@ class RequiredTraffic(_serialization.Model):
         "direction": {"key": "direction", "type": "str"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.protocol = None
@@ -6004,7 +6073,7 @@ class ResourceRequests(_serialization.Model):
         "memory": {"key": "memory", "type": "str"},
     }
 
-    def __init__(self, *, cpu: Optional[str] = None, memory: Optional[str] = None, **kwargs):
+    def __init__(self, *, cpu: Optional[str] = None, memory: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword cpu: Required CPU. 1 core can be represented by 1 or 1000m. This should be 500m or 1
          for Basic tier, and {500m, 1, 2, 3, 4} for Standard tier.
@@ -6061,8 +6130,8 @@ class ResourceSku(_serialization.Model):
         locations: Optional[List[str]] = None,
         location_info: Optional[List["_models.ResourceSkuLocationInfo"]] = None,
         restrictions: Optional[List["_models.ResourceSkuRestrictions"]] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword resource_type: Gets the type of resource the SKU applies to.
         :paramtype resource_type: str
@@ -6107,7 +6176,7 @@ class ResourceSkuCapabilities(_serialization.Model):
         "value": {"key": "value", "type": "str"},
     }
 
-    def __init__(self, *, name: Optional[str] = None, value: Optional[str] = None, **kwargs):
+    def __init__(self, *, name: Optional[str] = None, value: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword name: Gets an invariant to describe the feature.
         :paramtype name: str
@@ -6135,8 +6204,8 @@ class ResourceSkuCollection(_serialization.Model):
     }
 
     def __init__(
-        self, *, value: Optional[List["_models.ResourceSku"]] = None, next_link: Optional[str] = None, **kwargs
-    ):
+        self, *, value: Optional[List["_models.ResourceSku"]] = None, next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of resource SKU.
         :paramtype value: list[~azure.mgmt.appplatform.v2022_05_01_preview.models.ResourceSku]
@@ -6173,8 +6242,8 @@ class ResourceSkuLocationInfo(_serialization.Model):
         location: Optional[str] = None,
         zones: Optional[List[str]] = None,
         zone_details: Optional[List["_models.ResourceSkuZoneDetails"]] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword location: Gets location of the SKU.
         :paramtype location: str
@@ -6204,7 +6273,9 @@ class ResourceSkuRestrictionInfo(_serialization.Model):
         "zones": {"key": "zones", "type": "[str]"},
     }
 
-    def __init__(self, *, locations: Optional[List[str]] = None, zones: Optional[List[str]] = None, **kwargs):
+    def __init__(
+        self, *, locations: Optional[List[str]] = None, zones: Optional[List[str]] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword locations: Gets locations where the SKU is restricted.
         :paramtype locations: list[str]
@@ -6250,8 +6321,8 @@ class ResourceSkuRestrictions(_serialization.Model):
         values: Optional[List[str]] = None,
         restriction_info: Optional["_models.ResourceSkuRestrictionInfo"] = None,
         reason_code: Optional[Union[str, "_models.ResourceSkuRestrictionsReasonCode"]] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword type: Gets the type of restrictions. Possible values include: 'Location', 'Zone'.
          Known values are: "Location" and "Zone".
@@ -6298,8 +6369,8 @@ class ResourceSkuZoneDetails(_serialization.Model):
         *,
         name: Optional[List[str]] = None,
         capabilities: Optional[List["_models.ResourceSkuCapabilities"]] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword name: Gets the set of zones that the SKU is available in with the
          specified capabilities.
@@ -6328,7 +6399,7 @@ class ResourceUploadDefinition(_serialization.Model):
         "upload_url": {"key": "uploadUrl", "type": "str"},
     }
 
-    def __init__(self, *, relative_path: Optional[str] = None, upload_url: Optional[str] = None, **kwargs):
+    def __init__(self, *, relative_path: Optional[str] = None, upload_url: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword relative_path: Source relative path.
         :paramtype relative_path: str
@@ -6361,7 +6432,7 @@ class ServiceRegistryInstance(_serialization.Model):
         "status": {"key": "status", "type": "str"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.name = None
@@ -6397,7 +6468,7 @@ class ServiceRegistryProperties(_serialization.Model):
         "instances": {"key": "instances", "type": "[ServiceRegistryInstance]"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.provisioning_state = None
@@ -6438,7 +6509,7 @@ class ServiceRegistryResource(ProxyResource):
         "properties": {"key": "properties", "type": "ServiceRegistryProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.ServiceRegistryProperties"] = None, **kwargs):
+    def __init__(self, *, properties: Optional["_models.ServiceRegistryProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: Service Registry properties payload.
         :paramtype properties:
@@ -6469,8 +6540,8 @@ class ServiceRegistryResourceCollection(_serialization.Model):
         *,
         value: Optional[List["_models.ServiceRegistryResource"]] = None,
         next_link: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of Service Registry resources.
         :paramtype value:
@@ -6509,7 +6580,7 @@ class ServiceRegistryResourceRequests(_serialization.Model):
         "instance_count": {"key": "instanceCount", "type": "int"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.cpu = None
@@ -6552,7 +6623,7 @@ class TrackedResource(Resource):
         "tags": {"key": "tags", "type": "{str}"},
     }
 
-    def __init__(self, *, location: Optional[str] = None, tags: Optional[Dict[str, str]] = None, **kwargs):
+    def __init__(self, *, location: Optional[str] = None, tags: Optional[Dict[str, str]] = None, **kwargs: Any) -> None:
         """
         :keyword location: The GEO location of the resource.
         :paramtype location: str
@@ -6614,8 +6685,8 @@ class ServiceResource(TrackedResource):
         tags: Optional[Dict[str, str]] = None,
         properties: Optional["_models.ClusterResourceProperties"] = None,
         sku: Optional["_models.Sku"] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword location: The GEO location of the resource.
         :paramtype location: str
@@ -6649,8 +6720,8 @@ class ServiceResourceList(_serialization.Model):
     }
 
     def __init__(
-        self, *, value: Optional[List["_models.ServiceResource"]] = None, next_link: Optional[str] = None, **kwargs
-    ):
+        self, *, value: Optional[List["_models.ServiceResource"]] = None, next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of Service resources.
         :paramtype value: list[~azure.mgmt.appplatform.v2022_05_01_preview.models.ServiceResource]
@@ -6684,8 +6755,8 @@ class ServiceSpecification(_serialization.Model):
         *,
         log_specifications: Optional[List["_models.LogSpecification"]] = None,
         metric_specifications: Optional[List["_models.MetricSpecification"]] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword log_specifications: Specifications of the Log for Azure Monitoring.
         :paramtype log_specifications:
@@ -6711,7 +6782,7 @@ class ServiceVNetAddons(_serialization.Model):
         "log_stream_public_endpoint": {"key": "logStreamPublicEndpoint", "type": "bool"},
     }
 
-    def __init__(self, *, log_stream_public_endpoint: bool = False, **kwargs):
+    def __init__(self, *, log_stream_public_endpoint: bool = False, **kwargs: Any) -> None:
         """
         :keyword log_stream_public_endpoint: Indicates whether the log stream in vnet injection
          instance could be accessed from internet.
@@ -6738,7 +6809,9 @@ class Sku(_serialization.Model):
         "capacity": {"key": "capacity", "type": "int"},
     }
 
-    def __init__(self, *, name: str = "S0", tier: str = "Standard", capacity: Optional[int] = None, **kwargs):
+    def __init__(
+        self, *, name: str = "S0", tier: str = "Standard", capacity: Optional[int] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword name: Name of the Sku.
         :paramtype name: str
@@ -6787,8 +6860,8 @@ class SkuCapacity(_serialization.Model):
         maximum: Optional[int] = None,
         default: Optional[int] = None,
         scale_type: Optional[Union[str, "_models.SkuScaleType"]] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword minimum: Gets or sets the minimum. Required.
         :paramtype minimum: int
@@ -6845,8 +6918,8 @@ class SourceUploadedUserSourceInfo(UploadedUserSourceInfo):
         relative_path: Optional[str] = None,
         artifact_selector: Optional[str] = None,
         runtime_version: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword version: Version of the source.
         :paramtype version: str
@@ -6860,7 +6933,7 @@ class SourceUploadedUserSourceInfo(UploadedUserSourceInfo):
         :paramtype runtime_version: str
         """
         super().__init__(version=version, relative_path=relative_path, **kwargs)
-        self.type = "Source"  # type: str
+        self.type: str = "Source"
         self.artifact_selector = artifact_selector
         self.runtime_version = runtime_version
 
@@ -6893,8 +6966,8 @@ class SsoProperties(_serialization.Model):
         client_id: Optional[str] = None,
         client_secret: Optional[str] = None,
         issuer_uri: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword scope: It defines the specific actions applications can be allowed to do on a user's
          behalf.
@@ -6928,8 +7001,12 @@ class StackProperties(_serialization.Model):
     }
 
     def __init__(
-        self, *, id: Optional[str] = None, version: Optional[str] = None, **kwargs  # pylint: disable=redefined-builtin
-    ):
+        self,
+        *,
+        id: Optional[str] = None,  # pylint: disable=redefined-builtin
+        version: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
         """
         :keyword id: Id of the ClusterStack.
         :paramtype id: str
@@ -6963,10 +7040,10 @@ class StorageProperties(_serialization.Model):
 
     _subtype_map = {"storage_type": {"StorageAccount": "StorageAccount"}}
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.storage_type = None  # type: Optional[str]
+        self.storage_type: Optional[str] = None
 
 
 class StorageAccount(StorageProperties):
@@ -6994,7 +7071,7 @@ class StorageAccount(StorageProperties):
         "account_key": {"key": "accountKey", "type": "str"},
     }
 
-    def __init__(self, *, account_name: str, account_key: str, **kwargs):
+    def __init__(self, *, account_name: str, account_key: str, **kwargs: Any) -> None:
         """
         :keyword account_name: The account name of the Azure Storage Account. Required.
         :paramtype account_name: str
@@ -7002,7 +7079,7 @@ class StorageAccount(StorageProperties):
         :paramtype account_key: str
         """
         super().__init__(**kwargs)
-        self.storage_type = "StorageAccount"  # type: str
+        self.storage_type: str = "StorageAccount"
         self.account_name = account_name
         self.account_key = account_key
 
@@ -7039,7 +7116,7 @@ class StorageResource(ProxyResource):
         "properties": {"key": "properties", "type": "StorageProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.StorageProperties"] = None, **kwargs):
+    def __init__(self, *, properties: Optional["_models.StorageProperties"] = None, **kwargs: Any) -> None:
         """
         :keyword properties: Properties of the storage resource payload.
         :paramtype properties: ~azure.mgmt.appplatform.v2022_05_01_preview.models.StorageProperties
@@ -7063,8 +7140,8 @@ class StorageResourceCollection(_serialization.Model):
     }
 
     def __init__(
-        self, *, value: Optional[List["_models.StorageResource"]] = None, next_link: Optional[str] = None, **kwargs
-    ):
+        self, *, value: Optional[List["_models.StorageResource"]] = None, next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword value: The storage resources list.
         :paramtype value: list[~azure.mgmt.appplatform.v2022_05_01_preview.models.StorageResource]
@@ -7109,7 +7186,9 @@ class SupportedBuildpackResource(ProxyResource):
         "properties": {"key": "properties", "type": "SupportedBuildpackResourceProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.SupportedBuildpackResourceProperties"] = None, **kwargs):
+    def __init__(
+        self, *, properties: Optional["_models.SupportedBuildpackResourceProperties"] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword properties: Supported buildpack resource properties.
         :paramtype properties:
@@ -7130,7 +7209,7 @@ class SupportedBuildpackResourceProperties(_serialization.Model):
         "buildpack_id": {"key": "buildpackId", "type": "str"},
     }
 
-    def __init__(self, *, buildpack_id: Optional[str] = None, **kwargs):
+    def __init__(self, *, buildpack_id: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword buildpack_id: The id of supported buildpack.
         :paramtype buildpack_id: str
@@ -7140,7 +7219,8 @@ class SupportedBuildpackResourceProperties(_serialization.Model):
 
 
 class SupportedBuildpacksCollection(_serialization.Model):
-    """Object that includes an array of supported buildpacks resources and a possible link for next set.
+    """Object that includes an array of supported buildpacks resources and a possible link for next
+    set.
 
     :ivar value: Collection of supported buildpacks resources.
     :vartype value:
@@ -7160,8 +7240,8 @@ class SupportedBuildpacksCollection(_serialization.Model):
         *,
         value: Optional[List["_models.SupportedBuildpackResource"]] = None,
         next_link: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of supported buildpacks resources.
         :paramtype value:
@@ -7201,8 +7281,8 @@ class SupportedRuntimeVersion(_serialization.Model):
         value: Optional[Union[str, "_models.SupportedRuntimeValue"]] = None,
         platform: Optional[Union[str, "_models.SupportedRuntimePlatform"]] = None,
         version: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword value: The raw value which could be passed to deployment CRUD operations. Known values
          are: "Java_8", "Java_11", "Java_17", and "NetCore_31".
@@ -7254,7 +7334,9 @@ class SupportedStackResource(ProxyResource):
         "properties": {"key": "properties", "type": "SupportedStackResourceProperties"},
     }
 
-    def __init__(self, *, properties: Optional["_models.SupportedStackResourceProperties"] = None, **kwargs):
+    def __init__(
+        self, *, properties: Optional["_models.SupportedStackResourceProperties"] = None, **kwargs: Any
+    ) -> None:
         """
         :keyword properties: Supported stack resource properties.
         :paramtype properties:
@@ -7278,7 +7360,7 @@ class SupportedStackResourceProperties(_serialization.Model):
         "version": {"key": "version", "type": "str"},
     }
 
-    def __init__(self, *, stack_id: Optional[str] = None, version: Optional[str] = None, **kwargs):
+    def __init__(self, *, stack_id: Optional[str] = None, version: Optional[str] = None, **kwargs: Any) -> None:
         """
         :keyword stack_id: The id of supported stack.
         :paramtype stack_id: str
@@ -7310,8 +7392,8 @@ class SupportedStacksCollection(_serialization.Model):
         *,
         value: Optional[List["_models.SupportedStackResource"]] = None,
         next_link: Optional[str] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword value: Collection of supported stacks resources.
         :paramtype value:
@@ -7364,8 +7446,8 @@ class SystemData(_serialization.Model):
         last_modified_by: Optional[str] = None,
         last_modified_by_type: Optional[Union[str, "_models.LastModifiedByType"]] = None,
         last_modified_at: Optional[datetime.datetime] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword created_by: The identity that created the resource.
         :paramtype created_by: str
@@ -7411,10 +7493,10 @@ class TCPSocketAction(ProbeAction):
         "type": {"key": "type", "type": "str"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
-        self.type = "TCPSocketAction"  # type: str
+        self.type: str = "TCPSocketAction"
 
 
 class TemporaryDisk(_serialization.Model):
@@ -7435,7 +7517,7 @@ class TemporaryDisk(_serialization.Model):
         "mount_path": {"key": "mountPath", "type": "str"},
     }
 
-    def __init__(self, *, size_in_gb: Optional[int] = None, mount_path: str = "/tmp", **kwargs):
+    def __init__(self, *, size_in_gb: Optional[int] = None, mount_path: str = "/tmp", **kwargs: Any) -> None:
         """
         :keyword size_in_gb: Size of the temporary disk in GB.
         :paramtype size_in_gb: int
@@ -7478,8 +7560,8 @@ class TestKeys(_serialization.Model):
         primary_test_endpoint: Optional[str] = None,
         secondary_test_endpoint: Optional[str] = None,
         enabled: Optional[bool] = None,
-        **kwargs
-    ):
+        **kwargs: Any
+    ) -> None:
         """
         :keyword primary_key: Primary key.
         :paramtype primary_key: str
@@ -7511,7 +7593,7 @@ class TriggeredBuildResult(_serialization.Model):
         "id": {"key": "id", "type": "str"},
     }
 
-    def __init__(self, *, id: Optional[str] = None, **kwargs):  # pylint: disable=redefined-builtin
+    def __init__(self, *, id: Optional[str] = None, **kwargs: Any) -> None:  # pylint: disable=redefined-builtin
         """
         :keyword id: The unique build id of this build result.
         :paramtype id: str
@@ -7541,7 +7623,7 @@ class UserAssignedManagedIdentity(_serialization.Model):
         "client_id": {"key": "clientId", "type": "str"},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.principal_id = None
@@ -7562,7 +7644,7 @@ class ValidationMessages(_serialization.Model):
         "messages": {"key": "messages", "type": "[str]"},
     }
 
-    def __init__(self, *, name: Optional[str] = None, messages: Optional[List[str]] = None, **kwargs):
+    def __init__(self, *, name: Optional[str] = None, messages: Optional[List[str]] = None, **kwargs: Any) -> None:
         """
         :keyword name: The name of the configuration service git repository.
         :paramtype name: str

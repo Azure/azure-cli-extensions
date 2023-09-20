@@ -23,9 +23,9 @@ class CalculateExchange(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-03-01",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.capacity/calculateexchange", "2022-03-01"],
+            ["mgmt-plane", "/providers/microsoft.capacity/calculateexchange", "2022-11-01"],
         ]
     }
 
@@ -56,6 +56,11 @@ class CalculateExchange(AAZCommand):
             arg_group="Properties",
             help="List of reservations that are being purchased in this exchange.",
         )
+        _args_schema.sp_to_purchase = AAZListArg(
+            options=["--sp-to-purchase"],
+            arg_group="Properties",
+            help="List of savings plans that are being purchased in this exchange.",
+        )
 
         ris_to_exchange = cls._args_schema.ris_to_exchange
         ris_to_exchange.Element = AAZObjectArg()
@@ -78,10 +83,15 @@ class CalculateExchange(AAZCommand):
             options=["location"],
             help="The Azure Region where the reserved resource lives.",
         )
+        _element.applied_scope_properties = AAZObjectArg(
+            options=["applied-scope-properties"],
+            help="Properties specific to applied scope type. Not required if not applicable. Required and need to provide tenantId and managementGroupId if AppliedScopeType is ManagementGroup",
+        )
+        cls._build_args_applied_scope_properties_create(_element.applied_scope_properties)
         _element.applied_scope_type = AAZStrArg(
             options=["applied-scope-type"],
             help="Type of the Applied Scope.",
-            enum={"Shared": "Shared", "Single": "Single"},
+            enum={"ManagementGroup": "ManagementGroup", "Shared": "Shared", "Single": "Single"},
         )
         _element.applied_scope = AAZListArg(
             options=["applied-scope"],
@@ -119,6 +129,10 @@ class CalculateExchange(AAZCommand):
             help="The type of the resource that is being reserved.",
             enum={"AVS": "AVS", "AppService": "AppService", "AzureDataExplorer": "AzureDataExplorer", "AzureFiles": "AzureFiles", "BlockBlob": "BlockBlob", "CosmosDb": "CosmosDb", "DataFactory": "DataFactory", "Databricks": "Databricks", "DedicatedHost": "DedicatedHost", "ManagedDisk": "ManagedDisk", "MariaDb": "MariaDb", "MySql": "MySql", "NetAppStorage": "NetAppStorage", "PostgreSql": "PostgreSql", "RedHat": "RedHat", "RedHatOsa": "RedHatOsa", "RedisCache": "RedisCache", "SapHana": "SapHana", "SqlAzureHybridBenefit": "SqlAzureHybridBenefit", "SqlDataWarehouse": "SqlDataWarehouse", "SqlDatabases": "SqlDatabases", "SqlEdge": "SqlEdge", "SuseLinux": "SuseLinux", "VMwareCloudSimple": "VMwareCloudSimple", "VirtualMachineSoftware": "VirtualMachineSoftware", "VirtualMachines": "VirtualMachines"},
         )
+        _element.review_date_time = AAZDateTimeArg(
+            options=["review-date-time"],
+            help="This is the date-time when the Azure hybrid benefit needs to be reviewed.",
+        )
         _element.term = AAZStrArg(
             options=["term"],
             help="Represent the term of Reservation.",
@@ -126,22 +140,136 @@ class CalculateExchange(AAZCommand):
         )
         _element.sku = AAZStrArg(
             options=["sku"],
+            help="sku name",
         )
 
         applied_scope = cls._args_schema.ris_to_purchase.Element.applied_scope
         applied_scope.Element = AAZStrArg()
+
+        sp_to_purchase = cls._args_schema.sp_to_purchase
+        sp_to_purchase.Element = AAZObjectArg()
+
+        _element = cls._args_schema.sp_to_purchase.Element
+        _element.applied_scope_properties = AAZObjectArg(
+            options=["applied-scope-properties"],
+        )
+        cls._build_args_applied_scope_properties_create(_element.applied_scope_properties)
+        _element.applied_scope_type = AAZStrArg(
+            options=["applied-scope-type"],
+            help="Type of the Applied Scope.",
+            enum={"ManagementGroup": "ManagementGroup", "Shared": "Shared", "Single": "Single"},
+        )
+        _element.billing_plan = AAZStrArg(
+            options=["billing-plan"],
+            help="Represents the billing plan in ISO 8601 format. Required only for monthly billing plans.",
+            enum={"P1M": "P1M"},
+        )
+        _element.billing_scope_id = AAZStrArg(
+            options=["billing-scope-id"],
+            help="Subscription that will be charged for purchasing reservation or savings plan",
+        )
+        _element.commitment = AAZObjectArg(
+            options=["commitment"],
+            help="Commitment towards the benefit.",
+        )
+        _element.display_name = AAZStrArg(
+            options=["display-name"],
+            help="Friendly name of the savings plan",
+        )
+        _element.term = AAZStrArg(
+            options=["term"],
+            help="Represent savings plan term in ISO 8601 format.",
+            enum={"P1Y": "P1Y", "P3Y": "P3Y"},
+        )
+        _element.sku = AAZObjectArg(
+            options=["sku"],
+        )
+        cls._build_args_sku_name_create(_element.sku)
+
+        commitment = cls._args_schema.sp_to_purchase.Element.commitment
+        commitment.amount = AAZFloatArg(
+            options=["amount"],
+        )
+        commitment.currency_code = AAZStrArg(
+            options=["currency-code"],
+            help="The ISO 4217 3-letter currency code for the currency used by this purchase record.",
+        )
+        commitment.grain = AAZStrArg(
+            options=["grain"],
+            help="Commitment grain.",
+            enum={"Hourly": "Hourly"},
+        )
         return cls._args_schema
+
+    _args_applied_scope_properties_create = None
+
+    @classmethod
+    def _build_args_applied_scope_properties_create(cls, _schema):
+        if cls._args_applied_scope_properties_create is not None:
+            _schema.display_name = cls._args_applied_scope_properties_create.display_name
+            _schema.management_group_id = cls._args_applied_scope_properties_create.management_group_id
+            _schema.resource_group_id = cls._args_applied_scope_properties_create.resource_group_id
+            _schema.subscription_id = cls._args_applied_scope_properties_create.subscription_id
+            _schema.tenant_id = cls._args_applied_scope_properties_create.tenant_id
+            return
+
+        cls._args_applied_scope_properties_create = AAZObjectArg()
+
+        applied_scope_properties_create = cls._args_applied_scope_properties_create
+        applied_scope_properties_create.display_name = AAZStrArg(
+            options=["display-name"],
+            help="Display name",
+        )
+        applied_scope_properties_create.management_group_id = AAZStrArg(
+            options=["management-group-id"],
+            help="Fully-qualified identifier of the management group where the benefit must be applied.",
+        )
+        applied_scope_properties_create.resource_group_id = AAZStrArg(
+            options=["resource-group-id"],
+            help="Fully-qualified identifier of the resource group.",
+        )
+        applied_scope_properties_create.subscription_id = AAZStrArg(
+            options=["subscription-id"],
+            help="Fully-qualified identifier of the subscription.",
+        )
+        applied_scope_properties_create.tenant_id = AAZStrArg(
+            options=["tenant-id"],
+            help="Tenant ID where the savings plan should apply benefit.",
+        )
+
+        _schema.display_name = cls._args_applied_scope_properties_create.display_name
+        _schema.management_group_id = cls._args_applied_scope_properties_create.management_group_id
+        _schema.resource_group_id = cls._args_applied_scope_properties_create.resource_group_id
+        _schema.subscription_id = cls._args_applied_scope_properties_create.subscription_id
+        _schema.tenant_id = cls._args_applied_scope_properties_create.tenant_id
+
+    _args_sku_name_create = None
+
+    @classmethod
+    def _build_args_sku_name_create(cls, _schema):
+        if cls._args_sku_name_create is not None:
+            _schema.name = cls._args_sku_name_create.name
+            return
+
+        cls._args_sku_name_create = AAZObjectArg()
+
+        sku_name_create = cls._args_sku_name_create
+        sku_name_create.name = AAZStrArg(
+            options=["name"],
+        )
+
+        _schema.name = cls._args_sku_name_create.name
 
     def _execute_operations(self):
         self.pre_operations()
         yield self.CalculateExchangePost(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -195,7 +323,7 @@ class CalculateExchange(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-03-01",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -226,6 +354,7 @@ class CalculateExchange(AAZCommand):
             if properties is not None:
                 properties.set_prop("reservationsToExchange", AAZListType, ".ris_to_exchange")
                 properties.set_prop("reservationsToPurchase", AAZListType, ".ris_to_purchase")
+                properties.set_prop("savingsPlansToPurchase", AAZListType, ".sp_to_purchase")
 
             reservations_to_exchange = _builder.get(".properties.reservationsToExchange")
             if reservations_to_exchange is not None:
@@ -248,6 +377,7 @@ class CalculateExchange(AAZCommand):
 
             properties = _builder.get(".properties.reservationsToPurchase[].properties")
             if properties is not None:
+                _CalculateExchangeHelper._build_schema_applied_scope_properties_create(properties.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_properties"))
                 properties.set_prop("appliedScopeType", AAZStrType, ".applied_scope_type")
                 properties.set_prop("appliedScopes", AAZListType, ".applied_scope")
                 properties.set_prop("billingPlan", AAZStrType, ".billing_plan")
@@ -257,6 +387,7 @@ class CalculateExchange(AAZCommand):
                 properties.set_prop("renew", AAZBoolType, ".renew")
                 properties.set_prop("reservedResourceProperties", AAZObjectType)
                 properties.set_prop("reservedResourceType", AAZStrType, ".reserved_resource_type")
+                properties.set_prop("reviewDateTime", AAZStrType, ".review_date_time")
                 properties.set_prop("term", AAZStrType, ".term")
 
             applied_scopes = _builder.get(".properties.reservationsToPurchase[].properties.appliedScopes")
@@ -270,6 +401,31 @@ class CalculateExchange(AAZCommand):
             sku = _builder.get(".properties.reservationsToPurchase[].sku")
             if sku is not None:
                 sku.set_prop("name", AAZStrType, ".sku")
+
+            savings_plans_to_purchase = _builder.get(".properties.savingsPlansToPurchase")
+            if savings_plans_to_purchase is not None:
+                savings_plans_to_purchase.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.savingsPlansToPurchase[]")
+            if _elements is not None:
+                _elements.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+                _CalculateExchangeHelper._build_schema_sku_name_create(_elements.set_prop("sku", AAZObjectType, ".sku"))
+
+            properties = _builder.get(".properties.savingsPlansToPurchase[].properties")
+            if properties is not None:
+                _CalculateExchangeHelper._build_schema_applied_scope_properties_create(properties.set_prop("appliedScopeProperties", AAZObjectType, ".applied_scope_properties"))
+                properties.set_prop("appliedScopeType", AAZStrType, ".applied_scope_type")
+                properties.set_prop("billingPlan", AAZStrType, ".billing_plan")
+                properties.set_prop("billingScopeId", AAZStrType, ".billing_scope_id")
+                properties.set_prop("commitment", AAZObjectType, ".commitment")
+                properties.set_prop("displayName", AAZStrType, ".display_name")
+                properties.set_prop("term", AAZStrType, ".term")
+
+            commitment = _builder.get(".properties.savingsPlansToPurchase[].properties.commitment")
+            if commitment is not None:
+                commitment.set_prop("amount", AAZFloatType, ".amount")
+                commitment.set_prop("currencyCode", AAZStrType, ".currency_code")
+                commitment.set_prop("grain", AAZStrType, ".grain")
 
             return self.serialize_content(_content_value)
 
@@ -305,23 +461,26 @@ class CalculateExchange(AAZCommand):
             properties.net_payable = AAZObjectType(
                 serialized_name="netPayable",
             )
-            _build_schema_price_read(properties.net_payable)
+            _CalculateExchangeHelper._build_schema_price_read(properties.net_payable)
             properties.policy_result = AAZObjectType(
                 serialized_name="policyResult",
             )
             properties.purchases_total = AAZObjectType(
                 serialized_name="purchasesTotal",
             )
-            _build_schema_price_read(properties.purchases_total)
+            _CalculateExchangeHelper._build_schema_price_read(properties.purchases_total)
             properties.refunds_total = AAZObjectType(
                 serialized_name="refundsTotal",
             )
-            _build_schema_price_read(properties.refunds_total)
+            _CalculateExchangeHelper._build_schema_price_read(properties.refunds_total)
             properties.reservations_to_exchange = AAZListType(
                 serialized_name="reservationsToExchange",
             )
             properties.reservations_to_purchase = AAZListType(
                 serialized_name="reservationsToPurchase",
+            )
+            properties.savings_plans_to_purchase = AAZListType(
+                serialized_name="savingsPlansToPurchase",
             )
             properties.session_id = AAZStrType(
                 serialized_name="sessionId",
@@ -349,7 +508,7 @@ class CalculateExchange(AAZCommand):
             _element.billing_refund_amount = AAZObjectType(
                 serialized_name="billingRefundAmount",
             )
-            _build_schema_price_read(_element.billing_refund_amount)
+            _CalculateExchangeHelper._build_schema_price_read(_element.billing_refund_amount)
             _element.quantity = AAZIntType()
             _element.reservation_id = AAZStrType(
                 serialized_name="reservationId",
@@ -359,15 +518,15 @@ class CalculateExchange(AAZCommand):
             billing_information.billing_currency_prorated_amount = AAZObjectType(
                 serialized_name="billingCurrencyProratedAmount",
             )
-            _build_schema_price_read(billing_information.billing_currency_prorated_amount)
+            _CalculateExchangeHelper._build_schema_price_read(billing_information.billing_currency_prorated_amount)
             billing_information.billing_currency_remaining_commitment_amount = AAZObjectType(
                 serialized_name="billingCurrencyRemainingCommitmentAmount",
             )
-            _build_schema_price_read(billing_information.billing_currency_remaining_commitment_amount)
+            _CalculateExchangeHelper._build_schema_price_read(billing_information.billing_currency_remaining_commitment_amount)
             billing_information.billing_currency_total_paid_amount = AAZObjectType(
                 serialized_name="billingCurrencyTotalPaidAmount",
             )
-            _build_schema_price_read(billing_information.billing_currency_total_paid_amount)
+            _CalculateExchangeHelper._build_schema_price_read(billing_information.billing_currency_total_paid_amount)
 
             reservations_to_purchase = cls._schema_on_200.properties.reservations_to_purchase
             reservations_to_purchase.Element = AAZObjectType()
@@ -376,7 +535,7 @@ class CalculateExchange(AAZCommand):
             _element.billing_currency_total = AAZObjectType(
                 serialized_name="billingCurrencyTotal",
             )
-            _build_schema_price_read(_element.billing_currency_total)
+            _CalculateExchangeHelper._build_schema_price_read(_element.billing_currency_total)
             _element.properties = AAZObjectType()
 
             properties = cls._schema_on_200.properties.reservations_to_purchase.Element.properties
@@ -385,8 +544,13 @@ class CalculateExchange(AAZCommand):
                 flags={"client_flatten": True},
             )
             properties.sku = AAZObjectType()
+            _CalculateExchangeHelper._build_schema_sku_name_read(properties.sku)
 
             properties = cls._schema_on_200.properties.reservations_to_purchase.Element.properties.properties
+            properties.applied_scope_properties = AAZObjectType(
+                serialized_name="appliedScopeProperties",
+            )
+            _CalculateExchangeHelper._build_schema_applied_scope_properties_read(properties.applied_scope_properties)
             properties.applied_scope_type = AAZStrType(
                 serialized_name="appliedScopeType",
             )
@@ -410,6 +574,9 @@ class CalculateExchange(AAZCommand):
             properties.reserved_resource_type = AAZStrType(
                 serialized_name="reservedResourceType",
             )
+            properties.review_date_time = AAZStrType(
+                serialized_name="reviewDateTime",
+            )
             properties.term = AAZStrType()
 
             applied_scopes = cls._schema_on_200.properties.reservations_to_purchase.Element.properties.properties.applied_scopes
@@ -420,32 +587,143 @@ class CalculateExchange(AAZCommand):
                 serialized_name="instanceFlexibility",
             )
 
-            sku = cls._schema_on_200.properties.reservations_to_purchase.Element.properties.sku
-            sku.name = AAZStrType()
+            savings_plans_to_purchase = cls._schema_on_200.properties.savings_plans_to_purchase
+            savings_plans_to_purchase.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.savings_plans_to_purchase.Element
+            _element.billing_currency_total = AAZObjectType(
+                serialized_name="billingCurrencyTotal",
+            )
+            _CalculateExchangeHelper._build_schema_price_read(_element.billing_currency_total)
+            _element.properties = AAZObjectType()
+
+            properties = cls._schema_on_200.properties.savings_plans_to_purchase.Element.properties
+            properties.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            properties.sku = AAZObjectType()
+            _CalculateExchangeHelper._build_schema_sku_name_read(properties.sku)
+
+            properties = cls._schema_on_200.properties.savings_plans_to_purchase.Element.properties.properties
+            properties.applied_scope_properties = AAZObjectType(
+                serialized_name="appliedScopeProperties",
+            )
+            _CalculateExchangeHelper._build_schema_applied_scope_properties_read(properties.applied_scope_properties)
+            properties.applied_scope_type = AAZStrType(
+                serialized_name="appliedScopeType",
+            )
+            properties.billing_plan = AAZStrType(
+                serialized_name="billingPlan",
+            )
+            properties.billing_scope_id = AAZStrType(
+                serialized_name="billingScopeId",
+            )
+            properties.commitment = AAZObjectType()
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+            )
+            properties.term = AAZStrType()
+
+            commitment = cls._schema_on_200.properties.savings_plans_to_purchase.Element.properties.properties.commitment
+            commitment.amount = AAZFloatType()
+            commitment.currency_code = AAZStrType(
+                serialized_name="currencyCode",
+            )
+            commitment.grain = AAZStrType()
 
             return cls._schema_on_200
 
 
-_schema_price_read = None
+class _CalculateExchangeHelper:
+    """Helper class for CalculateExchange"""
 
+    @classmethod
+    def _build_schema_applied_scope_properties_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("displayName", AAZStrType, ".display_name")
+        _builder.set_prop("managementGroupId", AAZStrType, ".management_group_id")
+        _builder.set_prop("resourceGroupId", AAZStrType, ".resource_group_id")
+        _builder.set_prop("subscriptionId", AAZStrType, ".subscription_id")
+        _builder.set_prop("tenantId", AAZStrType, ".tenant_id")
 
-def _build_schema_price_read(_schema):
-    global _schema_price_read
-    if _schema_price_read is not None:
-        _schema.amount = _schema_price_read.amount
-        _schema.currency_code = _schema_price_read.currency_code
-        return
+    @classmethod
+    def _build_schema_sku_name_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("name", AAZStrType, ".name")
 
-    _schema_price_read = AAZObjectType()
+    _schema_applied_scope_properties_read = None
 
-    price_read = _schema_price_read
-    price_read.amount = AAZFloatType()
-    price_read.currency_code = AAZStrType(
-        serialized_name="currencyCode",
-    )
+    @classmethod
+    def _build_schema_applied_scope_properties_read(cls, _schema):
+        if cls._schema_applied_scope_properties_read is not None:
+            _schema.display_name = cls._schema_applied_scope_properties_read.display_name
+            _schema.management_group_id = cls._schema_applied_scope_properties_read.management_group_id
+            _schema.resource_group_id = cls._schema_applied_scope_properties_read.resource_group_id
+            _schema.subscription_id = cls._schema_applied_scope_properties_read.subscription_id
+            _schema.tenant_id = cls._schema_applied_scope_properties_read.tenant_id
+            return
 
-    _schema.amount = _schema_price_read.amount
-    _schema.currency_code = _schema_price_read.currency_code
+        cls._schema_applied_scope_properties_read = _schema_applied_scope_properties_read = AAZObjectType()
+
+        applied_scope_properties_read = _schema_applied_scope_properties_read
+        applied_scope_properties_read.display_name = AAZStrType(
+            serialized_name="displayName",
+        )
+        applied_scope_properties_read.management_group_id = AAZStrType(
+            serialized_name="managementGroupId",
+        )
+        applied_scope_properties_read.resource_group_id = AAZStrType(
+            serialized_name="resourceGroupId",
+        )
+        applied_scope_properties_read.subscription_id = AAZStrType(
+            serialized_name="subscriptionId",
+        )
+        applied_scope_properties_read.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+        )
+
+        _schema.display_name = cls._schema_applied_scope_properties_read.display_name
+        _schema.management_group_id = cls._schema_applied_scope_properties_read.management_group_id
+        _schema.resource_group_id = cls._schema_applied_scope_properties_read.resource_group_id
+        _schema.subscription_id = cls._schema_applied_scope_properties_read.subscription_id
+        _schema.tenant_id = cls._schema_applied_scope_properties_read.tenant_id
+
+    _schema_price_read = None
+
+    @classmethod
+    def _build_schema_price_read(cls, _schema):
+        if cls._schema_price_read is not None:
+            _schema.amount = cls._schema_price_read.amount
+            _schema.currency_code = cls._schema_price_read.currency_code
+            return
+
+        cls._schema_price_read = _schema_price_read = AAZObjectType()
+
+        price_read = _schema_price_read
+        price_read.amount = AAZFloatType()
+        price_read.currency_code = AAZStrType(
+            serialized_name="currencyCode",
+        )
+
+        _schema.amount = cls._schema_price_read.amount
+        _schema.currency_code = cls._schema_price_read.currency_code
+
+    _schema_sku_name_read = None
+
+    @classmethod
+    def _build_schema_sku_name_read(cls, _schema):
+        if cls._schema_sku_name_read is not None:
+            _schema.name = cls._schema_sku_name_read.name
+            return
+
+        cls._schema_sku_name_read = _schema_sku_name_read = AAZObjectType()
+
+        sku_name_read = _schema_sku_name_read
+        sku_name_read.name = AAZStrType()
+
+        _schema.name = cls._schema_sku_name_read.name
 
 
 __all__ = ["CalculateExchange"]

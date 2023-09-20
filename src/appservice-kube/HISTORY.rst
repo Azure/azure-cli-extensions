@@ -2,6 +2,13 @@
 
 Release History
 ===============
+0.1.9
+++++++
+* `az webapp scale`: Add validation to reject non-arc enabled app service
+
+0.1.8
+++++++
+* Fix appservice kube - No module named 'azure.mgmt.web.v2021_01_01'
 
 0.1.7
 ++++++

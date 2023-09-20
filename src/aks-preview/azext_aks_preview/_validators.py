@@ -12,6 +12,17 @@ from ipaddress import ip_network
 from math import isclose, isnan
 
 import azure.cli.core.keys as keys
+from azext_aks_preview._consts import (
+    ADDONS,
+    CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
+    CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
+    CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
+    CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
+    CONST_OS_SKU_AZURELINUX,
+    CONST_OS_SKU_CBLMARINER,
+    CONST_OS_SKU_MARINER,
+)
+from azext_aks_preview._helpers import _fuzzy_match
 from azure.cli.core.azclierror import (
     ArgumentUsageError,
     InvalidArgumentValueError,
@@ -21,13 +32,6 @@ from azure.cli.core.azclierror import (
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 from knack.log import get_logger
-
-from azext_aks_preview._consts import (
-    ADDONS,
-    CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
-    CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
-)
-from azext_aks_preview._helpers import _fuzzy_match
 
 logger = get_logger(__name__)
 
@@ -182,9 +186,10 @@ def validate_vm_set_type(namespace):
         if namespace.vm_set_type == '':
             return
         if namespace.vm_set_type.lower() != "availabilityset" and \
+            namespace.vm_set_type.lower() != "virtualmachines" and \
                 namespace.vm_set_type.lower() != "virtualmachinescalesets":
             raise CLIError(
-                "--vm-set-type can only be VirtualMachineScaleSets or AvailabilitySet")
+                "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only)")
 
 
 def validate_load_balancer_sku(namespace):
@@ -196,39 +201,40 @@ def validate_load_balancer_sku(namespace):
             raise CLIError("--load-balancer-sku can only be standard or basic")
 
 
-def validate_load_balancer_outbound_ips(namespace):
-    """validate load balancer profile outbound IP ids"""
-    if namespace.load_balancer_outbound_ips is not None:
-        ip_id_list = [x.strip()
-                      for x in namespace.load_balancer_outbound_ips.split(',')]
-        if not all(ip_id_list):
-            raise CLIError(
-                "--load-balancer-outbound-ips cannot contain whitespace")
+def validate_sku_tier(namespace):
+    """Validates the sku tier string."""
+    if namespace.tier is not None:
+        if namespace.tier == '':
+            return
+        if namespace.tier.lower() not in (CONST_MANAGED_CLUSTER_SKU_TIER_FREE, CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD):
+            raise InvalidArgumentValueError("--tier can only be free or standard")
 
 
-def validate_load_balancer_outbound_ip_prefixes(namespace):
-    """validate load balancer profile outbound IP prefix ids"""
-    if namespace.load_balancer_outbound_ip_prefixes is not None:
-        ip_prefix_id_list = [
-            x.strip() for x in namespace.load_balancer_outbound_ip_prefixes.split(',')]
-        if not all(ip_prefix_id_list):
-            raise CLIError(
-                "--load-balancer-outbound-ip-prefixes cannot contain whitespace")
+def validate_nodepool_taints(namespace):
+    """Validates that provided node taints is a valid format"""
+    if hasattr(namespace, 'nodepool_taints'):
+        taintsStr = namespace.nodepool_taints
+    else:
+        taintsStr = namespace.node_taints
+
+    if taintsStr is None or taintsStr == '':
+        return
+
+    for taint in taintsStr.split(','):
+        validate_taint(taint)
 
 
-def validate_taints(namespace):
+def validate_taint(taint):
     """Validates that provided taint is a valid format"""
 
     regex = re.compile(
         r"^[a-zA-Z\d][\w\-\.\/]{0,252}=[a-zA-Z\d][\w\-\.]{0,62}:(NoSchedule|PreferNoSchedule|NoExecute)$")  # pylint: disable=line-too-long
 
-    if namespace.node_taints is not None and namespace.node_taints != '':
-        for taint in namespace.node_taints.split(','):
-            if taint == "":
-                continue
-            found = regex.findall(taint)
-            if not found:
-                raise CLIError('Invalid node taint: %s' % taint)
+    if taint == "":
+        return
+    found = regex.findall(taint)
+    if not found:
+        raise ArgumentUsageError('Invalid node taint: %s' % taint)
 
 
 def validate_priority(namespace):
@@ -308,25 +314,6 @@ def _validate_subnet_id(subnet_id, name):
         raise CLIError(name + " is not a valid Azure resource ID.")
 
 
-def validate_load_balancer_outbound_ports(namespace):
-    """validate load balancer profile outbound allocated ports"""
-    if namespace.load_balancer_outbound_ports is not None:
-        if namespace.load_balancer_outbound_ports % 8 != 0:
-            raise CLIError(
-                "--load-balancer-allocated-ports must be a multiple of 8")
-        if namespace.load_balancer_outbound_ports < 0 or namespace.load_balancer_outbound_ports > 64000:
-            raise CLIError(
-                "--load-balancer-allocated-ports must be in the range [0,64000]")
-
-
-def validate_load_balancer_idle_timeout(namespace):
-    """validate load balancer profile idle timeout"""
-    if namespace.load_balancer_idle_timeout is not None:
-        if namespace.load_balancer_idle_timeout < 4 or namespace.load_balancer_idle_timeout > 100:
-            raise CLIError(
-                "--load-balancer-idle-timeout must be in the range [4,100]")
-
-
 def validate_load_balancer_backend_pool_type(namespace):
     """validate load balancer backend pool type"""
     if namespace.load_balancer_backend_pool_type is not None:
@@ -334,22 +321,6 @@ def validate_load_balancer_backend_pool_type(namespace):
                                                              CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION]:
             raise InvalidArgumentValueError(
                 f"Invalid Load Balancer Backend Pool Type {namespace.load_balancer_backend_pool_type}, supported values are nodeIP and nodeIPConfiguration")
-
-
-def validate_nat_gateway_managed_outbound_ip_count(namespace):
-    """validate NAT gateway profile managed outbound IP count"""
-    if namespace.nat_gateway_managed_outbound_ip_count is not None:
-        if namespace.nat_gateway_managed_outbound_ip_count < 1 or namespace.nat_gateway_managed_outbound_ip_count > 16:
-            raise InvalidArgumentValueError(
-                "--nat-gateway-managed-outbound-ip-count must be in the range [1,16]")
-
-
-def validate_nat_gateway_idle_timeout(namespace):
-    """validate NAT gateway profile idle timeout"""
-    if namespace.nat_gateway_idle_timeout is not None:
-        if namespace.nat_gateway_idle_timeout < 4 or namespace.nat_gateway_idle_timeout > 120:
-            raise InvalidArgumentValueError(
-                "--nat-gateway-idle-timeout must be in the range [4,120]")
 
 
 def validate_nodepool_tags(ns):
@@ -368,6 +339,30 @@ def validate_node_public_ip_tags(ns):
         for item in ns.node_public_ip_tags:
             tags_dict.update(validate_tag(item))
         ns.node_public_ip_tags = tags_dict
+
+
+def validate_egress_gtw_nodeselector(namespace):
+    """Validates that provided node selector is a valid format"""
+
+    if not hasattr(namespace, 'egx_gtw_nodeselector'):
+        return
+
+    labels = namespace.egx_gtw_nodeselector
+
+    if labels is None:
+        # no specify any labels
+        namespace.egx_gtw_nodeselector = {}
+        return
+
+    if isinstance(labels, list):
+        labels_dict = {}
+        for item in labels:
+            labels_dict.update(validate_label(item))
+        after_validation_labels = labels_dict
+    else:
+        after_validation_labels = validate_label(labels)
+
+    namespace.egx_gtw_nodeselector = after_validation_labels
 
 
 def validate_nodepool_labels(namespace):
@@ -689,6 +684,11 @@ def validate_defender_disable_and_enable_parameters(namespace):
         raise ArgumentUsageError('Providing both --disable-defender and --enable-defender flags is invalid')
 
 
+def validate_force_upgrade_disable_and_enable_parameters(namespace):
+    if namespace.disable_force_upgrade and namespace.enable_force_upgrade:
+        raise MutuallyExclusiveArgumentError('Providing both --disable-force-upgrade and --enable-force-upgrade flags is invalid')
+
+
 def sanitize_resource_id(resource_id):
     resource_id = resource_id.strip()
     if not resource_id.startswith("/"):
@@ -714,63 +714,6 @@ def validate_grafanaresourceid(namespace):
     resource_id = sanitize_resource_id(resource_id)
     if (bool(re.match(r'/subscriptions/.*/resourcegroups/.*/providers/microsoft.dashboard/grafana/.*', resource_id))) is False:
         raise ArgumentUsageError("--grafana-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.dashboard/grafana/<resourceName>`")
-
-
-def validate_ksm_parameter(ksmparam):
-    labelValueMap = {}
-    ksmStrLength = len(ksmparam)
-    EOF = -1
-    next = ""
-    name = ""
-    firstWordPos = 0
-    for i, v in enumerate(ksmparam):
-        if i + 1 == ksmStrLength:
-            next = EOF
-        else:
-            next = ord(ksmparam[i + 1])
-        if i - 1 >= 0:
-            previous = ord(ksmparam[i - 1])
-        else:
-            previous = v
-        if v == "=":
-            if previous == ord(",") or next != ord("["):
-                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-            name = ksmparam[firstWordPos:i]
-            labelValueMap[name] = []
-            firstWordPos = i + 1
-        elif v == "[":
-            if previous != ord("="):
-                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-            firstWordPos = i + 1
-        elif v == "]":
-            # if after metric group, has char not comma or end.
-            if next != EOF and next != ord(","):
-                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-            if previous != ord("["):
-                labelValueMap[name].append(ksmparam[firstWordPos:i])
-            firstWordPos = i + 1
-        elif v == ",":
-            # if starts or ends with comma
-            if previous == v or next == EOF or next == ord("]"):
-                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-            if previous != ord("]"):
-                labelValueMap[name].append(ksmparam[firstWordPos:i])
-            firstWordPos = i + 1
-    for label in labelValueMap:
-        if (bool(re.match(r'^[a-zA-Z_][A-Za-z0-9_]+$', label))) is False:
-            raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-
-
-def validate_ksm_labels(namespace):
-    if namespace.ksm_metric_labels_allow_list is None:
-        return
-    validate_ksm_parameter(namespace.ksm_metric_labels_allow_list)
-
-
-def validate_ksm_annotations(namespace):
-    if namespace.ksm_metric_annotations_allow_list is None:
-        return
-    validate_ksm_parameter(namespace.ksm_metric_annotations_allow_list)
 
 
 def validate_allowed_host_ports(namespace):
@@ -803,3 +746,47 @@ def validate_application_security_groups(namespace):
     for asg in asg_ids.split(","):
         if not is_valid_resource_id(asg):
             raise InvalidArgumentValueError(asg + " is not a valid Azure resource ID.")
+
+
+def validate_utc_offset(namespace):
+    """Validates --utc-offset for aks maintenanceconfiguration add/update commands."""
+    if namespace.utc_offset is None:
+        return
+    utc_offset_regex = re.compile(r'^[+-]\d{2}:\d{2}$')
+    found = utc_offset_regex.findall(namespace.utc_offset)
+    if not found:
+        raise InvalidArgumentValueError('--utc-offset must be in format: "+/-HH:mm". For example, "+05:30" and "-12:00".')
+
+
+def validate_start_date(namespace):
+    """Validates --start-date for aks maintenanceconfiguration add/update commands."""
+    if namespace.start_date is None:
+        return
+    start_dt_regex = re.compile(r'^\d{4}-\d{2}-\d{2}$')
+    found = start_dt_regex.findall(namespace.start_date)
+    if not found:
+        raise InvalidArgumentValueError('--start-date must be in format: "yyyy-MM-dd". For example, "2023-01-01".')
+
+
+def validate_start_time(namespace):
+    """Validates --start-time for aks maintenanceconfiguration add/update commands."""
+    if namespace.start_time is None:
+        return
+    start_time_regex = re.compile(r'^\d{2}:\d{2}$')
+    found = start_time_regex.findall(namespace.start_time)
+    if not found:
+        raise InvalidArgumentValueError('--start-time must be in format "HH:mm". For example, "09:30" and "17:00".')
+
+
+def validate_os_sku(namespace):
+    os_sku = namespace.os_sku
+    if os_sku in [CONST_OS_SKU_MARINER, CONST_OS_SKU_CBLMARINER]:
+        logger.warning(
+            'The osSKU "%s" should be used going forward instead of "%s" or "%s". '
+            'The osSKUs "%s" and "%s" will eventually be deprecated.',
+            CONST_OS_SKU_AZURELINUX,
+            CONST_OS_SKU_CBLMARINER,
+            CONST_OS_SKU_MARINER,
+            CONST_OS_SKU_CBLMARINER,
+            CONST_OS_SKU_MARINER,
+        )

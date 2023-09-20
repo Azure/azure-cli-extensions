@@ -241,6 +241,7 @@ class VirtualMachinesOperations:  # pylint: disable=too-many-public-methods
         virtual_machine_name: str,
         retain: Optional[bool] = None,
         force: Optional[bool] = None,
+        delete_from_host: Optional[bool] = None,
         **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
@@ -259,6 +260,7 @@ class VirtualMachinesOperations:  # pylint: disable=too-many-public-methods
             api_version=api_version,
             retain=retain,
             force=force,
+            delete_from_host=delete_from_host,
             template_url=self._delete_initial.metadata['url'],
         )
         request = _convert_request(request)
@@ -288,6 +290,7 @@ class VirtualMachinesOperations:  # pylint: disable=too-many-public-methods
         virtual_machine_name: str,
         retain: Optional[bool] = None,
         force: Optional[bool] = None,
+        delete_from_host: Optional[bool] = None,
         **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Implements VirtualMachine DELETE method.
@@ -304,6 +307,8 @@ class VirtualMachinesOperations:  # pylint: disable=too-many-public-methods
         :param force: Forces the resource to be deleted from azure. The corresponding CR would be
          attempted to be deleted too. Default value is None.
         :type force: bool
+        :param delete_from_host: Delete the VM from SCVMM. Default value is None.
+        :type delete_from_host: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
@@ -330,6 +335,7 @@ class VirtualMachinesOperations:  # pylint: disable=too-many-public-methods
                 virtual_machine_name=virtual_machine_name,
                 retain=retain,
                 force=force,
+                delete_from_host=delete_from_host,
                 api_version=api_version,
                 cls=lambda x,y,z: x,
                 **kwargs

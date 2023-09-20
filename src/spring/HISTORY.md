@@ -1,5 +1,182 @@
 Release History
 ===============
+1.15.0
+---
+* Add arguments `--type` and `--git-sub-path` in `spring application-accelerator customized-accelerator create` and `spring application-accelerator customized-accelerator update` for accelerator fragment support.
+* Add new argument `--server-version` in `az spring app deploy` and `az spring app deployment create` to support WAR file deployment in Standard tier. 
+* Add argument `--enable-auto-sync` in `az spring certificate add`.
+* Add new command `az spring certificate update` to update a certificate.
+* Add new command `az spring list-support-server-versions` to list all supported server versions.
+
+1.14.3
+---
+* Make error message for `az spring app logs` more readable.  
+
+1.14.2
+---
+* Add new command `az spring flush-virtualnetwork-dns-settings` to flush virtual network DNS settings for the service instance.
+
+1.14.1
+---
+* Support up to 1000 app instances in Enterprise tier.
+
+1.14.0
+---
+* Add new command `az spring application-configuration-service create --generation` to support creating Application Configuration Service with different generation
+* Add new command `az spring application-configuration-service update --generation` to support updating Application Configuration Service to different generation
+* Add new command `az spring application-configuration-service git repo add --ca-cert-name` to support binding certificate to Application Configuration Service Gen2
+
+1.13.3
+---
+* Add arguments `--allowed-origin-patterns`, `--addon-configs-json` and `--addon-configs-file` in `az spring gateway update`.
+* Add new command `az spring gateway restart` to restart Spring Cloud Gateway.
+
+1.13.2
+---
+* Add argument `--build-certificates` in `az spring app deploy`.
+
+1.13.1
+---
+* Fix the parameter `--no-wait` of the command -- `az spring build-service update`.
+
+1.13.0
+---
+* Add new command -- `az spring apm show` to show the APM resource.
+* Add new command -- `az spring apm create` to create APM resource.
+* Add new command -- `az spring apm update` to update APM resource.
+* Add new command -- `az spring apm delete` to delete APM resource.
+* Add new command -- `az spring apm enable-globally` to enable an APM globally.
+* Add new command -- `az spring apm disable-globally` to disable an APM globally.
+* Add new command -- `az spring apm list-support-types` to list all the supported APM types.
+* Add new command -- `az spring apm list` to list all the APM resources.
+* Add new command -- `az spring apm list-enabled-globally` to list all the APMs enabled globally.
+
+1.12.2
+---
+* Add default `enabled_state` for `az spring config-server set` in Standard Counsumption tier.
+
+1.12.1
+---
+* Add new command -- `az spring eureka-server show` to show the Eureka server resource in consumption tier.
+* Add new command -- `az spring eureka-server enable` to enable the Eureka server resource in consumption tier.
+* Add new command -- `az spring eureka-server disable` to disable the Eureka server resource in consumption tier.
+* Add new command -- `az spring config-server enable` to enable the Config server resource in consumption tier.
+* Add new command -- `az spring config-server disable` to disable the Config server resource in consumption tier.
+
+1.12.0
+---
+* Add new command `az spring container-registry create` to craete container registry resource.
+* Add new command `az spring container-registry delete` to delete container registry resource.
+* Add new command `az spring container-registry list` to list all the container registry resources.
+* Add new command `az spring build-service update` to update build service.
+* Add new command `az spring build-service show` to show build service resource.
+* Add new parameter `--workload-profile` for `az spring app create` and `az spring app update`.
+
+1.11.3
+---
+* Fix `az spring create` command with `--container-registry-server`, `--container-registry-username` and `--container-registry-password`.
+* Fix the help message for parameter `--sku` of `az spring create` and `az spring update` commands.
+
+1.11.2
+---
+* Refine `az spring app create` command from 3 steps to 2 steps.
+
+1.11.1
+---
+* Add argument `--ca-cert-name` in `az spring application-accelerator customized-accelerator update` and command `az spring application-accelerator customized-accelerator sync-cert`.
+* Support client cert validation for customized accelerator with CA certificate.
+* Add arguments `--enable-cert-verify` and `--certificate-names` in `az spring gateway update` and command `az spring gateway sync-cert`.
+* Support client cert validation for Spring Cloud Gateway.
+
+1.11.0
+---
+* Deprecate parameter `--enable-log-stream-public-endpoint` when creating/updating service 
+* Add new parameter `--enable-dataplane-public-endpoint` when creating/updating service 
+
+1.10.0
+---
+* Print more logs for app deployment
+
+1.9.2
+---
+* Fix `ingress_read_timeout` and `session_max_age` validation error
+
+1.9.1
+---
+* Support subPath for bring your own persistent storage feature.
+* Add new parameter `--enable-sub-path` into `az spring append-persistent-storage` to enable subPath feature.
+
+1.9.0
+---
+* Add new command -- `az spring build-service build create` to create the build resource when using your own container registry.
+* Add new command -- `az spring build-service build update` to update the build resource when using your own container registry.
+* Add new command -- `az spring build-service build show` to show the build resource.
+* Add new command -- `az spring build-service build list` to list all build resource.
+* Add new command -- `az spring build-service build delete` to delete the build resource.
+* Add new command -- `az spring build-service build result show` to show the build result by build name and result name.
+* Add new command -- `az spring build-service build result list` to list all build results of the build resource.
+* Add new command -- `az spring container-registry update` to update container registry resource.
+* Add new command -- `az spring container-registry show` to show the container registry resource.
+* Add new parameters -- `--disable-build-service`, `--container-registry-server`, `--container-registry-username` and `--container-registry-password` when creating service.
+
+1.8.0
+---
+* Add Azure Spring Apps StandardGen2 tier.
+
+1.7.3
+---
+* Fix `subscription_id` AAZSimpleValue type error
+
+1.7.2
+---
+* Support `--no-wait` in `az spring dev-tool`.
+* [BREAKING CHANGE] Add delete confirmation in `az spring dev-tool` and `az spring application-live-view`.
+
+1.7.1
+---
+* Remove dependency to NETWORK SDK
+
+1.7.0
+---
+* Print application logs when create/update deployment
+* Bypass jar check for enterprise tier
+* Add java runtime check for jar file
+
+1.6.8
+---
+* Add detail description to Default for argument `--backend-protocol`.
+
+1.6.7
+---
+* Change all Azure Spring Apps API version to 2022-11-01-preview.
+
+1.6.6
+---
+* Modify help text of name in command `az spring create` and `az spring app create`
+
+1.6.5
+---
+* Add argument `--deployment-name` in command `az spring app create`.
+
+1.6.4
+---
+* Add new commands `az spring application-configuration-service create` and `az spring application-configuration-service delete`.
+* Add new commands `az spring service-registry create` and `az spring service-registry delete`.
+* Add new commands `az spring gateway create` and `az spring gateway delete`.
+* Add new commands `az spring api-portal create` and `az spring api-portal delete`.
+
+1.6.3
+---
+* Deprecate the subcommand 'spring app binding'.
+
+1.6.2
+---
+* Add new arguments `--apm-types`, `--properties` and `--secrets` for command `az spring gateway update`.
+
+1.6.1
+---
+* Add type check for argument `--artifact-path`.
+
 1.6.0
 ---
 * Add argument `--client-auth-certs` in command `az spring app create` and `az spring app update`.

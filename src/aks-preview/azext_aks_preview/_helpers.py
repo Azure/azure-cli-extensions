@@ -11,13 +11,17 @@ import tempfile
 import yaml
 from typing import Any, List, TypeVar
 from azure.cli.command_modules.acs._helpers import map_azure_error_to_cli_error
-from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError
+from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError, FileOperationError
 from azure.core.exceptions import AzureError
 from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
 from knack.util import CLIError
 
 from azext_aks_preview._client_factory import get_nodepool_snapshots_client, get_mc_snapshots_client
+
+from azure.cli.command_modules.acs._validators import (
+    extract_comma_separated_string,
+)
 
 logger = get_logger(__name__)
 
@@ -126,7 +130,7 @@ def _merge_kubernetes_configurations(existing_file, addition_file, replace, cont
     current_context = addition.get('current-context', 'UNKNOWN')
     msg = 'Merged "{}" as current context in {}'.format(
         current_context, existing_file)
-    print(msg)
+    logger.warning(msg)
 
 
 def _load_kubernetes_configuration(filename):
@@ -136,19 +140,29 @@ def _load_kubernetes_configuration(filename):
     except (IOError, OSError) as ex:
         if getattr(ex, 'errno', 0) == errno.ENOENT:
             raise CLIError('{} does not exist'.format(filename))
+        raise
     except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
         raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
 
 
 def _handle_merge(existing, addition, key, replace):
-    if not addition[key]:
+    if not addition.get(key, False):
         return
-    if existing[key] is None:
+    if key not in existing:
+        raise FileOperationError(
+            "No such key '{}' in existing config, please confirm whether it is a valid config file. "
+            "May back up this config file, delete it and retry the command.".format(
+                key
+            )
+        )
+    if not existing.get(key):
         existing[key] = addition[key]
         return
 
     for i in addition[key]:
         for j in existing[key]:
+            if not i.get('name', False) or not j.get('name', False):
+                continue
             if i['name'] == j['name']:
                 if replace or i == j:
                     existing[key].remove(j)
@@ -282,3 +296,17 @@ def check_is_apiserver_vnet_integration_cluster(mc: ManagedCluster) -> bool:
     if mc and mc.api_server_access_profile:
         return bool(mc.api_server_access_profile.enable_vnet_integration)
     return False
+
+
+def setup_common_guardrails_profile(level, version, excludedNamespaces, mc: ManagedCluster, models) -> ManagedCluster:
+    if (level is not None or version is not None or excludedNamespaces is not None) and mc.guardrails_profile is None:
+        mc.guardrails_profile = models.GuardrailsProfile(
+            level=level,
+            version=version
+        )
+    # replace values with provided values
+    if excludedNamespaces is not None:
+        mc.guardrails_profile.excluded_namespaces = extract_comma_separated_string(
+            excludedNamespaces, enable_strip=True, keep_none=True, default_value=[])
+
+    return mc

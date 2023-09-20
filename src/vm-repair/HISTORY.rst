@@ -1,6 +1,40 @@
 
 Release History
 ===============
+0.5.6
+++++++
+Renaming the Public IP resource.
+Fix the name of the resource, previously the name was always "yes". Now it follows the format repair-<VM>_PublicIP
+
+0.5.5
+++++++
+Adding ARM64 support.
+Fix for telemetry for repair-and-restore command.
+Repair VM fix for gen1 VM attaching disk on SCSI controller, preventing nested VM from booting (by Ryan McCallum)
+
+0.5.4
+++++++
+Adding repair-and-restore command to create a one command flow for vm-repair with fstab scripts.
+
+0.5.3
+++++++
+Removing check for EncryptionSettingsCollection.enabled is string 'false'.
+
+0.5.2
+++++++
+Fix bug in _fetch_encryption_settings, add check for EncryptionSettingsCollection.enabled is false.
+
+0.5.1
+++++++
+Updated exsiting privateIpAddress field to privateIPAddress and privateIpAllocationMethod to privateIPAllocationMethod.
+
+0.5.0
+++++++
+Support for hosting repair vm in existing resource group and fixing existing resource group logic 
+
+0.5.0
+++++++
+Support for hosting repair vm in existing resource group and fixing existing resource group logic 
 
 0.4.10
 ++++++

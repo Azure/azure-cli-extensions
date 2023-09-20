@@ -19,12 +19,15 @@ class Update(AAZCommand):
 
     :example: Update a databricks accessConnector
         az databricks access-connector update --resource-group MyResourceGroup --name MyAccessConnector --location westus --identity-type SystemAssigned
+
+    :example: Update a databricks accessConnector with identities
+        az databricks access-connector update --resource-group MyResourceGroup --name MyAccessConnector --identity-type UserAssigned --user-assigned-identities {"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}":{}}
     """
 
     _aaz_info = {
-        "version": "2022-04-01-preview",
+        "version": "2022-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/accessconnectors/{}", "2022-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/accessconnectors/{}", "2022-10-01-preview"],
         ]
     }
 
@@ -63,7 +66,7 @@ class Update(AAZCommand):
         _args_schema.identity_type = AAZStrArg(
             options=["--identity-type"],
             help="The identity type.",
-            enum={"None": "None", "SystemAssigned": "SystemAssigned"},
+            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -74,6 +77,22 @@ class Update(AAZCommand):
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg(
             nullable=True,
+        )
+
+        # define Arg Group "Identity"
+
+        _args_schema = cls._args_schema
+        _args_schema.user_assigned_identities = AAZDictArg(
+            options=["--identities", "--user-assigned-identities"],
+            arg_group="Identity",
+            help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
+            nullable=True,
+        )
+
+        user_assigned_identities = cls._args_schema.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
+            nullable=True,
+            blank={},
         )
         return cls._args_schema
 
@@ -155,7 +174,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-10-01-preview",
                     required=True,
                 ),
             }
@@ -186,7 +205,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_access_connector_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_access_connector_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -254,7 +273,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2022-10-01-preview",
                     required=True,
                 ),
             }
@@ -297,7 +316,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_access_connector_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_access_connector_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -318,6 +337,11 @@ class Update(AAZCommand):
             identity = _builder.get(".identity")
             if identity is not None:
                 identity.set_prop("type", AAZStrType, ".identity_type", typ_kwargs={"flags": {"required": True}})
+                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+
+            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
+            if user_assigned_identities is not None:
+                user_assigned_identities.set_elements(AAZObjectType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -334,69 +358,113 @@ class Update(AAZCommand):
             )
 
 
-_schema_access_connector_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_access_connector_read = None
 
-def _build_schema_access_connector_read(_schema):
-    global _schema_access_connector_read
-    if _schema_access_connector_read is not None:
-        _schema.id = _schema_access_connector_read.id
-        _schema.identity = _schema_access_connector_read.identity
-        _schema.location = _schema_access_connector_read.location
-        _schema.name = _schema_access_connector_read.name
-        _schema.properties = _schema_access_connector_read.properties
-        _schema.tags = _schema_access_connector_read.tags
-        _schema.type = _schema_access_connector_read.type
-        return
+    @classmethod
+    def _build_schema_access_connector_read(cls, _schema):
+        if cls._schema_access_connector_read is not None:
+            _schema.id = cls._schema_access_connector_read.id
+            _schema.identity = cls._schema_access_connector_read.identity
+            _schema.location = cls._schema_access_connector_read.location
+            _schema.name = cls._schema_access_connector_read.name
+            _schema.properties = cls._schema_access_connector_read.properties
+            _schema.system_data = cls._schema_access_connector_read.system_data
+            _schema.tags = cls._schema_access_connector_read.tags
+            _schema.type = cls._schema_access_connector_read.type
+            return
 
-    _schema_access_connector_read = AAZObjectType()
+        cls._schema_access_connector_read = _schema_access_connector_read = AAZObjectType()
 
-    access_connector_read = _schema_access_connector_read
-    access_connector_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    access_connector_read.identity = AAZObjectType()
-    access_connector_read.location = AAZStrType(
-        flags={"required": True},
-    )
-    access_connector_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    access_connector_read.properties = AAZObjectType()
-    access_connector_read.tags = AAZDictType()
-    access_connector_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        access_connector_read = _schema_access_connector_read
+        access_connector_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        access_connector_read.identity = AAZObjectType()
+        access_connector_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        access_connector_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        access_connector_read.properties = AAZObjectType()
+        access_connector_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        access_connector_read.tags = AAZDictType()
+        access_connector_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    identity = _schema_access_connector_read.identity
-    identity.principal_id = AAZStrType(
-        serialized_name="principalId",
-        flags={"read_only": True},
-    )
-    identity.tenant_id = AAZStrType(
-        serialized_name="tenantId",
-        flags={"read_only": True},
-    )
-    identity.type = AAZStrType(
-        flags={"required": True},
-    )
+        identity = _schema_access_connector_read.identity
+        identity.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
+        identity.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+            flags={"read_only": True},
+        )
+        identity.type = AAZStrType(
+            flags={"required": True},
+        )
+        identity.user_assigned_identities = AAZDictType(
+            serialized_name="userAssignedIdentities",
+        )
 
-    properties = _schema_access_connector_read.properties
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
+        user_assigned_identities = _schema_access_connector_read.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectType()
 
-    tags = _schema_access_connector_read.tags
-    tags.Element = AAZStrType()
+        _element = _schema_access_connector_read.identity.user_assigned_identities.Element
+        _element.client_id = AAZStrType(
+            serialized_name="clientId",
+            flags={"read_only": True},
+        )
+        _element.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
 
-    _schema.id = _schema_access_connector_read.id
-    _schema.identity = _schema_access_connector_read.identity
-    _schema.location = _schema_access_connector_read.location
-    _schema.name = _schema_access_connector_read.name
-    _schema.properties = _schema_access_connector_read.properties
-    _schema.tags = _schema_access_connector_read.tags
-    _schema.type = _schema_access_connector_read.type
+        properties = _schema_access_connector_read.properties
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+
+        system_data = _schema_access_connector_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        tags = _schema_access_connector_read.tags
+        tags.Element = AAZStrType()
+
+        _schema.id = cls._schema_access_connector_read.id
+        _schema.identity = cls._schema_access_connector_read.identity
+        _schema.location = cls._schema_access_connector_read.location
+        _schema.name = cls._schema_access_connector_read.name
+        _schema.properties = cls._schema_access_connector_read.properties
+        _schema.system_data = cls._schema_access_connector_read.system_data
+        _schema.tags = cls._schema_access_connector_read.tags
+        _schema.type = cls._schema_access_connector_read.type
 
 
 __all__ = ["Update"]

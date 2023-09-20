@@ -11,8 +11,8 @@ def cf_logic(cli_ctx, *_):
 
 
 def cf_workflow(cli_ctx, *_):
-    return cf_logic(cli_ctx).workflow
+    return cf_logic(cli_ctx).workflows
 
 
 def cf_integration_account(cli_ctx, *_):
-    return cf_logic(cli_ctx).integration_account
+    return cf_logic(cli_ctx).integration_accounts

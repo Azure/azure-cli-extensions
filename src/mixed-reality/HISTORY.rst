@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.0.5
+++++++
+* Migrate to CodeGen V2
+
 0.0.4
 ++++++
 * Migrate to track2 SDK

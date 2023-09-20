@@ -110,6 +110,7 @@ def is_storagev2(import_prefix):
     return import_prefix.startswith('azure.multiapi.storagev2.')
 
 
+# pylint: disable=too-many-branches, too-many-statements
 def validate_client_parameters(cmd, namespace):
     """ Retrieves storage connection parameters from environment variables and parses out connection string into
     account name and key """
@@ -119,12 +120,15 @@ def validate_client_parameters(cmd, namespace):
         auth_mode = n.auth_mode or get_config_value(cmd, 'storage', 'auth_mode', None)
         del n.auth_mode
         if not n.account_name:
-            n.account_name = get_config_value(cmd, 'storage', 'account', None)
+            if hasattr(n, 'account_url') and not n.account_url:
+                n.account_name = get_config_value(cmd, 'storage', 'account', None)
+                n.account_url = get_config_value(cmd, 'storage', 'account_url', None)
+            else:
+                n.account_name = get_config_value(cmd, 'storage', 'account', None)
         if auth_mode == 'login':
             from azure.cli.core._profile import Profile
             profile = Profile(cli_ctx=cmd.cli_ctx)
-            n.token_credential, _, _ = profile.get_login_credentials(
-                resource="https://storage.azure.com", subscription_id=n._subscription)
+            n.token_credential, _, _ = profile.get_login_credentials(subscription_id=n._subscription)
 
     if hasattr(n, 'token_credential') and n.token_credential:
         # give warning if there are account key args being ignored
@@ -137,7 +141,8 @@ def validate_client_parameters(cmd, namespace):
                            ' ,'.join(account_key_args))
         return
 
-    if not n.connection_string:
+    # When there is no input for credential, we will read environment variable
+    if not n.connection_string and not n.account_key and not n.sas_token:
         n.connection_string = get_config_value(cmd, 'storage', 'connection_string', None)
 
     # if connection string supplied or in environment variables, extract account key and name
@@ -149,8 +154,12 @@ def validate_client_parameters(cmd, namespace):
 
     # otherwise, simply try to retrieve the remaining variables from environment variables
     if not n.account_name:
-        n.account_name = get_config_value(cmd, 'storage', 'account', None)
-    if not n.account_key:
+        if hasattr(n, 'account_url') and not n.account_url:
+            n.account_name = get_config_value(cmd, 'storage', 'account', None)
+            n.account_url = get_config_value(cmd, 'storage', 'account_url', None)
+        else:
+            n.account_name = get_config_value(cmd, 'storage', 'account', None)
+    if not n.account_key and not n.sas_token:
         n.account_key = get_config_value(cmd, 'storage', 'key', None)
     if not n.sas_token:
         n.sas_token = get_config_value(cmd, 'storage', 'sas_token', None)
@@ -167,14 +176,36 @@ def validate_client_parameters(cmd, namespace):
 
     # if account name is specified but no key, attempt to query
     if n.account_name and not n.account_key and not n.sas_token:
-        logger.warning('There is no credential provided in your command and environment, we will query account key '
-                       'for your storage account. \nPlease provide --connection-string, --account-key or --sas-token '
-                       'as credential, or use `--auth-mode login` if you have required RBAC roles in your command. '
-                       'For more information about RBAC roles in storage, you can see '
-                       'https://docs.microsoft.com/en-us/azure/storage/common/storage-auth-aad-rbac-cli. \n'
-                       'Setting corresponding environment variable can avoid inputting credential in your command. '
-                       'Please use --help to get more information.')
-        n.account_key = _query_account_key(cmd.cli_ctx, n.account_name)
+        message = """
+There are no credentials provided in your command and environment, we will query for account key for your storage account.
+It is recommended to provide --connection-string, --account-key or --sas-token in your command as credentials.
+"""
+        if 'auth_mode' in cmd.arguments:
+            message += """
+You also can add `--auth-mode login` in your command to use Azure Active Directory (Azure AD) for authorization if your login account is assigned required RBAC roles.
+For more information about RBAC roles in storage, visit https://docs.microsoft.com/azure/storage/common/storage-auth-aad-rbac-cli.
+"""
+        logger.warning('%s\nIn addition, setting the corresponding environment variables can avoid inputting '
+                       'credentials in your command. Please use --help to get more information about environment '
+                       'variable usage.', message)
+        try:
+            n.account_key = _query_account_key(cmd.cli_ctx, n.account_name)
+        except Exception as ex:  # pylint: disable=broad-except
+            logger.warning("\nSkip querying account key due to failure: %s", ex)
+
+    if hasattr(n, 'account_url') and n.account_url and not n.account_key and not n.sas_token:
+        message = """
+There are no credentials provided in your command and environment.
+Please provide --connection-string, --account-key or --sas-token in your command as credentials.
+        """
+
+        if 'auth_mode' in cmd.arguments:
+            message += """
+You also can add `--auth-mode login` in your command to use Azure Active Directory (Azure AD) for authorization if your login account is assigned required RBAC roles.
+For more information about RBAC roles in storage, visit https://docs.microsoft.com/azure/storage/common/storage-auth-aad-rbac-cli."
+            """
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        raise InvalidArgumentValueError(message)
 
 
 def validate_encryption_key(cmd, namespace):
@@ -851,6 +882,11 @@ def get_char_options_validator(types, property_name):
         setattr(namespace, property_name, service_types)
 
     return _validator
+
+
+def validate_blob_name_for_upload(namespace):
+    if not namespace.blob_name:
+        namespace.blob_name = os.path.basename(namespace.file_path)
 
 
 def page_blob_tier_validator(cmd, namespace):

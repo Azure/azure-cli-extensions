@@ -3,6 +3,10 @@
 Release History
 ===============
 
+++++++
+- Added support for flushing the data in case of geo replicated cache
+- Added support for customer managed keys
+
 0.1.2
 ++++++
 - Added support for active georeplication

@@ -167,21 +167,24 @@ def __to_communication_identifier(participants):
 
 def __to_room_participant(presenters, attendees, consumers):
     from azure.communication.identity._shared.models import identifier_from_raw_id
-    from azure.communication.rooms import RoomParticipant, RoleType
+    from azure.communication.rooms import RoomParticipant, ParticipantRole
 
     participants = []
 
     if presenters is not None:
         identifiers = [identifier_from_raw_id(p) for p in presenters]
-        participants.extend([RoomParticipant(communication_identifier=i, role=RoleType.PRESENTER) for i in identifiers])
+        participants.extend([RoomParticipant(communication_identifier=i,
+                                             role=ParticipantRole.PRESENTER) for i in identifiers])
 
     if attendees is not None:
         identifiers = [identifier_from_raw_id(p) for p in attendees]
-        participants.extend([RoomParticipant(communication_identifier=i, role=RoleType.ATTENDEE) for i in identifiers])
+        participants.extend([RoomParticipant(communication_identifier=i,
+                                             role=ParticipantRole.ATTENDEE) for i in identifiers])
 
     if consumers is not None:
         identifiers = [identifier_from_raw_id(p) for p in consumers]
-        participants.extend([RoomParticipant(communication_identifier=i, role=RoleType.CONSUMER) for i in identifiers])
+        participants.extend([RoomParticipant(communication_identifier=i,
+                                             role=ParticipantRole.CONSUMER) for i in identifiers])
 
     return participants
 
@@ -198,7 +201,6 @@ def communication_rooms_get_room(client, room_id):
 def communication_rooms_create_room(client,
                                     valid_from=None,
                                     valid_until=None,
-                                    join_policy=None,
                                     presenters=None,
                                     attendees=None,
                                     consumers=None):
@@ -208,7 +210,6 @@ def communication_rooms_create_room(client,
         return client.create_room(
             valid_from=valid_from,
             valid_until=valid_until,
-            room_join_policy=join_policy,
             participants=room_participants)
     except HttpResponseError:
         raise
@@ -227,20 +228,21 @@ def communication_rooms_delete_room(client, room_id):
 
 def communication_rooms_update_room(client, room_id,
                                     valid_from=None,
-                                    valid_until=None,
-                                    join_policy=None,
-                                    presenters=None,
-                                    attendees=None,
-                                    consumers=None):
+                                    valid_until=None):
     try:
-        room_participants = __to_room_participant(presenters, attendees, consumers)
-
         return client.update_room(
             room_id=room_id,
             valid_from=valid_from,
-            valid_until=valid_until,
-            room_join_policy=join_policy,
-            participants=room_participants)
+            valid_until=valid_until)
+    except HttpResponseError:
+        raise
+    except Exception as ex:
+        sys.exit(str(ex))
+
+
+def communication_rooms_list_rooms(client):
+    try:
+        return client.list_rooms()
     except HttpResponseError:
         raise
     except Exception as ex:
@@ -249,33 +251,19 @@ def communication_rooms_update_room(client, room_id,
 
 def communication_rooms_get_participants(client, room_id):
     try:
-        return client.get_participants(room_id)
+        return client.list_participants(room_id)
     except HttpResponseError:
         raise
     except Exception as ex:
         sys.exit(str(ex))
 
 
-def communication_rooms_add_participants(client, room_id,
-                                         presenters=None,
-                                         attendees=None,
-                                         consumers=None):
+def communication_rooms_add_or_update_participants(client, room_id,
+                                                   presenters=None,
+                                                   attendees=None,
+                                                   consumers=None):
     try:
-        return client.add_participants(
-            room_id=room_id,
-            participants=__to_room_participant(presenters, attendees, consumers))
-    except HttpResponseError:
-        raise
-    except Exception as ex:
-        sys.exit(str(ex))
-
-
-def communication_rooms_update_participants(client, room_id,
-                                            presenters=None,
-                                            attendees=None,
-                                            consumers=None):
-    try:
-        return client.update_participants(
+        return client.add_or_update_participants(
             room_id=room_id,
             participants=__to_room_participant(presenters, attendees, consumers))
     except HttpResponseError:
@@ -288,7 +276,96 @@ def communication_rooms_remove_participants(client, room_id, participants):
     try:
         return client.remove_participants(
             room_id=room_id,
-            communication_identifiers=__to_communication_identifier(participants))
+            participants=__to_communication_identifier(participants))
+    except HttpResponseError:
+        raise
+    except Exception as ex:
+        sys.exit(str(ex))
+
+
+def __get_attachment_content(filename, filetype):
+    import base64
+    import json
+    import os
+
+    _, tail = os.path.split(filename)
+
+    with open(filename, "rb") as file:
+        file_bytes = file.read()
+    file_bytes_b64 = base64.b64encode(file_bytes)
+
+    attachment = {
+        "name": tail,
+        "contentType": filetype,
+        "contentInBase64": file_bytes_b64.decode(),
+    }
+
+    return json.dumps(attachment)
+
+
+def communication_email_send(client,
+                             subject,
+                             sender,
+                             recipients_to=None,
+                             disable_tracking=False,
+                             text=None,
+                             html=None,
+                             importance='normal',
+                             recipients_cc=None,
+                             recipients_bcc=None,
+                             reply_to=None,
+                             attachments=None,
+                             attachment_types=None):
+
+    import json
+    from knack.util import CLIError
+
+    try:
+
+        if recipients_to is None and recipients_cc is None and recipients_bcc is None:
+            raise CLIError('At least one recipient is required.')
+
+        if importance == 'low':
+            priority = '5'
+        elif importance == 'high':
+            priority = '1'
+        else:
+            priority = '3'
+
+        attachments_list = []
+        if attachments is None and attachment_types is None:
+            attachments_list = None
+        elif attachments is None or attachment_types is None:
+            raise CLIError('Number of attachments and attachment-types should match.')
+        elif len(attachments) != len(attachment_types):
+            raise CLIError('Number of attachments and attachment-types should match.')
+        else:
+            all_attachments = attachments[0].split(',')
+            all_attachment_types = attachment_types[0].split(',')
+            for i in range(len(all_attachments)):
+                attachments_list.append(__get_attachment_content(all_attachments[i], all_attachment_types[i]))
+
+        message = {
+            "content": {
+                "subject": subject,
+                "plainText": text,
+                "html": html
+            },
+            "recipients": {
+                "to": None if recipients_to is None else [{"address": recipient} for recipient in recipients_to[0].split(',')],
+                "cc": None if recipients_cc is None else [{"address": recipient} for recipient in recipients_cc[0].split(',')],
+                "bcc": None if recipients_bcc is None else [{"address": recipient} for recipient in recipients_bcc[0].split(',')]
+            },
+            "replyTo": None if reply_to is None else [{"address": reply_to}],
+            "attachments": None if attachments_list is None else [json.loads(attachment) for attachment in attachments_list],
+            "senderAddress": sender,
+            "userEngagementTrackingDisabled": disable_tracking,
+            "headers": {
+                "x-priority": priority
+            }
+        }
+
+        return client.begin_send(message)
     except HttpResponseError:
         raise
     except Exception as ex:

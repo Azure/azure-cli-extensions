@@ -12,12 +12,12 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError
 
-from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing
+from .utils import get_test_subscription_id, get_test_resource_group, get_test_workspace, get_test_workspace_location, issue_cmd_with_param_missing, get_test_workspace_storage, get_test_workspace_random_name
 from ..._client_factory import _get_data_credentials
 from ...commands import transform_output
-from ...operations.workspace import WorkspaceInfo
+from ...operations.workspace import WorkspaceInfo, DEPLOYMENT_NAME_PREFIX
 from ...operations.target import TargetInfo
-from ...operations.job import _generate_submit_args, _parse_blob_url, _validate_max_poll_wait_secs, build
+from ...operations.job import _generate_submit_args, _parse_blob_url, _validate_max_poll_wait_secs, build, _convert_numeric_params
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -44,16 +44,16 @@ class QuantumJobsScenarioTest(ScenarioTest):
         issue_cmd_with_param_missing(self, "az quantum job wait", "az quantum job wait -g MyResourceGroup -w MyWorkspace -l MyLocation -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table\nWait for completion of a job, check at 60 second intervals.")
 
     def test_build(self):
-        result = build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\source_for_build_test\\QuantumRNG.csproj', target_capability='BasicQuantumFunctionality')
+        result = build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\input_data\\QuantumRNG.csproj', target_capability='BasicQuantumFunctionality')
         assert result == {'result': 'ok'}
 
-        self.testfile = open(os.path.join(os.path.dirname(__file__), 'source_for_build_test/obj/qsharp/config/qsc.rsp'))
+        self.testfile = open(os.path.join(os.path.dirname(__file__), 'input_data/obj/qsharp/config/qsc.rsp'))
         self.testdata = self.testfile.read()
         self.assertIn('TargetCapability:BasicQuantumFunctionality', self.testdata)
         self.testfile.close()
 
         try:
-            build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\source_for_build_test\\QuantumRNG.csproj', target_capability='BogusQuantumFunctionality')
+            build(self, target_id='ionq.simulator', project='src\\quantum\\azext_quantum\\tests\\latest\\input_data\\QuantumRNG.csproj', target_capability='BogusQuantumFunctionality')
             assert False
         except AzureInternalError as e:
             assert str(e) == "Failed to compile program."
@@ -111,11 +111,11 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
     def test_parse_blob_url(self):
         sas = "sv=2018-03-28&sr=c&sig=some-sig&sp=racwl"
-        url = f"https://getest2.blob.core.windows.net/qio/rawOutputData?{sas}"
+        url = f"https://accountname.blob.core.windows.net/containername/rawOutputData?{sas}"
         args = _parse_blob_url(url)
 
-        self.assertEquals(args['account_name'], "getest2")
-        self.assertEquals(args['container'], "qio")
+        self.assertEquals(args['account_name'], "accountname")
+        self.assertEquals(args['container'], "containername")
         self.assertEquals(args['blob'], "rawOutputData")
         self.assertEquals(args['sas_token'], sas)
 
@@ -237,3 +237,45 @@ class QuantumJobsScenarioTest(ScenarioTest):
             assert False
         except InvalidArgumentValueError as e:
             assert str(e) == "--max-poll-wait-secs parameter is not valid: foobar"
+
+    def test_convert_numeric_params(self):
+        # Show that it converts numeric strings, but doesn't modify params that are already numeric
+        test_job_params = {"integer1": "1", "float1.5": "1.5", "integer2": 2, "float2.5": 2.5, "integer3": "3", "float3.5": "3.5"}
+        _convert_numeric_params(test_job_params)
+        assert test_job_params == {"integer1": 1, "float1.5": 1.5, "integer2": 2, "float2.5": 2.5, "integer3": 3, "float3.5": 3.5}
+
+        # Make sure it doesn't modify non-numeric strings
+        test_job_params = {"string1": "string_value1", "string2": "string_value2", "string3": "string_value3"}
+        _convert_numeric_params(test_job_params)
+        assert test_job_params == {"string1": "string_value1", "string2": "string_value2", "string3": "string_value3"}
+
+        # Make sure it doesn't modify the "tags" list
+        test_job_params = {"string1": "string_value1", "tags": ["tag1", "tag2", "3", "4"], "integer1": "1"}
+        _convert_numeric_params(test_job_params)
+        assert test_job_params == {"string1": "string_value1", "tags": ["tag1", "tag2", "3", "4"], "integer1": 1}
+
+        # Make sure it doesn't modify nested dict like metadata uses
+        test_job_params = {"string1": "string_value1", "metadata": {"meta1": "meta_value1", "meta2": "2"}, "integer1": "1"}
+        _convert_numeric_params(test_job_params)
+        assert test_job_params == {"string1": "string_value1", "metadata": {"meta1": "meta_value1", "meta2": "2"}, "integer1": 1}
+
+    @live_only()
+    def test_submit(self):
+        test_location = get_test_workspace_location()
+        test_resource_group = get_test_resource_group()
+        test_workspace_temp = get_test_workspace_random_name()
+        test_provider_sku_list = "qci/qci-freepreview,rigetti/azure-quantum-credits,ionq/pay-as-you-go-cred,microsoft-qc/learn-and-develop"
+        test_storage = get_test_workspace_storage()
+
+        self.cmd(f"az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list}")
+        self.cmd(f"az quantum workspace set -g {test_resource_group} -w {test_workspace_temp} -l {test_location}")
+
+        # Run a Quil pass-through job on Rigetti
+        results = self.cmd("az quantum run -t rigetti.sim.qvm --job-input-format rigetti.quil.v1 -t rigetti.sim.qvm --job-input-file src/quantum/azext_quantum/tests/latest/input_data/bell-state.quil --job-output-format rigetti.quil-results.v1 -o json").get_output_in_json()
+        self.assertIn("ro", results)
+
+        # Run a Qiskit pass-through job on IonQ
+        results = self.cmd("az quantum run -t ionq.simulator --shots 100 --job-input-format ionq.circuit.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/Qiskit-3-qubit-GHZ-circuit.json --job-output-format ionq.quantum-results.v1 --job-params count=100 content-type=application/json -o json").get_output_in_json()
+        self.assertIn("histogram", results)
+
+        self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')

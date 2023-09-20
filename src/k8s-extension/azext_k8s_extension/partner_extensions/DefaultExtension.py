@@ -6,12 +6,14 @@
 # pylint: disable=unused-argument
 
 from azure.cli.core.util import user_confirmation
+from azure.cli.core.azclierror import ArgumentUsageError
 
 from ..vendored_sdks.models import Extension
 from ..vendored_sdks.models import PatchExtension
 from ..vendored_sdks.models import ScopeCluster
 from ..vendored_sdks.models import ScopeNamespace
 from ..vendored_sdks.models import Scope
+from ..vendored_sdks.models import Plan
 
 from .PartnerExtensionModel import PartnerExtensionModel
 
@@ -37,6 +39,9 @@ class DefaultExtension(PartnerExtensionModel):
         configuration_protected_settings,
         configuration_settings_file,
         configuration_protected_settings_file,
+        plan_name,
+        plan_publisher,
+        plan_product
     ):
         """Default validations & defaults for Create
         Must create and return a valid 'Extension' object.
@@ -50,6 +55,21 @@ class DefaultExtension(PartnerExtensionModel):
                 scope_namespace = ScopeNamespace(target_namespace=target_namespace)
                 ext_scope = Scope(namespace=scope_namespace, cluster=None)
 
+        plan = None
+        if plan_name is not None or plan_product is not None or plan_publisher is not None:
+            if plan_name is None:
+                raise ArgumentUsageError('Usage error: Missing valid plan name. To find the correct plan name please refer to the Marketplace portal under ‘Usage Information + Support.’ The Plan Id listed here will be the valid plan name required.')
+            if plan_product is None:
+                raise ArgumentUsageError('Usage error: Missing a valid plan product. To find the correct plan product please refer to the Marketplace portal under ‘Usage Information + Support.’ The Product Id listed here will be the valid plan product required.')
+            if plan_publisher is None:
+                raise ArgumentUsageError('Usage error: Missing a valid plan publisher. To find the correct plan publisher please refer to the Marketplace portal under ‘Usage Information + Support.’ The Publisher Id listed here will be the valid plan publisher required')
+
+            plan = Plan(
+                name=plan_name,
+                publisher=plan_publisher,
+                product=plan_product
+            )
+
         create_identity = True
         extension = Extension(
             extension_type=extension_type,
@@ -59,6 +79,7 @@ class DefaultExtension(PartnerExtensionModel):
             scope=ext_scope,
             configuration_settings=configuration_settings,
             configuration_protected_settings=configuration_protected_settings,
+            plan=plan
         )
         return extension, name, create_identity
 

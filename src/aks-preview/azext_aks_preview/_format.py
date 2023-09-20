@@ -147,6 +147,18 @@ def version_to_tuple(version):
     return tuple(map(int, (version.split('.'))))
 
 
+# helper function used by aks get-versions, should be removed once dependency bumped to 2.50.0
+def flatten_version_table(release_info):
+    """Flattens version table"""
+    flattened = []
+    for release in release_info:
+        isPreview = release.get("isPreview", False)
+        for k, v in release.get("patchVersions", {}).items():
+            item = {"version": k, "upgrades": v.get("upgrades", []), "isPreview": isPreview}
+            flattened.append(item)
+    return flattened
+
+
 def _custom_functions(preview_versions):
     class CustomFunctions(functions.Functions):  # pylint: disable=too-few-public-methods
 
@@ -215,6 +227,23 @@ def aks_pod_identities_table_format(result):
     }""")
     # use ordered dicts so headers are predictable
     return parsed.search(result, Options(dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))
+
+
+# helper function used by aks get-versions, should be removed once dependency bumped to 2.50.0
+def aks_versions_table_format(result):
+    """Format get-versions results as a summary for display with "-o table"."""
+
+    version_table = flatten_version_table(result.get("values", []))
+
+    parsed = compile_jmes("""[].{
+        kubernetesVersion: version,
+        isPreview: isPreview,
+        upgrades: upgrades || [`None available`] | sort_versions(@) | join(`, `, @)
+    }""")
+    # use ordered dicts so headers are predictable
+    results = parsed.search(version_table, Options(
+        dict_cls=OrderedDict, custom_functions=_custom_functions({})))
+    return sorted(results, key=lambda x: version_to_tuple(x.get("kubernetesVersion")), reverse=True)
 
 
 def aks_list_nodepool_snapshot_table_format(results):

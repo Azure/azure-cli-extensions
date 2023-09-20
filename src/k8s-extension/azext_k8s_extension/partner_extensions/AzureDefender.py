@@ -21,7 +21,8 @@ class AzureDefender(DefaultExtension):
     def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp,
                extension_type, scope, auto_upgrade_minor_version, release_train, version, target_namespace,
                release_namespace, configuration_settings, configuration_protected_settings,
-               configuration_settings_file, configuration_protected_settings_file):
+               configuration_settings_file, configuration_protected_settings_file, plan_name,
+               plan_publisher, plan_product):
 
         """ExtensionType 'microsoft.azuredefender.kubernetes' specific validations & defaults for Create
            Must create and return a valid 'Extension' object.

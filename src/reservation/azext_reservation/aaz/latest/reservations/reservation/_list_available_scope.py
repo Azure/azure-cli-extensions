@@ -22,9 +22,9 @@ class ListAvailableScope(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-03-01",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/providers/microsoft.capacity/reservationorders/{}/reservations/{}/availablescopes", "2022-03-01"],
+            ["mgmt-plane", "/providers/microsoft.capacity/reservationorders/{}/reservations/{}/availablescopes", "2022-11-01"],
         ]
     }
 
@@ -73,11 +73,11 @@ class ListAvailableScope(AAZCommand):
         yield self.ReservationAvailableScopes(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -145,7 +145,7 @@ class ListAvailableScope(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-03-01",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -213,6 +213,10 @@ class ListAvailableScope(AAZCommand):
             _element.valid = AAZBoolType()
 
             return cls._schema_on_200
+
+
+class _ListAvailableScopeHelper:
+    """Helper class for ListAvailableScope"""
 
 
 __all__ = ["ListAvailableScope"]

@@ -19,9 +19,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-04-01-preview",
+        "version": "2023-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}/privateendpointconnections/{}", "2022-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}/privateendpointconnections/{}", "2023-02-01"],
         ]
     }
 
@@ -131,7 +131,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2023-02-01",
                     required=True,
                 ),
             }
@@ -178,6 +178,9 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.group_ids = AAZListType(
+                serialized_name="groupIds",
+            )
             properties.private_endpoint = AAZObjectType(
                 serialized_name="privateEndpoint",
             )
@@ -190,14 +193,17 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
+            group_ids = cls._schema_on_200.properties.group_ids
+            group_ids.Element = AAZStrType()
+
             private_endpoint = cls._schema_on_200.properties.private_endpoint
             private_endpoint.id = AAZStrType(
                 flags={"read_only": True},
             )
 
             private_link_service_connection_state = cls._schema_on_200.properties.private_link_service_connection_state
-            private_link_service_connection_state.action_required = AAZStrType(
-                serialized_name="actionRequired",
+            private_link_service_connection_state.actions_required = AAZStrType(
+                serialized_name="actionsRequired",
             )
             private_link_service_connection_state.description = AAZStrType()
             private_link_service_connection_state.status = AAZStrType(
@@ -205,6 +211,10 @@ class Show(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _ShowHelper:
+    """Helper class for Show"""
 
 
 __all__ = ["Show"]

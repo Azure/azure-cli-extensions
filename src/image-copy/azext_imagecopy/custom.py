@@ -6,6 +6,7 @@
 from multiprocessing import Pool
 
 from knack.util import CLIError
+from azure.cli.core.azclierror import ResourceNotFoundError, ArgumentUsageError
 from knack.log import get_logger
 
 from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command, get_storage_account_id_from_blob_path
@@ -30,8 +31,7 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
                                       only_show_errors=only_show_errors)
         cmd_output = run_cli_command(cli_cmd)
         if 'true' in cmd_output:
-            raise CLIError('Don\'t specify an existing resource group in --temporary-resource-group-name '
-                           'when --cleanup is set')
+            raise ArgumentUsageError('You already have an resource group named {temporary_resource_group_name}, the existing resource group cannot be used as --temporary-resource-group-name when --cleanup is set. Please delete the resouce group or specify a new resource group by --temporary-resource-group-name.'.format(temporary_resource_group_name=temporary_resource_group_name))
 
     if not target_subscription:
         from azure.cli.core.commands.client_factory import get_subscription_id
@@ -45,8 +45,10 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
                                    '--resource-group', source_resource_group_name],
                                   only_show_errors=only_show_errors)
 
+    # get detailed information of target image
     json_cmd_output = run_cli_command(cli_cmd, return_as_json=True)
 
+    # check if the source image has data disks
     if json_cmd_output['storageProfile']['dataDisks']:
         logger.warning(
             "Data disks in the source detected, but are ignored by this extension!")
@@ -54,10 +56,20 @@ def imagecopy(cmd, source_resource_group_name, source_object_name, target_locati
     source_os_disk_id = None
     source_os_disk_type = None
 
+    # get the os disk id from source image
     try:
         source_os_disk_id = json_cmd_output['storageProfile']['osDisk']['managedDisk']['id']
         if source_os_disk_id is None:
             raise TypeError
+        else:
+            try:
+                cli_cmd = prepare_cli_command(['disk', 'show', '--ids', source_os_disk_id],
+                                              output_as_json=False,
+                                              only_show_errors=only_show_errors)
+                run_cli_command(cli_cmd)
+            except:
+                raise ResourceNotFoundError('Unable to find the source OS disk. Please make sure the source OS disk is not deleted.\n '
+                                            'If you deleted the source disk where the image was created (or chose to delete the VM while creating the image). Please refer to https://github.com/Azure/azure-cli/issues/25431 for temporary solution.')
         source_os_disk_type = "DISK"
         logger.debug("found %s: %s", source_os_disk_type, source_os_disk_id)
     except TypeError:

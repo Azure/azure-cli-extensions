@@ -6,13 +6,13 @@
 # pylint: disable=wrong-import-order
 from knack.log import get_logger
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from .vendored_sdks.appplatform.v2022_01_01_preview import models
 from ._deployment_uploadable_factory import FileUpload, FolderUpload
 from azure.core.exceptions import HttpResponseError
 from time import sleep
 from ._stream_utils import stream_logs
 from ._buildservices_factory import BuildService
 from threading import Timer
+from ._utils import (_get_file_ext)
 
 logger = get_logger(__name__)
 
@@ -39,11 +39,13 @@ class EmptyDeployableBuilder():
     def stream_log(self, **_):
         pass
 
-    def get_source_type(self, runtime_version=None, **_):
+    def get_source_type(self, runtime_version=None, artifact_path=None, **_):
         if self.sku.name == 'E0':
             return 'BuildResult'
         if runtime_version and runtime_version.lower() == 'netcore_31':
             return 'NetCoreZip'
+        if _get_file_ext(artifact_path).lower() == ".war":
+            return "War"
         return 'Jar'
 
 

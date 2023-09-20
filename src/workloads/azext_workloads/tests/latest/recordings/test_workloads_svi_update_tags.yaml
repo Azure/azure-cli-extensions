@@ -1,0 +1,242 @@
+interactions:
+- request:
+    body: '{"tags": {"tag": "test", "tag2": "test2"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-virtual-instance update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '42'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/U77-rg/providers/Microsoft.Workloads/sapVirtualInstances/U77?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/U77-rg/providers/Microsoft.Workloads/sapVirtualInstances/U77","name":"U77","type":"microsoft.workloads/sapvirtualinstances","location":"centraluseuap","tags":{"tag":"test","tag2":"test2"},"systemData":{"createdBy":"mohitaneja@microsoft.com","createdByType":"User","createdAt":"2022-09-08T12:55:39.5330848Z","lastModifiedBy":"mohitaneja@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-21T08:59:32.5774674Z"},"properties":{"environment":"Prod","sapProduct":"S/4HANA","configuration":{"configurationType":"Discovery","appLocation":"eastus","centralServerVmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-SVI-08SEP-B760-AVZONE-SLES-SAP-15-SP3-GEN2/providers/Microsoft.Compute/virtualMachines/u77ascszavm"},"managedResourceGroupConfiguration":{"name":"mrg-U77-220271"},"status":"Unavailable","health":"Unknown","state":"RegistrationComplete","errors":{"properties":{"code":"HealthAndStatusFailure","message":"\n      Unable
+        to fetch health and status data from primary central server.\n      Possible
+        causes:\n        - The storage account may have been deleted.\n        - The
+        role assignment from central server VM(s) to managed RG might be unassigned.\n        -
+        The central server VM(s) system assigned managed identity might be disabled.\n        -
+        The VM might be not running.\n        - The VM might have networking issues.\n        -
+        The monitoring extension might not be running on the central server VM.\n      Recommended
+        Action: Status monitoring service will retry the operation, if issue persists
+        for more than 30 mins then please contact support.\n    ","details":[{"code":"ChangeDetectionVisCentralVmNotFound","message":"\n      SAP
+        central instance virtual machine with id - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-SVI-08SEP-B760-AVZONE-SLES-SAP-15-SP3-GEN2/providers/Microsoft.Compute/virtualMachines/u77ascszavm
+        was not found.\n      Possible Causes: The SAP central instance virtual machine
+        was deleted or moved to a different Resource group/subscription.\n      Recommended
+        Action: In order to view new updates to the Virtual Instance for SAP metadata,
+        please ensure the central server virtual machine is existing in Resource group
+        U77-rg.\n      If the virtual machine /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-SVI-08SEP-B760-AVZONE-SLES-SAP-15-SP3-GEN2/providers/Microsoft.Compute/virtualMachines/u77ascszavm
+        exists, please wait for an hour for the change to be detected. If the issue
+        still persists, please contact support.\n    ","details":[]}]}},"provisioningState":"Succeeded"}}'
+    headers:
+      api-supported-versions:
+      - 2021-12-01-preview, 2022-10-15-preview, 2022-11-01-preview, 2023-04-01
+      azure-asyncoperation:
+      - subscriptions/49d64d54-e966-4c46-a868-1999802b762c/providers/Microsoft.Workloads/locations/CENTRALUSEUAP/operationStatuses/6e1ce09a-45b0-414c-a19d-eef8338d5065*282FF9D36625B70B7671EBBECC70D0807CBAE5F901A24D0143C35D907481B455?api-version=2023-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '2683'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 08:59:37 GMT
+      etag:
+      - '"04005f99-0000-3400-0000-644250760000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 47be1437-d03f-454e-9509-2261ead7d054
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"tag": "test3", "tag2": "test4"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-central-instance update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '43'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --sap-virtual-instance-name -g -n --tags
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/U77-rg/providers/Microsoft.Workloads/sapVirtualInstances/U77/centralInstances/u77scs00cl1-0?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/U77-rg/providers/Microsoft.Workloads/sapVirtualInstances/U77/centralInstances/u77scs00cl1-0","name":"u77scs00cl1-0","type":"microsoft.workloads/sapvirtualinstances/centralinstances","location":"centraluseuap","tags":{"tag":"test3","tag2":"test4"},"systemData":{"createdBy":"ea21b132-560f-4b0b-9876-903b6bca7b9d","createdByType":"Application","createdAt":"2022-09-08T13:01:38.4750662Z","lastModifiedBy":"mohitaneja@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-21T08:59:40.8036216Z"},"properties":{"instanceNo":"00","subnet":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SAP-E2ETest-rg/providers/Microsoft.Network/virtualNetworks/loop-test-vnet/subnets/loopsubnet","messageServerProperties":{"msPort":3600,"internalMsPort":3900,"httpPort":8100,"ipAddress":"10.0.5.36","hostname":"u77scs00cl1"},"enqueueServerProperties":{"port":3200,"ipAddress":"10.0.5.36","hostname":"u77scs00cl1"},"gatewayServerProperties":{"port":3300},"kernelVersion":"777","kernelPatch":"patch
+        300","vmDetails":[{"virtualMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-SVI-08SEP-B760-AVZONE-SLES-SAP-15-SP3-GEN2/providers/Microsoft.Compute/virtualMachines/u77ascszavm","type":"Primary"},{"virtualMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-SVI-08SEP-B760-AVZONE-SLES-SAP-15-SP3-GEN2/providers/Microsoft.Compute/virtualMachines/u77ascszbvm","type":"Secondary"}],"provisioningState":"Succeeded","health":"Unknown","status":"Unavailable"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1600'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 08:59:44 GMT
+      etag:
+      - '"30009f0c-0000-3400-0000-6442507d0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"tag": "test5", "tag2": "test6"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-application-server-instance update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '43'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --sap-virtual-instance-name -g -n --tags
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/U77-rg/providers/Microsoft.Workloads/sapVirtualInstances/U77/applicationInstances/u77appzavm0-0?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/U77-rg/providers/Microsoft.Workloads/sapVirtualInstances/U77/applicationInstances/u77appzavm0-0","name":"u77appzavm0-0","type":"microsoft.workloads/sapvirtualinstances/applicationinstances","location":"centraluseuap","tags":{"tag":"test5","tag2":"test6"},"systemData":{"createdBy":"ea21b132-560f-4b0b-9876-903b6bca7b9d","createdByType":"Application","createdAt":"2022-09-08T13:01:40.38218Z","lastModifiedBy":"mohitaneja@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-21T08:59:46.8880977Z"},"properties":{"instanceNo":"00","subnet":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SAP-E2ETest-rg/providers/Microsoft.Network/virtualNetworks/loop-test-vnet/subnets/loopsubnet","hostname":"u77appzavm0","kernelVersion":"777","kernelPatch":"patch
+        300","ipAddress":"10.0.5.34","gatewayPort":3300,"icmHttpPort":0,"icmHttpsPort":0,"provisioningState":"Succeeded","vmDetails":[{"virtualMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-SVI-08SEP-B760-AVZONE-SLES-SAP-15-SP3-GEN2/providers/Microsoft.Compute/virtualMachines/u77appzavm0","type":"Active"}],"health":"Unknown","status":"Unavailable"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1236'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 08:59:49 GMT
+      etag:
+      - '"14000ed1-0000-3400-0000-644250830000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"tag": "test7", "tag2": "test8"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-database-instance update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '43'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --sap-virtual-instance-name -g -n --tags
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/U77-rg/providers/Microsoft.Workloads/sapVirtualInstances/U77/databaseInstances/U77?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/U77-rg/providers/Microsoft.Workloads/sapVirtualInstances/U77/databaseInstances/U77","name":"U77","type":"microsoft.workloads/sapvirtualinstances/databaseinstances","location":"centraluseuap","tags":{"tag":"test7","tag2":"test8"},"systemData":{"createdBy":"ea21b132-560f-4b0b-9876-903b6bca7b9d","createdByType":"Application","createdAt":"2022-09-08T13:01:40.9924961Z","lastModifiedBy":"mohitaneja@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-21T08:59:52.8977872Z"},"properties":{"subnet":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SAP-E2ETest-rg/providers/Microsoft.Network/virtualNetworks/loop-test-vnet/subnets/loopsubnet-db","databaseSid":"U77","ipAddress":"10.0.129.166","databaseType":"hdb","vmDetails":[{"virtualMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-SVI-08SEP-B760-AVZONE-SLES-SAP-15-SP3-GEN2/providers/Microsoft.Compute/virtualMachines/u77dbzavm"},{"virtualMachineId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/E2E-SVI-08SEP-B760-AVZONE-SLES-SAP-15-SP3-GEN2/providers/Microsoft.Compute/virtualMachines/u77dbzbvm"}],"provisioningState":"Succeeded","status":"Unavailable"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1270'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 08:59:57 GMT
+      etag:
+      - '"25000a62-0000-3400-0000-644250890000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+version: 1

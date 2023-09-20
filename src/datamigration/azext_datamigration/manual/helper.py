@@ -19,6 +19,9 @@ import subprocess
 import time
 import urllib.request
 from zipfile import ZipFile
+import shutil
+import requests
+from knack.util import CLIError
 from azure.cli.core.azclierror import CLIInternalError
 from azure.cli.core.azclierror import FileOperationError
 from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -52,6 +55,15 @@ def validate_config_file_path(path, action):
 
 
 # -----------------------------------------------------------------------------------------------------------------
+# Helper function to test whether the path exists.
+# -----------------------------------------------------------------------------------------------------------------
+def test_path_exist(path):
+
+    if not os.path.exists(path):
+        raise InvalidArgumentValueError(f'Invalid config file path: {path}. Please provide a valid config file path.')
+
+
+# -----------------------------------------------------------------------------------------------------------------
 # Assessment helper function to do console app setup (mkdir, download and extract)
 # -----------------------------------------------------------------------------------------------------------------
 def console_app_setup():
@@ -68,6 +80,72 @@ def console_app_setup():
     create_dir_path(baseFolder)
     # check and download console app
     check_and_download_console_app(exePath, baseFolder)
+
+    return defaultOutputFolder, exePath
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# LoginMigration helper function to do console app setup (mkdir, download and extract)
+# -----------------------------------------------------------------------------------------------------------------
+def loginMigration_console_app_setup():
+
+    validate_os_env()
+
+    defaultOutputFolder = get_loginMigration_default_output_folder()
+
+    # Assigning base folder path
+    baseFolder = os.path.join(defaultOutputFolder, "Downloads")
+    exePath = os.path.join(baseFolder, "Logins.Console.csproj", "Logins.Console.exe")
+
+    # Creating base folder structure
+    create_dir_path(baseFolder)
+    # check and download console app
+    check_and_download_loginMigration_console_app(exePath, baseFolder)
+
+    return defaultOutputFolder, exePath
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# TdeMigration helper function to do console app setup (mkdir, download and extract)
+# -----------------------------------------------------------------------------------------------------------------
+def tdeMigration_console_app_setup():
+    validate_os_env()
+
+    # Create downloads directory if it doesn't already exists
+    default_output_folder = get_tdeMigration_default_output_folder()
+    downloads_folder = os.path.join(default_output_folder, "Downloads")
+    os.makedirs(downloads_folder, exist_ok=True)
+
+    # check and download console app
+    console_app_version = check_and_download_tdeMigration_console_app(downloads_folder)
+    if console_app_version is None:
+        raise CLIError("Connection to NuGet.org required. Please check connection and try again.")
+
+    # Assigning base folder path\TdeConsoleApp\console
+    console_app_location = os.path.join(downloads_folder, console_app_version)
+
+    exePath = os.path.join(console_app_location, "tools", "Microsoft.SqlServer.Migration.Tde.ConsoleApp.exe")
+
+    return exePath
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# SqlServerSchema helper function to do console app setup (mkdir, download and extract)
+# -----------------------------------------------------------------------------------------------------------------
+def sqlServerSchema_console_app_setup():
+
+    validate_os_env()
+
+    defaultOutputFolder = get_sqlServerSchema_default_output_folder()
+
+    # Assigning base folder path
+    baseFolder = os.path.join(defaultOutputFolder, "Downloads")
+    exePath = os.path.join(baseFolder, "SchemaMigration.Console.csproj", "SqlSchemaMigration.exe")
+
+    # Creating base folder structure
+    create_dir_path(baseFolder)
+    # check and download console app
+    check_and_download_sqlServerSchema_console_app(exePath, baseFolder)
 
     return defaultOutputFolder, exePath
 
@@ -90,6 +168,57 @@ def get_default_output_folder():
 
 
 # -----------------------------------------------------------------------------------------------------------------
+# LoginMigration helper function to return the default output folder path depending on OS environment.
+# -----------------------------------------------------------------------------------------------------------------
+def get_loginMigration_default_output_folder():
+
+    osPlatform = platform.system()
+
+    if osPlatform.__contains__('Linux'):
+        defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), ".config", "Microsoft", "SqlLoginMigrations")
+    elif osPlatform.__contains__('Darwin'):
+        defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), "Library", "Application Support", "Microsoft", "SqlLoginMigrations")
+    else:
+        defaultOutputPath = os.path.join(os.getenv('LOCALAPPDATA'), "Microsoft", "SqlLoginMigrations")
+
+    return defaultOutputPath
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# TdeMigration helper function to return the default output folder path depending on OS environment.
+# -----------------------------------------------------------------------------------------------------------------
+def get_tdeMigration_default_output_folder():
+
+    osPlatform = platform.system()
+
+    if osPlatform.__contains__('Linux'):
+        defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), ".config", "Microsoft", "SqlTdeMigrations")
+    elif osPlatform.__contains__('Darwin'):
+        defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), "Library", "Application Support", "Microsoft", "SqlTdeMigrations")
+    else:
+        defaultOutputPath = os.path.join(os.getenv('LOCALAPPDATA'), "Microsoft", "SqlTdeMigrations")
+
+    return defaultOutputPath
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# SqlServerSchema helper function to return the default output folder path depending on OS environment.
+# -----------------------------------------------------------------------------------------------------------------
+def get_sqlServerSchema_default_output_folder():
+
+    osPlatform = platform.system()
+
+    if osPlatform.__contains__('Linux'):
+        defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), ".config", "Microsoft", "SqlSchemaMigration")
+    elif osPlatform.__contains__('Darwin'):
+        defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), "Library", "Application Support", "Microsoft", "SqlSchemaMigration")
+    else:
+        defaultOutputPath = os.path.join(os.getenv('LOCALAPPDATA'), "Microsoft", "SqlSchemaMigration")
+
+    return defaultOutputPath
+
+
+# -----------------------------------------------------------------------------------------------------------------
 # Assessment helper function to check if console app exists, if not download it.
 # -----------------------------------------------------------------------------------------------------------------
 def check_and_download_console_app(exePath, baseFolder):
@@ -104,6 +233,136 @@ def check_and_download_console_app(exePath, baseFolder):
         urllib.request.urlretrieve(zipSource, filename=zipDestination)
         with ZipFile(zipDestination, 'r') as zipFile:
             zipFile.extractall(path=baseFolder)
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# LoginMigration helper function to check if console app exists, if not download it.
+# -----------------------------------------------------------------------------------------------------------------
+def check_and_download_loginMigration_console_app(exePath, baseFolder):
+
+    testPath = os.path.exists(exePath)
+
+    # Downloading console app zip and extracting it
+    if not testPath:
+        zipSource = "https://sqlassess.blob.core.windows.net/app/LoginsMigration.zip"
+        zipDestination = os.path.join(baseFolder, "LoginsMigration.zip")
+
+        urllib.request.urlretrieve(zipSource, filename=zipDestination)
+        with ZipFile(zipDestination, 'r') as zipFile:
+            zipFile.extractall(path=baseFolder)
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# SqlServerSchema helper function to check if console app exists, if not download it.
+# -----------------------------------------------------------------------------------------------------------------
+def check_and_download_sqlServerSchema_console_app(exePath, baseFolder):
+
+    testPath = os.path.exists(exePath)
+
+    # Downloading console app zip and extracting it
+    if not testPath:
+        zipSource = "https://migrationapps.blob.core.windows.net/schemamigration/SqlSchemaMigration.zip"
+        zipDestination = os.path.join(baseFolder, "SqlSchemaMigration.zip")
+
+        urllib.request.urlretrieve(zipSource, filename=zipDestination)
+        with ZipFile(zipDestination, 'r') as zipFile:
+            zipFile.extractall(path=baseFolder)
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# Get latest version of TDE Console App on NuGet.org
+# -----------------------------------------------------------------------------------------------------------------
+def get_latest_nuget_org_version(package_id):
+    # Get Nuget.org service index
+    service_index_response = None
+    try:
+        service_index_response = requests.get("https://api.nuget.org/v3/index.json")
+    except Exception:
+        print("Unable to connect to NuGet.org to check for updates.")
+
+    if(service_index_response is None or
+       service_index_response.status_code != 200 or
+       len(service_index_response.content) > 999999):
+        return None
+
+    json_response = json.loads(service_index_response.content)
+    nuget_org_resources = json_response["resources"]
+
+    package_base_address_type = "PackageBaseAddress/3.0.0"
+    package_base_address_url = None
+
+    for resource in nuget_org_resources:
+        if resource["@type"] == package_base_address_type:
+            package_base_address_url = resource["@id"]
+            break
+
+    if package_base_address_url is None:
+        return None
+
+    package_versions_response = None
+    package_versions_response = requests.get(f"{package_base_address_url}{package_id.lower()}/index.json")
+    if(package_versions_response.status_code != 200 or len(package_versions_response.content) > 999999):
+        return None
+
+    package_versions_json = json.loads(package_versions_response.content)
+    package_versions_array = package_versions_json["versions"]
+    return package_versions_array[len(package_versions_array) - 1]
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# Get latest local version of TDE Console App
+# -----------------------------------------------------------------------------------------------------------------
+def get_latest_local_name_and_version(downloads_folder):
+    nuget_versions = os.listdir(downloads_folder)
+    if len(nuget_versions) == 0:
+        return None
+
+    nuget_versions.sort(reverse=True)
+    return nuget_versions[0]
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# TdeMigration helper function to check if console app exists, if not download it.
+# -----------------------------------------------------------------------------------------------------------------
+def check_and_download_tdeMigration_console_app(downloads_folder):
+    # Get latest TdeConsoleApp name from nuget.org
+    package_id = "Microsoft.SqlServer.Migration.TdeConsoleApp"
+
+    latest_nuget_org_version = get_latest_nuget_org_version(package_id)
+    latest_nuget_org_name_and_version = f"{package_id}.{latest_nuget_org_version}"
+    latest_local_name_and_version = get_latest_local_name_and_version(downloads_folder)
+
+    if latest_nuget_org_version is None:
+        # Cannot retrieve latest version on NuGet.org, return latest local version
+        return latest_local_name_and_version
+
+    if latest_local_name_and_version is not None and latest_local_name_and_version >= latest_nuget_org_name_and_version:
+        # Console app is up to date, do not download update
+        return latest_local_name_and_version
+
+    # Download latest version of NuGet
+    latest_nuget_org_download_directory = os.path.join(downloads_folder, latest_nuget_org_name_and_version)
+    os.makedirs(latest_nuget_org_download_directory, exist_ok=True)
+
+    latest_nuget_org_download_name = f"{latest_nuget_org_download_directory}/{latest_nuget_org_name_and_version}.nupkg"
+    download_url = f"https://www.nuget.org/api/v2/package/{package_id}/{latest_nuget_org_version}"
+
+    # Extract downloaded NuGet
+    urllib.request.urlretrieve(download_url, filename=latest_nuget_org_download_name)
+    with ZipFile(latest_nuget_org_download_name, 'r') as zipFile:
+        zipFile.extractall(path=latest_nuget_org_download_directory)
+
+    exe_path = os.path.join(latest_nuget_org_download_directory, "tools", "Microsoft.SqlServer.Migration.Tde.ConsoleApp.exe")
+
+    if os.path.exists(exe_path):
+        for nuget_version in os.listdir(downloads_folder):
+            if nuget_version != latest_nuget_org_name_and_version:
+                shutil.rmtree(os.path.join(downloads_folder, nuget_version))
+
+    else:
+        return latest_local_name_and_version
+
+    return latest_nuget_org_name_and_version
 
 
 # -----------------------------------------------------------------------------------------------------------------

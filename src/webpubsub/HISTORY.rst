@@ -3,6 +3,16 @@
 Release History
 ===============
 
+1.3.0
++++++
+* Add `kind` support for creating resource
+
+1.2.0
++++++
+* Drop python 3.6 support
+* Update websocket dependency version
+* Remove hard limit of sku
+
 1.1.0
 ++++++
 * Add `az webpubsub list-usage`

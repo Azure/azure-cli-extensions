@@ -106,7 +106,7 @@ def _update_addon_pod_identity(
     instance.pod_identity_profile.user_assigned_identity_exceptions = pod_identity_exceptions or []
 
 
-def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
+def _ensure_managed_identity_operator_permission(cmd, instance, scope):
     cluster_identity_object_id = None
     if instance.identity.type.lower() == 'userassigned':
         for identity in instance.identity.user_assigned_identities.values():
@@ -120,7 +120,7 @@ def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
     if cluster_identity_object_id is None:
         raise CLIError('unable to resolve cluster identity')
 
-    factory = get_auth_management_client(cli_ctx, scope)
+    factory = get_auth_management_client(cmd.cli_ctx, scope)
     assignments_client = factory.role_assignments
     cluster_identity_object_id = cluster_identity_object_id.lower()
     scope = scope.lower()
@@ -143,7 +143,7 @@ def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
         logger.debug('Managed Identity Opereator role has been assigned to {}'.format(i.scope))
         return
 
-    if not add_role_assignment(cli_ctx, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
+    if not add_role_assignment(cmd, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
                                is_service_principal=False, scope=scope):
         raise CLIError(
             'Could not grant Managed Identity Operator permission for cluster')

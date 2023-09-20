@@ -3,6 +3,50 @@
 Release History
 ===============
 
+1.4.5
+++++++++++++++++++
+* fix bugs while dropping 'azure-mgmt-relay'
+
+1.4.4
+++++++++++++++++++
+* drop 'azure-mgmt-relay' sdk dependency
+
+1.4.3
+++++++++++++++++++
+* microsoft.azuremonitor.containers: Extend ContainerInsights Extension dataCollectionSettings with streams and containerlogv2 field. Also, add a kind tag in DCR creation for the ContainerInsights extension.
+* microsoft.dapr: Use semver instead of packaging
+* microsoft.azuremonitor.containers.metrics: update logic to sanitize cluster name for dc* objects
+* microsoft.openservicemesh: Fix osm-arc version check for CI tags
+* add support to skip provisioning of prerequisites for Azure Monitor K8s extensions
+
+1.4.2
+++++++++++++++++++
+* microsoft.azuremonitor.containers: ContainerInsights Extension Managed Identity Auth Enabled by default
+
+1.4.1
+++++++++++++++++++
+* microsoft.azureml.kubernetes: Fix sslSecret parameter in update operation
+* microsoft.azuremonitor.containers.metrics : public preview support for managed prometheus in ARC clusters
+
+1.4.0
+++++++++++++++++++
+* microsoft.dapr: Update version comparison logic to use semver based comparison
+* microsoft.azuremonitor.containers: Make ContainerInsights DataCollectionRuleName consistent with portal and other onboarding clients
+
+1.3.9
+++++++++++++++++++
+* Deprecating  --config-settings alias for --configuration-settings
+* Deprecating  --configuration-protected-settings alias for --config-protected-settings
+* Deprecating  --configuration-settings-file alias for --config-settings-file
+* Deprecating  --configuration-protected-settings-file alias for --config-protected-file
+
+1.3.8
+++++++++++++++++++
+* Fixes to address the bug with msi auth mode for azuremonitor-containers extension version >= 3.0.0
+* microsoft.dapr: disable apply-CRDs hook if auto-upgrade is disabled
+* microsoft.azuremonitor.containers: ContainerInsights Extension add dataCollectionSettings to configuration settings
+* k8s-extension Adding GA api version 2022-11-01 exposing isSystemExtension and support
+
 1.3.7
 ++++++++++++++++++
 * microsoft.dapr: prompt user for existing dapr installation during extension create
@@ -20,7 +64,7 @@ Release History
 
 1.3.4
 ++++++++++++++++++
-* Fix to address the error TypeError: cf_k8s_extension() takes 1 positional argument but 2 were given while running command az k8s-extension extension-types list 
+* Fix to address the error TypeError: cf_k8s_extension() takes 1 positional argument but 2 were given while running command az k8s-extension extension-types list
 
 1.3.3
 ++++++++++++++++++
@@ -74,9 +118,9 @@ Release History
 1.2.0
 ++++++++++++++++++
 * microsoft.azureml.kubernetes: Update AzureMLKubernetes install parameters on inferenceRouterServiceType and internalLoadBalancerProvider
-* microsoft.openservicemesh: Change extension validation logic osm-arc 
-* microsoft.azuremonitor.containers: Add Managed Identity Auth support for ContainerInsights Extension 
-* microsoft.azuremonitor.containers: Bring back containerInsights solution addition in MSI mode 
+* microsoft.openservicemesh: Change extension validation logic osm-arc
+* microsoft.azuremonitor.containers: Add Managed Identity Auth support for ContainerInsights Extension
+* microsoft.azuremonitor.containers: Bring back containerInsights solution addition in MSI mode
 
 1.1.0
 ++++++++++++++++++
@@ -139,7 +183,7 @@ Release History
 0.5.0
 ++++++++++++++++++
 * Add microsoft.openservicemesh customization to check distros
-* Delete customization for partners 
+* Delete customization for partners
 
 0.4.3
 ++++++++++++++++++
@@ -176,7 +220,7 @@ Release History
 ++++++++++++++++++
 
 * Remove `k8s-extension update` until PATCH is supported
-* Improved logging for overwriting extension name with default 
+* Improved logging for overwriting extension name with default
 
 0.2.0
 ++++++++++++++++++

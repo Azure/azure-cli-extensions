@@ -30,6 +30,9 @@ class PartnerExtensionModel(ABC):
         configuration_protected_settings: dict,
         configuration_settings_file: str,
         configuration_protected_settings_file: str,
+        plan_name: str,
+        plan_publisher: str,
+        plan_product: str,
     ) -> Extension:
         pass
 

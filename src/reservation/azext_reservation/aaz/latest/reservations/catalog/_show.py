@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-03-01",
+        "version": "2022-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.capacity/catalogs", "2022-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.capacity/catalogs", "2022-11-01"],
         ]
     }
 
@@ -48,6 +48,11 @@ class Show(AAZCommand):
             options=["--subscription-id"],
             help="subscription id",
             required=True,
+            id_part="subscription",
+        )
+        _args_schema.filter = AAZStrArg(
+            options=["--filter"],
+            help="May be used to filter by Catalog properties. The filter supports 'eq', 'or', and 'and'.",
         )
         _args_schema.location = AAZStrArg(
             options=["--location"],
@@ -76,11 +81,11 @@ class Show(AAZCommand):
         self.GetCatalog(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -128,6 +133,9 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
+                    "$filter", self.ctx.args.filter,
+                ),
+                **self.serialize_query_param(
                     "location", self.ctx.args.location,
                 ),
                 **self.serialize_query_param(
@@ -143,7 +151,7 @@ class Show(AAZCommand):
                     "reservedResourceType", self.ctx.args.reserved_resource_type,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-03-01",
+                    "api-version", "2022-11-01",
                     required=True,
                 ),
             }
@@ -173,12 +181,24 @@ class Show(AAZCommand):
             if cls._schema_on_200 is not None:
                 return cls._schema_on_200
 
-            cls._schema_on_200 = AAZListType()
+            cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.Element = AAZObjectType()
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+                flags={"read_only": True},
+            )
+            _schema_on_200.total_items = AAZIntType(
+                serialized_name="totalItems",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"read_only": True},
+            )
 
-            _element = cls._schema_on_200.Element
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
             _element.billing_plans = AAZDictType(
                 serialized_name="billingPlans",
             )
@@ -215,86 +235,84 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
-            billing_plans = cls._schema_on_200.Element.billing_plans
+            billing_plans = cls._schema_on_200.value.Element.billing_plans
             billing_plans.Element = AAZListType()
 
-            _element = cls._schema_on_200.Element.billing_plans.Element
+            _element = cls._schema_on_200.value.Element.billing_plans.Element
             _element.Element = AAZStrType()
 
-            capabilities = cls._schema_on_200.Element.capabilities
-            capabilities.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            capabilities = cls._schema_on_200.value.Element.capabilities
+            capabilities.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.Element.capabilities.Element
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.value = AAZStrType(
-                flags={"read_only": True},
-            )
+            _element = cls._schema_on_200.value.Element.capabilities.Element
+            _element.name = AAZStrType()
+            _element.value = AAZStrType()
 
-            locations = cls._schema_on_200.Element.locations
-            locations.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            locations = cls._schema_on_200.value.Element.locations
+            locations.Element = AAZStrType()
 
-            msrp = cls._schema_on_200.Element.msrp
+            msrp = cls._schema_on_200.value.Element.msrp
             msrp.p1_y = AAZObjectType(
                 serialized_name="p1Y",
-                flags={"read_only": True},
             )
+            _ShowHelper._build_schema_price_read(msrp.p1_y)
+            msrp.p3_y = AAZObjectType(
+                serialized_name="p3Y",
+            )
+            _ShowHelper._build_schema_price_read(msrp.p3_y)
+            msrp.p5_y = AAZObjectType(
+                serialized_name="p5Y",
+            )
+            _ShowHelper._build_schema_price_read(msrp.p5_y)
 
-            p1_y = cls._schema_on_200.Element.msrp.p1_y
-            p1_y.amount = AAZFloatType(
-                flags={"read_only": True},
-            )
-            p1_y.currency_code = AAZStrType(
-                serialized_name="currencyCode",
-                flags={"read_only": True},
-            )
+            restrictions = cls._schema_on_200.value.Element.restrictions
+            restrictions.Element = AAZObjectType()
 
-            restrictions = cls._schema_on_200.Element.restrictions
-            restrictions.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
-
-            _element = cls._schema_on_200.Element.restrictions.Element
+            _element = cls._schema_on_200.value.Element.restrictions.Element
             _element.reason_code = AAZStrType(
                 serialized_name="reasonCode",
-                flags={"read_only": True},
             )
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.values = AAZListType(
-                flags={"read_only": True},
-            )
+            _element.type = AAZStrType()
+            _element.values = AAZListType()
 
-            values = cls._schema_on_200.Element.restrictions.Element.values
-            values.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            values = cls._schema_on_200.value.Element.restrictions.Element.values
+            values.Element = AAZStrType()
 
-            sku_properties = cls._schema_on_200.Element.sku_properties
-            sku_properties.Element = AAZObjectType(
-                flags={"read_only": True},
-            )
+            sku_properties = cls._schema_on_200.value.Element.sku_properties
+            sku_properties.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.Element.sku_properties.Element
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.value = AAZStrType(
-                flags={"read_only": True},
-            )
+            _element = cls._schema_on_200.value.Element.sku_properties.Element
+            _element.name = AAZStrType()
+            _element.value = AAZStrType()
 
-            terms = cls._schema_on_200.Element.terms
-            terms.Element = AAZStrType(
-                flags={"read_only": True},
-            )
+            terms = cls._schema_on_200.value.Element.terms
+            terms.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _ShowHelper:
+    """Helper class for Show"""
+
+    _schema_price_read = None
+
+    @classmethod
+    def _build_schema_price_read(cls, _schema):
+        if cls._schema_price_read is not None:
+            _schema.amount = cls._schema_price_read.amount
+            _schema.currency_code = cls._schema_price_read.currency_code
+            return
+
+        cls._schema_price_read = _schema_price_read = AAZObjectType()
+
+        price_read = _schema_price_read
+        price_read.amount = AAZFloatType()
+        price_read.currency_code = AAZStrType(
+            serialized_name="currencyCode",
+        )
+
+        _schema.amount = cls._schema_price_read.amount
+        _schema.currency_code = cls._schema_price_read.currency_code
 
 
 __all__ = ["Show"]

@@ -12,7 +12,7 @@ from typing import Any, Awaitable, TYPE_CHECKING
 from azure.core.rest import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core import AsyncARMPipelineClient
 
-from .. import models
+from .. import models as _models
 from ..._serialization import Deserializer, Serializer
 from ._configuration import AppPlatformManagementClientConfiguration
 from .operations import (
@@ -135,54 +135,76 @@ class AppPlatformManagementClient:  # pylint: disable=client-accepts-api-version
         self._config = AppPlatformManagementClientConfiguration(
             credential=credential, subscription_id=subscription_id, **kwargs
         )
-        self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client: AsyncARMPipelineClient = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
-        client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
+        client_models = {k: v for k, v in _models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
-        self.services = ServicesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.config_servers = ConfigServersOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.services = ServicesOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
+        )
+        self.config_servers = ConfigServersOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
+        )
         self.configuration_services = ConfigurationServicesOperations(
-            self._client, self._config, self._serialize, self._deserialize
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
         )
         self.service_registries = ServiceRegistriesOperations(
-            self._client, self._config, self._serialize, self._deserialize
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
         )
-        self.build_service = BuildServiceOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.build_service = BuildServiceOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
+        )
         self.buildpack_binding = BuildpackBindingOperations(
-            self._client, self._config, self._serialize, self._deserialize
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
         )
         self.build_service_builder = BuildServiceBuilderOperations(
-            self._client, self._config, self._serialize, self._deserialize
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
         )
         self.build_service_agent_pool = BuildServiceAgentPoolOperations(
-            self._client, self._config, self._serialize, self._deserialize
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
         )
         self.monitoring_settings = MonitoringSettingsOperations(
-            self._client, self._config, self._serialize, self._deserialize
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
         )
-        self.apps = AppsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.bindings = BindingsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.storages = StoragesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.certificates = CertificatesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.custom_domains = CustomDomainsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.deployments = DeploymentsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.operations = Operations(self._client, self._config, self._serialize, self._deserialize)
+        self.apps = AppsOperations(self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview")
+        self.bindings = BindingsOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
+        )
+        self.storages = StoragesOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
+        )
+        self.certificates = CertificatesOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
+        )
+        self.custom_domains = CustomDomainsOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
+        )
+        self.deployments = DeploymentsOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
+        )
+        self.operations = Operations(
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
+        )
         self.runtime_versions = RuntimeVersionsOperations(
-            self._client, self._config, self._serialize, self._deserialize
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
         )
-        self.skus = SkusOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.gateways = GatewaysOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.skus = SkusOperations(self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview")
+        self.gateways = GatewaysOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
+        )
         self.gateway_route_configs = GatewayRouteConfigsOperations(
-            self._client, self._config, self._serialize, self._deserialize
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
         )
         self.gateway_custom_domains = GatewayCustomDomainsOperations(
-            self._client, self._config, self._serialize, self._deserialize
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
         )
-        self.api_portals = ApiPortalsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.api_portals = ApiPortalsOperations(
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
+        )
         self.api_portal_custom_domains = ApiPortalCustomDomainsOperations(
-            self._client, self._config, self._serialize, self._deserialize
+            self._client, self._config, self._serialize, self._deserialize, "2022-03-01-preview"
         )
 
     def _send_request(self, request: HttpRequest, **kwargs: Any) -> Awaitable[AsyncHttpResponse]:
@@ -214,5 +236,5 @@ class AppPlatformManagementClient:  # pylint: disable=client-accepts-api-version
         await self._client.__aenter__()
         return self
 
-    async def __aexit__(self, *exc_details) -> None:
+    async def __aexit__(self, *exc_details: Any) -> None:
         await self._client.__aexit__(*exc_details)

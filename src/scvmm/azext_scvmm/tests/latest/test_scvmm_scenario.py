@@ -19,20 +19,22 @@ class ScVmmScenarioTest(ScenarioTest):
                 'location': 'eastus2euap',
                 'custom_location': 'arcvmm-azcli-test-cl',
                 'vmmserver_name': 'arcvmm-azcli-test-vmmserver',
-                'icloud_name': 'cloud-qos',
-                'icloud_uuid': '3e1798f2-32a5-4121-8ed7-2527bf4e23d9',
-                'cloud_name': 'arcvmm-azcli-test-cloud-qos',
-                'ivmt_name': 'vmt-minion',
-                'ivmt_uuid': 'da3bed37-98f9-444f-badd-268a90924937',
-                'vmt_name': 'arcvmm-azcli-test-vmt-minion',
-                'ivnet_name': 'vnet-561',
-                'ivnet_uuid': '19cab3a9-e51d-48ef-9944-2ef6dc5d98a4',
-                'vnet_name': 'arcvmm-azcli-test-vnet-561',
+                'icloud_name': 'sojilani',
+                'icloud_uuid': 'ca912988-afcf-4c2e-b3c1-b1ddc8392f6b',
+                'cloud_name': 'arcvmm-azcli-test-sojilani',
+                'ivmt_name': 'vmt-win',
+                'ivmt_uuid': '97df5464-106e-4f82-8508-1ac3767adde6',
+                'vmt_name': 'arcvmm-azcli-test-vmt-win',
+                'ivnet_name': 'vnet-562',
+                'ivnet_uuid': 'a6f9432f-23d7-4124-9887-11c3ab173463',
+                'vnet_name': 'arcvmm-azcli-test-vnet-562',
                 'avset_string': 'avset1',
                 'avset_name': 'arcvmm-azcli-test-avset1',
                 'vm_name': 'arcvmm-azcli-test-vm-1',
                 'disk_name': 'disk_1',
                 'nic_name': 'nic_1',
+                'checkpoint_name': 'arcvmm-azcli-checkpoint',
+                'checkpoint_description': 'arcvmm-azcli-checkpoint',
             }
         )
 
@@ -151,7 +153,39 @@ class ScVmmScenarioTest(ScenarioTest):
             'az scvmm vm stop -g {resource_group} --name {vm_name} --skip-shutdown'
         )
 
-        self.cmd('az scvmm vm delete -g {resource_group} --name {vm_name} -y')
+        self.cmd(
+            'az scvmm vm create-checkpoint -g {resource_group} --name {vm_name} --checkpoint-name {checkpoint_name} --checkpoint-description {checkpoint_description}',
+        )
+        alias_sub = self.cmd('az scvmm vm show -g {resource_group} --name {vm_name}',
+                             checks=[
+                                 self.check('provisioningState', 'Succeeded'),
+                                 self.greater_than('checkpoints | length(@)', 0),                                
+                             ]).get_output_in_json()
+        checkpoint_id = alias_sub['checkpoints'][0]['checkpointId']
+        self.kwargs.update({'checkpoint_id': checkpoint_id})
+
+        self.cmd(
+            'az scvmm vm restore-checkpoint -g {resource_group} --name {vm_name} --checkpoint-id {checkpoint_id}',
+        )
+        self.cmd(
+            'az scvmm vm show -g {resource_group} --name {vm_name}',
+            checks=[
+                self.check('provisioningState', 'Succeeded'),                           
+            ]
+        )
+
+        self.cmd(
+            'az scvmm vm delete-checkpoint -g {resource_group} --name {vm_name} --checkpoint-id {checkpoint_id}',
+        )
+        self.cmd(
+            'az scvmm vm show -g {resource_group} --name {vm_name}',
+            checks=[
+                self.check('provisioningState', 'Succeeded'),
+                self.check('checkpoints | length(@)', 0),                           
+            ]
+        )
+
+        self.cmd('az scvmm vm delete -g {resource_group} --name {vm_name} --deleteFromHost -y')
 
         self.cmd('az scvmm avset delete -g {resource_group} --name {avset_name} -y')
 

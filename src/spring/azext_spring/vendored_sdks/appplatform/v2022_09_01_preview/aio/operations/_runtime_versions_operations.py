@@ -13,6 +13,7 @@ from azure.core.exceptions import (
     HttpResponseError,
     ResourceExistsError,
     ResourceNotFoundError,
+    ResourceNotModifiedError,
     map_error,
 )
 from azure.core.pipeline import PipelineResponse
@@ -48,6 +49,7 @@ class RuntimeVersionsOperations:
         self._config = input_args.pop(0) if input_args else kwargs.pop("config")
         self._serialize = input_args.pop(0) if input_args else kwargs.pop("serializer")
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
+        self._api_version = input_args.pop(0) if input_args else kwargs.pop("api_version")
 
     @distributed_trace_async
     async def list_runtime_versions(self, **kwargs: Any) -> _models.AvailableRuntimeVersions:
@@ -58,14 +60,21 @@ class RuntimeVersionsOperations:
         :rtype: ~azure.mgmt.appplatform.v2022_09_01_preview.models.AvailableRuntimeVersions
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
         error_map.update(kwargs.pop("error_map", {}) or {})
 
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version = kwargs.pop("api_version", _params.pop("api-version", "2022-09-01-preview"))  # type: str
-        cls = kwargs.pop("cls", None)  # type: ClsType[_models.AvailableRuntimeVersions]
+        api_version: str = kwargs.pop(
+            "api_version", _params.pop("api-version", self._api_version or "2022-09-01-preview")
+        )
+        cls: ClsType[_models.AvailableRuntimeVersions] = kwargs.pop("cls", None)
 
         request = build_list_runtime_versions_request(
             api_version=api_version,
@@ -74,10 +83,11 @@ class RuntimeVersionsOperations:
             params=_params,
         )
         request = _convert_request(request)
-        request.url = self._client.format_url(request.url)  # type: ignore
+        request.url = self._client.format_url(request.url)
 
-        pipeline_response = await self._client._pipeline.run(  # type: ignore # pylint: disable=protected-access
-            request, stream=False, **kwargs
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -93,4 +103,4 @@ class RuntimeVersionsOperations:
 
         return deserialized
 
-    list_runtime_versions.metadata = {"url": "/providers/Microsoft.AppPlatform/runtimeVersions"}  # type: ignore
+    list_runtime_versions.metadata = {"url": "/providers/Microsoft.AppPlatform/runtimeVersions"}

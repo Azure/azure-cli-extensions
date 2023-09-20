@@ -6,12 +6,16 @@
 manifest = '''
 {
     "isProxyResource": false,
+    "enableDataSourceSetInfo": false,
     "resourceType": "Microsoft.Compute/disks",
     "parentResourceType": "Microsoft.Compute/disks",
     "datasourceType": "Microsoft.Compute/disks",
     "allowedRestoreModes": [ "RecoveryPointBased" ],
     "allowedRestoreTargetTypes": [ "AlternateLocation" ],
     "itemLevelRecoveyEnabled": false,
+    "addBackupDatasourceParametersList": false,
+    "addDataStoreParametersList": true,
+    "friendlyNameRequired": false,
     "supportSecretStoreAuthentication": false,
     "backupVaultPermissions": [
         {
@@ -31,60 +35,60 @@ manifest = '''
         "backupScheduleSupported": true,
         "supportedBackupFrequency": [ "Daily", "Hourly" ],
         "defaultPolicy": {
-        "policyRules": [
-            {
-            "backupParameters": {
-                "backupType": "Incremental",
-                "objectType": "AzureBackupParams"
-            },
-            "trigger": {
-                "schedule": {
-                "repeatingTimeIntervals": [
-                    "R/2020-04-05T13:00:00+00:00/PT4H"
-                ]
-                },
-                "taggingCriteria": [
+            "policyRules": [
                 {
-                    "tagInfo": {
-                    "tagName": "Default",
-                    "id": "Default_"
+                "backupParameters": {
+                    "backupType": "Incremental",
+                    "objectType": "AzureBackupParams"
+                },
+                "trigger": {
+                    "schedule": {
+                    "repeatingTimeIntervals": [
+                        "R/2020-04-05T13:00:00+00:00/PT4H"
+                    ]
                     },
-                    "taggingPriority": 99,
-                    "isDefault": true
-                }
-                ],
-                "objectType": "ScheduleBasedTriggerContext"
-            },
-            "dataStore": {
-                "dataStoreType": "OperationalStore",
-                "objectType": "DataStoreInfoBase"
-            },
-            "name": "BackupHourly",
-            "objectType": "AzureBackupRule"
-            },
-            {
-            "lifecycles": [
-                {
-                "deleteAfter": {
-                    "objectType": "AbsoluteDeleteOption",
-                    "duration": "P7D"
+                    "taggingCriteria": [
+                    {
+                        "tagInfo": {
+                        "tagName": "Default",
+                        "id": "Default_"
+                        },
+                        "taggingPriority": 99,
+                        "isDefault": true
+                    }
+                    ],
+                    "objectType": "ScheduleBasedTriggerContext"
                 },
-                "sourceDataStore": {
+                "dataStore": {
                     "dataStoreType": "OperationalStore",
                     "objectType": "DataStoreInfoBase"
-                }
+                },
+                "name": "BackupHourly",
+                "objectType": "AzureBackupRule"
+                },
+                {
+                "lifecycles": [
+                    {
+                    "deleteAfter": {
+                        "objectType": "AbsoluteDeleteOption",
+                        "duration": "P7D"
+                    },
+                    "sourceDataStore": {
+                        "dataStoreType": "OperationalStore",
+                        "objectType": "DataStoreInfoBase"
+                    }
+                    }
+                ],
+                "isDefault": true,
+                "name": "Default",
+                "objectType": "AzureRetentionRule"
                 }
             ],
-            "isDefault": true,
-            "name": "Default",
-            "objectType": "AzureRetentionRule"
-            }
-        ],
-        "name": "DiskPolicy1",
-        "datasourceTypes": [
-            "Microsoft.Compute/disks"
-        ],
-        "objectType": "BackupPolicy"
+            "name": "DiskPolicy1",
+            "datasourceTypes": [
+                "Microsoft.Compute/disks"
+            ],
+            "objectType": "BackupPolicy"
         }
     }
 }

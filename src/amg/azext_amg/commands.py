@@ -10,12 +10,14 @@ from ._validators import process_grafana_create_namespace
 
 def load_command_table(self, _):
 
-    with self.command_group('grafana', is_preview=True) as g:
+    with self.command_group('grafana') as g:
         g.custom_command('create', 'create_grafana', validator=process_grafana_create_namespace)
         g.custom_command('delete', 'delete_grafana', confirmation=True)
         g.custom_command('list', 'list_grafana')
         g.custom_show_command('show', 'show_grafana')
         g.custom_command('update', 'update_grafana')
+        g.custom_command('backup', 'backup_grafana', is_preview=True)
+        g.custom_command('restore', 'restore_grafana', is_preview=True)
 
     with self.command_group('grafana dashboard') as g:
         g.custom_command('create', 'create_dashboard')
@@ -24,6 +26,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'show_dashboard')
         g.custom_command('update', 'update_dashboard')
         g.custom_command('import', 'import_dashboard')
+        g.custom_command('sync', 'sync_dashboard', is_preview=True)
 
     with self.command_group('grafana data-source') as g:
         g.custom_command('create', 'create_data_source')

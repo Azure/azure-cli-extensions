@@ -66,7 +66,17 @@ class List(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.NspProfilesList(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
@@ -185,11 +195,19 @@ class List(AAZCommand):
                 serialized_name="accessRulesVersion",
                 flags={"read_only": True},
             )
+            properties.diagnostic_settings_version = AAZStrType(
+                serialized_name="diagnosticSettingsVersion",
+                flags={"read_only": True},
+            )
 
             tags = cls._schema_on_200.value.Element.tags
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _ListHelper:
+    """Helper class for List"""
 
 
 __all__ = ["List"]

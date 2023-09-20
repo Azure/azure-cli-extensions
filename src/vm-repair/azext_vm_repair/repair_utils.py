@@ -210,7 +210,7 @@ def _check_existing_rg(rg_name):
         logger.error(azCommandError)
         raise Exception('Unexpected error occured while fetching existing resource groups.')
 
-    logger.info('Resource group exists is \'%s\'', group_exists)
+    logger.info('Pre-existing repair resource group with the same name is \'%s\'', group_exists)
     return group_exists
 
 
@@ -345,10 +345,12 @@ def _fetch_encryption_settings(source_vm):
         return Encryption.NONE, key_vault, kekurl, secreturl
 
     disk_id = source_vm.storage_profile.os_disk.managed_disk.id
-    show_disk_command = 'az disk show --id {i} --query [encryptionSettingsCollection,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].keyEncryptionKey.keyUrl,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.secretUrl] -o json' \
+    show_disk_command = 'az disk show --id {i} --query [encryptionSettingsCollection,encryptionSettingsCollection.enabled,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].keyEncryptionKey.keyUrl,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.secretUrl] -o json' \
                         .format(i=disk_id)
-    encryption_type, key_vault, kekurl, secreturl = loads(_call_az_command(show_disk_command))
+    encryption_type, enabled, key_vault, kekurl, secreturl = loads(_call_az_command(show_disk_command))
     if [encryption_type, key_vault, kekurl] == [None, None, None]:
+        return Encryption.NONE, key_vault, kekurl, secreturl
+    if not enabled:
         return Encryption.NONE, key_vault, kekurl, secreturl
     if kekurl == []:
         key_vault, secreturl = key_vault[0], secreturl[0]
@@ -370,17 +372,20 @@ def _check_linux_hyperV_gen(source_vm):
     disk_id = source_vm.storage_profile.os_disk.managed_disk.id
     show_disk_command = 'az disk show --id {i} --query [hyperVgeneration] -o json' \
                         .format(i=disk_id)
-    hyperVGen = loads(_call_az_command(show_disk_command))
-    if hyperVGen != 'V2':
+    disk_hyperVGen = loads(_call_az_command(show_disk_command))
+
+    if disk_hyperVGen != 'V2':
         logger.info('Checking if source VM is gen2')
         # if image is created from Marketplace gen2 image , the disk will not have the mark for gen2
         fetch_hypervgen_command = 'az vm get-instance-view --ids {id} --query "[instanceView.hyperVGeneration]" -o json'.format(id=source_vm.id)
         hyperVGen_list = loads(_call_az_command(fetch_hypervgen_command))
-        hyperVGen = hyperVGen_list[0]
-        if hyperVGen != 'V2':
-            hyperVGen = 'V1'
+        vm_hyperVGen = hyperVGen_list[0]
+        if vm_hyperVGen != 'V2':
+            vm_hyperVGen = 'V1'
 
-    return hyperVGen
+        return vm_hyperVGen
+
+    return disk_hyperVGen
 
 
 def _secret_tag_check(resource_group_name, copy_disk_name, secreturl):
@@ -486,22 +491,17 @@ def _fetch_compatible_windows_os_urn(source_vm):
 
 def _suse_image_selector(distro):
     fetch_urn_command = 'az vm image list --publisher SUSE --offer {offer} --sku gen1 --verbose --all --query "[].urn | reverse(sort(@))" -o json'.format(offer=distro)
-    logger.info('Fetching compatible SUSE OS images from gallery...')
     urns = loads(_call_az_command(fetch_urn_command))
 
     # Raise exception when not finding SUSE image
     if not urns:
         raise SuseNotAvailableError()
 
-    logger.debug('Fetched urns: \n%s', urns)
-    # Returning the first URN as it is the latest image with no special use like HPC or SAP
-    logger.debug('Return the first URN : %s', urns[0])
     return urns[0]
 
 
 def _suse_image_selector_gen2(distro):
     fetch_urn_command = 'az vm image list --publisher SUSE --offer {offer} --sku gen2 --verbose --all --query "[].urn | reverse(sort(@))" -o json'.format(offer=distro)
-    logger.info('Fetching compatible SUSE OS images from gallery...')
     urns = loads(_call_az_command(fetch_urn_command))
 
     # Raise exception when not finding SUSE image
@@ -538,13 +538,32 @@ def _select_distro_linux(distro):
             os_image_urn = distro
         else:
             logger.info('No specific distro was provided , using the default Ubuntu distro')
-            os_image_urn = "UbuntuLTS"
+            os_image_urn = "Ubuntu2204"
+    return os_image_urn
+
+
+def _select_distro_linux_Arm64(distro):
+    image_lookup = {
+        'rhel8': 'RedHat:rhel-arm64:8_8-arm64:latest',
+        'rhel9': 'RedHat:rhel-arm64:9_2-arm64:latest',
+        'ubuntu18': 'Canonical:UbuntuServer:18_04-lts-arm64:latest',
+        'ubuntu20': 'Canonical:0001-com-ubuntu-server-focal:20_04-lts-arm64:latest',
+        'centos7': 'OpenLogic:CentOS:7_9-arm64:latest',
+    }
+    if distro in image_lookup:
+        os_image_urn = image_lookup[distro]
+    else:
+        if distro.count(":") == 3:
+            logger.info('A custom URN was provided , will be used as distro for the recovery VM')
+            os_image_urn = distro
+        else:
+            logger.info('No specific distro was provided , using the default ARM64 Ubuntu distro')
+            os_image_urn = "Canonical:UbuntuServer:18_04-lts-arm64:latest"
     return os_image_urn
 
 
 def _select_distro_linux_gen2(distro):
     # base on the document : https://docs.microsoft.com/en-us/azure/virtual-machines/generation-2#generation-2-vm-images-in-azure-marketplace
-    # RHEL/Centos/Oracle 6 are not supported for Gen 2
     image_lookup = {
         'rhel6': 'RedHat:rhel-raw:7-raw-gen2:latest',
         'rhel7': 'RedHat:rhel-raw:7-raw-gen2:latest',
@@ -706,9 +725,32 @@ def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux):
 
 
 def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username, fix_uuid=False):
+
+    # logging all parameters of the function individually
+    logger.info('Creating repair VM with command: {}'.format(create_repair_vm_command))
+    logger.info('copy_disk_id: {}'.format(copy_disk_id))
+    logger.info('repair_password: {}'.format(repair_password))
+    logger.info('repair_username: {}'.format(repair_username))
+    logger.info('fix_uuid: {}'.format(fix_uuid))
+
     if not fix_uuid:
         create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
     logger.info('Validating VM template before continuing...')
     _call_az_command(create_repair_vm_command + ' --validate', secure_params=[repair_password, repair_username])
     logger.info('Creating repair VM...')
     _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])
+
+
+def _fetch_architecture(source_vm):
+    """
+    Returns the architecture of the source VM.
+    """
+    location = source_vm.location
+    vm_size = source_vm.hardware_profile.vm_size
+    architecture_type_cmd = 'az vm list-skus -l {loc} --size {vm_size} --query "[].capabilities[?name==\'CpuArchitectureType\'].value" -o json' \
+                            .format(loc=location, vm_size=vm_size)
+
+    logger.info('Fetching architecture type of the source VM...')
+    architecture = loads(_call_az_command(architecture_type_cmd).strip('\n'))
+
+    return architecture[0][0]

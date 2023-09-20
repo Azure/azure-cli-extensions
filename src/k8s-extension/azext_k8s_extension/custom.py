@@ -24,6 +24,7 @@ from .vendored_sdks.models import Identity, Scope
 from ._validators import validate_cc_registration
 
 from .partner_extensions.ContainerInsights import ContainerInsights
+from .partner_extensions.AzureMonitorMetrics import AzureMonitorMetrics
 from .partner_extensions.AzureDefender import AzureDefender
 from .partner_extensions.OpenServiceMesh import OpenServiceMesh
 from .partner_extensions.AzureMLKubernetes import AzureMLKubernetes
@@ -44,6 +45,7 @@ logger = get_logger(__name__)
 def ExtensionFactory(extension_name):
     extension_map = {
         "microsoft.azuremonitor.containers": ContainerInsights,
+        "microsoft.azuremonitor.containers.metrics": AzureMonitorMetrics,
         "microsoft.azuredefender.kubernetes": AzureDefender,
         "microsoft.openservicemesh": OpenServiceMesh,
         "microsoft.azureml.kubernetes": AzureMLKubernetes,
@@ -109,6 +111,9 @@ def create_k8s_extension(
     configuration_settings_file=None,
     configuration_protected_settings_file=None,
     no_wait=False,
+    plan_name=None,
+    plan_publisher=None,
+    plan_product=None
 ):
     """Create a new Extension Instance."""
 
@@ -182,6 +187,9 @@ def create_k8s_extension(
         config_protected_settings,
         configuration_settings_file,
         configuration_protected_settings_file,
+        plan_name,
+        plan_publisher,
+        plan_product
     )
 
     # Common validations
