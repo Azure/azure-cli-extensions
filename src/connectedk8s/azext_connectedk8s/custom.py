@@ -174,7 +174,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Pre onboarding checks
     try:
         # if aks_hci skip, otherwise continue to perform pre-onboarding check
-        if not aks_hci:                  
+        if not aks_hci:
             diagnostic_checks = "Failed"
             batchv1_api_instance = kube_client.BatchV1Api()
             storage_space_available = True
