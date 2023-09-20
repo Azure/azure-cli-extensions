@@ -9,17 +9,17 @@ import azext_fleet._validators as validators
 
 class AgentSubnetIDNamespace:
 
-    def _init_(self, agent_subnet_id):
+    def __init__(self, agent_subnet_id):
         self.agent_subnet_id = agent_subnet_id
 
 class ApiServerSubnetIDNamespace:
 
-    def _init_(self, apiserver_subnet_id):
+    def __init__(self, apiserver_subnet_id):
         self.apiserver_subnet_id = apiserver_subnet_id
 
 class AssignIdentityNamespace:
 
-    def _init_(self, assign_identity):
+    def __init__(self, assign_identity):
         self.assign_identity = assign_identity
 
 class MemberClusterIDNamespace:

@@ -83,7 +83,7 @@ def create_fleet(cmd,
         managed_service_identity.type = "SystemAssigned"
         if assign_identity is not None:
             managed_service_identity.type = "UserAssigned"
-            managed_service_identity.user_assigned_identities = {assign_identity,None}
+            managed_service_identity.user_assigned_identities = {assign_identity, None}
     else:
         managed_service_identity.type = "None"
 
@@ -120,7 +120,7 @@ def update_fleet(cmd,
         managed_service_identity.type = "SystemAssigned"
         if assign_identity is not None:
             managed_service_identity.type = "UserAssigned"
-            managed_service_identity.user_assigned_identities = {assign_identity,None}
+            managed_service_identity.user_assigned_identities = {assign_identity, None}
     else:
         managed_service_identity.type = "None"
 
