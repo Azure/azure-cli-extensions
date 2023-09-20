@@ -68,7 +68,7 @@ def create_fleet(cmd,
     api_server_access_profile = api_server_access_profile_model(
         enable_private_cluster=enable_private_cluster,
         enable_vnet_integration=enable_vnet_integration,
-        apiserver_subnet_id=apiserver_subnet_id
+        subnet_id=apiserver_subnet_id
     )
     agent_profile = agent_profile_model(
         subnet_id=agent_subnet_id
