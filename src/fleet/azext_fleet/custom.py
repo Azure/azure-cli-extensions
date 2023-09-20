@@ -16,7 +16,7 @@ from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
 from azext_fleet._helpers import print_or_merge_credentials
 
 
-def create_fleet(cmd, # pylint: disable=option_length_too_long
+def create_fleet(cmd,
                  client,
                  resource_group_name,
                  name,
@@ -95,7 +95,7 @@ def create_fleet(cmd, # pylint: disable=option_length_too_long
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, fleet)
 
 
-def update_fleet(cmd, # pylint: disable=option_length_too_long
+def update_fleet(cmd,
                  client,
                  resource_group_name,
                  name,
