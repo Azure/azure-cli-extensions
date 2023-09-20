@@ -82,7 +82,7 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
     def test_resourcemover_movecollection_e2e(self):
 
         self.kwargs.update({
-            'collection_name': 'clitest-movecollection-29',
+            'collection_name': 'clitest-movecollection-98',
             'location': 'eastus2',
             'source_region': 'eastus',
             'target_region': 'westus',
@@ -132,7 +132,7 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
             'vnet_resource_settings': vnet_temp_file.replace('\\', '\\\\')
         })
 
-        time.sleep(10)
+        time.sleep(15)
 
         # role assignments for the move-collection
         self.cmd('az role assignment create --assignee-object-id {collection_principal_id} --role Contributor '
@@ -140,7 +140,7 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
         self.cmd('az role assignment create --assignee-object-id {collection_principal_id} --role "User Access Administrator" '
                  '--scope {role_assignment_scope}')
 
-        time.sleep(10)
+        time.sleep(15)
 
         # add the vNet as a move-resource to the move-collection
         self.cmd('az resource-mover move-resource add --resource-group {rg} --move-collection-name {collection_name} '
@@ -237,7 +237,7 @@ class ResourceMoverMoveResourceScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix="clitest_resourcemover_collection_", location="eastus2")
     def test_resourcemover_moveresource_basic(self):
         self.kwargs.update({
-            'collection_name': 'clitest-movecollection-91',
+            'collection_name': 'clitest-movecollection-95',
             'location': 'eastus2',
             'source_region': 'eastus',
             'target_region': 'westus',
@@ -282,7 +282,7 @@ class ResourceMoverMoveResourceScenarioTest(ScenarioTest):
             'resource_settings': temp_file.replace('\\', '\\\\'),
         })
 
-        time.sleep(10)
+        time.sleep(15)
 
         # role assignments for the move-collection
         self.cmd('az role assignment create --assignee-object-id {collection_principal_id} --role Contributor '
@@ -290,7 +290,7 @@ class ResourceMoverMoveResourceScenarioTest(ScenarioTest):
         self.cmd('az role assignment create --assignee-object-id {collection_principal_id} --role "User Access Administrator" '
                  '--scope {role_assignment_scope}')
 
-        time.sleep(10)
+        time.sleep(15)
 
         # add the vNet as a move-resource to the move-collection
         self.cmd('az resource-mover move-resource add --resource-group {rg} --move-collection-name '

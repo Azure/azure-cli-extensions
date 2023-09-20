@@ -42,7 +42,7 @@ class ListRequiredFor(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.move_collection_name = AAZStrArg(
-            options=["--move-collection-name"],
+            options=["-n", "--name", "--move-collection-name"],
             help="The Move Collection Name.",
             required=True,
             id_part="name",

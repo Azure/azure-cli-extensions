@@ -81,8 +81,8 @@ class Add(AAZCommand):
             arg_group="Properties",
             help="Gets or sets the existing target ARM Id of the resource.",
         )
-        _args_schema.resource_settings = AAZObjectArg(
-            options=["--resource-settings"],
+        _args_schema.resource_settings_generated = AAZObjectArg(
+            options=["--resource-settings-generated"],
             arg_group="Properties",
             help="Gets or sets the resource settings.",
         )
@@ -105,44 +105,44 @@ class Add(AAZCommand):
             help="Gets or sets the resource ARM id of either the MoveResource or the resource ARM ID of the dependent resource.",
         )
 
-        resource_settings = cls._args_schema.resource_settings
-        resource_settings.microsoft_compute_availability_sets = AAZObjectArg(
+        resource_settings_generated = cls._args_schema.resource_settings_generated
+        resource_settings_generated.microsoft_compute_availability_sets = AAZObjectArg(
             options=["microsoft-compute-availability-sets"],
         )
-        resource_settings.microsoft_compute_virtual_machines = AAZObjectArg(
+        resource_settings_generated.microsoft_compute_virtual_machines = AAZObjectArg(
             options=["microsoft-compute-virtual-machines"],
         )
-        resource_settings.microsoft_network_load_balancers = AAZObjectArg(
+        resource_settings_generated.microsoft_network_load_balancers = AAZObjectArg(
             options=["microsoft-network-load-balancers"],
         )
-        resource_settings.microsoft_network_network_interfaces = AAZObjectArg(
+        resource_settings_generated.microsoft_network_network_interfaces = AAZObjectArg(
             options=["microsoft-network-network-interfaces"],
         )
-        resource_settings.microsoft_network_network_security_groups = AAZObjectArg(
+        resource_settings_generated.microsoft_network_network_security_groups = AAZObjectArg(
             options=["microsoft-network-network-security-groups"],
         )
-        resource_settings.microsoft_network_public_ip_addresses = AAZObjectArg(
+        resource_settings_generated.microsoft_network_public_ip_addresses = AAZObjectArg(
             options=["microsoft-network-public-ip-addresses"],
         )
-        resource_settings.microsoft_network_virtual_networks = AAZObjectArg(
+        resource_settings_generated.microsoft_network_virtual_networks = AAZObjectArg(
             options=["microsoft-network-virtual-networks"],
         )
-        resource_settings.microsoft_sql_servers_databases = AAZObjectArg(
+        resource_settings_generated.microsoft_sql_servers_databases = AAZObjectArg(
             options=["microsoft-sql-servers-databases"],
         )
-        resource_settings.microsoft_sql_servers_elastic_pools = AAZObjectArg(
+        resource_settings_generated.microsoft_sql_servers_elastic_pools = AAZObjectArg(
             options=["microsoft-sql-servers-elastic-pools"],
         )
-        resource_settings.target_resource_group_name = AAZStrArg(
+        resource_settings_generated.target_resource_group_name = AAZStrArg(
             options=["target-resource-group-name"],
             help="Gets or sets the target resource group name.",
         )
-        resource_settings.target_resource_name = AAZStrArg(
+        resource_settings_generated.target_resource_name = AAZStrArg(
             options=["target-resource-name"],
             help="Gets or sets the target Resource name.",
         )
 
-        microsoft_compute_availability_sets = cls._args_schema.resource_settings.microsoft_compute_availability_sets
+        microsoft_compute_availability_sets = cls._args_schema.resource_settings_generated.microsoft_compute_availability_sets
         microsoft_compute_availability_sets.fault_domain = AAZIntArg(
             options=["fault-domain"],
             help="Gets or sets the target fault domain.",
@@ -165,10 +165,10 @@ class Add(AAZCommand):
             ),
         )
 
-        tags = cls._args_schema.resource_settings.microsoft_compute_availability_sets.tags
+        tags = cls._args_schema.resource_settings_generated.microsoft_compute_availability_sets.tags
         tags.Element = AAZStrArg()
 
-        microsoft_compute_virtual_machines = cls._args_schema.resource_settings.microsoft_compute_virtual_machines
+        microsoft_compute_virtual_machines = cls._args_schema.resource_settings_generated.microsoft_compute_virtual_machines
         microsoft_compute_virtual_machines.tags = AAZDictArg(
             options=["tags"],
             help="Gets or sets the Resource tags.",
@@ -191,13 +191,13 @@ class Add(AAZCommand):
             help="Gets or sets user-managed identities",
         )
 
-        tags = cls._args_schema.resource_settings.microsoft_compute_virtual_machines.tags
+        tags = cls._args_schema.resource_settings_generated.microsoft_compute_virtual_machines.tags
         tags.Element = AAZStrArg()
 
-        user_managed_identities = cls._args_schema.resource_settings.microsoft_compute_virtual_machines.user_managed_identities
+        user_managed_identities = cls._args_schema.resource_settings_generated.microsoft_compute_virtual_machines.user_managed_identities
         user_managed_identities.Element = AAZStrArg()
 
-        microsoft_network_load_balancers = cls._args_schema.resource_settings.microsoft_network_load_balancers
+        microsoft_network_load_balancers = cls._args_schema.resource_settings_generated.microsoft_network_load_balancers
         microsoft_network_load_balancers.backend_address_pools = AAZListArg(
             options=["backend-address-pools"],
             help="Gets or sets the backend address pools of the load balancer.",
@@ -219,19 +219,19 @@ class Add(AAZCommand):
             help="Gets or sets the csv list of zones common for all frontend IP configurations. Note this is given precedence only if frontend IP configurations settings are not present.",
         )
 
-        backend_address_pools = cls._args_schema.resource_settings.microsoft_network_load_balancers.backend_address_pools
+        backend_address_pools = cls._args_schema.resource_settings_generated.microsoft_network_load_balancers.backend_address_pools
         backend_address_pools.Element = AAZObjectArg()
 
-        _element = cls._args_schema.resource_settings.microsoft_network_load_balancers.backend_address_pools.Element
+        _element = cls._args_schema.resource_settings_generated.microsoft_network_load_balancers.backend_address_pools.Element
         _element.name = AAZStrArg(
             options=["name"],
             help="Gets or sets the backend address pool name.",
         )
 
-        frontend_ip_configurations = cls._args_schema.resource_settings.microsoft_network_load_balancers.frontend_ip_configurations
+        frontend_ip_configurations = cls._args_schema.resource_settings_generated.microsoft_network_load_balancers.frontend_ip_configurations
         frontend_ip_configurations.Element = AAZObjectArg()
 
-        _element = cls._args_schema.resource_settings.microsoft_network_load_balancers.frontend_ip_configurations.Element
+        _element = cls._args_schema.resource_settings_generated.microsoft_network_load_balancers.frontend_ip_configurations.Element
         _element.name = AAZStrArg(
             options=["name"],
             help="Gets or sets the frontend IP configuration name.",
@@ -253,10 +253,10 @@ class Add(AAZCommand):
             help="Gets or sets the csv list of zones.",
         )
 
-        tags = cls._args_schema.resource_settings.microsoft_network_load_balancers.tags
+        tags = cls._args_schema.resource_settings_generated.microsoft_network_load_balancers.tags
         tags.Element = AAZStrArg()
 
-        microsoft_network_network_interfaces = cls._args_schema.resource_settings.microsoft_network_network_interfaces
+        microsoft_network_network_interfaces = cls._args_schema.resource_settings_generated.microsoft_network_network_interfaces
         microsoft_network_network_interfaces.enable_accelerated_networking = AAZBoolArg(
             options=["enable-accelerated-networking"],
             help="Gets or sets a value indicating whether accelerated networking is enabled.",
@@ -271,10 +271,10 @@ class Add(AAZCommand):
             help="Gets or sets the Resource tags.",
         )
 
-        ip_configurations = cls._args_schema.resource_settings.microsoft_network_network_interfaces.ip_configurations
+        ip_configurations = cls._args_schema.resource_settings_generated.microsoft_network_network_interfaces.ip_configurations
         ip_configurations.Element = AAZObjectArg()
 
-        _element = cls._args_schema.resource_settings.microsoft_network_network_interfaces.ip_configurations.Element
+        _element = cls._args_schema.resource_settings_generated.microsoft_network_network_interfaces.ip_configurations.Element
         _element.load_balancer_backend_address_pools = AAZListArg(
             options=["load-balancer-backend-address-pools"],
             help="Gets or sets the references of the load balancer backend address pools.",
@@ -309,10 +309,10 @@ class Add(AAZCommand):
         )
         cls._build_args_subnet_reference_create(_element.subnet)
 
-        load_balancer_backend_address_pools = cls._args_schema.resource_settings.microsoft_network_network_interfaces.ip_configurations.Element.load_balancer_backend_address_pools
+        load_balancer_backend_address_pools = cls._args_schema.resource_settings_generated.microsoft_network_network_interfaces.ip_configurations.Element.load_balancer_backend_address_pools
         load_balancer_backend_address_pools.Element = AAZObjectArg()
 
-        _element = cls._args_schema.resource_settings.microsoft_network_network_interfaces.ip_configurations.Element.load_balancer_backend_address_pools.Element
+        _element = cls._args_schema.resource_settings_generated.microsoft_network_network_interfaces.ip_configurations.Element.load_balancer_backend_address_pools.Element
         _element.name = AAZStrArg(
             options=["name"],
             help="Gets the name of the proxy resource on the target side.",
@@ -323,10 +323,10 @@ class Add(AAZCommand):
             required=True,
         )
 
-        load_balancer_nat_rules = cls._args_schema.resource_settings.microsoft_network_network_interfaces.ip_configurations.Element.load_balancer_nat_rules
+        load_balancer_nat_rules = cls._args_schema.resource_settings_generated.microsoft_network_network_interfaces.ip_configurations.Element.load_balancer_nat_rules
         load_balancer_nat_rules.Element = AAZObjectArg()
 
-        _element = cls._args_schema.resource_settings.microsoft_network_network_interfaces.ip_configurations.Element.load_balancer_nat_rules.Element
+        _element = cls._args_schema.resource_settings_generated.microsoft_network_network_interfaces.ip_configurations.Element.load_balancer_nat_rules.Element
         _element.name = AAZStrArg(
             options=["name"],
             help="Gets the name of the proxy resource on the target side.",
@@ -337,17 +337,17 @@ class Add(AAZCommand):
             required=True,
         )
 
-        public_ip = cls._args_schema.resource_settings.microsoft_network_network_interfaces.ip_configurations.Element.public_ip
+        public_ip = cls._args_schema.resource_settings_generated.microsoft_network_network_interfaces.ip_configurations.Element.public_ip
         public_ip.source_arm_resource_id = AAZStrArg(
             options=["source-arm-resource-id"],
             help="Gets the ARM resource ID of the tracked resource being referenced.",
             required=True,
         )
 
-        tags = cls._args_schema.resource_settings.microsoft_network_network_interfaces.tags
+        tags = cls._args_schema.resource_settings_generated.microsoft_network_network_interfaces.tags
         tags.Element = AAZStrArg()
 
-        microsoft_network_network_security_groups = cls._args_schema.resource_settings.microsoft_network_network_security_groups
+        microsoft_network_network_security_groups = cls._args_schema.resource_settings_generated.microsoft_network_network_security_groups
         microsoft_network_network_security_groups.security_rules = AAZListArg(
             options=["security-rules"],
             help="Gets or sets Security rules of network security group.",
@@ -357,10 +357,10 @@ class Add(AAZCommand):
             help="Gets or sets the Resource tags.",
         )
 
-        security_rules = cls._args_schema.resource_settings.microsoft_network_network_security_groups.security_rules
+        security_rules = cls._args_schema.resource_settings_generated.microsoft_network_network_security_groups.security_rules
         security_rules.Element = AAZObjectArg()
 
-        _element = cls._args_schema.resource_settings.microsoft_network_network_security_groups.security_rules.Element
+        _element = cls._args_schema.resource_settings_generated.microsoft_network_network_security_groups.security_rules.Element
         _element.access = AAZStrArg(
             options=["access"],
             help="Gets or sets whether network traffic is allowed or denied. Possible values are 'Allow' and 'Deny'.",
@@ -402,10 +402,10 @@ class Add(AAZCommand):
             help="Gets or sets Source Port or Range. Integer or range between 0 and 65535. A '*' can also be used to match all ports.",
         )
 
-        tags = cls._args_schema.resource_settings.microsoft_network_network_security_groups.tags
+        tags = cls._args_schema.resource_settings_generated.microsoft_network_network_security_groups.tags
         tags.Element = AAZStrArg()
 
-        microsoft_network_public_ip_addresses = cls._args_schema.resource_settings.microsoft_network_public_ip_addresses
+        microsoft_network_public_ip_addresses = cls._args_schema.resource_settings_generated.microsoft_network_public_ip_addresses
         microsoft_network_public_ip_addresses.domain_name_label = AAZStrArg(
             options=["domain-name-label"],
             help="Gets or sets the domain name label.",
@@ -431,10 +431,10 @@ class Add(AAZCommand):
             help="Gets or sets public IP zones.",
         )
 
-        tags = cls._args_schema.resource_settings.microsoft_network_public_ip_addresses.tags
+        tags = cls._args_schema.resource_settings_generated.microsoft_network_public_ip_addresses.tags
         tags.Element = AAZStrArg()
 
-        microsoft_network_virtual_networks = cls._args_schema.resource_settings.microsoft_network_virtual_networks
+        microsoft_network_virtual_networks = cls._args_schema.resource_settings_generated.microsoft_network_virtual_networks
         microsoft_network_virtual_networks.address_space = AAZListArg(
             options=["address-space"],
             help="Gets or sets the address prefixes for the virtual network.",
@@ -457,16 +457,16 @@ class Add(AAZCommand):
             help="Gets or sets the Resource tags.",
         )
 
-        address_space = cls._args_schema.resource_settings.microsoft_network_virtual_networks.address_space
+        address_space = cls._args_schema.resource_settings_generated.microsoft_network_virtual_networks.address_space
         address_space.Element = AAZStrArg()
 
-        dns_servers = cls._args_schema.resource_settings.microsoft_network_virtual_networks.dns_servers
+        dns_servers = cls._args_schema.resource_settings_generated.microsoft_network_virtual_networks.dns_servers
         dns_servers.Element = AAZStrArg()
 
-        subnets = cls._args_schema.resource_settings.microsoft_network_virtual_networks.subnets
+        subnets = cls._args_schema.resource_settings_generated.microsoft_network_virtual_networks.subnets
         subnets.Element = AAZObjectArg()
 
-        _element = cls._args_schema.resource_settings.microsoft_network_virtual_networks.subnets.Element
+        _element = cls._args_schema.resource_settings_generated.microsoft_network_virtual_networks.subnets.Element
         _element.address_prefix = AAZStrArg(
             options=["address-prefix"],
             help="Gets or sets address prefix for the subnet.",
@@ -480,17 +480,17 @@ class Add(AAZCommand):
             help="Defines reference to NSG.",
         )
 
-        network_security_group = cls._args_schema.resource_settings.microsoft_network_virtual_networks.subnets.Element.network_security_group
+        network_security_group = cls._args_schema.resource_settings_generated.microsoft_network_virtual_networks.subnets.Element.network_security_group
         network_security_group.source_arm_resource_id = AAZStrArg(
             options=["source-arm-resource-id"],
             help="Gets the ARM resource ID of the tracked resource being referenced.",
             required=True,
         )
 
-        tags = cls._args_schema.resource_settings.microsoft_network_virtual_networks.tags
+        tags = cls._args_schema.resource_settings_generated.microsoft_network_virtual_networks.tags
         tags.Element = AAZStrArg()
 
-        microsoft_sql_servers_databases = cls._args_schema.resource_settings.microsoft_sql_servers_databases
+        microsoft_sql_servers_databases = cls._args_schema.resource_settings_generated.microsoft_sql_servers_databases
         microsoft_sql_servers_databases.tags = AAZDictArg(
             options=["tags"],
             help="Gets or sets the Resource tags.",
@@ -501,10 +501,10 @@ class Add(AAZCommand):
             enum={"Disable": "Disable", "Enable": "Enable"},
         )
 
-        tags = cls._args_schema.resource_settings.microsoft_sql_servers_databases.tags
+        tags = cls._args_schema.resource_settings_generated.microsoft_sql_servers_databases.tags
         tags.Element = AAZStrArg()
 
-        microsoft_sql_servers_elastic_pools = cls._args_schema.resource_settings.microsoft_sql_servers_elastic_pools
+        microsoft_sql_servers_elastic_pools = cls._args_schema.resource_settings_generated.microsoft_sql_servers_elastic_pools
         microsoft_sql_servers_elastic_pools.tags = AAZDictArg(
             options=["tags"],
             help="Gets or sets the Resource tags.",
@@ -515,7 +515,7 @@ class Add(AAZCommand):
             enum={"Disable": "Disable", "Enable": "Enable"},
         )
 
-        tags = cls._args_schema.resource_settings.microsoft_sql_servers_elastic_pools.tags
+        tags = cls._args_schema.resource_settings_generated.microsoft_sql_servers_elastic_pools.tags
         tags.Element = AAZStrArg()
         return cls._args_schema
 
@@ -660,7 +660,7 @@ class Add(AAZCommand):
             if properties is not None:
                 properties.set_prop("dependsOnOverrides", AAZListType, ".depends_on_overrides")
                 properties.set_prop("existingTargetId", AAZStrType, ".existing_target_id")
-                properties.set_prop("resourceSettings", AAZObjectType, ".resource_settings")
+                properties.set_prop("resourceSettings", AAZObjectType, ".resource_settings_generated")
                 properties.set_prop("sourceId", AAZStrType, ".source_id", typ_kwargs={"flags": {"required": True}})
 
             depends_on_overrides = _builder.get(".properties.dependsOnOverrides")
