@@ -184,11 +184,9 @@ class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
         validate_container_app_name(self.get_argument_name(), AppType.ContainerAppJob.name)
         validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait())
         if self.get_argument_yaml() is None:
-            if self.get_argument_replica_timeout() is None:
-                raise RequiredArgumentMissingError('Usage error: --replica-timeout is required')
 
-            if self.get_argument_replica_retry_limit() is None:
-                raise RequiredArgumentMissingError('Usage error: --replica-retry-limit is required')
+            if self.get_argument_trigger_type() is None:
+                raise RequiredArgumentMissingError('Usage error: --trigger-type is required')
 
             if self.get_argument_managed_env() is None:
                 raise RequiredArgumentMissingError('Usage error: --environment is required if not using --yaml')
@@ -278,7 +276,7 @@ class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
         eventTriggerConfig_def = None
         if self.get_argument_trigger_type is not None and self.get_argument_trigger_type().lower() == "event":
             scale_def = None
-            if self.get_argument_min_executions() is not None or self.get_argument_max_executions() is not None or self.get_argument_polling_interval() is not None:
+            if self.get_argument_min_executions() or self.get_argument_max_executions() or self.get_argument_polling_interval():
                 scale_def = JobScaleModel
                 scale_def["pollingInterval"] = self.get_argument_polling_interval()
                 scale_def["minExecutions"] = self.get_argument_min_executions()

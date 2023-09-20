@@ -166,3 +166,48 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
             JMESPathCheck("properties.template.containers[0].image", image_name),
             JMESPathCheck("properties.configuration.secrets[0].name", f"{acr}azurecrio-{acr}")
         ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northcentralus")
+    # test for CRUD operations on Container App Job resource with trigger type as manual
+    def test_containerapp_manualjob_defaults_e2e(self, resource_group):
+        import requests
+        
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env = self.create_random_name(prefix='env', length=24)
+        job = self.create_random_name(prefix='job1', length=24)
+
+        create_containerapp_env(self, env, resource_group)
+
+        # create a container app environment for a Container App Job resource
+        self.cmd('containerapp env show -n {} -g {}'.format(env, resource_group), checks=[
+            JMESPathCheck('name', env)            
+        ])
+
+        ## test for CRUD operations on Container App Job resource with trigger type as manual
+        # create a Container App Job resource with trigger type as manual
+        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --trigger-type event".format(resource_group, job, env))
+
+        # verify the container app job resource
+        self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job), checks=[
+            JMESPathCheck('name', job),
+            JMESPathCheck('properties.configuration.replicaTimeout', 1800),
+            JMESPathCheck('properties.configuration.replicaRetryLimit', 0),
+            JMESPathCheck('properties.configuration.eventTriggerConfig.parallelism', 1),
+            JMESPathCheck('properties.configuration.eventTriggerConfig.replicaCompletionCount', 1),
+            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.minExecutions', 0),
+            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.maxExecutions', 10),
+            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.pollingInterval', 30),
+            JMESPathCheck('properties.configuration.triggerType', "event", case_sensitive=False),
+        ])
+
+        # delete the Container App Job resource
+        self.cmd("az containerapp job delete --resource-group {} --name {} --yes".format(resource_group, job))
+
+        # verify the Container App Job resource is deleted
+        jobs_list = self.cmd("az containerapp job list --resource-group {}".format(resource_group)).get_output_in_json()
+        self.assertTrue(len(jobs_list) == 0)
+        
+        
+
