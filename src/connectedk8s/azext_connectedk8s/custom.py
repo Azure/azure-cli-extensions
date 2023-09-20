@@ -157,17 +157,24 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     required_node_exists = check_linux_node(node_api_response)
 
     # check if this is AKS_HCI
-    is_aks_hci = False
-    is_aks_hci = os.getenv('IS_AKS_HCI')    # returns bool
+    aks_hci = False
+    if distribution =='aks_workload' and infrastructure == 'azure_stack_hci':
+        aks_hci = True
 
-    # Pre onboarding checks
+    # Install kubectl and helm
     try:
         kubectl_client_location = install_kubectl_client()
         helm_client_location = install_helm_client()
+    except Exception as e:
+        raise CLIInternalError("An exception has occured while trying to perform kubectl or helm install : {}".format(str(e)))
+    # Handling the user manual interrupt
+    except KeyboardInterrupt:
+        raise ManualInterrupt('Process terminated externally.')
 
-        if not is_aks_hci:                  # if not aks hci perform pre-check
-            kubectl_client_location = install_kubectl_client()
-            helm_client_location = install_helm_client()
+    # Pre onboarding checks
+    try:
+        # if aks_hci skip, otherwise continue to perform pre-onboarding check
+        if not aks_hci:                  
             diagnostic_checks = "Failed"
             batchv1_api_instance = kube_client.BatchV1Api()
             storage_space_available = True
@@ -211,7 +218,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         raise ManualInterrupt('Process terminated externally.')
 
     # If the checks didnt pass then stop the onboarding
-    if diagnostic_checks != consts.Diagnostic_Check_Passed and is_aks_hci is False:
+    if diagnostic_checks != consts.Diagnostic_Check_Passed and aks_hci is False:
         if storage_space_available:
                 logger.warning("The pre-check result logs logs have been saved at this path:" + filepath_with_timestamp + " .\nThese logs can be attached while filing a support ticket for further assistance.\n")
         if(diagnostic_checks == consts.Diagnostic_Check_Incomplete):
@@ -221,10 +228,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             telemetry.set_exception(exception='Cluster Diagnostic Prechecks Failed', fault_type=consts.Cluster_Diagnostic_Prechecks_Failed, summary="Cluster Diagnostic Prechecks Failed in the cluster")
             raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
 
-    if is_aks_hci is False:
+    if aks_hci is False:
         print("The required pre-checks for onboarding have succeeded.")
     else:
-        print("skipped onboarding pre-checks for AKS-HCI.")
+        print("Skipped onboarding pre-checks for AKS-HCI. Continuing...")
 
     if not required_node_exists:
         telemetry.set_user_fault()
