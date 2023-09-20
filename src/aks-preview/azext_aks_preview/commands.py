@@ -198,7 +198,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'aks_machine_list',
                          table_transformer=aks_machine_list_table_format)
         g.custom_show_command('show', 'aks_machine_show',
-                              table_transformer=aks_machine_show_table_format)   
+                              table_transformer=aks_machine_show_table_format)
 
     # AKS draft commands
     with self.command_group('aks draft', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
