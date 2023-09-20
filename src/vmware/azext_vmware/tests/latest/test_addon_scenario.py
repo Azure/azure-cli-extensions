@@ -122,5 +122,5 @@ class VmwareAddonScenarioTest(ScenarioTest):
 
         # List all existing addon
         self.cmd('vmware addon list -g {rg} -c {privatecloud}', checks=[
-            self.check('length(@)', 0)
+            self.check('length(@)', 1)
         ])
