@@ -45,7 +45,7 @@ class TestValidateMemberClusterId(unittest.TestCase):
 
 class TestValidateApiServerSubnetID(unittest.TestCase):
     def test_invalid_apiserver_subnet_id(self):
-        invalid_apiserver_subnet_id = ""
+        invalid_apiserver_subnet_id = "an invalid apiserver_subnet_id"
         namespace = ApiServerSubnetIDNamespace(apiserver_subnet_id=invalid_apiserver_subnet_id)
         err = ("--apiserver-subnet-id is not a valid Azure resource ID.")
 
@@ -74,7 +74,7 @@ class TestValidateApiServerSubnetID(unittest.TestCase):
 
 class TestValidateAgentSubnetID(unittest.TestCase):
     def test_invalid_agent_subnet_id(self):
-        invalid_agent_subnet_id = ""
+        invalid_agent_subnet_id = "an invalid agent_subnet_id"
         namespace = AgentSubnetIDNamespace(agent_subnet_id=invalid_agent_subnet_id)
         err = ("--agent-subnet-id is not a valid Azure resource ID.")
 
@@ -103,7 +103,7 @@ class TestValidateAgentSubnetID(unittest.TestCase):
 
 class TestAssignIdentity(unittest.TestCase):
     def test_invalid_identity_id(self):
-        invalid_identity_id = "dummy identity id"
+        invalid_identity_id = "an invalid identity id"
         namespace = AssignIdentityNamespace(invalid_identity_id)
         err = ("--assign-identity is not a valid Azure resource ID.")
 
