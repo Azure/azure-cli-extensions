@@ -9,7 +9,8 @@
 # pylint: disable=too-many-statements
 
 # from azure.cli.core.commands import CliCommandType
+from .custom import MoveResourceAdd
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    self.command_table["resource-mover move-resource add"] = MoveResourceAdd(loader=self)

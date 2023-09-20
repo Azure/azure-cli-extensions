@@ -9,6 +9,53 @@
 # pylint: disable=too-many-statements
 
 from knack.log import get_logger
+from azure.cli.core.azclierror import UnrecognizedArgumentError
+
+from .aaz.latest.resource_mover.move_resource import Add as _MoveResourceAdd
 
 
 logger = get_logger(__name__)
+
+
+class MoveResourceAdd(_MoveResourceAdd):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZDictArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.resource_settings = AAZDictArg(
+            options=["--resource-settings"],
+            help="The resource settings. Expected value: json-string/@json-file."
+        )
+
+        return args_schema
+
+    def pre_operations(self):
+        resource_types = {
+            "Microsoft.Compute/availabilitySets": "microsoft_compute_availability_sets",
+            "Microsoft.Compute/virtualMachines": "microsoft_compute_virtual_machines",
+            "Microsoft.Network/loadBalancers": "microsoft_network_load_balancers",
+            "Microsoft.Network/networkInterfaces": "microsoft_network_network_interfaces",
+            "Microsoft.Network/networkSecurityGroups": "microsoft_network_network_security_groups",
+            "Microsoft.Network/publicIPAddresses": "microsoft_network_public_ip_addresses",
+            "Microsoft.Network/virtualNetworks": "microsoft_network_virtual_networks",
+            "Microsoft.Sql/servers/databases": "microsoft_sql_servers_databases",
+            "Microsoft.Sql/servers/elasticPools": "microsoft_sql_servers_elastic_pools",
+        }
+
+        args = self.ctx.args
+        settings = args_schema.resource_settings.to_serialized_data()
+        props = {
+            "target_resource_name": settings.pop("target_resource_name", None),
+            "target_resource_group_name": settings.pop("target_resource_group_name", None)
+        }
+
+        try:
+            resource_type = settings.pop("resource_type")
+            args.resource_settings_generated = {
+                resource_types[resource_type]: {**settings},
+                **props
+            }
+        except KeyError:
+            raise UnrecognizedArgumentError(
+                "resourceType is required and its value range is %s.", resource_types.values()
+            )
