@@ -70,7 +70,7 @@ class Unlock(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_guard_operation_requests = AAZListArg(
             options=["--resource-guard-operation-requests"],
-            singular_options=["--resource-guard-operations"],
+            singular_options=["--operation-requests"],
             arg_group="Parameters",
             help="List of critical operations which are protected by the resourceGuard and need to be unlocked. Supported values are DeleteBackupInstance, DisableMUA",
         )

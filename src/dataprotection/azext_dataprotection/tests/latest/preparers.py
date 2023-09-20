@@ -66,7 +66,7 @@ class VaultPreparer(AbstractPreparer, SingleValueReplacer):
 
 class ResourceGuardPreparer(AbstractPreparer, SingleValueReplacer):
     def __init__(self):
-        raise CliTestError("The Vault Preparer is not ready yet. Please do not use it right now.")
+        raise CliTestError("The Resource Guard Preparer is not ready yet. Please do not use it right now.")
 
     def create_resource(self, name, **kwargs):
         pass

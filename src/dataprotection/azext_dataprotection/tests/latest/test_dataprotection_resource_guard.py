@@ -67,22 +67,28 @@ class ResourceGuardScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitest-dpp-resourceguard-', location='centraluseuap')
     def test_dataprotection_resource_guard_mapping(test):
         test.kwargs.update({
-            'vaultName': 'clitest-dpp-muavault-deletable'
+            'vaultName': 'clitest-dpp-muavault-deletable',
         })
-        vault = test.cmd('az dataprotection backup-vault create -g {rg} --vault-name {vaultName} --type SystemAssigned --storage-settings datastore-type="VaultStore" type="LocallyRedundant" --soft-delete-state "Off"').get_output_in_json()
-        print(vault)
 
-        # test.cmd('az dataprotection backup-vault resource-guard-mapping create -g {rg} -v {vaultName} --resource-guard-resource-id {resource_guard_id}', checks=[
-        #     test.check('name', 'DppResourceGuardProxy')
-        # ])
+        test.cmd('az dataprotection backup-vault create -g {rg} -v {vaultName} --type SystemAssigned '
+                 '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" '
+                 '--soft-delete-state "Off"')
+        
+        resource_guard = test.cmd('az dataprotection resource-guard create -g "{rg}" -n "{resourceGuardName}"').get_output_in_json()
+        test.kwargs.update({
+            'resourceGuardId': resource_guard['id']
+        })
 
-        # test.cmd('az dataprotection backup-vault resource-guard-mapping show -g {rg} -v {vaultName} -n "DppResourceGuardProxy"')
+        test.cmd('az dataprotection backup-vault resource-guard-mapping create -g "{rg}" -v "{vaultName}" '
+                 '-n "DppResourceGuardProxy" --resource-guard-resource-id "{resourceGuardId}"', checks=[
+                     test.check('name', 'DppResourceGuardProxy'),
+                     test.check('properties.resourceGuardResourceId', '{resourceGuardId}')
+                ])
 
-        # print("In the test")
-        # print("RG: {rg}, Vault Name: {vaultName}, location: {location}")
-        # # test.cmd('az group list --query "[?location==\'{resource_group_location}\']"')
-        # test.cmd('az group list --query "[?location==\'{location}\']"')
-        # test.cmd('az dataprotection backup-vault show -g {rg} --vault-name {vaultName}', checks=[
-        #     test.check('name', "{soft_delete_state}")
-        # ])
+        test.cmd('az dataprotection backup-vault resource-guard-mapping show -g "{rg}" -v "{vaultName}" -n "DppResourceGuardProxy"')
 
+        unlock_output = test.cmd('az dataprotection resource-guard unlock -g "{rg}" -v "{vaultName}" '
+                                 '-n "DppResourceGuardProxy" --resource-guard-operation-requests "DisableMUA"').get_output_in_json()
+        assert unlock_output['unlockDeleteExpiryTime'] != "0001-01-01T00:00:00.0000000Z"
+
+        test.cmd('az dataprotection backup-vault resource-guard-mapping delete -g "{rg}" -v "{vaultName}" -n "DppResourceGuardProxy" -y')

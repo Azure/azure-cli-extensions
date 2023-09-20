@@ -11,15 +11,8 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "dataprotection backup-vault resource-guard-mapping update",
-    is_experimental=True,
-)
 class Update(AAZCommand):
     """Update a ResourceGuard mapping
-
-    :example: Update a ResourceGuard mapping
-        az dataprotection backup-vault resource-guard-mapping update -n "DppResourceGuardProxy" -g "sampleRG" --vault-name "sampleVault" --resource-guard-id "/subscription/00000000-0000-0000-0000-000000000000/resourcegroups/sampleRG/providers/Microsoft.DataProtection/resourceGuards/sampleResourceGuard"
     """
 
     _aaz_info = {

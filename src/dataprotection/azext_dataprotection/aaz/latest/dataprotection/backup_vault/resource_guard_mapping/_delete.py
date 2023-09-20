@@ -54,7 +54,6 @@ class Delete(AAZCommand):
             help="The name of the resource guard mapping",
             required=True,
             id_part="child_name_1",
-            default="DppResourceGuardProxy",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]*$",
             ),
