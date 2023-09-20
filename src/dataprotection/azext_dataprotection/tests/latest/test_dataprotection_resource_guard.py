@@ -65,27 +65,24 @@ class ResourceGuardScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitest-dpp-resourceguard-', location='centraluseuap')
-    @VaultPreparer(name_prefix='clitest-dpp-resourceguard-vault-', soft_delete_state="Off")
-    @ResourceGuardPreparer(parameter_name='resource_guard_1')
-    @ResourceGuardPreparer(parameter_name='resource_guard_2')
-    def test_dataprotection_resource_guard_mapping(test, vault_name, resource_guard_1, resource_guard_2):
+    def test_dataprotection_resource_guard_mapping(test):
         test.kwargs.update({
-            'vaultName': vault_name,
-            'resGuard1': resource_guard_1,
-            'resGuard2': resource_guard_2
+            'vaultName': 'clitest-dpp-muavault-deletable'
         })
+        vault = test.cmd('az dataprotection backup-vault create -g {rg} --vault-name {vaultName} --type SystemAssigned --storage-settings datastore-type="VaultStore" type="LocallyRedundant" --soft-delete-state "Off"').get_output_in_json()
+        print(vault)
 
-        test.cmd('az dataprotection backup-vault resource-guard-mapping create -g {rg} -v {vaultName} --resource-guard-resource-id {resource_guard_id}', checks=[
-            test.check('name', 'DppResourceGuardProxy')
-        ])
+        # test.cmd('az dataprotection backup-vault resource-guard-mapping create -g {rg} -v {vaultName} --resource-guard-resource-id {resource_guard_id}', checks=[
+        #     test.check('name', 'DppResourceGuardProxy')
+        # ])
 
-        test.cmd('az dataprotection backup-vault resource-guard-mapping show -g {rg} -v {vaultName} -n "DppResourceGuardProxy"')
+        # test.cmd('az dataprotection backup-vault resource-guard-mapping show -g {rg} -v {vaultName} -n "DppResourceGuardProxy"')
 
-        print("In the test")
-        print("RG: {rg}, Vault Name: {vaultName}, location: {location}")
-        # test.cmd('az group list --query "[?location==\'{resource_group_location}\']"')
-        test.cmd('az group list --query "[?location==\'{location}\']"')
-        test.cmd('az dataprotection backup-vault show -g {rg} --vault-name {vaultName}', checks=[
-            test.check('name', "{soft_delete_state}")
-        ])
+        # print("In the test")
+        # print("RG: {rg}, Vault Name: {vaultName}, location: {location}")
+        # # test.cmd('az group list --query "[?location==\'{resource_group_location}\']"')
+        # test.cmd('az group list --query "[?location==\'{location}\']"')
+        # test.cmd('az dataprotection backup-vault show -g {rg} --vault-name {vaultName}', checks=[
+        #     test.check('name', "{soft_delete_state}")
+        # ])
 

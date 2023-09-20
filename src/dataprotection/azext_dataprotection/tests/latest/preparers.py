@@ -10,6 +10,7 @@ class VaultPreparer(AbstractPreparer, SingleValueReplacer):
                  datastore_type='VaultStore', storage_type='LocallyRedundant',
                  msi_type="SystemAssigned", soft_delete_state="On",
                  immutability_state="Disabled"):
+        raise CliTestError("The Vault Preparer is not ready yet. Please do not use it right now.")
         super(VaultPreparer, self).__init__(name_prefix, 36)
         self.cli_ctx = DummyCli()
         self.parameter_name = parameter_name
@@ -61,3 +62,14 @@ class VaultPreparer(AbstractPreparer, SingleValueReplacer):
                        'decorator @{} in front of this Vault preparer.'
             raise CliTestError(template.format(ResourceGroupPreparer.__name__,
                                                self.resource_group_parameter_name))
+
+
+class ResourceGuardPreparer(AbstractPreparer, SingleValueReplacer):
+    def __init__(self):
+        raise CliTestError("The Vault Preparer is not ready yet. Please do not use it right now.")
+
+    def create_resource(self, name, **kwargs):
+        pass
+
+    def remove_resource(self, name, **kwargs):
+        pass
