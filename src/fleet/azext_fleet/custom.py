@@ -78,14 +78,12 @@ def create_fleet(cmd,
         api_server_access_profile=api_server_access_profile,
         agent_profile=agent_profile)
 
-    managed_service_identity = fleet_managed_service_identity_model()
+    managed_service_identity = fleet_managed_service_identity_model(type="None")
     if enable_managed_identity is True:
         managed_service_identity.type = "SystemAssigned"
         if assign_identity is not None:
             managed_service_identity.type = "UserAssigned"
             managed_service_identity.user_assigned_identities = {assign_identity, None}
-    else:
-        managed_service_identity.type = "None"
 
     fleet = fleet_model(
         location=location,
