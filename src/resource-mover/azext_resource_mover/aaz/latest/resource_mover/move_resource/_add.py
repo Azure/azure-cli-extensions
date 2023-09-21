@@ -365,7 +365,7 @@ class Add(AAZCommand):
         _element = cls._args_schema.resource_settings_generated.microsoft_network_network_security_groups.security_rules.Element
         _element.access = AAZStrArg(
             options=["access"],
-            help="Gets or sets whether network traffic is allowed or denied. Possible values are “Allow” and “Deny”.",
+            help="Gets or sets whether network traffic is allowed or denied. Possible values are 'Allow' and 'Deny'.",
         )
         _element.description = AAZStrArg(
             options=["description"],
@@ -373,11 +373,11 @@ class Add(AAZCommand):
         )
         _element.destination_address_prefix = AAZStrArg(
             options=["destination-address-prefix"],
-            help="Gets or sets destination address prefix. CIDR or source IP range. A “*” can also be used to match all source IPs. Default tags such as ‘VirtualNetwork’, ‘AzureLoadBalancer’ and ‘Internet’ can also be used.",
+            help="Gets or sets destination address prefix. CIDR or source IP range. A '*' can also be used to match all source IPs. Default tags such as 'VirtualNetwork', 'AzureLoadBalancer' and 'Internet' can also be used.",
         )
         _element.destination_port_range = AAZStrArg(
             options=["destination-port-range"],
-            help="Gets or sets Destination Port or Range. Integer or range between 0 and 65535. A “*” can also be used to match all ports.",
+            help="Gets or sets Destination Port or Range. Integer or range between 0 and 65535. A '*' can also be used to match all ports.",
         )
         _element.direction = AAZStrArg(
             options=["direction"],
@@ -397,11 +397,11 @@ class Add(AAZCommand):
         )
         _element.source_address_prefix = AAZStrArg(
             options=["source-address-prefix"],
-            help="Gets or sets source address prefix. CIDR or source IP range. A “*” can also be used to match all source IPs.  Default tags such as ‘VirtualNetwork’, ‘AzureLoadBalancer’ and ‘Internet’ can also be used. If this is an ingress rule, specifies where network traffic originates from.",
+            help="Gets or sets source address prefix. CIDR or source IP range. A '*' can also be used to match all source IPs.  Default tags such as 'VirtualNetwork', 'AzureLoadBalancer' and 'Internet' can also be used. If this is an ingress rule, specifies where network traffic originates from.",
         )
         _element.source_port_range = AAZStrArg(
             options=["source-port-range"],
-            help="Gets or sets Source Port or Range. Integer or range between 0 and 65535. A “*” can also be used to match all ports.",
+            help="Gets or sets Source Port or Range. Integer or range between 0 and 65535. A '*' can also be used to match all ports.",
         )
 
         tags = cls._args_schema.resource_settings_generated.microsoft_network_network_security_groups.tags
