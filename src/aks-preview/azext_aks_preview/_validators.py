@@ -193,7 +193,6 @@ def validate_vm_set_type(namespace):
             raise CLIError(
                 "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only)")
 
-
 def validate_load_balancer_sku(namespace):
     """Validates the load balancer sku string."""
     if namespace.load_balancer_sku is not None:
@@ -201,7 +200,6 @@ def validate_load_balancer_sku(namespace):
             return
         if namespace.load_balancer_sku.lower() != "basic" and namespace.load_balancer_sku.lower() != "standard":
             raise CLIError("--load-balancer-sku can only be standard or basic")
-
 
 def validate_sku_tier(namespace):
     """Validates the sku tier string."""
