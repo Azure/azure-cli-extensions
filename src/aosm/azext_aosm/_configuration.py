@@ -289,9 +289,28 @@ class HelmPackageConfig:
 class CNFImageConfig:
     """CNF Image config settings."""
 
-    source_registry: str = DESCRIPTION_MAP["source_registry"]
-    source_registry_namespace: str = DESCRIPTION_MAP["source_registry_namespace"]
-    source_local_docker_image: str = DESCRIPTION_MAP["source_local_docker_image"]
+    source_registry: str = ""
+    source_registry_namespace: str = ""
+    source_local_docker_image: str = ""
+
+    def __post_init__(self):
+        """
+        Cope with optional parameters being omitted in the loaded json config file.
+
+        If param is set to placeholder text, it is not in the config file and should be unset.
+        """
+        if self.source_registry == DESCRIPTION_MAP["source_registry"]:
+            self.source_registry = ""
+        if (
+            self.source_registry_namespace
+            == DESCRIPTION_MAP["source_registry_namespace"]
+        ):
+            self.source_registry_namespace = ""
+        if (
+            self.source_local_docker_image
+            == DESCRIPTION_MAP["source_local_docker_image"]
+        ):
+            self.source_local_docker_image = ""
 
 
 @dataclass
@@ -329,32 +348,21 @@ class CNFConfiguration(NFConfiguration):
 
         :raises ValidationError: If source registry ID doesn't match the regex
         """
-        source_reg_set = (
-            self.images.source_registry
-            and self.images.source_registry != DESCRIPTION_MAP["source_registry"]
-        )
-        source_local_set = (
-            self.images.source_local_docker_image
-            and self.images.source_local_docker_image
-            != DESCRIPTION_MAP["source_local_docker_image"]
-        )
-        source_reg_namespace_set = (
-            self.images.source_registry_namespace
-            and self.images.source_registry_namespace
-            != DESCRIPTION_MAP["source_registry_namespace"]
-        )
 
-        # If these are the same, either neither is set or both are, both of which are errors
-        if source_reg_set == source_local_set:
-            raise ValidationError(
-                "Config validation error. Images config must have either a local docker image"
-                " or a source registry, but not both."
-            )
+        source_reg_set = self.images.source_registry != ""
+        source_local_set = self.images.source_local_docker_image != ""
+        source_reg_namespace_set = self.images.source_registry_namespace != ""
 
         if source_reg_namespace_set and not source_reg_set:
             raise ValidationError(
                 "Config validation error. The image source registry namespace should "
                 "only be configured if a source registry is configured."
+            )
+        # If these are the same, either neither is set or both are, both of which are errors
+        if source_reg_set == source_local_set:
+            raise ValidationError(
+                "Config validation error. Images config must have either a local docker image"
+                " or a source registry, but not both."
             )
 
 
@@ -367,7 +375,9 @@ NFD_VERSION = (
 NFD_LOCATION = "The region that the NFDV is published to."
 PUBLISHER_RESOURCE_GROUP = "The resource group that the publisher is hosted in."
 PUBLISHER_NAME = "The name of the publisher that this NFDV is published under."
-PUBLISHER_SCOPE = "The scope that the publisher is published under. Currently, only 'private' is supported."
+PUBLISHER_SCOPE = (
+    "The scope that the publisher is published under. Only 'private' is supported."
+)
 NFD_TYPE = "Type of Network Function. Valid values are 'cnf' or 'vnf'"
 MULTIPLE_INSTANCES = (
     "Set to true or false.  Whether the NSD should allow arbitrary numbers of this "
@@ -423,9 +433,7 @@ class NFDRETConfiguration:  # pylint: disable=too-many-instance-attributes
 
         # Temporary validation while only private publishers exist
         if self.publisher_scope not in ["private", "Private"]:
-            raise ValidationError(
-                "Only private publishers are currently supported"
-            )
+            raise ValidationError("Only private publishers are currently supported")
 
         if self.type not in [CNF, VNF]:
             raise ValueError(
@@ -503,7 +511,11 @@ class NSConfiguration(Configuration):
             self.network_functions = nf_ret_list
 
     def validate(self):
-        # validate that all of the configuration parameters are set
+        """
+        Validate the configuration passed in.
+
+        :raises ValueError for any invalid config
+        """
 
         if self.location in (DESCRIPTION_MAP["location"], ""):
             raise ValueError("Location must be set")
