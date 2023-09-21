@@ -162,7 +162,6 @@ def validate_ip_ranges(namespace):
             raise CLIError(
                 "--api-server-authorized-ip-ranges should be a list of IPv4 addresses or CIDRs")
 
-
 def _validate_nodepool_name(nodepool_name):
     """Validates a nodepool name to be at most 12 characters, alphanumeric only."""
     if nodepool_name != "":
@@ -193,6 +192,7 @@ def validate_vm_set_type(namespace):
             raise CLIError(
                 "--vm-set-type can only be VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only)")
 
+
 def validate_load_balancer_sku(namespace):
     """Validates the load balancer sku string."""
     if namespace.load_balancer_sku is not None:
@@ -201,6 +201,7 @@ def validate_load_balancer_sku(namespace):
         if namespace.load_balancer_sku.lower() != "basic" and namespace.load_balancer_sku.lower() != "standard":
             raise CLIError("--load-balancer-sku can only be standard or basic")
 
+
 def validate_sku_tier(namespace):
     """Validates the sku tier string."""
     if namespace.tier is not None:
@@ -208,6 +209,7 @@ def validate_sku_tier(namespace):
             return
         if namespace.tier.lower() not in (CONST_MANAGED_CLUSTER_SKU_TIER_FREE, CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD, CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM):
             raise InvalidArgumentValueError("--tier can only be free, standard, or premium")
+
 
 def validate_nodepool_taints(namespace):
     """Validates that provided node taints is a valid format"""
