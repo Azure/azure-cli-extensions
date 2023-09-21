@@ -59,8 +59,8 @@ class Prepare(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.move_resource_input_type = AAZStrArg(
-            options=["--move-resource-input-type"],
+        _args_schema.input_type = AAZStrArg(
+            options=["--input-type"],
             arg_group="Body",
             help="Defines the move resource input type.",
             enum={"MoveResourceId": "MoveResourceId", "MoveResourceSourceId": "MoveResourceSourceId"},
@@ -186,7 +186,7 @@ class Prepare(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
-            _builder.set_prop("moveResourceInputType", AAZStrType, ".move_resource_input_type")
+            _builder.set_prop("moveResourceInputType", AAZStrType, ".input_type")
             _builder.set_prop("moveResources", AAZListType, ".move_resources", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("validateOnly", AAZBoolType, ".validate_only")
 
