@@ -420,10 +420,10 @@ def delete_published_design(
                    we use cf_resources, but other extensions seem to pass a client
                    around like this.
     :param config_file: Path to the config file
-    :param clean: if True, will delete the NSDG, artifact stores and publisher too.
+    :param clean: if True, will delete the NSD, artifact stores and publisher too.
                   Defaults to False. Only works if no resources have those as a parent.
                     Use with care.
-    :param clean: if True, will delete the NSDG on top of the other resources.
+    :param clean: if True, will delete the NSD on top of the other resources.
     :param force: if True, will not prompt for confirmation before deleting the resources.
     """
     # Check that the required features are enabled on the subscription

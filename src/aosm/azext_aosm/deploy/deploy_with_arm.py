@@ -328,7 +328,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
                 "location": {"value": self.config.location},
                 "publisherName": {"value": self.config.publisher_name},
                 "acrArtifactStoreName": {"value": self.config.acr_artifact_store_name},
-                "nsDesignGroup": {"value": self.config.nsdg_name},
+                "nsDesignGroup": {"value": self.config.nsd_name},
                 "nsDesignVersion": {"value": self.config.nsd_version},
                 "nfviSiteName": {"value": self.config.nfvi_site_name},
             }
@@ -465,7 +465,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         logger.info(message)
         self.deploy_bicep_template(bicep_path, self.parameters)
         print(
-            f"Deployed NSD {self.config.nsdg_name} "
+            f"Deployed NSD {self.config.nsd_name} "
             f"version {self.config.nsd_version}."
         )
 
@@ -498,7 +498,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
 
     def nsd_predeploy(self) -> bool:
         """
-        All the predeploy steps for a NSD. Check if the RG, publisher, ACR, NSDG and
+        All the predeploy steps for a NSD. Check if the RG, publisher, ACR, NSD and
         artifact manifest exist.
 
         Return True if artifact manifest already exists, False otherwise
@@ -507,7 +507,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         self.pre_deployer.ensure_config_resource_group_exists()
         self.pre_deployer.ensure_config_publisher_exists()
         self.pre_deployer.ensure_acr_artifact_store_exists()
-        self.pre_deployer.ensure_config_nsdg_exists()
+        self.pre_deployer.ensure_config_nsd_exists()
         return self.pre_deployer.do_config_artifact_manifests_exist()
 
     def deploy_bicep_template(

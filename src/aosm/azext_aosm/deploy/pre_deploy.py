@@ -319,18 +319,18 @@ class PreDeployerViaSDK:
             self.config.location,
         )
 
-    def ensure_config_nsdg_exists(
+    def ensure_config_nsd_exists(
         self,
     ):
         """
-        Ensures that the Network Function Definition Group exists.
+        Ensures that the Network Service Design exists.
 
         Finds the parameters from self.config
         """
-        self.ensure_nsdg_exists(
+        self.ensure_nsd_exists(
             self.config.publisher_resource_group_name,
             self.config.publisher_name,
-            self.config.nsdg_name,
+            self.config.nsd_name,
             self.config.location,
         )
 
@@ -386,11 +386,11 @@ class PreDeployerViaSDK:
 
         return acr_manny_exists
 
-    def ensure_nsdg_exists(
+    def ensure_nsd_exists(
         self,
         resource_group_name: str,
         publisher_name: str,
-        nsdg_name: str,
+        nsd_name: str,
         location: str,
     ):
         """
@@ -400,25 +400,25 @@ class PreDeployerViaSDK:
         :type resource_group_name: str
         :param publisher_name: The name of the publisher.
         :type publisher_name: str
-        :param nsdg_name: The name of the network service design group.
-        :type nsdg_name: str
+        :param nsd_name: The name of the network service design group.
+        :type nsd_name: str
         :param location: The location of the network service design group.
         :type location: str
         """
         print(
-            f"Creating Network Service Design Group {nsdg_name} if it does not exist",
+            f"Creating Network Service Design {nsd_name} if it does not exist",
         )
         logger.info(
-            "Creating Network Service Design Group %s if it does not exist",
-            nsdg_name,
+            "Creating Network Service Design  %s if it does not exist",
+            nsd_name,
         )
         poller = self.api_clients.aosm_client.network_service_design_groups.begin_create_or_update(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
-            network_service_design_group_name=nsdg_name,
+            network_service_design_group_name=nsd_name,
             parameters=NetworkServiceDesignGroup(location=location),
         )
-        LongRunningOperation(self.cli_ctx, "Creating Network Service Design group...")(
+        LongRunningOperation(self.cli_ctx, "Creating Network Service Design...")(
             poller
         )
 
