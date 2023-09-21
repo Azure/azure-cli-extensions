@@ -138,5 +138,23 @@ WALK_THROUGH_CONFIG_LIST = [
                 "desc": "Survey links will never be shown"
             }
         ]
+    },
+    {
+        "configuration": "core.collect_telemetry",
+        "brief": "Collect Telemetry",
+        "description": "This option is used to enable/disable telemetry",
+        "options": [
+            {
+                "option": "On",
+                "value": "true",
+                "desc": "Telemetry will be colected",
+                "tag": "default"
+            },
+            {
+                "option": "Off",
+                "value": "false",
+                "desc": "Telemetry will not be collected"
+            }
+        ]
     }
 ]
