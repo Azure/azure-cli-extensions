@@ -120,5 +120,23 @@ WALK_THROUGH_CONFIG_LIST = [
                 "desc": "Disable the progress bar during long running commands"
             }
         ]
+    },
+    {
+        "configuration": "core.survey_message",
+        "brief": "PSurvey Message",
+        "description": "This option is used to enable/disable the survey message",
+        "options": [
+            {
+                "option": "On",
+                "value": "true",
+                "desc": "The survey link will be shown",
+                "tag": "default"
+            },
+            {
+                "option": "Off",
+                "value": "false",
+                "desc": "Survey links will never be shown"
+            }
+        ]
     }
 ]
