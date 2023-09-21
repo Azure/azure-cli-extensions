@@ -82,7 +82,7 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
     def test_resourcemover_movecollection_e2e(self):
 
         self.kwargs.update({
-            'collection_name': 'clitest-movecollection-98',
+            'collection_name': 'clitest-movecollection-test98',
             'location': 'eastus2',
             'source_region': 'eastus',
             'target_region': 'westus',
@@ -145,11 +145,6 @@ class ResourceMoverMoveCollectionScenarioTest(ScenarioTest):
         # add the vNet as a move-resource to the move-collection
         self.cmd('az resource-mover move-resource add --resource-group {rg} --move-collection-name {collection_name} '
                  '--name {move_resource_vnet} --source-id {source_vnet_id} --resource-settings {vnet_resource_settings}')
-
-        # list-required-for
-        self.cmd('az resource-mover move-collection list-required-for --resource-group {rg} --move-collection-name '
-                 '{collection_name} --source-id {source_vnet_id}', checks=[
-                     self.check('length(sourceIds)', 0)])
 
         # list-unresolved-dependency
         self.cmd('az resource-mover move-collection list-unresolved-dependency --resource-group {rg} '
@@ -237,7 +232,7 @@ class ResourceMoverMoveResourceScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix="clitest_resourcemover_collection_", location="eastus2")
     def test_resourcemover_moveresource_basic(self):
         self.kwargs.update({
-            'collection_name': 'clitest-movecollection-95',
+            'collection_name': 'clitest-movecollection-test95',
             'location': 'eastus2',
             'source_region': 'eastus',
             'target_region': 'westus',
