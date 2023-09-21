@@ -8,10 +8,17 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._create import *
-from ._delete import *
-from ._list import *
-from ._show import *
-from ._unlock import *
-from ._update import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "dataprotection backup-vault resource-guard-mapping",
+    is_experimental=True,
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage ResourceGuard mappings for a backup vault.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]
