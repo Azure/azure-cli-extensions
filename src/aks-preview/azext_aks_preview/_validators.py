@@ -162,6 +162,7 @@ def validate_ip_ranges(namespace):
             raise CLIError(
                 "--api-server-authorized-ip-ranges should be a list of IPv4 addresses or CIDRs")
 
+
 def _validate_nodepool_name(nodepool_name):
     """Validates a nodepool name to be at most 12 characters, alphanumeric only."""
     if nodepool_name != "":
