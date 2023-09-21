@@ -70,7 +70,7 @@ BUILD_IN_AUTOMATION_BUNDLES = [
     {
         "brief": "Disable the survey prompts",
         "configuration": "core.survey_message",
-        "value": "falso",
+        "value": "false",
     },
     {
         "brief": "Do not collect telemetry",
