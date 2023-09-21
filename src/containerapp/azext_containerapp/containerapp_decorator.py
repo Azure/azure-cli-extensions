@@ -1476,6 +1476,8 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
         location = self.containerapp_def["location"] if "location" in self.containerapp_def else env_info['location']
 
+        # Check if source contains a Dockerfile
+        # and ignore checking if Dockerfile exists in repo since GitHub action inherently checks for it.
         has_dockerfile = _has_dockerfile(self.get_argument_source(), dockerfile)
         if has_dockerfile:
             dockerfile_content = _get_dockerfile_content(repo=None, branch=None, token=None, source=self.get_argument_source(), context_path=None, dockerfile=dockerfile)
