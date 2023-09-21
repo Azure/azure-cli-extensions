@@ -1829,7 +1829,7 @@ helps['aks machine list'] = """
 
 helps['aks machine show'] = """
    type: command
-   short-summary: show IP Addresses, Hostname for a specific machine in an agentpool for a managedcluster.
+   short-summary: Show IP Addresses, Hostname for a specific machine in an agentpool for a managedcluster.
    parameters:
        - name: --cluster-name
          type: string
