@@ -3,7 +3,7 @@
 Release History
 ===============
 
-Upcoming
+0.2.0
 ++++++
 * Using New Resource Model for all VM operations:
     * `vm` command : Create, Update, Delete, Show, VirtualMachineInstance and Perform Operations on VM Instance

@@ -30,11 +30,18 @@ class ScVmmScenarioTest(ScenarioTest):
                 'vnet_name': 'azcli-test-virtual-network',
                 'avset_string': 'avset1',
                 'avset_name': 'azcli-test-avset1',
-                'vm_name': 'azcli-test-vm-0',
+                'vm_name': 'azcli-test-vm-1',
                 'disk_name': 'disk_1',
                 'nic_name': 'nic_1',
                 'checkpoint_name': 'azcli-test-checkpoint',
                 'checkpoint_description': 'azcli-test-checkpoint',
+                'guest_username': 'Administrator',
+                'guest_password': 'Password~1',
+                'extension_name': 'RunCommand',
+                'extension_type': 'CustomScriptExtension',
+                'publisher': 'Microsoft.Compute',
+                'command_whoami': '{"commandToExecute": "whoami"}',
+                'command_sysroot': '{"commandToExecute": "echo %SYSTEMROOT%"}',
             }
         )
 
@@ -137,6 +144,41 @@ class ScVmmScenarioTest(ScenarioTest):
         )
 
         self.cmd('az scvmm vm start -g {resource_group} --name {vm_name}')
+
+        self.cmd(
+            "az scvmm vm guest-agent enable -g {resource_group} --vm-name {vm_name}"
+            " --username {guest_username} --password {guest_password}",
+            checks=[
+                self.check('provisioningState', 'Succeeded'),
+            ],
+        )
+
+        extension = self.cmd(
+            "az scvmm vm extension create -l {location} -g {resource_group} --vm-name {vm_name}"
+            " --name {extension_name} --type {extension_type} --publisher {publisher}"
+            " --settings '{command_whoami}'",
+            checks=[
+                self.check('provisioningState', 'Succeeded'),
+                self.check('settings.commandToExecute', 'whoami'),
+            ],
+        ).get_output_in_json()
+        self.assertIn(
+            'nt authority\\system',
+            extension['instanceView']['status']['message'].lower()
+        )
+
+        extension = self.cmd(
+            "az scvmm vm extension update -g {resource_group} --vm-name {vm_name}"
+            " --name {extension_name} --settings '{command_sysroot}'",
+            checks=[
+                self.check('provisioningState', 'Succeeded'),
+                self.check('settings.commandToExecute', 'echo %SYSTEMROOT%'),
+            ],
+        ).get_output_in_json()
+        self.assertIn(
+            'C:\\Windows'.lower(),
+            extension['instanceView']['status']['message'].lower()
+        )
 
         self.cmd(
             'az scvmm vm stop -g {resource_group} --name {vm_name} --skip-shutdown'
