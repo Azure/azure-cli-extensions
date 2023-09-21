@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Get the move collection.
 
+    The ' az resource-mover move-collection show' command remains same for both 'RegionToRegion' and 'RegionToZone' type move collections.
+
     :example: Show information about a move-collection.
         az resource-mover move-collection show --name MyMoveCollection --resource-group MyResourceGroup
     """

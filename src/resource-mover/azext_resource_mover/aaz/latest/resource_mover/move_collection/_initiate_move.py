@@ -17,8 +17,13 @@ from azure.cli.core.aaz import *
 class InitiateMove(AAZCommand):
     """Moves the set of resources included in the request body. The move operation is triggered after the moveResources are in the moveState 'MovePending' or 'MoveFailed', on a successful completion the moveResource moveState do a transition to CommitPending. To aid the user to prerequisite the operation the client can call operation with validateOnly property set to true.
 
-    :example: Move the set of resources.
+    The 'az resource-mover move-collection initiate-move' command remains same for both 'RegionToRegion' and 'RegionToZone' type move collections.
+
+    :example: Move the set of resources. (RegionToRegion)
         az resource-mover move-collection initiate-move --move-resources "/subscriptions/subID/resourceGroups/myRG/providers/Microsoft.Migrate/MoveCollections/movecollection1/MoveResources/moveresource1" --validate-only false --name MyMoveCollection --resource-group MyResourceGroup
+
+    :example: Move VMs into zonal configuration within the same region (RegionToZone)
+        az resource-mover move-collection initiate-move --move-resources "/subscriptions/subID/resourceGroups/MyResourceGroup/providers/Microsoft.Migrate/moveCollections/MyZonalMoveCollection/moveResources/MyVMMoveResource" --validate-only false --name MyZonalMoveCollection --resource-group MyResourceGroup
     """
 
     _aaz_info = {

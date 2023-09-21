@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 class Discard(AAZCommand):
     """Discards the set of resources included in the request body. The discard operation is triggered on the moveResources in the moveState 'CommitPending' or 'DiscardFailed', on a successful completion the moveResource moveState do a transition to MovePending. To aid the user to prerequisite the operation the client can call operation with validateOnly property set to true.
 
+    The 'az resource-mover move-collection discard' command is not applicable on move collections with move-type 'RegionToZone' since discard is not a valid operation for region to zone move scenario.
+
     :example: Discard a remove-resource.
         az resource-mover move-collection discard --move-resources "/subscriptions/subID/resourceGroups/myRG/providers/Microsoft.Migrate/MoveCollections/movecollection1/MoveResources/moveresource1" --validate-only false --name MyMoveCollection --resource-group MyResourceGroup
     """

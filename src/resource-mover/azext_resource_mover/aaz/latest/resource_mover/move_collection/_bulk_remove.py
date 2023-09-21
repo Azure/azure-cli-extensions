@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 class BulkRemove(AAZCommand):
     """Removes the set of move resources included in the request body from move collection. The orchestration is done by service. To aid the user to prerequisite the operation the client can call operation with validateOnly property set to true.
 
+    The 'az resource-mover move-collection bulk-remove' command remains same for both 'RegionToRegion' and 'RegionToZone' type move collections.
+
     :example: Remove a move-resource in a move-collection.
         az resource-mover move-collection bulk-remove --move-resources "/subscriptions/subID/resourceGroups/myRG/providers/Microsoft.Migrate/MoveCollections/movecollection1/MoveResources/moveresource1" --validate-only false --name MyMoveCollection --resource-group MyResourceGroup
     """

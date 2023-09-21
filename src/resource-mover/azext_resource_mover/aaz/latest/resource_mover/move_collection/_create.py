@@ -17,8 +17,13 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a move collection.
 
-    :example: Create a move-collection with system assigned identity.
+    Creates or updates a move collection. The following types of move collections based on the move scenario are supported currently: 1. RegionToRegion (Moving resources across regions) 2. RegionToZone (Moving virtual machines into a zone within the same region)
+
+    :example: Create a move-collection with system assigned identity. (RegionToRegion)
         az resource-mover move-collection create --identity type=SystemAssigned --location eastus2 --source-region eastus --target-region westus --name MyMoveCollection --resource-group MyResourceGroup
+
+    :example: Create a zonal type move-collection with system assigned identity. (RegionToZone)
+        az resource-mover move-collection create --identity type=SystemAssigned --location eastus2 --move-region uksouth --name MyZonalMoveCollection --resource-group MyResourceGroup --move-type RegionToZone
     """
 
     _aaz_info = {

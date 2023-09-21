@@ -17,13 +17,15 @@ from azure.cli.core.aaz import *
 class Add(AAZCommand):
     """Create a Move Resource in the move collection.
 
-    :example: Add a vNet as a move-resource to the move-collection.
+    The 'az resource-mover move-resource add' command remains same for both 'RegionToRegion' (default) and 'RegionToZone' type move collections.
+
+    :example: Add a vNet as a move-resource to the move-collection. (RegionToRegion)
         az resource-mover move-resource add --resource-group MyResourceGroup --move-collection-name MyMoveCollection --name MoveResourceName --source-id "/subscriptions/subID/resourceGroups/myRG/providers/Microsoft.Network/virtualNetworks/MyVNet" --resource-settings '{ "resourceType": "Microsoft.Network/virtualNetworks", "targetResourceName": "MyVNet-target" }'
 
-    :example: Add a vNet as a move-resource to the move-collection.
-        az resource-mover move-resource add --resource-group MyResourceGroup --move-collection-name MyMoveCollection --name MoveResourceName --source-id "/subscriptions/subID/resourceGroups/myRG/providers/Microsoft.Network/virtualNetworks/MyVNet" --resource-settings @resource-settings.json
+    :example: Add a VM as a move-resource to the move-collection. (RegionToZone)
+        az resource-mover move-resource add --resource-group MyResourceGroup --move-collection-name MyZonalMoveCollection --name MyVMMoveResource --source-id "/subscriptions/subID/resourceGroups/MyResourceGroup/providers/Microsoft.Compute/virtualMachines/MyVM" --resource-settings '{ "resourceType": "Microsoft.Compute/virtualMachines", "targetResourceName": "MyVM", "targetAvailabilityZone": "2", "targetVmSize": "Standard_B2s" }'
 
-    :example: Add a VM as a move-resource to the move-collection.
+    :example: Add a VM as a move-resource to the move-collection. (RegionToRegion)
         az resource-mover move-resource add --resource-group MyResourceGroup --move-collection-name MyMoveCollection --name MoveResourceName --source-id "/subscriptions/subID/resourceGroups/eastusRG/providers/Microsoft.Compute/virtualMachines/MyVM" --depends-on-overrides id="/subscriptions/subID/resourceGroups/eastusRG/providers/Microsoft.Network/networkInterfaces/MyNIC" target-id="/subscriptions/subID/resourceGroups/westusRG/providers/Microsoft.Network/networkInterfaces/MyNIC" --resource-settings '{ "resourceType": "Microsoft.Compute/virtualMachines", "targetAvailabilitySetId": "/subscriptions/subID/resourceGroups/eastusRG/providers/Microsoft.Compute/availabilitySets/MyAVSet", "targetAvailabilityZone": "2", "targetResourceName": "MyVM-target", "targetVmSize": null, "userManagedIdentities": [/subscriptions/subid/resourceGroups/eastusRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/umi1] }'
     """
 
@@ -363,7 +365,7 @@ class Add(AAZCommand):
         _element = cls._args_schema.resource_settings_generated.microsoft_network_network_security_groups.security_rules.Element
         _element.access = AAZStrArg(
             options=["access"],
-            help="Gets or sets whether network traffic is allowed or denied. Possible values are 'Allow' and 'Deny'.",
+            help="Gets or sets whether network traffic is allowed or denied. Possible values are “Allow” and “Deny”.",
         )
         _element.description = AAZStrArg(
             options=["description"],
@@ -371,11 +373,11 @@ class Add(AAZCommand):
         )
         _element.destination_address_prefix = AAZStrArg(
             options=["destination-address-prefix"],
-            help="Gets or sets destination address prefix. CIDR or source IP range. A '*' can also be used to match all source IPs. Default tags such as 'VirtualNetwork', 'AzureLoadBalancer' and 'Internet' can also be used.",
+            help="Gets or sets destination address prefix. CIDR or source IP range. A “*” can also be used to match all source IPs. Default tags such as ‘VirtualNetwork’, ‘AzureLoadBalancer’ and ‘Internet’ can also be used.",
         )
         _element.destination_port_range = AAZStrArg(
             options=["destination-port-range"],
-            help="Gets or sets Destination Port or Range. Integer or range between 0 and 65535. A '*' can also be used to match all ports.",
+            help="Gets or sets Destination Port or Range. Integer or range between 0 and 65535. A “*” can also be used to match all ports.",
         )
         _element.direction = AAZStrArg(
             options=["direction"],
@@ -395,11 +397,11 @@ class Add(AAZCommand):
         )
         _element.source_address_prefix = AAZStrArg(
             options=["source-address-prefix"],
-            help="Gets or sets source address prefix. CIDR or source IP range. A '*' can also be used to match all source IPs.  Default tags such as 'VirtualNetwork', 'AzureLoadBalancer' and 'Internet' can also be used. If this is an ingress rule, specifies where network traffic originates from.",
+            help="Gets or sets source address prefix. CIDR or source IP range. A “*” can also be used to match all source IPs.  Default tags such as ‘VirtualNetwork’, ‘AzureLoadBalancer’ and ‘Internet’ can also be used. If this is an ingress rule, specifies where network traffic originates from.",
         )
         _element.source_port_range = AAZStrArg(
             options=["source-port-range"],
-            help="Gets or sets Source Port or Range. Integer or range between 0 and 65535. A '*' can also be used to match all ports.",
+            help="Gets or sets Source Port or Range. Integer or range between 0 and 65535. A “*” can also be used to match all ports.",
         )
 
         tags = cls._args_schema.resource_settings_generated.microsoft_network_network_security_groups.tags

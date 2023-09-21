@@ -17,8 +17,13 @@ from azure.cli.core.aaz import *
 class ResolveDependency(AAZCommand):
     """Computes, resolves and validate the dependencies of the moveResources in the move collection.
 
-    :example: Resolve the dependency of the move-resources.
+    Please note that for 'RegionToRegion' type move collections the 'az resource-mover move-collection resolve-dependency' command just resolves the move collection, the user is required to identify the list of unresolved dependencies using 'az resource-mover move-collection list-unresolved-dependency' and then manually add them to the move collection using 'az resource-mover move-resource add' command. However, for move-type 'RegionToZone' this command finds the required dependencies and automatically adds them to the move collection in a single step.
+
+    :example: Resolve the dependency of the move-resources. (RegionToRegion)
         az resource-mover move-collection resolve-dependency --name MyMoveCollection --resource-group MyResourceGroup
+
+    :example: Resolve the dependency of the move-resources. (RegionToZone)
+        az resource-mover move-collection resolve-dependency --name MyZonalMoveCollection --resource-group MyResourceGroup
     """
 
     _aaz_info = {

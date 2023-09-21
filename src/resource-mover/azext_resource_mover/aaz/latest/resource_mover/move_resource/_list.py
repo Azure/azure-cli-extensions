@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List the Move Resources in the move collection.
 
+    The 'az resource-mover move-resource list' command remains same for both 'RegionToRegion' and 'RegionToZone' type move collections.
+
     :example: List the move-resources in a move-collection.
         az resource-mover move-resource list --move-collection-name MyMoveCollection --resource-group MyResourceGroup
     """
@@ -46,7 +48,7 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.move_collection_name = AAZStrArg(
-            options=["--move-collection-name"],
+            options=["-n", "--name", "--move-collection-name"],
             help="The Move Collection Name.",
             required=True,
         )

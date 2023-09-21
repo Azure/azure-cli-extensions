@@ -15,7 +15,9 @@ from azure.cli.core.aaz import *
     "resource-mover move-collection list-unresolved-dependency",
 )
 class ListUnresolvedDependency(AAZCommand):
-    """List a list of unresolved dependencies.
+    """Lists a list of unresolved dependencies.
+
+    The 'az resource-mover move-collection list-unresolved-dependency' command is applicable for 'RegionToRegion' type move collections. However, for move collections with move-type 'RegionToZone' dependencies are automatically added to the move collection once 'az resource-mover move-collection resolve-dependency' is executed. Please refer to 'az resource-mover move-collection resolve-dependency' command documentation for additional details.
 
     :example: List the unresolved dependencies.
         az resource-mover move-collection list-unresolved-dependency --move-collection-name MyMoveCollection --resource-group MyResourceGroup

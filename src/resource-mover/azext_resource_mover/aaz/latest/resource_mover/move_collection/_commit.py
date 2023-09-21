@@ -17,8 +17,13 @@ from azure.cli.core.aaz import *
 class Commit(AAZCommand):
     """Commits the set of resources included in the request body. The commit operation is triggered on the moveResources in the moveState 'CommitPending' or 'CommitFailed', on a successful completion the moveResource moveState do a transition to Committed. To aid the user to prerequisite the operation the client can call operation with validateOnly property set to true.
 
-    :example: Commit a move-resource.
+    The 'az resource-mover move-collection commit' command remains same for both 'RegionToRegion' and 'RegionToZone' type move collections.
+
+    :example: Commit a move-resource in the move-collection (RegionToRegion)
         az resource-mover move-collection commit --move-resources "/subscriptions/subID/resourceGroups/myRG/providers/Microsoft.Migrate/MoveCollections/movecollection1/MoveResources/moveresource1" --validate-only false --name MyMoveCollection --resource-group MyResourceGroup
+
+    :example: Commit resources in the move-collection (RegionToZone)
+        az resource-mover move-collection commit --move-resources "/subscriptions/subID/resourceGroups/MyResourceGroup/providers/Microsoft.Migrate/moveCollections/MyZonalMoveCollection/moveResources/MyVMMoveResource" --validate-only false --name MyZonalMoveCollection --resource-group MyResourceGroup
     """
 
     _aaz_info = {

@@ -16,6 +16,8 @@ from azure.cli.core.aaz import *
 )
 class ListRequiredFor(AAZCommand):
     """List of the move resources for which an arm resource is required for.
+
+    The 'az resource-mover move-collection list-required-for' command remains same for both 'RegionToRegion' and 'RegionToZone' type move collections.
     """
 
     _aaz_info = {

@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update a move collection.
 
+    Updates a move collection. The following types of move collections based on the move scenario are supported currently: 1. RegionToRegion (Moving resources across regions) 2. RegionToZone (Moving virtual machines into a zone within the same region)
+
     :example: Update a move-collection.
         az resource-mover move-collection update --identity type=SystemAssigned --tags key1=value1 --name MyMoveCollection --resource-group MyResourceGroup
     """

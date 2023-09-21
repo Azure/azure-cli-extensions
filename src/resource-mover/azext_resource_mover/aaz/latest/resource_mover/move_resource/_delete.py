@@ -18,6 +18,8 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete a Move Resource from the move collection.
 
+    The 'az resource-mover move-resource delete' command remains same for both 'RegionToRegion' and 'RegionToZone' type move collections.
+
     :example: Delete a move-resource from the move-collection.
         az resource-mover move-resource delete --move-collection-name MyMoveCollection --name MyMoveResource --resource-group MyResourceGroup
     """

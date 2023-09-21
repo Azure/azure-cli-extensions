@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List all the Move Collections in the subscription.
 
+    The 'az resource-mover move-collection list' command remains same for both 'RegionToRegion' and 'RegionToZone' type move collections.
+
     :example: List all move-collections.
         az resource-mover move-collection list
 
