@@ -123,7 +123,7 @@ WALK_THROUGH_CONFIG_LIST = [
     },
     {
         "configuration": "core.survey_message",
-        "brief": "PSurvey Message",
+        "brief": "Survey Message",
         "description": "This option is used to enable/disable the survey message",
         "options": [
             {
