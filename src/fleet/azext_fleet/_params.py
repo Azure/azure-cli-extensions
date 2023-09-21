@@ -30,13 +30,13 @@ def load_arguments(self, _):
         c.argument('enable_vnet_integration', arg_type=get_three_state_flag(), is_preview=True, help='Whether to enable apiserver vnet integration for the Fleet hub or not.')
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True, help='The subnet to be used when apiserver vnet integration is enabled. It is required when creating a new Fleet with BYO vnet.')
         c.argument('agent_subnet_id', validator=validate_agent_subnet_id, is_preview=True, help='The ID of the subnet which the Fleet hub node will join on startup. If this is not specified, a vnet and subnet will be generated and used.')
-        c.argument('enable_managed_identity', arg_type=get_three_state_flag(), is_preview=True, help='Use managed identity (MSI) to manage the Fleet\'s Hub cluster. This value is not set by default, which implies a hubless Fleet.')
-        c.argument('assign_identity', validator=validate_assign_identity, is_preview=True, help='Specify an existing user assigned identity to manage the Fleet\'s hub cluster.')
+        c.argument('enable_managed_identity', arg_type=get_three_state_flag(), is_preview=True, help='Enable system assigned managed identity (MSI) on the Fleet resource.')
+        c.argument('assign_identity', validator=validate_assign_identity, is_preview=True, help='With --enable-managed-identity, enable user assigned managed identity (MSI) on the Fleet resource. Specify the existing user assigned identity resource.')
 
     with self.argument_context('fleet update') as c:
         c.argument('tags', tags_type)
-        c.argument('enable_managed_identity', arg_type=get_three_state_flag(), is_preview=True, help='Use managed identity (MSI) to manage the Fleet\'s Hub cluster. This value is not set by default, which implies a hubless Fleet.')
-        c.argument('assign_identity', validator=validate_assign_identity, is_preview=True, help='Specify an existing user assigned identity to manage the Fleet\'s hub cluster.')
+        c.argument('enable_managed_identity', arg_type=get_three_state_flag(), is_preview=True, help='Enable system assigned managed identity (MSI) on the Fleet resource.')
+        c.argument('assign_identity', validator=validate_assign_identity, is_preview=True, help='With --enable-managed-identity, enable user assigned managed identity (MSI) on the Fleet resource. Specify the existing user assigned identity resource.')
 
     with self.argument_context('fleet get-credentials') as c:
         c.argument('context_name', options_list=['--context'], help='If specified, overwrite the default context name.')
