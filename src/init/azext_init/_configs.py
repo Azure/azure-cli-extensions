@@ -156,5 +156,23 @@ WALK_THROUGH_CONFIG_LIST = [
                 "desc": "Telemetry will not be collected"
             }
         ]
+    },
+    {
+        "configuration": "auto-upgrade.enable",
+        "brief": "Automaticaly upgrade",
+        "description": "This option is used to enable/disable auto-upgrade",
+        "options": [
+            {
+                "option": "enable",
+                "value": "true",
+                "desc": "Auto-upgrade enabled",
+                "tag": "default"
+            },
+            {
+                "option": "disable",
+                "value": "false",
+                "desc": "Auto-upgrade disabled"
+            }
+        ]
     }
 ]

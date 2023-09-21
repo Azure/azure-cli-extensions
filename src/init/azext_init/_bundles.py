@@ -38,6 +38,11 @@ BUILD_IN_INTERACTION_BUNDLES = [
         "brief": "Collect telemetry",
         "configuration": "core.collect_telemetry",
         "value": "true",
+    },
+    {
+        "brief": "Enable auto-upgrade",
+        "configuration": "auto-upgrade.enable",
+        "value": "true",
     }
 ]
 
@@ -75,6 +80,11 @@ BUILD_IN_AUTOMATION_BUNDLES = [
     {
         "brief": "Do not collect telemetry",
         "configuration": "core.collect_telemetry",
+        "value": "false",
+    },
+    {
+        "brief": "Disable auto-upgrade",
+        "configuration": "auto-upgrade.enable",
         "value": "false",
     }
 ]
