@@ -33,6 +33,11 @@ BUILD_IN_INTERACTION_BUNDLES = [
         "brief": "Enable the survey prompts",
         "configuration": "core.survey_message",
         "value": "true",
+    },
+    {
+        "brief": "Collect telemetry",
+        "configuration": "core.collect_telemetry",
+        "value": "true",
     }
 ]
 
@@ -66,5 +71,10 @@ BUILD_IN_AUTOMATION_BUNDLES = [
         "brief": "Disable the survey prompts",
         "configuration": "core.survey_message",
         "value": "falso",
+    },
+    {
+        "brief": "Do not collect telemetry",
+        "configuration": "core.collect_telemetry",
+        "value": "false",
     }
 ]
