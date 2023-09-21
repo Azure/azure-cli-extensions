@@ -28,6 +28,11 @@ BUILD_IN_INTERACTION_BUNDLES = [
         "brief": "Display a progress bar for long running commands",
         "configuration": "core.disable_progress_bar",
         "value": "false",
+    },
+    {
+        "brief": "Enable the survey prompts",
+        "configuration": "core.survey_message",
+        "value": "true",
     }
 ]
 
@@ -56,5 +61,10 @@ BUILD_IN_AUTOMATION_BUNDLES = [
         "brief": "Display progress bar for long running commands",
         "configuration": "core.disable_progress_bar",
         "value": "true",
+    },
+    {
+        "brief": "Disable the survey prompts",
+        "configuration": "core.survey_message",
+        "value": "falso",
     }
 ]
