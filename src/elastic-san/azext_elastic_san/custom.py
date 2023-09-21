@@ -13,6 +13,8 @@ from .aaz.latest.elastic_san.volume_group import Create as _VolumeGroupCreate
 from .aaz.latest.elastic_san.volume_group import Update as _VolumeGroupUpdate
 
 logger = get_logger(__name__)
+
+
 class VolumeGroupCreate(_VolumeGroupCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -33,6 +35,7 @@ class VolumeGroupCreate(_VolumeGroupCreate):
             args.identity.user_assigned_identities = {
                 "id": args.identity.user_assigned_identity_id}
             del args.identity.user_assigned_identity_id
+
 
 class VolumeGroupUpdate(_VolumeGroupUpdate):
     @classmethod

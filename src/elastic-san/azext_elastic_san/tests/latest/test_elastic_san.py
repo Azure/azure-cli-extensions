@@ -137,3 +137,50 @@ class ElasticSanScenario(ScenarioTest):
         self.cmd('az elastic-san volume snapshot delete -g {rg} -e {san_name} -v {vg_name} -n {snapshot_name} -y')
         self.cmd('az elastic-san volume snapshot list -g {rg} -e {san_name} -v {vg_name}',
                  checks=[JMESPathCheck('length(@)', 0)])
+
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.cmk.sai.')
+    def test_elastic_san_customer_managed_key_system_assigned_identity_scenarios(self, resource_group):
+        logged_in_user = self.cmd('ad signed-in-user show').get_output_in_json()
+        logged_in_user = logged_in_user["id"] if logged_in_user is not None else "a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e"
+        self.kwargs.update({
+            "san_name": self.create_random_name('elastic-san', 24),
+            "kv_name": self.create_random_name('keyvault', 24),
+            "key_name": self.create_random_name('key', 24),
+            "logged_in_user": logged_in_user,
+            "vnet_name": self.create_random_name('vnet', 24),
+            "subnet_name": self.create_random_name('subnet', 24),
+            "vg_name": self.create_random_name('volume-group', 24),
+            "volume_name": self.create_random_name('volume', 24)
+        })
+        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2euap '
+                 '--base-size-tib 23 --extended-capacity-size-tib 14 '
+                 '--sku {{name:Premium_LRS,tier:Premium}}')
+        # 1.Create a key vault with a key in it. Key type should be RSA
+        self.cmd('az keyvault create --name {kv_name} --resource-group {rg} --location eastus2 '
+                 '--enable-purge-protection --retention-days 7')
+        kv = self.cmd('az keyvault show --name {kv_name} --resource-group {rg}').get_output_in_json()
+        self.kwargs.update({"vault_uri": kv["properties"]["vaultUri"]})
+        self.cmd('az keyvault set-policy -n {kv_name} --object-id {logged_in_user} '
+                 '--key-permissions backup create delete get import get list update restore ')
+        self.cmd('az keyvault key create --vault-name {kv_name} -n {key_name} --protection software')
+        # 2.PUT a volume group with PMK and a system assigned identity with it
+        vg = self.cmd('az elastic-san volume-group create -e {san_name} -n {vg_name} -g {rg} '
+                      '--encryption EncryptionAtRestWithPlatformKey --protocol-type Iscsi --identity '
+                      '{{type:SystemAssigned}}',
+                      checks=[JMESPathCheck('encryption', "EncryptionAtRestWithPlatformKey"),
+                              JMESPathCheck('identity.type', "SystemAssigned")]).get_output_in_json()
+        vg_identity_principal_id = vg["identity"]["principalId"]
+        self.kwargs.update({"vg_identity_principal_id": vg_identity_principal_id})
+        # 3. Get the system identity's principalId from the response of PUT volume group request.
+        # Grant access to  the system assigned identity to the key vault created in  step1
+        # (key permissions: Get, Unwrap Key, Wrap Key)
+        self.cmd('az keyvault set-policy -n {kv_name} --object-id {vg_identity_principal_id} '
+                 '--key-permissions backup create delete get import get list update restore ')
+        # 4. PATCH the volume group with the key created in step 1
+        self.cmd("az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} "
+                 "--encryption EncryptionAtRestWithCustomerManagedKey --encryption-properties "
+                 "\"{{key-vault-properties:{{key-name:{key_name},key-vault-uri:\'{vault_uri}\'}}}}\"",
+                 checks=[JMESPathCheck('encryption', "EncryptionAtRestWithCustomerManagedKey"),
+                         JMESPathCheck('encryptionProperties.keyVaultProperties.keyVaultUri', self.kwargs.get("vault_uri")),
+                         JMESPathCheck('encryptionProperties.keyVaultProperties.keyName', self.kwargs.get("key_name")),
+                         ]).get_output_in_json()
