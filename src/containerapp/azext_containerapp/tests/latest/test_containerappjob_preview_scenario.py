@@ -7,6 +7,7 @@ import os
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
 
 from azure.cli.testsdk.decorators import serial_test
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .common import TEST_LOCATION
 from .custom_preparers import ConnectedClusterPreparer
 from .utils import create_containerapp_env, create_extension_and_custom_location
@@ -16,6 +17,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ContainerappJobPreviewScenarioTest(ScenarioTest):
     @serial_test()
+    @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location=TEST_LOCATION, random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)
     def test_containerappjob_preview_environment_type(self, resource_group, infra_cluster, connected_cluster_name):

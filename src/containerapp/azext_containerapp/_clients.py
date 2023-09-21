@@ -15,9 +15,8 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-CURRENT_API_VERSION = "2023-04-01-preview"
+CURRENT_API_VERSION = "2023-05-01"
 PREVIEW_API_VERSION = "2023-05-02-preview"
-ARC_PREVIEW_API_VERSION = "2023-04-01-preview"
 POLLING_TIMEOUT = 600  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -1572,7 +1571,7 @@ class AuthPreviewClient(AuthClient):
 
 
 class ConnectedEnvironmentClient():
-    api_version = ARC_PREVIEW_API_VERSION
+    api_version = PREVIEW_API_VERSION
 
     @classmethod
     def create(cls, cmd, resource_group_name, name, connected_environment_envelope, no_wait=False):
@@ -1719,7 +1718,7 @@ class ConnectedEnvironmentClient():
 
 
 class ConnectedEnvCertificateClient():
-    api_version = ARC_PREVIEW_API_VERSION
+    api_version = PREVIEW_API_VERSION
 
     @classmethod
     def show_certificate(cls, cmd, resource_group_name, name, certificate_name):
@@ -1807,7 +1806,7 @@ class ConnectedEnvCertificateClient():
 
 
 class ConnectedEnvDaprComponentClient():
-    api_version = ARC_PREVIEW_API_VERSION
+    api_version = PREVIEW_API_VERSION
 
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, environment_name, name, dapr_component_envelope):
@@ -1890,7 +1889,7 @@ class ConnectedEnvDaprComponentClient():
 
 
 class ConnectedEnvStorageClient():
-    api_version = ARC_PREVIEW_API_VERSION
+    api_version = PREVIEW_API_VERSION
 
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, env_name, name, storage_envelope):
