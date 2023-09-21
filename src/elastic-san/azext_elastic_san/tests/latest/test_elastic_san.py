@@ -14,11 +14,11 @@ class ElasticSanScenario(ScenarioTest):
         self.kwargs.update({
             "san_name": self.create_random_name('elastic-san', 24)
         })
-        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l southcentralusstg '
+        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2euap '
                  '--base-size-tib 23 --extended-capacity-size-tib 14 '
                  '--sku {{name:Premium_LRS,tier:Premium}}',
                  checks=[JMESPathCheck('name', self.kwargs.get('san_name', '')),
-                         JMESPathCheck('location', "southcentralusstg"),
+                         JMESPathCheck('location', "eastus2euap"),
                          JMESPathCheck('tags', {"key1810": "aaaa"}),
                          JMESPathCheck('baseSizeTiB', 23),
                          JMESPathCheck('extendedCapacitySizeTiB', 14),
@@ -27,7 +27,7 @@ class ElasticSanScenario(ScenarioTest):
                          ])
         self.cmd('az elastic-san show -g {rg} -n {san_name}',
                  checks=[JMESPathCheck('name', self.kwargs.get('san_name', '')),
-                         JMESPathCheck('location', "southcentralusstg"),
+                         JMESPathCheck('location', "eastus2euap"),
                          JMESPathCheck('tags', {"key1810": "aaaa"}),
                          JMESPathCheck('baseSizeTiB', 23),
                          JMESPathCheck('extendedCapacitySizeTiB', 14),
@@ -56,7 +56,7 @@ class ElasticSanScenario(ScenarioTest):
             "subnet_name_2": self.create_random_name('subnet', 24),
             "volume_name": self.create_random_name('volume', 24)
         })
-        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l southcentralusstg '
+        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2euap '
                  '--base-size-tib 23 --extended-capacity-size-tib 14 '
                  '--sku {{name:Premium_LRS,tier:Premium}}')
         subnet_id = self.cmd('az network vnet create -g {rg} -n {vnet_name} --address-prefix 10.0.0.0/16 '
@@ -101,3 +101,39 @@ class ElasticSanScenario(ScenarioTest):
         self.cmd('az elastic-san volume-group delete -g {rg} -e {san_name} -n {vg_name} -y')
         time.sleep(20)
         self.cmd('az elastic-san delete -g {rg} -n {san_name} -y')
+
+    @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.snapshot')
+    def test_elastic_san_snapshot_scenarios(self, resource_group):
+        self.kwargs.update({
+            "san_name": self.create_random_name('elastic-san', 24),
+            "vnet_name": self.create_random_name('vnet', 24),
+            "subnet_name": self.create_random_name('subnet', 24),
+            "vg_name": self.create_random_name('volume-group', 24),
+            "volume_name": self.create_random_name('volume', 24),
+            "snapshot_name": self.create_random_name('snapshot', 24)
+        })
+        self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2euap '
+                 '--base-size-tib 23 --extended-capacity-size-tib 14 '
+                 '--sku {{name:Premium_LRS,tier:Premium}}')
+        self.cmd('az network vnet create -g {rg} -n {vnet_name} --address-prefix 10.0.0.0/16')
+        subnet_id = self.cmd('az network vnet subnet create -g {rg} --vnet-name {vnet_name} --name {subnet_name} '
+                             '--address-prefixes 10.0.0.0/24 '
+                             '--service-endpoints Microsoft.Storage').get_output_in_json()["id"]
+        self.kwargs.update({"subnet_id": subnet_id})
+        self.cmd('az elastic-san volume-group create -e {san_name} -n {vg_name} -g {rg} '
+                 '--encryption EncryptionAtRestWithPlatformKey --protocol-type Iscsi '
+                 '--network-acls {{virtual-network-rules:[{{id:{subnet_id},action:Allow}}]}}')
+        self.cmd('az elastic-san volume create -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 2')
+        volume_id = self.cmd('az elastic-san volume show -g {rg} -e {san_name} -v {vg_name} '
+                             '-n {volume_name}').get_output_in_json()["id"]
+        self.kwargs.update({"volume_id": volume_id})
+        self.cmd('az elastic-san volume snapshot create -g {rg} -e {san_name} -v {vg_name} -n {snapshot_name} '
+                 '--creation-data {{source-id:{volume_id}}}')
+        self.cmd('az elastic-san volume snapshot show -g {rg} -e {san_name} -v {vg_name} -n {snapshot_name}',
+                 checks=[JMESPathCheck('name', self.kwargs.get('snapshot_name', '')),
+                         JMESPathCheck('creationData.sourceId', self.kwargs.get("volume_id"))])
+        self.cmd('az elastic-san volume snapshot list -g {rg} -e {san_name} -v {vg_name}',
+                 checks=[JMESPathCheck('length(@)', 1)])
+        self.cmd('az elastic-san volume snapshot delete -g {rg} -e {san_name} -v {vg_name} -n {snapshot_name} -y')
+        self.cmd('az elastic-san volume snapshot list -g {rg} -e {san_name} -v {vg_name}',
+                 checks=[JMESPathCheck('length(@)', 0)])

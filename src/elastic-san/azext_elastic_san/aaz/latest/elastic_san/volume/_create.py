@@ -87,11 +87,6 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="State of the operation on the resource.",
         )
-        _args_schema.managed_by = AAZObjectArg(
-            options=["--managed-by"],
-            arg_group="Properties",
-            help="Parent resource information.",
-        )
         _args_schema.size_gib = AAZIntArg(
             options=["--size-gib"],
             arg_group="Properties",
@@ -108,12 +103,6 @@ class Create(AAZCommand):
         creation_data.source_id = AAZStrArg(
             options=["source-id"],
             help="Fully qualified resource ID for the resource. E.g. \"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}\"",
-        )
-
-        managed_by = cls._args_schema.managed_by
-        managed_by.resource_id = AAZStrArg(
-            options=["resource-id"],
-            help="Resource ID of the resource managing the volume.",
         )
         return cls._args_schema
 
@@ -236,17 +225,12 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("creationData", AAZObjectType, ".creation_data")
-                properties.set_prop("managedBy", AAZObjectType, ".managed_by")
                 properties.set_prop("sizeGiB", AAZIntType, ".size_gib", typ_kwargs={"flags": {"required": True}})
 
             creation_data = _builder.get(".properties.creationData")
             if creation_data is not None:
                 creation_data.set_prop("createSource", AAZStrType, ".create_source")
                 creation_data.set_prop("sourceId", AAZStrType, ".source_id")
-
-            managed_by = _builder.get(".properties.managedBy")
-            if managed_by is not None:
-                managed_by.set_prop("resourceId", AAZStrType, ".resource_id")
 
             return self.serialize_content(_content_value)
 

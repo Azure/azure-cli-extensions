@@ -9,6 +9,48 @@
 # pylint: disable=too-many-statements
 
 from knack.log import get_logger
-
+from .aaz.latest.elastic_san.volume_group import Create as _VolumeGroupCreate
+from .aaz.latest.elastic_san.volume_group import Update as _VolumeGroupUpdate
 
 logger = get_logger(__name__)
+class VolumeGroupCreate(_VolumeGroupCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg, AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.identity.user_assigned_identity_id = AAZStrArg(
+            options=["user-assigned-identity"],
+            help="The ARM resource identifier of the User Assigned identity that will be used with this volume group. ",
+            fmt=AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
+                                                "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
+        )
+        args_schema.identity.user_assigned_identities._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if args.identity.user_assigned_identity_id:
+            args.identity.user_assigned_identities = {
+                "id": args.identity.user_assigned_identity_id}
+            del args.identity.user_assigned_identity_id
+
+class VolumeGroupUpdate(_VolumeGroupUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg, AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.identity.user_assigned_identity_id = AAZStrArg(
+            options=["user-assigned-identity"],
+            help="The ARM resource identifier of the User Assigned identity that will be used with this volume group. ",
+            fmt=AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
+                                                "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
+        )
+        args_schema.identity.user_assigned_identities._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if args.identity.user_assigned_identity_id:
+            args.identity.user_assigned_identities = {
+                "id": args.identity.user_assigned_identity_id}
+            del args.identity.user_assigned_identity_id
