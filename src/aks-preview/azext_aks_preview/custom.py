@@ -2425,6 +2425,7 @@ def aks_mesh_enable(
         client,
         resource_group_name,
         name,
+        revision=None,
         key_vault_id=None,
         ca_cert_object_name=None,
         ca_key_object_name=None,
@@ -2446,6 +2447,7 @@ def aks_mesh_enable(
                             ca_key_object_name,
                             root_cert_object_name,
                             cert_chain_object_name,
+                            revision=revision,
                             enable_azure_service_mesh=True)
 
 
@@ -2553,7 +2555,8 @@ def aks_mesh_upgrade_start(
         client,
         resource_group_name,
         name,
-        revision=revision)
+        revision=revision,
+        mesh_upgrade_command="start")
 
 
 def aks_mesh_upgrade_complete(

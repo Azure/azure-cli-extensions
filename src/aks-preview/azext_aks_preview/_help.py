@@ -2588,6 +2588,9 @@ helps['aks mesh enable'] = """
     short-summary: Enable Azure Service Mesh.
     long-summary: This command enables Azure Service Mesh in given cluster.
     parameters:
+      - name: --revision
+        type: string
+        short-summary: Azure Service Mesh revision to install.
       - name: --key-vault-id
         type: string
         short-summary: The Azure Keyvault id with plugin CA info.

@@ -2092,6 +2092,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # enable/disable
         enable_asm = self.raw_param.get("enable_azure_service_mesh", False)
         disable_asm = self.raw_param.get("disable_azure_service_mesh", False)
+        mesh_upgrade_command = self.raw_param.get("mesh_upgrade_command", None)
 
         if enable_asm and disable_asm:
             raise MutuallyExclusiveArgumentError(
@@ -2099,12 +2100,25 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
 
         if disable_asm:
+            if new_profile is None or new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_DISABLED:
+                raise ArgumentUsageError(
+                    "Istio has not been enabled for this cluster, please refer to aka.ms/aks/asm "
+                    "for more details on enabling Azure Service Mesh."
+                )
             new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_DISABLED
             updated = True
         elif enable_asm:
+            if new_profile is not None and new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_ISTIO:
+                raise ArgumentUsageError(
+                    "Istio has already been enabled for this cluster, please refer to aka.ms/aks/asm "
+                    "for more details on updating the mesh profile."
+                )
+            requested_revision = self.raw_param.get("revision", None)
             new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
             if new_profile.istio is None:
                 new_profile.istio = self.models.IstioServiceMesh()
+            if mesh_upgrade_command is None and requested_revision is not None:
+                new_profile.istio.revisions = [requested_revision]
             updated = True
 
         enable_ingress_gateway = self.raw_param.get("enable_ingress_gateway", False)
@@ -2246,22 +2260,18 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             updated = True
 
         # deal with mesh upgrade commands
-        mesh_upgrade_command = self.raw_param.get("mesh_upgrade_command", None)
         if mesh_upgrade_command is not None:
-            if len(new_profile.istio.revisions) < 2:
+            if len(new_profile.istio.revisions) < 2 and mesh_upgrade_command != "start":
                 raise ArgumentUsageError('Azure Service Mesh upgrade is not in progress.')
-
-            if mesh_upgrade_command is not None and mesh_upgrade_command == "complete":
+            requested_revision = self.raw_param.get("revision", None)
+            if mesh_upgrade_command == "complete":
                 new_profile.istio.revisions.remove(min(new_profile.istio.revisions))
-            if mesh_upgrade_command is not None and mesh_upgrade_command == "rollback":
+            elif mesh_upgrade_command == "rollback":
                 new_profile.istio.revisions.remove(max(new_profile.istio.revisions))
-            updated = True
-
-        revision = self.raw_param.get("revision", None)
-        if revision is not None:
-            if new_profile.istio.revisions is None:
-                new_profile.istio.revisions = []
-            new_profile.istio.revisions.append(revision)
+            elif mesh_upgrade_command == "start" and requested_revision is not None:
+                if new_profile.istio.revisions is None:
+                    new_profile.istio.revisions = []
+                new_profile.istio.revisions.append(requested_revision)
             updated = True
 
         if updated:
