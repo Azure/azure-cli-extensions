@@ -2,6 +2,13 @@
 
 Release History
 ===============
+1.4.2
+++++++
+* Fix reference error.
+
+1.4.1
+++++++
+* Skip Onboarding prechecks for AKS-HCI.
 
 1.4.0
 ++++++
