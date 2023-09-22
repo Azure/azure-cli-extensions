@@ -842,7 +842,7 @@ helps['cosmosdb copy list'] = """
     examples:
       - name: List all jobs
         text: |-
-               az cosmosdb copy list -g "rg1" --dest-account "db1" 
+               az cosmosdb copy list -g "rg1" --dest-account "db1"
 """
 
 helps['cosmosdb copy show'] = """

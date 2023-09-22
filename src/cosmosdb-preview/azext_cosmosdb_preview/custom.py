@@ -1568,18 +1568,18 @@ def cosmosdb_data_transfer_copy_job(client,
 
 
 def cosmosdb_copy_job(client,
-                    resource_group_name,
-                    dest_account,
-                    src_account,
-                    src_cassandra=None,
-                    dest_cassandra=None,
-                    src_nosql=None,
-                    dest_nosql=None,
-                    src_mongo=None,
-                    dest_mongo=None,
-                    job_name=None,
-                    worker_count=0,
-                    host_copy_on_src="false"):
+                      resource_group_name,
+                      dest_account,
+                      src_account,
+                      src_cassandra=None,
+                      dest_cassandra=None,
+                      src_nosql=None,
+                      dest_nosql=None,
+                      src_mongo=None,
+                      dest_mongo=None,
+                      job_name=None,
+                      worker_count=0,
+                      host_copy_on_src="false"):
     host_copy_on_src = host_copy_on_src.lower() == "true"
     job_create_properties = {}
     is_cross_account = src_account != dest_account
