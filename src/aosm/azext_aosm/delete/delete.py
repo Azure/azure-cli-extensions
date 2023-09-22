@@ -108,7 +108,7 @@ class ResourceDeleter:
             )
             if clean:
                 print(
-                    f"Because of the --clean flag, the NSDG {self.config.nsdg_name} will also be deleted."
+                    f"Because of the --clean flag, the NSD {self.config.nsd_name} will also be deleted."
                 )
             print("There is no undo. Type 'delete' to confirm")
             if not input_ack("delete", "Confirm delete:"):
@@ -150,7 +150,7 @@ class ResourceDeleter:
         assert isinstance(self.config, NSConfiguration)
         message = (
             f"Delete NSDV {self.config.nsd_version} from group"
-            f" {self.config.nsdg_name} and publisher {self.config.publisher_name}"
+            f" {self.config.nsd_name} and publisher {self.config.publisher_name}"
         )
         logger.debug(message)
         print(message)
@@ -158,7 +158,7 @@ class ResourceDeleter:
             poller = self.api_clients.aosm_client.network_service_design_versions.begin_delete(
                 resource_group_name=self.config.publisher_resource_group_name,
                 publisher_name=self.config.publisher_name,
-                network_service_design_group_name=self.config.nsdg_name,
+                network_service_design_group_name=self.config.nsd_name,
                 network_service_design_version_name=self.config.nsd_version,
             )
             LongRunningOperation(self.cli_ctx, "Deleting NSDV...")(poller)
@@ -167,7 +167,7 @@ class ResourceDeleter:
             logger.error(
                 "Failed to delete NSDV %s from group %s",
                 self.config.nsd_version,
-                self.config.nsdg_name,
+                self.config.nsd_name,
             )
             raise
 
@@ -218,9 +218,9 @@ class ResourceDeleter:
                 raise
 
     def delete_nsdg(self) -> None:
-        """Delete the NSDG."""
+        """Delete the NSD."""
         assert isinstance(self.config, NSConfiguration)
-        message = f"Delete NSD Group {self.config.nsdg_name}"
+        message = f"Delete NSD {self.config.nsd_name}"
         logger.debug(message)
         print(message)
         try:
@@ -228,13 +228,13 @@ class ResourceDeleter:
                 self.api_clients.aosm_client.network_service_design_groups.begin_delete(
                     resource_group_name=self.config.publisher_resource_group_name,
                     publisher_name=self.config.publisher_name,
-                    network_service_design_group_name=self.config.nsdg_name,
+                    network_service_design_group_name=self.config.nsd_name,
                 )
             )
-            LongRunningOperation(self.cli_ctx, "Deleting NSD Group...")(poller)
-            print("Deleted NSD Group")
+            LongRunningOperation(self.cli_ctx, "Deleting NSD...")(poller)
+            print("Deleted NSD")
         except Exception:
-            logger.error("Failed to delete NFDG.")
+            logger.error("Failed to delete NSD.")
             raise
 
     def delete_nfdg(self) -> None:
