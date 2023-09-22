@@ -120,8 +120,8 @@ class HybridNetworkManagementClient(
 
     def __init__(
         self,
-        subscription_id: str,
         credential: "TokenCredential",
+        subscription_id: str,
         endpoint: str = "https://management.azure.com",
         **kwargs: Any
     ) -> None:
