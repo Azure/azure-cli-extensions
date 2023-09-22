@@ -2,6 +2,12 @@
 
 Release History
 ===============
+0.11.0
+++++++
+* Add support for Multi-User Authentication for Backup vaults
+* `az dataprotection backup-vault resource-guard-mapping`: Support the creation and management of ResourceGuard Mappings onto a Backup Vault.
+* `az dataprotection resource-guard unlock`: Unlock ResourceGuard in order to perform protected/Critical operations
+
 0.10.0
 ++++++
 * Add complete support for Soft Delete
