@@ -89,9 +89,14 @@ def generate_definition_config(definition_type: str, output_file: str = "input.j
 
     :param definition_type: CNF, VNF
     :param output_file: path to output config file, defaults to "input.json"
-    :type output_file: str, optional
     """
-    _generate_config(configuration_type=definition_type, output_file=output_file)
+    config: Configuration
+    if definition_type == CNF:
+        config = CNFConfiguration.helptext()
+    elif definition_type == VNF:
+        config = VNFConfiguration.helptext()
+
+    _generate_config(configuration=config, output_file=output_file)
 
 
 def _get_config_from_file(config_file: str, configuration_type: str) -> Configuration:
@@ -324,21 +329,21 @@ def generate_design_config(output_file: str = "input.json"):
     :param output_file: path to output config file, defaults to "input.json"
     :type output_file: str, optional
     """
-    _generate_config(NSD, output_file)
+    _generate_config(NSConfiguration.helptext(), output_file)
 
 
-def _generate_config(configuration_type: str, output_file: str = "input.json"):
+def _generate_config(configuration: Configuration, output_file: str = "input.json"):
     """
     Generic generate config function for NFDs and NSDs.
 
-    :param configuration_type: CNF, VNF or NSD
+    :param configuration: The Configuration object with helptext filled in for each of
+        the fields.
     :param output_file: path to output config file, defaults to "input.json"
-    :type output_file: str, optional
     """
     # Config file is a special parameter on the configuration objects.  It is the path
     # to the configuration file, rather than an input parameter.  It therefore shouldn't
     # be included here.
-    config = asdict(get_configuration(configuration_type))
+    config = asdict(configuration)
     config.pop("config_file")
 
     config_as_dict = json.dumps(config, indent=4)
@@ -353,10 +358,10 @@ def _generate_config(configuration_type: str, output_file: str = "input.json"):
 
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(config_as_dict)
-        if configuration_type in (CNF, VNF):
-            prtName = "definition"
-        else:
+        if isinstance(configuration, NSConfiguration):
             prtName = "design"
+        else:
+            prtName = "definition"
         print(f"Empty {prtName} configuration has been written to {output_file}")
         logger.info(
             "Empty %s configuration has been written to %s", prtName, output_file

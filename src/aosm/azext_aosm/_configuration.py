@@ -7,7 +7,7 @@ import abc
 import logging
 import json
 import os
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
@@ -110,21 +110,58 @@ DESCRIPTION_MAP: Dict[str, str] = {
 class ArtifactConfig:
     # artifact.py checks for the presence of the default descriptions, change
     # there if you change the descriptions.
-    artifact_name: str = DESCRIPTION_MAP["artifact_name"]
-    file_path: Optional[str] = DESCRIPTION_MAP["file_path"]
-    blob_sas_url: Optional[str] = DESCRIPTION_MAP["blob_sas_url"]
-    version: Optional[str] = DESCRIPTION_MAP["artifact_version"]
+    artifact_name: str = ""
+    file_path: Optional[str] = ""
+    blob_sas_url: Optional[str] = ""
+    version: Optional[str] = ""
+
+    @classmethod
+    def helptext(cls) -> "ArtifactConfig":
+        """
+        Build an object where each value is helptext for that field.
+        """
+        return ArtifactConfig(
+            artifact_name=DESCRIPTION_MAP["artifact_name"],
+            file_path=DESCRIPTION_MAP["file_path"],
+            blob_sas_url=DESCRIPTION_MAP["blob_sas_url"],
+            version=DESCRIPTION_MAP["version"],
+        )
 
 
 @dataclass
 class Configuration(abc.ABC):
     config_file: Optional[str] = None
-    publisher_name: str = DESCRIPTION_MAP["publisher_name"]
-    publisher_resource_group_name: str = DESCRIPTION_MAP[
-        "publisher_resource_group_name"
-    ]
-    acr_artifact_store_name: str = DESCRIPTION_MAP["acr_artifact_store_name"]
-    location: str = DESCRIPTION_MAP["location"]
+    publisher_name: str = ""
+    publisher_resource_group_name: str = ""
+    acr_artifact_store_name: str = ""
+    location: str = ""
+
+    @classmethod
+    def helptext(cls):
+        """
+        Build an object where each value is helptext for that field.
+        """
+        return Configuration(
+            publisher_name=DESCRIPTION_MAP["publisher_name"],
+            publisher_resource_group_name=DESCRIPTION_MAP[
+                "publisher_resource_group_name"
+            ],
+            acr_artifact_store_name=DESCRIPTION_MAP["acr_artifact_store_name"],
+            location=DESCRIPTION_MAP["location"],
+        )
+        
+    def validate(self):
+        """
+        Validate the configuration.
+        """
+        if not self.location:
+            raise ValidationError("Location must be set")
+        if not self.publisher_name:
+            raise ValidationError("Publisher name must be set")
+        if not self.publisher_resource_group_name:
+            raise ValidationError("Publisher resource group name must be set")
+        if not self.acr_artifact_store_name:
+            raise ValidationError("ACR Artifact Store name must be set")
 
     def path_from_cli_dir(self, path: str) -> str:
         """
@@ -169,14 +206,30 @@ class Configuration(abc.ABC):
 class NFConfiguration(Configuration):
     """Network Function configuration."""
 
-    publisher_name: str = DESCRIPTION_MAP["publisher_name"]
-    publisher_resource_group_name: str = DESCRIPTION_MAP[
-        "publisher_resource_group_name"
-    ]
-    nf_name: str = DESCRIPTION_MAP["nf_name"]
-    version: str = DESCRIPTION_MAP["version"]
-    acr_artifact_store_name: str = DESCRIPTION_MAP["acr_artifact_store_name"]
-    location: str = DESCRIPTION_MAP["location"]
+    nf_name: str = ""
+    version: str = ""
+
+    @classmethod
+    def helptext(cls) -> "NFConfiguration":
+        """
+        Build an object where each value is helptext for that field.
+        """
+        return NFConfiguration(
+            nf_name=DESCRIPTION_MAP["nf_name"],
+            version=DESCRIPTION_MAP["version"],
+            **asdict(Configuration.helptext()),
+        )
+        
+    def validate(self):
+        """
+        Validate the configuration.
+        """
+        super().validate()
+        if not self.nf_name:
+            raise ValidationError("nf_name must be set")
+        if not self.version:
+            raise ValidationError("version must be set")
+        
 
     @property
     def nfdg_name(self) -> str:
@@ -197,10 +250,23 @@ class NFConfiguration(Configuration):
 
 @dataclass
 class VNFConfiguration(NFConfiguration):
-    blob_artifact_store_name: str = DESCRIPTION_MAP["blob_artifact_store_name"]
-    image_name_parameter: str = DESCRIPTION_MAP["image_name_parameter"]
+    blob_artifact_store_name: str = ""
+    image_name_parameter: str = ""
     arm_template: Any = ArtifactConfig()
     vhd: Any = ArtifactConfig()
+
+    @classmethod
+    def helptext(cls) -> "VNFConfiguration":
+        """
+        Build an object where each value is helptext for that field.
+        """
+        return VNFConfiguration(
+            blob_artifact_store_name=DESCRIPTION_MAP["blob_artifact_store_name"],
+            image_name_parameter=DESCRIPTION_MAP["image_name_parameter"],
+            arm_template=ArtifactConfig.helptext(),
+            vhd=ArtifactConfig.helptext(),
+            **asdict(NFConfiguration.helptext()),
+        )
 
     def __post_init__(self):
         """
@@ -241,13 +307,10 @@ class VNFConfiguration(NFConfiguration):
                 "Config validation error. ARM template artifact version should be in"
                 " format A.B.C"
             )
-        filepath_set = (
-            self.vhd.file_path and self.vhd.file_path != DESCRIPTION_MAP["file_path"]
-        )
-        sas_set = (
-            self.vhd.blob_sas_url
-            and self.vhd.blob_sas_url != DESCRIPTION_MAP["blob_sas_url"]
-        )
+        filepath_set = bool(self.vhd.file_path)
+        sas_set = bool(self.vhd.blob_sas_url)
+        print(asdict(self.vhd))
+
         # If these are the same, either neither is set or both are, both of which are errors
         if filepath_set == sas_set:
             raise ValidationError(
@@ -284,6 +347,18 @@ class HelmPackageConfig:
         default_factory=lambda: [DESCRIPTION_MAP["helm_depends_on"]]
     )
 
+    @classmethod
+    def helptext(cls):
+        """
+        Build an object where each value is helptext for that field.
+        """
+        return HelmPackageConfig(
+            name=DESCRIPTION_MAP["helm_package_name"],
+            path_to_chart=DESCRIPTION_MAP["path_to_chart"],
+            path_to_mappings=DESCRIPTION_MAP["path_to_mappings"],
+            depends_on=[DESCRIPTION_MAP["helm_depends_on"]],
+        )
+
 
 @dataclass
 class CNFImageConfig:
@@ -293,24 +368,16 @@ class CNFImageConfig:
     source_registry_namespace: str = ""
     source_local_docker_image: str = ""
 
-    def __post_init__(self):
+    @classmethod
+    def helptext(cls) -> "CNFImageConfig":
         """
-        Cope with optional parameters being omitted in the loaded json config file.
-
-        If param is set to placeholder text, it is not in the config file and should be unset.
+        Build an object where each value is helptext for that field.
         """
-        if self.source_registry == DESCRIPTION_MAP["source_registry"]:
-            self.source_registry = ""
-        if (
-            self.source_registry_namespace
-            == DESCRIPTION_MAP["source_registry_namespace"]
-        ):
-            self.source_registry_namespace = ""
-        if (
-            self.source_local_docker_image
-            == DESCRIPTION_MAP["source_local_docker_image"]
-        ):
-            self.source_local_docker_image = ""
+        return CNFImageConfig(
+            source_registry=DESCRIPTION_MAP["source_registry"],
+            source_registry_namespace=DESCRIPTION_MAP["source_registry_namespace"],
+            source_local_docker_image=DESCRIPTION_MAP["source_local_docker_image"],
+        )
 
 
 @dataclass
@@ -336,6 +403,17 @@ class CNFConfiguration(NFConfiguration):
         if isinstance(self.images, dict):
             self.images = CNFImageConfig(**self.images)
             self.validate()
+
+    @classmethod
+    def helptext(cls) -> "CNFConfiguration":
+        """
+        Build an object where each value is helptext for that field.
+        """
+        return CNFConfiguration(
+            images=CNFImageConfig.helptext(),
+            helm_packages=[HelmPackageConfig.helptext()],
+            ** asdict(NFConfiguration.helptext()),
+        )
 
     @property
     def output_directory_for_build(self) -> Path:
@@ -390,14 +468,30 @@ MULTIPLE_INSTANCES = (
 class NFDRETConfiguration:  # pylint: disable=too-many-instance-attributes
     """The configuration required for an NFDV that you want to include in an NSDV."""
 
-    publisher: str = PUBLISHER_NAME
-    publisher_resource_group: str = PUBLISHER_RESOURCE_GROUP
-    name: str = NFD_NAME
-    version: str = NFD_VERSION
-    publisher_offering_location: str = NFD_LOCATION
-    publisher_scope: str = PUBLISHER_SCOPE
-    type: str = NFD_TYPE
-    multiple_instances: Union[str, bool] = MULTIPLE_INSTANCES
+    publisher: str = ""
+    publisher_resource_group: str = ""
+    name: str = ""
+    version: str = ""
+    publisher_offering_location: str = ""
+    publisher_scope: str = ""
+    type: str = ""
+    multiple_instances: Union[str, bool] = False
+
+    @classmethod
+    def helptext(cls) -> "NFDRETConfiguration":
+        """
+        Build an object where each value is helptext for that field.
+        """
+        return NFDRETConfiguration(
+            publisher=PUBLISHER_NAME,
+            publisher_resource_group=PUBLISHER_RESOURCE_GROUP,
+            name=NFD_NAME,
+            version=NFD_VERSION,
+            publisher_offering_location=NFD_LOCATION,
+            publisher_scope=PUBLISHER_SCOPE,
+            type=NFD_TYPE,
+            multiple_instances=MULTIPLE_INSTANCES,
+        )
 
     def validate(self) -> None:
         """
@@ -405,28 +499,28 @@ class NFDRETConfiguration:  # pylint: disable=too-many-instance-attributes
 
         :raises ValidationError for any invalid config
         """
-        if self.name == NFD_NAME:
+        if not self.name:
             raise ValidationError("Network function definition name must be set")
 
-        if self.publisher == PUBLISHER_NAME:
+        if not self.publisher:
             raise ValidationError(f"Publisher name must be set for {self.name}")
 
-        if self.publisher_resource_group == PUBLISHER_RESOURCE_GROUP:
+        if not self.publisher_resource_group:
             raise ValidationError(
                 f"Publisher resource group name must be set for {self.name}"
             )
 
-        if self.version == NFD_VERSION:
+        if not self.version:
             raise ValidationError(
                 f"Network function definition version must be set for {self.name}"
             )
 
-        if self.publisher_offering_location == NFD_LOCATION:
+        if not self.publisher_offering_location:
             raise ValidationError(
                 f"Network function definition offering location must be set, for {self.name}"
             )
 
-        if self.publisher_scope == PUBLISHER_SCOPE:
+        if not self.publisher_scope:
             raise ValidationError(
                 f"Network function definition publisher scope must be set, for {self.name}"
             )
@@ -498,9 +592,9 @@ class NSConfiguration(Configuration):
             NFDRETConfiguration(),
         ]
     )
-    nsd_name: str = DESCRIPTION_MAP["nsd_name"]
-    nsd_version: str = DESCRIPTION_MAP["nsd_version"]
-    nsdv_description: str = DESCRIPTION_MAP["nsdv_description"]
+    nsd_name: str = ""
+    nsd_version: str = ""
+    nsdv_description: str = ""
 
     def __post_init__(self):
         """Covert things to the correct format."""
@@ -510,35 +604,35 @@ class NSConfiguration(Configuration):
             ]
             self.network_functions = nf_ret_list
 
+    @classmethod
+    def helptext(cls) -> "NSConfiguration":
+        """
+        Build a NSConfiguration object where each value is helptext for that field.
+        """
+        nsd_helptext = NSConfiguration(
+            nsd_name=DESCRIPTION_MAP["nsd_name"],
+            nsd_version=DESCRIPTION_MAP["nsd_version"],
+            nsdv_description=DESCRIPTION_MAP["nsdv_description"],
+            **asdict(Configuration.helptext())
+        )
+        nsd_helptext.network_functions = [NFDRETConfiguration.helptext()]
+
+        return nsd_helptext
+
     def validate(self):
         """
         Validate the configuration passed in.
 
         :raises ValueError for any invalid config
         """
-
-        if self.location in (DESCRIPTION_MAP["location"], ""):
-            raise ValueError("Location must be set")
-        if self.publisher_name in (DESCRIPTION_MAP["publisher_name"], ""):
-            raise ValueError("Publisher name must be set")
-        if self.publisher_resource_group_name in (
-            DESCRIPTION_MAP["publisher_resource_group_name_nsd"],
-            "",
-        ):
-            raise ValueError("Publisher resource group name must be set")
-        if self.acr_artifact_store_name in (
-            DESCRIPTION_MAP["acr_artifact_store_name"],
-            "",
-        ):
-            raise ValueError("ACR Artifact Store name must be set")
         if self.network_functions in ([], None):
             raise ValueError(("At least one network function must be included."))
 
         for configuration in self.network_functions:
             configuration.validate()
-        if self.nsd_name in (DESCRIPTION_MAP["nsd_name"], ""):
+        if not self.nsd_name:
             raise ValueError("NSD name must be set")
-        if self.nsd_version in (DESCRIPTION_MAP["nsd_version"], ""):
+        if not self.nsd_version:
             raise ValueError("NSD Version must be set")
 
     @property
@@ -563,9 +657,7 @@ class NSConfiguration(Configuration):
         return [nf.acr_manifest_name(self.nsd_version) for nf in self.network_functions]
 
 
-def get_configuration(
-    configuration_type: str, config_file: Optional[str] = None
-) -> Configuration:
+def get_configuration(configuration_type: str, config_file: str) -> Configuration:
     """
     Return the correct configuration object based on the type.
 
@@ -573,16 +665,13 @@ def get_configuration(
     :param config_file: The path to the config file
     :return: The configuration object
     """
-    if config_file:
-        try:
-            with open(config_file, "r", encoding="utf-8") as f:
-                config_as_dict = json.loads(f.read())
-        except json.decoder.JSONDecodeError as e:
-            raise InvalidArgumentValueError(
-                f"Config file {config_file} is not valid JSON: {e}"
-            ) from e
-    else:
-        config_as_dict = {}
+    try:
+        with open(config_file, "r", encoding="utf-8") as f:
+            config_as_dict = json.loads(f.read())
+    except json.decoder.JSONDecodeError as e:
+        raise InvalidArgumentValueError(
+            f"Config file {config_file} is not valid JSON: {e}"
+        ) from e
 
     config: Configuration
     try:
@@ -600,5 +689,7 @@ def get_configuration(
         raise InvalidArgumentValueError(
             f"Config file {config_file} is not valid: {typeerr}"
         ) from typeerr
+        
+    config.validate()
 
     return config
