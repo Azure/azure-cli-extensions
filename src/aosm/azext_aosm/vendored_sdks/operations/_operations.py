@@ -2087,10 +2087,10 @@ def build_proxy_network_function_definition_versions_get_request(  # pylint: dis
     _url: str = _url.format(**path_format_arguments)  # type: ignore
 
     # Construct parameters
-    _params["publisherScopeName"] = _SERIALIZER.query(
+    _params["publisherScope"] = _SERIALIZER.query(
         "publisher_scope_name", publisher_scope_name, "str", max_length=64, pattern=r"^[a-zA-Z0-9][a-zA-Z0-9_-]*$"
     )
-    _params["publisherLocationName"] = _SERIALIZER.query(
+    _params["publisherLocation"] = _SERIALIZER.query(
         "publisher_location_name", publisher_location_name, "str", max_length=64, pattern=r"^[a-zA-Z0-9][a-zA-Z0-9_-]*$"
     )
     _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")

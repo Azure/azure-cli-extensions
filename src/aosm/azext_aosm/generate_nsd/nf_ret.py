@@ -31,11 +31,11 @@ class NFRETGenerator:
             f"Finding the deploy parameters for {self.config.name}:{self.config.version}"
         )
 
-        if not nfdv.deploy_parameters:
+        if not nfdv.properties.deploy_parameters:
             raise NotImplementedError(
                 f"NFDV {self.config.name} has no deploy parameters, cannot generate NSD."
             )
-        self.deploy_parameters: Dict[str, Any] = json.loads(nfdv.deploy_parameters)
+        self.deploy_parameters: Dict[str, Any] = json.loads(nfdv.properties.deploy_parameters)
 
         self.nfd_group_name = self.config.name.replace("-", "_")
         self.nfdv_parameter_name = f"{self.nfd_group_name}_nfd_version"
@@ -43,12 +43,11 @@ class NFRETGenerator:
 
     @staticmethod
     def _get_nfdv(
-        config: NFDRETConfiguration, api_clients
+        config: NFDRETConfiguration, api_clients: ApiClients
     ) -> NetworkFunctionDefinitionVersion:
         """Get the existing NFDV resource object."""
         print(
-            "Reading existing NFDV resource object "
-            f"{config.version} from group {config.name}"
+            f"Reading existing NFDV resource object {config.version} from group {config.name}"
         )
         nfdv_object = api_clients.aosm_client.proxy_network_function_definition_versions.get(
             publisher_scope_name=config.publisher_scope,
