@@ -1958,7 +1958,7 @@ def create_or_update_github_action(cmd,
                     return r
 
             raise ValidationError(
-                "Failed to find workflow file for Container App '{}' in .github/workflow folder for repo '{}'. ".format(name, repo) +
+                "Failed to find workflow file for Container App '{}' in .github/workflow folder for repo '{}'. ".format(name, repo) + "Please try again by re-running the command."
                 "If this file was removed, please use the 'az containerapp github-action delete' command to disconnect the removed workflow file connection.")
         return r
     except Exception as e:
