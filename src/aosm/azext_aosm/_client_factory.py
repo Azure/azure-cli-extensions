@@ -11,7 +11,7 @@ from .vendored_sdks import HybridNetworkManagementClient
 
 
 def cf_aosm(cli_ctx, *_) -> HybridNetworkManagementClient:
-    return get_mgmt_service_client(cli_ctx, HybridNetworkManagementClient)
+    return get_mgmt_service_client(cli_ctx, HybridNetworkManagementClient, base_url_bound=False)
 
 
 def cf_resources(cli_ctx, subscription_id=None):
