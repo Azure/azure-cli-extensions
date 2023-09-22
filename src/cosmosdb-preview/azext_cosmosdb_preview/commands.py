@@ -189,7 +189,7 @@ def load_command_table(self, _):
         client_factory=cf_data_transfer_job
     )
 
-    with self.command_group('cosmosdb dts', cosmosdb_data_transfer_job, client_factory=cf_data_transfer_job, is_preview=True) as g:
+    with self.command_group('cosmosdb dts', cosmosdb_data_transfer_job, client_factory=cf_data_transfer_job, is_preview=True, deprecate_info=self.deprecate(redirect='cosmosdb copy', hide=True)) as g:
         g.custom_command('copy', 'cosmosdb_data_transfer_copy_job')
         g.command('list', 'list_by_database_account')
         g.show_command('show', 'get')

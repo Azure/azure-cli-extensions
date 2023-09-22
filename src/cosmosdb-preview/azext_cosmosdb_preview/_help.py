@@ -842,7 +842,7 @@ helps['cosmosdb copy list'] = """
     examples:
       - name: List all jobs
         text: |-
-               az cosmosdb dts list --dest-account "db1" -g "rg1"
+               az cosmosdb copy list -g "rg1" --dest-account "db1" 
 """
 
 helps['cosmosdb copy show'] = """
@@ -851,7 +851,10 @@ helps['cosmosdb copy show'] = """
     examples:
       - name: Show details of job j1
         text: |-
-               az cosmosdb dts show --dest-account "db1" --job-name "j1" -g "rg1"
+               az cosmosdb copy show -g "rg1" --dest-account "db1" --job-name "j1"
+      - name: Show job details using Id
+        text: |-
+               az cosmosdb copy show --ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.DocumentDB/databaseAccounts/db1/dataTransferJobs/j1"
 """
 
 helps['cosmosdb copy pause'] = """
@@ -860,7 +863,10 @@ helps['cosmosdb copy pause'] = """
     examples:
       - name: Pause job j1
         text: |-
-               az cosmosdb dts pause --dest-account "db1" --job-name "j1" -g "rg1"
+               az cosmosdb copy pause -g "rg1" --dest-account "db1" --job-name "j1"
+      - name: Pause job using Id
+        text: |-
+               az cosmosdb copy pause --ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.DocumentDB/databaseAccounts/db1/dataTransferJobs/j1"
 """
 
 helps['cosmosdb copy resume'] = """
@@ -869,16 +875,24 @@ helps['cosmosdb copy resume'] = """
     examples:
       - name: Resume job j1
         text: |-
-               az cosmosdb dts resume --dest-account "db1" --job-name "j1" -g "rg1"
+               az cosmosdb copy resume -g "rg1" --dest-account "db1" --job-name "j1"
+      - name: Resume job using Id
+        text: |-
+               az cosmosdb copy resume --ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.DocumentDB/databaseAccounts/db1/dataTransferJobs/j1"
+
 """
 
 helps['cosmosdb copy cancel'] = """
     type: command
-    short-summary: "Cancels a Copy Job."
+    short-summary: "Cancel a Copy Job."
     examples:
       - name: Cancel job j1
         text: |-
-               az cosmosdb dts cancel --dest-account "db1" --job-name "j1" -g "rg1"
+               az cosmosdb copy cancel -g "rg1" --dest-account "db1" --job-name "j1"
+      - name: Cancel job using Id
+        text: |-
+               az cosmosdb copy cancel --ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.DocumentDB/databaseAccounts/db1/dataTransferJobs/j1"
+
 """
 
 helps['cosmosdb sql container merge'] = """
