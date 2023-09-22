@@ -57,7 +57,10 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     MongoCluster,
     NodeGroupSpec,
     NodeKind,
-    FirewallRule
+    FirewallRule,
+    CosmosCassandraDataTransferDataSourceSink,
+    CosmosSqlDataTransferDataSourceSink,
+    CosmosMongoDataTransferDataSourceSink
 )
 
 from azext_cosmosdb_preview._client_factory import (
@@ -1560,6 +1563,100 @@ def cosmosdb_data_transfer_copy_job(client,
 
     return client.create(resource_group_name=resource_group_name,
                          account_name=account_name,
+                         job_name=job_name,
+                         job_create_parameters=job_create_parameters)
+
+
+def cosmosdb_copy_job(client,
+                    resource_group_name,
+                    dest_account,
+                    src_account,
+                    src_cassandra=None,
+                    dest_cassandra=None,
+                    src_nosql=None,
+                    dest_nosql=None,
+                    src_mongo=None,
+                    dest_mongo=None,
+                    job_name=None,
+                    worker_count=0,
+                    host_copy_on_src="false"):
+    host_copy_on_src = host_copy_on_src.lower() == "true"
+    job_create_properties = {}
+    is_cross_account = src_account != dest_account
+    remote_account_name = dest_account if host_copy_on_src else src_account
+
+    source = None
+    if src_cassandra is not None:
+        if source is not None:
+            raise CLIError('Invalid input: multiple source components')
+        if is_cross_account and not host_copy_on_src:
+            source = CosmosCassandraDataTransferDataSourceSink(keyspace_name=src_cassandra.keyspace_name, table_name=src_cassandra.table_name, remote_account_name=remote_account_name)
+        else:
+            source = src_cassandra
+
+    if src_nosql is not None:
+        if source is not None:
+            raise CLIError('Invalid input: multiple source components')
+        if is_cross_account and not host_copy_on_src:
+            source = CosmosSqlDataTransferDataSourceSink(database_name=src_nosql.database_name, container_name=src_nosql.container_name, remote_account_name=remote_account_name)
+        else:
+            source = src_nosql
+
+    if src_mongo is not None:
+        if source is not None:
+            raise CLIError('Invalid input: multiple source components')
+        if is_cross_account and not host_copy_on_src:
+            source = CosmosMongoDataTransferDataSourceSink(database_name=src_mongo.database_name, collection_name=src_mongo.collection_name, remote_account_name=remote_account_name)
+        else:
+            source = src_mongo
+
+    if source is None:
+        raise CLIError('source component is missing')
+    job_create_properties['source'] = source
+
+    destination = None
+    if dest_cassandra is not None:
+        if destination is not None:
+            raise CLIError('Invalid input: multiple destination components')
+        destination = dest_cassandra
+        if is_cross_account and host_copy_on_src:
+            destination = CosmosCassandraDataTransferDataSourceSink(keyspace_name=dest_cassandra.keyspace_name, table_name=dest_cassandra.table_name, remote_account_name=remote_account_name)
+        else:
+            destination = dest_cassandra
+
+    if dest_nosql is not None:
+        if destination is not None:
+            raise CLIError('Invalid input: multiple destination components')
+        if is_cross_account and host_copy_on_src:
+            destination = CosmosSqlDataTransferDataSourceSink(database_name=dest_nosql.database_name, container_name=dest_nosql.container_name, remote_account_name=remote_account_name)
+        else:
+            destination = dest_nosql
+
+    if dest_mongo is not None:
+        if destination is not None:
+            raise CLIError('Invalid input: multiple destination components')
+        if is_cross_account and host_copy_on_src:
+            destination = CosmosMongoDataTransferDataSourceSink(database_name=dest_mongo.database_name, collection_name=dest_mongo.collection_name, remote_account_name=remote_account_name)
+        else:
+            destination = dest_mongo
+
+    if destination is None:
+        raise CLIError('destination component is missing')
+    job_create_properties['destination'] = destination
+
+    if worker_count > 0:
+        job_create_properties['worker_count'] = worker_count
+
+    job_create_parameters = {}
+    job_create_parameters['properties'] = job_create_properties
+
+    if job_name is None:
+        job_name = _gen_guid()
+
+    host_account_name = src_account if host_copy_on_src else dest_account
+
+    return client.create(resource_group_name=resource_group_name,
+                         account_name=host_account_name,
                          job_name=job_name,
                          job_create_parameters=job_create_parameters)
 

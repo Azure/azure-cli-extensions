@@ -778,6 +778,109 @@ helps['cosmosdb dts cancel'] = """
                az cosmosdb dts cancel --account-name "ddb1" --job-name "j1" -g "rg1"
 """
 
+helps['cosmosdb copy'] = """
+    type: group
+    short-summary: Manage copy job
+"""
+
+helps['cosmosdb copy create'] = """
+    type: command
+    short-summary: "Creates a Copy Job."
+    parameters:
+      - name: --src-cassandra
+        short-summary: "Source Cassandra table"
+        long-summary: |
+            Usage: --src-cassandra keyspace=XX table=XX'
+            keyspace: Keyspace name of CosmosDB Cassandra.
+            table: Table name of CosmosDB Cassandra.
+      - name: --dest-cassandra
+        short-summary: "Destination Cassandra table"
+        long-summary: |
+            Usage: --dest-cassandra keyspace=XX table=XX'
+            keyspace: Keyspace name of CosmosDB Cassandra.
+            table: Table name of CosmosDB Cassandra.
+      - name: --src-nosql
+        short-summary: "Source NoSql container"
+        long-summary: |
+            Usage: --src-nosql database=XX container=XX'
+            database: Database name of CosmosDB Sql.
+            container: Container name of CosmosDB Sql.
+      - name: --dest-nosql
+        short-summary: "Destination NoSql container"
+        long-summary: |
+            Usage: --dest-nosql database=XX container=XX'
+            database: Database name of CosmosDB NoSql.
+            container: Container name of CosmosDB NoSql.
+      - name: --src-mongo
+        short-summary: "Source Mongo collection"
+        long-summary: |
+            Usage: --src-mongo database=XX collection=XX'
+            database: Database name of CosmosDB Mongo.
+            collection: Collection name of CosmosDB Mongo.
+      - name: --dest-mongo
+        short-summary: "Destination Mongo collection"
+        long-summary: |
+            Usage: --dest-mongo database=XX collection=XX'
+            database: Database name of CosmosDB Mongo.
+            collection: Collection name of CosmosDB Mongo.
+
+    examples:
+      - name: Copy NoSql container
+        text: |-
+          az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "db1" --dest-account "db1" --src-nosql database=db1 container=c1 --dest-nosql database=db2 container=c2
+      - name: Copy Cassandra table
+        text: |-
+          az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "db1" --dest-account "db1" --src-cassandra keyspace=k1 table=t1 --dest-cassandra keyspace=k2 table=t2
+      - name: Copy Mongo collection
+        text: |-
+          az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "db1" --dest-account "db1" --src-mongo database=d1 collection=c1 --dest-mongo database=d2 collection=c2
+"""
+
+helps['cosmosdb copy list'] = """
+    type: command
+    short-summary: "Get a list of Copy Jobs."
+    examples:
+      - name: List all jobs
+        text: |-
+               az cosmosdb dts list --dest-account "db1" -g "rg1"
+"""
+
+helps['cosmosdb copy show'] = """
+    type: command
+    short-summary: "Get a Copy Job."
+    examples:
+      - name: Show details of job j1
+        text: |-
+               az cosmosdb dts show --dest-account "db1" --job-name "j1" -g "rg1"
+"""
+
+helps['cosmosdb copy pause'] = """
+    type: command
+    short-summary: "Pause a Copy Job."
+    examples:
+      - name: Pause job j1
+        text: |-
+               az cosmosdb dts pause --dest-account "db1" --job-name "j1" -g "rg1"
+"""
+
+helps['cosmosdb copy resume'] = """
+    type: command
+    short-summary: "Resume a Copy Job."
+    examples:
+      - name: Resume job j1
+        text: |-
+               az cosmosdb dts resume --dest-account "db1" --job-name "j1" -g "rg1"
+"""
+
+helps['cosmosdb copy cancel'] = """
+    type: command
+    short-summary: "Cancels a Copy Job."
+    examples:
+      - name: Cancel job j1
+        text: |-
+               az cosmosdb dts cancel --dest-account "db1" --job-name "j1" -g "rg1"
+"""
+
 helps['cosmosdb sql container merge'] = """
     type: command
     short-summary: "Merges the partitions of a sql container."
