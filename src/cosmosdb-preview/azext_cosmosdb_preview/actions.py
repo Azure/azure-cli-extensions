@@ -224,7 +224,7 @@ class AddSqlContainerAction(argparse._AppendAction):
         elif option_string == "--dest-nosql":
             namespace.dest_nosql = nosql_container
         else:
-            namespace.sql_container = sql_container
+            namespace.sql_container = nosql_container
 
 
 # pylint: disable=protected-access, too-few-public-methods
