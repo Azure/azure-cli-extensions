@@ -12,6 +12,18 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.160
++++++++
+* Custom ips and managed ips can be assigned to aks cluster outbound resources
+
+0.5.159
++++++++
+* Revert `az aks copilot` Command
+
+0.5.158
++++++++
+* Add `enable-egress-gateway` and `disable-egress-gateway` to the `az aks mesh` command.
+
 0.5.157
 +++++++
 * Add `--disable-workload-identity` to the `az aks update` command.

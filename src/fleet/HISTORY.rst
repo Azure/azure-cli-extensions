@@ -23,3 +23,11 @@ Release History
 0.2.2
 ++++++
 * Add fleet multi-cluster update commands
+
+0.2.3
+++++++
+* Upgrade SDK version to 2023-06-15-preview
+
+0.2.4
+++++++
+* Added support for private fleet & MSI.
