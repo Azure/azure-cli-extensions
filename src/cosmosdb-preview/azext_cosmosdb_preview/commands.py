@@ -197,6 +197,20 @@ def load_command_table(self, _):
         g.command('resume', 'resume')
         g.command('cancel', 'cancel')
 
+    # Data Transfer Service
+    cosmosdb_copy_job = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations._data_transfer_jobs_operations#DataTransferJobsOperations.{}',
+        client_factory=cf_data_transfer_job
+    )
+
+    with self.command_group('cosmosdb copy', cosmosdb_copy_job, client_factory=cf_data_transfer_job, is_preview=True) as g:
+        g.custom_command('create', 'cosmosdb_copy_job')
+        g.command('list', 'list_by_database_account')
+        g.show_command('show', 'get')
+        g.command('pause', 'pause')
+        g.command('resume', 'resume')
+        g.command('cancel', 'cancel')
+
     # Merge partitions for Sql containers
     cosmosdb_sql_sdk = CliCommandType(
         operations_tmpl='azure.mgmt.cosmosdb.operations#SqlResourcesOperations.{}',
