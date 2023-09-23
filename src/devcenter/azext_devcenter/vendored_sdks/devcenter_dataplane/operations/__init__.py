@@ -6,26 +6,22 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._project_operations import ProjectOperations
-from ._pool_operations import PoolOperations
-from ._schedule_operations import ScheduleOperations
-from ._dev_box_operations import DevBoxOperations
-from ._environments_operations import EnvironmentsOperations
-from ._artifacts_operations import ArtifactsOperations
-from ._environment_definitions_operations import EnvironmentDefinitionsOperations
-from ._catalogs_operations import CatalogsOperations
-from ._environment_type_operations import EnvironmentTypeOperations
-from ._notification_setting_operations import NotificationSettingOperations
+from ._operations import DevCenterOperations
+from ._operations import DevBoxesOperations
+from ._operations import DevBoxOperationsOperations
+from ._operations import EnvironmentsOperations
+from ._operations import EnvironmentOperationsOperations
+
+from ._patch import __all__ as _patch_all
+from ._patch import *  # pylint: disable=unused-wildcard-import
+from ._patch import patch_sdk as _patch_sdk
 
 __all__ = [
-    'ProjectOperations',
-    'PoolOperations',
-    'ScheduleOperations',
-    'DevBoxOperations',
-    'EnvironmentsOperations',
-    'ArtifactsOperations',
-    'EnvironmentDefinitionsOperations',
-    'CatalogsOperations',
-    'EnvironmentTypeOperations',
-    'NotificationSettingOperations'
+    "DevCenterOperations",
+    "DevBoxesOperations",
+    "DevBoxOperationsOperations",
+    "EnvironmentsOperations",
+    "EnvironmentOperationsOperations",
 ]
+__all__.extend([p for p in _patch_all if p not in __all__])
+_patch_sdk()

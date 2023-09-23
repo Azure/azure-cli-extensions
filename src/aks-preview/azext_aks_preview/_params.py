@@ -118,6 +118,7 @@ from azext_aks_preview._validators import (
     validate_defender_config_parameter,
     validate_defender_disable_and_enable_parameters,
     validate_disable_windows_outbound_nat,
+    validate_egress_gtw_nodeselector,
     validate_enable_custom_ca_trust,
     validate_eviction_policy,
     validate_grafanaresourceid,
@@ -408,7 +409,7 @@ def load_arguments(self, _):
         c.argument('enable_pod_security_policy', action='store_true', deprecate_info=c.deprecate(target='--enable-pod-security-policy', hide=True))
         c.argument('enable_pod_identity', action='store_true')
         c.argument('enable_pod_identity_with_kubenet', action='store_true')
-        c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_workload_identity', action='store_true', is_preview=True)
         c.argument('enable_image_cleaner', action='store_true', is_preview=True)
         c.argument('enable_azure_service_mesh',
                    options_list=["--enable-azure-service-mesh", "--enable-asm"],
@@ -449,6 +450,7 @@ def load_arguments(self, _):
         c.argument('ksm_metric_annotations_allow_list')
         c.argument('grafana_resource_id', validator=validate_grafanaresourceid)
         c.argument('enable_windows_recording_rules', action='store_true')
+        c.argument('enable_cost_analysis', is_preview=True, action='store_true')
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -542,7 +544,8 @@ def load_arguments(self, _):
         c.argument('enable_pod_identity', action='store_true')
         c.argument('enable_pod_identity_with_kubenet', action='store_true')
         c.argument('disable_pod_identity', action='store_true')
-        c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_workload_identity', action='store_true', is_preview=True)
+        c.argument('disable_workload_identity', action='store_true', is_preview=True)
         c.argument('enable_image_cleaner', action='store_true', is_preview=True)
         c.argument('disable_image_cleaner', action='store_true', validator=validate_image_cleaner_enable_disable_mutually_exclusive, is_preview=True)
         c.argument('image_cleaner_interval_hours', type=int, is_preview=True)
@@ -573,6 +576,8 @@ def load_arguments(self, _):
         c.argument('guardrails_version', help='The guardrails version', is_preview=True)
         c.argument('guardrails_excluded_ns', is_preview=True)
         c.argument('enable_network_observability', action='store_true', is_preview=True, help="enable network observability for cluster")
+        c.argument('enable_cost_analysis', is_preview=True, action='store_true')
+        c.argument('disable_cost_analysis', is_preview=True, action='store_true')
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
@@ -670,6 +675,13 @@ def load_arguments(self, _):
         c.argument('ignore_pod_disruption_budget', options_list=[
                    "--ignore-pod-disruption-budget", "-i"], action=get_three_state_flag(), is_preview=True,
                    help='delete an AKS nodepool by ignoring PodDisruptionBudget setting')
+
+    with self.argument_context('aks machine') as c:
+        c.argument('cluster_name', help='The cluster name.')
+        c.argument('nodepool_name', validator=validate_nodepool_name, help='The node pool name.')
+
+    with self.argument_context('aks machine show') as c:
+        c.argument('machine_name', help='to display specific information for all machines.')
 
     with self.argument_context('aks maintenanceconfiguration') as c:
         c.argument('cluster_name', help='The cluster name.')
@@ -913,6 +925,10 @@ def load_arguments(self, _):
     with self.argument_context('aks mesh disable-ingress-gateway') as c:
         c.argument('ingress_gateway_type',
                    arg_type=get_enum_type(ingress_gateway_types))
+
+    with self.argument_context('aks mesh enable-egress-gateway') as c:
+        c.argument('egx_gtw_nodeselector', nargs='*', validator=validate_egress_gtw_nodeselector, required=False, default=None,
+                   options_list=["--egress-gateway-nodeselector", "--egx-gtw-ns"])
 
     with self.argument_context('aks mesh enable') as c:
         c.argument('key_vault_id')

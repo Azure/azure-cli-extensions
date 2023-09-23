@@ -155,7 +155,7 @@ class VmwareWorkloadNetworkScenarioTest(ScenarioTest):
         self.assertEqual(vmGroupCreate['name'], 'vmGroup1')
 
         vmGroupUpdate = self.cmd('az vmware workload-network vm-group update --resource-group {rg} --private-cloud {privatecloud} --vm-group {vm_group} --display-name {display_name} --members {members} --revision {revision}').get_output_in_json()
-        self.assertEqual(vmGroupUpdate['name'], 'cloud1')
+        self.assertEqual(vmGroupUpdate['name'], 'vmGroup1')
 
         vmGroupDelete = self.cmd('az vmware workload-network vm-group delete --resource-group {rg} --private-cloud {privatecloud} --vm-group {vm_group} --yes').output
         self.assertEqual(len(vmGroupDelete), 0)

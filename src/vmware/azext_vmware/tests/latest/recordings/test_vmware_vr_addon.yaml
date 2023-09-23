@@ -1,0 +1,234 @@
+interactions:
+- request:
+    body: '{"properties": {"addonType": "VR", "vrsCount": 1}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware addon vr create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '50'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -c --vrs-count
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1/addons/vr?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}'
+    headers:
+      content-length:
+      - '260'
+      content-type:
+      - application/json
+      date:
+      - Wed, 20 Sep 2023 15:27:54 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware addon vr update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c --vrs-count
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1/addons/vr?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}'
+    headers:
+      content-length:
+      - '260'
+      content-type:
+      - application/json
+      date:
+      - Wed, 20 Sep 2023 15:27:59 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"addonType": "VR", "vrsCount": 1}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware addon vr update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '50'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -c --vrs-count
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1/addons/vr?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}'
+    headers:
+      content-length:
+      - '260'
+      content-type:
+      - application/json
+      date:
+      - Wed, 20 Sep 2023 15:27:59 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware addon list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1/addons?api-version=2023-03-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}]}'
+    headers:
+      content-length:
+      - '272'
+      content-type:
+      - application/json
+      date:
+      - Wed, 20 Sep 2023 15:28:04 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware addon vr show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1/addons/vr?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}'
+    headers:
+      content-length:
+      - '260'
+      content-type:
+      - application/json
+      date:
+      - Wed, 20 Sep 2023 15:28:09 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware addon vr delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -c --yes
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1/addons/vr?api-version=2023-03-01
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 20 Sep 2023 15:28:14 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware addon list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmwarepc/providers/Microsoft.AVS/privateClouds/cloud1/addons?api-version=2023-03-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}]}'
+    headers:
+      content-length:
+      - '272'
+      content-type:
+      - application/json
+      date:
+      - Wed, 20 Sep 2023 15:28:19 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+version: 1
