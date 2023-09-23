@@ -14,6 +14,11 @@ Pending
 * Add `az aks machine list` command to fetch list of machines in an agentpool.
 * Add `az aks machine show` command to fetch information about a specific machine in an agentpool.
 
+0.5.161
+++++++
+* Add support for agentpool updating with Capacity Reservation Group.
+    * `az aks nodepool update --crg-id`
+
 0.5.160
 +++++++
 * Custom ips and managed ips can be assigned to aks cluster outbound resources
@@ -38,11 +43,6 @@ Pending
 +++++++
 * Add `--enable-cost-analysis` and `--disable-cost-analysis` to the `az aks update` command.
 * Add `--enable-cost-analysis` to the `az aks create` command.
-
-0.5.155
-++++++
-* Add support for agentpool updating with Capacity Reservation Group.
-    * `az aks nodepool update --crg-id`
 
 0.5.154
 +++++++
