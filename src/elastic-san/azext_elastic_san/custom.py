@@ -27,13 +27,17 @@ class VolumeGroupCreate(_VolumeGroupCreate):
                                                 "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
         )
         args_schema.identity.user_assigned_identities._registered = False
+        args_schema.encryption_properties.identity.user_assigned_identity._fmt = \
+            AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
+                                            "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
         return args_schema
 
     def pre_operations(self):
         args = self.ctx.args
         if args.identity.user_assigned_identity_id:
-            args.identity.user_assigned_identities = {
-                "id": args.identity.user_assigned_identity_id}
+            uai_id = str(args.identity.user_assigned_identity_id)
+            args.identity["user_assigned_identities"] = {
+                uai_id: {}}
             del args.identity.user_assigned_identity_id
 
 
@@ -49,11 +53,16 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
                                                 "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
         )
         args_schema.identity.user_assigned_identities._registered = False
+        args_schema.encryption_properties.identity.user_assigned_identity = AAZStrArg(
+            fmt=AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
+                                                "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
+        )
         return args_schema
 
     def pre_operations(self):
         args = self.ctx.args
         if args.identity.user_assigned_identity_id:
-            args.identity.user_assigned_identities = {
-                "id": args.identity.user_assigned_identity_id}
+            uai_id = str(args.identity.user_assigned_identity_id)
+            args.identity["user_assigned_identities"] = {
+                uai_id: {}}
             del args.identity.user_assigned_identity_id
