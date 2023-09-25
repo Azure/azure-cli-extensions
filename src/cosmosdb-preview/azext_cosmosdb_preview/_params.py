@@ -449,7 +449,7 @@ def load_arguments(self, _):
         c.argument('dest_cassandra', nargs='+', arg_group='CosmosDB for Cassandra Table Copy', action=AddCassandraTableAction, help='Destination Cassandra table details')
         c.argument('dest_mongo', nargs='+', arg_group='CosmosDB for MongoDB Collection Copy', action=AddMongoCollectionAction, help='Destination Mongo collection details')
         c.argument('dest_nosql', nargs='+', arg_group='Cosmos DB for NoSQL Container Copy', action=AddSqlContainerAction, help='Destination NoSql container details')
-        c.argument('host_copy_on_src', help=argparse.SUPPRESS)
+        c.argument('host_copy_on_src', arg_type=get_three_state_flag(), help=argparse.SUPPRESS)
         c.argument('worker_count', type=int, help=argparse.SUPPRESS)
 
     for scope in [
