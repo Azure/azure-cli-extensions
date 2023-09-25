@@ -6,7 +6,7 @@ upcoming
 
 0.3.41
 ++++++
-* 'az containerapp create': enable support for no Dockerfile cases with --repo
+* 'az containerapp up/create': enable support for no Dockerfile cases with --repo
 
 0.3.40
 ++++++
