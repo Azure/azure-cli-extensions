@@ -14,7 +14,6 @@ from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        InvalidArgumentValueError,
                                        MutuallyExclusiveArgumentError)
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
 from .vendored_sdks.appplatform.v2023_09_01_preview.models import (ApmReference, CertificateReference)
 from .vendored_sdks.appplatform.v2023_09_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
