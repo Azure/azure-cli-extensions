@@ -2102,7 +2102,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if disable_asm:
             if new_profile is None or new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_DISABLED:
                 raise ArgumentUsageError(
-                    "Istio has not been enabled for this cluster, please refer to aka.ms/aks/asm "
+                    "Istio has not been enabled for this cluster, please refer to https://aka.ms/asm-aks-addon-docs "
                     "for more details on enabling Azure Service Mesh."
                 )
             new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_DISABLED
@@ -2110,7 +2110,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         elif enable_asm:
             if new_profile is not None and new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_ISTIO:
                 raise ArgumentUsageError(
-                    "Istio has already been enabled for this cluster, please refer to aka.ms/aks/asm "
+                    "Istio has already been enabled for this cluster, please refer to https://aka.ms/asm-aks-upgrade-docs "
                     "for more details on updating the mesh profile."
                 )
             requested_revision = self.raw_param.get("revision", None)
