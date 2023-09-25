@@ -2472,7 +2472,6 @@ def aks_mesh_enable_ingress_gateway(
         client,
         resource_group_name,
         name,
-        enable_azure_service_mesh=True,
         enable_ingress_gateway=True,
         ingress_gateway_type=ingress_gateway_type)
 
@@ -2505,7 +2504,6 @@ def aks_mesh_enable_egress_gateway(
         client,
         resource_group_name,
         name,
-        enable_azure_service_mesh=True,
         enable_egress_gateway=True,
         egx_gtw_nodeselector=egx_gtw_nodeselector)
 
