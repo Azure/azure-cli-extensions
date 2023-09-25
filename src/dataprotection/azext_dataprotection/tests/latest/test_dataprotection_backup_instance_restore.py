@@ -107,6 +107,7 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
             test.exists('properties.extendedInfo.recoveryDestination')
         ])
 
+    @unittest.skip('Skipping test until datasources are set back up')
     @AllowLargeResponse()
     def test_dataprotection_backup_instance_restore_blob_recovery_point(test):
         test.kwargs.update({
