@@ -58,8 +58,8 @@ DESCRIPTION_MAP: Dict[str, str] = {
         "For ARM templates this must be in format A.B.C"
     ),
     "nsdv_description": "Description of the NSDV",
-    "nsdg_name": (
-        "Network Service Design Group Name. This is the collection of Network Service"
+    "nsd_name": (
+        "Network Service Design (NSD) name. This is the collection of Network Service"
         " Design Versions. Will be created if it does not exist."
     ),
     "nsd_version": (
@@ -498,7 +498,7 @@ class NSConfiguration(Configuration):
             NFDRETConfiguration(),
         ]
     )
-    nsdg_name: str = DESCRIPTION_MAP["nsdg_name"]
+    nsd_name: str = DESCRIPTION_MAP["nsd_name"]
     nsd_version: str = DESCRIPTION_MAP["nsd_version"]
     nsdv_description: str = DESCRIPTION_MAP["nsdv_description"]
 
@@ -536,7 +536,7 @@ class NSConfiguration(Configuration):
 
         for configuration in self.network_functions:
             configuration.validate()
-        if self.nsdg_name in (DESCRIPTION_MAP["nsdg_name"], ""):
+        if self.nsd_name in (DESCRIPTION_MAP["nsd_name"], ""):
             raise ValueError("NSD name must be set")
         if self.nsd_version in (DESCRIPTION_MAP["nsd_version"], ""):
             raise ValueError("NSD Version must be set")
@@ -550,12 +550,12 @@ class NSConfiguration(Configuration):
     @property
     def nfvi_site_name(self) -> str:
         """Return the name of the NFVI used for the NSDV."""
-        return f"{self.nsdg_name}_NFVI"
+        return f"{self.nsd_name}_NFVI"
 
     @property
     def cg_schema_name(self) -> str:
         """Return the name of the Configuration Schema used for the NSDV."""
-        return f"{self.nsdg_name.replace('-', '_')}_ConfigGroupSchema"
+        return f"{self.nsd_name.replace('-', '_')}_ConfigGroupSchema"
 
     @property
     def acr_manifest_names(self) -> List[str]:
