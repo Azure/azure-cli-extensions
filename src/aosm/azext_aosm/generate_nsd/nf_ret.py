@@ -19,7 +19,7 @@ logger = get_logger(__name__)
 
 
 class NFRETGenerator:
-    """Represents a single network function resource element template withing an NSD."""
+    """Represents a single network function resource element template within an NSD."""
 
     def __init__(
         self, api_clients: ApiClients, config: NFDRETConfiguration, cg_schema_name: str

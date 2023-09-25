@@ -1,6 +1,6 @@
 {
     "location": "westcentralus",
-    "publisher_name": "nginx-publisher",
+    "publisher_name": "automated-tests-nginx-publisher",
     "publisher_resource_group_name": "{{publisher_resource_group_name}}",
     "acr_artifact_store_name": "nginx-nsd-acr",
     "network_functions": [
@@ -10,7 +10,7 @@
             "publisher_offering_location": "westcentralus",
             "type": "cnf",
             "multiple_instances": false,
-            "publisher": "nginx-publisher",
+            "publisher": "automated-tests-nginx-publisher",
             "publisher_scope": "private",
             "publisher_resource_group": "{{publisher_resource_group_name}}"
         }
