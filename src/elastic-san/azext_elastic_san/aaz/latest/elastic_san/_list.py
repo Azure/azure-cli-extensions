@@ -23,12 +23,14 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2021-11-20-preview",
+        "version": "2022-12-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elasticsan/elasticsans", "2021-11-20-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans", "2021-11-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elasticsan/elasticsans", "2022-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans", "2022-12-01-preview"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -58,11 +60,11 @@ class List(AAZCommand):
             self.ElasticSansListBySubscription(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -115,7 +117,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-11-20-preview",
+                    "api-version", "2022-12-01-preview",
                     required=True,
                 ),
             }
@@ -152,9 +154,7 @@ class List(AAZCommand):
                 serialized_name="nextLink",
                 flags={"read_only": True},
             )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
+            _schema_on_200.value = AAZListType()
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -163,7 +163,9 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType()
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -174,6 +176,7 @@ class List(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
+            _ListHelper._build_schema_system_data_read(_element.system_data)
             _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
@@ -190,6 +193,10 @@ class List(AAZCommand):
             properties.extended_capacity_size_ti_b = AAZIntType(
                 serialized_name="extendedCapacitySizeTiB",
                 flags={"required": True},
+            )
+            properties.private_endpoint_connections = AAZListType(
+                serialized_name="privateEndpointConnections",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -222,37 +229,64 @@ class List(AAZCommand):
             availability_zones = cls._schema_on_200.value.Element.properties.availability_zones
             availability_zones.Element = AAZStrType()
 
+            private_endpoint_connections = cls._schema_on_200.value.Element.properties.private_endpoint_connections
+            private_endpoint_connections.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _ListHelper._build_schema_system_data_read(_element.system_data)
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties
+            properties.group_ids = AAZListType(
+                serialized_name="groupIds",
+            )
+            properties.private_endpoint = AAZObjectType(
+                serialized_name="privateEndpoint",
+            )
+            properties.private_link_service_connection_state = AAZObjectType(
+                serialized_name="privateLinkServiceConnectionState",
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+
+            group_ids = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties.group_ids
+            group_ids.Element = AAZStrType()
+
+            private_endpoint = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties.private_endpoint
+            private_endpoint.id = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            private_link_service_connection_state = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
+            private_link_service_connection_state.actions_required = AAZStrType(
+                serialized_name="actionsRequired",
+            )
+            private_link_service_connection_state.description = AAZStrType()
+            private_link_service_connection_state.status = AAZStrType()
+
             sku = cls._schema_on_200.value.Element.properties.sku
             sku.name = AAZStrType(
                 flags={"required": True},
             )
             sku.tier = AAZStrType()
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-                flags={"read_only": True},
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-                flags={"read_only": True},
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-                flags={"read_only": True},
-            )
 
             tags = cls._schema_on_200.value.Element.tags
             tags.Element = AAZStrType()
@@ -299,7 +333,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-11-20-preview",
+                    "api-version", "2022-12-01-preview",
                     required=True,
                 ),
             }
@@ -336,9 +370,7 @@ class List(AAZCommand):
                 serialized_name="nextLink",
                 flags={"read_only": True},
             )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
+            _schema_on_200.value = AAZListType()
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -347,7 +379,9 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType()
+            _element.location = AAZStrType(
+                flags={"required": True},
+            )
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -358,6 +392,7 @@ class List(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
+            _ListHelper._build_schema_system_data_read(_element.system_data)
             _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
@@ -374,6 +409,10 @@ class List(AAZCommand):
             properties.extended_capacity_size_ti_b = AAZIntType(
                 serialized_name="extendedCapacitySizeTiB",
                 flags={"required": True},
+            )
+            properties.private_endpoint_connections = AAZListType(
+                serialized_name="privateEndpointConnections",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -406,42 +445,117 @@ class List(AAZCommand):
             availability_zones = cls._schema_on_200.value.Element.properties.availability_zones
             availability_zones.Element = AAZStrType()
 
+            private_endpoint_connections = cls._schema_on_200.value.Element.properties.private_endpoint_connections
+            private_endpoint_connections.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"required": True, "client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _ListHelper._build_schema_system_data_read(_element.system_data)
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties
+            properties.group_ids = AAZListType(
+                serialized_name="groupIds",
+            )
+            properties.private_endpoint = AAZObjectType(
+                serialized_name="privateEndpoint",
+            )
+            properties.private_link_service_connection_state = AAZObjectType(
+                serialized_name="privateLinkServiceConnectionState",
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+
+            group_ids = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties.group_ids
+            group_ids.Element = AAZStrType()
+
+            private_endpoint = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties.private_endpoint
+            private_endpoint.id = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            private_link_service_connection_state = cls._schema_on_200.value.Element.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
+            private_link_service_connection_state.actions_required = AAZStrType(
+                serialized_name="actionsRequired",
+            )
+            private_link_service_connection_state.description = AAZStrType()
+            private_link_service_connection_state.status = AAZStrType()
+
             sku = cls._schema_on_200.value.Element.properties.sku
             sku.name = AAZStrType(
                 flags={"required": True},
             )
             sku.tier = AAZStrType()
 
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-                flags={"read_only": True},
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-                flags={"read_only": True},
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-                flags={"read_only": True},
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-                flags={"read_only": True},
-            )
-
             tags = cls._schema_on_200.value.Element.tags
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _ListHelper:
+    """Helper class for List"""
+
+    _schema_system_data_read = None
+
+    @classmethod
+    def _build_schema_system_data_read(cls, _schema):
+        if cls._schema_system_data_read is not None:
+            _schema.created_at = cls._schema_system_data_read.created_at
+            _schema.created_by = cls._schema_system_data_read.created_by
+            _schema.created_by_type = cls._schema_system_data_read.created_by_type
+            _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+            _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+            _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
+            return
+
+        cls._schema_system_data_read = _schema_system_data_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        system_data_read = _schema_system_data_read
+        system_data_read.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data_read.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data_read.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data_read.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data_read.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data_read.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        _schema.created_at = cls._schema_system_data_read.created_at
+        _schema.created_by = cls._schema_system_data_read.created_by
+        _schema.created_by_type = cls._schema_system_data_read.created_by_type
+        _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+        _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+        _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
 
 
 __all__ = ["List"]

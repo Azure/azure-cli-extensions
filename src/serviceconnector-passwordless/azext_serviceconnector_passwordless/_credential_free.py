@@ -63,16 +63,23 @@ def get_enable_mi_for_db_linker_func(yes=False):
             cmd, target_id, target_type, auth_info, client_type, connection_name, skip_prompt=yes)
         if target_handler is None:
             return None
+        target_handler.check_db_existence()
 
-        user_object_id = auth_info.get('principal_id') if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserAccount] else None
+        user_object_id = auth_info.get(
+            'principal_id') if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserAccount] else auth_info.get("user_object_id")
         if user_object_id is None:
-            user_object_id = get_object_id_of_current_user()
-
-        if user_object_id is None:
-            e = Exception(
-                "No object id for current user {}".format(target_handler.login_username))
-            telemetry.set_exception(e, "No-User-Oid")
-            raise e
+            try:
+                user_object_id = get_object_id_of_current_user()
+            except CLIInternalError as e:
+                telemetry.set_exception(e, "No-User-Oid")
+                if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserAccount]:
+                    raise e
+                error_msg = "Unable to get current login user object id. "
+                if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserIdentity]:
+                    error_msg += "You can provide it via --user-identity user-object-id=xx"
+                if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.SystemIdentity]:
+                    error_msg += "You can provide it via --system-identity user-object-id=xx"
+                logger.warning(error_msg)
 
         target_handler.user_object_id = user_object_id
         if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.SystemIdentity]:
@@ -170,6 +177,8 @@ class TargetHandler:
     user_object_id = ""
     aad_username = ""
 
+    admin_username = ""
+
     identity_name = ""
     identity_client_id = ""
     identity_object_id = ""
@@ -212,6 +221,9 @@ class TargetHandler:
         return
 
     def create_aad_user(self):
+        return
+
+    def check_db_existence(self):
         return
 
     def get_auth_flag(self):
@@ -268,14 +280,38 @@ class MysqlFlexibleHandler(TargetHandler):
         self.server = target_segments.get('name')
         self.dbname = target_segments.get('child_name_1')
 
+    def check_db_existence(self):
+        try:
+            db_info = run_cli_cmd(
+                'az mysql flexible-server db show --ids {}'.format(self.target_id))
+            if db_info is None:
+                e = ResourceNotFoundError(
+                    "No database found with name {}".format(self.dbname))
+                telemetry.set_exception(e, "No-Db")
+                raise e
+        except CLIInternalError as e:
+            telemetry.set_exception(e, "No-Db")
+            raise e
+
     def set_user_admin(self, user_object_id, **kwargs):
         mysql_identity_id = kwargs['mysql_identity_id']
         admins = run_cli_cmd(
             'az mysql flexible-server ad-admin list -g {} -s {} --subscription {}'.format(
                 self.resource_group, self.server, self.subscription)
         )
-        is_admin = any(ad.get('sid') == user_object_id for ad in admins)
-        if is_admin:
+        if not user_object_id:
+            if not admins:
+                e = ValidationError(
+                    'No AAD admin found. Please set current user as AAD admin and try again.')
+                telemetry.set_exception(e, "Missing-Aad-Admin")
+                raise e
+            else:
+                logger.warning(
+                    'Unable to check if current user is AAD admin. Please confirm current user as AAD admin manually.')
+                return
+        admin_info = next((ad for ad in admins if ad.get('sid') == user_object_id), None)
+        if admin_info:
+            self.admin_username = admin_info.get('login')
             return
 
         logger.warning('Set current user as DB Server AAD Administrators.')
@@ -293,6 +329,7 @@ class MysqlFlexibleHandler(TargetHandler):
                 self.resource_group, self.server, self.subscription, mysql_identity_id))
         run_cli_cmd('az mysql flexible-server ad-admin create -g {} -s {} --subscription {} -u {} -i {} --identity {}'.format(
             self.resource_group, self.server, self.subscription, self.login_username, user_object_id, mysql_identity_id))
+        self.admin_username = self.login_username
 
     def create_aad_user(self):
         query_list = self.get_create_query()
@@ -338,7 +375,7 @@ class MysqlFlexibleHandler(TargetHandler):
                 'az mysql flexible-server show --ids {}'.format(self.target_id))
             if target.get('network').get('publicNetworkAccess') == "Disabled":
                 ex = AzureConnectionError(
-                    "The target resource doesn't allow public access. Connection can't be created.")
+                    "The target resource doesn't allow public access. Please enable it manually and try again.")
                 telemetry.set_exception(ex, "Public-Access-Disabled")
                 raise ex
             logger.warning("Add firewall rule %s %s - %s...%s", ip_name, start_ip, end_ip,
@@ -408,7 +445,7 @@ class MysqlFlexibleHandler(TargetHandler):
         return {
             'host': self.server + self.endpoint,
             'database': self.dbname,
-            'user': self.login_username,
+            'user': self.admin_username,
             'password': password,
             'ssl': {"fake_flag_to_enable_tls": True},
             'autocommit': True
@@ -443,16 +480,40 @@ class SqlHandler(TargetHandler):
         self.server = target_segments.get('name')
         self.dbname = target_segments.get('child_name_1')
 
+    def check_db_existence(self):
+        try:
+            db_info = run_cli_cmd(
+                'az sql db show --ids {}'.format(self.target_id))
+            if db_info is None:
+                e = ResourceNotFoundError(
+                    "No database found with name {}".format(self.dbname))
+                telemetry.set_exception(e, "No-Db")
+                raise e
+        except CLIInternalError as e:
+            telemetry.set_exception(e, "No-Db")
+            raise e
+
     def set_user_admin(self, user_object_id, **kwargs):
         # pylint: disable=not-an-iterable
         admins = run_cli_cmd(
             'az sql server ad-admin list --ids {}'.format(self.target_id))
-        is_admin = any(ad.get('sid') == user_object_id for ad in admins)
-        if not is_admin:
+        if not user_object_id:
+            if not admins:
+                e = ValidationError(
+                    'No AAD admin found. Please set current user as AAD admin and try again.')
+                telemetry.set_exception(e, "Missing-Aad-Admin")
+                raise e
+            else:
+                logger.warning(
+                    'Unable to check if current user is AAD admin. Please confirm current user as AAD admin manually.')
+                return
+        admin_info = next((ad for ad in admins if ad.get('sid') == user_object_id), None)
+        if not admin_info:
             logger.warning('Setting current user as database server AAD admin:'
                            ' user=%s object id=%s', self.login_username, user_object_id)
-            run_cli_cmd('az sql server ad-admin create -g {} --server-name {} --display-name {} --object-id {} --subscription {}'.format(
-                self.resource_group, self.server, self.login_username, user_object_id, self.subscription)).get('objectId')
+            admin_info = run_cli_cmd('az sql server ad-admin create -g {} --server-name {} --display-name {} --object-id {} --subscription {}'.format(
+                self.resource_group, self.server, self.login_username, user_object_id, self.subscription))
+        self.admin_username = admin_info.get('login', self.login_username)
 
     def create_aad_user(self):
 
@@ -586,7 +647,7 @@ class SqlHandler(TargetHandler):
             self.aad_username = self.login_username
         role_q = "CREATE USER \"{}\" FROM EXTERNAL PROVIDER;".format(
             self.aad_username)
-        grant_q = "GRANT CONTROL ON DATABASE::{} TO \"{}\";".format(
+        grant_q = "GRANT CONTROL ON DATABASE::\"{}\" TO \"{}\";".format(
             self.dbname, self.aad_username)
 
         return [role_q, grant_q]
@@ -608,24 +669,47 @@ class PostgresFlexHandler(TargetHandler):
         self.host = self.db_server + self.endpoint
         self.dbname = target_segments.get('child_name_1')
 
+    def check_db_existence(self):
+        try:
+            db_info = run_cli_cmd(
+                'az postgres flexible-server db show --ids {}'.format(self.target_id))
+            if db_info is None:
+                e = ResourceNotFoundError(
+                    "No database found with name {}".format(self.dbname))
+                telemetry.set_exception(e, "No-Db")
+                raise e
+        except CLIInternalError as e:
+            telemetry.set_exception(e, "No-Db")
+            raise e
+
     def enable_target_aad_auth(self):
         target = run_cli_cmd(
             'az postgres flexible-server show --ids {}'.format(self.target_id))
         if target.get('authConfig').get('activeDirectoryAuth') == "Enabled":
             return
-        run_cli_cmd('az postgres flexible-server update -g {} -n {} --subscription {} --active-directory-auth Enabled'.format(
-            self.resource_group, self.db_server, self.subscription))
+        run_cli_cmd('az postgres flexible-server update --ids {} --active-directory-auth Enabled'.format(
+            self.target_id))
 
     def set_user_admin(self, user_object_id, **kwargs):
         admins = run_cli_cmd('az postgres flexible-server ad-admin list -g {} -s {} --subscription {}'.format(
             self.resource_group, self.db_server, self.subscription))
 
-        is_admin = any(user_object_id in u.get("objectId", "") for u in admins)
-        if is_admin:
-            return
-        logger.warning('Set current user as DB Server AAD Administrators.')
-        run_cli_cmd('az postgres flexible-server ad-admin create -u {} -i {} -g {} -s {} --subscription {} -t {}'.format(
-            self.login_username, user_object_id, self.resource_group, self.db_server, self.subscription, self.login_usertype))
+        if not user_object_id:
+            if not admins:
+                e = ValidationError(
+                    'No AAD admin found. Please set current user as AAD admin and try again.')
+                telemetry.set_exception(e, "Missing-Aad-Admin")
+                raise e
+            else:
+                logger.warning(
+                    'Unable to check if current user is AAD admin. Please confirm current user as AAD admin manually.')
+                return
+        admin_info = next((ad for ad in admins if ad.get('objectId', "") == user_object_id), None)
+        if not admin_info:
+            logger.warning('Set current user as DB Server AAD Administrators.')
+            admin_info = run_cli_cmd('az postgres flexible-server ad-admin create -u {} -i {} -g {} -s {} --subscription {} -t {}'.format(
+                self.login_username, user_object_id, self.resource_group, self.db_server, self.subscription, self.login_usertype))
+        self.admin_username = admin_info.get('principalName', self.login_username)
 
     def create_aad_user(self):
         query_list = self.get_create_query()
@@ -672,7 +756,7 @@ class PostgresFlexHandler(TargetHandler):
                 'az postgres flexible-server show --ids {}'.format(self.target_id))
             if target.get('network').get('publicNetworkAccess') == "Disabled":
                 ex = AzureConnectionError(
-                    "The target resource doesn't allow public access. Connection can't be created.")
+                    "The target resource doesn't allow public access. Please enable it manually and try again.")
                 telemetry.set_exception(ex, "Public-Access-Disabled")
                 raise ex
             logger.warning("Add firewall rule %s %s - %s...%s", ip_name, start_ip, end_ip,
@@ -744,7 +828,7 @@ class PostgresFlexHandler(TargetHandler):
 
         # extension functions require the extension to be available, which is the case for postgres (default) database.
         conn_string = "host={} user={} dbname=postgres password={} sslmode=require".format(
-            self.host, self.login_username, password)
+            self.host, self.admin_username, password)
         return conn_string
 
     def get_create_query(self):
@@ -770,21 +854,45 @@ class PostgresSingleHandler(PostgresFlexHandler):
     def enable_target_aad_auth(self):
         return
 
+    def check_db_existence(self):
+        try:
+            db_info = run_cli_cmd(
+                'az postgres db show --ids {} -n {}'.format(self.target_id, self.dbname))
+            if db_info is None:
+                e = ResourceNotFoundError(
+                    "No database found with name {}".format(self.dbname))
+                telemetry.set_exception(e, "No-Db")
+                raise e
+        except CLIInternalError as e:
+            telemetry.set_exception(e, "No-Db")
+            raise e
+
     def set_user_admin(self, user_object_id, **kwargs):
         sub = self.subscription
         rg = self.resource_group
         server = self.db_server
-        is_admin = True
 
         # pylint: disable=not-an-iterable
         admins = run_cli_cmd(
             'az postgres server ad-admin list --ids {}'.format(self.target_id))
-        is_admin = any(ad.get('sid') == user_object_id for ad in admins)
-        if not is_admin:
+
+        if not user_object_id:
+            if not admins:
+                e = ValidationError(
+                    'No AAD admin found. Please set current user as AAD admin and try again.')
+                telemetry.set_exception(e, "Missing-Aad-Admin")
+                raise e
+            else:
+                logger.warning(
+                    'Unable to check if current user is AAD admin. Please confirm current user as AAD admin manually.')
+                return
+        admin_info = next((ad for ad in admins if ad.get('sid') == user_object_id), None)
+        if not admin_info:
             logger.warning('Setting current user as database server AAD admin:'
                            ' user=%s object id=%s', self.login_username, user_object_id)
-            run_cli_cmd('az postgres server ad-admin create -g {} --server-name {} --display-name {} --object-id {}'
-                        ' --subscription {}'.format(rg, server, self.login_username, user_object_id, sub)).get('objectId')
+            admin_info = run_cli_cmd('az postgres server ad-admin create -g {} --server-name {} --display-name {} --object-id {}'
+                                     ' --subscription {}'.format(rg, server, self.login_username, user_object_id, sub))
+        self.admin_username = admin_info.get('login', self.login_username)
 
     def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
         sub = self.subscription
@@ -825,7 +933,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
 
         # extension functions require the extension to be available, which is the case for postgres (default) database.
         conn_string = "host={} user={} dbname={} password={} sslmode=require".format(
-            self.host, self.login_username + '@' + self.db_server, self.dbname, password)
+            self.host, self.admin_username + '@' + self.db_server, self.dbname, password)
         return conn_string
 
     def get_create_query(self):

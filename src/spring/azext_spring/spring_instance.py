@@ -5,8 +5,8 @@
 
 # pylint: disable=wrong-import-order
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
-from ._utils import (wait_till_end, _get_rg_location)
-from .vendored_sdks.appplatform.v2023_05_01_preview import models
+from ._utils import (wait_till_end, _get_rg_location, register_provider_if_needed)
+from .vendored_sdks.appplatform.v2023_09_01_preview import models
 from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create)
 from ._build_service import _update_default_build_agent_pool, create_build_service
 from .buildpack_binding import create_default_buildpack_binding_for_application_insights
@@ -23,7 +23,7 @@ from ._validators import (_parse_sku_name, validate_instance_not_existed)
 from azure.cli.core.commands import LongRunningOperation
 from knack.log import get_logger
 from ._marketplace import _spring_list_marketplace_plan
-from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PUBLISHER_ID)
+from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PUBLISHER_ID, AKS_RP)
 
 logger = get_logger(__name__)
 
@@ -239,6 +239,9 @@ def spring_create(cmd, client, resource_group, name,
         'no_wait': no_wait
     }
 
+    if vnet:
+        register_provider_if_needed(cmd, AKS_RP)
+
     spring_factory = _get_factory(cmd, client, resource_group, name, location=location, sku=sku)
     return spring_factory.create(**kwargs)
 
@@ -260,3 +263,7 @@ def _enable_app_insights(cmd, client, resource_group, name, location, app_insigh
 
 def spring_list_marketplace_plan(cmd, client):
     return _spring_list_marketplace_plan(cmd, client)
+
+
+def spring_list_support_server_versions(cmd, client, resource_group, service):
+    return client.services.list_supported_server_versions(resource_group, service)

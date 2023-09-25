@@ -11,6 +11,7 @@ from azext_networkcloud.operations.kubernetescluster.agentpool._create import Cr
 from azure.cli.core.mock import DummyCli
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
+
 from .test_common_ssh import TestCommonSsh
 
 
@@ -25,10 +26,10 @@ class TestKubernetesClusterAgentPoolCreate(unittest.TestCase):
         self.cmd = Create(loader)
 
     def test_build_arguments_schema(self):
-        """Test that _build_arguments_schema unregisters the parameters."""
+        """Test that _build_arguments_schema un-registers the parameters."""
         args_schema = mock.Mock()
         results_args_schema = self.cmd._build_arguments_schema(args_schema)
-        # valdiate registered parameters
+        # validate registered parameters
         self.assertFalse(results_args_schema.ssh_public_keys._registered)
 
     def test_pre_operations(self):
@@ -45,9 +46,23 @@ class TestKubernetesClusterAgentPoolCreate(unittest.TestCase):
             )
             # Convert from bytes
             keys.append(str(pub, "UTF-8"))
+        # no ssh keys passed to agent pool
+        args.ssh_key_values = []
+        args.ssh_dest_key_path = []
+        args.generate_ssh_keys = []
+        args.ssh_public_keys = None
+
+        self.cmd.ctx = mock.Mock()
+        self.cmd.ctx.args = args
+
+        # Call func
+        self.cmd.pre_operations()
+        self.assertEqual(None, self.cmd.ctx.args.ssh_public_keys)
+        # SSH keys passed to agent pool
         args.ssh_key_values = keys
         args.ssh_dest_key_path = []
         args.generate_ssh_keys = []
+        args.ssh_public_keys = None
 
         self.cmd.ctx = mock.Mock()
         self.cmd.ctx.args = args
@@ -59,18 +74,18 @@ class TestKubernetesClusterAgentPoolCreate(unittest.TestCase):
     @mock.patch("azure.cli.core.keys.generate_ssh_keys")
     @mock.patch("os.path.expanduser")
     def test_vm_generate_ssh_keys(self, mock_expand_user, mock_keys):
-        """ Test KubernetesCluster agentpool generate ssh key option"""
-        TestCommonSsh.validate_generate_ssh_keys(
-            self, mock_expand_user, mock_keys)
+        """Test KubernetesCluster agentpool generate ssh key option"""
+        TestCommonSsh.validate_generate_ssh_keys(self, mock_expand_user, mock_keys)
 
     @mock.patch("os.listdir")
     @mock.patch("os.path.isdir")
     @mock.patch("os.path.isfile")
     def test_vm_get_ssh_keys_from_path(self, mock_isfile, mock_isdir, mock_listdir):
-        """ Test KubernetesCluster agent pool ssh-key-from-path paramter enabled """
+        """Test KubernetesCluster agent pool ssh-key-from-path parameter enabled"""
         TestCommonSsh.validate_get_ssh_keys_from_path(
-            self, mock_isfile, mock_isdir, mock_listdir)
+            self, mock_isfile, mock_isdir, mock_listdir
+        )
 
     def test_vm_add_key_action(self):
-        """ Test ssh key provided as input are correctly set in ssh-public-keys"""
+        """Test ssh key provided as input are correctly set in ssh-public-keys"""
         TestCommonSsh.validate_add_key_action(self)

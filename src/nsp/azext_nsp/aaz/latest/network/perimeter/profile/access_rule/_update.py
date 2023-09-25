@@ -119,12 +119,6 @@ class Update(AAZCommand):
             help="Outbound rules fully qualified domain name format.",
             nullable=True,
         )
-        _args_schema.nsp = AAZListArg(
-            options=["--nsp"],
-            arg_group="Properties",
-            help="Inbound rule specified by the perimeter id.",
-            nullable=True,
-        )
         _args_schema.phone_numbers = AAZListArg(
             options=["--phone-numbers"],
             arg_group="Properties",
@@ -150,18 +144,6 @@ class Update(AAZCommand):
 
         fqdn = cls._args_schema.fqdn
         fqdn.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        nsp = cls._args_schema.nsp
-        nsp.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.nsp.Element
-        _element.id = AAZStrArg(
-            options=["id"],
-            help="NSP id in the ARM id format.",
             nullable=True,
         )
 
@@ -429,7 +411,6 @@ class Update(AAZCommand):
                 properties.set_prop("direction", AAZStrType, ".direction")
                 properties.set_prop("emailAddresses", AAZListType, ".email_addresses")
                 properties.set_prop("fullyQualifiedDomainNames", AAZListType, ".fqdn")
-                properties.set_prop("networkSecurityPerimeters", AAZListType, ".nsp")
                 properties.set_prop("phoneNumbers", AAZListType, ".phone_numbers")
                 properties.set_prop("subscriptions", AAZListType, ".subscriptions")
 
@@ -444,14 +425,6 @@ class Update(AAZCommand):
             fully_qualified_domain_names = _builder.get(".properties.fullyQualifiedDomainNames")
             if fully_qualified_domain_names is not None:
                 fully_qualified_domain_names.set_elements(AAZStrType, ".")
-
-            network_security_perimeters = _builder.get(".properties.networkSecurityPerimeters")
-            if network_security_perimeters is not None:
-                network_security_perimeters.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.networkSecurityPerimeters[]")
-            if _elements is not None:
-                _elements.set_prop("id", AAZStrType, ".id")
 
             phone_numbers = _builder.get(".properties.phoneNumbers")
             if phone_numbers is not None:
@@ -523,6 +496,7 @@ class _UpdateHelper:
         )
         properties.network_security_perimeters = AAZListType(
             serialized_name="networkSecurityPerimeters",
+            flags={"read_only": True},
         )
         properties.phone_numbers = AAZListType(
             serialized_name="phoneNumbers",
@@ -546,7 +520,9 @@ class _UpdateHelper:
         network_security_perimeters.Element = AAZObjectType()
 
         _element = _schema_nsp_access_rule_read.properties.network_security_perimeters.Element
-        _element.id = AAZStrType()
+        _element.id = AAZStrType(
+            flags={"read_only": True},
+        )
         _element.location = AAZStrType(
             flags={"read_only": True},
         )

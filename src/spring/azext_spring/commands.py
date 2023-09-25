@@ -27,7 +27,8 @@ from ._transformers import (transform_spring_table_output,
                             transform_build_result_output,
                             transform_apm_output,
                             transform_apm_type_output,
-                            transform_container_registry_output)
+                            transform_container_registry_output,
+                            transform_support_server_versions_output)
 from ._validators import validate_app_insights_command_not_supported_tier
 from ._marketplace import (transform_marketplace_plan_output)
 from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update, validate_dev_tool_portal, validate_customized_accelerator, validate_central_build_instance)
@@ -123,6 +124,9 @@ def load_command_table(self, _):
         g.custom_command('list-marketplace-plan', 'spring_list_marketplace_plan',
                          is_preview=True,
                          table_transformer=transform_marketplace_plan_output)
+        g.custom_command('list-support-server-versions', 'spring_list_support_server_versions',
+                         is_preview=True,
+                         table_transformer=transform_support_server_versions_output)
 
     with self.command_group('spring', client_factory=cf_spring,
                             exception_handler=handle_asc_exception) as g:
@@ -132,6 +136,7 @@ def load_command_table(self, _):
         g.custom_command('stop', 'spring_stop', supports_no_wait=True)
         g.custom_command('list', 'spring_list', table_transformer=transform_spring_table_output)
         g.custom_show_command('show', 'spring_get', table_transformer=transform_spring_table_output)
+        g.custom_command('flush-virtualnetwork-dns-settings', 'spring_flush_vnet_dns_setting', is_preview=True, supports_no_wait=True)
 
     with self.command_group('spring test-endpoint', client_factory=cf_spring,
                             exception_handler=handle_asc_exception) as g:
@@ -248,6 +253,7 @@ def load_command_table(self, _):
     with self.command_group('spring certificate', client_factory=cf_spring,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('add', 'certificate_add')
+        g.custom_command('update', 'certificate_update')
         g.custom_show_command('show', 'certificate_show', table_transformer=transform_spring_certificate_output)
         g.custom_command('list', 'certificate_list', table_transformer=transform_spring_certificate_output)
         g.custom_command('remove', 'certificate_remove')

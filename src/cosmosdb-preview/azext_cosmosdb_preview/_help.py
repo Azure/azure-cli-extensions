@@ -796,6 +796,24 @@ helps['cosmosdb mongodb collection merge'] = """
                az cosmosdb mongodb collection merge -g my-resource-group -a my-account -d my-db --name my-mongodb-collection
 """
 
+helps['cosmosdb sql database merge'] = """
+    type: command
+    short-summary: "Merge the partitions of a sql database."
+    examples:
+      - name: Merge partitions of database my-database
+        text: |-
+               az cosmosdb sql database merge -g my-resource-group -a my-account --name my-database
+"""
+
+helps['cosmosdb mongodb database merge'] = """
+    type: command
+    short-summary: "Merges the partitions of a mongodb database."
+    examples:
+      - name: merge partitions of database my-mongodb-database
+        text: |-
+               az cosmosdb mongodb database merge -g my-resource-group -a my-account --name my-mongodb-collection
+"""
+
 helps['cosmosdb sql container retrieve-partition-throughput'] = """
     type: command
     short-summary: "Retrieve  the partition throughput of a sql container."

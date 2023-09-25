@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a dev box definition.
 
     :example: Create
-        az devcenter admin devbox-definition create --location "eastus" --image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.DevCenter/devcenters/Contoso/galleries/contosogallery/images/exampleImage/version/1.0.0" --os-storage-type "ssd_1024gb" --sku name="general_a_8c32gb_v1" --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
+        az devcenter admin devbox-definition create --location "eastus" --image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.DevCenter/devcenters/Contoso/galleries/contosogallery/images/exampleImage/version/1.0.0" --os-storage-type "ssd_1024gb" --sku name="general_a_8c32gb1024ssd_v2" --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2023-06-01-preview"],
         ]
     }
 
@@ -45,8 +45,8 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.dev_box_definition_name = AAZStrArg(
-            options=["-n", "--name", "--dev-box-definition-name"],
+        _args_schema.devbox_definition_name = AAZStrArg(
+            options=["-n", "--name", "--devbox-definition-name"],
             help="The name of the dev box definition.",
             required=True,
         )
@@ -56,7 +56,6 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -200,7 +199,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "devBoxDefinitionName", self.ctx.args.dev_box_definition_name,
+                    "devBoxDefinitionName", self.ctx.args.devbox_definition_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -222,7 +221,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-06-01-preview",
                     required=True,
                 ),
             }
@@ -344,6 +343,13 @@ class Create(AAZCommand):
             properties.sku = AAZObjectType(
                 flags={"required": True},
             )
+            properties.validation_error_details = AAZListType(
+                serialized_name="validationErrorDetails",
+                flags={"read_only": True},
+            )
+            properties.validation_status = AAZStrType(
+                serialized_name="validationStatus",
+            )
 
             image_validation_error_details = cls._schema_on_200_201.properties.image_validation_error_details
             image_validation_error_details.code = AAZStrType()
@@ -357,6 +363,13 @@ class Create(AAZCommand):
             )
             sku.size = AAZStrType()
             sku.tier = AAZStrType()
+
+            validation_error_details = cls._schema_on_200_201.properties.validation_error_details
+            validation_error_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.validation_error_details.Element
+            _element.code = AAZStrType()
+            _element.message = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

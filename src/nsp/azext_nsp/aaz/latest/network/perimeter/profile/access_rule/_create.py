@@ -20,9 +20,6 @@ class Create(AAZCommand):
     :example: Create IP based access rule
         az network perimeter profile access-rule create -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup --address-prefixes "[10.10.0.0/16]"
 
-    :example: Create NSP based access rule
-        az network perimeter profile access-rule create -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup --nsp "[{id:<NSP_ARM_ID>}]"
-
     :example: Create FQDN based access rule
         az network perimeter profile access-rule create -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup --fqdn "['www.abc.com', 'www.google.com']" --direction "Outbound"
 
@@ -115,11 +112,6 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Outbound rules fully qualified domain name format.",
         )
-        _args_schema.nsp = AAZListArg(
-            options=["--nsp"],
-            arg_group="Properties",
-            help="Inbound rule specified by the perimeter id.",
-        )
         _args_schema.phone_numbers = AAZListArg(
             options=["--phone-numbers"],
             arg_group="Properties",
@@ -139,15 +131,6 @@ class Create(AAZCommand):
 
         fqdn = cls._args_schema.fqdn
         fqdn.Element = AAZStrArg()
-
-        nsp = cls._args_schema.nsp
-        nsp.Element = AAZObjectArg()
-
-        _element = cls._args_schema.nsp.Element
-        _element.id = AAZStrArg(
-            options=["id"],
-            help="NSP id in the ARM id format.",
-        )
 
         phone_numbers = cls._args_schema.phone_numbers
         phone_numbers.Element = AAZStrArg()
@@ -271,7 +254,6 @@ class Create(AAZCommand):
                 properties.set_prop("direction", AAZStrType, ".direction")
                 properties.set_prop("emailAddresses", AAZListType, ".email_addresses")
                 properties.set_prop("fullyQualifiedDomainNames", AAZListType, ".fqdn")
-                properties.set_prop("networkSecurityPerimeters", AAZListType, ".nsp")
                 properties.set_prop("phoneNumbers", AAZListType, ".phone_numbers")
                 properties.set_prop("subscriptions", AAZListType, ".subscriptions")
 
@@ -286,14 +268,6 @@ class Create(AAZCommand):
             fully_qualified_domain_names = _builder.get(".properties.fullyQualifiedDomainNames")
             if fully_qualified_domain_names is not None:
                 fully_qualified_domain_names.set_elements(AAZStrType, ".")
-
-            network_security_perimeters = _builder.get(".properties.networkSecurityPerimeters")
-            if network_security_perimeters is not None:
-                network_security_perimeters.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.networkSecurityPerimeters[]")
-            if _elements is not None:
-                _elements.set_prop("id", AAZStrType, ".id")
 
             phone_numbers = _builder.get(".properties.phoneNumbers")
             if phone_numbers is not None:
@@ -355,6 +329,7 @@ class Create(AAZCommand):
             )
             properties.network_security_perimeters = AAZListType(
                 serialized_name="networkSecurityPerimeters",
+                flags={"read_only": True},
             )
             properties.phone_numbers = AAZListType(
                 serialized_name="phoneNumbers",
@@ -378,7 +353,9 @@ class Create(AAZCommand):
             network_security_perimeters.Element = AAZObjectType()
 
             _element = cls._schema_on_200_201.properties.network_security_perimeters.Element
-            _element.id = AAZStrType()
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.location = AAZStrType(
                 flags={"read_only": True},
             )

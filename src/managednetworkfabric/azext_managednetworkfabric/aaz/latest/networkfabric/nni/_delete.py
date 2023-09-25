@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "networkfabric nni delete",
 )
 class Delete(AAZCommand):
-    """Delete the Network To Network Interconnect resource.
+    """Delete the Network To Network Interconnect resource
 
     :example: Delete the Network To Network Interconnect
         az networkfabric nni delete --resource-group "example-rg" --fabric "example-fabric" --resource-name "example-nni"
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/networktonetworkinterconnects/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics/{}/networktonetworkinterconnects/{}", "2023-06-15"],
         ]
     }
 
@@ -53,7 +53,7 @@ class Delete(AAZCommand):
         )
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the NetworkToNetworkInterconnect Name",
+            help="Name of the Network to Network Interconnect.",
             required=True,
             id_part="child_name_1",
         )
@@ -153,7 +153,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }

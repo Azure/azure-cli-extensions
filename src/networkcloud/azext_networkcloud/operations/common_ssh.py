@@ -12,8 +12,8 @@ Provides Ssh Key customization
 import os
 
 from azure.cli.core import keys
-from azure.cli.core.aaz._base import has_value
 from azure.cli.core.aaz import AAZBoolArg, AAZListArg, AAZStrArg
+from azure.cli.core.aaz._base import has_value
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from knack.log import get_logger
 

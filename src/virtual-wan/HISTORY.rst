@@ -3,10 +3,14 @@
 Release History
 ===============
 
+0.3.0
+++++++
+* `az network vhub connection`: Fix cross-tenant connection cannot be created.
+
 0.2.17
 ++++++
-* `az network vhub connection create`: Add new parameter `allow-b2b-traffic` and `auto-scale-config`.
-* `az network vhub connection update`: Add new parameter `allow-b2b-traffic` and `auto-scale-config`.
+* `az network vhub create`: Add new parameter `allow-b2b-traffic` and `auto-scale-config`.
+* `az network vhub update`: Add new parameter `allow-b2b-traffic` and `auto-scale-config`.
 
 0.2.16
 ++++++

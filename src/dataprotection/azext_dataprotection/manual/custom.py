@@ -84,7 +84,8 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
                                                            include_cluster_scope_resources=None,
                                                            vaulted_backup_containers=None,
                                                            include_all_containers=None,
-                                                           storage_account_name=None, storage_account_resource_group=None):
+                                                           storage_account_name=None, storage_account_resource_group=None,
+                                                           backup_hook_references=None):
     if datasource_type == "AzureKubernetesService":
         if vaulted_backup_containers:
             raise InvalidArgumentValueError('Invalid argument --vaulted-backup-containers for given datasource type.')
@@ -100,14 +101,15 @@ def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasour
             "included_namespaces": included_namespaces,
             "label_selectors": label_selectors,
             "snapshot_volumes": snapshot_volumes,
-            "include_cluster_scope_resources": include_cluster_scope_resources
+            "include_cluster_scope_resources": include_cluster_scope_resources,
+            "backup_hook_references": backup_hook_references
         }
     elif datasource_type == "AzureBlob":
         if any([excluded_resource_types, included_resource_types, excluded_namespaces, included_namespaces,
-                label_selectors, snapshot_volumes, include_cluster_scope_resources]):
+                label_selectors, snapshot_volumes, include_cluster_scope_resources, backup_hook_references]):
             raise InvalidArgumentValueError('Invalid arguments --excluded-resource-type, --included-resource-type, --excluded-namespaces, '
-                                            ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources '
-                                            ' for given datasource type.')
+                                            ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources, '
+                                            ' --backup-hook-references for given datasource type.')
         if vaulted_backup_containers:
             return {
                 "object_type": "BlobBackupDatasourceParameters",
@@ -795,7 +797,8 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
                                                             included_namespaces=None, label_selectors=None,
                                                             persistent_volume_restore_mode=None,
                                                             include_cluster_scope_resources=None,
-                                                            namespace_mappings=None, conflict_policy=None):
+                                                            namespace_mappings=None, conflict_policy=None,
+                                                            restore_hook_references=None):
     if datasource_type != "AzureKubernetesService":
         raise InvalidArgumentValueError("This command is currently not supported for datasource types other than AzureKubernetesService")
 
@@ -819,6 +822,7 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
         "include_cluster_scope_resources": include_cluster_scope_resources,
         "conflict_policy": conflict_policy,
         "namespace_mappings": namespace_mappings,
+        "restore_hook_references": restore_hook_references
     }
 
 

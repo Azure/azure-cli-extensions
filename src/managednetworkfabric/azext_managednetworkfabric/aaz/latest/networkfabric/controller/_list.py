@@ -15,21 +15,20 @@ from azure.cli.core.aaz import *
     "networkfabric controller list",
 )
 class List(AAZCommand):
-    """List all Network Fabric Controllers in the provided resource group or subscription.
+    """List all Network Fabric Controllers in the provided resource group or subscription
 
     :example: List the Network Fabric Controllers for Resource group
         az networkfabric controller list --resource-group "example-rg"
-        az networkfabric controller list -g "example-rg"
 
-    :example: List the Network Fabric Controllers for Subscription.
+    :example: List the Network Fabric Controllers for Subscription
         az networkfabric controller list --subscription "<subscriptionId>"
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers", "2023-02-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers", "2023-06-15"],
         ]
     }
 
@@ -120,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -172,7 +171,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -192,11 +191,15 @@ class List(AAZCommand):
                 serialized_name="infrastructureServices",
                 flags={"read_only": True},
             )
+            _ListHelper._build_schema_controller_services_read(properties.infrastructure_services)
             properties.ipv4_address_space = AAZStrType(
                 serialized_name="ipv4AddressSpace",
             )
             properties.ipv6_address_space = AAZStrType(
                 serialized_name="ipv6AddressSpace",
+            )
+            properties.is_workload_management_network_enabled = AAZStrType(
+                serialized_name="isWorkloadManagementNetworkEnabled",
             )
             properties.managed_resource_group_configuration = AAZObjectType(
                 serialized_name="managedResourceGroupConfiguration",
@@ -205,12 +208,15 @@ class List(AAZCommand):
                 serialized_name="networkFabricIds",
                 flags={"read_only": True},
             )
-            properties.operational_state = AAZStrType(
-                serialized_name="operationalState",
-                flags={"read_only": True},
+            properties.nfc_sku = AAZStrType(
+                serialized_name="nfcSku",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.tenant_internet_gateway_ids = AAZListType(
+                serialized_name="tenantInternetGatewayIds",
                 flags={"read_only": True},
             )
             properties.workload_express_route_connections = AAZListType(
@@ -224,24 +230,11 @@ class List(AAZCommand):
                 serialized_name="workloadServices",
                 flags={"read_only": True},
             )
+            _ListHelper._build_schema_controller_services_read(properties.workload_services)
 
             infrastructure_express_route_connections = cls._schema_on_200.value.Element.properties.infrastructure_express_route_connections
             infrastructure_express_route_connections.Element = AAZObjectType()
             _ListHelper._build_schema_express_route_connection_information_read(infrastructure_express_route_connections.Element)
-
-            infrastructure_services = cls._schema_on_200.value.Element.properties.infrastructure_services
-            infrastructure_services.ipv4_address_spaces = AAZListType(
-                serialized_name="ipv4AddressSpaces",
-            )
-            infrastructure_services.ipv6_address_spaces = AAZListType(
-                serialized_name="ipv6AddressSpaces",
-            )
-
-            ipv4_address_spaces = cls._schema_on_200.value.Element.properties.infrastructure_services.ipv4_address_spaces
-            ipv4_address_spaces.Element = AAZStrType()
-
-            ipv6_address_spaces = cls._schema_on_200.value.Element.properties.infrastructure_services.ipv6_address_spaces
-            ipv6_address_spaces.Element = AAZStrType()
 
             managed_resource_group_configuration = cls._schema_on_200.value.Element.properties.managed_resource_group_configuration
             managed_resource_group_configuration.location = AAZStrType()
@@ -250,23 +243,12 @@ class List(AAZCommand):
             network_fabric_ids = cls._schema_on_200.value.Element.properties.network_fabric_ids
             network_fabric_ids.Element = AAZStrType()
 
+            tenant_internet_gateway_ids = cls._schema_on_200.value.Element.properties.tenant_internet_gateway_ids
+            tenant_internet_gateway_ids.Element = AAZStrType()
+
             workload_express_route_connections = cls._schema_on_200.value.Element.properties.workload_express_route_connections
             workload_express_route_connections.Element = AAZObjectType()
             _ListHelper._build_schema_express_route_connection_information_read(workload_express_route_connections.Element)
-
-            workload_services = cls._schema_on_200.value.Element.properties.workload_services
-            workload_services.ipv4_address_spaces = AAZListType(
-                serialized_name="ipv4AddressSpaces",
-            )
-            workload_services.ipv6_address_spaces = AAZListType(
-                serialized_name="ipv6AddressSpaces",
-            )
-
-            ipv4_address_spaces = cls._schema_on_200.value.Element.properties.workload_services.ipv4_address_spaces
-            ipv4_address_spaces.Element = AAZStrType()
-
-            ipv6_address_spaces = cls._schema_on_200.value.Element.properties.workload_services.ipv6_address_spaces
-            ipv6_address_spaces.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -333,7 +315,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -385,7 +367,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -405,11 +387,15 @@ class List(AAZCommand):
                 serialized_name="infrastructureServices",
                 flags={"read_only": True},
             )
+            _ListHelper._build_schema_controller_services_read(properties.infrastructure_services)
             properties.ipv4_address_space = AAZStrType(
                 serialized_name="ipv4AddressSpace",
             )
             properties.ipv6_address_space = AAZStrType(
                 serialized_name="ipv6AddressSpace",
+            )
+            properties.is_workload_management_network_enabled = AAZStrType(
+                serialized_name="isWorkloadManagementNetworkEnabled",
             )
             properties.managed_resource_group_configuration = AAZObjectType(
                 serialized_name="managedResourceGroupConfiguration",
@@ -418,12 +404,15 @@ class List(AAZCommand):
                 serialized_name="networkFabricIds",
                 flags={"read_only": True},
             )
-            properties.operational_state = AAZStrType(
-                serialized_name="operationalState",
-                flags={"read_only": True},
+            properties.nfc_sku = AAZStrType(
+                serialized_name="nfcSku",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.tenant_internet_gateway_ids = AAZListType(
+                serialized_name="tenantInternetGatewayIds",
                 flags={"read_only": True},
             )
             properties.workload_express_route_connections = AAZListType(
@@ -437,24 +426,11 @@ class List(AAZCommand):
                 serialized_name="workloadServices",
                 flags={"read_only": True},
             )
+            _ListHelper._build_schema_controller_services_read(properties.workload_services)
 
             infrastructure_express_route_connections = cls._schema_on_200.value.Element.properties.infrastructure_express_route_connections
             infrastructure_express_route_connections.Element = AAZObjectType()
             _ListHelper._build_schema_express_route_connection_information_read(infrastructure_express_route_connections.Element)
-
-            infrastructure_services = cls._schema_on_200.value.Element.properties.infrastructure_services
-            infrastructure_services.ipv4_address_spaces = AAZListType(
-                serialized_name="ipv4AddressSpaces",
-            )
-            infrastructure_services.ipv6_address_spaces = AAZListType(
-                serialized_name="ipv6AddressSpaces",
-            )
-
-            ipv4_address_spaces = cls._schema_on_200.value.Element.properties.infrastructure_services.ipv4_address_spaces
-            ipv4_address_spaces.Element = AAZStrType()
-
-            ipv6_address_spaces = cls._schema_on_200.value.Element.properties.infrastructure_services.ipv6_address_spaces
-            ipv6_address_spaces.Element = AAZStrType()
 
             managed_resource_group_configuration = cls._schema_on_200.value.Element.properties.managed_resource_group_configuration
             managed_resource_group_configuration.location = AAZStrType()
@@ -463,23 +439,12 @@ class List(AAZCommand):
             network_fabric_ids = cls._schema_on_200.value.Element.properties.network_fabric_ids
             network_fabric_ids.Element = AAZStrType()
 
+            tenant_internet_gateway_ids = cls._schema_on_200.value.Element.properties.tenant_internet_gateway_ids
+            tenant_internet_gateway_ids.Element = AAZStrType()
+
             workload_express_route_connections = cls._schema_on_200.value.Element.properties.workload_express_route_connections
             workload_express_route_connections.Element = AAZObjectType()
             _ListHelper._build_schema_express_route_connection_information_read(workload_express_route_connections.Element)
-
-            workload_services = cls._schema_on_200.value.Element.properties.workload_services
-            workload_services.ipv4_address_spaces = AAZListType(
-                serialized_name="ipv4AddressSpaces",
-            )
-            workload_services.ipv6_address_spaces = AAZListType(
-                serialized_name="ipv6AddressSpaces",
-            )
-
-            ipv4_address_spaces = cls._schema_on_200.value.Element.properties.workload_services.ipv4_address_spaces
-            ipv4_address_spaces.Element = AAZStrType()
-
-            ipv6_address_spaces = cls._schema_on_200.value.Element.properties.workload_services.ipv6_address_spaces
-            ipv6_address_spaces.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -509,6 +474,36 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
+
+    _schema_controller_services_read = None
+
+    @classmethod
+    def _build_schema_controller_services_read(cls, _schema):
+        if cls._schema_controller_services_read is not None:
+            _schema.ipv4_address_spaces = cls._schema_controller_services_read.ipv4_address_spaces
+            _schema.ipv6_address_spaces = cls._schema_controller_services_read.ipv6_address_spaces
+            return
+
+        cls._schema_controller_services_read = _schema_controller_services_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        controller_services_read = _schema_controller_services_read
+        controller_services_read.ipv4_address_spaces = AAZListType(
+            serialized_name="ipv4AddressSpaces",
+        )
+        controller_services_read.ipv6_address_spaces = AAZListType(
+            serialized_name="ipv6AddressSpaces",
+        )
+
+        ipv4_address_spaces = _schema_controller_services_read.ipv4_address_spaces
+        ipv4_address_spaces.Element = AAZStrType()
+
+        ipv6_address_spaces = _schema_controller_services_read.ipv6_address_spaces
+        ipv6_address_spaces.Element = AAZStrType()
+
+        _schema.ipv4_address_spaces = cls._schema_controller_services_read.ipv4_address_spaces
+        _schema.ipv6_address_spaces = cls._schema_controller_services_read.ipv6_address_spaces
 
     _schema_express_route_connection_information_read = None
 

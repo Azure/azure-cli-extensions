@@ -18,23 +18,25 @@ interactions:
       ParameterSetName:
       - -g -n -l --private-ranges --learn-ranges
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_snat_000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
-        \   },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n
-        \   \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"snat\":
-        {\r\n      \"privateRanges\": [\r\n        \"10.0.0.0/8\",\r\n        \"172.16.0.0/12\",\r\n
-        \       \"192.168.0.0/16\",\r\n        \"100.64.0.0/10\"\r\n      ],\r\n      \"autoLearnPrivateRanges\":
-        \"Enabled\"\r\n    },\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_snat_000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"01a6d546-c76e-4557-b96d-8de8430e7ab4\",\r\n  \"location\": \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":\
+        \ [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n\
+        \    \"snat\": {\r\n      \"privateRanges\": [\r\n        \"10.0.0.0/8\",\r\
+        \n        \"172.16.0.0/12\",\r\n        \"192.168.0.0/16\",\r\n        \"\
+        100.64.0.0/10\"\r\n      ],\r\n      \"autoLearnPrivateRanges\": \"Enabled\"\
+        \r\n    },\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\"\
+        : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_snat_000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
+        ,\r\n  \"etag\": \"cdf30d5e-ce5a-4336-a112-ee1c3f8ce688\",\r\n  \"location\"\
+        : \"westus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/9b90dbce-7d85-405e-b16f-ebdf393be271?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/9087039c-95af-4fc3-b1cf-f66096b10e93?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -42,7 +44,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 08 May 2023 08:24:40 GMT
+      - Fri, 04 Aug 2023 08:54:19 GMT
       expires:
       - '-1'
       pragma:
@@ -72,9 +74,9 @@ interactions:
       ParameterSetName:
       - -g -n -l --private-ranges --learn-ranges
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/9b90dbce-7d85-405e-b16f-ebdf393be271?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/9087039c-95af-4fc3-b1cf-f66096b10e93?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -86,7 +88,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 08 May 2023 08:24:40 GMT
+      - Fri, 04 Aug 2023 08:54:19 GMT
       expires:
       - '-1'
       pragma:
@@ -118,20 +120,22 @@ interactions:
       ParameterSetName:
       - -g -n -l --private-ranges --learn-ranges
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_snat_000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
-        \   },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n
-        \   \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"snat\":
-        {\r\n      \"privateRanges\": [\r\n        \"10.0.0.0/8\",\r\n        \"172.16.0.0/12\",\r\n
-        \       \"192.168.0.0/16\",\r\n        \"100.64.0.0/10\"\r\n      ],\r\n      \"autoLearnPrivateRanges\":
-        \"Enabled\"\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_snat_000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"01a6d546-c76e-4557-b96d-8de8430e7ab4\",\r\n  \"location\": \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":\
+        \ [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n\
+        \    \"snat\": {\r\n      \"privateRanges\": [\r\n        \"10.0.0.0/8\",\r\
+        \n        \"172.16.0.0/12\",\r\n        \"192.168.0.0/16\",\r\n        \"\
+        100.64.0.0/10\"\r\n      ],\r\n      \"autoLearnPrivateRanges\": \"Enabled\"\
+        \r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\"\
+        : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_snat_000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
+        ,\r\n  \"etag\": \"cdf30d5e-ce5a-4336-a112-ee1c3f8ce688\",\r\n  \"location\"\
+        : \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -140,9 +144,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 08 May 2023 08:24:41 GMT
+      - Fri, 04 Aug 2023 08:54:19 GMT
       etag:
-      - '"01a6d546-c76e-4557-b96d-8de8430e7ab4"'
+      - '"cdf30d5e-ce5a-4336-a112-ee1c3f8ce688"'
       expires:
       - '-1'
       pragma:
@@ -174,20 +178,22 @@ interactions:
       ParameterSetName:
       - -g -n --private-ranges --learn-ranges
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_snat_000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
-        \   },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n
-        \   \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"snat\":
-        {\r\n      \"privateRanges\": [\r\n        \"10.0.0.0/8\",\r\n        \"172.16.0.0/12\",\r\n
-        \       \"192.168.0.0/16\",\r\n        \"100.64.0.0/10\"\r\n      ],\r\n      \"autoLearnPrivateRanges\":
-        \"Enabled\"\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
-        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_snat_000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"01a6d546-c76e-4557-b96d-8de8430e7ab4\",\r\n  \"location\": \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":\
+        \ [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n\
+        \    \"snat\": {\r\n      \"privateRanges\": [\r\n        \"10.0.0.0/8\",\r\
+        \n        \"172.16.0.0/12\",\r\n        \"192.168.0.0/16\",\r\n        \"\
+        100.64.0.0/10\"\r\n      ],\r\n      \"autoLearnPrivateRanges\": \"Enabled\"\
+        \r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\"\
+        : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_snat_000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
+        ,\r\n  \"etag\": \"cdf30d5e-ce5a-4336-a112-ee1c3f8ce688\",\r\n  \"location\"\
+        : \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -196,9 +202,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 08 May 2023 08:24:42 GMT
+      - Fri, 04 Aug 2023 08:54:21 GMT
       etag:
-      - '"01a6d546-c76e-4557-b96d-8de8430e7ab4"'
+      - '"cdf30d5e-ce5a-4336-a112-ee1c3f8ce688"'
       expires:
       - '-1'
       pragma:
@@ -236,21 +242,23 @@ interactions:
       ParameterSetName:
       - -g -n --private-ranges --learn-ranges
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_snat_000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
-        \   },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n
-        \   \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"snat\":
-        {\r\n      \"privateRanges\": [\r\n        \"0.0.0.0/0\"\r\n      ]\r\n    },\r\n
-        \   \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_snat_000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"2f084496-97fa-4e2c-9535-0c50c4e2c22e\",\r\n  \"location\": \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":\
+        \ [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n\
+        \    \"snat\": {\r\n      \"privateRanges\": [\r\n        \"0.0.0.0/0\"\r\n\
+        \      ]\r\n    },\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n\
+        \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_snat_000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
+        ,\r\n  \"etag\": \"0946cfee-6270-4951-946e-4a78148dacfb\",\r\n  \"location\"\
+        : \"westus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/58df04cf-1c99-4f1b-a7c0-78fe70b05578?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/138cbf19-3da7-45bc-9897-ace792bd0d2b?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -258,7 +266,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 08 May 2023 08:24:43 GMT
+      - Fri, 04 Aug 2023 08:54:22 GMT
       expires:
       - '-1'
       pragma:
@@ -292,9 +300,9 @@ interactions:
       ParameterSetName:
       - -g -n --private-ranges --learn-ranges
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/58df04cf-1c99-4f1b-a7c0-78fe70b05578?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/138cbf19-3da7-45bc-9897-ace792bd0d2b?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -306,7 +314,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 08 May 2023 08:24:43 GMT
+      - Fri, 04 Aug 2023 08:54:22 GMT
       expires:
       - '-1'
       pragma:
@@ -338,9 +346,9 @@ interactions:
       ParameterSetName:
       - -g -n --private-ranges --learn-ranges
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/58df04cf-1c99-4f1b-a7c0-78fe70b05578?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/138cbf19-3da7-45bc-9897-ace792bd0d2b?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -352,7 +360,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 08 May 2023 08:24:54 GMT
+      - Fri, 04 Aug 2023 08:54:32 GMT
       expires:
       - '-1'
       pragma:
@@ -384,18 +392,20 @@ interactions:
       ParameterSetName:
       - -g -n --private-ranges --learn-ranges
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_snat_000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
-        \   },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n
-        \   \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"snat\":
-        {\r\n      \"privateRanges\": [\r\n        \"0.0.0.0/0\"\r\n      ]\r\n    },\r\n
-        \   \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_snat_000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\",\r\n
-        \ \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"2f084496-97fa-4e2c-9535-0c50c4e2c22e\",\r\n  \"location\": \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\
+        \r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":\
+        \ [],\r\n    \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n\
+        \    \"snat\": {\r\n      \"privateRanges\": [\r\n        \"0.0.0.0/0\"\r\n\
+        \      ]\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n\
+        \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_snat_000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
+        ,\r\n  \"etag\": \"0946cfee-6270-4951-946e-4a78148dacfb\",\r\n  \"location\"\
+        : \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -404,9 +414,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 08 May 2023 08:24:54 GMT
+      - Fri, 04 Aug 2023 08:54:34 GMT
       etag:
-      - '"2f084496-97fa-4e2c-9535-0c50c4e2c22e"'
+      - '"0946cfee-6270-4951-946e-4a78148dacfb"'
       expires:
       - '-1'
       pragma:
@@ -440,7 +450,7 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.50.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy_with_snat_000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2022-01-01
   response:
@@ -452,7 +462,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 08 May 2023 08:24:56 GMT
+      - Fri, 04 Aug 2023 08:54:37 GMT
       expires:
       - '-1'
       pragma:

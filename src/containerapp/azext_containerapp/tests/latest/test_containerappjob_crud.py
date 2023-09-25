@@ -50,7 +50,15 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         self.assertTrue(len(jobs_list) == 1)
 
         # update the Container App Job resource
-        self.cmd("az containerapp job update --resource-group {} --name {} --replica-timeout 300 --replica-retry-limit 1 --image mcr.microsoft.com/k8se/quickstart-jobs:latest --cpu '0.5' --memory '1.0Gi'".format(resource_group, job))
+        self.cmd("az containerapp job update --resource-group {} --name {} --replica-timeout 300 --replica-retry-limit 1 --image mcr.microsoft.com/k8se/quickstart-jobs:latest --cpu '0.5' --memory '1.0Gi'".format(resource_group, job), checks=[
+            JMESPathCheck('name', job),
+            JMESPathCheck('properties.configuration.replicaTimeout', 300),
+            JMESPathCheck('properties.configuration.replicaRetryLimit', 1),
+            JMESPathCheck('properties.configuration.triggerType', "manual", case_sensitive=False),
+            JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
+            JMESPathCheck('properties.template.containers[0].resources.cpu', "0.5"),
+            JMESPathCheck('properties.template.containers[0].resources.memory', "1Gi"),
+        ])
 
         # verify the updated Container App Job resource
         self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job), checks=[
@@ -102,4 +110,59 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
             JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
             JMESPathCheck('properties.template.containers[0].resources.cpu', "0.5"),
             JMESPathCheck('properties.template.containers[0].resources.memory', "1Gi"),
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_manualjob_private_registry_port(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        env = self.create_random_name(prefix='env', length=24)
+        acr = self.create_random_name(prefix='acr', length=24)
+        image_source = "mcr.microsoft.com/k8se/quickstart:latest"
+
+        create_containerapp_env(self, env, resource_group)
+
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        self.cmd(f'acr import -n {acr} --source {image_source}')
+        password = self.cmd(f'acr credential show -n {acr} --query passwords[0].value').get_output_in_json()
+
+        app = self.create_random_name(prefix='aca1', length=24)
+        image_name = f"{acr}.azurecr.io:443/k8se/quickstart:latest"
+
+        self.cmd(f"containerapp job create -g {resource_group} -n {app} --image {image_name} --environment {env} --registry-server {acr}.azurecr.io:443 --registry-username {acr} --registry-password {password} --replica-timeout 200 --replica-retry-limit 2 --trigger-type schedule --parallelism 1 --replica-completion-count 1 --cron-expression '*/10 * * * *' ")
+
+        self.cmd(f'containerapp job show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io:443"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+            JMESPathCheck("properties.configuration.secrets[0].name", f"{acr}azurecrio-443-{acr}")
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_manualjob_registry_acr_look_up_credentical(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='aca', length=24)
+        acr = self.create_random_name(prefix='acr', length=24)
+        image_source = "mcr.microsoft.com/k8se/quickstart:latest"
+        image_name = f"{acr}.azurecr.io:443/k8se/quickstart:latest"
+
+        create_containerapp_env(self, env, resource_group)
+
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        self.cmd(f'acr import -n {acr} --source {image_source}')
+        password = self.cmd(f'acr credential show -n {acr} --query passwords[0].value').get_output_in_json()
+
+        app = self.create_random_name(prefix='aca1', length=24)
+        image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
+
+        self.cmd(
+            f"containerapp job create -g {resource_group} -n {app} --image {image_name} --environment {env} --registry-server {acr}.azurecr.io --replica-timeout 200 --replica-retry-limit 2 --trigger-type schedule --parallelism 1 --replica-completion-count 1 --cron-expression '*/10 * * * *' ")
+
+        self.cmd(f'containerapp job show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+            JMESPathCheck("properties.configuration.secrets[0].name", f"{acr}azurecrio-{acr}")
         ])

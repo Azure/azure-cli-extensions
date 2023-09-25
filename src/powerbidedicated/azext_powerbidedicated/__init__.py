@@ -12,15 +12,24 @@ class PowerBIDedicatedCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from ._client_factory import cf_powerbidedicated
         powerbidedicated_custom = CliCommandType(
-            operations_tmpl='azext_powerbidedicated.custom#{}',
-            client_factory=cf_powerbidedicated)
+            operations_tmpl='azext_powerbidedicated.custom#{}')
         super(PowerBIDedicatedCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                              custom_command_type=powerbidedicated_custom)
 
     def load_command_table(self, args):
         from .commands import load_command_table
+        from azure.cli.core.aaz import load_aaz_command_table
+        try:
+            from . import aaz
+        except ImportError:
+            aaz = None
+        if aaz:
+            load_aaz_command_table(
+                loader=self,
+                aaz_pkg_name=aaz.__name__,
+                args=args
+            )
         load_command_table(self, args)
         return self.command_table
 

@@ -16,6 +16,9 @@ critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContaine
                           "getSecurityPIN": "/backupSecurityPIN/action",
                           "disableSoftDelete": "/backupconfig/write"}
 
+operation_request_map = {"DisableMUA": "/deleteResourceGuardProxyRequests/default",
+                         "DeleteBackupInstance": "/deleteBackupInstanceRequests/default"}
+
 
 def load_manifest(datasource_type):
     module = import_module('azext_dataprotection.manual.Manifests.' + datasource_type)
@@ -357,7 +360,7 @@ def convert_dict_keys_snake_to_camel(dictionary):
         for item in dictionary:
             new_list.append(convert_dict_keys_snake_to_camel(item))
         return new_list
-    elif not isinstance(dictionary, dict):
+    if not isinstance(dictionary, dict):
         return dictionary
 
     new_dictionary = {}

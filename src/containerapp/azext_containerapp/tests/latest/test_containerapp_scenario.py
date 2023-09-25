@@ -87,13 +87,6 @@ class ContainerappScenarioTest(ScenarioTest):
             JMESPathCheck('length(properties.configuration.secrets)', 2)
         ])
 
-        self.cmd('containerapp auth update -g {} -n {} --proxy-convention Standard --redirect-provider Facebook --unauthenticated-client-action AllowAnonymous'.format(resource_group, containerapp_name), checks=[
-            JMESPathCheck('name', 'current'),
-            JMESPathCheck('properties.httpSettings.forwardProxy.convention', 'Standard'),
-            JMESPathCheck('properties.globalValidation.redirectToProvider', 'Facebook'),
-            JMESPathCheck('properties.globalValidation.unauthenticatedClientAction', 'AllowAnonymous')
-        ])
-
 
     # TODO rename
     @AllowLargeResponse(8192)

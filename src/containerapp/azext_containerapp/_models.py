@@ -20,7 +20,8 @@ ManagedEnvironment = {
         "vnetConfiguration": None,  # VnetConfiguration
         "appLogsConfiguration": None,
         "customDomainConfiguration": None,  # CustomDomainConfiguration,
-        "workloadProfiles": None
+        "workloadProfiles": None,
+        "InfrastructureResourceGroup": None
     }
 }
 
@@ -169,6 +170,7 @@ Ingress = {
     "targetPort": None,
     "transport": None,  # 'auto', 'http', 'http2', 'tcp'
     "exposedPort": None,
+    "allowInsecure": False,
     "traffic": None,  # TrafficWeight
     "customDomains": None,  # [CustomDomain]
     "ipSecurityRestrictions": None,  # [IPSecurityRestrictions]
@@ -206,10 +208,8 @@ JobTemplate = {
 
 # Added template for starting job executions
 JobExecutionTemplate = {
-    "template": {
-        "containers": None,  # [Container]
-        "initContainers": None  # [Container]
-    }
+    "containers": None,  # [Container]
+    "initContainers": None  # [Container]
 }
 
 JobConfiguration = {
@@ -407,4 +407,21 @@ OryxMarinerRunImgTagProperty = {
     "marinerVersion": None,
     "architectures": None,
     "support": None,
+}
+
+
+# model for preview extension
+ConnectedEnvironment = {
+    "extendedLocation": None,
+    "tags": None,
+    "location": None,
+    "properties": {
+        "staticIp": None,
+        "daprAIConnectionString": None
+    }
+}
+
+ExtendedLocation = {
+    "name": None,
+    "type": None
 }

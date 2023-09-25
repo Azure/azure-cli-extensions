@@ -22,6 +22,7 @@ def load_command_table(self, _):
         g.custom_command('update-msi-permissions', 'dataprotection_backup_instance_update_msi_permissions')
         g.custom_command('update-policy', "dataprotection_backup_instance_update_policy", supports_no_wait=True)
 
+    # A custom client factory is required hence the separated command group
     with self.command_group('dataprotection backup-instance', exception_handler=exception_handler, client_factory=cf_blob_container_mgmt) as g:
         g.custom_command('initialize-backupconfig', "dataprotection_backup_instance_initialize_backupconfig")
 
@@ -77,3 +78,6 @@ def load_command_table(self, _):
 
     from .aaz_operations.resource_guard import Update as ResourceGuardUpdate
     self.command_table['dataprotection resource-guard update'] = ResourceGuardUpdate(loader=self)
+
+    from .aaz_operations.resource_guard import Unlock as ResouceGuardMappingUnlock
+    self.command_table['dataprotection resource-guard unlock'] = ResouceGuardMappingUnlock(loader=self)

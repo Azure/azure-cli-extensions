@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "networkfabric l3domain delete",
 )
 class Delete(AAZCommand):
-    """Delete the L3 Isolation Domain resource.
+    """Delete the L3 Isolation Domain resource
 
     :example: Delete the L3 Isolation Domain
         az networkfabric l3domain delete --resource-group "example-rg" --resource-name "example-l3domain"
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}", "2023-06-15"],
         ]
     }
 
@@ -47,7 +47,7 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the L3 Isolation Domain",
+            help="Name of the L3 Isolation Domain.",
             required=True,
             id_part="name",
         )
@@ -143,7 +143,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }

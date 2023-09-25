@@ -7,8 +7,10 @@
 from knack.util import CLIError
 from knack.log import get_logger
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
+    AutoscaleSettings,
     ClusterResource,
     ClusterResourceProperties,
+    ContainerPartitionKey,
     DataCenterResource,
     DataCenterResourceProperties,
     ManagedCassandraManagedServiceIdentity,
@@ -72,6 +74,22 @@ from azure.cli.command_modules.cosmosdb._client_factory import (
     cf_restorable_sql_resources,
     cf_restorable_mongodb_resources
 )
+
+DEFAULT_INDEXING_POLICY = """{
+  "indexingMode": "consistent",
+  "automatic": true,
+  "includedPaths": [
+    {
+      "path": "/*"
+    }
+  ],
+  "excludedPaths": [
+    {
+      "path": "/\\"_etag\\"/?"
+    }
+  ]
+}"""
+
 
 logger = get_logger(__name__)
 
@@ -1319,6 +1337,153 @@ def cli_table_retrieve_latest_backup_time(client,
     return asyc_backupInfo.result()
 
 
+def cli_cosmosdb_sql_container_create(client,
+                                      resource_group_name,
+                                      account_name,
+                                      database_name,
+                                      container_name,
+                                      partition_key_path,
+                                      partition_key_version=None,
+                                      default_ttl=None,
+                                      indexing_policy=DEFAULT_INDEXING_POLICY,
+                                      client_encryption_policy=None,
+                                      throughput=None,
+                                      max_throughput=None,
+                                      unique_key_policy=None,
+                                      conflict_resolution_policy=None,
+                                      analytical_storage_ttl=None,
+                                      materialized_view_definition=None):
+    """Creates an Azure Cosmos DB SQL container """
+    sql_container_resource = SqlContainerResource(id=container_name)
+
+    _populate_sql_container_definition(sql_container_resource,
+                                       partition_key_path,
+                                       default_ttl,
+                                       indexing_policy,
+                                       unique_key_policy,
+                                       client_encryption_policy,
+                                       partition_key_version,
+                                       conflict_resolution_policy,
+                                       analytical_storage_ttl,
+                                       materialized_view_definition)
+
+    options = _get_options(throughput, max_throughput)
+
+    sql_container_create_update_resource = SqlContainerCreateUpdateParameters(
+        resource=sql_container_resource,
+        options=options)
+
+    return client.begin_create_update_sql_container(resource_group_name,
+                                                    account_name,
+                                                    database_name,
+                                                    container_name,
+                                                    sql_container_create_update_resource)
+
+
+def _populate_sql_container_definition(sql_container_resource,
+                                       partition_key_path,
+                                       default_ttl,
+                                       indexing_policy,
+                                       unique_key_policy,
+                                       client_encryption_policy,
+                                       partition_key_version,
+                                       conflict_resolution_policy,
+                                       analytical_storage_ttl,
+                                       materialized_view_definition):
+    if all(arg is None for arg in
+           [partition_key_path, partition_key_version, default_ttl, indexing_policy, unique_key_policy, client_encryption_policy, conflict_resolution_policy, analytical_storage_ttl, materialized_view_definition]):
+        return False
+
+    if partition_key_path is not None:
+        container_partition_key = ContainerPartitionKey()
+        container_partition_key.paths = [partition_key_path]
+        container_partition_key.kind = 'Hash'
+        if partition_key_version is not None:
+            container_partition_key.version = partition_key_version
+        sql_container_resource.partition_key = container_partition_key
+
+    if default_ttl is not None:
+        sql_container_resource.default_ttl = default_ttl
+
+    if indexing_policy is not None:
+        sql_container_resource.indexing_policy = indexing_policy
+
+    if unique_key_policy is not None:
+        sql_container_resource.unique_key_policy = unique_key_policy
+
+    if client_encryption_policy is not None:
+        sql_container_resource.client_encryption_policy = client_encryption_policy
+
+    if conflict_resolution_policy is not None:
+        sql_container_resource.conflict_resolution_policy = conflict_resolution_policy
+
+    if analytical_storage_ttl is not None:
+        sql_container_resource.analytical_storage_ttl = analytical_storage_ttl
+
+    if materialized_view_definition is not None:
+        sql_container_resource.materialized_view_definition = materialized_view_definition
+
+    return True
+
+
+def _get_options(throughput=None, max_throughput=None):
+    options = {}
+    if throughput and max_throughput:
+        raise CLIError("Please provide max-throughput if your resource is autoscale enabled otherwise provide throughput.")
+    if throughput:
+        options['throughput'] = throughput
+    if max_throughput:
+        options['autoscaleSettings'] = AutoscaleSettings(max_throughput=max_throughput)
+    return options
+
+
+def cli_cosmosdb_sql_container_update(client,
+                                      resource_group_name,
+                                      account_name,
+                                      database_name,
+                                      container_name,
+                                      default_ttl=None,
+                                      indexing_policy=None,
+                                      analytical_storage_ttl=None,
+                                      materialized_view_definition=None):
+    """Updates an Azure Cosmos DB SQL container """
+    logger.debug('reading SQL container')
+    sql_container = client.get_sql_container(resource_group_name, account_name, database_name, container_name)
+
+    sql_container_resource = SqlContainerResource(id=container_name)
+    sql_container_resource.partition_key = sql_container.resource.partition_key
+    sql_container_resource.indexing_policy = sql_container.resource.indexing_policy
+    sql_container_resource.default_ttl = sql_container.resource.default_ttl
+    sql_container_resource.unique_key_policy = sql_container.resource.unique_key_policy
+    sql_container_resource.conflict_resolution_policy = sql_container.resource.conflict_resolution_policy
+    sql_container_resource.materialized_view_definition = materialized_view_definition
+
+    # client encryption policy is immutable
+    sql_container_resource.client_encryption_policy = sql_container.resource.client_encryption_policy
+
+    if _populate_sql_container_definition(sql_container_resource,
+                                          None,
+                                          default_ttl,
+                                          indexing_policy,
+                                          None,
+                                          None,
+                                          None,
+                                          None,
+                                          analytical_storage_ttl,
+                                          materialized_view_definition):
+        logger.debug('replacing SQL container')
+
+    sql_container_create_update_resource = SqlContainerCreateUpdateParameters(
+        resource=sql_container_resource,
+        options={})
+
+    return client.begin_create_update_sql_container(resource_group_name,
+                                                    account_name,
+                                                    database_name,
+                                                    container_name,
+                                                    sql_container_create_update_resource)
+
+
 def cosmosdb_data_transfer_copy_job(client,
                                     resource_group_name,
                                     account_name,
@@ -1431,6 +1596,50 @@ def cli_begin_list_mongo_db_collection_partition_merge(client,
                                                                                          database_name=database_name,
                                                                                          collection_name=container_name,
                                                                                          merge_parameters=mergeParameters)
+
+    return async_partition_merge_result.result()
+
+
+def cli_begin_sql_database_partition_merge(client,
+                                           resource_group_name,
+                                           account_name,
+                                           database_name):
+
+    try:
+        client.get_sql_database(resource_group_name, account_name, database_name)
+    except Exception as ex:
+        if ex.error.code == "NotFound":
+            raise CLIError("(NotFound) Database with name '{}' in account '{}' could not be found.".format(database_name, account_name))
+        raise CLIError("{}".format(str(ex)))
+
+    mergeParameters = MergeParameters(is_dry_run=False)
+
+    async_partition_merge_result = client.begin_sql_database_partition_merge(resource_group_name=resource_group_name,
+                                                                             account_name=account_name,
+                                                                             database_name=database_name,
+                                                                             merge_parameters=mergeParameters)
+
+    return async_partition_merge_result.result()
+
+
+def cli_begin_mongo_db_database_partition_merge(client,
+                                                resource_group_name,
+                                                account_name,
+                                                database_name):
+
+    try:
+        client.get_mongo_db_database(resource_group_name, account_name, database_name)
+    except Exception as ex:
+        if ex.error.code == "NotFound":
+            raise CLIError("(NotFound) Database with name '{}' in account '{}' could not be found.".format(database_name, account_name))
+        raise CLIError("{}".format(str(ex)))
+
+    mergeParameters = MergeParameters(is_dry_run=False)
+
+    async_partition_merge_result = client.begin_mongo_db_database_partition_merge(resource_group_name=resource_group_name,
+                                                                                  account_name=account_name,
+                                                                                  database_name=database_name,
+                                                                                  merge_parameters=mergeParameters)
 
     return async_partition_merge_result.result()
 

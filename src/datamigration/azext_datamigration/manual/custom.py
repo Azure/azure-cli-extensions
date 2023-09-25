@@ -332,7 +332,7 @@ def datamigration_tde_migration(source_sql_connection_string=None,
             print("Failed to locate executable.")
             return
 
-        cmd = f'{exePath} --sourceSqlConnectionString "{source_sql_connection_string}" --targetSubscriptionId "{target_subscription_id}" --targetResourceGroupName "{target_resource_group_name}" --targetManagedInstanceName "{target_managed_instance_name}" --networkSharePath "{network_share_path}" --networkShareDomain "{network_share_domain}" --networkShareUserName "{network_share_user_name}" --networkSharePassword "{network_share_password}" --databaseName'
+        cmd = f'{exePath} --sourceSqlConnectionString "{source_sql_connection_string}" --targetSubscriptionId "{target_subscription_id}" --targetResourceGroupName "{target_resource_group_name}" --targetManagedInstanceName "{target_managed_instance_name}" --networkSharePath "{network_share_path}" --networkShareDomain "{network_share_domain}" --networkShareUserName "{network_share_user_name}" --networkSharePassword "{network_share_password}" --clientType "CLI" --databaseName'
 
         for db in database_name:
             cmd += " \"" + db + "\""

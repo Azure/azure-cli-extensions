@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.2.5
+++++++
+* Fixing the command `az network bastion rdp` to avoid the `java.lang.NullPointerException` while calling `get_auth_token` function
+
 0.2.4
 ++++++
 * Fixing blocking of IP connect with AZ CLI tunnel to allow only standard ports.

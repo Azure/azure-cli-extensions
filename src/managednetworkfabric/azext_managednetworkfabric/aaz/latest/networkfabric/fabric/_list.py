@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "networkfabric fabric list",
 )
 class List(AAZCommand):
-    """List all Network Fabrics in the provided resource group or subscription.
+    """List all Network Fabrics in the provided resource group or subscription
 
     :example: List the Network Fabrics for Resource Group
         az networkfabric fabric list --resource-group "example-rg"
@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkfabrics", "2023-02-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkfabrics", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabrics", "2023-06-15"],
         ]
     }
 
@@ -119,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -171,7 +171,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -183,13 +183,26 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
             properties.fabric_asn = AAZIntType(
                 serialized_name="fabricASN",
                 flags={"required": True},
             )
+            properties.fabric_version = AAZStrType(
+                serialized_name="fabricVersion",
+                flags={"read_only": True},
+            )
             properties.ipv4_prefix = AAZStrType(
                 serialized_name="ipv4Prefix",
+                flags={"required": True},
             )
             properties.ipv6_prefix = AAZStrType(
                 serialized_name="ipv6Prefix",
@@ -214,23 +227,18 @@ class List(AAZCommand):
                 serialized_name="networkFabricSku",
                 flags={"required": True},
             )
-            properties.operational_state = AAZStrType(
-                serialized_name="operationalState",
-                flags={"read_only": True},
-            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.rack_count = AAZIntType(
                 serialized_name="rackCount",
-                flags={"required": True},
             )
             properties.racks = AAZListType(
                 flags={"read_only": True},
             )
-            properties.router_id = AAZStrType(
-                serialized_name="routerId",
+            properties.router_ids = AAZListType(
+                serialized_name="routerIds",
                 flags={"read_only": True},
             )
             properties.server_count_per_rack = AAZIntType(
@@ -262,6 +270,9 @@ class List(AAZCommand):
 
             racks = cls._schema_on_200.value.Element.properties.racks
             racks.Element = AAZStrType()
+
+            router_ids = cls._schema_on_200.value.Element.properties.router_ids
+            router_ids.Element = AAZStrType()
 
             terminal_server_configuration = cls._schema_on_200.value.Element.properties.terminal_server_configuration
             terminal_server_configuration.network_device_id = AAZStrType(
@@ -357,7 +368,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -409,7 +420,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -421,13 +432,26 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
             properties.fabric_asn = AAZIntType(
                 serialized_name="fabricASN",
                 flags={"required": True},
             )
+            properties.fabric_version = AAZStrType(
+                serialized_name="fabricVersion",
+                flags={"read_only": True},
+            )
             properties.ipv4_prefix = AAZStrType(
                 serialized_name="ipv4Prefix",
+                flags={"required": True},
             )
             properties.ipv6_prefix = AAZStrType(
                 serialized_name="ipv6Prefix",
@@ -452,23 +476,18 @@ class List(AAZCommand):
                 serialized_name="networkFabricSku",
                 flags={"required": True},
             )
-            properties.operational_state = AAZStrType(
-                serialized_name="operationalState",
-                flags={"read_only": True},
-            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.rack_count = AAZIntType(
                 serialized_name="rackCount",
-                flags={"required": True},
             )
             properties.racks = AAZListType(
                 flags={"read_only": True},
             )
-            properties.router_id = AAZStrType(
-                serialized_name="routerId",
+            properties.router_ids = AAZListType(
+                serialized_name="routerIds",
                 flags={"read_only": True},
             )
             properties.server_count_per_rack = AAZIntType(
@@ -500,6 +519,9 @@ class List(AAZCommand):
 
             racks = cls._schema_on_200.value.Element.properties.racks
             racks.Element = AAZStrType()
+
+            router_ids = cls._schema_on_200.value.Element.properties.router_ids
+            router_ids.Element = AAZStrType()
 
             terminal_server_configuration = cls._schema_on_200.value.Element.properties.terminal_server_configuration
             terminal_server_configuration.network_device_id = AAZStrType(
@@ -580,7 +602,6 @@ class _ListHelper:
         )
         vpn_configuration_properties_read.network_to_network_interconnect_id = AAZStrType(
             serialized_name="networkToNetworkInterconnectId",
-            flags={"read_only": True},
         )
         vpn_configuration_properties_read.option_a_properties = AAZObjectType(
             serialized_name="optionAProperties",
@@ -600,6 +621,7 @@ class _ListHelper:
         option_a_properties.mtu = AAZIntType()
         option_a_properties.peer_asn = AAZIntType(
             serialized_name="peerASN",
+            flags={"required": True},
         )
         option_a_properties.primary_ipv4_prefix = AAZStrType(
             serialized_name="primaryIpv4Prefix",
@@ -615,24 +637,28 @@ class _ListHelper:
         )
         option_a_properties.vlan_id = AAZIntType(
             serialized_name="vlanId",
+            flags={"required": True},
         )
 
         bfd_configuration = _schema_vpn_configuration_properties_read.option_a_properties.bfd_configuration
-        bfd_configuration.interval = AAZIntType(
+        bfd_configuration.administrative_state = AAZStrType(
+            serialized_name="administrativeState",
             flags={"read_only": True},
         )
-        bfd_configuration.multiplier = AAZIntType(
-            flags={"read_only": True},
+        bfd_configuration.interval_in_milli_seconds = AAZIntType(
+            serialized_name="intervalInMilliSeconds",
         )
+        bfd_configuration.multiplier = AAZIntType()
 
         option_b_properties = _schema_vpn_configuration_properties_read.option_b_properties
         option_b_properties.export_route_targets = AAZListType(
             serialized_name="exportRouteTargets",
-            flags={"required": True},
         )
         option_b_properties.import_route_targets = AAZListType(
             serialized_name="importRouteTargets",
-            flags={"required": True},
+        )
+        option_b_properties.route_targets = AAZObjectType(
+            serialized_name="routeTargets",
         )
 
         export_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.export_route_targets
@@ -640,6 +666,32 @@ class _ListHelper:
 
         import_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.import_route_targets
         import_route_targets.Element = AAZStrType()
+
+        route_targets = _schema_vpn_configuration_properties_read.option_b_properties.route_targets
+        route_targets.export_ipv4_route_targets = AAZListType(
+            serialized_name="exportIpv4RouteTargets",
+        )
+        route_targets.export_ipv6_route_targets = AAZListType(
+            serialized_name="exportIpv6RouteTargets",
+        )
+        route_targets.import_ipv4_route_targets = AAZListType(
+            serialized_name="importIpv4RouteTargets",
+        )
+        route_targets.import_ipv6_route_targets = AAZListType(
+            serialized_name="importIpv6RouteTargets",
+        )
+
+        export_ipv4_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.route_targets.export_ipv4_route_targets
+        export_ipv4_route_targets.Element = AAZStrType()
+
+        export_ipv6_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.route_targets.export_ipv6_route_targets
+        export_ipv6_route_targets.Element = AAZStrType()
+
+        import_ipv4_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.route_targets.import_ipv4_route_targets
+        import_ipv4_route_targets.Element = AAZStrType()
+
+        import_ipv6_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.route_targets.import_ipv6_route_targets
+        import_ipv6_route_targets.Element = AAZStrType()
 
         _schema.administrative_state = cls._schema_vpn_configuration_properties_read.administrative_state
         _schema.network_to_network_interconnect_id = cls._schema_vpn_configuration_properties_read.network_to_network_interconnect_id

@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "networkfabric ipprefix show",
 )
 class Show(AAZCommand):
-    """Show details of the provided Ip Prefix resource.
+    """Show details of the provided Ip Prefix resource
 
     :example: Show the Ip Prefix
         az networkfabric ipprefix show --resource-group "example-rg" --resource-name "example-ipprefix"
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipprefixes/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipprefixes/{}", "2023-06-15"],
         ]
     }
 
@@ -46,7 +46,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the IP Prefix",
+            help="Name of the IP Prefix.",
             required=True,
             id_part="name",
         )
@@ -121,7 +121,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -176,7 +176,15 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
             properties.ip_prefix_rules = AAZListType(
                 serialized_name="ipPrefixRules",
                 flags={"required": True},
@@ -202,7 +210,7 @@ class Show(AAZCommand):
                 serialized_name="sequenceNumber",
                 flags={"required": True},
             )
-            _element.subnet_mask_length = AAZIntType(
+            _element.subnet_mask_length = AAZStrType(
                 serialized_name="subnetMaskLength",
             )
 

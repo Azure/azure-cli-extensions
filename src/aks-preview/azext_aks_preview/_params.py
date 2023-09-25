@@ -14,6 +14,20 @@ from azext_aks_preview._completers import (
     get_k8s_versions_completion_list,
     get_vm_size_completion_list,
 )
+from azure.cli.command_modules.acs._consts import (
+    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+)
+from azure.cli.command_modules.acs._validators import (
+    validate_load_balancer_idle_timeout,
+    validate_load_balancer_outbound_ip_prefixes,
+    validate_load_balancer_outbound_ips,
+    validate_load_balancer_outbound_ports,
+    validate_nat_gateway_idle_timeout,
+    validate_nat_gateway_managed_outbound_ip_count,
+)
 from azext_aks_preview._consts import (
     CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
@@ -58,10 +72,6 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
-    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
-    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
-    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
-    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
     CONST_PATCH_UPGRADE_CHANNEL,
     CONST_RAPID_UPGRADE_CHANNEL,
     CONST_RELATIVEMONTHLY_MAINTENANCE_SCHEDULE,
@@ -108,6 +118,7 @@ from azext_aks_preview._validators import (
     validate_defender_config_parameter,
     validate_defender_disable_and_enable_parameters,
     validate_disable_windows_outbound_nat,
+    validate_egress_gtw_nodeselector,
     validate_enable_custom_ca_trust,
     validate_eviction_policy,
     validate_grafanaresourceid,
@@ -117,18 +128,13 @@ from azext_aks_preview._validators import (
     validate_k8s_version,
     validate_linux_host_name,
     validate_load_balancer_backend_pool_type,
-    validate_load_balancer_idle_timeout,
-    validate_load_balancer_outbound_ip_prefixes,
-    validate_load_balancer_outbound_ips,
-    validate_load_balancer_outbound_ports,
     validate_load_balancer_sku,
     validate_max_surge,
     validate_message_of_the_day,
-    validate_nat_gateway_idle_timeout,
-    validate_nat_gateway_managed_outbound_ip_count,
     validate_node_public_ip_tags,
     validate_nodepool_id,
     validate_nodepool_labels,
+    validate_nodepool_taints,
     validate_nodepool_name,
     validate_nodepool_tags,
     validate_nodes_count,
@@ -146,11 +152,11 @@ from azext_aks_preview._validators import (
     validate_ssh_key_for_update,
     validate_start_date,
     validate_start_time,
-    validate_taints,
     validate_user,
     validate_utc_offset,
     validate_vm_set_type,
     validate_vnet_subnet_id,
+    validate_force_upgrade_disable_and_enable_parameters
 )
 from azure.cli.core.commands.parameters import (
     edge_zone_type,
@@ -376,6 +382,7 @@ def load_arguments(self, _):
                    help='space-separated tags: key[=value] [key[=value] ...]. Use "" to clear existing tags.')
         c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels,
                    help='space-separated labels: key[=value] [key[=value] ...]. See https://aka.ms/node-labels for syntax of labels.')
+        c.argument('nodepool_taints', validator=validate_nodepool_taints)
         c.argument('node_osdisk_type', arg_type=get_enum_type(node_os_disk_types))
         c.argument('node_osdisk_size', type=int)
         c.argument('max_pods', type=int, options_list=['--max-pods', '-m'])
@@ -402,7 +409,7 @@ def load_arguments(self, _):
         c.argument('enable_pod_security_policy', action='store_true', deprecate_info=c.deprecate(target='--enable-pod-security-policy', hide=True))
         c.argument('enable_pod_identity', action='store_true')
         c.argument('enable_pod_identity_with_kubenet', action='store_true')
-        c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_workload_identity', action='store_true', is_preview=True)
         c.argument('enable_image_cleaner', action='store_true', is_preview=True)
         c.argument('enable_azure_service_mesh',
                    options_list=["--enable-azure-service-mesh", "--enable-asm"],
@@ -412,7 +419,8 @@ def load_arguments(self, _):
         c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
         c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
-        c.argument('dns_zone_resource_id')
+        c.argument('dns_zone_resource_id', deprecate_info=c.deprecate(target='--dns-zone-resource-id', redirect='--dns-zone-resource-ids', hide=True))
+        c.argument('dns_zone_resource_ids', is_preview=True)
         c.argument('enable_keda', action='store_true', is_preview=True)
         c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
         c.argument('enable_node_restriction', action='store_true', is_preview=True, help="enable node restriction for cluster")
@@ -442,6 +450,7 @@ def load_arguments(self, _):
         c.argument('ksm_metric_annotations_allow_list')
         c.argument('grafana_resource_id', validator=validate_grafanaresourceid)
         c.argument('enable_windows_recording_rules', action='store_true')
+        c.argument('enable_cost_analysis', is_preview=True, action='store_true')
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -456,10 +465,12 @@ def load_arguments(self, _):
         c.argument('nrg_lockdown_restriction_level', arg_type=get_enum_type(nrg_lockdown_restriction_levels))
         c.argument('nat_gateway_managed_outbound_ip_count', type=int, validator=validate_nat_gateway_managed_outbound_ip_count)
         c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
+        c.argument('network_dataplane', arg_type=get_enum_type(network_dataplanes))
         c.argument('kube_proxy_config')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
         c.argument('node_os_upgrade_channel', arg_type=get_enum_type(node_os_upgrade_channels))
-        c.argument('upgrade_settings', is_preview=True)
+        c.argument('disable_force_upgrade', action='store_true', validator=validate_force_upgrade_disable_and_enable_parameters)
+        c.argument('enable_force_upgrade', action='store_true', validator=validate_force_upgrade_disable_and_enable_parameters)
         c.argument('upgrade_override_until', is_preview=True)
         c.argument('cluster_autoscaler_profile', nargs='+', options_list=["--cluster-autoscaler-profile", "--ca-profile"],
                    help="Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.")
@@ -519,6 +530,7 @@ def load_arguments(self, _):
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels,
                    help='space-separated labels: key[=value] [key[=value] ...]. See https://aka.ms/node-labels for syntax of labels.')
+        c.argument('nodepool_taints', validator=validate_nodepool_taints)
         # misc
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('aks_custom_headers')
@@ -532,10 +544,12 @@ def load_arguments(self, _):
         c.argument('enable_pod_identity', action='store_true')
         c.argument('enable_pod_identity_with_kubenet', action='store_true')
         c.argument('disable_pod_identity', action='store_true')
-        c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_workload_identity', action='store_true', is_preview=True)
+        c.argument('disable_workload_identity', action='store_true', is_preview=True)
         c.argument('enable_image_cleaner', action='store_true', is_preview=True)
         c.argument('disable_image_cleaner', action='store_true', validator=validate_image_cleaner_enable_disable_mutually_exclusive, is_preview=True)
         c.argument('image_cleaner_interval_hours', type=int, is_preview=True)
+        c.argument('disable_image_integrity', action='store_true', is_preview=True)
         c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
         c.argument('enable_keda', action='store_true', is_preview=True)
@@ -562,6 +576,8 @@ def load_arguments(self, _):
         c.argument('guardrails_version', help='The guardrails version', is_preview=True)
         c.argument('guardrails_excluded_ns', is_preview=True)
         c.argument('enable_network_observability', action='store_true', is_preview=True, help="enable network observability for cluster")
+        c.argument('enable_cost_analysis', is_preview=True, action='store_true')
+        c.argument('disable_cost_analysis', is_preview=True, action='store_true')
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
@@ -597,7 +613,7 @@ def load_arguments(self, _):
         c.argument('spot_max_price', type=float, validator=validate_spot_max_price)
         c.argument('labels', nargs='*', validator=validate_nodepool_labels)
         c.argument('tags', tags_type)
-        c.argument('node_taints', validator=validate_taints)
+        c.argument('node_taints', validator=validate_nodepool_taints)
         c.argument('node_osdisk_type', arg_type=get_enum_type(node_os_disk_types))
         c.argument('node_osdisk_size', type=int)
         c.argument('max_surge', validator=validate_max_surge)
@@ -606,6 +622,7 @@ def load_arguments(self, _):
         c.argument('max_pods', type=int, options_list=['--max-pods', '-m'])
         c.argument('zones', zones_type, options_list=['--zones', '-z'], help='Space-separated list of availability zones where agent nodes will be placed.')
         c.argument('ppg')
+        c.argument('vm_set_type', validator=validate_vm_set_type)
         c.argument('enable_encryption_at_host', action='store_true')
         c.argument('enable_ultra_ssd', action='store_true')
         c.argument('enable_fips_image', action='store_true')
@@ -637,7 +654,7 @@ def load_arguments(self, _):
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('labels', nargs='*', validator=validate_nodepool_labels)
         c.argument('tags', tags_type)
-        c.argument('node_taints', validator=validate_taints)
+        c.argument('node_taints', validator=validate_nodepool_taints)
         c.argument('max_surge', validator=validate_max_surge)
         c.argument('mode', arg_type=get_enum_type(node_mode_types))
         c.argument('scale_down_mode', arg_type=get_enum_type(scale_down_modes))
@@ -720,7 +737,8 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(), is_preview=True)
         c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('data_collection_settings', is_preview=True)
-        c.argument('dns-zone-resource-id')
+        c.argument('dns_zone_resource_id', deprecate_info=c.deprecate(target='--dns-zone-resource-id', redirect='--dns-zone-resource-ids', hide=True))
+        c.argument('dns_zone_resource_ids', is_preview=True)
 
     with self.argument_context('aks addon disable') as c:
         c.argument('addon', options_list=[
@@ -751,7 +769,8 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(), is_preview=True)
         c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('data_collection_settings', is_preview=True)
-        c.argument('dns-zone-resource-id')
+        c.argument('dns_zone_resource_id', deprecate_info=c.deprecate(target='--dns-zone-resource-id', redirect='--dns-zone-resource-ids', hide=True))
+        c.argument('dns_zone_resource_ids', is_preview=True)
 
     with self.argument_context('aks disable-addons') as c:
         c.argument('addons', options_list=['--addons', '-a'], validator=validate_addons)
@@ -773,7 +792,8 @@ def load_arguments(self, _):
         c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('data_collection_settings', is_preview=True)
-        c.argument('dns-zone-resource-id')
+        c.argument('dns_zone_resource_id', deprecate_info=c.deprecate(target='--dns-zone-resource-id', redirect='--dns-zone-resource-ids', hide=True))
+        c.argument('dns_zone_resource_ids', is_preview=True)
 
     with self.argument_context('aks get-credentials') as c:
         c.argument('admin', options_list=['--admin', '-a'], default=False)
@@ -897,6 +917,17 @@ def load_arguments(self, _):
     with self.argument_context('aks mesh disable-ingress-gateway') as c:
         c.argument('ingress_gateway_type',
                    arg_type=get_enum_type(ingress_gateway_types))
+
+    with self.argument_context('aks mesh enable-egress-gateway') as c:
+        c.argument('egx_gtw_nodeselector', nargs='*', validator=validate_egress_gtw_nodeselector, required=False, default=None,
+                   options_list=["--egress-gateway-nodeselector", "--egx-gtw-ns"])
+
+    with self.argument_context('aks mesh enable') as c:
+        c.argument('key_vault_id')
+        c.argument('ca_cert_object_name')
+        c.argument('ca_key_object_name')
+        c.argument('root_cert_object_name')
+        c.argument('cert_chain_object_name')
 
 
 def _get_default_install_location(exe_name):

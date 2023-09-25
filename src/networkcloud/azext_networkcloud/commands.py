@@ -35,8 +35,8 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         )
 
         from .operations.baremetalmachine._run_command import RunCommand
-        from .operations.baremetalmachine._run_read_command import RunReadCommand
         from .operations.baremetalmachine._run_data_extract import RunDataExtract
+        from .operations.baremetalmachine._run_read_command import RunReadCommand
 
         self.command_table["networkcloud baremetalmachine run-command"] = RunCommand(
             loader=self
@@ -101,9 +101,9 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         )
 
         from .operations.cluster.metricsconfiguration._create import Create
-        from .operations.cluster.metricsconfiguration._update import Update
         from .operations.cluster.metricsconfiguration._delete import Delete
         from .operations.cluster.metricsconfiguration._show import Show
+        from .operations.cluster.metricsconfiguration._update import Update
 
         self.command_table["networkcloud cluster metricsconfiguration create"] = Create(
             loader=self
@@ -127,28 +127,6 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         )
         self.command_table["networkcloud clustermanager list"] = List(
             loader=self, table_transformer=transform_cluster_manager_table_output
-        )
-
-    # defaultcninetwork
-    with self.command_group("networkcloud defaultcninetwork"):
-        from .aaz.latest.networkcloud.defaultcninetwork import List, Show
-
-        self.command_table["networkcloud defaultcninetwork show"] = Show(
-            loader=self, table_transformer=transform_resource_table_output
-        )
-        self.command_table["networkcloud defaultcninetwork list"] = List(
-            loader=self, table_transformer=transform_resource_table_output
-        )
-
-    # hybridakscluster
-    with self.command_group("networkcloud hybridakscluster"):
-        from .aaz.latest.networkcloud.hybridakscluster import List, Show
-
-        self.command_table["networkcloud hybridakscluster show"] = Show(
-            loader=self, table_transformer=transform_resource_table_output
-        )
-        self.command_table["networkcloud hybridakscluster list"] = List(
-            loader=self, table_transformer=transform_resource_table_output
         )
 
     # kubernetescluster
@@ -275,9 +253,9 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         )
 
         from .operations.virtualmachine.console._create import Create
-        from .operations.virtualmachine.console._update import Update
         from .operations.virtualmachine.console._delete import Delete
         from .operations.virtualmachine.console._show import Show
+        from .operations.virtualmachine.console._update import Update
 
         self.command_table["networkcloud virtualmachine console create"] = Create(
             loader=self

@@ -19,25 +19,25 @@ interactions:
       ParameterSetName:
       - -n -g --tags -l --base-size-tib --extended-capacity-size-tib --sku
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Creating","baseSizeTiB":23,"extendedCapacitySizeTiB":14,"totalIops":115000,"totalMBps":1840,"totalSizeTiB":37,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"location":"southcentralusstg","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1810":"aaaa"},"systemData":{"createdAt":"2023-03-24T03:40:43.0252637Z","createdBy":"liwang3@microsoft.com","createdByType":"User","lastModifiedAt":"2023-03-24T03:40:43.0252637Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"location":"southcentralusstg","properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Creating","baseSizeTiB":23,"extendedCapacitySizeTiB":14,"totalIops":115000,"totalMBps":1840,"totalSizeTiB":37,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1810":"aaaa"},"systemData":{"createdAt":"2023-07-24T08:33:54.2378231Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:33:54.2378231Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '776'
+      - '782'
       content-type:
       - application/json
       date:
-      - Fri, 24 Mar 2023 03:40:44 GMT
+      - Mon, 24 Jul 2023 08:33:53 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/2800d1c4-4d2a-4997-bfca-75ce843a137d?monitor=true&api-version=2021-11-20-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/65b0eceb-de99-4fae-a2a0-fd8cf49b4f4e?monitor=true&api-version=2022-12-01-preview
       pragma:
       - no-cache
       server:
@@ -47,10 +47,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1194'
     status:
-      code: 202
-      message: Accepted
+      code: 201
+      message: Created
 - request:
     body: null
     headers:
@@ -65,9 +65,9 @@ interactions:
       ParameterSetName:
       - -n -g --tags -l --base-size-tib --extended-capacity-size-tib --sku
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/2800d1c4-4d2a-4997-bfca-75ce843a137d?monitor=true&api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/65b0eceb-de99-4fae-a2a0-fd8cf49b4f4e?monitor=true&api-version=2022-12-01-preview
   response:
     body:
       string: ''
@@ -79,11 +79,11 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Fri, 24 Mar 2023 03:41:01 GMT
+      - Mon, 24 Jul 2023 08:33:54 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/2800d1c4-4d2a-4997-bfca-75ce843a137d?monitor=true&api-version=2021-11-20-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/65b0eceb-de99-4fae-a2a0-fd8cf49b4f4e?monitor=true&api-version=2022-12-01-preview
       pragma:
       - no-cache
       server:
@@ -109,21 +109,65 @@ interactions:
       ParameterSetName:
       - -n -g --tags -l --base-size-tib --extended-capacity-size-tib --sku
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/2800d1c4-4d2a-4997-bfca-75ce843a137d?monitor=true&api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/65b0eceb-de99-4fae-a2a0-fd8cf49b4f4e?monitor=true&api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Succeeded","baseSizeTiB":23,"extendedCapacitySizeTiB":14,"totalIops":115000,"totalMBps":1840,"totalSizeTiB":37,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"location":"southcentralusstg","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1810":"aaaa"},"systemData":{"createdAt":"2023-03-24T03:40:43.0252637Z","createdBy":"liwang3@microsoft.com","createdByType":"User","lastModifiedAt":"2023-03-24T03:40:43.0252637Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User"}}'
+      string: ''
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '777'
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Mon, 24 Jul 2023 08:34:12 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/65b0eceb-de99-4fae-a2a0-fd8cf49b4f4e?monitor=true&api-version=2022-12-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --tags -l --base-size-tib --extended-capacity-size-tib --sku
+      User-Agent:
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/65b0eceb-de99-4fae-a2a0-fd8cf49b4f4e?monitor=true&api-version=2022-12-01-preview
+  response:
+    body:
+      string: '{"location":"southcentralusstg","properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Succeeded","baseSizeTiB":23,"extendedCapacitySizeTiB":14,"totalIops":115000,"totalMBps":1840,"totalSizeTiB":37,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1810":"aaaa"},"systemData":{"createdAt":"2023-07-24T08:33:54.2378231Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:33:54.2378231Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '783'
       content-type:
       - application/json
       date:
-      - Fri, 24 Mar 2023 03:41:18 GMT
+      - Mon, 24 Jul 2023 08:34:29 GMT
       expires:
       - '-1'
       pragma:
@@ -155,21 +199,22 @@ interactions:
       ParameterSetName:
       - -g -n --address-prefix --subnet-name --subnet-prefix
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.13
+        (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg.testelasticsan.volumegroup000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001","name":"clitest.rg.testelasticsan.volumegroup000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2023-03-24T03:40:28Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001","name":"clitest.rg.testelasticsan.volumegroup000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","test":"test_elastic_san_volume_group_and_volume_scenarios","date":"2023-07-24T08:33:49Z","module":"elastic-san"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '369'
+      - '452'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Mar 2023 03:41:25 GMT
+      - Mon, 24 Jul 2023 08:34:32 GMT
       expires:
       - '-1'
       pragma:
@@ -203,32 +248,30 @@ interactions:
       ParameterSetName:
       - -g -n --address-prefix --subnet-name --subnet-prefix
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"name\": \"vnet000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004\"\
-        ,\r\n  \"etag\": \"W/\\\"9388c5f4-027d-4abd-878c-39e7eab0f8c1\\\"\",\r\n \
-        \ \"type\": \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus2euap\"\
-        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n \
-        \   \"resourceGuid\": \"eea2386d-950c-4431-865b-82c08b7e32e2\",\r\n    \"\
-        addressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\
-        \r\n      ]\r\n    },\r\n    \"subnets\": [\r\n      {\r\n        \"name\"\
-        : \"subnet000005\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005\"\
-        ,\r\n        \"etag\": \"W/\\\"9388c5f4-027d-4abd-878c-39e7eab0f8c1\\\"\"\
-        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Updating\"\
-        ,\r\n          \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\"\
-        : [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n \
-        \         \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n        },\r\
-        \n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n    \
-        \  }\r\n    ],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\"\
-        : false\r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"vnet000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004\",\r\n
+        \ \"etag\": \"W/\\\"39635e9d-9f8d-49fa-8af4-dfd45bcbb534\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus2euap\",\r\n
+        \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"resourceGuid\":
+        \"fa16fc9b-c1b9-4e99-8e6a-00b991041c4e\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [\r\n
+        \     {\r\n        \"name\": \"subnet000005\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005\",\r\n
+        \       \"etag\": \"W/\\\"39635e9d-9f8d-49fa-8af4-dfd45bcbb534\\\"\",\r\n
+        \       \"properties\": {\r\n          \"provisioningState\": \"Updating\",\r\n
+        \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
+        [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
+        \"Enabled\"\r\n        },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n
+        \     }\r\n    ],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\":
+        false\r\n  }\r\n}"
     headers:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/19b26ab9-8089-44e5-91fe-c55f1fe9432e?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/42707106-06a5-4a62-9a49-1a755b3da376?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -236,7 +279,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Mar 2023 03:41:32 GMT
+      - Mon, 24 Jul 2023 08:34:34 GMT
       expires:
       - '-1'
       pragma:
@@ -249,9 +292,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f08397a4-7b78-4cfa-a2e1-83350edd5f40
+      - 4bffba65-4a94-4824-b347-779b6c860bbc
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1196'
     status:
       code: 201
       message: ''
@@ -269,21 +312,21 @@ interactions:
       ParameterSetName:
       - -g -n --address-prefix --subnet-name --subnet-prefix
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/19b26ab9-8089-44e5-91fe-c55f1fe9432e?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/42707106-06a5-4a62-9a49-1a755b3da376?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '29'
+      - '30'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Mar 2023 03:41:35 GMT
+      - Mon, 24 Jul 2023 08:34:34 GMT
       expires:
       - '-1'
       pragma:
@@ -300,7 +343,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 91c748ce-b17e-44e7-8a64-29eabadc2d7b
+      - b82dce14-fe02-4ea5-9814-0a84d3f0975f
     status:
       code: 200
       message: ''
@@ -318,38 +361,21 @@ interactions:
       ParameterSetName:
       - -g -n --address-prefix --subnet-name --subnet-prefix
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/42707106-06a5-4a62-9a49-1a755b3da376?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"name\": \"vnet000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004\"\
-        ,\r\n  \"etag\": \"W/\\\"d455493d-dff0-40c4-b092-276026b47c77\\\"\",\r\n \
-        \ \"type\": \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus2euap\"\
-        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n\
-        \    \"resourceGuid\": \"eea2386d-950c-4431-865b-82c08b7e32e2\",\r\n    \"\
-        addressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\
-        \r\n      ]\r\n    },\r\n    \"subnets\": [\r\n      {\r\n        \"name\"\
-        : \"subnet000005\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005\"\
-        ,\r\n        \"etag\": \"W/\\\"d455493d-dff0-40c4-b092-276026b47c77\\\"\"\
-        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
-        ,\r\n          \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\"\
-        : [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n \
-        \         \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n        },\r\
-        \n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n    \
-        \  }\r\n    ],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\"\
-        : false\r\n  }\r\n}"
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1303'
+      - '29'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Mar 2023 03:41:36 GMT
-      etag:
-      - W/"d455493d-dff0-40c4-b092-276026b47c77"
+      - Mon, 24 Jul 2023 08:34:44 GMT
       expires:
       - '-1'
       pragma:
@@ -366,14 +392,78 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 9025b249-f4a5-475d-b344-c560665b7852
+      - f909e96a-c3d4-45fc-9f5d-cd713dee2206
+    status:
+      code: 200
+      message: ''
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --address-prefix --subnet-name --subnet-prefix
+      User-Agent:
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"vnet000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004\",\r\n
+        \ \"etag\": \"W/\\\"8f7e53bc-9892-4de4-8cba-a8f73ab9c7e6\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus2euap\",\r\n
+        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\":
+        \"fa16fc9b-c1b9-4e99-8e6a-00b991041c4e\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [\r\n
+        \     {\r\n        \"name\": \"subnet000005\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005\",\r\n
+        \       \"etag\": \"W/\\\"8f7e53bc-9892-4de4-8cba-a8f73ab9c7e6\\\"\",\r\n
+        \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
+        \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
+        [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
+        \"Enabled\"\r\n        },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n
+        \     }\r\n    ],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\":
+        false\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1303'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 24 Jul 2023 08:34:44 GMT
+      etag:
+      - W/"8f7e53bc-9892-4de4-8cba-a8f73ab9c7e6"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - f7bb5155-89d9-49c1-aa03-228a3291d23f
     status:
       code: 200
       message: ''
 - request:
     body: '{"properties": {"encryption": "EncryptionAtRestWithPlatformKey", "networkAcls":
       {"virtualNetworkRules": [{"action": "Allow", "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005"}]},
-      "protocolType": "Iscsi"}, "tags": {"key1910": "bbbb"}}'
+      "protocolType": "Iscsi"}}'
     headers:
       Accept:
       - application/json
@@ -384,31 +474,31 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '378'
+      - '349'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -e -n -g --tags --encryption --protocol-type --network-acls
+      - -e -n -g --encryption --protocol-type --network-acls
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Creating","networkAcls":{"virtualNetworkRules":[{"action":"Allow","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","state":"Provisioning"}]},"protocolType":"iSCSI","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003","name":"volume-group000003","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","tags":{"key1910":"bbbb"},"systemData":{"createdAt":"2023-03-24T03:41:37.2384648Z","createdBy":"liwang3@microsoft.com","createdByType":"User","lastModifiedAt":"2023-03-24T03:41:37.2384648Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"properties":{"provisioningState":"Creating","networkAcls":{"virtualNetworkRules":[{"action":"Allow","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","state":"Provisioning"}]},"protocolType":"iSCSI","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003","name":"volume-group000003","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2023-07-24T08:34:47.5244447Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:34:47.5244447Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '947'
+      - '927'
       content-type:
       - application/json
       date:
-      - Fri, 24 Mar 2023 03:41:39 GMT
+      - Mon, 24 Jul 2023 08:34:47 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/96f067f3-f94a-4730-bcf7-2a28fb4f0b94?monitor=true&api-version=2021-11-20-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/410fd017-068e-4599-9c8b-f6a41d4ad607?monitor=true&api-version=2022-12-01-preview
       pragma:
       - no-cache
       server:
@@ -418,10 +508,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1195'
     status:
-      code: 202
-      message: Accepted
+      code: 201
+      message: Created
 - request:
     body: null
     headers:
@@ -434,23 +524,23 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -e -n -g --tags --encryption --protocol-type --network-acls
+      - -e -n -g --encryption --protocol-type --network-acls
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/96f067f3-f94a-4730-bcf7-2a28fb4f0b94?monitor=true&api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/410fd017-068e-4599-9c8b-f6a41d4ad607?monitor=true&api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","networkAcls":{"virtualNetworkRules":[{"action":"Allow","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","state":"Provisioning"}]},"protocolType":"iSCSI","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003","name":"volume-group000003","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","tags":{"key1910":"bbbb"},"systemData":{"createdAt":"2023-03-24T03:41:37.2384648Z","createdBy":"liwang3@microsoft.com","createdByType":"User","lastModifiedAt":"2023-03-24T03:41:37.2384648Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","networkAcls":{"virtualNetworkRules":[{"action":"Allow","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","state":"Provisioning"}]},"protocolType":"iSCSI","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003","name":"volume-group000003","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2023-07-24T08:34:47.5244447Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:34:47.5244447Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '948'
+      - '928'
       content-type:
       - application/json
       date:
-      - Fri, 24 Mar 2023 03:41:57 GMT
+      - Mon, 24 Jul 2023 08:34:47 GMT
       expires:
       - '-1'
       pragma:
@@ -482,21 +572,21 @@ interactions:
       ParameterSetName:
       - -g -e -n
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","networkAcls":{"virtualNetworkRules":[{"action":"Allow","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","state":"Provisioning"}]},"protocolType":"iSCSI","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003","name":"volume-group000003","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","tags":{"key1910":"bbbb"},"systemData":{"createdAt":"2023-03-24T03:41:37.2384648Z","createdBy":"liwang3@microsoft.com","createdByType":"User","lastModifiedAt":"2023-03-24T03:41:37.2384648Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","networkAcls":{"virtualNetworkRules":[{"action":"Allow","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","state":"Provisioning"}]},"protocolType":"iSCSI","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003","name":"volume-group000003","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2023-07-24T08:34:47.5244447Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:34:47.5244447Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '948'
+      - '928'
       content-type:
       - application/json
       date:
-      - Fri, 24 Mar 2023 03:42:01 GMT
+      - Mon, 24 Jul 2023 08:34:49 GMT
       expires:
       - '-1'
       pragma:
@@ -528,21 +618,21 @@ interactions:
       ParameterSetName:
       - -g -e
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumeGroups?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumeGroups?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"value":[{"properties":{"provisioningState":"Succeeded","networkAcls":{"virtualNetworkRules":[{"action":"Allow","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","state":"Provisioning"}]},"protocolType":"iSCSI","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003","name":"volume-group000003","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","tags":{"key1910":"bbbb"},"systemData":{"createdAt":"2023-03-24T03:41:37.2384648Z","createdBy":"liwang3@microsoft.com","createdByType":"User","lastModifiedAt":"2023-03-24T03:41:37.2384648Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User"}}]}'
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","networkAcls":{"virtualNetworkRules":[{"action":"Allow","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","state":"Provisioning"}]},"protocolType":"iSCSI","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003","name":"volume-group000003","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2023-07-24T08:34:47.5244447Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:34:47.5244447Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '960'
+      - '940'
       content-type:
       - application/json
       date:
-      - Fri, 24 Mar 2023 03:42:04 GMT
+      - Mon, 24 Jul 2023 08:34:51 GMT
       expires:
       - '-1'
       pragma:
@@ -579,25 +669,24 @@ interactions:
       ParameterSetName:
       - -g --vnet-name --name --address-prefixes --service-endpoints
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000006?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"name\": \"subnet000006\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000006\"\
-        ,\r\n  \"etag\": \"W/\\\"803cced3-34c8-40f1-bdf4-2debdd304265\\\"\",\r\n \
-        \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"\
-        addressPrefix\": \"10.0.1.0/24\",\r\n    \"serviceEndpoints\": [\r\n     \
-        \ {\r\n        \"provisioningState\": \"Updating\",\r\n        \"service\"\
-        : \"Microsoft.Storage\",\r\n        \"locations\": [\r\n          \"*\"\r\n\
-        \        ]\r\n      }\r\n    ],\r\n    \"delegations\": [],\r\n    \"privateEndpointNetworkPolicies\"\
-        : \"Disabled\",\r\n    \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\
-        \n  },\r\n  \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n}"
+      string: "{\r\n  \"name\": \"subnet000006\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000006\",\r\n
+        \ \"etag\": \"W/\\\"0ed41d9c-f11d-45cd-bac1-b2b515f219bb\\\"\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Updating\",\r\n    \"addressPrefix\": \"10.0.1.0/24\",\r\n
+        \   \"serviceEndpoints\": [\r\n      {\r\n        \"provisioningState\": \"Updating\",\r\n
+        \       \"service\": \"Microsoft.Storage\",\r\n        \"locations\": [\r\n
+        \         \"*\"\r\n        ]\r\n      }\r\n    ],\r\n    \"delegations\":
+        [],\r\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n    \"privateLinkServiceNetworkPolicies\":
+        \"Enabled\"\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n}"
     headers:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1f4e98b9-0c1d-484b-8491-c360c0d63915?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/7e13eca7-55ff-44ca-ac31-615371da240f?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -605,7 +694,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Mar 2023 03:42:06 GMT
+      - Mon, 24 Jul 2023 08:34:53 GMT
       expires:
       - '-1'
       pragma:
@@ -618,9 +707,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 7fc82b89-887f-4e56-9c6d-936834b7a28a
+      - fae8432d-e4a4-4419-bea8-ba2b4e410469
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1194'
     status:
       code: 201
       message: ''
@@ -638,21 +727,21 @@ interactions:
       ParameterSetName:
       - -g --vnet-name --name --address-prefixes --service-endpoints
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1f4e98b9-0c1d-484b-8491-c360c0d63915?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/7e13eca7-55ff-44ca-ac31-615371da240f?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '29'
+      - '30'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Mar 2023 03:42:10 GMT
+      - Mon, 24 Jul 2023 08:34:53 GMT
       expires:
       - '-1'
       pragma:
@@ -669,7 +758,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - bfd8b7d0-c9ed-4ff7-9c04-02cde7973a53
+      - 9475cddb-08f2-4a95-b2a9-7054676722ea
     status:
       code: 200
       message: ''
@@ -687,31 +776,21 @@ interactions:
       ParameterSetName:
       - -g --vnet-name --name --address-prefixes --service-endpoints
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000006?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/7e13eca7-55ff-44ca-ac31-615371da240f?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"name\": \"subnet000006\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000006\"\
-        ,\r\n  \"etag\": \"W/\\\"11509f17-7a7b-4b66-b5e5-ba19bb392e89\\\"\",\r\n \
-        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"\
-        addressPrefix\": \"10.0.1.0/24\",\r\n    \"serviceEndpoints\": [\r\n     \
-        \ {\r\n        \"provisioningState\": \"Succeeded\",\r\n        \"service\"\
-        : \"Microsoft.Storage\",\r\n        \"locations\": [\r\n          \"*\"\r\n\
-        \        ]\r\n      }\r\n    ],\r\n    \"delegations\": [],\r\n    \"privateEndpointNetworkPolicies\"\
-        : \"Disabled\",\r\n    \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\
-        \n  },\r\n  \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n}"
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '757'
+      - '29'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 Mar 2023 03:42:16 GMT
-      etag:
-      - W/"11509f17-7a7b-4b66-b5e5-ba19bb392e89"
+      - Mon, 24 Jul 2023 08:35:03 GMT
       expires:
       - '-1'
       pragma:
@@ -728,7 +807,65 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 86f3f98f-342a-4cc5-897c-5ceeb4ac03dd
+      - a5f3824e-c8f8-48e2-b956-b0938d7581f6
+    status:
+      code: 200
+      message: ''
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet subnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vnet-name --name --address-prefixes --service-endpoints
+      User-Agent:
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000006?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"subnet000006\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000006\",\r\n
+        \ \"etag\": \"W/\\\"bb930b45-1a4d-4c9f-8a52-6950126709f8\\\"\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"addressPrefix\": \"10.0.1.0/24\",\r\n
+        \   \"serviceEndpoints\": [\r\n      {\r\n        \"provisioningState\": \"Succeeded\",\r\n
+        \       \"service\": \"Microsoft.Storage\",\r\n        \"locations\": [\r\n
+        \         \"*\"\r\n        ]\r\n      }\r\n    ],\r\n    \"delegations\":
+        [],\r\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n    \"privateLinkServiceNetworkPolicies\":
+        \"Enabled\"\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '757'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 24 Jul 2023 08:35:03 GMT
+      etag:
+      - W/"bb930b45-1a4d-4c9f-8a52-6950126709f8"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - c5a7a583-8170-4bc9-b619-0d3a7c6db0b6
     status:
       code: 200
       message: ''
@@ -744,23 +881,23 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -e -n -g --tags --protocol-type --network-acls
+      - -e -n -g --protocol-type --network-acls
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","networkAcls":{"virtualNetworkRules":[{"action":"Allow","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","state":"Provisioning"}]},"protocolType":"iSCSI","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003","name":"volume-group000003","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","tags":{"key1910":"bbbb"},"systemData":{"createdAt":"2023-03-24T03:41:37.2384648Z","createdBy":"liwang3@microsoft.com","createdByType":"User","lastModifiedAt":"2023-03-24T03:41:37.2384648Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","networkAcls":{"virtualNetworkRules":[{"action":"Allow","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000005","state":"Provisioning"}]},"protocolType":"iSCSI","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003","name":"volume-group000003","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2023-07-24T08:34:47.5244447Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:34:47.5244447Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '948'
+      - '928'
       content-type:
       - application/json
       date:
-      - Fri, 24 Mar 2023 03:42:18 GMT
+      - Mon, 24 Jul 2023 08:35:06 GMT
       expires:
       - '-1'
       pragma:
@@ -781,7 +918,7 @@ interactions:
 - request:
     body: '{"properties": {"encryption": "EncryptionAtRestWithPlatformKey", "networkAcls":
       {"virtualNetworkRules": [{"action": "Allow", "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000006"}]},
-      "protocolType": "None"}, "tags": {"key2011": "cccc"}}'
+      "protocolType": "None"}}'
     headers:
       Accept:
       - application/json
@@ -792,31 +929,31 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '377'
+      - '348'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -e -n -g --tags --protocol-type --network-acls
+      - -e -n -g --protocol-type --network-acls
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Updating","networkAcls":{"virtualNetworkRules":[{"action":"Allow","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000006","state":"Provisioning"}]},"protocolType":"None","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003","name":"volume-group000003","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","tags":{"key2011":"cccc"},"systemData":{"createdAt":"2023-03-24T03:42:19.5288856Z","createdBy":"liwang3@microsoft.com","createdByType":"User","lastModifiedAt":"2023-03-24T03:42:19.5288856Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"properties":{"provisioningState":"Updating","networkAcls":{"virtualNetworkRules":[{"action":"Allow","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000006","state":"Provisioning"}]},"protocolType":"None","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003","name":"volume-group000003","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2023-07-24T08:35:06.9821831Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:35:06.9821831Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '946'
+      - '926'
       content-type:
       - application/json
       date:
-      - Fri, 24 Mar 2023 03:42:19 GMT
+      - Mon, 24 Jul 2023 08:35:07 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/a4a9993e-bcaf-4d2e-8c06-8250cfa0122a?monitor=true&api-version=2021-11-20-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/d6eb08e8-b0fe-4ca5-9ef8-e7b0be974834?monitor=true&api-version=2022-12-01-preview
       pragma:
       - no-cache
       server:
@@ -826,10 +963,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1194'
     status:
-      code: 202
-      message: Accepted
+      code: 201
+      message: Created
 - request:
     body: null
     headers:
@@ -842,23 +979,23 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -e -n -g --tags --protocol-type --network-acls
+      - -e -n -g --protocol-type --network-acls
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/a4a9993e-bcaf-4d2e-8c06-8250cfa0122a?monitor=true&api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/d6eb08e8-b0fe-4ca5-9ef8-e7b0be974834?monitor=true&api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","networkAcls":{"virtualNetworkRules":[{"action":"Allow","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000006","state":"Provisioning"}]},"protocolType":"None","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003","name":"volume-group000003","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","tags":{"key2011":"cccc"},"systemData":{"createdAt":"2023-03-24T03:42:19.5288856Z","createdBy":"liwang3@microsoft.com","createdByType":"User","lastModifiedAt":"2023-03-24T03:42:19.5288856Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","networkAcls":{"virtualNetworkRules":[{"action":"Allow","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000006","state":"Provisioning"}]},"protocolType":"None","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003","name":"volume-group000003","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2023-07-24T08:35:06.9821831Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:35:06.9821831Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '947'
+      - '927'
       content-type:
       - application/json
       date:
-      - Fri, 24 Mar 2023 03:42:36 GMT
+      - Mon, 24 Jul 2023 08:35:07 GMT
       expires:
       - '-1'
       pragma:
@@ -894,25 +1031,25 @@ interactions:
       ParameterSetName:
       - -g -e -v -n --size-gib
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"creationData":{"createSource":"None"},"sizeGiB":2,"storageTarget":{"provisioningState":"Creating","status":"Pending"},"volumeId":"8285f379-4886-4ed9-9493-250311815e3d"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007","name":"volume000007","type":"Microsoft.ElasticSan/ElasticSans","systemData":{"createdAt":"2023-03-24T03:42:38.3562573Z","createdBy":"liwang3@microsoft.com","createdByType":"User","lastModifiedAt":"2023-03-24T03:42:38.3562573Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"properties":{"creationData":{"createSource":"None"},"sizeGiB":2,"storageTarget":{"provisioningState":"Creating","status":"Pending"},"volumeId":"c329b29a-7045-4ff4-a339-3bf4bdf6e278"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007","name":"volume000007","type":"Microsoft.ElasticSan/ElasticSans","systemData":{"createdAt":"2023-07-24T08:35:09.8270181Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:35:09.8270181Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '715'
+      - '721'
       content-type:
       - application/json
       date:
-      - Fri, 24 Mar 2023 03:42:39 GMT
+      - Mon, 24 Jul 2023 08:35:09 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/0286a6cc-0383-4746-b328-701f7cb2fa1e?monitor=true&api-version=2021-11-20-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/1535b280-9e95-4450-8838-0ecca80e9953?monitor=true&api-version=2022-12-01-preview
       pragma:
       - no-cache
       server:
@@ -922,10 +1059,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1196'
     status:
-      code: 202
-      message: Accepted
+      code: 201
+      message: Created
 - request:
     body: null
     headers:
@@ -940,9 +1077,9 @@ interactions:
       ParameterSetName:
       - -g -e -v -n --size-gib
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/0286a6cc-0383-4746-b328-701f7cb2fa1e?monitor=true&api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/1535b280-9e95-4450-8838-0ecca80e9953?monitor=true&api-version=2022-12-01-preview
   response:
     body:
       string: ''
@@ -954,11 +1091,11 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Fri, 24 Mar 2023 03:42:57 GMT
+      - Mon, 24 Jul 2023 08:35:09 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/0286a6cc-0383-4746-b328-701f7cb2fa1e?monitor=true&api-version=2021-11-20-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/1535b280-9e95-4450-8838-0ecca80e9953?monitor=true&api-version=2022-12-01-preview
       pragma:
       - no-cache
       server:
@@ -984,9 +1121,9 @@ interactions:
       ParameterSetName:
       - -g -e -v -n --size-gib
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/0286a6cc-0383-4746-b328-701f7cb2fa1e?monitor=true&api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/1535b280-9e95-4450-8838-0ecca80e9953?monitor=true&api-version=2022-12-01-preview
   response:
     body:
       string: ''
@@ -998,11 +1135,11 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Fri, 24 Mar 2023 03:43:00 GMT
+      - Mon, 24 Jul 2023 08:35:27 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/0286a6cc-0383-4746-b328-701f7cb2fa1e?monitor=true&api-version=2021-11-20-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/1535b280-9e95-4450-8838-0ecca80e9953?monitor=true&api-version=2022-12-01-preview
       pragma:
       - no-cache
       server:
@@ -1028,109 +1165,21 @@ interactions:
       ParameterSetName:
       - -g -e -v -n --size-gib
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/0286a6cc-0383-4746-b328-701f7cb2fa1e?monitor=true&api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/1535b280-9e95-4450-8838-0ecca80e9953?monitor=true&api-version=2022-12-01-preview
   response:
     body:
-      string: ''
+      string: '{"properties":{"creationData":{"createSource":"None"},"sizeGiB":2,"storageTarget":{"targetIqn":"iqn.2023-07.net.windows.core.blob.ElasticSan.es-hqrlekyswkz1:volume000007","provisioningState":"Succeeded","status":"Running","targetPortalHostname":"es-hqrlekyswkz1.z38.blob.storage.azure.net","targetPortalPort":3260},"volumeId":"c329b29a-7045-4ff4-a339-3bf4bdf6e278"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007","name":"volume000007","type":"Microsoft.ElasticSan/ElasticSans","systemData":{"createdAt":"2023-07-24T08:35:09.8270181Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:35:09.8270181Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '0'
-      content-type:
-      - text/plain; charset=utf-8
-      date:
-      - Fri, 24 Mar 2023 03:43:04 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/0286a6cc-0383-4746-b328-701f7cb2fa1e?monitor=true&api-version=2021-11-20-preview
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - elastic-san volume create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -e -v -n --size-gib
-      User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/0286a6cc-0383-4746-b328-701f7cb2fa1e?monitor=true&api-version=2021-11-20-preview
-  response:
-    body:
-      string: ''
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      content-type:
-      - text/plain; charset=utf-8
-      date:
-      - Fri, 24 Mar 2023 03:43:07 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/0286a6cc-0383-4746-b328-701f7cb2fa1e?monitor=true&api-version=2021-11-20-preview
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - elastic-san volume create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -e -v -n --size-gib
-      User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/0286a6cc-0383-4746-b328-701f7cb2fa1e?monitor=true&api-version=2021-11-20-preview
-  response:
-    body:
-      string: '{"properties":{"creationData":{"createSource":"None"},"sizeGiB":2,"storageTarget":{"targetIqn":"iqn.2023-03.net.windows.core.blob.ElasticSan.es-omv4pi14g5o0:volume000007","provisioningState":"Succeeded","status":"Running","targetPortalHostname":"es-omv4pi14g5o0.z35.blob.storage.azure.net","targetPortalPort":3260},"volumeId":"8285f379-4886-4ed9-9493-250311815e3d"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007","name":"volume000007","type":"Microsoft.ElasticSan/ElasticSans","systemData":{"createdAt":"2023-03-24T03:42:38.3562573Z","createdBy":"liwang3@microsoft.com","createdByType":"User","lastModifiedAt":"2023-03-24T03:42:38.3562573Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '896'
+      - '902'
       content-type:
       - application/json
       date:
-      - Fri, 24 Mar 2023 03:43:11 GMT
+      - Mon, 24 Jul 2023 08:35:44 GMT
       expires:
       - '-1'
       pragma:
@@ -1162,21 +1211,21 @@ interactions:
       ParameterSetName:
       - -g -e -v -n
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"creationData":{"createSource":"None"},"sizeGiB":2,"storageTarget":{"targetIqn":"iqn.2023-03.net.windows.core.blob.ElasticSan.es-omv4pi14g5o0:volume000007","provisioningState":"Succeeded","status":"Running","targetPortalHostname":"es-omv4pi14g5o0.z35.blob.storage.azure.net","targetPortalPort":3260},"volumeId":"8285f379-4886-4ed9-9493-250311815e3d"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007","name":"volume000007","type":"Microsoft.ElasticSan/ElasticSans","systemData":{"createdAt":"2023-03-24T03:42:38.3562573Z","createdBy":"liwang3@microsoft.com","createdByType":"User","lastModifiedAt":"2023-03-24T03:42:38.3562573Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"properties":{"creationData":{"createSource":"None"},"sizeGiB":2,"storageTarget":{"targetIqn":"iqn.2023-07.net.windows.core.blob.ElasticSan.es-hqrlekyswkz1:volume000007","provisioningState":"Succeeded","status":"Running","targetPortalHostname":"es-hqrlekyswkz1.z38.blob.storage.azure.net","targetPortalPort":3260},"volumeId":"c329b29a-7045-4ff4-a339-3bf4bdf6e278"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007","name":"volume000007","type":"Microsoft.ElasticSan/ElasticSans","systemData":{"createdAt":"2023-07-24T08:35:09.8270181Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:35:09.8270181Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '896'
+      - '902'
       content-type:
       - application/json
       date:
-      - Fri, 24 Mar 2023 03:43:14 GMT
+      - Mon, 24 Jul 2023 08:35:46 GMT
       expires:
       - '-1'
       pragma:
@@ -1208,21 +1257,21 @@ interactions:
       ParameterSetName:
       - -g -e -v
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"value":[{"properties":{"creationData":{"createSource":"None"},"sizeGiB":2,"storageTarget":{"targetIqn":"iqn.2023-03.net.windows.core.blob.ElasticSan.es-omv4pi14g5o0:volume000007","provisioningState":"Succeeded","status":"Running","targetPortalHostname":"es-omv4pi14g5o0.z35.blob.storage.azure.net","targetPortalPort":3260},"volumeId":"8285f379-4886-4ed9-9493-250311815e3d"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007","name":"volume000007","type":"Microsoft.ElasticSan/ElasticSans","systemData":{"createdAt":"2023-03-24T03:42:38.3562573Z","createdBy":"liwang3@microsoft.com","createdByType":"User","lastModifiedAt":"2023-03-24T03:42:38.3562573Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User"}}]}'
+      string: '{"value":[{"properties":{"creationData":{"createSource":"None"},"sizeGiB":2,"storageTarget":{"targetIqn":"iqn.2023-07.net.windows.core.blob.ElasticSan.es-hqrlekyswkz1:volume000007","provisioningState":"Succeeded","status":"Running","targetPortalHostname":"es-hqrlekyswkz1.z38.blob.storage.azure.net","targetPortalPort":3260},"volumeId":"c329b29a-7045-4ff4-a339-3bf4bdf6e278"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007","name":"volume000007","type":"Microsoft.ElasticSan/ElasticSans","systemData":{"createdAt":"2023-07-24T08:35:09.8270181Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:35:09.8270181Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '908'
+      - '914'
       content-type:
       - application/json
       date:
-      - Fri, 24 Mar 2023 03:43:17 GMT
+      - Mon, 24 Jul 2023 08:35:48 GMT
       expires:
       - '-1'
       pragma:
@@ -1254,21 +1303,21 @@ interactions:
       ParameterSetName:
       - -g -e -v -n --size-gib
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"creationData":{"createSource":"None"},"sizeGiB":2,"storageTarget":{"targetIqn":"iqn.2023-03.net.windows.core.blob.ElasticSan.es-omv4pi14g5o0:volume000007","provisioningState":"Succeeded","status":"Running","targetPortalHostname":"es-omv4pi14g5o0.z35.blob.storage.azure.net","targetPortalPort":3260},"volumeId":"8285f379-4886-4ed9-9493-250311815e3d"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007","name":"volume000007","type":"Microsoft.ElasticSan/ElasticSans","systemData":{"createdAt":"2023-03-24T03:42:38.3562573Z","createdBy":"liwang3@microsoft.com","createdByType":"User","lastModifiedAt":"2023-03-24T03:42:38.3562573Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"properties":{"creationData":{"createSource":"None"},"sizeGiB":2,"storageTarget":{"targetIqn":"iqn.2023-07.net.windows.core.blob.ElasticSan.es-hqrlekyswkz1:volume000007","provisioningState":"Succeeded","status":"Running","targetPortalHostname":"es-hqrlekyswkz1.z38.blob.storage.azure.net","targetPortalPort":3260},"volumeId":"c329b29a-7045-4ff4-a339-3bf4bdf6e278"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007","name":"volume000007","type":"Microsoft.ElasticSan/ElasticSans","systemData":{"createdAt":"2023-07-24T08:35:09.8270181Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:35:09.8270181Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '896'
+      - '902'
       content-type:
       - application/json
       date:
-      - Fri, 24 Mar 2023 03:43:20 GMT
+      - Mon, 24 Jul 2023 08:35:49 GMT
       expires:
       - '-1'
       pragma:
@@ -1304,25 +1353,25 @@ interactions:
       ParameterSetName:
       - -g -e -v -n --size-gib
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"creationData":{"createSource":"None"},"sizeGiB":3,"storageTarget":{"targetIqn":"iqn.2023-03.net.windows.core.blob.ElasticSan.es-omv4pi14g5o0:volume000007","provisioningState":"Updating","status":"Pending","targetPortalHostname":"es-omv4pi14g5o0.z35.blob.storage.azure.net","targetPortalPort":3260},"volumeId":"8285f379-4886-4ed9-9493-250311815e3d"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007","name":"volume000007","type":"Microsoft.ElasticSan/ElasticSans","systemData":{"createdAt":"2023-03-24T03:43:21.2965412Z","createdBy":"liwang3@microsoft.com","createdByType":"User","lastModifiedAt":"2023-03-24T03:43:21.2965412Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"properties":{"creationData":{"createSource":"None"},"sizeGiB":3,"storageTarget":{"targetIqn":"iqn.2023-07.net.windows.core.blob.ElasticSan.es-hqrlekyswkz1:volume000007","provisioningState":"Updating","status":"Pending","targetPortalHostname":"es-hqrlekyswkz1.z38.blob.storage.azure.net","targetPortalPort":3260},"volumeId":"c329b29a-7045-4ff4-a339-3bf4bdf6e278"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007","name":"volume000007","type":"Microsoft.ElasticSan/ElasticSans","systemData":{"createdAt":"2023-07-24T08:35:50.1595437Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:35:50.1595437Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '895'
+      - '901'
       content-type:
       - application/json
       date:
-      - Fri, 24 Mar 2023 03:43:21 GMT
+      - Mon, 24 Jul 2023 08:35:49 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/3c7e431b-d762-45db-acba-0af163326b26?monitor=true&api-version=2021-11-20-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/acb34f23-0a8a-4130-a043-00f52dc4a071?monitor=true&api-version=2022-12-01-preview
       pragma:
       - no-cache
       server:
@@ -1332,10 +1381,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1193'
     status:
-      code: 202
-      message: Accepted
+      code: 201
+      message: Created
 - request:
     body: null
     headers:
@@ -1350,21 +1399,21 @@ interactions:
       ParameterSetName:
       - -g -e -v -n --size-gib
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/3c7e431b-d762-45db-acba-0af163326b26?monitor=true&api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/acb34f23-0a8a-4130-a043-00f52dc4a071?monitor=true&api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"creationData":{"createSource":"None"},"sizeGiB":3,"storageTarget":{"targetIqn":"iqn.2023-03.net.windows.core.blob.ElasticSan.es-omv4pi14g5o0:volume000007","provisioningState":"Succeeded","status":"Running","targetPortalHostname":"es-omv4pi14g5o0.z35.blob.storage.azure.net","targetPortalPort":3260},"volumeId":"8285f379-4886-4ed9-9493-250311815e3d"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007","name":"volume000007","type":"Microsoft.ElasticSan/ElasticSans","systemData":{"createdAt":"2023-03-24T03:43:21.2965412Z","createdBy":"liwang3@microsoft.com","createdByType":"User","lastModifiedAt":"2023-03-24T03:43:21.2965412Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"properties":{"creationData":{"createSource":"None"},"sizeGiB":3,"storageTarget":{"targetIqn":"iqn.2023-07.net.windows.core.blob.ElasticSan.es-hqrlekyswkz1:volume000007","provisioningState":"Succeeded","status":"Running","targetPortalHostname":"es-hqrlekyswkz1.z38.blob.storage.azure.net","targetPortalPort":3260},"volumeId":"c329b29a-7045-4ff4-a339-3bf4bdf6e278"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007","name":"volume000007","type":"Microsoft.ElasticSan/ElasticSans","systemData":{"createdAt":"2023-07-24T08:35:50.1595437Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:35:50.1595437Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '896'
+      - '902'
       content-type:
       - application/json
       date:
-      - Fri, 24 Mar 2023 03:43:38 GMT
+      - Mon, 24 Jul 2023 08:35:50 GMT
       expires:
       - '-1'
       pragma:
@@ -1398,9 +1447,55 @@ interactions:
       ParameterSetName:
       - -g -e -v -n -y
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007?api-version=2022-12-01-preview
+  response:
+    body:
+      string: '{"properties":{"creationData":{"createSource":"None"},"sizeGiB":3,"storageTarget":{"targetIqn":"iqn.2023-07.net.windows.core.blob.ElasticSan.es-hqrlekyswkz1:volume000007","provisioningState":"Deleting","status":"Running","targetPortalHostname":"es-hqrlekyswkz1.z38.blob.storage.azure.net","targetPortalPort":3260},"volumeId":"c329b29a-7045-4ff4-a339-3bf4bdf6e278"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes/volume000007","name":"volume000007","type":"Microsoft.ElasticSan/ElasticSans","systemData":{"createdAt":"2023-07-24T08:35:50.1595437Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:35:50.1595437Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '901'
+      content-type:
+      - application/json
+      date:
+      - Mon, 24 Jul 2023 08:35:52 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/f933b310-bcb8-471f-9ab7-446822613148?monitor=true&api-version=2022-12-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14993'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -e -v -n -y
+      User-Agent:
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/f933b310-bcb8-471f-9ab7-446822613148?monitor=true&api-version=2022-12-01-preview
   response:
     body:
       string: ''
@@ -1412,7 +1507,7 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Fri, 24 Mar 2023 03:43:39 GMT
+      - Mon, 24 Jul 2023 08:35:52 GMT
       expires:
       - '-1'
       pragma:
@@ -1423,8 +1518,6 @@ interactions:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
     status:
       code: 200
       message: OK
@@ -1442,9 +1535,9 @@ interactions:
       ParameterSetName:
       - -g -e -v
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003/volumes?api-version=2022-12-01-preview
   response:
     body:
       string: '{"value":[]}'
@@ -1456,7 +1549,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 24 Mar 2023 03:43:43 GMT
+      - Mon, 24 Jul 2023 08:35:54 GMT
       expires:
       - '-1'
       pragma:
@@ -1490,9 +1583,55 @@ interactions:
       ParameterSetName:
       - -g -e -n -y
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003?api-version=2022-12-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Deleting","networkAcls":{"virtualNetworkRules":[{"action":"Allow","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.Network/virtualNetworks/vnet000004/subnets/subnet000006","state":"Provisioning"}]},"protocolType":"None","encryption":"EncryptionAtRestWithPlatformKey"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002/volumegroups/volume-group000003","name":"volume-group000003","type":"Microsoft.ElasticSan/elasticSans/volumeGroups","systemData":{"createdAt":"2023-07-24T08:35:06.9821831Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:35:06.9821831Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '926'
+      content-type:
+      - application/json
+      date:
+      - Mon, 24 Jul 2023 08:35:56 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/cbfcd331-0aa3-4ece-aabc-488922138420?monitor=true&api-version=2022-12-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume-group delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -e -n -y
+      User-Agent:
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/cbfcd331-0aa3-4ece-aabc-488922138420?monitor=true&api-version=2022-12-01-preview
   response:
     body:
       string: ''
@@ -1504,7 +1643,51 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Fri, 24 Mar 2023 03:43:46 GMT
+      - Mon, 24 Jul 2023 08:35:56 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/cbfcd331-0aa3-4ece-aabc-488922138420?monitor=true&api-version=2022-12-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san volume-group delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -e -n -y
+      User-Agent:
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/cbfcd331-0aa3-4ece-aabc-488922138420?monitor=true&api-version=2022-12-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Mon, 24 Jul 2023 08:36:14 GMT
       expires:
       - '-1'
       pragma:
@@ -1515,8 +1698,6 @@ interactions:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
     status:
       code: 200
       message: OK
@@ -1536,9 +1717,55 @@ interactions:
       ParameterSetName:
       - -g -n -y
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.6 (macOS-13.2.1-x86_64-i386-64bit)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002?api-version=2022-12-01-preview
+  response:
+    body:
+      string: '{"location":"southcentralusstg","properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Deleting","baseSizeTiB":23,"extendedCapacitySizeTiB":14,"totalIops":115000,"totalMBps":1840,"totalSizeTiB":37,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan.volumegroup000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1810":"aaaa"},"systemData":{"createdAt":"2023-07-24T08:33:54.2378231Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:33:54.2378231Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '782'
+      content-type:
+      - application/json
+      date:
+      - Mon, 24 Jul 2023 08:36:37 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/b0638ffe-b449-4743-ac16-7595b9761994?monitor=true&api-version=2022-12-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14992'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/b0638ffe-b449-4743-ac16-7595b9761994?monitor=true&api-version=2022-12-01-preview
   response:
     body:
       string: ''
@@ -1550,7 +1777,51 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Fri, 24 Mar 2023 03:44:14 GMT
+      - Mon, 24 Jul 2023 08:36:37 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/b0638ffe-b449-4743-ac16-7595b9761994?monitor=true&api-version=2022-12-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/b0638ffe-b449-4743-ac16-7595b9761994?monitor=true&api-version=2022-12-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Mon, 24 Jul 2023 08:36:54 GMT
       expires:
       - '-1'
       pragma:
@@ -1561,8 +1832,6 @@ interactions:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
     status:
       code: 200
       message: OK

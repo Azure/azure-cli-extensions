@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.3.0
++++++
+* Add `kind` support for creating resource
+
 1.2.0
 +++++
 * Drop python 3.6 support

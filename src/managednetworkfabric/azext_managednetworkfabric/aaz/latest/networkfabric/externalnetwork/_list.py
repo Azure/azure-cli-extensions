@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "networkfabric externalnetwork list",
 )
 class List(AAZCommand):
-    """List all External Networks in the provided resource group.
+    """List all External Networks in the provided resource group
 
     :example: List the External Network for Resource Group
         az networkfabric externalnetwork list --resource-group "example-rg" --l3domain "example-l3domain"
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/externalnetworks", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/externalnetworks", "2023-06-15"],
         ]
     }
 
@@ -45,7 +45,7 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.l3_isolation_domain_name = AAZStrArg(
             options=["--l3domain", "--l3-isolation-domain-name"],
-            help="Name of the L3IsolationDomain",
+            help="Name of the L3 Isolation Domain.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -56,7 +56,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ExternalNetworksList(ctx=self.ctx)()
+        self.ExternalNetworksListByL3IsolationDomain(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,7 +72,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class ExternalNetworksList(AAZHttpOperation):
+    class ExternalNetworksListByL3IsolationDomain(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -120,7 +120,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -185,12 +185,18 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             properties.annotation = AAZStrType()
-            properties.disabled_on_resources = AAZListType(
-                serialized_name="disabledOnResources",
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
                 flags={"read_only": True},
+            )
+            properties.export_route_policy = AAZObjectType(
+                serialized_name="exportRoutePolicy",
             )
             properties.export_route_policy_id = AAZStrType(
                 serialized_name="exportRoutePolicyId",
+            )
+            properties.import_route_policy = AAZObjectType(
+                serialized_name="importRoutePolicy",
             )
             properties.import_route_policy_id = AAZStrType(
                 serialized_name="importRoutePolicyId",
@@ -214,16 +220,35 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            disabled_on_resources = cls._schema_on_200.value.Element.properties.disabled_on_resources
-            disabled_on_resources.Element = AAZStrType()
+            export_route_policy = cls._schema_on_200.value.Element.properties.export_route_policy
+            export_route_policy.export_ipv4_route_policy_id = AAZStrType(
+                serialized_name="exportIpv4RoutePolicyId",
+            )
+            export_route_policy.export_ipv6_route_policy_id = AAZStrType(
+                serialized_name="exportIpv6RoutePolicyId",
+            )
+
+            import_route_policy = cls._schema_on_200.value.Element.properties.import_route_policy
+            import_route_policy.import_ipv4_route_policy_id = AAZStrType(
+                serialized_name="importIpv4RoutePolicyId",
+            )
+            import_route_policy.import_ipv6_route_policy_id = AAZStrType(
+                serialized_name="importIpv6RoutePolicyId",
+            )
 
             option_a_properties = cls._schema_on_200.value.Element.properties.option_a_properties
             option_a_properties.bfd_configuration = AAZObjectType(
                 serialized_name="bfdConfiguration",
             )
+            option_a_properties.egress_acl_id = AAZStrType(
+                serialized_name="egressAclId",
+            )
             option_a_properties.fabric_asn = AAZIntType(
                 serialized_name="fabricASN",
                 flags={"read_only": True},
+            )
+            option_a_properties.ingress_acl_id = AAZStrType(
+                serialized_name="ingressAclId",
             )
             option_a_properties.mtu = AAZIntType()
             option_a_properties.peer_asn = AAZIntType(
@@ -252,12 +277,10 @@ class List(AAZCommand):
                 serialized_name="administrativeState",
                 flags={"read_only": True},
             )
-            bfd_configuration.interval = AAZIntType(
-                flags={"read_only": True},
+            bfd_configuration.interval_in_milli_seconds = AAZIntType(
+                serialized_name="intervalInMilliSeconds",
             )
-            bfd_configuration.multiplier = AAZIntType(
-                flags={"read_only": True},
-            )
+            bfd_configuration.multiplier = AAZIntType()
 
             option_b_properties = cls._schema_on_200.value.Element.properties.option_b_properties
             option_b_properties.export_route_targets = AAZListType(
@@ -266,12 +289,41 @@ class List(AAZCommand):
             option_b_properties.import_route_targets = AAZListType(
                 serialized_name="importRouteTargets",
             )
+            option_b_properties.route_targets = AAZObjectType(
+                serialized_name="routeTargets",
+            )
 
             export_route_targets = cls._schema_on_200.value.Element.properties.option_b_properties.export_route_targets
             export_route_targets.Element = AAZStrType()
 
             import_route_targets = cls._schema_on_200.value.Element.properties.option_b_properties.import_route_targets
             import_route_targets.Element = AAZStrType()
+
+            route_targets = cls._schema_on_200.value.Element.properties.option_b_properties.route_targets
+            route_targets.export_ipv4_route_targets = AAZListType(
+                serialized_name="exportIpv4RouteTargets",
+            )
+            route_targets.export_ipv6_route_targets = AAZListType(
+                serialized_name="exportIpv6RouteTargets",
+            )
+            route_targets.import_ipv4_route_targets = AAZListType(
+                serialized_name="importIpv4RouteTargets",
+            )
+            route_targets.import_ipv6_route_targets = AAZListType(
+                serialized_name="importIpv6RouteTargets",
+            )
+
+            export_ipv4_route_targets = cls._schema_on_200.value.Element.properties.option_b_properties.route_targets.export_ipv4_route_targets
+            export_ipv4_route_targets.Element = AAZStrType()
+
+            export_ipv6_route_targets = cls._schema_on_200.value.Element.properties.option_b_properties.route_targets.export_ipv6_route_targets
+            export_ipv6_route_targets.Element = AAZStrType()
+
+            import_ipv4_route_targets = cls._schema_on_200.value.Element.properties.option_b_properties.route_targets.import_ipv4_route_targets
+            import_ipv4_route_targets.Element = AAZStrType()
+
+            import_ipv6_route_targets = cls._schema_on_200.value.Element.properties.option_b_properties.route_targets.import_ipv6_route_targets
+            import_ipv6_route_targets.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

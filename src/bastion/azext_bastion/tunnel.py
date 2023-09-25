@@ -107,7 +107,7 @@ class TunnelServer:
                 exp = CloudError(response, error=response_json["message"])
             else:
                 exp = CloudError(response)
-            raise exp
+                raise exp
 
         self.last_token = response_json["authToken"]
         self.node_id = response_json["nodeId"]

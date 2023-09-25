@@ -19,12 +19,12 @@ interactions:
       ParameterSetName:
       - -n -g --tags -l --base-size-tib --extended-capacity-size-tib --sku
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Creating","baseSizeTiB":23,"extendedCapacitySizeTiB":14,"totalIops":115000,"totalMBps":1840,"totalSizeTiB":37,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"location":"southcentralusstg","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1810":"aaaa"},"systemData":{"createdAt":"2022-09-29T08:34:13.3143577Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-29T08:34:13.3143577Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"location":"southcentralusstg","properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Creating","baseSizeTiB":23,"extendedCapacitySizeTiB":14,"totalIops":115000,"totalMBps":1840,"totalSizeTiB":37,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1810":"aaaa"},"systemData":{"createdAt":"2023-07-24T08:33:53.4344499Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:33:53.4344499Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
@@ -33,11 +33,11 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 08:34:14 GMT
+      - Mon, 24 Jul 2023 08:33:53 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/1acf9011-2637-4290-b4a8-baaec195da35?monitor=true&api-version=2021-11-20-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/d06ff411-df3c-4b9e-a170-7da1d6448fb0?monitor=true&api-version=2022-12-01-preview
       pragma:
       - no-cache
       server:
@@ -47,10 +47,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1195'
     status:
-      code: 202
-      message: Accepted
+      code: 201
+      message: Created
 - request:
     body: null
     headers:
@@ -65,9 +65,9 @@ interactions:
       ParameterSetName:
       - -n -g --tags -l --base-size-tib --extended-capacity-size-tib --sku
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/1acf9011-2637-4290-b4a8-baaec195da35?monitor=true&api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/d06ff411-df3c-4b9e-a170-7da1d6448fb0?monitor=true&api-version=2022-12-01-preview
   response:
     body:
       string: ''
@@ -79,11 +79,11 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Thu, 29 Sep 2022 08:34:31 GMT
+      - Mon, 24 Jul 2023 08:33:53 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/1acf9011-2637-4290-b4a8-baaec195da35?monitor=true&api-version=2021-11-20-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/d06ff411-df3c-4b9e-a170-7da1d6448fb0?monitor=true&api-version=2022-12-01-preview
       pragma:
       - no-cache
       server:
@@ -109,12 +109,56 @@ interactions:
       ParameterSetName:
       - -n -g --tags -l --base-size-tib --extended-capacity-size-tib --sku
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/1acf9011-2637-4290-b4a8-baaec195da35?monitor=true&api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/d06ff411-df3c-4b9e-a170-7da1d6448fb0?monitor=true&api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Succeeded","baseSizeTiB":23,"extendedCapacitySizeTiB":14,"totalIops":115000,"totalMBps":1840,"totalSizeTiB":37,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"location":"southcentralusstg","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1810":"aaaa"},"systemData":{"createdAt":"2022-09-29T08:34:13.3143577Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-29T08:34:13.3143577Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Mon, 24 Jul 2023 08:34:11 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/d06ff411-df3c-4b9e-a170-7da1d6448fb0?monitor=true&api-version=2022-12-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --tags -l --base-size-tib --extended-capacity-size-tib --sku
+      User-Agent:
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/d06ff411-df3c-4b9e-a170-7da1d6448fb0?monitor=true&api-version=2022-12-01-preview
+  response:
+    body:
+      string: '{"location":"southcentralusstg","properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Succeeded","baseSizeTiB":23,"extendedCapacitySizeTiB":14,"totalIops":115000,"totalMBps":1840,"totalSizeTiB":37,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1810":"aaaa"},"systemData":{"createdAt":"2023-07-24T08:33:53.4344499Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:33:53.4344499Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
@@ -123,7 +167,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 08:34:48 GMT
+      - Mon, 24 Jul 2023 08:34:28 GMT
       expires:
       - '-1'
       pragma:
@@ -155,12 +199,12 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Succeeded","baseSizeTiB":23,"extendedCapacitySizeTiB":14,"totalIops":115000,"totalMBps":1840,"totalSizeTiB":37,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"location":"southcentralusstg","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1810":"aaaa"},"systemData":{"createdAt":"2022-09-29T08:34:13.3143577Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-29T08:34:13.3143577Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"location":"southcentralusstg","properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Succeeded","baseSizeTiB":23,"extendedCapacitySizeTiB":14,"totalIops":115000,"totalMBps":1840,"totalSizeTiB":37,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1810":"aaaa"},"systemData":{"createdAt":"2023-07-24T08:33:53.4344499Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:33:53.4344499Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
@@ -169,7 +213,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 08:34:50 GMT
+      - Mon, 24 Jul 2023 08:34:30 GMT
       expires:
       - '-1'
       pragma:
@@ -178,6 +222,10 @@ interactions:
       - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:
@@ -197,12 +245,12 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"value":[{"properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Succeeded","baseSizeTiB":23,"extendedCapacitySizeTiB":14,"totalIops":115000,"totalMBps":1840,"totalSizeTiB":37,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"location":"southcentralusstg","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1810":"aaaa"},"systemData":{"createdAt":"2022-09-29T08:34:13.3143577Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-29T08:34:13.3143577Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}]}'
+      string: '{"value":[{"location":"southcentralusstg","properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Succeeded","baseSizeTiB":23,"extendedCapacitySizeTiB":14,"totalIops":115000,"totalMBps":1840,"totalSizeTiB":37,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1810":"aaaa"},"systemData":{"createdAt":"2023-07-24T08:33:53.4344499Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:33:53.4344499Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -211,7 +259,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 08:34:52 GMT
+      - Mon, 24 Jul 2023 08:34:31 GMT
       expires:
       - '-1'
       pragma:
@@ -241,21 +289,21 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/skus?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/skus?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"value":[{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["centraluseuap"],"locationInfo":[{"location":"centraluseuap","zones":["1","2"],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elastiSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["eastus2stage"],"locationInfo":[{"location":"eastus2stage","zones":[],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"1024"},{"name":"elasticSanMinSizeTiB","value":"64"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"81920"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["southcentralusstg"],"locationInfo":[{"location":"southcentralusstg","zones":[],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elastiSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_ZRS","tier":"Premium","locations":["eastus2euap"],"locationInfo":[{"location":"eastus2euap","zones":[],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elastiSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]}]}'
+      string: '{"value":[{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["australiaeast"],"locationInfo":[{"location":"australiaeast","zones":["2","3","1"],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["centraluseuap"],"locationInfo":[{"location":"centraluseuap","zones":["1"],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["eastus"],"locationInfo":[{"location":"eastus","zones":["2","3","1"],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["eastus2"],"locationInfo":[{"location":"eastus2","zones":["2","3","1"],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["eastus2euap"],"locationInfo":[{"location":"eastus2euap","zones":["1","2","3"],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["eastus2stage"],"locationInfo":[{"location":"eastus2stage","zones":[],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["francecentral"],"locationInfo":[{"location":"francecentral","zones":["2","3"],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["northeurope"],"locationInfo":[{"location":"northeurope","zones":["2","3","1"],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["southcentralus"],"locationInfo":[{"location":"southcentralus","zones":["2","3","1"],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["southcentralusstg"],"locationInfo":[{"location":"southcentralusstg","zones":[],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["southeastasia"],"locationInfo":[{"location":"southeastasia","zones":["2","3","1"],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["swedencentral"],"locationInfo":[{"location":"swedencentral","zones":["2","3","1"],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["uksouth"],"locationInfo":[{"location":"uksouth","zones":["2","3","1"],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["westeurope"],"locationInfo":[{"location":"westeurope","zones":["2","3","1"],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"400"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"32000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"2000000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["westus2"],"locationInfo":[{"location":"westus2","zones":["2","3","1"],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"400"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"32000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"2000000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_LRS","tier":"Premium","locations":["westus3"],"locationInfo":[{"location":"westus3","zones":["2","3","1"],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_ZRS","tier":"Premium","locations":["eastus2euap"],"locationInfo":[{"location":"eastus2euap","zones":[],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_ZRS","tier":"Premium","locations":["francecentral"],"locationInfo":[{"location":"francecentral","zones":[],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_ZRS","tier":"Premium","locations":["northeurope"],"locationInfo":[{"location":"northeurope","zones":[],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_ZRS","tier":"Premium","locations":["westeurope"],"locationInfo":[{"location":"westeurope","zones":[],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]},{"resourceType":"elasticSans","name":"Premium_ZRS","tier":"Premium","locations":["westus2"],"locationInfo":[{"location":"westus2","zones":[],"zoneDetails":[]}],"capabilities":[{"name":"elasticSanIopsPerBaseTiB","value":"5000"},{"name":"elasticSanMaxSizeTiB","value":"100"},{"name":"elasticSanMinSizeTiB","value":"1"},{"name":"elasticSanMBpsPerBaseTiB","value":"80"},{"name":"elasticSanMaxMBps","value":"8000"},{"name":"elasticSanMinIncrementSizeTiB","value":"1"},{"name":"elasticSanMaxVolumeGroupCount","value":"20"},{"name":"elasticSanMaxIOPS","value":"500000"},{"name":"volumeGroupMaxVolumeCount","value":"1000"},{"name":"volumeMaxSizeGiB","value":"65536"},{"name":"volumeMinSizeGiB","value":"1"},{"name":"volumeIopsPerBaseGiB","value":"750"},{"name":"volumeMBpsPerBaseGiB","value":"192"},{"name":"volumeMaxIops","value":"64000"},{"name":"volumeMaxMBps","value":"1024"},{"name":"volumeMinIncrementSizeGiB","value":"1"}],"restrictions":[]}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3786'
+      - '20076'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Sep 2022 08:34:53 GMT
+      - Mon, 24 Jul 2023 08:34:33 GMT
       expires:
       - '-1'
       pragma:
@@ -283,12 +331,12 @@ interactions:
       ParameterSetName:
       - -n -g --tags --base-size-tib --extended-capacity-size-tib
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Succeeded","baseSizeTiB":23,"extendedCapacitySizeTiB":14,"totalIops":115000,"totalMBps":1840,"totalSizeTiB":37,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"location":"southcentralusstg","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1810":"aaaa"},"systemData":{"createdAt":"2022-09-29T08:34:13.3143577Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-29T08:34:13.3143577Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"location":"southcentralusstg","properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Succeeded","baseSizeTiB":23,"extendedCapacitySizeTiB":14,"totalIops":115000,"totalMBps":1840,"totalSizeTiB":37,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1810":"aaaa"},"systemData":{"createdAt":"2023-07-24T08:33:53.4344499Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:33:53.4344499Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
@@ -297,7 +345,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 08:34:56 GMT
+      - Mon, 24 Jul 2023 08:34:34 GMT
       expires:
       - '-1'
       pragma:
@@ -335,25 +383,25 @@ interactions:
       ParameterSetName:
       - -n -g --tags --base-size-tib --extended-capacity-size-tib
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002?api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Updating","baseSizeTiB":25,"extendedCapacitySizeTiB":15,"totalIops":125000,"totalMBps":2000,"totalSizeTiB":40,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"location":"southcentralusstg","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1710":"bbbb"},"systemData":{"createdAt":"2022-09-29T08:34:13.3143577Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-29T08:35:01.046445Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"location":"southcentralusstg","properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Updating","baseSizeTiB":25,"extendedCapacitySizeTiB":15,"totalIops":125000,"totalMBps":2000,"totalSizeTiB":40,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1710":"bbbb"},"systemData":{"createdAt":"2023-07-24T08:33:53.4344499Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:34:35.8703002Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '769'
+      - '770'
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 08:35:00 GMT
+      - Mon, 24 Jul 2023 08:34:36 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/c7ad04fd-2348-4b8c-88a1-eefc19592e05?monitor=true&api-version=2021-11-20-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/6bb843db-b316-459a-bd66-81a83edbe2e2?monitor=true&api-version=2022-12-01-preview
       pragma:
       - no-cache
       server:
@@ -363,7 +411,51 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1195'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --tags --base-size-tib --extended-capacity-size-tib
+      User-Agent:
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/6bb843db-b316-459a-bd66-81a83edbe2e2?monitor=true&api-version=2022-12-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Mon, 24 Jul 2023 08:34:36 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/6bb843db-b316-459a-bd66-81a83edbe2e2?monitor=true&api-version=2022-12-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
     status:
       code: 202
       message: Accepted
@@ -381,21 +473,21 @@ interactions:
       ParameterSetName:
       - -n -g --tags --base-size-tib --extended-capacity-size-tib
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/c7ad04fd-2348-4b8c-88a1-eefc19592e05?monitor=true&api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/6bb843db-b316-459a-bd66-81a83edbe2e2?monitor=true&api-version=2022-12-01-preview
   response:
     body:
-      string: '{"properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Succeeded","baseSizeTiB":25,"extendedCapacitySizeTiB":15,"totalIops":125000,"totalMBps":2000,"totalSizeTiB":40,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"location":"southcentralusstg","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1710":"bbbb"},"systemData":{"createdAt":"2022-09-29T08:34:13.3143577Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2022-09-29T08:35:01.046445Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+      string: '{"location":"southcentralusstg","properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Succeeded","baseSizeTiB":25,"extendedCapacitySizeTiB":15,"totalIops":125000,"totalMBps":2000,"totalSizeTiB":40,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1710":"bbbb"},"systemData":{"createdAt":"2023-07-24T08:33:53.4344499Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:34:35.8703002Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '770'
+      - '771'
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 08:35:18 GMT
+      - Mon, 24 Jul 2023 08:34:53 GMT
       expires:
       - '-1'
       pragma:
@@ -429,9 +521,55 @@ interactions:
       ParameterSetName:
       - -g -n -y
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002?api-version=2022-12-01-preview
+  response:
+    body:
+      string: '{"location":"southcentralusstg","properties":{"sku":{"name":"Premium_LRS","tier":"Premium"},"provisioningState":"Deleting","baseSizeTiB":25,"extendedCapacitySizeTiB":15,"totalIops":125000,"totalMBps":2000,"totalSizeTiB":40,"volumeGroupCount":0,"totalVolumeSizeGiB":0},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans/elastic-san000002","name":"elastic-san000002","type":"Microsoft.ElasticSan/ElasticSans","tags":{"key1710":"bbbb"},"systemData":{"createdAt":"2023-07-24T08:33:53.4344499Z","createdBy":"zhiyihuang@microsoft.com","createdByType":"User","lastModifiedAt":"2023-07-24T08:34:35.8703002Z","lastModifiedBy":"zhiyihuang@microsoft.com","lastModifiedByType":"User"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '770'
+      content-type:
+      - application/json
+      date:
+      - Mon, 24 Jul 2023 08:34:54 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/85f20bf9-a134-48d8-9d75-0732fa8394cf?monitor=true&api-version=2022-12-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/85f20bf9-a134-48d8-9d75-0732fa8394cf?monitor=true&api-version=2022-12-01-preview
   response:
     body:
       string: ''
@@ -443,7 +581,51 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Thu, 29 Sep 2022 08:35:27 GMT
+      - Mon, 24 Jul 2023 08:34:55 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/85f20bf9-a134-48d8-9d75-0732fa8394cf?monitor=true&api-version=2022-12-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic-san delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ElasticSan/locations/southcentralusstg/asyncoperations/85f20bf9-a134-48d8-9d75-0732fa8394cf?monitor=true&api-version=2022-12-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Mon, 24 Jul 2023 08:35:13 GMT
       expires:
       - '-1'
       pragma:
@@ -454,8 +636,6 @@ interactions:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
     status:
       code: 200
       message: OK
@@ -473,9 +653,9 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.50.0 (PIP) (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans?api-version=2021-11-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg.testelasticsan000001/providers/Microsoft.ElasticSan/elasticSans?api-version=2022-12-01-preview
   response:
     body:
       string: '{"value":[]}'
@@ -487,7 +667,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Sep 2022 08:35:48 GMT
+      - Mon, 24 Jul 2023 08:35:35 GMT
       expires:
       - '-1'
       pragma:

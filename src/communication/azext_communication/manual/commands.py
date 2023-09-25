@@ -13,7 +13,7 @@ from azext_communication.manual._client_factory import cf_communication_email
 
 
 def load_command_table(self, _):
-    _load_identity_command_table(self)
+    _load_identity_token_command_table(self)
     _load_sms_command_table(self)
     _load_phonenumber_command_table(self)
     _load_chat_command_table(self)
@@ -21,17 +21,29 @@ def load_command_table(self, _):
     _load_email_command_table(self)
 
 
-def _load_identity_command_table(self):
+def _load_identity_token_command_table(self):
     identity_arguments = ['connection_string']
-    with self.command_group('communication identity user', client_factory=cf_communication_identity, is_preview=True) as g:
+
+    with self.command_group('communication identity user', client_factory=cf_communication_identity,
+                            deprecate_info=self.deprecate(target='communication identity user', redirect='communication user-identity user')) as g:
         g.communication_custom_command('create', "communication_identity_create_user", identity_arguments)
         g.communication_custom_command('delete', "communication_identity_delete_user", identity_arguments, confirmation=True)
 
-    with self.command_group('communication identity', client_factory=cf_communication_identity) as g:
+    with self.command_group('communication identity token', client_factory=cf_communication_identity,
+                            deprecate_info=self.deprecate(target='communication identity token', redirect='communication user-identity token')) as g:
+        g.communication_custom_command('issue', "communication_identity_issue_access_token", identity_arguments)
+        g.communication_custom_command('revoke', "communication_identity_revoke_access_tokens", identity_arguments, confirmation=True)
+        g.communication_custom_command('get-for-teams-user', "communication_identity_get_token_for_teams_user", identity_arguments)
+
+    with self.command_group('communication user-identity user', client_factory=cf_communication_identity, is_preview=True) as g:
+        g.communication_custom_command('create', "communication_identity_create_user", identity_arguments)
+        g.communication_custom_command('delete', "communication_identity_delete_user", identity_arguments, confirmation=True)
+
+    with self.command_group('communication user-identity', client_factory=cf_communication_identity, is_preview=True) as g:
         g.communication_custom_command('issue-access-token', "communication_identity_issue_access_token", identity_arguments,
                                        deprecate_info=self.deprecate(redirect='token issue', hide=True))
 
-    with self.command_group('communication identity token', client_factory=cf_communication_identity, is_preview=True) as g:
+    with self.command_group('communication user-identity token', client_factory=cf_communication_identity, is_preview=True) as g:
         g.communication_custom_command('issue', "communication_identity_issue_access_token", identity_arguments)
         g.communication_custom_command('revoke', "communication_identity_revoke_access_tokens", identity_arguments, confirmation=True)
         g.communication_custom_command('get-for-teams-user', "communication_identity_get_token_for_teams_user", identity_arguments)
@@ -107,10 +119,8 @@ def _load_rooms_command_table(self):
 
 
 def _load_email_command_table(self):
-    rooms_arguments = ['connection_string']
-    self.command_group('communication email', is_preview=True)
+    email_arguments = ['connection_string']
+    self.command_group('communication email')
 
-    with self.command_group('communication email', client_factory=cf_communication_email, is_preview=True) as g:
-        g.communication_custom_command('send', 'communication_email_send', rooms_arguments)
-    with self.command_group('communication email', client_factory=cf_communication_email, is_preview=True) as g:
-        g.communication_custom_command('status get', 'communication_email_get_status', rooms_arguments)
+    with self.command_group('communication email', client_factory=cf_communication_email) as g:
+        g.communication_custom_command('send', 'communication_email_send', email_arguments)

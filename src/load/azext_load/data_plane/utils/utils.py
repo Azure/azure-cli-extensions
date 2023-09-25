@@ -290,8 +290,17 @@ def convert_yaml_to_test(data):
         new_body["passFailCriteria"]["passFailMetrics"] = {}
         for items in data["failureCriteria"]:
             metric_id = get_random_uuid()
-            name = list(items.keys())[0]
-            components = list(items.values())[0]
+            # check if item is string or dict. if string then no name is provided
+            name = None
+            components = items
+            if isinstance(items, dict):
+                name = list(items.keys())[0]
+                components = list(items.values())[0]
+            # validate failure criteria
+            try:
+                validate_failure_criteria(components)
+            except InvalidArgumentValueError as e:
+                logger.error("Invalid failure criteria: %s", str(e))
             new_body["passFailCriteria"]["passFailMetrics"][metric_id] = {}
             new_body["passFailCriteria"]["passFailMetrics"][metric_id][
                 "aggregate"
@@ -309,9 +318,10 @@ def convert_yaml_to_test(data):
             )[
                 1
             ].strip()
-            new_body["passFailCriteria"]["passFailMetrics"][metric_id][
-                "requestName"
-            ] = name
+            if name is not None:
+                new_body["passFailCriteria"]["passFailMetrics"][metric_id][
+                    "requestName"
+                ] = name
     logger.debug("Converted yaml to test body: %s", new_body)
     return new_body
 
@@ -414,6 +424,8 @@ def create_or_update_body(
         ).get("engineInstances", 1)
     # quick test is not supported in CLI
     new_body["loadTestConfiguration"]["quickStartTest"] = False
+    if yaml_test_body.get("passFailCriteria") is not None:
+        new_body["passFailCriteria"] = yaml_test_body.get("passFailCriteria", {})
     if split_csv is not None:
         new_body["loadTestConfiguration"]["splitAllCSVs"] = split_csv
     elif (
@@ -543,6 +555,19 @@ def upload_files_helper(
             raise FileOperationError(
                 f"Test plan file {test_plan} is not valid. Please check the file and try again."
             )
+
+
+def validate_failure_criteria(failure_criteria):
+    parts = failure_criteria.split("(")
+    if len(parts) != 2:
+        raise ValueError(f"Invalid failure criteria: {failure_criteria}")
+    _, condition_value = parts
+    if (
+        ")" not in condition_value
+        or len(condition_value.split(")")) != 2
+        or condition_value.endswith(")")
+    ):
+        raise ValueError(f"Invalid failure criteria: {failure_criteria}")
 
 
 def get_random_uuid():

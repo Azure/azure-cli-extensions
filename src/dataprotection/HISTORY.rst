@@ -2,11 +2,28 @@
 
 Release History
 ===============
-0.10.0
+0.12.0
 +++++
 * Added support for vaulted blob backup and restore
 * `az dataprotection backup-instance initialize-backupconfig`: Added parameters `--vaulted-backup-containers` to provide list of containers to backup
 * `az dataprotection backup-instance initialize-backupconfig`: Added parameters `--include-all-containers`, `--storage-account-name`, `storage-account-resource-group` to backup all containers in a storage storage-account-resource-group
+
+0.11.0
+++++++
+* Add support for Multi-User Authentication for Backup vaults
+* `az dataprotection backup-vault resource-guard-mapping`: Support the creation and management of ResourceGuard Mappings onto a Backup Vault.
+* `az dataprotection resource-guard unlock`: Unlock ResourceGuard in order to perform protected/Critical operations
+
+0.10.0
+++++++
+* Add complete support for Soft Delete
+* `az dataprotection backup-instance deleted-backup-instance`: Add support to list, show, and undelete soft deleted backed up instances
+
+0.9.2
+++++++
+* Updated API version to 2023-05-01 across the board
+* `az dataprotection backup-instance initialize-backupconfig`: Added support for AKS Hooks
+* `az dataprotection backup-instance initialize-restoreconfig`: Added support for AKS Hooks
 
 0.9.1
 +++++

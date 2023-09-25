@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2023-06-01-preview"],
         ]
     }
 
@@ -60,7 +60,6 @@ class Update(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -82,8 +81,8 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.dev_box_definition_name = AAZStrArg(
-            options=["-d", "--dev-box-definition-name"],
+        _args_schema.devbox_definition_name = AAZStrArg(
+            options=["-d", "--devbox-definition-name"],
             arg_group="Properties",
             help="Name of a dev box definition in parent project of this pool.",
         )
@@ -182,7 +181,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-06-01-preview",
                     required=True,
                 ),
             }
@@ -285,7 +284,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-06-01-preview",
                     required=True,
                 ),
             }
@@ -348,7 +347,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("devBoxDefinitionName", AAZStrType, ".dev_box_definition_name", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("devBoxDefinitionName", AAZStrType, ".devbox_definition_name", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("localAdministrator", AAZStrType, ".local_administrator", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkConnectionName", AAZStrType, ".network_connection_name", typ_kwargs={"flags": {"required": True}})
 
@@ -409,6 +408,10 @@ class _UpdateHelper:
         )
 
         properties = _schema_pool_read.properties
+        properties.dev_box_count = AAZIntType(
+            serialized_name="devBoxCount",
+            flags={"read_only": True},
+        )
         properties.dev_box_definition_name = AAZStrType(
             serialized_name="devBoxDefinitionName",
             flags={"required": True},

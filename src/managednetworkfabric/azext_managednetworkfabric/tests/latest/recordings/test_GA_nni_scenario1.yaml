@@ -1,0 +1,403 @@
+interactions:
+- request:
+    body: '{"properties": {"exportRoutePolicy": {"exportIpv4RoutePolicyId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023",
+      "exportIpv6RoutePolicyId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023"},
+      "importRoutePolicy": {"importIpv4RoutePolicyId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023",
+      "importIpv6RoutePolicyId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023"},
+      "isManagementType": "True", "layer2Configuration": {"interfaces": ["/subscriptions//resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric/networkToNetworkInterconnects/example-interface"],
+      "mtu": 1500}, "nniType": "CE", "optionBLayer3Configuration": {"peerASN": 28,
+      "primaryIpv4Prefix": "172.31.0.0/31", "secondaryIpv4Prefix": "172.31.0.20/31",
+      "vlanId": 501}, "useOptionB": "True"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric nni create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1388'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --resource-name --fabric --nni-type --is-management-type
+        --use-option-b --layer2-configuration --option-b-layer3-configuration --import-route-policy
+        --export-route-policy
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfa-tool-ts-GA-cli-nf081023/networkToNetworkInterconnects/nfa-tool-ts-GA-cli-nni081023?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfa-tool-ts-GA-cli-nf081023/networkToNetworkInterconnects/nfa-tool-ts-GA-cli-nni081023","name":"nfa-tool-ts-GA-cli-nni081023","type":"microsoft.managednetworkfabric/networkfabrics/networktonetworkinterconnects","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-08-10T10:45:31.1449543Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-10T10:45:31.1449543Z"},"properties":{"administrativeState":"Disabled","nniType":"CE","isManagementType":"True","useOptionB":"True","layer2Configuration":{"mtu":1500,"interfaces":["/subscriptions//resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric/networkToNetworkInterconnects/example-interface"]},"optionBLayer3Configuration":{"peerASN":28,"vlanId":501,"fabricASN":0,"primaryIpv4Prefix":"172.31.0.0/31","secondaryIpv4Prefix":"172.31.0.20/31"},"provisioningState":"Accepted","importRoutePolicy":{"importIpv4RoutePolicyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023","importIpv6RoutePolicyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023"},"exportRoutePolicy":{"exportIpv4RoutePolicyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023","exportIpv6RoutePolicyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023"},"configurationState":"Succeeded"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/a30cecf8-fc52-4685-b7db-9cb1ec82abcb*582F9D5680491FCA63B58C8073F24F95E61CAAC3F144971D7871163D62DB7C41?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '2093'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 10 Aug 2023 10:45:35 GMT
+      etag:
+      - '"230350e9-0000-3400-0000-64d4bfd00000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 66c56e7a-24ab-4cba-b78f-d6b08c4638ff
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric nni create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --fabric --nni-type --is-management-type
+        --use-option-b --layer2-configuration --option-b-layer3-configuration --import-route-policy
+        --export-route-policy
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/a30cecf8-fc52-4685-b7db-9cb1ec82abcb*582F9D5680491FCA63B58C8073F24F95E61CAAC3F144971D7871163D62DB7C41?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/a30cecf8-fc52-4685-b7db-9cb1ec82abcb*582F9D5680491FCA63B58C8073F24F95E61CAAC3F144971D7871163D62DB7C41","name":"a30cecf8-fc52-4685-b7db-9cb1ec82abcb*582F9D5680491FCA63B58C8073F24F95E61CAAC3F144971D7871163D62DB7C41","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfa-tool-ts-GA-cli-nf081023/networkToNetworkInterconnects/nfa-tool-ts-GA-cli-nni081023","status":"Succeeded","startTime":"2023-08-10T10:45:36.1296334Z","endTime":"2023-08-10T10:45:37.2407136Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '742'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 10 Aug 2023 10:45:36 GMT
+      etag:
+      - '"00002fac-0000-3400-0000-64d4bfd10000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric nni create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --resource-name --fabric --nni-type --is-management-type
+        --use-option-b --layer2-configuration --option-b-layer3-configuration --import-route-policy
+        --export-route-policy
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfa-tool-ts-GA-cli-nf081023/networkToNetworkInterconnects/nfa-tool-ts-GA-cli-nni081023?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfa-tool-ts-GA-cli-nf081023/networkToNetworkInterconnects/nfa-tool-ts-GA-cli-nni081023","name":"nfa-tool-ts-GA-cli-nni081023","type":"microsoft.managednetworkfabric/networkfabrics/networktonetworkinterconnects","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-08-10T10:45:31.1449543Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-10T10:45:31.1449543Z"},"properties":{"administrativeState":"Disabled","nniType":"CE","isManagementType":"True","useOptionB":"True","layer2Configuration":{"mtu":1500,"interfaces":["/subscriptions//resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric/networkToNetworkInterconnects/example-interface"]},"optionBLayer3Configuration":{"peerASN":28,"vlanId":501,"fabricASN":65523,"primaryIpv4Prefix":"172.31.0.0/31","secondaryIpv4Prefix":"172.31.0.20/31"},"provisioningState":"Succeeded","importRoutePolicy":{"importIpv4RoutePolicyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023","importIpv6RoutePolicyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023"},"exportRoutePolicy":{"exportIpv4RoutePolicyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023","exportIpv6RoutePolicyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023"},"configurationState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2098'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 10 Aug 2023 10:45:37 GMT
+      etag:
+      - '"2303bae9-0000-3400-0000-64d4bfd10000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric nni show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group --fabric
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfa-tool-ts-GA-cli-nf081023/networkToNetworkInterconnects/nfa-tool-ts-GA-cli-nni081023?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfa-tool-ts-GA-cli-nf081023/networkToNetworkInterconnects/nfa-tool-ts-GA-cli-nni081023","name":"nfa-tool-ts-GA-cli-nni081023","type":"microsoft.managednetworkfabric/networkfabrics/networktonetworkinterconnects","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-08-10T10:45:31.1449543Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-10T10:45:31.1449543Z"},"properties":{"administrativeState":"Disabled","nniType":"CE","isManagementType":"True","useOptionB":"True","layer2Configuration":{"mtu":1500,"interfaces":["/subscriptions//resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric/networkToNetworkInterconnects/example-interface"]},"optionBLayer3Configuration":{"peerASN":28,"vlanId":501,"fabricASN":65523,"primaryIpv4Prefix":"172.31.0.0/31","secondaryIpv4Prefix":"172.31.0.20/31"},"provisioningState":"Succeeded","importRoutePolicy":{"importIpv4RoutePolicyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023","importIpv6RoutePolicyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023"},"exportRoutePolicy":{"exportIpv4RoutePolicyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023","exportIpv6RoutePolicyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023"},"configurationState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2098'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 10 Aug 2023 10:45:40 GMT
+      etag:
+      - '"2303bae9-0000-3400-0000-64d4bfd10000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric nni list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --fabric
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfa-tool-ts-GA-cli-nf081023/networkToNetworkInterconnects?api-version=2023-06-15
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfa-tool-ts-GA-cli-nf081023/networkToNetworkInterconnects/nfa-tool-ts-GA-cli-nni081023","name":"nfa-tool-ts-GA-cli-nni081023","type":"microsoft.managednetworkfabric/networkfabrics/networktonetworkinterconnects","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-08-10T10:45:31.1449543Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-08-10T10:45:31.1449543Z"},"properties":{"administrativeState":"Disabled","nniType":"CE","isManagementType":"True","useOptionB":"True","layer2Configuration":{"mtu":1500,"interfaces":["/subscriptions//resourceGroups/example-rg/providers/Microsoft.ManagedNetworkFabric/networkFabrics/example-fabric/networkToNetworkInterconnects/example-interface"]},"optionBLayer3Configuration":{"peerASN":28,"vlanId":501,"fabricASN":65523,"primaryIpv4Prefix":"172.31.0.0/31","secondaryIpv4Prefix":"172.31.0.20/31"},"provisioningState":"Succeeded","importRoutePolicy":{"importIpv4RoutePolicyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023","importIpv6RoutePolicyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023"},"exportRoutePolicy":{"exportIpv4RoutePolicyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023","exportIpv6RoutePolicyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-GA-routePolicy081023"},"configurationState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2110'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 10 Aug 2023 10:45:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric nni delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-name --resource-group --fabric
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfa-tool-ts-GA-cli-nf081023/networkToNetworkInterconnects/nfa-tool-ts-GA-cli-nni081023?api-version=2023-06-15
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/f634ae55-1b2e-40cd-909e-4eae61adf7cc*582F9D5680491FCA63B58C8073F24F95E61CAAC3F144971D7871163D62DB7C41?api-version=2023-06-15
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 10 Aug 2023 10:45:45 GMT
+      etag:
+      - '"23033bee-0000-3400-0000-64d4bfd90000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/f634ae55-1b2e-40cd-909e-4eae61adf7cc*582F9D5680491FCA63B58C8073F24F95E61CAAC3F144971D7871163D62DB7C41?api-version=2023-06-15
+      mise-correlation-id:
+      - 9b8d9db8-1413-4875-ae92-105af224268e
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric nni delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group --fabric
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/f634ae55-1b2e-40cd-909e-4eae61adf7cc*582F9D5680491FCA63B58C8073F24F95E61CAAC3F144971D7871163D62DB7C41?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/f634ae55-1b2e-40cd-909e-4eae61adf7cc*582F9D5680491FCA63B58C8073F24F95E61CAAC3F144971D7871163D62DB7C41","name":"f634ae55-1b2e-40cd-909e-4eae61adf7cc*582F9D5680491FCA63B58C8073F24F95E61CAAC3F144971D7871163D62DB7C41","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfa-tool-ts-GA-cli-nf081023/networkToNetworkInterconnects/nfa-tool-ts-GA-cli-nni081023","status":"Succeeded","startTime":"2023-08-10T10:45:45.3775263Z","endTime":"2023-08-10T10:45:46.2302259Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '742'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 10 Aug 2023 10:45:46 GMT
+      etag:
+      - '"000032ac-0000-3400-0000-64d4bfda0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric nni delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group --fabric
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/f634ae55-1b2e-40cd-909e-4eae61adf7cc*582F9D5680491FCA63B58C8073F24F95E61CAAC3F144971D7871163D62DB7C41?api-version=2023-06-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS2EUAP/operationStatuses/f634ae55-1b2e-40cd-909e-4eae61adf7cc*582F9D5680491FCA63B58C8073F24F95E61CAAC3F144971D7871163D62DB7C41","name":"f634ae55-1b2e-40cd-909e-4eae61adf7cc*582F9D5680491FCA63B58C8073F24F95E61CAAC3F144971D7871163D62DB7C41","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-GA3.2-clisdktest-nfrg081023/providers/Microsoft.ManagedNetworkFabric/networkFabrics/nfa-tool-ts-GA-cli-nf081023/networkToNetworkInterconnects/nfa-tool-ts-GA-cli-nni081023","status":"Succeeded","startTime":"2023-08-10T10:45:45.3775263Z","endTime":"2023-08-10T10:45:46.2302259Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '742'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 10 Aug 2023 10:45:46 GMT
+      etag:
+      - '"000032ac-0000-3400-0000-64d4bfda0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
