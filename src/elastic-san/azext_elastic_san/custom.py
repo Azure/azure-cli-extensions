@@ -53,10 +53,9 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
                                                 "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
         )
         args_schema.identity.user_assigned_identities._registered = False
-        args_schema.encryption_properties.identity.user_assigned_identity = AAZStrArg(
-            fmt=AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
-                                                "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
-        )
+        args_schema.encryption_properties.identity.user_assigned_identity._fmt = \
+            AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
+                                            "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
         return args_schema
 
     def pre_operations(self):
