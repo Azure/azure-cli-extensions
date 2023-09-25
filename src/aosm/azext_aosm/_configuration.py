@@ -9,7 +9,7 @@ import json
 import os
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, List, Optional, Union
 
 from azure.cli.core.azclierror import InvalidArgumentValueError, ValidationError
 from azext_aosm.util.constants import (
@@ -22,88 +22,6 @@ from azext_aosm.util.constants import (
 )
 
 logger = logging.getLogger(__name__)
-
-DESCRIPTION_MAP: Dict[str, str] = {
-    "publisher_resource_group_name": (
-        "Resource group for the Publisher resource. "
-        "Will be created if it does not exist."
-    ),
-    "publisher_name": (
-        "Name of the Publisher resource you want your definition published to. "
-        "Will be created if it does not exist."
-    ),
-    "publisher_resource_group_name_nsd": "Resource group for the Publisher resource.",
-    "nf_name": "Name of NF definition",
-    "version": "Version of the NF definition in A.B.C format.",
-    "acr_artifact_store_name": (
-        "Name of the ACR Artifact Store resource. Will be created if it does not exist."
-    ),
-    "location": "Azure location to use when creating resources.",
-    "blob_artifact_store_name": (
-        "Name of the storage account Artifact Store resource. Will be created if it "
-        "does not exist."
-    ),
-    "artifact_name": "Name of the artifact",
-    "file_path": (
-        "Optional. File path of the artifact you wish to upload from your local disk. "
-        "Delete if not required. Relative paths are relative to the configuration file."
-        "On Windows escape any backslash with another backslash."
-    ),
-    "blob_sas_url": (
-        "Optional. SAS URL of the blob artifact you wish to copy to your Artifact"
-        " Store. Delete if not required."
-    ),
-    "artifact_version": (
-        "Version of the artifact. For VHDs this must be in format A-B-C. "
-        "For ARM templates this must be in format A.B.C"
-    ),
-    "nsdv_description": "Description of the NSDV",
-    "nsd_name": (
-        "Network Service Design (NSD) name. This is the collection of Network Service"
-        " Design Versions. Will be created if it does not exist."
-    ),
-    "nsd_version": (
-        "Version of the NSD to be created. This should be in the format A.B.C"
-    ),
-    "helm_package_name": "Name of the Helm package",
-    "path_to_chart": (
-        "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz."
-        " Use Linux slash (/) file separator even if running on Windows."
-    ),
-    "path_to_mappings": (
-        "File path of value mappings on local disk where chosen values are replaced "
-        "with deploymentParameter placeholders. Accepts .yaml or .yml. If left as a "
-        "blank string, a value mappings file will be generated with every value "
-        "mapped to a deployment parameter. Use a blank string and --interactive on "
-        "the build command to interactively choose which values to map."
-    ),
-    "helm_depends_on": (
-        "Names of the Helm packages this package depends on. "
-        "Leave as an empty array if no dependencies"
-    ),
-    "image_name_parameter": (
-        "The parameter name in the VM ARM template which specifies the name of the "
-        "image to use for the VM."
-    ),
-    "source_registry": (
-        "Optional. Login server of the source acr registry from which to pull the "
-        "image(s). For example sourceacr.azurecr.io. Leave blank if you have set "
-        "source_local_docker_image."
-    ),
-    "source_local_docker_image": (
-        "Optional. Image name of the source docker image from local machine. For "
-        "limited use case where the CNF only requires a single docker image and exists "
-        "in the local docker repository. Set to blank of not required."
-    ),
-    "source_registry_namespace": (
-        "Optional. Namespace of the repository of the source acr registry from which "
-        "to pull. For example if your repository is samples/prod/nginx then set this to"
-        " samples/prod . Leave blank if the image is in the root namespace or you have "
-        "set source_local_docker_image."
-        "See https://learn.microsoft.com/en-us/azure/container-registry/"
-        "container-registry-best-practices#repository-namespaces for further details."
-    ),
-}
 
 
 @dataclass
@@ -121,11 +39,38 @@ class ArtifactConfig:
         Build an object where each value is helptext for that field.
         """
         return ArtifactConfig(
-            artifact_name=DESCRIPTION_MAP["artifact_name"],
-            file_path=DESCRIPTION_MAP["file_path"],
-            blob_sas_url=DESCRIPTION_MAP["blob_sas_url"],
-            version=DESCRIPTION_MAP["version"],
+            artifact_name="Optional. Name of the artifact.",
+            file_path=(
+                "Optional. File path of the artifact you wish to upload from your local disk. "
+                "Delete if not required. Relative paths are relative to the configuration file."
+                "On Windows escape any backslash with another backslash."
+            ),
+            blob_sas_url=(
+                "Optional. SAS URL of the blob artifact you wish to copy to your Artifact"
+                " Store. Delete if not required."
+            ),
+            version="Version of the artifact in A.B.C format.",
         )
+
+    def __post_init__(self):
+        """
+        Change empty stings to None.
+        """
+        if not self.file_path:
+            self.file_path = None
+        if not self.blob_sas_url:
+            self.blob_sas_url = None
+
+    def validate(self):
+        """
+        Validate the configuration.
+        """
+        if not self.version:
+            raise ValidationError("version must be set.")
+        if self.blob_sas_url and self.file_path:
+            raise ValidationError("Only one of file_path or blob_sas_url may be set.")
+        if not (self.blob_sas_url or self.file_path):
+            raise ValidationError("One of file_path or sas_blob_url must be set.")
 
 
 @dataclass
@@ -142,14 +87,20 @@ class Configuration(abc.ABC):
         Build an object where each value is helptext for that field.
         """
         return Configuration(
-            publisher_name=DESCRIPTION_MAP["publisher_name"],
-            publisher_resource_group_name=DESCRIPTION_MAP[
-                "publisher_resource_group_name"
-            ],
-            acr_artifact_store_name=DESCRIPTION_MAP["acr_artifact_store_name"],
-            location=DESCRIPTION_MAP["location"],
+            publisher_name=(
+                "Name of the Publisher resource you want your definition published to. "
+                "Will be created if it does not exist."
+            ),
+            publisher_resource_group_name=(
+                "Resource group for the Publisher resource. "
+                "Will be created if it does not exist."
+            ),
+            acr_artifact_store_name=(
+                "Name of the ACR Artifact Store resource. Will be created if it does not exist."
+            ),
+            location="Azure location to use when creating resources.",
         )
-        
+
     def validate(self):
         """
         Validate the configuration.
@@ -215,11 +166,11 @@ class NFConfiguration(Configuration):
         Build an object where each value is helptext for that field.
         """
         return NFConfiguration(
-            nf_name=DESCRIPTION_MAP["nf_name"],
-            version=DESCRIPTION_MAP["version"],
+            nf_name="Name of NF definition",
+            version="Version of the NF definition in A.B.C format.",
             **asdict(Configuration.helptext()),
         )
-        
+
     def validate(self):
         """
         Validate the configuration.
@@ -229,7 +180,6 @@ class NFConfiguration(Configuration):
             raise ValidationError("nf_name must be set")
         if not self.version:
             raise ValidationError("version must be set")
-        
 
     @property
     def nfdg_name(self) -> str:
@@ -261,8 +211,14 @@ class VNFConfiguration(NFConfiguration):
         Build an object where each value is helptext for that field.
         """
         return VNFConfiguration(
-            blob_artifact_store_name=DESCRIPTION_MAP["blob_artifact_store_name"],
-            image_name_parameter=DESCRIPTION_MAP["image_name_parameter"],
+            blob_artifact_store_name=(
+                "Name of the storage account Artifact Store resource. Will be created if it "
+                "does not exist."
+            ),
+            image_name_parameter=(
+                "The parameter name in the VM ARM template which specifies the name of the "
+                "image to use for the VM."
+            ),
             arm_template=ArtifactConfig.helptext(),
             vhd=ArtifactConfig.helptext(),
             **asdict(NFConfiguration.helptext()),
@@ -284,7 +240,6 @@ class VNFConfiguration(NFConfiguration):
             if self.vhd.get("file_path"):
                 self.vhd["file_path"] = self.path_from_cli_dir(self.vhd["file_path"])
             self.vhd = ArtifactConfig(**self.vhd)
-            self.validate()
 
     def validate(self) -> None:
         """
@@ -292,10 +247,10 @@ class VNFConfiguration(NFConfiguration):
 
         :raises ValidationError for any invalid config
         """
+        super().validate()
 
-        if self.vhd.version == DESCRIPTION_MAP["version"]:
-            # Config has not been filled in. Don't validate.
-            return
+        self.vhd.validate()
+        self.arm_template.validate()
 
         if "." in self.vhd.version or "-" not in self.vhd.version:
             raise ValidationError(
@@ -307,23 +262,6 @@ class VNFConfiguration(NFConfiguration):
                 "Config validation error. ARM template artifact version should be in"
                 " format A.B.C"
             )
-        filepath_set = bool(self.vhd.file_path)
-        sas_set = bool(self.vhd.blob_sas_url)
-        print(asdict(self.vhd))
-
-        # If these are the same, either neither is set or both are, both of which are errors
-        if filepath_set == sas_set:
-            raise ValidationError(
-                "Config validation error. VHD config must have either a local filepath"
-                " or a blob SAS URL"
-            )
-
-        if filepath_set:
-            # Explicitly set the blob SAS URL to None to avoid other code having to
-            # check if the value is the default description
-            self.vhd.blob_sas_url = None
-        elif sas_set:
-            self.vhd.file_path = None
 
     @property
     def sa_manifest_name(self) -> str:
@@ -340,12 +278,10 @@ class VNFConfiguration(NFConfiguration):
 
 @dataclass
 class HelmPackageConfig:
-    name: str = DESCRIPTION_MAP["helm_package_name"]
-    path_to_chart: str = DESCRIPTION_MAP["path_to_chart"]
-    path_to_mappings: str = DESCRIPTION_MAP["path_to_mappings"]
-    depends_on: List[str] = field(
-        default_factory=lambda: [DESCRIPTION_MAP["helm_depends_on"]]
-    )
+    name: str = ""
+    path_to_chart: str = ""
+    path_to_mappings: str = ""
+    depends_on: List[str] = field(default_factory=lambda: [])
 
     @classmethod
     def helptext(cls):
@@ -353,11 +289,32 @@ class HelmPackageConfig:
         Build an object where each value is helptext for that field.
         """
         return HelmPackageConfig(
-            name=DESCRIPTION_MAP["helm_package_name"],
-            path_to_chart=DESCRIPTION_MAP["path_to_chart"],
-            path_to_mappings=DESCRIPTION_MAP["path_to_mappings"],
-            depends_on=[DESCRIPTION_MAP["helm_depends_on"]],
+            name="Name of the Helm package",
+            path_to_chart=(
+                "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz."
+                " Use Linux slash (/) file separator even if running on Windows."
+            ),
+            path_to_mappings=(
+                "File path of value mappings on local disk where chosen values are replaced "
+                "with deploymentParameter placeholders. Accepts .yaml or .yml. If left as a "
+                "blank string, a value mappings file will be generated with every value "
+                "mapped to a deployment parameter. Use a blank string and --interactive on "
+                "the build command to interactively choose which values to map."
+            ),
+            depends_on=(
+                "Names of the Helm packages this package depends on. "
+                "Leave as an empty array if no dependencies"
+            ),
         )
+
+    def validate(self):
+        """
+        Validate the configuration.
+        """
+        if not self.name:
+            raise ValidationError("name must be set")
+        if not self.path_to_chart:
+            raise ValidationError("path_to_chart must be set")
 
 
 @dataclass
@@ -374,16 +331,51 @@ class CNFImageConfig:
         Build an object where each value is helptext for that field.
         """
         return CNFImageConfig(
-            source_registry=DESCRIPTION_MAP["source_registry"],
-            source_registry_namespace=DESCRIPTION_MAP["source_registry_namespace"],
-            source_local_docker_image=DESCRIPTION_MAP["source_local_docker_image"],
+            source_registry=(
+                "Optional. Login server of the source acr registry from which to pull the "
+                "image(s). For example sourceacr.azurecr.io. Leave blank if you have set "
+                "source_local_docker_image."
+            ),
+            source_registry_namespace=(
+                "Optional. Namespace of the repository of the source acr registry from which "
+                "to pull. For example if your repository is samples/prod/nginx then set this to"
+                " samples/prod . Leave blank if the image is in the root namespace or you have "
+                "set source_local_docker_image."
+                "See https://learn.microsoft.com/en-us/azure/container-registry/"
+                "container-registry-best-practices#repository-namespaces for further details."
+            ),
+            source_local_docker_image=(
+                "Optional. Image name of the source docker image from local machine. For "
+                "limited use case where the CNF only requires a single docker image and exists "
+                "in the local docker repository. Set to blank of not required."
+            ),
         )
+
+    def validate(self):
+        """
+        Validate the configuration.
+        """
+        if self.source_registry_namespace and not self.source_registry:
+            raise ValidationError(
+                "Config validation error. The image source registry namespace should "
+                "only be configured if a source registry is configured."
+            )
+
+        if self.source_registry and self.source_local_docker_image:
+            raise ValidationError(
+                "Only one of source_registry and source_local_docker_image can be set."
+            )
+
+        if not (self.source_registry or self.source_local_docker_image):
+            raise ValidationError(
+                "One of source_registry or source_local_docker_image must be set."
+            )
 
 
 @dataclass
 class CNFConfiguration(NFConfiguration):
     images: Any = CNFImageConfig()
-    helm_packages: List[Any] = field(default_factory=lambda: [HelmPackageConfig()])
+    helm_packages: List[Any] = field(default_factory=lambda: [])
 
     def __post_init__(self):
         """
@@ -402,7 +394,6 @@ class CNFConfiguration(NFConfiguration):
                 self.helm_packages[package_index] = HelmPackageConfig(**dict(package))
         if isinstance(self.images, dict):
             self.images = CNFImageConfig(**self.images)
-            self.validate()
 
     @classmethod
     def helptext(cls) -> "CNFConfiguration":
@@ -412,7 +403,7 @@ class CNFConfiguration(NFConfiguration):
         return CNFConfiguration(
             images=CNFImageConfig.helptext(),
             helm_packages=[HelmPackageConfig.helptext()],
-            ** asdict(NFConfiguration.helptext()),
+            **asdict(NFConfiguration.helptext()),
         )
 
     @property
@@ -426,42 +417,14 @@ class CNFConfiguration(NFConfiguration):
 
         :raises ValidationError: If source registry ID doesn't match the regex
         """
+        assert isinstance(self.images, CNFImageConfig)
+        super().validate()
 
-        source_reg_set = self.images.source_registry != ""
-        source_local_set = self.images.source_local_docker_image != ""
-        source_reg_namespace_set = self.images.source_registry_namespace != ""
+        self.images.validate()
 
-        if source_reg_namespace_set and not source_reg_set:
-            raise ValidationError(
-                "Config validation error. The image source registry namespace should "
-                "only be configured if a source registry is configured."
-            )
-        # If these are the same, either neither is set or both are, both of which are errors
-        if source_reg_set == source_local_set:
-            raise ValidationError(
-                "Config validation error. Images config must have either a local docker image"
-                " or a source registry, but not both."
-            )
-
-
-NFD_NAME = "The name of the existing Network Function Definition Group to deploy using this NSD"
-NFD_VERSION = (
-    "The version of the existing Network Function Definition to base this NSD on.  "
-    "This NSD will be able to deploy any NFDV with deployment parameters compatible "
-    "with this version."
-)
-NFD_LOCATION = "The region that the NFDV is published to."
-PUBLISHER_RESOURCE_GROUP = "The resource group that the publisher is hosted in."
-PUBLISHER_NAME = "The name of the publisher that this NFDV is published under."
-PUBLISHER_SCOPE = (
-    "The scope that the publisher is published under. Only 'private' is supported."
-)
-NFD_TYPE = "Type of Network Function. Valid values are 'cnf' or 'vnf'"
-MULTIPLE_INSTANCES = (
-    "Set to true or false.  Whether the NSD should allow arbitrary numbers of this "
-    "type of NF.  If set to false only a single instance will be allowed.  Only "
-    "supported on VNFs, must be set to false on CNFs."
-)
+        for helm_package in self.helm_packages:
+            assert isinstance(helm_package, HelmPackageConfig)
+            helm_package.validate()
 
 
 @dataclass
@@ -483,14 +446,24 @@ class NFDRETConfiguration:  # pylint: disable=too-many-instance-attributes
         Build an object where each value is helptext for that field.
         """
         return NFDRETConfiguration(
-            publisher=PUBLISHER_NAME,
-            publisher_resource_group=PUBLISHER_RESOURCE_GROUP,
-            name=NFD_NAME,
-            version=NFD_VERSION,
-            publisher_offering_location=NFD_LOCATION,
-            publisher_scope=PUBLISHER_SCOPE,
-            type=NFD_TYPE,
-            multiple_instances=MULTIPLE_INSTANCES,
+            publisher="The name of the existing Network Function Definition Group to deploy using this NSD",
+            publisher_resource_group="The resource group that the publisher is hosted in.",
+            name="The name of the existing Network Function Definition Group to deploy using this NSD",
+            version=(
+                "The version of the existing Network Function Definition to base this NSD on.  "
+                "This NSD will be able to deploy any NFDV with deployment parameters compatible "
+                "with this version."
+            ),
+            publisher_offering_location="The region that the NFDV is published to.",
+            publisher_scope=(
+                "The scope that the publisher is published under. Only 'private' is supported."
+            ),
+            type="Type of Network Function. Valid values are 'cnf' or 'vnf'",
+            multiple_instances=(
+                "Set to true or false.  Whether the NSD should allow arbitrary numbers of this "
+                "type of NF.  If set to false only a single instance will be allowed.  Only "
+                "supported on VNFs, must be set to false on CNFs."
+            ),
         )
 
     def validate(self) -> None:
@@ -610,10 +583,15 @@ class NSConfiguration(Configuration):
         Build a NSConfiguration object where each value is helptext for that field.
         """
         nsd_helptext = NSConfiguration(
-            nsd_name=DESCRIPTION_MAP["nsd_name"],
-            nsd_version=DESCRIPTION_MAP["nsd_version"],
-            nsdv_description=DESCRIPTION_MAP["nsdv_description"],
-            **asdict(Configuration.helptext())
+            nsd_name=(
+                "Network Service Design (NSD) name. This is the collection of Network Service"
+                " Design Versions. Will be created if it does not exist."
+            ),
+            nsd_version=(
+                "Version of the NSD to be created. This should be in the format A.B.C"
+            ),
+            nsdv_description="Description of the NSDV.",
+            **asdict(Configuration.helptext()),
         )
         nsd_helptext.network_functions = [NFDRETConfiguration.helptext()]
 
@@ -625,15 +603,16 @@ class NSConfiguration(Configuration):
 
         :raises ValueError for any invalid config
         """
+        super().validate()
         if self.network_functions in ([], None):
             raise ValueError(("At least one network function must be included."))
 
         for configuration in self.network_functions:
             configuration.validate()
         if not self.nsd_name:
-            raise ValueError("NSD name must be set")
+            raise ValueError("nsd_name must be set")
         if not self.nsd_version:
-            raise ValueError("NSD Version must be set")
+            raise ValueError("nsd_version must be set")
 
     @property
     def output_directory_for_build(self) -> Path:
@@ -689,7 +668,7 @@ def get_configuration(configuration_type: str, config_file: str) -> Configuratio
         raise InvalidArgumentValueError(
             f"Config file {config_file} is not valid: {typeerr}"
         ) from typeerr
-        
+
     config.validate()
 
     return config
