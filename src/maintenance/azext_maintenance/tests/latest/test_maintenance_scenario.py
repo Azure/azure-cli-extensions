@@ -9,6 +9,8 @@
 # --------------------------------------------------------------------------
 
 import os
+from datetime import datetime, timezone, timedelta
+import time
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
@@ -31,7 +33,7 @@ def setup_scenario(test):
     ## Dedicated host
     test.cmd('az vm host group create --name clidhtesthostgroup --resource-group "{rg}" --platform-fault-domain-count 1 ',checks=[])
 
-    test.cmd('az vm host create --host-group clidhtesthostgroup --name clidhtesthost --resource-group "{rg}" --sku ESv3-Type2  --platform-fault-domain 0', checks=[])
+    test.cmd('az vm host create --host-group clidhtesthostgroup --name clidhtesthost --resource-group "{rg}" --sku ESv3-Type3  --platform-fault-domain 0', checks=[])
     
 
     ### VMSS resource
@@ -354,6 +356,32 @@ def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatc
         '--extension-properties InGuestPatchMode=Platform '
         , checks=[])
 
+def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchadvanced_forcancel(test, start_date):
+    test.cmd('az maintenance configuration create --maintenance-scope InGuestPatch '
+        '--location eastus2euap '
+        '--namespace "Microsoft.Maintenance" '
+        '--visibility "Custom" '
+        '--maintenance-window-duration "02:00" '
+        '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
+        '--maintenance-window-recur-every "Day" '
+        f'--maintenance-window-start-date-time "{start_date.strftime("%Y-%m-%d %H:%M")}" '
+        '--maintenance-window-time-zone "UTC" '
+        '--resource-group  {rg} '
+        '--resource-name  clitestmrpconfinguestadvancedforcancel '
+        '--linux-parameters "classifications-to-include-list=[Security,Critical]" '
+        '--reboot-setting Always '
+        '--extension-properties InGuestPatchMode=User '
+        , checks=[])
+    
+def step__maintenanceconfigurations_cancel_maintenanceconfigurations(test, start_date):
+    test.cmd(f'az maintenance apply-update create --apply-update-name "{start_date.strftime("%Y%m%d%H%M00")}" '
+        '--provider-name "Microsoft.Maintenance" '
+        '--resource-group {rg} '
+        '--resource-name clitestmrpconfinguestadvancedforcancel '
+        '--resource-type "maintenanceConfigurations" '
+        '--status "Cancel" '
+        , checks=[])
+
 # Dynamic scope tests subscription level
 def step__configurationassignments_put_configurationassignments_createorupdate_subscription(test):
     test.cmd('az maintenance assignment create-or-update-subscription '
@@ -458,6 +486,12 @@ def call_scenario(test):
     # inguest patch
     step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchdefault(test)
     step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchadvanced(test)
+
+    # cancel maintenance config
+    start_date = datetime.now(timezone.utc) + timedelta(minutes=12)
+    step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchadvanced_forcancel(test, start_date)
+    time.sleep(4 * 60)
+    step__maintenanceconfigurations_cancel_maintenanceconfigurations(test, start_date)
 
     # Dynamic scope
     step__configurationassignments_put_configurationassignments_createorupdate_subscription(test)
