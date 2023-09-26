@@ -16,15 +16,15 @@ class ElasticSanScenario(ScenarioTest):
         })
         self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2euap '
                  '--base-size-tib 23 --extended-capacity-size-tib 14 '
-                 '--sku {{name:Premium_LRS,tier:Premium}}',
+                 '--sku {{name:Premium_LRS,tier:Premium}} --public-network-access Enabled',
                  checks=[JMESPathCheck('name', self.kwargs.get('san_name', '')),
                          JMESPathCheck('location', "eastus2euap"),
                          JMESPathCheck('tags', {"key1810": "aaaa"}),
                          JMESPathCheck('baseSizeTiB', 23),
                          JMESPathCheck('extendedCapacitySizeTiB', 14),
                          JMESPathCheck('sku', {"name": "Premium_LRS",
-                                               "tier": "Premium"})
-                         ])
+                                               "tier": "Premium"}),
+                         JMESPathCheck('publicNetworkAccess', "Enabled")])
         self.cmd('az elastic-san show -g {rg} -n {san_name}',
                  checks=[JMESPathCheck('name', self.kwargs.get('san_name', '')),
                          JMESPathCheck('location', "eastus2euap"),
@@ -37,11 +37,12 @@ class ElasticSanScenario(ScenarioTest):
         self.cmd('az elastic-san list -g {rg}', checks=[JMESPathCheck('length(@)', 1)])
         self.cmd('az elastic-san list-sku')
         self.cmd('az elastic-san update -n {san_name} -g {rg} --tags {{key1710:bbbb}} '
-                 '--base-size-tib 25 --extended-capacity-size-tib 15',
+                 '--base-size-tib 25 --extended-capacity-size-tib 15 --public-network-access Disabled',
                  checks=[JMESPathCheck('name', self.kwargs.get('san_name', '')),
                          JMESPathCheck('tags', {"key1710": "bbbb"}),
                          JMESPathCheck('baseSizeTiB', 25),
-                         JMESPathCheck('extendedCapacitySizeTiB', 15)])
+                         JMESPathCheck('extendedCapacitySizeTiB', 15),
+                         JMESPathCheck('publicNetworkAccess', "Disabled")])
         self.cmd('az elastic-san delete -g {rg} -n {san_name} -y')
         time.sleep(20)
         self.cmd('az elastic-san list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
@@ -110,7 +111,9 @@ class ElasticSanScenario(ScenarioTest):
             "subnet_name": self.create_random_name('subnet', 24),
             "vg_name": self.create_random_name('volume-group', 24),
             "volume_name": self.create_random_name('volume', 24),
-            "snapshot_name": self.create_random_name('snapshot', 24)
+            "snapshot_name": self.create_random_name('snapshot', 24),
+            "snapshot2_name": self.create_random_name('snapshot', 24),
+            "snapshot3_name": self.create_random_name('snapshot', 24)
         })
         self.cmd('az elastic-san create -n {san_name} -g {rg} --tags {{key1810:aaaa}} -l eastus2euap '
                  '--base-size-tib 23 --extended-capacity-size-tib 14 '
@@ -135,6 +138,15 @@ class ElasticSanScenario(ScenarioTest):
         self.cmd('az elastic-san volume snapshot list -g {rg} -e {san_name} -v {vg_name}',
                  checks=[JMESPathCheck('length(@)', 1)])
         self.cmd('az elastic-san volume snapshot delete -g {rg} -e {san_name} -v {vg_name} -n {snapshot_name} -y')
+        self.cmd('az elastic-san volume snapshot list -g {rg} -e {san_name} -v {vg_name}',
+                 checks=[JMESPathCheck('length(@)', 0)])
+
+        self.cmd('az elastic-san volume snapshot create -g {rg} -e {san_name} -v {vg_name} -n {snapshot2_name} '
+                 '--creation-data {{source-id:{volume_id}}}')
+        self.cmd('az elastic-san volume snapshot list -g {rg} -e {san_name} -v {vg_name}',
+                 checks=[JMESPathCheck('length(@)', 1)])
+        self.cmd('az elastic-san volume delete -g {rg} -e {san_name} -v {vg_name} -n {volume_name} -y '
+                 '--x-ms-delete-snapshots true --x-ms-force-delete true')
         self.cmd('az elastic-san volume snapshot list -g {rg} -e {san_name} -v {vg_name}',
                  checks=[JMESPathCheck('length(@)', 0)])
 
