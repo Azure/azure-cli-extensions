@@ -9,6 +9,8 @@ import os
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
+from azure.mgmt.containerservice.models import KubernetesSupportPlan
+
 from azure.cli.command_modules.acs._consts import (
     DecoratorEarlyExitException,
     DecoratorMode,
@@ -56,6 +58,7 @@ from azext_aks_preview._consts import (
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
+    CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
     CONST_NETWORK_PLUGIN_AZURE,
     CONST_NETWORK_PLUGIN_MODE_OVERLAY,
     CONST_NETWORK_DATAPLANE_CILIUM,
@@ -2251,6 +2254,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         else:
             return self.mc.service_mesh_profile
 
+    def _get_k8s_support_plan(self) -> KubernetesSupportPlan:
+        support_plan = self.raw_param.get("k8s_support_plan")
+        return support_plan
+
     def _get_uptime_sla(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of uptime_sla.
 
@@ -2340,6 +2347,24 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
 
         return tierStr
+
+    def get_k8s_support_plan(self) -> Union[str, None]:
+        """Obtain the value of kubernetes_support_plan.
+
+        :return: string or None
+        """
+        # default to None
+        support_plan = None
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.mc and hasattr(self.mc, "support_plan") and self.mc.support_plan is not None:
+            support_plan = self.mc.support_plan
+
+        # if specified by customer, use the specified value
+        support_plan = self.raw_param.get("k8s_support_plan")
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return support_plan
 
     def get_nodepool_taints(self) -> Union[List[str], None]:
         """Obtain the value of nodepool_labels.
@@ -2814,6 +2839,26 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 name="Base",
                 tier="Standard"
             )
+
+        if self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM:
+            mc.sku = self.models.ManagedClusterSKU(
+                name="Base",
+                tier="Premium"
+            )
+        return mc
+
+    def set_up_k8s_support_plan(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up supportPlan for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        support_plan = self.context.get_k8s_support_plan()
+        if support_plan == KubernetesSupportPlan.AKS_LONG_TERM_SUPPORT:
+            if mc is None or mc.sku is None or mc.sku.tier.lower() != CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM.lower():
+                raise InvalidArgumentValueError("Long term support is only available for premium tier clusters.")
+
+        mc.support_plan = support_plan
         return mc
 
     def set_up_cost_analysis(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2880,6 +2925,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_guardrails_profile(mc)
         # set up azure service mesh profile
         mc = self.set_up_azure_service_mesh_profile(mc)
+        # setup k8s support plan
+        mc = self.set_up_k8s_support_plan(mc)
         # set up azure monitor profile
         mc = self.set_up_azure_monitor_profile(mc)
         # set up metrics profile
@@ -3338,6 +3385,20 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_k8s_support_plan(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update supportPlan for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        support_plan = self.context.get_k8s_support_plan()
+        if support_plan == KubernetesSupportPlan.AKS_LONG_TERM_SUPPORT:
+            if mc is None or mc.sku is None or mc.sku.tier.lower() != CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM.lower():
+                raise RequiredArgumentMissingError("Long term support is only available for premium tier clusters.")
+
+        mc.support_plan = support_plan
+        return mc
+
     def update_image_cleaner(self, mc: ManagedCluster) -> ManagedCluster:
         """Update security profile imageCleaner for the ManagedCluster object.
 
@@ -3663,6 +3724,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
+        # Premium without LTS is ok (not vice versa)
+        if self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM:
+            mc.sku = self.models.ManagedClusterSKU(
+                name="Base",
+                tier="Premium"
+            )
+
         if self.context.get_uptime_sla() or self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
             mc.sku = self.models.ManagedClusterSKU(
                 name="Base",
@@ -3817,6 +3885,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nodepool_taints_mc(mc)
         # update network_observability in network_profile
         mc = self.update_enable_network_observability_in_network_profile(mc)
+        # update kubernetes support plan
+        mc = self.update_k8s_support_plan(mc)
         # update metrics profile
         mc = self.update_metrics_profile(mc)
 

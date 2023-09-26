@@ -4,6 +4,11 @@ Release History
 ===============
 upcoming
 ++++++
+* [Breaking Change] 'az containerapp job create': update default values for container app job properties
+
+0.3.41
+++++++
+* 'az containerapp up/create': enable support for no Dockerfile cases with --repo
 
 0.3.40
 ++++++
@@ -15,7 +20,6 @@ upcoming
 * Add command group 'az containerapp connected-env dapr-component', support list/show/set/remove connectedEnvironments daprComponents
 * Add command group 'az containerapp connected-env storage', support list/show/set/remove connectedEnvironments storage
 * 'az containerapp env': --infrastructure-resource-group, supports custom rg name for byovnet env creations in WP enabled envs
-* [Breaking Change] 'az containerapp job create': update default values for container app job properties
 
 0.3.39
 ++++++

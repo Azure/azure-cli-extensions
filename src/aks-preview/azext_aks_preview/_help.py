@@ -302,6 +302,9 @@ helps['aks create'] = """
         - name: --node-resource-group
           type: string
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
+        - name: --k8s-support-plan
+          type: string
+          short-summary: Choose from "KubernetesOfficial" or "AKSLongTermSupport", with "AKSLongTermSupport" you get 1 extra year of CVE patchs.
         - name: --nrg-lockdown-restriction-level
           type: string
           short-summary: Restriction level on the managed node resource group.
@@ -841,6 +844,9 @@ helps['aks update'] = """
         - name: --rotation-poll-interval
           type: string
           short-summary: Set interval of rotation poll. Use with azure-keyvault-secrets-provider addon.
+        - name: --k8s-support-plan
+          type: string
+          short-summary: Choose from "KubernetesOfficial" or "AKSLongTermSupport", with "AKSLongTermSupport" you get 1 extra year of CVE patchs.
         - name: --enable-disk-driver
           type: bool
           short-summary: Enable AzureDisk CSI Driver.
@@ -1805,6 +1811,44 @@ helps['aks nodepool operation-abort'] = """
     examples:
         - name: Abort operation on agent pool
           text: az aks nodepool operation-abort -g myResourceGroup --nodepool-name nodepool1 --cluster-name myAKSCluster
+"""
+
+helps['aks machine'] = """
+   type: group
+   short-summary: Get information about machines in a nodepool of a managed clusters
+"""
+
+helps['aks machine list'] = """
+   type: command
+   short-summary: Get information about IP Addresses, Hostname for all machines in an agentpool
+   parameters:
+       - name: --cluster-name
+         type: string
+         short-summary: Name of the managed cluster
+       - name: --nodepool-name
+         type: string
+         short-summary: Name of the agentpool of a managed cluster
+   exmaples:
+       - name: Get information about IP Addresses, Hostname for all machines in an agentpool
+         text: az aks machine list --cluster-name <clusterName> --nodepool-name <apName>
+"""
+
+helps['aks machine show'] = """
+   type: command
+   short-summary: Show IP Addresses, Hostname for a specific machine in an agentpool for a managedcluster.
+   parameters:
+       - name: --cluster-name
+         type: string
+         short-summary: Name of the managed cluster
+       - name: --nodepool-name
+         type: string
+         short-summary: Name of the agentpool of a managed cluster
+       - name: --machine-name
+         type: string
+         short-summary: Get IP Addresses, Hostname for a specific machine in an agentpool
+   exmaples:
+       - name: Get IP Addresses, Hostname for a specific machine in an agentpool
+         text: az aks machine show --cluster-name <clusterName> --nodepool-name <apName> --machine-name <machineName>
 """
 
 helps['aks operation-abort'] = """

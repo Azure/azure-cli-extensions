@@ -37,7 +37,7 @@ class FleetScenarioTest(ScenarioTest):
             key_file.write(TEST_SSH_KEY_PUB)
         return pathname.replace('\\', '\\\\')
 
-    @ResourceGroupPreparer(name_prefix='cli-', random_name_length=8, location='centraluseuap')
+    @ResourceGroupPreparer(name_prefix='cli-', random_name_length=8, location='westcentralus')
     def test_fleet(self):
 
         self.kwargs.update({
