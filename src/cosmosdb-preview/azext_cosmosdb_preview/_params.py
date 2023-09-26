@@ -447,7 +447,7 @@ def load_arguments(self, _):
         c.argument('dest_cassandra', nargs='+', arg_group='Azure Cosmos DB API for Apache Cassandra table copy', action=AddCassandraTableAction, help='Destination Cassandra table details')
         c.argument('dest_mongo', nargs='+', arg_group='Azure Cosmos DB API for MongoDB collection copy', action=AddMongoCollectionAction, help='Destination Mongo collection details')
         c.argument('dest_nosql', nargs='+', arg_group='Azure Cosmos DB API for NoSQL container copy', action=AddSqlContainerAction, help='Destination NoSql container details')
-        c.argument('host_copy_on_src', arg_type=get_three_state_flag(), help="Default value is false. Use this in cross account container copy to host container copy job on source account.")
+        c.argument('host_copy_on_src', arg_type=get_three_state_flag(), help=argparse.SUPPRESS)
         c.argument('worker_count', type=int, help=argparse.SUPPRESS)
 
     for scope in [
@@ -457,7 +457,7 @@ def load_arguments(self, _):
             'cosmosdb copy resume',
             'cosmosdb copy cancel']:
         with self.argument_context(scope) as c:
-            c.argument('account_name', options_list=["--account-name", "-a"], required=True, help='Azure Cosmos DB account name where the job is created. Use --dest-account value from create job command. If --host_copy_on_src was set then use --src-account value')
+            c.argument('account_name', options_list=["--account-name", "-a"], required=True, help='Azure Cosmos DB account name where the job is created. Use --dest-account value from create job command.')
 
     for scope in [
             'cosmosdb copy show',
