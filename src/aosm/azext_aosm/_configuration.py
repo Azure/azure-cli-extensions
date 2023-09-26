@@ -9,7 +9,7 @@ import json
 import os
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
-from typing import Any, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from azure.cli.core.azclierror import InvalidArgumentValueError, ValidationError
 from azext_aosm.util.constants import (
@@ -29,8 +29,8 @@ class ArtifactConfig:
     # artifact.py checks for the presence of the default descriptions, change
     # there if you change the descriptions.
     artifact_name: str = ""
-    file_path: Optional[str] = ""
-    blob_sas_url: Optional[str] = ""
+    file_path: Optional[str] = None
+    blob_sas_url: Optional[str] = None
     version: Optional[str] = ""
 
     @classmethod
@@ -51,15 +51,6 @@ class ArtifactConfig:
             ),
             version="Version of the artifact in A.B.C format.",
         )
-
-    def __post_init__(self):
-        """
-        Change empty stings to None.
-        """
-        if not self.file_path:
-            self.file_path = None
-        if not self.blob_sas_url:
-            self.blob_sas_url = None
 
     def validate(self):
         """
@@ -202,8 +193,8 @@ class NFConfiguration(Configuration):
 class VNFConfiguration(NFConfiguration):
     blob_artifact_store_name: str = ""
     image_name_parameter: str = ""
-    arm_template: Any = ArtifactConfig()
-    vhd: Any = ArtifactConfig()
+    arm_template: Union[Dict[str, str], ArtifactConfig] = ArtifactConfig()
+    vhd: Union[Dict[str, str], ArtifactConfig] = ArtifactConfig()
 
     @classmethod
     def helptext(cls) -> "VNFConfiguration":
@@ -249,8 +240,13 @@ class VNFConfiguration(NFConfiguration):
         """
         super().validate()
 
+        assert isinstance(self.vhd, ArtifactConfig)
+        assert isinstance(self.arm_template, ArtifactConfig)
         self.vhd.validate()
         self.arm_template.validate()
+
+        assert self.vhd.version
+        assert self.arm_template.version
 
         if "." in self.vhd.version or "-" not in self.vhd.version:
             raise ValidationError(
@@ -272,6 +268,8 @@ class VNFConfiguration(NFConfiguration):
     @property
     def output_directory_for_build(self) -> Path:
         """Return the local folder for generating the bicep template to."""
+        assert isinstance(self.arm_template, ArtifactConfig)
+        assert self.arm_template.file_path
         arm_template_name = Path(self.arm_template.file_path).stem
         return Path(f"{NF_DEFINITION_OUTPUT_BICEP_PREFIX}{arm_template_name}")
 
@@ -374,8 +372,10 @@ class CNFImageConfig:
 
 @dataclass
 class CNFConfiguration(NFConfiguration):
-    images: Any = CNFImageConfig()
-    helm_packages: List[Any] = field(default_factory=lambda: [])
+    images: Union[Dict[str, str], CNFImageConfig] = CNFImageConfig()
+    helm_packages: List[Union[Dict[str, Any], HelmPackageConfig]] = field(
+        default_factory=lambda: []
+    )
 
     def __post_init__(self):
         """
@@ -439,6 +439,17 @@ class NFDRETConfiguration:  # pylint: disable=too-many-instance-attributes
     publisher_scope: str = ""
     type: str = ""
     multiple_instances: Union[str, bool] = False
+
+    def __post_init__(self):
+        """
+        Convert parameters to the correct types.
+        """
+        # Cope with multiple_instances being supplied as a string, rather than a bool.
+        if isinstance(self.multiple_instances, str):
+            if self.multiple_instances.lower() == "true":
+                self.multiple_instances = True
+            elif self.multiple_instances.lower() == "false":
+                self.multiple_instances = False
 
     @classmethod
     def helptext(cls) -> "NFDRETConfiguration":
@@ -560,10 +571,8 @@ class NFDRETConfiguration:  # pylint: disable=too-many-instance-attributes
 
 @dataclass
 class NSConfiguration(Configuration):
-    network_functions: List[NFDRETConfiguration] = field(
-        default_factory=lambda: [
-            NFDRETConfiguration(),
-        ]
+    network_functions: List[Union[NFDRETConfiguration, Dict[str, Any]]] = field(
+        default_factory=lambda: []
     )
     nsd_name: str = ""
     nsd_version: str = ""
@@ -583,6 +592,7 @@ class NSConfiguration(Configuration):
         Build a NSConfiguration object where each value is helptext for that field.
         """
         nsd_helptext = NSConfiguration(
+            network_functions=[asdict(NFDRETConfiguration.helptext())],
             nsd_name=(
                 "Network Service Design (NSD) name. This is the collection of Network Service"
                 " Design Versions. Will be created if it does not exist."
@@ -593,7 +603,6 @@ class NSConfiguration(Configuration):
             nsdv_description="Description of the NSDV.",
             **asdict(Configuration.helptext()),
         )
-        nsd_helptext.network_functions = [NFDRETConfiguration.helptext()]
 
         return nsd_helptext
 
@@ -604,7 +613,7 @@ class NSConfiguration(Configuration):
         :raises ValueError for any invalid config
         """
         super().validate()
-        if self.network_functions in ([], None):
+        if not self.network_functions:
             raise ValueError(("At least one network function must be included."))
 
         for configuration in self.network_functions:
@@ -633,7 +642,13 @@ class NSConfiguration(Configuration):
     @property
     def acr_manifest_names(self) -> List[str]:
         """The list of ACR manifest names for all the NF ARM templates."""
-        return [nf.acr_manifest_name(self.nsd_version) for nf in self.network_functions]
+        acr_manifest_names = []
+        for nf in self.network_functions:
+            assert isinstance(nf, NFDRETConfiguration)
+            acr_manifest_names.append(nf.acr_manifest_name(self.nsd_version))
+
+        logger.debug("ACR manifest names: %s", acr_manifest_names)
+        return acr_manifest_names
 
 
 def get_configuration(configuration_type: str, config_file: str) -> Configuration:

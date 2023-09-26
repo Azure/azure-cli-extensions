@@ -418,9 +418,7 @@ class PreDeployerViaSDK:
             network_service_design_group_name=nsd_name,
             parameters=NetworkServiceDesignGroup(location=location),
         )
-        LongRunningOperation(self.cli_ctx, "Creating Network Service Design...")(
-            poller
-        )
+        LongRunningOperation(self.cli_ctx, "Creating Network Service Design...")(poller)
 
     def resource_exists_by_name(self, rg_name: str, resource_name: str) -> bool:
         """

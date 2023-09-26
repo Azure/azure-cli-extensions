@@ -13,7 +13,7 @@ from typing import Any, Dict
 from jinja2 import Template
 from knack.log import get_logger
 
-from azext_aosm._configuration import NSConfiguration
+from azext_aosm._configuration import NFDRETConfiguration, NSConfiguration
 from azext_aosm.generate_nsd.nf_ret import NFRETGenerator
 from azext_aosm.util.constants import (
     CONFIG_MAPPINGS_DIR_NAME,
@@ -56,10 +56,14 @@ class NSDGenerator:  # pylint: disable=too-few-public-methods
         self.config = config
         self.nsd_bicep_template_name = NSD_DEFINITION_JINJA2_SOURCE_TEMPLATE
         self.nsd_bicep_output_name = NSD_BICEP_FILENAME
-        self.nf_ret_generators = [
-            NFRETGenerator(api_clients, nf_config, self.config.cg_schema_name)
-            for nf_config in self.config.network_functions
-        ]
+
+        self.nf_ret_generators = []
+
+        for nf_config in self.config.network_functions:
+            assert isinstance(nf_config, NFDRETConfiguration)
+            self.nf_ret_generators.append(
+                NFRETGenerator(api_clients, nf_config, self.config.cg_schema_name)
+            )
 
     def generate_nsd(self) -> None:
         """Generate a NSD templates which includes an Artifact Manifest, NFDV and NF templates."""
