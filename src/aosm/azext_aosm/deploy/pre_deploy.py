@@ -384,7 +384,7 @@ class PreDeployerViaSDK:
                 )
             return False
 
-        return acr_manny_exists
+        return all_acr_mannys_exist
 
     def ensure_nsd_exists(
         self,
