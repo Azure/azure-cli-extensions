@@ -21,7 +21,12 @@ def prepare_containerapp_env_for_app_e2e_tests(test_cls):
     except CLIInternalError as e:
         if e.error_msg.__contains__('ResourceGroupNotFound') or e.error_msg.__contains__('ResourceNotFound'):
             test_cls.cmd(f'group create -n {rg_name}')
-            managed_env = create_containerapp_env(test_cls, env_name=env_name, resource_group=rg_name, location=TEST_LOCATION)
+            test_cls.cmd(f'containerapp env create -g {rg_name} -n {env_name} --logs-destination none')
+            managed_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
+
+            while managed_env["properties"]["provisioningState"].lower() == "waiting":
+                time.sleep(5)
+                managed_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
     return managed_env["id"]
 
 
@@ -40,6 +45,7 @@ def create_containerapp_env(test_cls, env_name, resource_group, location=None):
     while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
         time.sleep(5)
         containerapp_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
 
 def create_and_verify_containerapp_up(
             test_cls,
