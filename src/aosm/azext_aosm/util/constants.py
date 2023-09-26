@@ -93,5 +93,7 @@ DEPLOYMENT_PARAMETER_MAPPING_REGEX = r"\{deployParameters.(.+?)\}"
 # Required features for AOSM publish aka deploy
 AOSM_FEATURE_NAMESPACE = "Microsoft.HybridNetwork"
 AOSM_REQUIRED_FEATURES = [
-    "Allow-2023-09-01",
+    "AllowPreReleaseFeatures",
+    "Allow-2023-04-01-preview",
+    # "Allow-2023-09-01", Not done on pre-release AOSM
 ]

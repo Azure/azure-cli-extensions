@@ -88,6 +88,10 @@ When filling in the input.json file, you must list helm packages in the order th
 #### NSDs
 For NSDs, you will need to have a Resource Group with a deployed Publisher, Artifact Store, Network Function Definition and Network Function Definition Version. You can use the `az aosm nfd` commands to create all of these resources.
 
+#### Subscription Feature Flags
+For this pre-release version of the CLI, your subscription needs to have enabled the following Feature Flags:
+- `Microsoft.HybridNetwork/AllowPreReleaseFeatures`
+- `Microsoft.HybridNetwork/Allow-2023-04-01-preview`
 
 ### Command examples
 
