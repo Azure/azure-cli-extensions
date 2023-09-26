@@ -101,6 +101,7 @@ def update_fleet(cmd,
                  name,
                  enable_managed_identity=None,
                  assign_identity=None,
+                 no_wait=False,
                  tags=None):
     fleet_patch_model = cmd.get_models(
         "FleetPatch",
@@ -128,7 +129,7 @@ def update_fleet(cmd,
     )
 
     fleet_patch = fleet_patch_model(tags=tags)
-    return client.update(resource_group_name, name, fleet_patch)
+    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, name, fleet_patch)
 
 
 def show_fleet(cmd,  # pylint: disable=unused-argument
@@ -198,14 +199,15 @@ def update_fleet_member(cmd,
                         resource_group_name,
                         name,
                         fleet_name,
-                        update_group=None):
+                        update_group=None,
+                        no_wait=False):
     fleet_member_update_model = cmd.get_models(
         "FleetMemberUpdate",
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleet_members"
     )
     properties = fleet_member_update_model(group=update_group)
-    return client.update(resource_group_name, fleet_name, name, properties)
+    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, fleet_name, name, properties)
 
 
 def list_fleet_member(cmd,  # pylint: disable=unused-argument
