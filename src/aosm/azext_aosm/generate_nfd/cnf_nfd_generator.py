@@ -117,6 +117,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             try:
                 for helm_package in self.config.helm_packages:
                     # Unpack the chart into the tmp directory
+                    assert isinstance(helm_package, HelmPackageConfig)
+
                     self._extract_chart(Path(helm_package.path_to_chart))
 
                     # TODO: Validate charts
