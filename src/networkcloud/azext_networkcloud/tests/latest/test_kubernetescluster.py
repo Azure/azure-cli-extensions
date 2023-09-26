@@ -9,7 +9,7 @@
 Kubernetescluster tests scenarios
 """
 
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
@@ -33,6 +33,7 @@ def call_scenario1(test):
     step_show(test)
     step_list(test)
     step_list_subscription(test)
+    step_restart_node(test)
     step_delete(test)
     cleanup_scenario1(test)
 
@@ -50,7 +51,6 @@ def step_create(test, checks=None):
         "--initial-agent-pool-configurations {initialNodeConfiguration} "
         "--control-plane-node-configuration count={count} vmSkuName={vmSkuName} adminUsername={cpAdminUsername} sshKeyValues={cpSshKeyList} "
         "--network-configuration cloud-services-network-id={csnId} cni-network-id={cniId} pod-cidrs={podCidrs} service-cidrs={serviceCidrs} dns-service-ip={dnsServiceIp} "
-        "bgp-service-load-balancer-configuration.bgp-advertisements={bgpAdvertisements} "
         "bgp-service-load-balancer-configuration.fabric-peering-enabled={fabricPeeringEnabled} "
         "bgp-service-load-balancer-configuration.ip-address-pools={ipAddressPools} "
         "--tags {tags}"
@@ -90,6 +90,16 @@ def step_list_subscription(test, checks=None):
     test.cmd("az networkcloud kubernetescluster list --resource-group {rg}")
 
 
+def step_restart_node(test, checks=None):
+    """Kubernetescluster restart node operation"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud kubernetescluster restart-node --node-name {nodeName} "
+        "--kubernetes-cluster-name {kubernetesClusterName} --resource-group {resourceGroup}"
+    )
+
+
 def step_delete(test, checks=None):
     """Kubernetescluster delete operation"""
     if checks is None:
@@ -107,7 +117,6 @@ class KubernetesClusterScenarioTest(ScenarioTest):
         self.kwargs.update(
             {
                 "name": self.create_random_name(prefix="cli-test-naks-", length=24),
-                "rg": CONFIG.get("KUBERNETESCLUSTER", "resource_group"),
                 "location": CONFIG.get("KUBERNETESCLUSTER", "location"),
                 "extendedLocation": CONFIG.get(
                     "KUBERNETESCLUSTER", "extended_location"
@@ -130,9 +139,6 @@ class KubernetesClusterScenarioTest(ScenarioTest):
                 "podCidrs": CONFIG.get("KUBERNETESCLUSTER", "pod_cidrs"),
                 "serviceCidrs": CONFIG.get("KUBERNETESCLUSTER", "service_cidrs"),
                 "dnsServiceIp": CONFIG.get("KUBERNETESCLUSTER", "dns_service_ip"),
-                "bgpAdvertisements": CONFIG.get(
-                    "KUBERNETESCLUSTER", "bgp_advertisements"
-                ),
                 "fabricPeeringEnabled": CONFIG.get(
                     "KUBERNETESCLUSTER", "fabric_peering_enabled"
                 ),
@@ -143,10 +149,16 @@ class KubernetesClusterScenarioTest(ScenarioTest):
                 "countUpdate": CONFIG.get("KUBERNETESCLUSTER", "count_update"),
                 "vmSkuName": CONFIG.get("KUBERNETESCLUSTER", "vm_sku_name"),
                 "count": CONFIG.get("KUBERNETESCLUSTER", "count"),
+                "nodeName": CONFIG.get("KUBERNETESCLUSTER_NODE", "node_name"),
+                "kubernetesClusterName": CONFIG.get(
+                    "KUBERNETESCLUSTER_NODE", "kubernetes_cluster_name"
+                ),
+                "resourceGroup": CONFIG.get("KUBERNETESCLUSTER_NODE", "resource_group"),
             }
         )
 
     @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix="clitest_rg"[:7], key="rg", parameter_name="rg")
     def test_kubernetescluster_scenario(self):
         """test scenario for kubernetes cluster CRUD operations"""
         call_scenario1(self)

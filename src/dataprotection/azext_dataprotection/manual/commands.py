@@ -74,3 +74,6 @@ def load_command_table(self, _):
 
     from .aaz_operations.resource_guard import Update as ResourceGuardUpdate
     self.command_table['dataprotection resource-guard update'] = ResourceGuardUpdate(loader=self)
+
+    from .aaz_operations.resource_guard import Unlock as ResouceGuardMappingUnlock
+    self.command_table['dataprotection resource-guard unlock'] = ResouceGuardMappingUnlock(loader=self)

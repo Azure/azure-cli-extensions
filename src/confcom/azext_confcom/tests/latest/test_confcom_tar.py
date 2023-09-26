@@ -97,7 +97,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
 
             "properties": {
@@ -285,7 +285,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
 
             "properties": {
@@ -494,7 +494,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
 
             "properties": {
@@ -652,7 +652,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             {
             "name": "[parameters('containergroupname')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2022-04-01-preview",
+            "apiVersion": "2023-05-01",
             "location": "[parameters('location')]",
 
             "properties": {

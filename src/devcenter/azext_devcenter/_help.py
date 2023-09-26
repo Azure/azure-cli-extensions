@@ -96,6 +96,30 @@ helps[
 """
 
 helps[
+    "devcenter dev schedule list"
+] = """
+    type: command
+    short-summary: "List schedules."
+    examples:
+      - name: List schedules by project using dev center
+        text: |-
+               az devcenter dev schedule list --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject"
+      - name: List schedules by project using endpoint
+        text: |-
+               az devcenter dev schedule list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject"
+      - name: List schedules by pool using dev center
+        text: |-
+               az devcenter dev schedule list --dev-center-name "ContosoDevCenter" \
+--pool-name "DevPool" --project-name "DevProject"
+      - name: List schedules by pool using endpoint
+        text: |-
+               az devcenter dev schedule list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--pool-name "DevPool" --project-name "DevProject"
+"""
+
+helps[
     "devcenter dev schedule show"
 ] = """
     type: command
@@ -246,6 +270,22 @@ helps[
 """
 
 helps[
+    "devcenter dev dev-box repair"
+] = """
+    type: command
+    short-summary: "Attempts automated repair steps to resolve common problems on a Dev Box. The dev box may restart during this operation."
+    examples:
+      - name: Repair using dev center
+        text: |-
+               az devcenter dev dev-box repair --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Repair using endpoint
+        text: |-
+               az devcenter dev dev-box repair --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
     "devcenter dev dev-box stop"
 ] = """
     type: command
@@ -311,6 +351,40 @@ helps[
                az devcenter dev dev-box delay-all-actions --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
 --project-name "DevProject" --delay-time "04:30" --name "myDevBox" \
 --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev dev-box list-operation"
+] = """
+    type: command
+    short-summary: "Lists operations on the dev box which have occurred within the past 90 days."
+    examples:
+      - name: List operations using dev center
+        text: |-
+               az devcenter dev dev-box list-operation --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --name "myDevBox" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: List operations using endpoint
+        text: |-
+               az devcenter dev dev-box list-operation --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --name "myDevBox" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev dev-box show-operation"
+] = """
+    type: command
+    short-summary: "Get an operation on a dev box."
+    examples:
+      - name: Get operation using dev center
+        text: |-
+               az devcenter dev dev-box show-operation --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --name "myDevBox" --operation-id \
+"f5dbdfab-fa0e-4831-8d13-25359aa5e680" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Get operation using endpoint
+        text: |-
+               az devcenter dev dev-box show-operation --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --name "myDevBox" --operation-id \
+"f5dbdfab-fa0e-4831-8d13-25359aa5e680" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[

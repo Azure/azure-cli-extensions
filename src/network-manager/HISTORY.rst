@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.0.0b2
++++++
+* `az network manager group static-member create`: Fix cross-tenant --resource-id
+* `az network manager post-commit`: Fix when no response body is returned
+
 1.0.0b1
 +++++
 * Migrate to CodeGen V2

@@ -8,14 +8,9 @@
 # pylint: disable=too-many-statements
 from azure.cli.core.commands import CliCommandType
 from azext_devcenter._client_factory import (
-    cf_project_dp,
-    cf_pool_dp,
-    cf_schedule_dp,
-    cf_dev_box_dp,
-    cf_environment_dp,
-    cf_catalog_dp,
-    cf_environment_definition_dp,
-    cf_environment_type_dp,
+    cf_dev_center_dp,
+    cf_dev_boxes_dp,
+    cf_environments_dp,
 )
 from .custom import (
     AttachedNetworkCreate,
@@ -162,10 +157,6 @@ def load_command_table(self, _):
     self.command_table["devcenter admin pool create"] = PoolCreate(loader=self)
     self.command_table["devcenter admin pool delete"] = PoolDelete(loader=self)
     self.command_table["devcenter admin pool list"] = PoolList(loader=self)
-    # TODO: Uncomment once feature is complete
-    # self.command_table["devcenter admin pool run-health-check"] = PoolRunHealthCheck(
-    #     loader=self
-    # )
     self.command_table["devcenter admin pool show"] = PoolShow(loader=self)
     self.command_table["devcenter admin pool update"] = PoolUpdate(loader=self)
     self.command_table["devcenter admin pool wait"] = PoolWait(loader=self)
@@ -203,54 +194,21 @@ def load_command_table(self, _):
 
     # Data plane
 
-    devcenter_pool_dp = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter_dataplane.operations._pool_operations#PoolOperations.{}",
-        client_factory=cf_pool_dp,
+    devcenter_dp = CliCommandType(
+        operations_tmpl="azext_devcenter.vendored_sdks.devcenter_dataplane.operations._operations#DevCenterOperations.{}",
+        client_factory=cf_dev_center_dp,
     )
 
-    devcenter_project_dp = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter_dataplane.operations._project_operations#ProjectOperations.{}",
-        client_factory=cf_project_dp,
+    dev_boxes_dp = CliCommandType(
+        operations_tmpl="azext_devcenter.vendored_sdks.devcenter_dataplane.operations._operations#DevBoxesOperations.{}",
+        client_factory=cf_dev_boxes_dp,
     )
 
-    devcenter_dev_box_dp = CliCommandType(
+    environments_dp = CliCommandType(
         operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._dev_box_operations#DevBoxOperations.{}"
+            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._operations#EnvironmentsOperations.{}"
         ),
-        client_factory=cf_dev_box_dp,
-    )
-
-    devcenter_catalog_dp = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._catalogs_operations#CatalogsOperations.{}"
-        ),
-        client_factory=cf_catalog_dp,
-    )
-
-    devcenter_environment_definition_dp = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter_dataplane.operations._environment_definitions_operations#EnvironmentDefinitionsOperations.{}",
-        client_factory=cf_environment_definition_dp,
-    )
-
-    devcenter_environment_dp = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._environments_operations#EnvironmentsOperations.{}"
-        ),
-        client_factory=cf_environment_dp,
-    )
-
-    devcenter_environment_type_dp = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._environment_type_operations#EnvironmentTypeOperations.{}"
-        ),
-        client_factory=cf_environment_type_dp,
-    )
-
-    devcenter_schedule_dp = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._schedule_operations#ScheduleOperations.{}"
-        ),
-        client_factory=cf_schedule_dp,
+        client_factory=cf_environments_dp,
     )
 
     with self.command_group("devcenter"):
@@ -259,15 +217,19 @@ def load_command_table(self, _):
     with self.command_group("devcenter dev"):
         pass
 
-    with self.command_group("devcenter dev project", devcenter_project_dp) as g:
+    with self.command_group("devcenter dev project", devcenter_dp) as g:
         g.custom_command("list", "devcenter_project_list_dp")
         g.custom_show_command("show", "devcenter_project_show_dp")
 
-    with self.command_group("devcenter dev pool", devcenter_pool_dp) as g:
+    with self.command_group("devcenter dev pool", dev_boxes_dp) as g:
         g.custom_command("list", "devcenter_pool_list_dp")
         g.custom_show_command("show", "devcenter_pool_show_dp")
 
-    with self.command_group("devcenter dev dev-box", devcenter_dev_box_dp) as g:
+    with self.command_group("devcenter dev schedule", dev_boxes_dp) as g:
+        g.custom_command("list", "devcenter_schedule_list_dp")
+        g.custom_show_command("show", "devcenter_schedule_show_dp")
+
+    with self.command_group("devcenter dev dev-box") as g:
         g.custom_command("list", "devcenter_dev_box_list")
         g.custom_show_command("show", "devcenter_dev_box_show")
         g.custom_command("create", "devcenter_dev_box_create", supports_no_wait=True)
@@ -277,19 +239,22 @@ def load_command_table(self, _):
             supports_no_wait=True,
             confirmation=True,
         )
+        g.custom_command("start", "devcenter_dev_box_start", supports_no_wait=True)
+        g.custom_command("stop", "devcenter_dev_box_stop", supports_no_wait=True)
+        g.custom_command("restart", "devcenter_dev_box_restart", supports_no_wait=True)
+        g.custom_command("repair", "devcenter_dev_box_repair", supports_no_wait=True)
         g.custom_command(
             "show-remote-connection", "devcenter_dev_box_get_remote_connection"
         )
-        g.custom_command("start", "devcenter_dev_box_start", supports_no_wait=True)
-        g.custom_command("restart", "devcenter_dev_box_restart", supports_no_wait=True)
-        g.custom_command("stop", "devcenter_dev_box_stop", supports_no_wait=True)
-        g.custom_command("delay-action", "devcenter_dev_box_delay_action")
-        g.custom_command("delay-all-actions", "devcenter_dev_box_delay_all_actions")
         g.custom_command("list-action", "devcenter_dev_box_list_action")
         g.custom_command("show-action", "devcenter_dev_box_show_action")
         g.custom_command("skip-action", "devcenter_dev_box_skip_action")
+        g.custom_command("delay-action", "devcenter_dev_box_delay_action")
+        g.custom_command("delay-all-actions", "devcenter_dev_box_delay_all_actions")
+        g.custom_command("list-operation", "devcenter_dev_box_list_operation")
+        g.custom_command("show-operation", "devcenter_dev_box_show_operation")
 
-    with self.command_group("devcenter dev environment", devcenter_environment_dp) as g:
+    with self.command_group("devcenter dev environment") as g:
         g.custom_command("list", "devcenter_environment_list")
         g.custom_show_command("show", "devcenter_environment_show")
         g.custom_command(
@@ -308,20 +273,17 @@ def load_command_table(self, _):
             confirmation=True,
         )
 
-    with self.command_group(
-        "devcenter dev environment-type", devcenter_environment_type_dp
-    ) as g:
-        g.custom_command("list", "devcenter_environment_type_list_dp")
-
-    with self.command_group("devcenter dev schedule", devcenter_schedule_dp) as g:
-        g.custom_show_command("show", "devcenter_schedule_show_dp")
-
-    with self.command_group("devcenter dev catalog", devcenter_catalog_dp) as g:
+    with self.command_group("devcenter dev catalog", environments_dp) as g:
         g.custom_command("list", "devcenter_catalog_list_dp")
         g.custom_show_command("show", "devcenter_catalog_show_dp")
 
     with self.command_group(
-        "devcenter dev environment-definition", devcenter_environment_definition_dp
+        "devcenter dev environment-definition", environments_dp
     ) as g:
         g.custom_command("list", "devcenter_environment_definition_list_dp")
         g.custom_show_command("show", "devcenter_environment_definition_show_dp")
+
+    with self.command_group(
+        "devcenter dev environment-type", environments_dp
+    ) as g:
+        g.custom_command("list", "devcenter_environment_type_list_dp")
