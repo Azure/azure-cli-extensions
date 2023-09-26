@@ -47,9 +47,15 @@ def install_kubectl_client():
         telemetry.set_exception(exception=e, fault_type=consts.Download_And_Install_Kubectl_Fault_Type, summary="Failed to download and install kubectl")
         raise CLIInternalError("Unable to install kubectl. Error: ", str(e))
 
+def get_snap_config_endpoint():
+    if "SNAP_CONFIG_ENDPOINT" in os.environ.keys() and os.environ["SNAP_CONFIG_ENDPOINT"] != "":
+        return os.environ["SNAP_CONFIG_ENDPOINT"]
+    return "{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name)
+
 def get_latest_tested_version():
     try:
-        response = requests.get("{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name))
+        endpoint = get_snap_config_endpoint()
+        response = requests.get(endpoint)
         jsonDict = json.loads(response.content.decode())
         major, minor = jsonDict["latestTestedMicrok8s"].split('.')
         return major, minor, jsonDict["kmsImage"]

@@ -19,6 +19,7 @@ def load_arguments(self, _):
         c.argument('http_proxy', options_list=['--proxy-http'], arg_group='Proxy', help='Http proxy URL to be used.')
         c.argument('no_proxy', options_list=['--proxy-skip-range'], arg_group='Proxy', help='List of URLs/CIDRs for which proxy should not to be used.')
         c.argument('tags', tags_type)
+        c.argument('custom_locations_oid', options_list=["--custom-locations-oid"], help="OID of the Custom Locations Application in your tenant")
 
     with self.argument_context('hybrid-appliance upgrade') as c:
         c.argument('name', options_list=['--name', '-n'], help='')

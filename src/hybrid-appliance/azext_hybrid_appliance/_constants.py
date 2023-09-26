@@ -45,3 +45,4 @@ No_Storage_Space_Available_Fault_Type = "No storage available on the host machin
 Diagnostics_Folder_Creation_Failed_Fault_Type = "Failed to create diagnostics folder"
 Log_file_path_env_variable_name = "LOG_FILE_PATH"
 Log_file_name_env_variable_name = "LOG_FILE_NAME"
+CC_Resource_Get_Failed="Failed to check if Connected cluster resource exists"
