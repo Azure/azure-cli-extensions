@@ -23,6 +23,12 @@ def create_fleet(cmd,
                  dns_name_prefix=None,
                  location=None,
                  tags=None,
+                 enable_private_cluster=None,
+                 enable_vnet_integration=None,
+                 apiserver_subnet_id=None,
+                 agent_subnet_id=None,
+                 enable_managed_identity=None,
+                 assign_identity=None,
                  no_wait=False):
     fleet_hub_profile_model = cmd.get_models(
         "FleetHubProfile",
@@ -34,6 +40,22 @@ def create_fleet(cmd,
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleets"
     )
+    api_server_access_profile_model = cmd.get_models(
+        "APIServerAccessProfile",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleets"
+    )
+    agent_profile_model = cmd.get_models(
+        "AgentProfile",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleets"
+    )
+    fleet_managed_service_identity_model = cmd.get_models(
+        "ManagedServiceIdentity",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleets"
+    )
+
     if dns_name_prefix is None:
         subscription_id = get_subscription_id(cmd.cli_ctx)
         # Use subscription id to provide uniqueness and prevent DNS name clashes
@@ -43,11 +65,31 @@ def create_fleet(cmd,
         resource_group_part = re.sub('[^A-Za-z0-9-]', '', resource_group_name)[0:16]
         dns_name_prefix = f'{name_part}-{resource_group_part}-{subscription_id[0:6]}'
 
-    fleet_hub_profile = fleet_hub_profile_model(dns_prefix=dns_name_prefix)
+    api_server_access_profile = api_server_access_profile_model(
+        enable_private_cluster=enable_private_cluster,
+        enable_vnet_integration=enable_vnet_integration,
+        subnet_id=apiserver_subnet_id
+    )
+    agent_profile = agent_profile_model(
+        subnet_id=agent_subnet_id
+    )
+    fleet_hub_profile = fleet_hub_profile_model(
+        dns_prefix=dns_name_prefix,
+        api_server_access_profile=api_server_access_profile,
+        agent_profile=agent_profile)
+
+    managed_service_identity = fleet_managed_service_identity_model(type="None")
+    if enable_managed_identity is True:
+        managed_service_identity.type = "SystemAssigned"
+        if assign_identity is not None:
+            managed_service_identity.type = "UserAssigned"
+            managed_service_identity.user_assigned_identities = {assign_identity, None}
+
     fleet = fleet_model(
         location=location,
         tags=tags,
-        hub_profile=fleet_hub_profile
+        hub_profile=fleet_hub_profile,
+        identity=managed_service_identity
     )
 
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, fleet)
@@ -57,12 +99,34 @@ def update_fleet(cmd,
                  client,
                  resource_group_name,
                  name,
+                 enable_managed_identity=None,
+                 assign_identity=None,
                  tags=None):
     fleet_patch_model = cmd.get_models(
         "FleetPatch",
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleets"
     )
+    fleet_managed_service_identity_model = cmd.get_models(
+        "ManagedServiceIdentity",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleets"
+    )
+
+    managed_service_identity = fleet_managed_service_identity_model(type="None")
+    if enable_managed_identity is True:
+        managed_service_identity.type = "SystemAssigned"
+        if assign_identity is not None:
+            managed_service_identity.type = "UserAssigned"
+            managed_service_identity.user_assigned_identities = {assign_identity, None}
+    else:
+        managed_service_identity.type = "None"
+
+    fleet_patch = fleet_patch_model(
+        tags=tags,
+        identity=managed_service_identity
+    )
+
     fleet_patch = fleet_patch_model(tags=tags)
     return client.update(resource_group_name, name, fleet_patch)
 

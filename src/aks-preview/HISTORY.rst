@@ -11,6 +11,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add `az aks machine list` command to fetch list of machines in an agentpool.
+* Add `az aks machine show` command to fetch information about a specific machine in an agentpool.
 
 0.5.161
 +++++++
