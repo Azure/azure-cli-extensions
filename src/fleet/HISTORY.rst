@@ -31,3 +31,8 @@ Release History
 0.2.4
 ++++++
 * Added support for private fleet & MSI.
+
+0.2.5
+++++++
+* Upgrade SDK version to 2023-08-15-preview
+
