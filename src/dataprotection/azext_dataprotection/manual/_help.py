@@ -184,10 +184,12 @@ helps['dataprotection resource-guard list-protected-operations'] = """
 
 helps['dataprotection backup-instance initialize-backupconfig'] = """
     type: command
-    short-summary: Initialize JSON request body for initializing and configuring backup of an AzureKubernetesService resource.
+    short-summary: Initialize JSON request body for initializing and configuring backup for AzureKubernetesService or AzureBlobs (for vaulted backups) resources.
     examples:
-      - name: Initialize backup configuration
+      - name: Initialize backup configuration for AzureKubernetesService
         text: az dataprotection backup-instance initialize-backupconfig --datasource-type AzureKubernetesService --label-selectors key=val foo=bar --excluded-namespaces excludeNS1 excludeNS2
+      - name: Initialize backup configuration for AzureBlob
+        text: az dataprotection backup-instance initialize-backupconfig --datasource-type "AzureBlob" --include-all-containers --storage-account-rg "sapleRG" --storage-account-name "samplestorage"'
 """
 
 helps['dataprotection backup-instance initialize-restoreconfig'] = """
