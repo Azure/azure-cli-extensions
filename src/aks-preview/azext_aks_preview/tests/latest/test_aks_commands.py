@@ -4460,6 +4460,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
                      '--network-plugin azure --ssh-key-value={ssh_key_value} --kubernetes-version {k8s_version} ' \
                      '--network-plugin-mode=overlay'
+        
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('networkProfile.networkPlugin', 'azure'),
@@ -4468,7 +4469,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # update to enable cilium dataplane
-        update_cmd = 'aks update -g {resource_group} -n {name} --network-dataplane=cilium'
+        update_cmd = 'aks update -g {resource_group} -n {name} --network-dataplane=cilium --network-policy=cilium'
 
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
