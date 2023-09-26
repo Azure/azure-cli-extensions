@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=unused-import
 
+import unittest
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from ..utils import track_job_to_completion, wait_for_job_exclusivity_on_datasource, get_midpoint_of_time_range
@@ -107,15 +108,15 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
             test.exists('properties.extendedInfo.recoveryDestination')
         ])
 
-    @unittest.skip('Skipping test until datasources are set back up')
+    # @unittest.skip('Skipping test until datasources are set back up')
     @AllowLargeResponse()
     def test_dataprotection_backup_instance_restore_blob_recovery_point(test):
         test.kwargs.update({
             'dataSourceType': 'AzureBlob',
             'sourceDataStore': 'VaultStore',
-            'backupInstanceName': 'clitestsabidonotdelete-clitestsabidonotdelete-887c3538-0bfc-11ee-acd3-002b670b472e',
-            'dataSourceName': 'clitestsabidonotdelete',
-            'dataSourceId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Storage/storageAccounts/clitestsabidonotdelete',
+            'backupInstanceName': 'clitestsavltdonotdelete-clitestsavltdonotdelete-65176b0a-64ad-4247-9866-19204633c0d5',
+            'dataSourceName': 'clitestsavltdonotdelete',
+            'dataSourceId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Storage/storageAccounts/clitestsavltdonotdelete',
             'restoreLocation': 'centraluseuap',
             'containerName': 'container1',
             'restoreContainerName': 'clitestvsdonotdelete',
@@ -131,12 +132,12 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
         })
 
         restore_request_vs = test.cmd('az dataprotection backup-instance restore initialize-for-item-recovery '
-                                   '--datasource-type "{dataSourceType}" '
-                                   '--restore-location "{restoreLocation}" '
-                                   '--source-datastore "{sourceDataStore}" '
-                                   '--recovery-point-id "{recoveryPointId}" '
-                                   '--target-resource-id "{targetResourceId}" '
-                                   '--container-list "{containerName}"').get_output_in_json()
+                                      '--datasource-type "{dataSourceType}" '
+                                      '--restore-location "{restoreLocation}" '
+                                      '--source-datastore "{sourceDataStore}" '
+                                      '--recovery-point-id "{recoveryPointId}" '
+                                      '--target-resource-id "{targetResourceId}" '
+                                      '--container-list "{containerName}"').get_output_in_json()
         test.kwargs.update({"restoreRequest": restore_request_vs})
 
         test.addCleanup(test.cmd, 'az storage container delete --name "{containerName}" --account-name "{restoreContainerName}" --auth-mode "login"')
