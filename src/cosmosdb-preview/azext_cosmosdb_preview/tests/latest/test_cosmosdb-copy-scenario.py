@@ -42,7 +42,7 @@ class Cosmosdb_previewCopyScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb copy create -g {rg} --job-name {job_name} --src-account {acc} --dest-account {acc} --src-nosql database={database_name} container={container_name} --dest-nosql database={database_name} container={container_name_copied}')
         
         # Show job
-        job = self.cmd('az cosmosdb copy show -g {rg} --dest-account {acc} --job-name {job_name}').get_output_in_json()
+        job = self.cmd('az cosmosdb copy show -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
         assert job['jobName'] == job_name
         assert job['source']['component'] == 'CosmosDBSql'
         assert job['source']['databaseName'] == database_name
@@ -52,24 +52,24 @@ class Cosmosdb_previewCopyScenarioTest(ScenarioTest):
         assert job['destination']['containerName'] == container_name_copied
 
         # List jobs
-        all_jobs = self.cmd('az cosmosdb copy list -g {rg} --dest-account {acc}').get_output_in_json()
+        all_jobs = self.cmd('az cosmosdb copy list -g {rg} --account-name {acc}').get_output_in_json()
         assert len(all_jobs) == 1
 
         # Pause Job
-        self.cmd('az cosmosdb copy pause -g {rg} --dest-account {acc} --job-name {job_name}').get_output_in_json()
-        job = self.cmd('az cosmosdb copy show -g {rg} --src-account {acc} --job-name {job_name}').get_output_in_json()
+        self.cmd('az cosmosdb copy pause -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
+        job = self.cmd('az cosmosdb copy show -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
         assert job['jobName'] == job_name
         assert job['status'] == "Paused"
 
         # Resume Job
-        self.cmd('az cosmosdb copy resume -g {rg} --dest-account {acc} --job-name {job_name}').get_output_in_json()
-        job = self.cmd('az cosmosdb copy show -g {rg} --src-account {acc} --job-name {job_name}').get_output_in_json()
+        self.cmd('az cosmosdb copy resume -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
+        job = self.cmd('az cosmosdb copy show -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
         assert job['jobName'] == job_name
         assert job['status'] != "Paused"
 
         # Cancel Job
-        self.cmd('az cosmosdb copy cancel -g {rg} --dest-account {acc} --job-name {job_name}').get_output_in_json()
-        job = self.cmd('az cosmosdb copy show -g {rg} --src-account {acc} --job-name {job_name}').get_output_in_json()
+        self.cmd('az cosmosdb copy cancel -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
+        job = self.cmd('az cosmosdb copy show -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
         assert job['jobName'] == job_name
         assert job['status'] == "Cancelled"
 
@@ -77,7 +77,7 @@ class Cosmosdb_previewCopyScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb copy create -g {rg} --job-name {cross_account_job_name} --src-account {remote_acc} --dest-account {acc} --src-nosql database={database_name} container={container_name} --dest-nosql database={database_name} container={container_name_copied}')
         
         # Show job
-        job = self.cmd('az cosmosdb copy show -g {rg} --dest-account {acc} --job-name {cross_account_job_name}').get_output_in_json()
+        job = self.cmd('az cosmosdb copy show -g {rg} --account-name {acc} --job-name {cross_account_job_name}').get_output_in_json()
         assert job['jobName'] == cross_account_job_name
         assert job['source']['component'] == 'CosmosDBSql'
         assert job['source']['databaseName'] == database_name
@@ -112,7 +112,7 @@ class Cosmosdb_previewCopyScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb copy create -g {rg} --job-name {job_name} --src-account {acc} --dest-account {acc} --src-mongo database={database_name} collection={collection_name} --dest-mongo database={database_name} collection={collection_name_copied}')
         
         # Show job
-        job = self.cmd('az cosmosdb copy show -g {rg} --dest-account {acc} --job-name {job_name}').get_output_in_json()
+        job = self.cmd('az cosmosdb copy show -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
         assert job['jobName'] == job_name
         assert job['source']['component'] == 'CosmosDBMongo'
         assert job['source']['databaseName'] == database_name
@@ -122,24 +122,24 @@ class Cosmosdb_previewCopyScenarioTest(ScenarioTest):
         assert job['destination']['collectionName'] == collection_name_copied
 
         # List jobs
-        all_jobs = self.cmd('az cosmosdb copy list -g {rg} --dest-account {acc}').get_output_in_json()
+        all_jobs = self.cmd('az cosmosdb copy list -g {rg} --account-name {acc}').get_output_in_json()
         assert len(all_jobs) == 1
 
         # Pause Job
-        self.cmd('az cosmosdb copy pause -g {rg} --dest-account {acc} --job-name {job_name}').get_output_in_json()
-        job = self.cmd('az cosmosdb copy show -g {rg} --src-account {acc} --job-name {job_name}').get_output_in_json()
+        self.cmd('az cosmosdb copy pause -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
+        job = self.cmd('az cosmosdb copy show -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
         assert job['jobName'] == job_name
         assert job['status'] == "Paused"
 
         # Resume Job
-        self.cmd('az cosmosdb copy resume -g {rg} --dest-account {acc} --job-name {job_name}').get_output_in_json()
-        job = self.cmd('az cosmosdb copy show -g {rg} --src-account {acc} --job-name {job_name}').get_output_in_json()
+        self.cmd('az cosmosdb copy resume -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
+        job = self.cmd('az cosmosdb copy show -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
         assert job['jobName'] == job_name
         assert job['status'] != "Paused"
 
         # Cancel Job
-        self.cmd('az cosmosdb copy cancel -g {rg} --dest-account {acc} --job-name {job_name}').get_output_in_json()
-        job = self.cmd('az cosmosdb copy show -g {rg} --src-account {acc} --job-name {job_name}').get_output_in_json()
+        self.cmd('az cosmosdb copy cancel -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
+        job = self.cmd('az cosmosdb copy show -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
         assert job['jobName'] == job_name
         assert job['status'] == "Cancelled"
         
@@ -167,7 +167,7 @@ class Cosmosdb_previewCopyScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb copy create -g {rg} --job-name {job_name} --src-account {acc} --dest-account {acc} --src-cassandra keyspace={keyspace_name} table={table_name} --dest-cassandra keyspace={keyspace_name} table={table_name_copied}')
         
         # Show job
-        job = self.cmd('az cosmosdb copy show -g {rg} --dest-account {acc} --job-name {job_name}').get_output_in_json()
+        job = self.cmd('az cosmosdb copy show -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
         assert job['jobName'] == job_name
         assert job['source']['component'] == 'CosmosDBCassandra'
         assert job['source']['keyspaceName'] == keyspace_name
@@ -177,24 +177,24 @@ class Cosmosdb_previewCopyScenarioTest(ScenarioTest):
         assert job['destination']['tableName'] == table_name_copied
 
         # List jobs
-        all_jobs = self.cmd('az cosmosdb copy list -g {rg} --dest-account {acc}').get_output_in_json()
+        all_jobs = self.cmd('az cosmosdb copy list -g {rg} --account-name {acc}').get_output_in_json()
         assert len(all_jobs) == 1
 
         # Pause Job
-        self.cmd('az cosmosdb copy pause -g {rg} --dest-account {acc} --job-name {job_name}').get_output_in_json()
-        job = self.cmd('az cosmosdb copy show -g {rg} --src-account {acc} --job-name {job_name}').get_output_in_json()
+        self.cmd('az cosmosdb copy pause -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
+        job = self.cmd('az cosmosdb copy show -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
         assert job['jobName'] == job_name
         assert job['status'] == "Paused"
 
         # Resume Job
-        self.cmd('az cosmosdb copy resume -g {rg} --dest-account {acc} --job-name {job_name}').get_output_in_json()
-        job = self.cmd('az cosmosdb copy show -g {rg} --src-account {acc} --job-name {job_name}').get_output_in_json()
+        self.cmd('az cosmosdb copy resume -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
+        job = self.cmd('az cosmosdb copy show -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
         assert job['jobName'] == job_name
         assert job['status'] != "Paused"
 
         # Cancel Job
-        self.cmd('az cosmosdb copy cancel -g {rg} --dest-account {acc} --job-name {job_name}').get_output_in_json()
-        job = self.cmd('az cosmosdb copy show -g {rg} --src-account {acc} --job-name {job_name}').get_output_in_json()
+        self.cmd('az cosmosdb copy cancel -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
+        job = self.cmd('az cosmosdb copy show -g {rg} --account-name {acc} --job-name {job_name}').get_output_in_json()
         assert job['jobName'] == job_name
         assert job['status'] == "Cancelled"
 

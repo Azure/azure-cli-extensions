@@ -436,20 +436,18 @@ def load_arguments(self, _):
         c.argument('dest_mongo', nargs='+', action=AddMongoCollectionAction, help='Destination mongo collection')
         c.argument('dest_sql_container', nargs='+', action=AddSqlContainerAction, help='Destination sql container')
         c.argument('worker_count', type=int, help='Worker count')
-
-    with self.argument_context('cosmosdb copy') as c:
-        c.argument('src_account', help='Name of the CosmosDB source database account.', completer=get_resource_name_completion_list('Microsoft.DocumentDb/databaseAccounts'), id_part='name')
-        c.argument('dest_account', help='Name of the CosmosDB destination database account.', completer=get_resource_name_completion_list('Microsoft.DocumentDb/databaseAccounts'), id_part='name')
-
+    
     with self.argument_context('cosmosdb copy create') as c:
         c.argument('job_name', job_name_type)
-        c.argument('src_cassandra', nargs='+', arg_group='CosmosDB for Cassandra Table Copy', action=AddCassandraTableAction, help='Source Cassandra table details')
-        c.argument('src_mongo', nargs='+', arg_group='CosmosDB for MongoDB Collection Copy', action=AddMongoCollectionAction, help='Source Mongo collection details')
-        c.argument('src_nosql', nargs='+', arg_group='Cosmos DB for NoSQL Container Copy', action=AddSqlContainerAction, help='Source NoSql container details')
-        c.argument('dest_cassandra', nargs='+', arg_group='CosmosDB for Cassandra Table Copy', action=AddCassandraTableAction, help='Destination Cassandra table details')
-        c.argument('dest_mongo', nargs='+', arg_group='CosmosDB for MongoDB Collection Copy', action=AddMongoCollectionAction, help='Destination Mongo collection details')
-        c.argument('dest_nosql', nargs='+', arg_group='Cosmos DB for NoSQL Container Copy', action=AddSqlContainerAction, help='Destination NoSql container details')
-        c.argument('host_copy_on_src', arg_type=get_three_state_flag(), help=argparse.SUPPRESS)
+        c.argument('src_account', help='Name of the Azure Cosmos DB source database account.', completer=get_resource_name_completion_list('Microsoft.DocumentDb/databaseAccounts'), id_part='name')
+        c.argument('dest_account', help='Name of the Azure Cosmos DB destination database account.', completer=get_resource_name_completion_list('Microsoft.DocumentDb/databaseAccounts'), id_part='name')
+        c.argument('src_cassandra', nargs='+', arg_group='Azure Cosmos DB API for Apache Cassandra table copy', action=AddCassandraTableAction, help='Source Cassandra table details')
+        c.argument('src_mongo', nargs='+', arg_group='Azure Cosmos DB API for MongoDB collection copy', action=AddMongoCollectionAction, help='Source Mongo collection details')
+        c.argument('src_nosql', nargs='+', arg_group='Azure Cosmos DB API for NoSQL container copy', action=AddSqlContainerAction, help='Source NoSql container details')
+        c.argument('dest_cassandra', nargs='+', arg_group='Azure Cosmos DB API for Apache Cassandra table copy', action=AddCassandraTableAction, help='Destination Cassandra table details')
+        c.argument('dest_mongo', nargs='+', arg_group='Azure Cosmos DB API for MongoDB collection copy', action=AddMongoCollectionAction, help='Destination Mongo collection details')
+        c.argument('dest_nosql', nargs='+', arg_group='Azure Cosmos DB API for NoSQL container copy', action=AddSqlContainerAction, help='Destination NoSql container details')
+        c.argument('host_copy_on_src', arg_type=get_three_state_flag(), help="Default value is false. Use this in cross account container copy to host container copy job on source account.")
         c.argument('worker_count', type=int, help=argparse.SUPPRESS)
 
     for scope in [
@@ -459,7 +457,7 @@ def load_arguments(self, _):
             'cosmosdb copy resume',
             'cosmosdb copy cancel']:
         with self.argument_context(scope) as c:
-            c.argument('account_name', options_list=["--account-name", "--dest-account", "--src-account"], required=True, help='CosmosDB account name where the job is created.')
+            c.argument('account_name', options_list=["--account-name", "-a"], required=True, help='Azure Cosmos DB account name where the job is created. Use --dest-account value from create job command. If --host_copy_on_src was set then use --src-account value')
 
     for scope in [
             'cosmosdb copy show',
@@ -467,7 +465,7 @@ def load_arguments(self, _):
             'cosmosdb copy resume',
             'cosmosdb copy cancel']:
         with self.argument_context(scope) as c:
-            c.argument('job_name', help='Name of the Copy Job.', id_part='child_name_1', required=True)
+            c.argument('job_name', help='Name of the container copy job.', id_part='child_name_1', required=True)
 
     max_throughput_type = CLIArgumentType(options_list=['--max-throughput'], help='The maximum throughput resource can scale to (RU/s). Provided when the resource is autoscale enabled. The minimum value can be 4000 (RU/s)')
 

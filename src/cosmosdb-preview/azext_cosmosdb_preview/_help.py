@@ -780,118 +780,121 @@ helps['cosmosdb dts cancel'] = """
 
 helps['cosmosdb copy'] = """
     type: group
-    short-summary: Manage copy job
+    short-summary: Manage container copy job
 """
 
 helps['cosmosdb copy create'] = """
     type: command
-    short-summary: "Creates a Copy Job."
+    short-summary: "Creates a container copy job."
     parameters:
       - name: --src-cassandra
-        short-summary: "Source Cassandra table"
+        short-summary: "Source table"
         long-summary: |
             Usage: --src-cassandra keyspace=XX table=XX'
-            keyspace: Keyspace name of CosmosDB Cassandra.
-            table: Table name of CosmosDB Cassandra.
+            keyspace: Keyspace name.
+            table: Table name.
       - name: --dest-cassandra
-        short-summary: "Destination Cassandra table"
+        short-summary: "Destination table"
         long-summary: |
             Usage: --dest-cassandra keyspace=XX table=XX'
-            keyspace: Keyspace name of CosmosDB Cassandra.
-            table: Table name of CosmosDB Cassandra.
+            keyspace: Keyspace name.
+            table: Table name.
       - name: --src-nosql
-        short-summary: "Source NoSql container"
+        short-summary: "Source container"
         long-summary: |
             Usage: --src-nosql database=XX container=XX'
-            database: Database name of CosmosDB Sql.
-            container: Container name of CosmosDB Sql.
+            database: Database name.
+            container: Container name.
       - name: --dest-nosql
-        short-summary: "Destination NoSql container"
+        short-summary: "Destination container"
         long-summary: |
             Usage: --dest-nosql database=XX container=XX'
-            database: Database name of CosmosDB NoSql.
-            container: Container name of CosmosDB NoSql.
+            database: Database name.
+            container: Container name.
       - name: --src-mongo
-        short-summary: "Source Mongo collection"
+        short-summary: "Source collection"
         long-summary: |
             Usage: --src-mongo database=XX collection=XX'
-            database: Database name of CosmosDB Mongo.
-            collection: Collection name of CosmosDB Mongo.
+            database: Database name.
+            collection: Collection name.
       - name: --dest-mongo
-        short-summary: "Destination Mongo collection"
+        short-summary: "Destination collection"
         long-summary: |
             Usage: --dest-mongo database=XX collection=XX'
-            database: Database name of CosmosDB Mongo.
-            collection: Collection name of CosmosDB Mongo.
+            database: Database name.
+            collection: Collection name.
 
     examples:
-      - name: Copy NoSql container
+      - name: Copy Azure Cosmos DB API for NoSQL container in same account
         text: |-
-          az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "db1" --dest-account "db1" --src-nosql database=db1 container=c1 --dest-nosql database=db2 container=c2
-      - name: Copy Cassandra table
+          az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "acc1" --dest-account "acc1" --src-nosql database=db1 container=c1 --dest-nosql database=db2 container=c2
+      - name: Copy Azure Cosmos DB API for NoSQL container in different account
         text: |-
-          az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "db1" --dest-account "db1" --src-cassandra keyspace=k1 table=t1 --dest-cassandra keyspace=k2 table=t2
-      - name: Copy Mongo collection
+          az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "acc1" --dest-account "acc2" --src-nosql database=db1 container=c1 --dest-nosql database=db2 container=c2
+      - name: Copy Azure Cosmos DB API for Apache Cassandra table
         text: |-
-          az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "db1" --dest-account "db1" --src-mongo database=d1 collection=c1 --dest-mongo database=d2 collection=c2
+          az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "acc1" --dest-account "acc1" --src-cassandra keyspace=k1 table=t1 --dest-cassandra keyspace=k2 table=t2
+      - name: Copy Azure Cosmos DB API for MongoDB collection
+        text: |-
+          az cosmosdb copy create -g "rg1" --job-name "j1" --src-account "acc1" --dest-account "acc1" --src-mongo database=d1 collection=c1 --dest-mongo database=d2 collection=c2
 """
 
 helps['cosmosdb copy list'] = """
     type: command
-    short-summary: "Get a list of Copy Jobs."
+    short-summary: "Get a container copy job."
     examples:
       - name: List all jobs
         text: |-
-               az cosmosdb copy list -g "rg1" --dest-account "db1"
+               az cosmosdb copy list -g "rg1" --account-name "acc1"
 """
 
 helps['cosmosdb copy show'] = """
     type: command
-    short-summary: "Get a Copy Job."
+    short-summary: "Get a container copy job."
     examples:
       - name: Show details of job j1
         text: |-
-               az cosmosdb copy show -g "rg1" --dest-account "db1" --job-name "j1"
+               az cosmosdb copy show -g "rg1" --account-name "acc1" --job-name "j1"
       - name: Show job details using Id
         text: |-
-               az cosmosdb copy show --ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.DocumentDB/databaseAccounts/db1/dataTransferJobs/j1"
+               az cosmosdb copy show --ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.DocumentDB/databaseAccounts/acc1/dataTransferJobs/j1"
 """
 
 helps['cosmosdb copy pause'] = """
     type: command
-    short-summary: "Pause a Copy Job."
+    short-summary: "Pause a container copy job."
     examples:
       - name: Pause job j1
         text: |-
-               az cosmosdb copy pause -g "rg1" --dest-account "db1" --job-name "j1"
+               az cosmosdb copy pause -g "rg1" --account-name "acc1" --job-name "j1"
       - name: Pause job using Id
         text: |-
-               az cosmosdb copy pause --ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.DocumentDB/databaseAccounts/db1/dataTransferJobs/j1"
+               az cosmosdb copy pause --ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.DocumentDB/databaseAccounts/acc1/dataTransferJobs/j1"
 """
 
 helps['cosmosdb copy resume'] = """
     type: command
-    short-summary: "Resume a Copy Job."
+    short-summary: "Resume a container copy job."
     examples:
       - name: Resume job j1
         text: |-
-               az cosmosdb copy resume -g "rg1" --dest-account "db1" --job-name "j1"
+               az cosmosdb copy resume -g "rg1" --account-name "acc1" --job-name "j1"
       - name: Resume job using Id
         text: |-
-               az cosmosdb copy resume --ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.DocumentDB/databaseAccounts/db1/dataTransferJobs/j1"
+               az cosmosdb copy resume --ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.DocumentDB/databaseAccounts/acc1/dataTransferJobs/j1"
 
 """
 
 helps['cosmosdb copy cancel'] = """
     type: command
-    short-summary: "Cancel a Copy Job."
+    short-summary: "Cancel a container copy job."
     examples:
       - name: Cancel job j1
         text: |-
-               az cosmosdb copy cancel -g "rg1" --dest-account "db1" --job-name "j1"
+               az cosmosdb copy cancel -g "rg1" --account-name "acc1" --job-name "j1"
       - name: Cancel job using Id
         text: |-
-               az cosmosdb copy cancel --ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.DocumentDB/databaseAccounts/db1/dataTransferJobs/j1"
+               az cosmosdb copy cancel --ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.DocumentDB/databaseAccounts/acc1/dataTransferJobs/j1"
 
 """
 
