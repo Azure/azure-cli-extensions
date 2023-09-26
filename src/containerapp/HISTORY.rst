@@ -4,6 +4,9 @@ Release History
 ===============
 upcoming
 ++++++
+
+0.3.40
+++++++
 * 'az containerapp service': add support for creation and deletion of Qdrant vector database as a container app dev service
 * Add command group 'az containerapp connected-env', support show/list/delete/create connected environment
 * 'az containerapp create': support --source and --repo properties
@@ -12,7 +15,7 @@ upcoming
 * Add command group 'az containerapp connected-env dapr-component', support list/show/set/remove connectedEnvironments daprComponents
 * Add command group 'az containerapp connected-env storage', support list/show/set/remove connectedEnvironments storage
 * 'az containerapp env': --infrastructure-resource-group, supports custom rg name for byovnet env creations in WP enabled envs
-* 'az containerapp job create': update default properties
+* [Breaking Change] 'az containerapp job create': update default values for container app job properties
 
 0.3.39
 ++++++
