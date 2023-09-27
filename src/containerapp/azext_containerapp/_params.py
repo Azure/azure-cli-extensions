@@ -507,9 +507,9 @@ def load_arguments(self, _):
         c.argument('polling_interval', type=int, help="Interval to check each event source in seconds.", default=30)
 
     with self.argument_context('containerapp job', arg_group='Scale') as c:
-        c.argument('min_executions', type=int, help="Minimum number of job executions to run per polling interval. Default: 0.", default=0)
-        c.argument('max_executions', type=int, help="Maximum number of job executions to run per polling interval", default=10)
-        c.argument('polling_interval', type=int, help="Interval to check each event source in seconds", default=30)
+        c.argument('min_executions', type=int, help="Minimum number of job executions to run per polling interval.")
+        c.argument('max_executions', type=int, help="Maximum number of job executions to run per polling interval.")
+        c.argument('polling_interval', type=int, help="Interval to check each event source in seconds. Defaults to 30s.")
         c.argument('scale_rule_type', options_list=['--scale-rule-type', '--srt'], help="The type of the scale rule.")
 
     with self.argument_context('containerapp job stop') as c:
