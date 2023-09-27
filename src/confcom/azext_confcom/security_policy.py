@@ -85,7 +85,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 "allowCapabilityDropping"
             )
         else:
-            self._allow_properties_access = False
+            self._allow_properties_access = True
             self._allow_dump_stacks = False
             self._allow_runtime_logging = False
             self._allow_environment_variable_dropping = True
@@ -350,6 +350,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             return pretty_print_func(policy)
         return print_func(policy)
 
+    # pylint: disable=R0914, R0915
     def populate_policy_content_for_all_images(
         self, individual_image=False, tar_mapping=None
     ) -> None:
@@ -431,6 +432,11 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                                     config.POLICY_FIELD_CONTAINERS_ELEMENTS_REQUIRED: False,
                                 }
                             )
+
+                    # merge signals for user container image
+                    signals = image_info.get("StopSignal")
+                    if signals:
+                        image.set_signals(signals)
 
                     if (deepdiff.DeepDiff(image.get_user(), config.DEFAULT_USER, ignore_order=True) == {}
                             and image_info.get("User") != ""):

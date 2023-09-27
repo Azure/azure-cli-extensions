@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster metricsconfiguration list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List metrics configurations of the cluster.

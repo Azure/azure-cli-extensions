@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine power-off",
-    is_preview=True,
 )
 class PowerOff(AAZCommand):
     """Power off the provided virtual machine.

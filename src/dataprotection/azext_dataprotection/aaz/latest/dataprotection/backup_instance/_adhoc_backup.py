@@ -18,14 +18,15 @@ from azure.cli.core.aaz import *
 class AdhocBackup(AAZCommand):
     """Trigger adhoc backup.
 
-    :example: Trigger Adhoc Backup
+    :example: Fetch Backup Policy details for rule name and Trigger Adhoc Backup
+        az dataprotection backup-policy show -g "000pikumar" --vault-name "PratikPrivatePreviewVault1" -n "backupPolicy"
         az dataprotection backup-instance adhoc-backup --name "testInstance1" --rule-name "BackupWeekly" --retention-tag-override "yearly" --resource-group "000pikumar" --vault-name "PratikPrivatePreviewVault1"
     """
 
     _aaz_info = {
-        "version": "2023-01-01",
+        "version": "2023-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/backup", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/backup", "2023-05-01"],
         ]
     }
 
@@ -167,7 +168,7 @@ class AdhocBackup(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01",
+                    "api-version", "2023-05-01",
                     required=True,
                 ),
             }

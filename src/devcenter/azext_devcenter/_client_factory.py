@@ -14,68 +14,42 @@ from ._validators import validate_endpoint
 
 
 def cf_devcenter_dataplane(cli_ctx, endpoint=None, dev_center=None, project_name=None):
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from azure.cli.core._profile import Profile
     from azext_devcenter.vendored_sdks.devcenter_dataplane import (
-        DevCenterDataplaneClient,
+        DevCenterClient,
     )
 
     validate_endpoint(endpoint, dev_center)
 
     if endpoint is None and dev_center is not None:
         project = get_project_data(cli_ctx, dev_center, project_name)
-
-        # We need to set the project name even if we don't need this information
-        # since initializing DevCenterDataplaneClient requires this param
-        if project_name is None:
-            project_name = project["name"]
         endpoint = project["devCenterUri"]
 
-    if project_name is None:
-        project_name = "placeholder"  # see comment above
+    profile = Profile(cli_ctx=cli_ctx)
 
-    cli_ctx.cloud.endpoints.active_directory_resource_id = "https://devcenter.azure.com"
+    credential = profile.get_login_credentials(resource="https://devcenter.azure.com")
 
-    return get_mgmt_service_client(
-        cli_ctx,
-        DevCenterDataplaneClient,
-        subscription_bound=False,
-        base_url_bound=False,
-        endpoint=endpoint,
-        project_name=project_name,
-    )
+    return DevCenterClient(endpoint, credential[0])
 
 
-def cf_project_dp(cli_ctx, dev_center, *_):
-    return cf_devcenter_dataplane(cli_ctx, dev_center).project
+def cf_dev_center_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).dev_center
 
 
-def cf_pool_dp(cli_ctx, dev_center, *_):
-    return cf_devcenter_dataplane(cli_ctx, dev_center).pool
+def cf_dev_boxes_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).dev_boxes
 
 
-def cf_schedule_dp(cli_ctx, dev_center, *_):
-    return cf_devcenter_dataplane(cli_ctx, dev_center).schedule
+def cf_dev_box_operations_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).dev_box_operations
 
 
-def cf_dev_box_dp(cli_ctx, dev_center, *_):
-    return cf_devcenter_dataplane(cli_ctx, dev_center).dev_box
-
-
-def cf_environment_dp(cli_ctx, dev_center, *_):
+def cf_environments_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).environments
 
 
-def cf_catalog_dp(cli_ctx, dev_center, *_):
-    return cf_devcenter_dataplane(cli_ctx, dev_center).catalogs
-
-
-def cf_environment_definition_dp(cli_ctx, dev_center, *_):
-    return cf_devcenter_dataplane(cli_ctx, dev_center).environment_definitions
-
-
-def cf_environment_type_dp(cli_ctx, dev_center, *_):
-    return cf_devcenter_dataplane(cli_ctx, dev_center).environment_type
-
+def cf_environment_operations_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).environment_operations
 
 # Control plane
 

@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=protected-access
 
+from datetime import datetime
 from azure.cli.core.aaz import register_callback
 from azure.cli.core.azclierror import ResourceNotFoundError
 from azure.cli.core.util import sdk_no_wait
@@ -370,7 +371,7 @@ class PoolCreate(_PoolCreate):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.license_type._registered = False
-        args_schema.dev_box_definition_name._required = True
+        args_schema.devbox_definition_name._required = True
         args_schema.local_administrator._required = True
         args_schema.network_connection_name._required = True
         return args_schema
@@ -584,21 +585,21 @@ def devcenter_project_list_dp(cmd, dev_center=None, endpoint=None):
             return []
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, endpoint, dev_center)
 
-    return cf_dataplane.project.list()
+    return cf_dataplane.dev_center.list_projects()
 
 
 def devcenter_project_show_dp(cmd, project_name, dev_center=None, endpoint=None):
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
-    return cf_dataplane.project.get(project_name=project_name)
+    return cf_dataplane.dev_center.get_project(project_name=project_name)
 
 
 def devcenter_pool_list_dp(cmd, project_name, dev_center=None, endpoint=None):
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
-    return cf_dataplane.pool.list()
+    return cf_dataplane.dev_boxes.list_pools(project_name=project_name)
 
 
 def devcenter_pool_show_dp(
@@ -607,16 +608,18 @@ def devcenter_pool_show_dp(
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
-    return cf_dataplane.pool.get(pool_name=pool_name)
+    return cf_dataplane.dev_boxes.get_pool(project_name=project_name, pool_name=pool_name)
 
 
 def devcenter_schedule_list_dp(
-    cmd, pool_name, project_name, dev_center=None, endpoint=None
+    cmd, project_name, pool_name=None, dev_center=None, endpoint=None
 ):
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
-    return cf_dataplane.schedule.list(pool_name=pool_name)
+    if pool_name is None:
+        return cf_dataplane.dev_boxes.list_schedules_by_project(project_name=project_name)
+    return cf_dataplane.dev_boxes.list_schedules_by_pool(project_name=project_name, pool_name=pool_name)
 
 
 def devcenter_schedule_show_dp(
@@ -625,7 +628,10 @@ def devcenter_schedule_show_dp(
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
-    return cf_dataplane.schedule.get(pool_name=pool_name, schedule_name="default")
+    return cf_dataplane.dev_boxes.get_schedule_by_pool(
+        project_name=project_name,
+        pool_name=pool_name,
+        schedule_name="default")
 
 
 def devcenter_dev_box_list(
@@ -635,10 +641,10 @@ def devcenter_dev_box_list(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
     if project_name is not None and user_id is not None:
-        return cf_dataplane.dev_box.list_by_project(user_id=user_id)
+        return cf_dataplane.dev_boxes.list_dev_boxes_by_user(project_name=project_name, user_id=user_id)
     if user_id is not None:
-        return cf_dataplane.dev_box.list_by_user(user_id=user_id)
-    return cf_dataplane.dev_box.list()
+        return cf_dataplane.dev_center.list_all_dev_boxes_by_user(user_id=user_id)
+    return cf_dataplane.dev_center.list_all_dev_boxes()
 
 
 def devcenter_dev_box_show(
@@ -647,7 +653,10 @@ def devcenter_dev_box_show(
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
-    return cf_dataplane.dev_box.get(user_id=user_id, dev_box_name=dev_box_name)
+    return cf_dataplane.dev_boxes.get_dev_box_by_user(
+        project_name=project_name,
+        user_id=user_id,
+        dev_box_name=dev_box_name)
 
 
 def devcenter_dev_box_create(
@@ -657,7 +666,6 @@ def devcenter_dev_box_create(
     project_name,
     user_id="me",
     no_wait=False,
-    local_administrator=None,
     dev_center=None,
     endpoint=None,
 ):
@@ -665,12 +673,11 @@ def devcenter_dev_box_create(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
     body = {}
-    body["pool_name"] = pool_name
-    if local_administrator is not None:
-        body["local_administrator"] = local_administrator
+    body["poolName"] = pool_name
     return sdk_no_wait(
         no_wait,
-        cf_dataplane.dev_box.begin_create,
+        cf_dataplane.dev_boxes.begin_create_dev_box,
+        project_name=project_name,
         user_id=user_id,
         dev_box_name=dev_box_name,
         body=body,
@@ -691,20 +698,10 @@ def devcenter_dev_box_delete(
     )
     return sdk_no_wait(
         no_wait,
-        cf_dataplane.dev_box.begin_delete,
+        cf_dataplane.dev_boxes.begin_delete_dev_box,
+        project_name=project_name,
         user_id=user_id,
         dev_box_name=dev_box_name,
-    )
-
-
-def devcenter_dev_box_get_remote_connection(
-    cmd, project_name, dev_box_name, user_id="me", dev_center=None, endpoint=None
-):
-    cf_dataplane = cf_devcenter_dataplane(
-        cmd.cli_ctx, endpoint, dev_center, project_name
-    )
-    return cf_dataplane.dev_box.get_remote_connection(
-        user_id=user_id, dev_box_name=dev_box_name
     )
 
 
@@ -722,27 +719,8 @@ def devcenter_dev_box_start(
     )
     return sdk_no_wait(
         no_wait,
-        cf_dataplane.dev_box.begin_start,
-        user_id=user_id,
-        dev_box_name=dev_box_name,
-    )
-
-
-def devcenter_dev_box_restart(
-    cmd,
-    project_name,
-    dev_box_name,
-    user_id="me",
-    no_wait=False,
-    dev_center=None,
-    endpoint=None,
-):
-    cf_dataplane = cf_devcenter_dataplane(
-        cmd.cli_ctx, endpoint, dev_center, project_name
-    )
-    return sdk_no_wait(
-        no_wait,
-        cf_dataplane.dev_box.begin_restart,
+        cf_dataplane.dev_boxes.begin_start_dev_box,
+        project_name=project_name,
         user_id=user_id,
         dev_box_name=dev_box_name,
     )
@@ -763,10 +741,114 @@ def devcenter_dev_box_stop(
     )
     return sdk_no_wait(
         no_wait,
-        cf_dataplane.dev_box.begin_stop,
+        cf_dataplane.dev_boxes.begin_stop_dev_box,
+        project_name=project_name,
         user_id=user_id,
         dev_box_name=dev_box_name,
         hibernate=hibernate,
+    )
+
+
+def devcenter_dev_box_restart(
+    cmd,
+    project_name,
+    dev_box_name,
+    user_id="me",
+    no_wait=False,
+    dev_center=None,
+    endpoint=None,
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+    return sdk_no_wait(
+        no_wait,
+        cf_dataplane.dev_boxes.begin_restart_dev_box,
+        project_name=project_name,
+        user_id=user_id,
+        dev_box_name=dev_box_name,
+    )
+
+
+def devcenter_dev_box_repair(
+    cmd,
+    project_name,
+    dev_box_name,
+    user_id="me",
+    no_wait=False,
+    dev_center=None,
+    endpoint=None,
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+    return sdk_no_wait(
+        no_wait,
+        cf_dataplane.dev_boxes.begin_repair_dev_box,
+        project_name=project_name,
+        user_id=user_id,
+        dev_box_name=dev_box_name,
+    )
+
+
+def devcenter_dev_box_get_remote_connection(
+    cmd, project_name, dev_box_name, user_id="me", dev_center=None, endpoint=None
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+    return cf_dataplane.dev_boxes.get_remote_connection(
+        project_name=project_name, user_id=user_id, dev_box_name=dev_box_name
+    )
+
+
+def devcenter_dev_box_list_action(
+    cmd, project_name, dev_box_name, user_id="me", dev_center=None, endpoint=None
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+    return cf_dataplane.dev_boxes.list_actions(project_name=project_name, user_id=user_id, dev_box_name=dev_box_name)
+
+
+def devcenter_dev_box_show_action(
+    cmd,
+    project_name,
+    dev_box_name,
+    action_name,
+    user_id="me",
+    dev_center=None,
+    endpoint=None,
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+
+    return cf_dataplane.dev_boxes.get_action(
+        project_name=project_name,
+        user_id=user_id,
+        dev_box_name=dev_box_name,
+        action_name=action_name,
+    )
+
+
+def devcenter_dev_box_skip_action(
+    cmd,
+    project_name,
+    dev_box_name,
+    action_name,
+    user_id="me",
+    dev_center=None,
+    endpoint=None,
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+    return cf_dataplane.dev_boxes.skip_action(
+        project_name=project_name,
+        user_id=user_id,
+        dev_box_name=dev_box_name,
+        action_name=action_name,
     )
 
 
@@ -783,15 +865,20 @@ def devcenter_dev_box_delay_action(
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
-    upcoming_action = cf_dataplane.dev_box.get_action(
+    upcoming_action = cf_dataplane.dev_boxes.get_action(
+        project_name=project_name,
         user_id=user_id,
         dev_box_name=dev_box_name,
         action_name=action_name,
     )
 
-    delayed_time = get_delayed_time(delay_time, upcoming_action.next.scheduled_time)
+    upcoming_action_time = upcoming_action["next"]["scheduledTime"]
+    action_time = datetime.strptime(upcoming_action_time, "%Y-%m-%dT%H:%M:%S.%fZ")
 
-    return cf_dataplane.dev_box.delay_action(
+    delayed_time = get_delayed_time(delay_time, action_time)
+
+    return cf_dataplane.dev_boxes.delay_action(
+        project_name=project_name,
         user_id=user_id,
         dev_box_name=dev_box_name,
         action_name=action_name,
@@ -812,8 +899,8 @@ def devcenter_dev_box_delay_all_actions(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
 
-    actions = cf_dataplane.dev_box.list_actions(
-        user_id=user_id, dev_box_name=dev_box_name
+    actions = cf_dataplane.dev_boxes.list_actions(
+        project_name=project_name, user_id=user_id, dev_box_name=dev_box_name
     )
     earliest_time = get_earliest_time(actions)
     if earliest_time is None:
@@ -821,27 +908,28 @@ def devcenter_dev_box_delay_all_actions(
 
     delayed_time = get_delayed_time(delay_time, earliest_time)
 
-    return cf_dataplane.dev_box.delay_actions(
+    return cf_dataplane.dev_boxes.delay_actions(
+        project_name=project_name,
         user_id=user_id,
         dev_box_name=dev_box_name,
         until=delayed_time,
     )
 
 
-def devcenter_dev_box_list_action(
+def devcenter_dev_box_list_operation(
     cmd, project_name, dev_box_name, user_id="me", dev_center=None, endpoint=None
 ):
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
-    return cf_dataplane.dev_box.list_actions(user_id=user_id, dev_box_name=dev_box_name)
+    return cf_dataplane.dev_box_operations.list(project_name=project_name, user_id=user_id, dev_box_name=dev_box_name)
 
 
-def devcenter_dev_box_show_action(
+def devcenter_dev_box_show_operation(
     cmd,
     project_name,
     dev_box_name,
-    action_name,
+    operation_id,
     user_id="me",
     dev_center=None,
     endpoint=None,
@@ -849,29 +937,11 @@ def devcenter_dev_box_show_action(
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
-    return cf_dataplane.dev_box.get_action(
+    return cf_dataplane.dev_box_operations.get(
+        project_name=project_name,
         user_id=user_id,
         dev_box_name=dev_box_name,
-        action_name=action_name,
-    )
-
-
-def devcenter_dev_box_skip_action(
-    cmd,
-    project_name,
-    dev_box_name,
-    action_name,
-    user_id="me",
-    dev_center=None,
-    endpoint=None,
-):
-    cf_dataplane = cf_devcenter_dataplane(
-        cmd.cli_ctx, endpoint, dev_center, project_name
-    )
-    return cf_dataplane.dev_box.skip_action(
-        user_id=user_id,
-        dev_box_name=dev_box_name,
-        action_name=action_name,
+        operation_id=operation_id,
     )
 
 
@@ -881,9 +951,10 @@ def devcenter_environment_list(
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
+
     if user_id is not None:
-        return cf_dataplane.environments.list_by_project_by_user(user_id=user_id)
-    return cf_dataplane.environments.list_by_project()
+        return cf_dataplane.environments.list_environments_by_user(project_name=project_name, user_id=user_id)
+    return cf_dataplane.environments.list_environments(project_name=project_name)
 
 
 def devcenter_environment_show(
@@ -892,8 +963,9 @@ def devcenter_environment_show(
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
-    return cf_dataplane.environments.get(
-        user_id=user_id, environment_name=environment_name
+
+    return cf_dataplane.environments.get_environment_by_user(
+        project_name=project_name, user_id=user_id, environment_name=environment_name
     )
 
 
@@ -913,8 +985,8 @@ def devcenter_environment_create(
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
-    environments_iterator = cf_dataplane.environments.list_by_project_by_user(
-        user_id=user_id
+    environments_iterator = cf_dataplane.environments.list_environments_by_user(
+        project_name=project_name, user_id=user_id
     )
     validate_env_name_already_exists(
         environments_iterator, environment_name, user_id, project_name
@@ -922,12 +994,13 @@ def devcenter_environment_create(
     body = {}
     if parameters is not None:
         body["parameters"] = parameters
-    body["environment_type"] = environment_type
-    body["catalog_name"] = catalog_name
-    body["environment_definition_name"] = environment_definition_name
+    body["environmentType"] = environment_type
+    body["catalogName"] = catalog_name
+    body["environmentDefinitionName"] = environment_definition_name
     return sdk_no_wait(
         no_wait,
-        cf_dataplane.environments.begin_create_or_replace,
+        cf_dataplane.environments.begin_create_or_replace_environment,
+        project_name=project_name,
         user_id=user_id,
         environment_name=environment_name,
         body=body,
@@ -947,18 +1020,19 @@ def devcenter_environment_update(
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
-    environment = cf_dataplane.environments.get(
-        user_id=user_id, environment_name=environment_name
+    environment = cf_dataplane.environments.get_environment_by_user(
+        project_name=project_name, user_id=user_id, environment_name=environment_name
     )
     body = {}
     if parameters is not None:
         body["parameters"] = parameters
-    body["environment_type"] = environment.environment_type
-    body["catalog_name"] = environment.catalog_name
-    body["environment_definition_name"] = environment.environment_definition_name
+    body["environmentType"] = environment["environmentType"]
+    body["catalogName"] = environment["catalogName"]
+    body["environmentDefinitionName"] = environment["environmentDefinitionName"]
     return sdk_no_wait(
         no_wait,
-        cf_dataplane.environments.begin_create_or_replace,
+        cf_dataplane.environments.begin_create_or_replace_environment,
+        project_name=project_name,
         user_id=user_id,
         environment_name=environment_name,
         body=body,
@@ -979,26 +1053,18 @@ def devcenter_environment_delete(
     )
     return sdk_no_wait(
         no_wait,
-        cf_dataplane.environments.begin_delete,
+        cf_dataplane.environments.begin_delete_environment,
+        project_name=project_name,
         user_id=user_id,
         environment_name=environment_name,
     )
-
-
-def devcenter_environment_type_list_dp(
-    cmd, project_name, dev_center=None, endpoint=None
-):
-    cf_dataplane = cf_devcenter_dataplane(
-        cmd.cli_ctx, endpoint, dev_center, project_name
-    )
-    return cf_dataplane.environment_type.list()
 
 
 def devcenter_catalog_list_dp(cmd, project_name, dev_center=None, endpoint=None):
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
-    return cf_dataplane.catalogs.list()
+    return cf_dataplane.environments.list_catalogs_by_project(project_name=project_name)
 
 
 def devcenter_catalog_show_dp(
@@ -1007,7 +1073,7 @@ def devcenter_catalog_show_dp(
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
-    return cf_dataplane.catalogs.get(catalog_name=catalog_name)
+    return cf_dataplane.environments.get_catalog(project_name=project_name, catalog_name=catalog_name)
 
 
 def devcenter_environment_definition_list_dp(
@@ -1017,10 +1083,10 @@ def devcenter_environment_definition_list_dp(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
     if catalog_name is not None:
-        return cf_dataplane.environment_definitions.list_by_catalog(
-            catalog_name=catalog_name
+        return cf_dataplane.environments.list_environment_definitions_by_catalog(
+            project_name=project_name, catalog_name=catalog_name
         )
-    return cf_dataplane.environment_definitions.list()
+    return cf_dataplane.environments.list_environment_definitions_by_project(project_name=project_name)
 
 
 def devcenter_environment_definition_show_dp(
@@ -1029,6 +1095,38 @@ def devcenter_environment_definition_show_dp(
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
-    return cf_dataplane.environment_definitions.get(
-        catalog_name=catalog_name, definition_name=definition_name
+    return cf_dataplane.environments.get_environment_definition(
+        project_name=project_name, catalog_name=catalog_name, definition_name=definition_name
+    )
+
+
+def devcenter_environment_type_list_dp(
+    cmd, project_name, dev_center=None, endpoint=None
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+    return cf_dataplane.environments.list_environment_types(project_name=project_name)
+
+
+def devcenter_environment_operation_list(
+    cmd, project_name, environment_name, user_id="me", dev_center=None, endpoint=None
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+
+    return cf_dataplane.environment_operations.list_by_environment(project_name=project_name,
+                                                                   environment_name=environment_name, user_id=user_id)
+
+
+def devcenter_environment_operation_show(
+    cmd, project_name, environment_name, operation_id, user_id="me", dev_center=None, endpoint=None
+):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
+
+    return cf_dataplane.environment_operations.get_by_environment(
+        project_name=project_name, operation_id=operation_id, user_id=user_id, environment_name=environment_name
     )

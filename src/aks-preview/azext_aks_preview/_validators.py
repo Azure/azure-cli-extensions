@@ -12,12 +12,14 @@ from ipaddress import ip_network
 from math import isclose, isnan
 
 import azure.cli.core.keys as keys
+from azure.mgmt.containerservice.models import KubernetesSupportPlan
 from azext_aks_preview._consts import (
     ADDONS,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
+    CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
     CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
@@ -201,38 +203,17 @@ def validate_load_balancer_sku(namespace):
             raise CLIError("--load-balancer-sku can only be standard or basic")
 
 
-def validate_load_balancer_outbound_ips(namespace):
-    """validate load balancer profile outbound IP ids"""
-    if namespace.load_balancer_outbound_ips is not None:
-        ip_id_list = [x.strip()
-                      for x in namespace.load_balancer_outbound_ips.split(',')]
-        if not all(ip_id_list):
-            raise CLIError(
-                "--load-balancer-outbound-ips cannot contain whitespace")
-
-
 def validate_sku_tier(namespace):
     """Validates the sku tier string."""
     if namespace.tier is not None:
         if namespace.tier == '':
             return
-        if namespace.tier.lower() not in (CONST_MANAGED_CLUSTER_SKU_TIER_FREE, CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD):
-            raise InvalidArgumentValueError("--tier can only be free or standard")
-
-
-def validate_load_balancer_outbound_ip_prefixes(namespace):
-    """validate load balancer profile outbound IP prefix ids"""
-    if namespace.load_balancer_outbound_ip_prefixes is not None:
-        ip_prefix_id_list = [
-            x.strip() for x in namespace.load_balancer_outbound_ip_prefixes.split(',')]
-        if not all(ip_prefix_id_list):
-            raise CLIError(
-                "--load-balancer-outbound-ip-prefixes cannot contain whitespace")
+        if namespace.tier.lower() not in (CONST_MANAGED_CLUSTER_SKU_TIER_FREE, CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD, CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM):
+            raise InvalidArgumentValueError("--tier can only be free, standard, or premium")
 
 
 def validate_nodepool_taints(namespace):
     """Validates that provided node taints is a valid format"""
-
     if hasattr(namespace, 'nodepool_taints'):
         taintsStr = namespace.nodepool_taints
     else:
@@ -335,25 +316,6 @@ def _validate_subnet_id(subnet_id, name):
         raise CLIError(name + " is not a valid Azure resource ID.")
 
 
-def validate_load_balancer_outbound_ports(namespace):
-    """validate load balancer profile outbound allocated ports"""
-    if namespace.load_balancer_outbound_ports is not None:
-        if namespace.load_balancer_outbound_ports % 8 != 0:
-            raise CLIError(
-                "--load-balancer-allocated-ports must be a multiple of 8")
-        if namespace.load_balancer_outbound_ports < 0 or namespace.load_balancer_outbound_ports > 64000:
-            raise CLIError(
-                "--load-balancer-allocated-ports must be in the range [0,64000]")
-
-
-def validate_load_balancer_idle_timeout(namespace):
-    """validate load balancer profile idle timeout"""
-    if namespace.load_balancer_idle_timeout is not None:
-        if namespace.load_balancer_idle_timeout < 4 or namespace.load_balancer_idle_timeout > 100:
-            raise CLIError(
-                "--load-balancer-idle-timeout must be in the range [4,100]")
-
-
 def validate_load_balancer_backend_pool_type(namespace):
     """validate load balancer backend pool type"""
     if namespace.load_balancer_backend_pool_type is not None:
@@ -361,22 +323,6 @@ def validate_load_balancer_backend_pool_type(namespace):
                                                              CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION]:
             raise InvalidArgumentValueError(
                 f"Invalid Load Balancer Backend Pool Type {namespace.load_balancer_backend_pool_type}, supported values are nodeIP and nodeIPConfiguration")
-
-
-def validate_nat_gateway_managed_outbound_ip_count(namespace):
-    """validate NAT gateway profile managed outbound IP count"""
-    if namespace.nat_gateway_managed_outbound_ip_count is not None:
-        if namespace.nat_gateway_managed_outbound_ip_count < 1 or namespace.nat_gateway_managed_outbound_ip_count > 16:
-            raise InvalidArgumentValueError(
-                "--nat-gateway-managed-outbound-ip-count must be in the range [1,16]")
-
-
-def validate_nat_gateway_idle_timeout(namespace):
-    """validate NAT gateway profile idle timeout"""
-    if namespace.nat_gateway_idle_timeout is not None:
-        if namespace.nat_gateway_idle_timeout < 4 or namespace.nat_gateway_idle_timeout > 120:
-            raise InvalidArgumentValueError(
-                "--nat-gateway-idle-timeout must be in the range [4,120]")
 
 
 def validate_nodepool_tags(ns):
@@ -395,6 +341,30 @@ def validate_node_public_ip_tags(ns):
         for item in ns.node_public_ip_tags:
             tags_dict.update(validate_tag(item))
         ns.node_public_ip_tags = tags_dict
+
+
+def validate_egress_gtw_nodeselector(namespace):
+    """Validates that provided node selector is a valid format"""
+
+    if not hasattr(namespace, 'egx_gtw_nodeselector'):
+        return
+
+    labels = namespace.egx_gtw_nodeselector
+
+    if labels is None:
+        # no specify any labels
+        namespace.egx_gtw_nodeselector = {}
+        return
+
+    if isinstance(labels, list):
+        labels_dict = {}
+        for item in labels:
+            labels_dict.update(validate_label(item))
+        after_validation_labels = labels_dict
+    else:
+        after_validation_labels = validate_label(labels)
+
+    namespace.egx_gtw_nodeselector = after_validation_labels
 
 
 def validate_nodepool_labels(namespace):
@@ -714,6 +684,11 @@ def validate_defender_config_parameter(namespace):
 def validate_defender_disable_and_enable_parameters(namespace):
     if namespace.disable_defender and namespace.enable_defender:
         raise ArgumentUsageError('Providing both --disable-defender and --enable-defender flags is invalid')
+
+
+def validate_force_upgrade_disable_and_enable_parameters(namespace):
+    if namespace.disable_force_upgrade and namespace.enable_force_upgrade:
+        raise MutuallyExclusiveArgumentError('Providing both --disable-force-upgrade and --enable-force-upgrade flags is invalid')
 
 
 def sanitize_resource_id(resource_id):

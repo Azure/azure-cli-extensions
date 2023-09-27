@@ -3,9 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
 import os
 import time
 import unittest
+
+from azure.cli.core.azclierror import ValidationError
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
@@ -718,6 +721,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
         postgres_ca_name = 'postgres'
         kafka_ca_name = 'kafka'
         mariadb_ca_name = 'mariadb'
+        qdrant_ca_name = "qdrant"
 
         create_containerapp_env(self, env_name, resource_group)
 
@@ -726,12 +730,15 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
         self.cmd('containerapp service postgres create -g {} -n {} --environment {}'.format(
             resource_group, postgres_ca_name, env_name))
-        
+
         self.cmd('containerapp service kafka create -g {} -n {} --environment {}'.format(
             resource_group, kafka_ca_name, env_name))
 
         self.cmd('containerapp service mariadb create -g {} -n {} --environment {}'.format(
             resource_group, mariadb_ca_name, env_name))
+        
+        self.cmd('containerapp service qdrant create -g {} -n {} --environment {}'.format(
+            resource_group, qdrant_ca_name, env_name))
 
         self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
             resource_group, ca_name, env_name, image), checks=[
@@ -744,12 +751,13 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
         ])
 
-        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb'.format(
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant'.format(
             resource_group, ca_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
             JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding"),
             JMESPathCheck('properties.template.serviceBinds[2].name', "kafka"),
-            JMESPathCheck('properties.template.serviceBinds[3].name', "mariadb")
+            JMESPathCheck('properties.template.serviceBinds[3].name', "mariadb"),
+            JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant")
         ])
 
         self.cmd('containerapp service postgres delete -g {} -n {} --yes'.format(
@@ -763,9 +771,58 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
         self.cmd('containerapp service mariadb delete -g {} -n {} --yes'.format(
             resource_group, mariadb_ca_name, env_name))
+    
+        self.cmd('containerapp service qdrant delete -g {} -n {} --yes'.format(
+            resource_group, qdrant_ca_name, env_name))
+
+        self.cmd(f'containerapp delete -g {resource_group} -n {ca_name} --yes') 
 
         self.cmd('containerapp service list -g {} --environment {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
+        ])
+
+        self.cmd('containerapp list -g {} --environment {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes')
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_managed_service_binding_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+        mysqlserver = "mysqlflexsb"
+        postgresqlserver = "postgresqlflexsb"
+        
+        mysqlflex_json= self.cmd('mysql flexible-server create --resource-group {} --name {} --public-access {} -y'.format(resource_group, mysqlserver, "None")).output
+        postgresqlflex_json= self.cmd('postgres flexible-server create --resource-group {} --name {} --public-access {} -y'.format(resource_group, postgresqlserver, "None")).output
+        mysqlflex_dict = json.loads(mysqlflex_json)
+
+        mysqlusername = mysqlflex_dict['username']
+        mysqlpassword = mysqlflex_dict['password']
+        
+        mysqldb = mysqlflex_dict['databaseName']
+        flex_binding="mysqlflex_binding"
+        postgresqlflex_dict = json.loads(postgresqlflex_json)
+        postgresqlusername = postgresqlflex_dict['username']
+        postgresqlpassword = postgresqlflex_dict['password']
+        postgresqldb = postgresqlflex_dict['databaseName']
+        create_containerapp_env(self, env_name, resource_group)
+
+        self.cmd('containerapp create -g {} -n {} --environment {} --bind {}:{},database={},username={},password={}'.format(
+            resource_group, ca_name, env_name, mysqlserver, flex_binding, mysqldb , mysqlusername, mysqlpassword))
+        self.cmd('containerapp show -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(properties.template.containers[0].env[?name==`AZURE_MYSQL_HOST`])', 1)
+        ])
+
+        self.cmd('containerapp update -g {} -n {} --bind {},database={},username={},password={}'.format(
+            resource_group, ca_name, postgresqlserver, postgresqldb , postgresqlusername, postgresqlpassword))
+        self.cmd('containerapp show -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(properties.template.containers[0].env[?name==`AZURE_MYSQL_HOST`])', 1),
+            JMESPathCheck('length(properties.template.containers[0].env[?name==`AZURE_POSTGRESQL_HOST`])', 1)
         ])
 
 
@@ -1247,6 +1304,32 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
         ])
 
+        # test managedEnvironmentId
+        containerapp_yaml_text = f"""
+                                        properties:
+                                          configuration:
+                                            activeRevisionsMode: Multiple
+                                            ingress:
+                                              external: false
+                                              additionalPortMappings:
+                                              - external: false
+                                                targetPort: 321
+                                              - external: false
+                                                targetPort: 8080
+                                                exposedPort: 1234
+                                        """
+
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+
+        self.cmd(f'containerapp update -n {app} -g {resource_group} --yaml {containerapp_file_name}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.configuration.ingress.external", False),
+            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[0].external", False),
+            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[0].targetPort", 321),
+            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].external", False),
+            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].targetPort", 8080),
+            JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].exposedPort", 1234),
+        ])
         clean_up_test_file(containerapp_file_name)
 
     @AllowLargeResponse(8192)
@@ -1273,6 +1356,9 @@ class ContainerappScaleTests(ScenarioTest):
             properties:
               managedEnvironmentId: {containerapp_env["id"]}
               configuration:
+                secrets:
+                - name: secret1
+                  value: 1
                 activeRevisionsMode: Multiple
                 ingress:
                   external: true
@@ -1329,6 +1415,7 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
+            JMESPathCheck("length(properties.configuration.secrets)", 1),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
             JMESPathCheck("properties.template.terminationGracePeriodSeconds", 90),
@@ -1351,6 +1438,10 @@ class ContainerappScaleTests(ScenarioTest):
                     properties:
                       environmentId: {containerapp_env["id"]}
                       configuration:
+                        secrets:
+                        - name: secret1
+                        - name: secret2
+                          value: 123
                         activeRevisionsMode: Multiple
                         ingress:
                           external: true
@@ -1389,12 +1480,23 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
+            JMESPathCheck("length(properties.configuration.secrets)", 2),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision2"),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
             JMESPathCheck("properties.template.scale.rules", None)
+        ])
+
+        self.cmd(f'containerapp secret show -g {resource_group} -n {app} --secret-name secret1', checks=[
+            JMESPathCheck("name", 'secret1'),
+            JMESPathCheck("value", '1'),
+        ])
+
+        self.cmd(f'containerapp secret show -g {resource_group} -n {app} --secret-name secret2', checks=[
+            JMESPathCheck("name", 'secret2'),
+            JMESPathCheck("value", '123'),
         ])
 
         # test update without environmentId
@@ -1412,6 +1514,21 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision3")
         ])
+
+        # test invalid yaml
+        containerapp_yaml_text = f"""
+                                            """
+        containerapp_file_name = f"{self._testMethodName}_containerapp.yml"
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+        try:
+            self.cmd(f'containerapp create -n {app} -g {resource_group} --yaml {containerapp_file_name}')
+        except Exception as ex:
+            print(ex)
+            self.assertTrue(isinstance(ex, ValidationError))
+            self.assertEqual(ex.error_msg,
+                             'Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+            pass
+
         clean_up_test_file(containerapp_file_name)
 
     @AllowLargeResponse(8192)
@@ -1623,6 +1740,57 @@ class ContainerappScaleTests(ScenarioTest):
 
 
 class ContainerappOtherPropertyTests(ScenarioTest):
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westus")
+    def test_containerapp_get_customdomainverificationid_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
+
+        logs_workspace_id = self.cmd(
+            'monitor log-analytics workspace create -g {} -n {} -l eastus'
+            .format(resource_group, logs_workspace_name)
+        ).get_output_in_json()["customerId"]
+        logs_workspace_key = self.cmd(
+            'monitor log-analytics workspace get-shared-keys -g {} -n {}'
+            .format(resource_group, logs_workspace_name)
+        ).get_output_in_json()["primarySharedKey"]
+
+        verification_id = self.cmd(f'containerapp show-custom-domain-verification-id').get_output_in_json()
+        self.assertEqual(len(verification_id), 64)
+
+        # create an App service domain and update its txt records
+        contacts = os.path.join(TEST_DIR, 'domain-contact.json')
+        zone_name = "{}.com".format(env_name)
+        subdomain_1 = "devtest"
+        txt_name_1 = "asuid.{}".format(subdomain_1)
+        hostname_1 = "{}.{}".format(subdomain_1, zone_name)
+
+        self.cmd(
+            "appservice domain create -g {} --hostname {} --contact-info=@'{}' --accept-terms"
+            .format(resource_group, zone_name, contacts)
+        ).get_output_in_json()
+        self.cmd(
+            'network dns record-set txt add-record -g {} -z {} -n {} -v {}'
+            .format(resource_group, zone_name, txt_name_1, verification_id)
+        ).get_output_in_json()
+
+        # upload cert, add hostname & binding
+        pfx_file = os.path.join(TEST_DIR, 'cert.pfx')
+        pfx_password = 'test12'
+
+        self.cmd(
+            'containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} '
+            '--dns-suffix {} --certificate-file "{}" --certificate-password {}'
+            .format(resource_group, env_name, logs_workspace_id, logs_workspace_key,
+                    hostname_1, pfx_file, pfx_password))
+
+        self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_1),
+        ])
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_termination_grace_period_seconds(self, resource_group):

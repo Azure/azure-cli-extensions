@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import json
+from datetime import datetime
 from enum import Enum
 import os
 from time import sleep
@@ -14,10 +15,13 @@ import uuid
 from io import open
 from re import (search, match, compile)
 from json import dumps
+
+from azure.cli.core.commands.client_factory import get_subscription_id, get_mgmt_service_client
+from azure.cli.core.profiles import ResourceType
 from knack.util import CLIError, todict
 from knack.log import get_logger
-from azure.cli.core.azclierror import ValidationError
-from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
+from azure.cli.core.azclierror import ValidationError, CLIInternalError
+from .vendored_sdks.appplatform.v2023_09_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
 from ._client_factory import cf_resource_groups
 
 
@@ -40,8 +44,18 @@ def _get_upload_local_file(runtime_version, artifact_path=None, source_path=None
     return file_type, file_path
 
 
+def _get_file_ext(artifact_path):
+    return os.path.splitext(artifact_path)[-1].lower() if artifact_path else ""
+
+
 def _get_file_type(runtime_version, artifact_path=None):
-    file_type = "Jar" if _is_java(runtime_version) else "Others"
+    file_type = "Others"
+    if _is_java(runtime_version):
+        file_ext = _get_file_ext(artifact_path)
+        if file_ext.lower() == ".jar":
+            file_type = "Jar"
+        elif file_ext.lower() == ".war":
+            file_type = "War"
     if artifact_path is None:
         file_type = "Source"
     return file_type
@@ -304,6 +318,53 @@ def handle_asc_exception(ex):
             raise CLIError(response_dict["error"]["message"])
         else:
             raise CLIError(ex)
+
+
+def register_provider_if_needed(cmd, rp_name):
+    if not _is_resource_provider_registered(cmd, rp_name):
+        _register_resource_provider(cmd, rp_name)
+
+
+def _is_resource_provider_registered(cmd, resource_provider, subscription_id=None):
+    registered = None
+    if not subscription_id:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+    try:
+        providers_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id).providers
+        registration_state = getattr(providers_client.get(resource_provider), 'registration_state', "NotRegistered")
+
+        registered = (registration_state and registration_state.lower() == 'registered')
+    except Exception:  # pylint: disable=broad-except
+        pass
+    return registered
+
+
+def _register_resource_provider(cmd, resource_provider):
+    from azure.mgmt.resource.resources.models import ProviderRegistrationRequest, ProviderConsentDefinition
+
+    logger.warning(f"Registering resource provider {resource_provider} ...")
+    properties = ProviderRegistrationRequest(third_party_provider_consent=ProviderConsentDefinition(consent_to_authorization=True))
+
+    client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES).providers
+    try:
+        client.register(resource_provider, properties=properties)
+        # wait for registration to finish
+        timeout_secs = 120
+        registration = _is_resource_provider_registered(cmd, resource_provider)
+        start = datetime.utcnow()
+        while not registration:
+            registration = _is_resource_provider_registered(cmd, resource_provider)
+            sleep(3)
+            if (datetime.utcnow() - start).seconds >= timeout_secs:
+                raise CLIInternalError(f"Timed out while waiting for the {resource_provider} resource provider to be registered.")
+
+    except Exception as e:
+        msg = ("This operation requires registering the resource provider {0}. "
+               "We were unable to perform that registration on your behalf: "
+               "Server responded with error message -- {1} . "
+               "Please check with your admin on permissions, "
+               "or try running registration manually with: az provider register --wait --namespace {0}")
+        raise ValidationError(resource_provider, msg.format(e.args)) from e
 
 
 class BearerAuth(requests.auth.AuthBase):
