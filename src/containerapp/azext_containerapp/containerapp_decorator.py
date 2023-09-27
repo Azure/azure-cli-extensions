@@ -1294,7 +1294,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         image = None if self.get_argument_image().__eq__(HELLO_WORLD_IMAGE) else _reformat_image(self.get_argument_source(), self.get_argument_repo(), self.get_argument_image())
 
         has_dockerfile = _has_dockerfile(self.get_argument_source(), dockerfile)
-        if not self.get_argument_source() or has_dockerfile:
+        if has_dockerfile:
             dockerfile_content = _get_dockerfile_content(self.get_argument_repo(), self.get_argument_branch(), token, self.get_argument_source(), self.get_argument_context_path(), dockerfile)
             ingress, target_port = _get_ingress_and_target_port(self.get_argument_ingress(), self.get_argument_target_port(), dockerfile_content)
 
@@ -1476,6 +1476,8 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
         location = self.containerapp_def["location"] if "location" in self.containerapp_def else env_info['location']
 
+        # Check if source contains a Dockerfile
+        # and ignore checking if Dockerfile exists in repo since GitHub action inherently checks for it.
         has_dockerfile = _has_dockerfile(self.get_argument_source(), dockerfile)
         if has_dockerfile:
             dockerfile_content = _get_dockerfile_content(repo=None, branch=None, token=None, source=self.get_argument_source(), context_path=None, dockerfile=dockerfile)

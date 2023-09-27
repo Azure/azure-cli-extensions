@@ -9,6 +9,7 @@ import os.path
 import platform
 
 from argcomplete.completers import FilesCompleter
+from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview._completers import (
     get_k8s_upgrades_completion_list,
     get_k8s_versions_completion_list,
@@ -48,6 +49,7 @@ from azext_aks_preview._consts import (
     CONST_LOAD_BALANCER_SKU_STANDARD,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
+    CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
     CONST_NETWORK_DATAPLANE_AZURE,
     CONST_NETWORK_DATAPLANE_CILIUM,
     CONST_NETWORK_PLUGIN_AZURE,
@@ -168,6 +170,7 @@ from azure.cli.core.commands.parameters import (
     tags_type,
     zones_type,
 )
+from azure.cli.core.profiles import ResourceType
 from knack.arguments import CLIArgumentType
 
 # candidates for enumeration
@@ -190,7 +193,7 @@ gpu_instance_profiles = [
 
 # consts for ManagedCluster
 load_balancer_skus = [CONST_LOAD_BALANCER_SKU_BASIC, CONST_LOAD_BALANCER_SKU_STANDARD]
-sku_tiers = [CONST_MANAGED_CLUSTER_SKU_TIER_FREE, CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD]
+sku_tiers = [CONST_MANAGED_CLUSTER_SKU_TIER_FREE, CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD, CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM]
 network_plugins = [CONST_NETWORK_PLUGIN_KUBENET, CONST_NETWORK_PLUGIN_AZURE, CONST_NETWORK_PLUGIN_NONE]
 network_plugin_modes = [CONST_NETWORK_PLUGIN_MODE_OVERLAY]
 network_dataplanes = [CONST_NETWORK_DATAPLANE_AZURE, CONST_NETWORK_DATAPLANE_CILIUM]
@@ -258,6 +261,7 @@ ingress_gateway_types = [
 def load_arguments(self, _):
 
     acr_arg_type = CLIArgumentType(metavar='ACR_NAME_OR_RESOURCE_ID')
+    k8s_support_plans = self.get_models("KubernetesSupportPlan", resource_type=CUSTOM_MGMT_AKS_PREVIEW, operation_group='managed_clusters')
 
     # AKS command argument configuration
     with self.argument_context('aks') as c:
@@ -338,6 +342,7 @@ def load_arguments(self, _):
         c.argument('attach_acr', acr_arg_type)
         c.argument('skip_subnet_role_assignment', action='store_true')
         c.argument('node_resource_group')
+        c.argument('k8s_support_plan', arg_type=get_enum_type(k8s_support_plans))
         c.argument('enable_defender', action='store_true')
         c.argument('defender_config', validator=validate_defender_config_parameter)
         c.argument('disk_driver_version', arg_type=get_enum_type(disk_driver_versions))
@@ -489,6 +494,7 @@ def load_arguments(self, _):
         c.argument('aad_tenant_id')
         c.argument('aad_admin_group_object_ids')
         c.argument('enable_oidc_issuer', action='store_true')
+        c.argument('k8s_support_plan', arg_type=get_enum_type(k8s_support_plans))
         c.argument('windows_admin_password')
         c.argument('enable_ahub')
         c.argument('disable_ahub')
@@ -674,6 +680,13 @@ def load_arguments(self, _):
         c.argument('ignore_pod_disruption_budget', options_list=[
                    "--ignore-pod-disruption-budget", "-i"], action=get_three_state_flag(), is_preview=True,
                    help='delete an AKS nodepool by ignoring PodDisruptionBudget setting')
+
+    with self.argument_context('aks machine') as c:
+        c.argument('cluster_name', help='The cluster name.')
+        c.argument('nodepool_name', validator=validate_nodepool_name, help='The node pool name.')
+
+    with self.argument_context('aks machine show') as c:
+        c.argument('machine_name', help='to display specific information for all machines.')
 
     with self.argument_context('aks maintenanceconfiguration') as c:
         c.argument('cluster_name', help='The cluster name.')

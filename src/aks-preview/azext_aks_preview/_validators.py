@@ -12,12 +12,14 @@ from ipaddress import ip_network
 from math import isclose, isnan
 
 import azure.cli.core.keys as keys
+from azure.mgmt.containerservice.models import KubernetesSupportPlan
 from azext_aks_preview._consts import (
     ADDONS,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
+    CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
     CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_CBLMARINER,
     CONST_OS_SKU_MARINER,
@@ -206,8 +208,8 @@ def validate_sku_tier(namespace):
     if namespace.tier is not None:
         if namespace.tier == '':
             return
-        if namespace.tier.lower() not in (CONST_MANAGED_CLUSTER_SKU_TIER_FREE, CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD):
-            raise InvalidArgumentValueError("--tier can only be free or standard")
+        if namespace.tier.lower() not in (CONST_MANAGED_CLUSTER_SKU_TIER_FREE, CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD, CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM):
+            raise InvalidArgumentValueError("--tier can only be free, standard, or premium")
 
 
 def validate_nodepool_taints(namespace):

@@ -3,7 +3,10 @@
 Release History
 ===============
 upcoming
+
+0.3.41
 ++++++
+* 'az containerapp up/create': enable support for no Dockerfile cases with --repo
 
 0.3.40
 ++++++

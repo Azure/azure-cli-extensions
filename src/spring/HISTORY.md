@@ -7,6 +7,7 @@ Release History
 * Add argument `--enable-auto-sync` in `az spring certificate add`.
 * Add new command `az spring certificate update` to update a certificate.
 * Add new command `az spring list-support-server-versions` to list all supported server versions.
+* Fix `list-marketplace-plan` command.
 
 1.14.3
 ---

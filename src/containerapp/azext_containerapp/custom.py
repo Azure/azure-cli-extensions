@@ -1946,7 +1946,7 @@ def create_or_update_github_action(cmd,
         logger.warning("Creating Github action...")
         r = GitHubActionClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, github_action_envelope=source_control_info, headers=headers, no_wait=no_wait)
         if not no_wait:
-            WORKFLOW_POLL_RETRY = 3
+            WORKFLOW_POLL_RETRY = 6
             WORKFLOW_POLL_SLEEP = 10
 
             # Poll for the workflow file just created (may take up to 30s)
@@ -1958,8 +1958,8 @@ def create_or_update_github_action(cmd,
                     return r
 
             raise ValidationError(
-                "Failed to find workflow file for Container App '{}' in .github/workflow folder for repo '{}'. ".format(name, repo) +
-                "If this file was removed, please use the 'az containerapp github-action delete' command to disconnect the removed workflow file connection.")
+                "Exhausted the number of re-tries allotted to polling the creation of the workflow file for Container App '{}' in .github/workflow folder for repo '{}'. ".format(name, repo) +
+                "Please check the provided repository '{}' for the GitHub Action workflow that was created and the status of it. If this file was removed, please use the 'az containerapp github-action delete' command to disconnect the removed workflow file connection.".format(repo))
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -3536,9 +3536,9 @@ def containerapp_up(cmd,
             target_port = 80
             logger.warning("No ingress provided, defaulting to port 80. Try `az containerapp up --ingress %s --target-port <port>` to set a custom port.", ingress)
 
-    if source and not _has_dockerfile(source, dockerfile):
-        pass
-    else:
+    # Check if source contains a Dockerfile
+    # and ignore checking if Dockerfile exists in repo since GitHub action inherently checks for it.
+    if _has_dockerfile(source, dockerfile):
         dockerfile_content = _get_dockerfile_content(repo, branch, token, source, context_path, dockerfile)
         ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
 
