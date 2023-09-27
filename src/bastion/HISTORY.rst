@@ -2,10 +2,6 @@
 
 Release History
 ===============
-0.2.6
-++++++
-* Surface error message from tenant to display descriptive error messages for az bastion command with --enable-gateway set to true
-
 0.2.5
 ++++++
 * Fixing the command `az network bastion rdp` to avoid the `java.lang.NullPointerException` while calling `get_auth_token` function
