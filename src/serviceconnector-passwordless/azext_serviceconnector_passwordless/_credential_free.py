@@ -104,8 +104,9 @@ def get_enable_mi_for_db_linker_func(yes=False):
         elif auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserIdentity]:
             mi_client_id = auth_info.get('client_id')
             mi_sub_id = auth_info.get('subscription_id')
-            umi_info = run_cli_cmd(
-                f'az identity list --subscription {mi_sub_id} --query "[?clientId==\'{mi_client_id}\']"')
+            umi_info_list = run_cli_cmd(
+                f'az rest -u /subscriptions/{mi_sub_id}/providers/Microsoft.ManagedIdentity/userAssignedIdentities?api-version=2023-01-31')
+            umi_info = [umi for umi in umi_info_list.get('value', []) if umi.get('properties', {}).get('clientId') == mi_client_id]
             if umi_info is None or len(umi_info) == 0:
                 e = ResourceNotFoundError(
                     "No identity found for client id {}".format(mi_client_id))
@@ -161,31 +162,6 @@ def getTargetHandler(cmd, target_id, target_type, auth_info, client_type, connec
 
 
 class TargetHandler:
-    cmd = None
-    auth_type = ""
-    auth_info = None
-
-    tenant_id = ""
-    subscription = ""
-    resource_group = ""
-    target_id = ""
-    target_type = ""
-    endpoint = ""
-
-    login_username = ""
-    login_usertype = ""  # servicePrincipal, user
-    user_object_id = ""
-    aad_username = ""
-
-    admin_username = ""
-
-    identity_name = ""
-    identity_client_id = ""
-    identity_object_id = ""
-
-    connection_name = ""
-
-    skip_prompt = False
 
     def __init__(self, cmd, target_id, target_type, auth_info, connection_name, skip_prompt):
         self.cmd = cmd
@@ -201,7 +177,7 @@ class TargetHandler:
         self.login_username = run_cli_cmd(
             'az account show').get("user").get("name")
         self.login_usertype = run_cli_cmd(
-            'az account show').get("user").get("type")
+            'az account show').get("user").get("type")  # servicePrincipal, user
         if (self.login_usertype not in ['servicePrincipal', 'user']):
             e = CLIInternalError(
                 f'{self.login_usertype} is not supported. Please login as user or servicePrincipal')
@@ -268,9 +244,6 @@ class TargetHandler:
 
 
 class MysqlFlexibleHandler(TargetHandler):
-
-    server = ""
-    dbname = ""
 
     def __init__(self, cmd, target_id, target_type, auth_info, connection_name, skip_prompt):
         super().__init__(cmd, target_id, target_type,
@@ -468,10 +441,6 @@ class MysqlFlexibleHandler(TargetHandler):
 
 class SqlHandler(TargetHandler):
 
-    server = ""
-    dbname = ""
-    ip = ""
-
     def __init__(self, cmd, target_id, target_type, auth_info, connection_name, skip_prompt):
         super().__init__(cmd, target_id, target_type,
                          auth_info, connection_name, skip_prompt)
@@ -479,6 +448,7 @@ class SqlHandler(TargetHandler):
         target_segments = parse_resource_id(target_id)
         self.server = target_segments.get('name')
         self.dbname = target_segments.get('child_name_1')
+        self.ip = ""
 
     def check_db_existence(self):
         try:
@@ -655,11 +625,6 @@ class SqlHandler(TargetHandler):
 
 class PostgresFlexHandler(TargetHandler):
 
-    db_server = ""
-    host = ""
-    dbname = ""
-    ip = ""
-
     def __init__(self, cmd, target_id, target_type, auth_info, connection_name, skip_prompt):
         super().__init__(cmd, target_id, target_type,
                          auth_info, connection_name, skip_prompt)
@@ -668,14 +633,16 @@ class PostgresFlexHandler(TargetHandler):
         self.db_server = target_segments.get('name')
         self.host = self.db_server + self.endpoint
         self.dbname = target_segments.get('child_name_1')
+        self.ip = ""
 
     def check_db_existence(self):
         try:
             db_info = run_cli_cmd(
-                'az postgres flexible-server db show --ids {}'.format(self.target_id))
+                'az postgres flexible-server db show --server-name {} --database-name {} -g {} --subscription {}'.format(
+                    self.db_server, self.dbname, self.resource_group, self.subscription))
             if db_info is None:
                 e = ResourceNotFoundError(
-                    "No database found with name {}".format(self.dbname))
+                    "No database '{}' found for server '{}'".format(self.dbname, self.db_server))
                 telemetry.set_exception(e, "No-Db")
                 raise e
         except CLIInternalError as e:
@@ -684,7 +651,8 @@ class PostgresFlexHandler(TargetHandler):
 
     def enable_target_aad_auth(self):
         target = run_cli_cmd(
-            'az postgres flexible-server show --ids {}'.format(self.target_id))
+            'az postgres flexible-server show -g {} -n {} --subscription {}'.format(
+                self.resource_group, self.db_server, self.subscription))
         if target.get('authConfig').get('activeDirectoryAuth') == "Enabled":
             return
         run_cli_cmd('az postgres flexible-server update --ids {} --active-directory-auth Enabled'.format(
@@ -968,8 +936,6 @@ def getSourceHandler(source_id, source_type):
 
 # pylint: disable=too-few-public-methods
 class SourceHandler:
-    source_id = ""
-    source_type = ""
 
     def __init__(self, source_id, source_type: RESOURCE):
         self.source_id = source_id
