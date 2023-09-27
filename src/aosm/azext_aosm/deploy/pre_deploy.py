@@ -70,10 +70,9 @@ class PreDeployerViaSDK:
             logger.info("RG %s not found. Create it.", resource_group_name)
             print(f"Creating resource group {resource_group_name}.")
             rg_params: ResourceGroup = ResourceGroup(location=self.config.location)
-            poller = self.api_clients.resource_client.resource_groups.create_or_update(
+            self.api_clients.resource_client.resource_groups.create_or_update(
                 resource_group_name, rg_params
             )
-            LongRunningOperation(self.cli_ctx, "Creating resource group...")(poller)
         else:
             print(f"Resource group {resource_group_name} exists.")
             self.api_clients.resource_client.resource_groups.get(resource_group_name)
