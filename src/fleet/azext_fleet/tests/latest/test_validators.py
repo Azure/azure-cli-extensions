@@ -27,6 +27,16 @@ class MemberClusterIDNamespace:
     def __init__(self, member_cluster_id):
         self.member_cluster_id = member_cluster_id
 
+class UpgradeTypeNamespace:
+
+    def __init__(self, upgrade_type):
+        self.upgrade_type = upgrade_type
+
+class NodeImageSelectionNamespace:
+
+    def __init__(self, node_image_selection):
+        self.node_image_selection = node_image_selection
+
 class TestValidateMemberClusterId(unittest.TestCase):
     def test_invalid_member_cluster_id(self):
         invalid_member_cluster_id = "dummy cluster id"
@@ -101,7 +111,7 @@ class TestValidateAgentSubnetID(unittest.TestCase):
 
         self.assertIsNone(validators.validate_agent_subnet_id(namespace))
 
-class TestAssignIdentity(unittest.TestCase):
+class TestValidateAssignIdentity(unittest.TestCase):
     def test_invalid_identity_id(self):
         invalid_identity_id = "an invalid identity id"
         namespace = AssignIdentityNamespace(invalid_identity_id)
@@ -128,6 +138,76 @@ class TestAssignIdentity(unittest.TestCase):
         namespace = AssignIdentityNamespace(empty_identity_id)
 
         self.assertIsNone(validators.validate_assign_identity(namespace))
+
+class TestValidateUpgradeType(unittest.TestCase):
+    def test_valid_upgrade_type(self):
+        valid_upgrade_type = "NodeImageOnly"
+        namespace = UpgradeTypeNamespace(valid_upgrade_type)
+
+        self.assertIsNone(validators.validate_upgrade_type(namespace))
+
+    def test_invalid_upgrade_type(self):
+        invalid_upgrade_type = "invalid_upgrade_type"
+        namespace = UpgradeTypeNamespace(invalid_upgrade_type)
+        err = ("--upgrade-type must be set to 'Full' or 'NodeImageOnly'")
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_upgrade_type(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_empty_upgrade_type(self):
+        empty_upgrade_type = ""
+        namespace = UpgradeTypeNamespace(empty_upgrade_type)
+        err = ("--upgrade-type must be set to 'Full' or 'NodeImageOnly'")
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_upgrade_type(namespace)
+        self.assertEqual(str(cm.exception), err) 
+
+    def test_none_upgrade_type(self):
+        none_upgrade_type = None
+        namespace = UpgradeTypeNamespace(none_upgrade_type)
+        err = ("--upgrade-type must be set to 'Full' or 'NodeImageOnly'")
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_upgrade_type(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+class TestValidateNodeImageSelection(unittest.TestCase):
+    def test_valid_node_image_selection(self):
+        valid_node_image_selection = "Latest"
+        namespace = NodeImageSelectionNamespace(valid_node_image_selection)
+
+        self.assertIsNone(validators.validate_node_image_selection(namespace))
+
+    def test_invalid_node_image_selection(self):
+        invalid_node_image_selection = "invalid_node_image_selection"
+        namespace = NodeImageSelectionNamespace(invalid_node_image_selection)
+        err = ("--node-image-selection must be set to 'Latest' or 'Consistent'")
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_node_image_selection(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_empty_node_image_selection(self):
+        empty_node_image_selection = ""
+        namespace = NodeImageSelectionNamespace(empty_node_image_selection)
+        err = ("--node-image-selection must be set to 'Latest' or 'Consistent'")
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_node_image_selection(namespace)
+        self.assertEqual(str(cm.exception), err) 
+
+    def test_none_node_image_selection(self):
+        none_node_image_selection = None
+        namespace = NodeImageSelectionNamespace(none_node_image_selection)
+        err = ("--node-image-selection must be set to 'Latest' or 'Consistent'")
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_node_image_selection(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    
 
 if __name__ == "__main__":
     unittest.main()

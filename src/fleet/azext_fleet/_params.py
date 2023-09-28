@@ -14,7 +14,7 @@ from azure.cli.core.commands.parameters import (
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
 from azext_fleet._validators import validate_member_cluster_id, validate_upgrade_type, validate_kubernetes_version
-from azext_fleet._validators import validate_member_cluster_id, validate_upgrade_type, validate_kubernetes_version, validate_apiserver_subnet_id, validate_agent_subnet_id, validate_assign_identity
+from azext_fleet._validators import validate_member_cluster_id, validate_upgrade_type, validate_kubernetes_version, validate_apiserver_subnet_id, validate_agent_subnet_id, validate_assign_identity, validate_node_image_selection
 
 
 def load_arguments(self, _):
@@ -61,20 +61,14 @@ def load_arguments(self, _):
     with self.argument_context('fleet updaterun create') as c:
         c.argument('upgrade_type', validator=validate_upgrade_type)
         c.argument('kubernetes_version', validator=validate_kubernetes_version)
+        c.argument('node_image_selection', validator=validate_node_image_selection)
         c.argument('stages', type=file_type, completer=FilesCompleter())
         c.argument('update_group')
 
-    with self.argument_context('fleet member update') as c:
-        c.argument('update_group')
-
-    with self.argument_context('fleet member update') as c:
-        c.argument('update_group')
-
-    with self.argument_context('fleet updaterun') as c:
-        c.argument('name', options_list=['--name', '-n'], help='Specify name for the update run.')
+    with self.argument_context('fleet updatestrategy') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Specify name for the fleet update strategy.')
         c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Specify the fleet name.')
 
-    with self.argument_context('fleet updaterun create') as c:
-        c.argument('upgrade_type', validator=validate_upgrade_type)
-        c.argument('kubernetes_version', validator=validate_kubernetes_version)
+    with self.argument_context('fleet updatestrategy create') as c:
         c.argument('stages', type=file_type, completer=FilesCompleter())
+

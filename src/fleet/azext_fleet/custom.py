@@ -254,6 +254,7 @@ def create_update_run(cmd,
                       name,
                       upgrade_type,
                       kubernetes_version=None,
+                      node_image_selection=None,
                       stages=None,
                       no_wait=False):
     if upgrade_type == "Full" and kubernetes_version is None:
@@ -273,6 +274,11 @@ def create_update_run(cmd,
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="update_runs"
     )
+    node_image_selection_model = cmd.get_models(
+        "NodeImageSelection",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="update_runs"
+    )
     update_run_model = cmd.get_models(
         "UpdateRun",
         resource_type=CUSTOM_MGMT_FLEET,
@@ -281,7 +287,12 @@ def create_update_run(cmd,
 
     managed_cluster_upgrade_spec = managed_cluster_upgrade_spec_model(
         type=upgrade_type, kubernetes_version=kubernetes_version)
-    managed_cluster_update = managed_cluster_update_model(upgrade=managed_cluster_upgrade_spec)
+    node_image_selection_obj = node_image_selection_model(type=node_image_selection)
+    
+    managed_cluster_update = managed_cluster_update_model(
+        upgrade=managed_cluster_upgrade_spec, 
+        nodeImageSelection=node_image_selection_obj)
+    
     update_run = update_run_model(strategy=update_run_strategy, managed_cluster_update=managed_cluster_update)
 
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run)
@@ -365,3 +376,39 @@ def get_update_run_strategy(cmd, stages):
             after_stage_wait_in_seconds=sec))
 
     return update_run_strategy_model(stages=update_stages)
+
+
+def create_fleet_update_strategy(cmd,
+                      client,
+                      resource_group_name,
+                      fleet_name,
+                      name,
+                      stages=None,
+                      no_wait=False):
+    update_run_strategy_model = get_update_run_strategy(cmd, stages)
+
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run_strategy_model)
+
+
+def show_fleet_update_strategy(cmd,  # pylint: disable=unused-argument
+                    client,
+                    resource_group_name,
+                    fleet_name,
+                    name):
+    return client.get(resource_group_name, fleet_name, name)
+
+
+def list_fleet_update_strategies(cmd,  # pylint: disable=unused-argument
+                    client,
+                    resource_group_name,
+                    fleet_name):
+    return client.list_by_fleet(resource_group_name, fleet_name)
+
+
+def delete_fleet_update_strategy(cmd,  # pylint: disable=unused-argument
+                      client,
+                      resource_group_name,
+                      fleet_name,
+                      name,
+                      no_wait=False):
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, fleet_name, name)

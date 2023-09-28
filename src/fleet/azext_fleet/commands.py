@@ -5,7 +5,7 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
-from azext_fleet._client_factory import cf_fleets, cf_fleet_members, cf_update_runs
+from azext_fleet._client_factory import cf_fleets, cf_fleet_members, cf_update_runs, cf_fleet_update_strategies
 
 
 def load_command_table(self, _):
@@ -26,6 +26,12 @@ def load_command_table(self, _):
         operations_tmpl="azext_fleet.vendored_sdks.operations._update_runs_operations#UpdateRunsOperations.{}",
         operation_group="update_runs",
         client_factory=cf_update_runs
+    )
+
+    fleet_update_strategy_sdk = CliCommandType(
+        operations_tmpl="azext_fleet.vendored_sdks.operations._fleet_update_strategies_operations#FleetUpdateStrategiesOperations.{}",
+        operation_group="update_strategies",
+        client_factory=cf_fleet_update_strategies
     )
 
     # fleets command group
@@ -55,3 +61,10 @@ def load_command_table(self, _):
         g.custom_command("delete", "delete_update_run", supports_no_wait=True)
         g.custom_command("start", "start_update_run", supports_no_wait=True)
         g.custom_command("stop", "stop_update_run", supports_no_wait=True)
+
+    # fleet update strategies command group
+    with self.command_group("fleet updatestrategy", fleet_update_strategy_sdk, client_factory=cf_fleet_update_strategies) as g:
+        g.custom_command("create", "create_fleet_update_strategy", supports_no_wait=True)
+        g.custom_show_command("show", "show_fleet_update_strategy")
+        g.custom_command("list", "list_fleet_update_strategies")
+        g.custom_command("delete", "delete_fleet_update_strategy", supports_no_wait=True)
