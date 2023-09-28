@@ -36,3 +36,9 @@ Release History
 ++++++
 * Upgrade SDK version to 2023-08-15-preview
 
+0.2.6
+++++++
+* Hubless is now default fleet creation
+* Added support for Fleet Upgrade Strategy
+* Added argument for Node Image Seleciton.
+
