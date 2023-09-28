@@ -39,7 +39,6 @@ def create_fleet(cmd,
     )
 
     fleet_hub_profile = None
-    managed_service_identity = None
     if enable_hub:
         fleet_hub_profile_model = cmd.get_models(
             "FleetHubProfile",
@@ -83,13 +82,6 @@ def create_fleet(cmd,
             dns_prefix=dns_name_prefix,
             api_server_access_profile=api_server_access_profile,
             agent_profile=agent_profile)
-
-        managed_service_identity = fleet_managed_service_identity_model(type="None")
-        if enable_managed_identity is True:
-            managed_service_identity.type = "SystemAssigned"
-            if assign_identity is not None:
-                managed_service_identity.type = "UserAssigned"
-                managed_service_identity.user_assigned_identities = {assign_identity, None}
     else:
         if (dns_name_prefix is not None
             or enable_private_cluster is not False
@@ -97,6 +89,13 @@ def create_fleet(cmd,
             or apiserver_subnet_id is not None
             or agent_subnet_id is not None):
             raise CLIError("The parameters --enable-private-cluster, --enable-vnet-integration, --apiserver-subnet-id, and --agent-subnet-id are only valid if --enable-hub is set to true")
+    
+    managed_service_identity = fleet_managed_service_identity_model(type="None")
+    if enable_managed_identity is True:
+        managed_service_identity.type = "SystemAssigned"
+        if assign_identity is not None:
+            managed_service_identity.type = "UserAssigned"
+            managed_service_identity.user_assigned_identities = {assign_identity, None}
 
     fleet = fleet_model(
         location=location,

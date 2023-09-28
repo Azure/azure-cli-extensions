@@ -61,7 +61,7 @@ def load_arguments(self, _):
     with self.argument_context('fleet updaterun create') as c:
         c.argument('upgrade_type', validator=validate_upgrade_type)
         c.argument('kubernetes_version', validator=validate_kubernetes_version)
-        c.argument('node_image_selection', validator=validate_node_image_selection)
+        c.argument('node_image_selection', validator=validate_node_image_selection, help='')
         c.argument('stages', type=file_type, completer=FilesCompleter(), help='Path to a json file that defines stages to upgrade a fleet. See examples for further reference.')
         c.argument('update_group')
 
