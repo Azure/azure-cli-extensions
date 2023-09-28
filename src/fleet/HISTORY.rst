@@ -38,7 +38,7 @@ Release History
 
 0.2.6
 ++++++
-* Hubless is now default fleet creation
+* By default, fleets are now created without a hub
 * Added support for Fleet Upgrade Strategy
 * Added argument for Node Image Seleciton.
 
