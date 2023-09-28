@@ -28,7 +28,7 @@ def validate_node_image_selection(namespace):
     node_image_selection = namespace.node_image_selection
     if node_image_selection not in ("Latest", "Consistent"):
         raise InvalidArgumentValueError(
-            "--node-image-upgrade-type must be set to 'Latest' or 'Consistent'")
+            "--node-image-selection must be set to 'Latest' or 'Consistent'")
 
 
 def validate_kubernetes_version(namespace):
