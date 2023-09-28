@@ -14,6 +14,7 @@ import subprocess
 import tempfile
 import threading
 import time
+import json
 
 import requests
 from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError, RequiredArgumentMissingError, \
@@ -279,6 +280,9 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
             }
             response = requests.get(web_address, headers=headers)
             if not response.ok:
+                errorMessage = json.loads(response.content).get('message', None)
+                if errorMessage:
+                    raise ClientRequestError("Request failed with error: " + errorMessage)
                 raise ClientRequestError("Request to EncodingReservedUnitTypes v2 API endpoint failed.")
 
             _write_to_file(response)
