@@ -254,5 +254,5 @@ def validate_custom_http_headers(namespace):
         item_comps = item.split('=')
         if len(item_comps) != 2:
             raise usage_error
-        http_header_list.append({'http_header_name': item_comps[0], 'http_header_value': item_comps[1]})
+        http_header_list.append({'header_name': item_comps[0], 'header_value': item_comps[1]})
     namespace.http_headers_to_insert = http_header_list

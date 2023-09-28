@@ -926,8 +926,8 @@ def add_azure_firewall_policy_filter_rule_collection(cmd, resource_group_name, f
                                                          port=int(item['port']))
         protocols = list(map(map_application_rule_protocol, protocols))
         def map_application_rule_custom_header(item):
-            return FirewallPolicyRuleApplicationCustomHeader(http_header_name=item['http_header_name'],
-                                                         http_header_value=item['http_header_value'])
+            return FirewallPolicyRuleApplicationCustomHeader(header_name=item['header_name'],
+                                                         header_value=item['header_value'])
         http_headers_to_insert = list(map(map_application_rule_custom_header, http_headers_to_insert))
         rule = ApplicationRule(name=rule_name,
                                description=description,
@@ -981,7 +981,7 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
                                           protocols=None, fqdn_tags=None, target_fqdns=None,
                                           source_ip_groups=None, destination_ip_groups=None, destination_fqdns=None,
                                           translated_address=None, translated_port=None, translated_fqdn=None,
-                                          target_urls=None, enable_tls_inspection=False, web_categories=None,http_headers_to_insert=None):
+                                          target_urls=None, enable_tls_inspection=False, web_categories=None, http_headers_to_insert=None):
     (NetworkRule,
      FirewallPolicyRuleApplicationProtocol,
      ApplicationRule,
@@ -1023,8 +1023,8 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
 
         protocols = list(map(map_application_rule_protocol, protocols))
         def map_application_rule_custom_header(item):
-            return FirewallPolicyRuleApplicationCustomHeader(http_header_name=item['http_header_name'],
-                                                         http_header_value=item['http_header_value'])
+            return FirewallPolicyRuleApplicationCustomHeader(header_name=item['header_name'],
+                                                         header_value=item['header_value'])
 
         http_headers_to_insert = list(map(map_application_rule_custom_header, http_headers_to_insert))
         rule = ApplicationRule(name=rule_name,
