@@ -44,10 +44,11 @@ class FleetScenarioTest(ScenarioTest):
             'fleet_name': self.create_random_name(prefix='fl-', length=7),
             'member_name': self.create_random_name(prefix='flmc-', length=9),
             'updaterun': self.create_random_name(prefix='uprn-', length=9),
+            'enable_hub': True,
             'ssh_key_value': self.generate_ssh_keys()
         })
 
-        self.cmd('fleet create -g {rg} -n {fleet_name}', checks=[
+        self.cmd('fleet create -g {rg} -n {fleet_name} -enable_hub {enable_hub}', checks=[
             self.check('name', '{fleet_name}')
         ])
 
