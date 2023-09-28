@@ -48,7 +48,7 @@ class FleetScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys()
         })
 
-        self.cmd('fleet create -g {rg} -n {fleet_name} -enable_hub {enable_hub}', checks=[
+        self.cmd('fleet create -g {rg} -n {fleet_name} --enable-hub {enable_hub}', checks=[
             self.check('name', '{fleet_name}')
         ])
 
@@ -101,7 +101,7 @@ class FleetScenarioTest(ScenarioTest):
 
         self.cmd('aks wait -g {rg} -n {member_name} --created', checks=[self.is_empty()])
 
-        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --kubernetes-version 1.25.0', checks=[
+        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.25.0', checks=[
             self.check('name', '{updaterun}')
         ])
 
@@ -122,7 +122,7 @@ class FleetScenarioTest(ScenarioTest):
         # ])
 
         self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name}')
-        
+
         self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member_name}')
 
         self.cmd('fleet delete -g {rg} -n {fleet_name}')
