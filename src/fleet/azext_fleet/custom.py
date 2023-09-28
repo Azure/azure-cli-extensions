@@ -29,61 +29,74 @@ def create_fleet(cmd,
                  agent_subnet_id=None,
                  enable_managed_identity=None,
                  assign_identity=None,
+                 enable_hub=None,
                  no_wait=False):
-    fleet_hub_profile_model = cmd.get_models(
-        "FleetHubProfile",
-        resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="fleets"
-    )
+    
     fleet_model = cmd.get_models(
         "Fleet",
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleets"
     )
-    api_server_access_profile_model = cmd.get_models(
-        "APIServerAccessProfile",
-        resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="fleets"
-    )
-    agent_profile_model = cmd.get_models(
-        "AgentProfile",
-        resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="fleets"
-    )
-    fleet_managed_service_identity_model = cmd.get_models(
-        "ManagedServiceIdentity",
-        resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="fleets"
-    )
 
-    if dns_name_prefix is None:
-        subscription_id = get_subscription_id(cmd.cli_ctx)
-        # Use subscription id to provide uniqueness and prevent DNS name clashes
-        name_part = re.sub('[^A-Za-z0-9-]', '', name)[0:10]
-        if not name_part[0].isalpha():
-            name_part = (str('a') + name_part)[0:10]
-        resource_group_part = re.sub('[^A-Za-z0-9-]', '', resource_group_name)[0:16]
-        dns_name_prefix = f'{name_part}-{resource_group_part}-{subscription_id[0:6]}'
+    fleet_hub_profile = None
+    managed_service_identity = None
+    if enable_hub:
+        fleet_hub_profile_model = cmd.get_models(
+            "FleetHubProfile",
+            resource_type=CUSTOM_MGMT_FLEET,
+            operation_group="fleets"
+        )
+        api_server_access_profile_model = cmd.get_models(
+            "APIServerAccessProfile",
+            resource_type=CUSTOM_MGMT_FLEET,
+            operation_group="fleets"
+        )
+        agent_profile_model = cmd.get_models(
+            "AgentProfile",
+            resource_type=CUSTOM_MGMT_FLEET,
+            operation_group="fleets"
+        )
+        fleet_managed_service_identity_model = cmd.get_models(
+            "ManagedServiceIdentity",
+            resource_type=CUSTOM_MGMT_FLEET,
+            operation_group="fleets"
+        )
 
-    api_server_access_profile = api_server_access_profile_model(
-        enable_private_cluster=enable_private_cluster,
-        enable_vnet_integration=enable_vnet_integration,
-        subnet_id=apiserver_subnet_id
-    )
-    agent_profile = agent_profile_model(
-        subnet_id=agent_subnet_id
-    )
-    fleet_hub_profile = fleet_hub_profile_model(
-        dns_prefix=dns_name_prefix,
-        api_server_access_profile=api_server_access_profile,
-        agent_profile=agent_profile)
+        if dns_name_prefix is None:
+            subscription_id = get_subscription_id(cmd.cli_ctx)
+            # Use subscription id to provide uniqueness and prevent DNS name clashes
+            name_part = re.sub('[^A-Za-z0-9-]', '', name)[0:10]
+            if not name_part[0].isalpha():
+                name_part = (str('a') + name_part)[0:10]
+            resource_group_part = re.sub('[^A-Za-z0-9-]', '', resource_group_name)[0:16]
+            dns_name_prefix = f'{name_part}-{resource_group_part}-{subscription_id[0:6]}'
 
-    managed_service_identity = fleet_managed_service_identity_model(type="None")
-    if enable_managed_identity is True:
-        managed_service_identity.type = "SystemAssigned"
-        if assign_identity is not None:
-            managed_service_identity.type = "UserAssigned"
-            managed_service_identity.user_assigned_identities = {assign_identity, None}
+        api_server_access_profile = api_server_access_profile_model(
+            enable_private_cluster=enable_private_cluster,
+            enable_vnet_integration=enable_vnet_integration,
+            subnet_id=apiserver_subnet_id
+        )
+        agent_profile = agent_profile_model(
+            subnet_id=agent_subnet_id
+        )
+        fleet_hub_profile = fleet_hub_profile_model(
+            dns_prefix=dns_name_prefix,
+            api_server_access_profile=api_server_access_profile,
+            agent_profile=agent_profile)
+
+        managed_service_identity = fleet_managed_service_identity_model(type="None")
+        if enable_managed_identity is True:
+            managed_service_identity.type = "SystemAssigned"
+            if assign_identity is not None:
+                managed_service_identity.type = "UserAssigned"
+                managed_service_identity.user_assigned_identities = {assign_identity, None}
+    else:
+        if (dns_name_prefix is not None
+            or enable_private_cluster is not False
+            or enable_vnet_integration is not False
+            or apiserver_subnet_id is not None
+            or agent_subnet_id is not None):
+            raise CLIError("The parameters --enable-private-cluster, --enable-vnet-integration, --apiserver-subnet-id, and --agent-subnet-id are only valid if --enable-hub is set to true")
 
     fleet = fleet_model(
         location=location,

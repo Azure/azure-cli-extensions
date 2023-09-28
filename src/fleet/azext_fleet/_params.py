@@ -32,6 +32,7 @@ def load_arguments(self, _):
         c.argument('agent_subnet_id', validator=validate_agent_subnet_id, is_preview=True, help='The ID of the subnet which the Fleet hub node will join on startup. If this is not specified, a vnet and subnet will be generated and used.')
         c.argument('enable_managed_identity', arg_type=get_three_state_flag(), is_preview=True, help='Enable system assigned managed identity (MSI) on the Fleet resource.')
         c.argument('assign_identity', validator=validate_assign_identity, is_preview=True, help='With --enable-managed-identity, enable user assigned managed identity (MSI) on the Fleet resource. Specify the existing user assigned identity resource.')
+        c.argument('enable_hub', arg_type=get_three_state_flag(), is_preview=True, help='If set, the Fleet will be created with a hub cluster.')
 
     with self.argument_context('fleet update') as c:
         c.argument('tags', tags_type)
