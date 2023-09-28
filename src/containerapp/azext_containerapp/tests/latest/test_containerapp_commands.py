@@ -721,6 +721,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
         postgres_ca_name = 'postgres'
         kafka_ca_name = 'kafka'
         mariadb_ca_name = 'mariadb'
+        qdrant_ca_name = "qdrant"
 
         create_containerapp_env(self, env_name, resource_group)
 
@@ -735,6 +736,9 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
         self.cmd('containerapp service mariadb create -g {} -n {} --environment {}'.format(
             resource_group, mariadb_ca_name, env_name))
+        
+        self.cmd('containerapp service qdrant create -g {} -n {} --environment {}'.format(
+            resource_group, qdrant_ca_name, env_name))
 
         self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
             resource_group, ca_name, env_name, image), checks=[
@@ -747,12 +751,13 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
         ])
 
-        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb'.format(
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant'.format(
             resource_group, ca_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
             JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding"),
             JMESPathCheck('properties.template.serviceBinds[2].name', "kafka"),
-            JMESPathCheck('properties.template.serviceBinds[3].name', "mariadb")
+            JMESPathCheck('properties.template.serviceBinds[3].name', "mariadb"),
+            JMESPathCheck('properties.template.serviceBinds[4].name', "qdrant")
         ])
 
         self.cmd('containerapp service postgres delete -g {} -n {} --yes'.format(
@@ -766,10 +771,21 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
         self.cmd('containerapp service mariadb delete -g {} -n {} --yes'.format(
             resource_group, mariadb_ca_name, env_name))
+    
+        self.cmd('containerapp service qdrant delete -g {} -n {} --yes'.format(
+            resource_group, qdrant_ca_name, env_name))
+
+        self.cmd(f'containerapp delete -g {resource_group} -n {ca_name} --yes') 
 
         self.cmd('containerapp service list -g {} --environment {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
+
+        self.cmd('containerapp list -g {} --environment {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+        self.cmd(f'containerapp env delete -g {resource_group} -n {env_name} --yes')
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -1340,6 +1356,9 @@ class ContainerappScaleTests(ScenarioTest):
             properties:
               managedEnvironmentId: {containerapp_env["id"]}
               configuration:
+                secrets:
+                - name: secret1
+                  value: 1
                 activeRevisionsMode: Multiple
                 ingress:
                   external: true
@@ -1396,6 +1415,7 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
+            JMESPathCheck("length(properties.configuration.secrets)", 1),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
             JMESPathCheck("properties.template.terminationGracePeriodSeconds", 90),
@@ -1418,6 +1438,10 @@ class ContainerappScaleTests(ScenarioTest):
                     properties:
                       environmentId: {containerapp_env["id"]}
                       configuration:
+                        secrets:
+                        - name: secret1
+                        - name: secret2
+                          value: 123
                         activeRevisionsMode: Multiple
                         ingress:
                           external: true
@@ -1456,12 +1480,23 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
+            JMESPathCheck("length(properties.configuration.secrets)", 2),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision2"),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
             JMESPathCheck("properties.template.scale.rules", None)
+        ])
+
+        self.cmd(f'containerapp secret show -g {resource_group} -n {app} --secret-name secret1', checks=[
+            JMESPathCheck("name", 'secret1'),
+            JMESPathCheck("value", '1'),
+        ])
+
+        self.cmd(f'containerapp secret show -g {resource_group} -n {app} --secret-name secret2', checks=[
+            JMESPathCheck("name", 'secret2'),
+            JMESPathCheck("value", '123'),
         ])
 
         # test update without environmentId

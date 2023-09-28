@@ -436,7 +436,7 @@ def load_arguments(self, _):
         c.argument('dest_mongo', nargs='+', action=AddMongoCollectionAction, help='Destination mongo collection')
         c.argument('dest_sql_container', nargs='+', action=AddSqlContainerAction, help='Destination sql container')
         c.argument('worker_count', type=int, help='Worker count')
-    
+
     with self.argument_context('cosmosdb copy create') as c:
         c.argument('job_name', job_name_type)
         c.argument('src_account', help='Name of the Azure Cosmos DB source database account.', completer=get_resource_name_completion_list('Microsoft.DocumentDb/databaseAccounts'), id_part='name')

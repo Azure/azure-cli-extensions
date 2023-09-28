@@ -181,19 +181,16 @@ helps['aks create'] = """
           short-summary: Enable the Kubernetes addons in a comma-separated list.
           long-summary: |-
             These addons are available:
-                http_application_routing        - configure ingress with automatic public DNS name creation.
-                monitoring                      - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
-                                                  If monitoring addon is enabled --no-wait argument will have no effect
-                virtual-node                    - enable AKS Virtual Node. Requires --aci-subnet-name to provide the name of an existing subnet for the Virtual Node to use.
-                                                  aci-subnet-name must be in the same vnet which is specified by --vnet-subnet-id (required as well).
-                azure-policy                    - enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner. Required if enabling Guardrails
-                                                  Learn more at aka.ms/aks/policy.
-                ingress-appgw                   - enable Application Gateway Ingress Controller addon (PREVIEW).
-                confcom                         - enable confcom addon, this will enable SGX device plugin by default(PREVIEW).
-                open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
-                gitops                          - enable GitOps (PREVIEW).
-                azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon.
-                web_application_routing         - enable Web Application Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
+            - http_application_routing        : configure ingress with automatic public DNS name creation.
+            - monitoring                      :  turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring addon is enabled --no-wait argument will have no effect
+            - virtual-node                    : enable AKS Virtual Node. Requires --aci-subnet-name to provide the name of an existing subnet for the Virtual Node to use. aci-subnet-name must be in the same vnet which is specified by --vnet-subnet-id (required as well).
+            - azure-policy                    : enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner. Required if enabling Guardrails. Learn more at aka.ms/aks/policy.
+            - ingress-appgw                   : enable Application Gateway Ingress Controller addon (PREVIEW).
+            - confcom                         : enable confcom addon, this will enable SGX device plugin by default(PREVIEW).
+            - open-service-mesh               : enable Open Service Mesh addon (PREVIEW).
+            - gitops                          : enable GitOps (PREVIEW).
+            - azure-keyvault-secrets-provider : enable Azure Keyvault Secrets Provider addon.
+            - web_application_routing         : enable Web Application Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -305,6 +302,9 @@ helps['aks create'] = """
         - name: --node-resource-group
           type: string
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
+        - name: --k8s-support-plan
+          type: string
+          short-summary: Choose from "KubernetesOfficial" or "AKSLongTermSupport", with "AKSLongTermSupport" you get 1 extra year of CVE patchs.
         - name: --nrg-lockdown-restriction-level
           type: string
           short-summary: Restriction level on the managed node resource group.
@@ -570,6 +570,9 @@ helps['aks create'] = """
         - name: --nodepool-taints
           type: string
           short-summary: The node taints for all node pools in this cluster.
+        - name: --enable-cost-analysis
+          type: bool
+          short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -829,6 +832,9 @@ helps['aks update'] = """
         - name: --enable-workload-identity
           type: bool
           short-summary: (PREVIEW) Enable Workload Identity addon for cluster.
+        - name: --disable-workload-identity
+          type: bool
+          short-summary: (PREVIEW) Disable Workload Identity addon for cluster.
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
@@ -838,6 +844,9 @@ helps['aks update'] = """
         - name: --rotation-poll-interval
           type: string
           short-summary: Set interval of rotation poll. Use with azure-keyvault-secrets-provider addon.
+        - name: --k8s-support-plan
+          type: string
+          short-summary: Choose from "KubernetesOfficial" or "AKSLongTermSupport", with "AKSLongTermSupport" you get 1 extra year of CVE patchs.
         - name: --enable-disk-driver
           type: bool
           short-summary: Enable AzureDisk CSI Driver.
@@ -1066,6 +1075,12 @@ helps['aks update'] = """
         - name: --enable-network-observability
           type: bool
           short-summary: Enable network observability on a cluster.
+        - name: --enable-cost-analysis
+          type: bool
+          short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
+        - name: --disable-cost-analysis
+          type: bool
+          short-summary: Disable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1796,6 +1811,44 @@ helps['aks nodepool operation-abort'] = """
     examples:
         - name: Abort operation on agent pool
           text: az aks nodepool operation-abort -g myResourceGroup --nodepool-name nodepool1 --cluster-name myAKSCluster
+"""
+
+helps['aks machine'] = """
+   type: group
+   short-summary: Get information about machines in a nodepool of a managed clusters
+"""
+
+helps['aks machine list'] = """
+   type: command
+   short-summary: Get information about IP Addresses, Hostname for all machines in an agentpool
+   parameters:
+       - name: --cluster-name
+         type: string
+         short-summary: Name of the managed cluster
+       - name: --nodepool-name
+         type: string
+         short-summary: Name of the agentpool of a managed cluster
+   exmaples:
+       - name: Get information about IP Addresses, Hostname for all machines in an agentpool
+         text: az aks machine list --cluster-name <clusterName> --nodepool-name <apName>
+"""
+
+helps['aks machine show'] = """
+   type: command
+   short-summary: Show IP Addresses, Hostname for a specific machine in an agentpool for a managedcluster.
+   parameters:
+       - name: --cluster-name
+         type: string
+         short-summary: Name of the managed cluster
+       - name: --nodepool-name
+         type: string
+         short-summary: Name of the agentpool of a managed cluster
+       - name: --machine-name
+         type: string
+         short-summary: Get IP Addresses, Hostname for a specific machine in an agentpool
+   exmaples:
+       - name: Get IP Addresses, Hostname for a specific machine in an agentpool
+         text: az aks machine show --cluster-name <clusterName> --nodepool-name <apName> --machine-name <machineName>
 """
 
 helps['aks operation-abort'] = """
@@ -2598,7 +2651,7 @@ helps['aks mesh enable'] = """
       - name: Enable Azure Service Mesh with selfsigned CA.
         text: az aks mesh enable --resource-group MyResourceGroup --name MyManagedCluster
       - name: Enable Azure Service Mesh with plugin CA.
-        text: az aks mesh enable --resource-group MyResourceGroup --name MyManagedCluster --key-vault-id my-akv-id --ca-cert-object-name my-ca-cert --ca-key-object-name my-ca-key --cert-chain-object-name my-cert-chain --root-cert-object-name my-root-cert
+        text: az aks mesh enable --resource-group MyResourceGroup --name MyManagedCluster --key-vault-id /subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo --ca-cert-object-name my-ca-cert --ca-key-object-name my-ca-key --cert-chain-object-name my-cert-chain --root-cert-object-name my-root-cert
 
 """
 
@@ -2634,4 +2687,26 @@ helps['aks mesh disable-ingress-gateway'] = """
     examples:
       - name: Disable an internal ingress gateway.
         text: az aks mesh disable-ingress-gateway --resource-group MyResourceGroup --name MyManagedCluster --ingress-gateway-type Internal
+"""
+
+helps['aks mesh enable-egress-gateway'] = """
+    type: command
+    short-summary: Enable an Azure Service Mesh egress gateway.
+    long-summary: This command enables an Azure Service Mesh egress gateway in given cluster.
+    parameters:
+      - name: --egress-gateway-nodeselector --egx-gtw-ns
+        type: string
+        short-summary: Specify the node selector for the egress gateway with space-separated, key-value pairs (key1=value1 key2=value2).
+    examples:
+      - name: Enable an egress gateway.
+        text: az aks mesh enable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster --egress-gateway-nodeselector istio=egress
+"""
+
+helps['aks mesh disable-egress-gateway'] = """
+    type: command
+    short-summary: Disable an Azure Service Mesh egress gateway.
+    long-summary: This command disables an Azure Service Mesh egress gateway in given cluster.
+    examples:
+      - name: Disable an egress gateway.
+        text: az aks mesh disable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster
 """

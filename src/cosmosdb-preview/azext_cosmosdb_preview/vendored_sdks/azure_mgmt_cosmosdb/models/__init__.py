@@ -20,7 +20,8 @@ from ._models_py3 import BackupInformation
 from ._models_py3 import BackupPolicy
 from ._models_py3 import BackupPolicyMigrationState
 from ._models_py3 import BackupResource
-from ._models_py3 import BackupResourceProperties
+from ._models_py3 import BackupSchedule
+from ._models_py3 import BaseCosmosDataTransferDataSourceSink
 from ._models_py3 import Capability
 from ._models_py3 import Capacity
 from ._models_py3 import CassandraClusterDataCenterNodeItem
@@ -75,7 +76,6 @@ from ._models_py3 import ContinuousModeBackupPolicy
 from ._models_py3 import ContinuousModeProperties
 from ._models_py3 import CorsPolicy
 from ._models_py3 import CosmosCassandraDataTransferDataSourceSink
-from ._models_py3 import CosmosDataTransferDataSourceSink
 from ._models_py3 import CosmosMongoDataTransferDataSourceSink
 from ._models_py3 import CosmosSqlDataTransferDataSourceSink
 from ._models_py3 import CreateJobRequest
@@ -337,8 +337,10 @@ from ._cosmos_db_management_client_enums import ApiType
 from ._cosmos_db_management_client_enums import AuthenticationMethod
 from ._cosmos_db_management_client_enums import BackupPolicyMigrationStatus
 from ._cosmos_db_management_client_enums import BackupPolicyType
+from ._cosmos_db_management_client_enums import BackupState
 from ._cosmos_db_management_client_enums import BackupStorageRedundancy
 from ._cosmos_db_management_client_enums import CheckNameAvailabilityReason
+from ._cosmos_db_management_client_enums import ClusterType
 from ._cosmos_db_management_client_enums import CompositePathSortOrder
 from ._cosmos_db_management_client_enums import ConflictResolutionMode
 from ._cosmos_db_management_client_enums import ConnectionState
@@ -405,7 +407,8 @@ __all__ = [
     "BackupPolicy",
     "BackupPolicyMigrationState",
     "BackupResource",
-    "BackupResourceProperties",
+    "BackupSchedule",
+    "BaseCosmosDataTransferDataSourceSink",
     "Capability",
     "Capacity",
     "CassandraClusterDataCenterNodeItem",
@@ -460,7 +463,6 @@ __all__ = [
     "ContinuousModeProperties",
     "CorsPolicy",
     "CosmosCassandraDataTransferDataSourceSink",
-    "CosmosDataTransferDataSourceSink",
     "CosmosMongoDataTransferDataSourceSink",
     "CosmosSqlDataTransferDataSourceSink",
     "CreateJobRequest",
@@ -721,8 +723,10 @@ __all__ = [
     "AuthenticationMethod",
     "BackupPolicyMigrationStatus",
     "BackupPolicyType",
+    "BackupState",
     "BackupStorageRedundancy",
     "CheckNameAvailabilityReason",
+    "ClusterType",
     "CompositePathSortOrder",
     "ConflictResolutionMode",
     "ConnectionState",

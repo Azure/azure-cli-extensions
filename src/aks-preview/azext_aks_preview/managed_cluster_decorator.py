@@ -9,6 +9,8 @@ import os
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
+from azure.mgmt.containerservice.models import KubernetesSupportPlan
+
 from azure.cli.command_modules.acs._consts import (
     DecoratorEarlyExitException,
     DecoratorMode,
@@ -56,6 +58,7 @@ from azext_aks_preview._consts import (
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
+    CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
     CONST_NETWORK_PLUGIN_AZURE,
     CONST_NETWORK_PLUGIN_MODE_OVERLAY,
     CONST_NETWORK_DATAPLANE_CILIUM,
@@ -985,11 +988,22 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # - False: sets by user, to disable the workload identity feature
         # - None: user unspecified, don't set the profile and let server side to backfill
         enable_workload_identity = self.raw_param.get("enable_workload_identity")
+        disable_workload_identity = self.raw_param.get("disable_workload_identity")
 
-        if enable_workload_identity is None:
+        if not enable_workload_identity and not disable_workload_identity:
             return None
 
+        if enable_workload_identity and disable_workload_identity:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-workload-identity and "
+                "--disable-workload-identity at the same time."
+            )
+
+        if not hasattr(self.models, "ManagedClusterSecurityProfileWorkloadIdentity"):
+            raise UnknownError("Workload Identity's data model not found")
+
         profile = self.models.ManagedClusterSecurityProfileWorkloadIdentity()
+
         if self.decorator_mode == DecoratorMode.UPDATE:
             if self.mc.security_profile is not None and self.mc.security_profile.workload_identity is not None:
                 # reuse previous profile is has been set
@@ -2101,14 +2115,18 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         disable_ingress_gateway = self.raw_param.get("disable_ingress_gateway", False)
         ingress_gateway_type = self.raw_param.get("ingress_gateway_type", None)
 
+        enable_egress_gateway = self.raw_param.get("enable_egress_gateway", False)
+        disable_egress_gateway = self.raw_param.get("disable_egress_gateway", False)
+        egx_gtw_nodeselector = self.raw_param.get("egx_gtw_nodeselector", None)
+
         if enable_ingress_gateway and disable_ingress_gateway:
             raise MutuallyExclusiveArgumentError(
                 "Cannot both enable and disable azure service mesh ingress gateway at the same time.",
             )
 
-        # deal with gateways
+        # deal with ingress gateways
         if enable_ingress_gateway or disable_ingress_gateway:
-            # if a gateway is enabled, enable the mesh
+            # if an ingress gateway is enabled, enable the mesh
             if enable_ingress_gateway:
                 new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
                 updated = True
@@ -2124,23 +2142,74 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 new_profile.istio.components.ingress_gateways = []
                 updated = True
 
-            # make update if the gateway already exist
-            gateway_exists = False
+            # make update if the ingress gateway already exist
+            ingress_gateway_exists = False
             for ingress in new_profile.istio.components.ingress_gateways:
                 if ingress.mode == ingress_gateway_type:
                     ingress.enabled = enable_ingress_gateway
-                    gateway_exists = True
+                    ingress_gateway_exists = True
                     updated = True
                     break
 
-            # gateway not exist, append
-            if not gateway_exists:
+            # ingress gateway not exist, append
+            if not ingress_gateway_exists:
                 new_profile.istio.components.ingress_gateways.append(
                     self.models.IstioIngressGateway(
                         mode=ingress_gateway_type,
                         enabled=enable_ingress_gateway,
                     )
                 )
+                updated = True
+
+        # deal with egress gateways
+        if enable_egress_gateway and disable_egress_gateway:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot both enable and disable azure service mesh egress gateway at the same time.",
+            )
+
+        if not enable_egress_gateway and egx_gtw_nodeselector:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot set egress gateway nodeselector without enabling an egress gateway.",
+            )
+
+        if enable_egress_gateway or disable_egress_gateway:
+            # if a gateway is enabled, enable the mesh
+            if enable_egress_gateway:
+                new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
+                updated = True
+
+            # ensure necessary fields
+            if new_profile.istio.components is None:
+                new_profile.istio.components = self.models.IstioComponents()
+                updated = True
+            if new_profile.istio.components.egress_gateways is None:
+                new_profile.istio.components.egress_gateways = []
+                updated = True
+
+            # make update if the egress gateway already exists
+            egress_gateway_exists = False
+            for egress in new_profile.istio.components.egress_gateways:
+                egress.enabled = enable_egress_gateway
+                egress.node_selector = egx_gtw_nodeselector
+                egress_gateway_exists = True
+                updated = True
+                break
+
+            # egress gateway doesn't exist, append
+            if not egress_gateway_exists:
+                if egx_gtw_nodeselector:
+                    new_profile.istio.components.egress_gateways.append(
+                        self.models.IstioEgressGateway(
+                            enabled=enable_egress_gateway,
+                            node_selector=egx_gtw_nodeselector,
+                        )
+                    )
+                else:
+                    new_profile.istio.components.egress_gateways.append(
+                        self.models.IstioEgressGateway(
+                            enabled=enable_egress_gateway,
+                        )
+                    )
                 updated = True
 
         # deal with plugin ca
@@ -2162,6 +2231,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             if cert_chain_object_name is None:
                 raise InvalidArgumentValueError('--cert-chain-object-name is required to use Azure Service Mesh plugin CA feature.')
 
+        if key_vault_id is not None and (
+                not is_valid_resource_id(key_vault_id) or "providers/Microsoft.KeyVault/vaults" not in key_vault_id):
+            raise InvalidArgumentValueError(
+                key_vault_id + " is not a valid Azure Keyvault resource ID."
+            )
+
         if enable_asm and all([key_vault_id, ca_cert_object_name, ca_key_object_name, root_cert_object_name, cert_chain_object_name]):
             if new_profile.istio.certificate_authority is None:
                 new_profile.istio.certificate_authority = self.models.IstioCertificateAuthority()
@@ -2178,6 +2253,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return new_profile
         else:
             return self.mc.service_mesh_profile
+
+    def _get_k8s_support_plan(self) -> KubernetesSupportPlan:
+        support_plan = self.raw_param.get("k8s_support_plan")
+        return support_plan
 
     def _get_uptime_sla(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of uptime_sla.
@@ -2269,12 +2348,65 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return tierStr
 
+    def get_k8s_support_plan(self) -> Union[str, None]:
+        """Obtain the value of kubernetes_support_plan.
+
+        :return: string or None
+        """
+        # default to None
+        support_plan = None
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if self.mc and hasattr(self.mc, "support_plan") and self.mc.support_plan is not None:
+            support_plan = self.mc.support_plan
+
+        # if specified by customer, use the specified value
+        support_plan = self.raw_param.get("k8s_support_plan")
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return support_plan
+
     def get_nodepool_taints(self) -> Union[List[str], None]:
         """Obtain the value of nodepool_labels.
 
         :return: dictionary or None
         """
         return self.agentpool_context.get_node_taints()
+
+    def _get_enable_cost_analysis(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of enable_cost_analysis.
+
+        When enabled, if both enable_cost_analysis and disable_cost_analysis are
+        specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        enable_cost_analysis = self.raw_param.get("enable_cost_analysis")
+
+        # This parameter does not need dynamic completion.
+        if enable_validation:
+            if enable_cost_analysis and self.get_disable_cost_analysis():
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-cost-analysis and --disable-cost-analysis at the same time."
+                )
+
+        return enable_cost_analysis
+
+    def get_enable_cost_analysis(self) -> bool:
+        """Obtain the value of enable_cost_analysis.
+
+        :return: bool
+        """
+        return self._get_enable_cost_analysis(enable_validation=True)
+
+    def get_disable_cost_analysis(self) -> bool:
+        """Obtain the value of disable_cost_analysis.
+
+        :return: bool
+        """
+        # Note: No need to check for mutually exclusive parameter with enable-cost-analysis here
+        # because it's already checked in _get_enable_cost_analysis
+        return self.raw_param.get("disable_cost_analysis")
 
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -2469,15 +2601,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         self._ensure_mc(mc)
 
         profile = self.context.get_workload_identity_profile()
-        if profile is None:
-            if mc.security_profile is not None:
-                # set the value to None to let server side to fill in the default value
-                mc.security_profile.workload_identity = None
-            return mc
-
-        if mc.security_profile is None:
-            mc.security_profile = self.models.ManagedClusterSecurityProfile()
-        mc.security_profile.workload_identity = profile
+        if profile:
+            if mc.security_profile is None:
+                mc.security_profile = self.models.ManagedClusterSecurityProfile()
+            mc.security_profile.workload_identity = profile
 
         return mc
 
@@ -2712,6 +2839,49 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 name="Base",
                 tier="Standard"
             )
+
+        if self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM:
+            mc.sku = self.models.ManagedClusterSKU(
+                name="Base",
+                tier="Premium"
+            )
+        return mc
+
+    def set_up_k8s_support_plan(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up supportPlan for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        support_plan = self.context.get_k8s_support_plan()
+        if support_plan == KubernetesSupportPlan.AKS_LONG_TERM_SUPPORT:
+            if mc is None or mc.sku is None or mc.sku.tier.lower() != CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM.lower():
+                raise InvalidArgumentValueError("Long term support is only available for premium tier clusters.")
+
+        mc.support_plan = support_plan
+        return mc
+
+    def set_up_cost_analysis(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_cost_analysis():
+            if mc.metrics_profile is None:
+                mc.metrics_profile = self.models.ManagedClusterMetricsProfile()
+            if mc.metrics_profile.cost_analysis is None:
+                mc.metrics_profile.cost_analysis = self.models.ManagedClusterCostAnalysis()
+
+            # set enabled
+            mc.metrics_profile.cost_analysis.enabled = True
+
+        # Default is disabled so no need to worry about that here
+
+        return mc
+
+    def set_up_metrics_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        mc = self.set_up_cost_analysis(mc)
+
         return mc
 
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
@@ -2755,8 +2925,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_guardrails_profile(mc)
         # set up azure service mesh profile
         mc = self.set_up_azure_service_mesh_profile(mc)
+        # setup k8s support plan
+        mc = self.set_up_k8s_support_plan(mc)
         # set up azure monitor profile
         mc = self.set_up_azure_monitor_profile(mc)
+        # set up metrics profile
+        mc = self.set_up_metrics_profile(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -3211,6 +3385,20 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_k8s_support_plan(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update supportPlan for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        support_plan = self.context.get_k8s_support_plan()
+        if support_plan == KubernetesSupportPlan.AKS_LONG_TERM_SUPPORT:
+            if mc is None or mc.sku is None or mc.sku.tier.lower() != CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM.lower():
+                raise RequiredArgumentMissingError("Long term support is only available for premium tier clusters.")
+
+        mc.support_plan = support_plan
+        return mc
+
     def update_image_cleaner(self, mc: ManagedCluster) -> ManagedCluster:
         """Update security profile imageCleaner for the ManagedCluster object.
 
@@ -3536,6 +3724,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
+        # Premium without LTS is ok (not vice versa)
+        if self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM:
+            mc.sku = self.models.ManagedClusterSKU(
+                name="Base",
+                tier="Premium"
+            )
+
         if self.context.get_uptime_sla() or self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
             mc.sku = self.models.ManagedClusterSKU(
                 name="Base",
@@ -3601,6 +3796,40 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 agent_profile.node_taints = nodepool_taints
         return mc
 
+    def update_cost_analysis(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        if self.context.get_enable_cost_analysis():
+            if mc.metrics_profile is None:
+                mc.metrics_profile = self.models.ManagedClusterMetricsProfile()
+            if mc.metrics_profile.cost_analysis is None:
+                mc.metrics_profile.cost_analysis = self.models.ManagedClusterCostAnalysis()
+
+            # set enabled
+            mc.metrics_profile.cost_analysis.enabled = True
+
+        if self.context.get_disable_cost_analysis():
+            if mc.metrics_profile is None:
+                mc.metrics_profile = self.models.ManagedClusterMetricsProfile()
+            if mc.metrics_profile.cost_analysis is None:
+                mc.metrics_profile.cost_analysis = self.models.ManagedClusterCostAnalysis()
+
+            # set disabled
+            mc.metrics_profile.cost_analysis.enabled = False
+
+        return mc
+
+    def update_metrics_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Updates the metricsProfile field of the managed cluster
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        mc = self.update_cost_analysis(mc)
+
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -3656,5 +3885,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nodepool_taints_mc(mc)
         # update network_observability in network_profile
         mc = self.update_enable_network_observability_in_network_profile(mc)
+        # update kubernetes support plan
+        mc = self.update_k8s_support_plan(mc)
+        # update metrics profile
+        mc = self.update_metrics_profile(mc)
 
         return mc

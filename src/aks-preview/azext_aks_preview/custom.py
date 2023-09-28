@@ -21,6 +21,7 @@ from azext_aks_preview._client_factory import (
     cf_agent_pools,
     get_graph_rbac_management_client,
     get_msi_client,
+    cf_machines
 )
 from azext_aks_preview._consts import (
     ADDONS,
@@ -47,7 +48,7 @@ from azext_aks_preview._consts import (
     CONST_SPOT_EVICTION_POLICY_DELETE,
     CONST_VIRTUAL_NODE_ADDON_NAME,
     CONST_VIRTUAL_NODE_SUBNET_NAME,
-    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
+    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
 )
 from azext_aks_preview._helpers import (
     get_cluster_snapshot_by_snapshot_id,
@@ -484,6 +485,7 @@ def aks_create(
     attach_acr=None,
     skip_subnet_role_assignment=False,
     node_resource_group=None,
+    k8s_support_plan=None,
     nrg_lockdown_restriction_level=None,
     enable_defender=False,
     defender_config=None,
@@ -554,7 +556,7 @@ def aks_create(
     enable_pod_security_policy=False,
     enable_pod_identity=False,
     enable_pod_identity_with_kubenet=False,
-    enable_workload_identity=None,
+    enable_workload_identity=False,
     enable_image_cleaner=False,
     image_cleaner_interval_hours=None,
     cluster_snapshot_id=None,
@@ -590,6 +592,8 @@ def aks_create(
     ksm_metric_annotations_allow_list=None,
     grafana_resource_id=None,
     enable_windows_recording_rules=False,
+    # metrics profile
+    enable_cost_analysis=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -667,6 +671,7 @@ def aks_update(
     aad_tenant_id=None,
     aad_admin_group_object_ids=None,
     enable_oidc_issuer=False,
+    k8s_support_plan=None,
     windows_admin_password=None,
     enable_ahub=False,
     disable_ahub=False,
@@ -723,7 +728,8 @@ def aks_update(
     enable_pod_identity=False,
     enable_pod_identity_with_kubenet=False,
     disable_pod_identity=False,
-    enable_workload_identity=None,
+    enable_workload_identity=False,
+    disable_workload_identity=False,
     enable_image_cleaner=False,
     disable_image_cleaner=False,
     image_cleaner_interval_hours=None,
@@ -755,6 +761,9 @@ def aks_update(
     guardrails_version=None,
     guardrails_excluded_ns=None,
     enable_network_observability=None,
+    # metrics profile
+    enable_cost_analysis=False,
+    disable_cost_analysis=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1418,6 +1427,14 @@ def aks_operation_abort(cmd,   # pylint: disable=unused-argument
     instance.power_state = power_state
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.begin_abort_latest_operation, resource_group_name, name, headers=headers)
+
+
+def aks_machine_list(cmd, client, resource_group_name, cluster_name, nodepool_name):
+    return client.list(resource_group_name, cluster_name, nodepool_name)
+
+
+def aks_machine_show(cmd, client, resource_group_name, cluster_name, nodepool_name, machine_name):
+    return client.get(resource_group_name, cluster_name, nodepool_name, machine_name)
 
 
 def aks_addon_list_available():
@@ -2485,6 +2502,39 @@ def aks_mesh_disable_ingress_gateway(
         ingress_gateway_type=ingress_gateway_type)
 
 
+def aks_mesh_enable_egress_gateway(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        egx_gtw_nodeselector,
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_azure_service_mesh=True,
+        enable_egress_gateway=True,
+        egx_gtw_nodeselector=egx_gtw_nodeselector)
+
+
+def aks_mesh_disable_egress_gateway(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_azure_service_mesh=True,
+        disable_egress_gateway=True,
+        egx_gtw_nodeselector=None)
+
+
 def _aks_mesh_update(
         cmd,
         client,
@@ -2500,6 +2550,9 @@ def _aks_mesh_update(
         enable_ingress_gateway=None,
         disable_ingress_gateway=None,
         ingress_gateway_type=None,
+        enable_egress_gateway=None,
+        egx_gtw_nodeselector=None,
+        disable_egress_gateway=None,
 ):
     raw_parameters = locals()
 
