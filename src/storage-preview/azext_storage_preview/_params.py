@@ -82,11 +82,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     azure_storage_sid_type = CLIArgumentType(min_api='2019-04-01', arg_group="Azure Active Directory Properties",
                                              help="Specify the security identifier (SID) for Azure Storage. "
                                                   "Required when --enable-files-adds is set to True")
-    sam_account_name_type = CLIArgumentType(min_api='2021-08-01', arg_group="Azure Active Directory Properties",
+    sam_account_name_type = CLIArgumentType(min_api='2023-05-01', arg_group="Azure Active Directory Properties",
                                             help="Specify the Active Directory SAMAccountName for Azure Storage.",
                                             is_preview=True)
     t_account_type = self.get_models('ActiveDirectoryPropertiesAccountType', resource_type=CUSTOM_MGMT_STORAGE)
-    account_type_type = CLIArgumentType(min_api='2021-08-01', arg_group="Azure Active Directory Properties",
+    account_type_type = CLIArgumentType(min_api='2023-05-01', arg_group="Azure Active Directory Properties",
                                         arg_type=get_enum_type(t_account_type), is_preview=True,
                                         help="Specify the Active Directory account type for Azure Storage.")
     t_routing_choice = self.get_models('RoutingChoice', resource_type=CUSTOM_MGMT_STORAGE)
@@ -150,7 +150,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     )
     allowed_copy_scope_type = CLIArgumentType(
         arg_type=get_enum_type(allowed_copy_scope_enum),
-        options_list=['--allowed-copy-scope', '-s'], min_api='2021-08-01',
+        options_list=['--allowed-copy-scope', '-s'], min_api='2023-05-01',
         help='Restrict copy to and from Storage Accounts within an AAD tenant or with Private Links to the same VNet'
     )
     dns_endpoint_type_enum = self.get_sdk(
@@ -226,9 +226,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('tags', tags_type)
         c.argument('custom_domain', help='User domain assigned to the storage account. Name is the CNAME source.')
         c.argument('sku', help='The storage account SKU.', arg_type=get_enum_type(t_sku_name, default='standard_ragrs'))
-        c.argument('enable_sftp', arg_type=get_three_state_flag(), min_api='2021-08-01',
+        c.argument('enable_sftp', arg_type=get_three_state_flag(), min_api='2023-05-01',
                    is_preview=True, help='Enable Secure File Transfer Protocol.')
-        c.argument('enable_local_user', arg_type=get_three_state_flag(), min_api='2021-08-01',
+        c.argument('enable_local_user', arg_type=get_three_state_flag(), min_api='2023-05-01',
                    is_preview=True, help='Enable local user features.')
         c.argument('enable_files_aadds', aadds_type)
         c.argument('enable_files_adds', adds_type)
@@ -329,9 +329,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('use_subdomain', help='Specify whether to use indirect CNAME validation.',
                    arg_type=get_enum_type(['true', 'false']))
         c.argument('tags', tags_type, default=None)
-        c.argument('enable_sftp', arg_type=get_three_state_flag(), min_api='2021-08-01',
+        c.argument('enable_sftp', arg_type=get_three_state_flag(), min_api='2023-05-01',
                    is_preview=True, help='Enable Secure File Transfer Protocol.')
-        c.argument('enable_local_user', arg_type=get_three_state_flag(), min_api='2021-08-01',
+        c.argument('enable_local_user', arg_type=get_three_state_flag(), min_api='2023-05-01',
                    is_preview=True, help='Enable local user features.')
         c.argument('enable_files_aadds', aadds_type)
         c.argument('enable_files_adds', adds_type)
@@ -405,7 +405,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                        help='Resource identifier of the UserAssigned identity to be associated with server-side '
                             'encryption on the storage account.')
             c.argument('federated_identity_client_id', options_list=['--key-vault-federated-client-id', '-f'],
-                       min_api='2021-08-01',
+                       min_api='2023-05-01',
                        help='ClientId of the multi-tenant application to be used '
                             'in conjunction with the user-assigned identity for '
                             'cross-tenant customer-managed-keys server-side encryption on the storage account.')

@@ -26,7 +26,7 @@ class MonitorManagementClient:
 
     :ivar scheduled_query_rules: ScheduledQueryRulesOperations operations
     :vartype scheduled_query_rules:
-     $(python-base-namespace).v2021_08_01.aio.operations.ScheduledQueryRulesOperations
+     $(python-base-namespace).v2023_05_01.aio.operations.ScheduledQueryRulesOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The ID of the target subscription.

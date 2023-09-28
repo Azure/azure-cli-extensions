@@ -36,7 +36,7 @@ def build_list_by_subscription_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = "2021-08-01"
+    api_version = "2023-05-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/providers/Microsoft.Insights/scheduledQueryRules')
@@ -69,7 +69,7 @@ def build_list_by_resource_group_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = "2021-08-01"
+    api_version = "2023-05-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Insights/scheduledQueryRules')
@@ -104,7 +104,7 @@ def build_get_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = "2021-08-01"
+    api_version = "2023-05-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Insights/scheduledQueryRules/{ruleName}')
@@ -142,7 +142,7 @@ def build_create_or_update_request(
     # type: (...) -> HttpRequest
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
-    api_version = "2021-08-01"
+    api_version = "2023-05-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Insights/scheduledQueryRules/{ruleName}')
@@ -182,7 +182,7 @@ def build_update_request(
     # type: (...) -> HttpRequest
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
-    api_version = "2021-08-01"
+    api_version = "2023-05-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Insights/scheduledQueryRules/{ruleName}')
@@ -220,7 +220,7 @@ def build_delete_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = "2021-08-01"
+    api_version = "2023-05-01"
     accept = "application/json"
     # Construct URL
     url = kwargs.pop("template_url", '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Insights/scheduledQueryRules/{ruleName}')
@@ -256,7 +256,7 @@ class ScheduledQueryRulesOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~$(python-base-namespace).v2021_08_01.models
+    :type models: ~$(python-base-namespace).v2023_05_01.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -283,7 +283,7 @@ class ScheduledQueryRulesOperations(object):
         :return: An iterator like instance of either ScheduledQueryRuleResourceCollection or the result
          of cls(response)
         :rtype:
-         ~azure.core.paging.ItemPaged[~$(python-base-namespace).v2021_08_01.models.ScheduledQueryRuleResourceCollection]
+         ~azure.core.paging.ItemPaged[~$(python-base-namespace).v2023_05_01.models.ScheduledQueryRuleResourceCollection]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ScheduledQueryRuleResourceCollection"]
@@ -353,7 +353,7 @@ class ScheduledQueryRulesOperations(object):
         :return: An iterator like instance of either ScheduledQueryRuleResourceCollection or the result
          of cls(response)
         :rtype:
-         ~azure.core.paging.ItemPaged[~$(python-base-namespace).v2021_08_01.models.ScheduledQueryRuleResourceCollection]
+         ~azure.core.paging.ItemPaged[~$(python-base-namespace).v2023_05_01.models.ScheduledQueryRuleResourceCollection]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ScheduledQueryRuleResourceCollection"]
@@ -426,7 +426,7 @@ class ScheduledQueryRulesOperations(object):
         :type rule_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ScheduledQueryRuleResource, or the result of cls(response)
-        :rtype: ~$(python-base-namespace).v2021_08_01.models.ScheduledQueryRuleResource
+        :rtype: ~$(python-base-namespace).v2023_05_01.models.ScheduledQueryRuleResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ScheduledQueryRuleResource"]
@@ -479,10 +479,10 @@ class ScheduledQueryRulesOperations(object):
         :param rule_name: The name of the rule.
         :type rule_name: str
         :param parameters: The parameters of the rule to create or update.
-        :type parameters: ~$(python-base-namespace).v2021_08_01.models.ScheduledQueryRuleResource
+        :type parameters: ~$(python-base-namespace).v2023_05_01.models.ScheduledQueryRuleResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ScheduledQueryRuleResource, or the result of cls(response)
-        :rtype: ~$(python-base-namespace).v2021_08_01.models.ScheduledQueryRuleResource
+        :rtype: ~$(python-base-namespace).v2023_05_01.models.ScheduledQueryRuleResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ScheduledQueryRuleResource"]
@@ -544,10 +544,10 @@ class ScheduledQueryRulesOperations(object):
         :param rule_name: The name of the rule.
         :type rule_name: str
         :param parameters: The parameters of the rule to update.
-        :type parameters: ~$(python-base-namespace).v2021_08_01.models.ScheduledQueryRuleResourcePatch
+        :type parameters: ~$(python-base-namespace).v2023_05_01.models.ScheduledQueryRuleResourcePatch
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ScheduledQueryRuleResource, or the result of cls(response)
-        :rtype: ~$(python-base-namespace).v2021_08_01.models.ScheduledQueryRuleResource
+        :rtype: ~$(python-base-namespace).v2023_05_01.models.ScheduledQueryRuleResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ScheduledQueryRuleResource"]

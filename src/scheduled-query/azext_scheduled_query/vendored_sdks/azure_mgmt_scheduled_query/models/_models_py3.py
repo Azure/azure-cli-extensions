@@ -54,7 +54,7 @@ class Condition(msrest.serialization.Model):
     :vartype query: str
     :ivar time_aggregation: Aggregation type. Relevant and required only for rules of the kind
      LogAlert. Possible values include: "Count", "Average", "Minimum", "Maximum", "Total".
-    :vartype time_aggregation: str or ~$(python-base-namespace).v2021_08_01.models.TimeAggregation
+    :vartype time_aggregation: str or ~$(python-base-namespace).v2023_05_01.models.TimeAggregation
     :ivar metric_measure_column: The column containing the metric measure number. Relevant only for
      rules of the kind LogAlert.
     :vartype metric_measure_column: str
@@ -62,17 +62,17 @@ class Condition(msrest.serialization.Model):
      be a uri formatted as resource id. Relevant only for rules of the kind LogAlert.
     :vartype resource_id_column: str
     :ivar dimensions: List of Dimensions conditions.
-    :vartype dimensions: list[~$(python-base-namespace).v2021_08_01.models.Dimension]
+    :vartype dimensions: list[~$(python-base-namespace).v2023_05_01.models.Dimension]
     :ivar operator: The criteria operator. Relevant and required only for rules of the kind
      LogAlert. Possible values include: "Equals", "GreaterThan", "GreaterThanOrEqual", "LessThan",
      "LessThanOrEqual".
-    :vartype operator: str or ~$(python-base-namespace).v2021_08_01.models.ConditionOperator
+    :vartype operator: str or ~$(python-base-namespace).v2023_05_01.models.ConditionOperator
     :ivar threshold: the criteria threshold value that activates the alert. Relevant and required
      only for rules of the kind LogAlert.
     :vartype threshold: float
     :ivar failing_periods: The minimum number of violations required within the selected lookback
      time window required to raise an alert. Relevant only for rules of the kind LogAlert.
-    :vartype failing_periods: ~$(python-base-namespace).v2021_08_01.models.ConditionFailingPeriods
+    :vartype failing_periods: ~$(python-base-namespace).v2023_05_01.models.ConditionFailingPeriods
     :ivar metric_name: The name of the metric to be sent. Relevant and required only for rules of
      the kind LogToMetric.
     :vartype metric_name: str
@@ -110,7 +110,7 @@ class Condition(msrest.serialization.Model):
         :keyword time_aggregation: Aggregation type. Relevant and required only for rules of the kind
          LogAlert. Possible values include: "Count", "Average", "Minimum", "Maximum", "Total".
         :paramtype time_aggregation: str or
-         ~$(python-base-namespace).v2021_08_01.models.TimeAggregation
+         ~$(python-base-namespace).v2023_05_01.models.TimeAggregation
         :keyword metric_measure_column: The column containing the metric measure number. Relevant only
          for rules of the kind LogAlert.
         :paramtype metric_measure_column: str
@@ -118,18 +118,18 @@ class Condition(msrest.serialization.Model):
          must be a uri formatted as resource id. Relevant only for rules of the kind LogAlert.
         :paramtype resource_id_column: str
         :keyword dimensions: List of Dimensions conditions.
-        :paramtype dimensions: list[~$(python-base-namespace).v2021_08_01.models.Dimension]
+        :paramtype dimensions: list[~$(python-base-namespace).v2023_05_01.models.Dimension]
         :keyword operator: The criteria operator. Relevant and required only for rules of the kind
          LogAlert. Possible values include: "Equals", "GreaterThan", "GreaterThanOrEqual", "LessThan",
          "LessThanOrEqual".
-        :paramtype operator: str or ~$(python-base-namespace).v2021_08_01.models.ConditionOperator
+        :paramtype operator: str or ~$(python-base-namespace).v2023_05_01.models.ConditionOperator
         :keyword threshold: the criteria threshold value that activates the alert. Relevant and
          required only for rules of the kind LogAlert.
         :paramtype threshold: float
         :keyword failing_periods: The minimum number of violations required within the selected
          lookback time window required to raise an alert. Relevant only for rules of the kind LogAlert.
         :paramtype failing_periods:
-         ~$(python-base-namespace).v2021_08_01.models.ConditionFailingPeriods
+         ~$(python-base-namespace).v2023_05_01.models.ConditionFailingPeriods
         :keyword metric_name: The name of the metric to be sent. Relevant and required only for rules
          of the kind LogToMetric.
         :paramtype metric_name: str
@@ -193,7 +193,7 @@ class Dimension(msrest.serialization.Model):
     :vartype name: str
     :ivar operator: Required. Operator for dimension values. Possible values include: "Include",
      "Exclude".
-    :vartype operator: str or ~$(python-base-namespace).v2021_08_01.models.DimensionOperator
+    :vartype operator: str or ~$(python-base-namespace).v2023_05_01.models.DimensionOperator
     :ivar values: Required. List of dimension values.
     :vartype values: list[str]
     """
@@ -223,7 +223,7 @@ class Dimension(msrest.serialization.Model):
         :paramtype name: str
         :keyword operator: Required. Operator for dimension values. Possible values include: "Include",
          "Exclude".
-        :paramtype operator: str or ~$(python-base-namespace).v2021_08_01.models.DimensionOperator
+        :paramtype operator: str or ~$(python-base-namespace).v2023_05_01.models.DimensionOperator
         :keyword values: Required. List of dimension values.
         :paramtype values: list[str]
         """
@@ -269,7 +269,7 @@ class ErrorContract(msrest.serialization.Model):
     """Describes the format of Error response.
 
     :ivar error: The error details.
-    :vartype error: ~$(python-base-namespace).v2021_08_01.models.ErrorResponse
+    :vartype error: ~$(python-base-namespace).v2023_05_01.models.ErrorResponse
     """
 
     _attribute_map = {
@@ -284,7 +284,7 @@ class ErrorContract(msrest.serialization.Model):
     ):
         """
         :keyword error: The error details.
-        :paramtype error: ~$(python-base-namespace).v2021_08_01.models.ErrorResponse
+        :paramtype error: ~$(python-base-namespace).v2023_05_01.models.ErrorResponse
         """
         super(ErrorContract, self).__init__(**kwargs)
         self.error = error
@@ -302,10 +302,10 @@ class ErrorResponse(msrest.serialization.Model):
     :ivar target: The error target.
     :vartype target: str
     :ivar details: The error details.
-    :vartype details: list[~$(python-base-namespace).v2021_08_01.models.ErrorResponse]
+    :vartype details: list[~$(python-base-namespace).v2023_05_01.models.ErrorResponse]
     :ivar additional_info: The error additional info.
     :vartype additional_info:
-     list[~$(python-base-namespace).v2021_08_01.models.ErrorAdditionalInfo]
+     list[~$(python-base-namespace).v2023_05_01.models.ErrorAdditionalInfo]
     """
 
     _validation = {
@@ -381,7 +381,7 @@ class ScheduledQueryRuleCriteria(msrest.serialization.Model):
     """The rule criteria that defines the conditions of the scheduled query rule.
 
     :ivar all_of: A list of conditions to evaluate against the specified scopes.
-    :vartype all_of: list[~$(python-base-namespace).v2021_08_01.models.Condition]
+    :vartype all_of: list[~$(python-base-namespace).v2023_05_01.models.Condition]
     """
 
     _attribute_map = {
@@ -396,7 +396,7 @@ class ScheduledQueryRuleCriteria(msrest.serialization.Model):
     ):
         """
         :keyword all_of: A list of conditions to evaluate against the specified scopes.
-        :paramtype all_of: list[~$(python-base-namespace).v2021_08_01.models.Condition]
+        :paramtype all_of: list[~$(python-base-namespace).v2023_05_01.models.Condition]
         """
         super(ScheduledQueryRuleCriteria, self).__init__(**kwargs)
         self.all_of = all_of
@@ -477,7 +477,7 @@ class ScheduledQueryRuleResource(TrackedResource):
     :vartype location: str
     :ivar kind: Indicates the type of scheduled query rule. The default is LogAlert. Possible
      values include: "LogAlert", "LogToMetric".
-    :vartype kind: str or ~$(python-base-namespace).v2021_08_01.models.Kind
+    :vartype kind: str or ~$(python-base-namespace).v2023_05_01.models.Kind
     :ivar etag: The etag field is *not* required. If it is provided in the response body, it must
      also be provided as a header per the normal etag convention.  Entity tags are used for
      comparing two or more entities from the same requested resource. HTTP/1.1 uses entity tags in
@@ -485,7 +485,7 @@ class ScheduledQueryRuleResource(TrackedResource):
      (section 14.27) header fields.
     :vartype etag: str
     :ivar system_data: SystemData of ScheduledQueryRule.
-    :vartype system_data: ~$(python-base-namespace).v2021_08_01.models.SystemData
+    :vartype system_data: ~$(python-base-namespace).v2023_05_01.models.SystemData
     :ivar created_with_api_version: The api-version used when creating this alert rule.
     :vartype created_with_api_version: str
     :ivar is_legacy_log_analytics_rule: True if alert rule is legacy Log Analytic rule.
@@ -497,7 +497,7 @@ class ScheduledQueryRuleResource(TrackedResource):
     :ivar severity: Severity of the alert. Should be an integer between [0-4]. Value of 0 is
      severest. Relevant and required only for rules of the kind LogAlert. Possible values include:
      0, 1, 2, 3, 4.
-    :vartype severity: int or ~$(python-base-namespace).v2021_08_01.models.AlertSeverity
+    :vartype severity: int or ~$(python-base-namespace).v2023_05_01.models.AlertSeverity
     :ivar enabled: The flag which indicates whether this scheduled query rule is enabled. Value
      should be true or false.
     :vartype enabled: bool
@@ -519,12 +519,12 @@ class ScheduledQueryRuleResource(TrackedResource):
      kind LogAlert.
     :vartype target_resource_types: list[str]
     :ivar criteria: The rule criteria that defines the conditions of the scheduled query rule.
-    :vartype criteria: ~$(python-base-namespace).v2021_08_01.models.ScheduledQueryRuleCriteria
+    :vartype criteria: ~$(python-base-namespace).v2023_05_01.models.ScheduledQueryRuleCriteria
     :ivar mute_actions_duration: Mute actions for the chosen period of time (in ISO 8601 duration
      format) after the alert is fired. Relevant only for rules of the kind LogAlert.
     :vartype mute_actions_duration: ~datetime.timedelta
     :ivar actions: Actions to invoke when the alert fires.
-    :vartype actions: ~$(python-base-namespace).v2021_08_01.models.Actions
+    :vartype actions: ~$(python-base-namespace).v2023_05_01.models.Actions
     :ivar is_workspace_alerts_storage_configured: The flag which indicates whether this scheduled
      query rule has been configured to be stored in the customer's storage. The default is false.
     :vartype is_workspace_alerts_storage_configured: bool
@@ -611,7 +611,7 @@ class ScheduledQueryRuleResource(TrackedResource):
         :paramtype location: str
         :keyword kind: Indicates the type of scheduled query rule. The default is LogAlert. Possible
          values include: "LogAlert", "LogToMetric".
-        :paramtype kind: str or ~$(python-base-namespace).v2021_08_01.models.Kind
+        :paramtype kind: str or ~$(python-base-namespace).v2023_05_01.models.Kind
         :keyword description: The description of the scheduled query rule.
         :paramtype description: str
         :keyword display_name: The display name of the alert rule.
@@ -619,7 +619,7 @@ class ScheduledQueryRuleResource(TrackedResource):
         :keyword severity: Severity of the alert. Should be an integer between [0-4]. Value of 0 is
          severest. Relevant and required only for rules of the kind LogAlert. Possible values include:
          0, 1, 2, 3, 4.
-        :paramtype severity: int or ~$(python-base-namespace).v2021_08_01.models.AlertSeverity
+        :paramtype severity: int or ~$(python-base-namespace).v2023_05_01.models.AlertSeverity
         :keyword enabled: The flag which indicates whether this scheduled query rule is enabled. Value
          should be true or false.
         :paramtype enabled: bool
@@ -641,12 +641,12 @@ class ScheduledQueryRuleResource(TrackedResource):
          kind LogAlert.
         :paramtype target_resource_types: list[str]
         :keyword criteria: The rule criteria that defines the conditions of the scheduled query rule.
-        :paramtype criteria: ~$(python-base-namespace).v2021_08_01.models.ScheduledQueryRuleCriteria
+        :paramtype criteria: ~$(python-base-namespace).v2023_05_01.models.ScheduledQueryRuleCriteria
         :keyword mute_actions_duration: Mute actions for the chosen period of time (in ISO 8601
          duration format) after the alert is fired. Relevant only for rules of the kind LogAlert.
         :paramtype mute_actions_duration: ~datetime.timedelta
         :keyword actions: Actions to invoke when the alert fires.
-        :paramtype actions: ~$(python-base-namespace).v2021_08_01.models.Actions
+        :paramtype actions: ~$(python-base-namespace).v2023_05_01.models.Actions
         :keyword check_workspace_alerts_storage_configured: The flag which indicates whether this
          scheduled query rule should be stored in the customer's storage. The default is false. Relevant
          only for rules of the kind LogAlert.
@@ -688,7 +688,7 @@ class ScheduledQueryRuleResourceCollection(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The values for the scheduled query rule resources.
-    :vartype value: list[~$(python-base-namespace).v2021_08_01.models.ScheduledQueryRuleResource]
+    :vartype value: list[~$(python-base-namespace).v2023_05_01.models.ScheduledQueryRuleResource]
     :ivar next_link: Provides the link to retrieve the next set of elements.
     :vartype next_link: str
     """
@@ -710,7 +710,7 @@ class ScheduledQueryRuleResourceCollection(msrest.serialization.Model):
     ):
         """
         :keyword value: The values for the scheduled query rule resources.
-        :paramtype value: list[~$(python-base-namespace).v2021_08_01.models.ScheduledQueryRuleResource]
+        :paramtype value: list[~$(python-base-namespace).v2023_05_01.models.ScheduledQueryRuleResource]
         """
         super(ScheduledQueryRuleResourceCollection, self).__init__(**kwargs)
         self.value = value
@@ -735,7 +735,7 @@ class ScheduledQueryRuleResourcePatch(msrest.serialization.Model):
     :ivar severity: Severity of the alert. Should be an integer between [0-4]. Value of 0 is
      severest. Relevant and required only for rules of the kind LogAlert. Possible values include:
      0, 1, 2, 3, 4.
-    :vartype severity: int or ~$(python-base-namespace).v2021_08_01.models.AlertSeverity
+    :vartype severity: int or ~$(python-base-namespace).v2023_05_01.models.AlertSeverity
     :ivar enabled: The flag which indicates whether this scheduled query rule is enabled. Value
      should be true or false.
     :vartype enabled: bool
@@ -757,12 +757,12 @@ class ScheduledQueryRuleResourcePatch(msrest.serialization.Model):
      kind LogAlert.
     :vartype target_resource_types: list[str]
     :ivar criteria: The rule criteria that defines the conditions of the scheduled query rule.
-    :vartype criteria: ~$(python-base-namespace).v2021_08_01.models.ScheduledQueryRuleCriteria
+    :vartype criteria: ~$(python-base-namespace).v2023_05_01.models.ScheduledQueryRuleCriteria
     :ivar mute_actions_duration: Mute actions for the chosen period of time (in ISO 8601 duration
      format) after the alert is fired. Relevant only for rules of the kind LogAlert.
     :vartype mute_actions_duration: ~datetime.timedelta
     :ivar actions: Actions to invoke when the alert fires.
-    :vartype actions: ~$(python-base-namespace).v2021_08_01.models.Actions
+    :vartype actions: ~$(python-base-namespace).v2023_05_01.models.Actions
     :ivar is_workspace_alerts_storage_configured: The flag which indicates whether this scheduled
      query rule has been configured to be stored in the customer's storage. The default is false.
     :vartype is_workspace_alerts_storage_configured: bool
@@ -837,7 +837,7 @@ class ScheduledQueryRuleResourcePatch(msrest.serialization.Model):
         :keyword severity: Severity of the alert. Should be an integer between [0-4]. Value of 0 is
          severest. Relevant and required only for rules of the kind LogAlert. Possible values include:
          0, 1, 2, 3, 4.
-        :paramtype severity: int or ~$(python-base-namespace).v2021_08_01.models.AlertSeverity
+        :paramtype severity: int or ~$(python-base-namespace).v2023_05_01.models.AlertSeverity
         :keyword enabled: The flag which indicates whether this scheduled query rule is enabled. Value
          should be true or false.
         :paramtype enabled: bool
@@ -859,12 +859,12 @@ class ScheduledQueryRuleResourcePatch(msrest.serialization.Model):
          kind LogAlert.
         :paramtype target_resource_types: list[str]
         :keyword criteria: The rule criteria that defines the conditions of the scheduled query rule.
-        :paramtype criteria: ~$(python-base-namespace).v2021_08_01.models.ScheduledQueryRuleCriteria
+        :paramtype criteria: ~$(python-base-namespace).v2023_05_01.models.ScheduledQueryRuleCriteria
         :keyword mute_actions_duration: Mute actions for the chosen period of time (in ISO 8601
          duration format) after the alert is fired. Relevant only for rules of the kind LogAlert.
         :paramtype mute_actions_duration: ~datetime.timedelta
         :keyword actions: Actions to invoke when the alert fires.
-        :paramtype actions: ~$(python-base-namespace).v2021_08_01.models.Actions
+        :paramtype actions: ~$(python-base-namespace).v2023_05_01.models.Actions
         :keyword check_workspace_alerts_storage_configured: The flag which indicates whether this
          scheduled query rule should be stored in the customer's storage. The default is false. Relevant
          only for rules of the kind LogAlert.
@@ -905,7 +905,7 @@ class SystemData(msrest.serialization.Model):
     :vartype created_by: str
     :ivar created_by_type: The type of identity that created the resource. Possible values include:
      "User", "Application", "ManagedIdentity", "Key".
-    :vartype created_by_type: str or ~$(python-base-namespace).v2021_08_01.models.CreatedByType
+    :vartype created_by_type: str or ~$(python-base-namespace).v2023_05_01.models.CreatedByType
     :ivar created_at: The timestamp of resource creation (UTC).
     :vartype created_at: ~datetime.datetime
     :ivar last_modified_by: The identity that last modified the resource.
@@ -913,7 +913,7 @@ class SystemData(msrest.serialization.Model):
     :ivar last_modified_by_type: The type of identity that last modified the resource. Possible
      values include: "User", "Application", "ManagedIdentity", "Key".
     :vartype last_modified_by_type: str or
-     ~$(python-base-namespace).v2021_08_01.models.CreatedByType
+     ~$(python-base-namespace).v2023_05_01.models.CreatedByType
     :ivar last_modified_at: The timestamp of resource last modification (UTC).
     :vartype last_modified_at: ~datetime.datetime
     """
@@ -943,7 +943,7 @@ class SystemData(msrest.serialization.Model):
         :paramtype created_by: str
         :keyword created_by_type: The type of identity that created the resource. Possible values
          include: "User", "Application", "ManagedIdentity", "Key".
-        :paramtype created_by_type: str or ~$(python-base-namespace).v2021_08_01.models.CreatedByType
+        :paramtype created_by_type: str or ~$(python-base-namespace).v2023_05_01.models.CreatedByType
         :keyword created_at: The timestamp of resource creation (UTC).
         :paramtype created_at: ~datetime.datetime
         :keyword last_modified_by: The identity that last modified the resource.
@@ -951,7 +951,7 @@ class SystemData(msrest.serialization.Model):
         :keyword last_modified_by_type: The type of identity that last modified the resource. Possible
          values include: "User", "Application", "ManagedIdentity", "Key".
         :paramtype last_modified_by_type: str or
-         ~$(python-base-namespace).v2021_08_01.models.CreatedByType
+         ~$(python-base-namespace).v2023_05_01.models.CreatedByType
         :keyword last_modified_at: The timestamp of resource last modification (UTC).
         :paramtype last_modified_at: ~datetime.datetime
         """

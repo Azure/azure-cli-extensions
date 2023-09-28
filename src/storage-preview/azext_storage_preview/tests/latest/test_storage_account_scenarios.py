@@ -26,7 +26,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
                  checks=[JMESPathCheck('dnsEndpointType', 'AzureDnsZone')])
 
     @AllowLargeResponse()
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2021-08-01')
+    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2023-05-01')
     @ResourceGroupPreparer(name_prefix='cli_test_storage_account_sftp')
     def test_storage_account_sftp(self, resource_group):
         self.kwargs.update({
@@ -42,7 +42,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         self.cmd('storage account update -n {sa} --enable-local-user false',
                  checks=[JMESPathCheck('isSftpEnabled', False), JMESPathCheck('isLocalUserEnabled', False)])
 
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2021-08-01')
+    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2023-05-01')
     @ResourceGroupPreparer()
     def test_storage_account_with_files_adds_sam_account_name(self, resource_group):
         name = self.create_random_name(prefix='cli', length=24)
@@ -214,7 +214,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         self.assertEqual(activeDirectoryProperties['domainGuid'], self.kwargs['domain_guid'])
         self.assertEqual(activeDirectoryProperties['domainName'], self.kwargs['domain_name'])
 
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2021-08-01')
+    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2023-05-01')
     @ResourceGroupPreparer()
     def test_storage_account_with_files_adds_sam_account_name(self, resource_group):
         name = self.create_random_name(prefix='cli', length=24)
