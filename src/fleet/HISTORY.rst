@@ -40,5 +40,5 @@ Release History
 ++++++
 * By default, fleets are now created without a hub
 * Added support for Fleet Upgrade Strategy
-* Added argument for Node Image Seleciton.
+* Added argument for Node Image Selection.
 
