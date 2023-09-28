@@ -855,9 +855,6 @@ helps['cosmosdb copy show'] = """
       - name: Show details of job j1
         text: |-
                az cosmosdb copy show -g "rg1" --account-name "acc1" --job-name "j1"
-      - name: Show job details using Id
-        text: |-
-               az cosmosdb copy show --ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.DocumentDB/databaseAccounts/acc1/dataTransferJobs/j1"
 """
 
 helps['cosmosdb copy pause'] = """
@@ -867,9 +864,6 @@ helps['cosmosdb copy pause'] = """
       - name: Pause job j1
         text: |-
                az cosmosdb copy pause -g "rg1" --account-name "acc1" --job-name "j1"
-      - name: Pause job using Id
-        text: |-
-               az cosmosdb copy pause --ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.DocumentDB/databaseAccounts/acc1/dataTransferJobs/j1"
 """
 
 helps['cosmosdb copy resume'] = """
@@ -879,10 +873,6 @@ helps['cosmosdb copy resume'] = """
       - name: Resume job j1
         text: |-
                az cosmosdb copy resume -g "rg1" --account-name "acc1" --job-name "j1"
-      - name: Resume job using Id
-        text: |-
-               az cosmosdb copy resume --ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.DocumentDB/databaseAccounts/acc1/dataTransferJobs/j1"
-
 """
 
 helps['cosmosdb copy cancel'] = """
@@ -892,10 +882,6 @@ helps['cosmosdb copy cancel'] = """
       - name: Cancel job j1
         text: |-
                az cosmosdb copy cancel -g "rg1" --account-name "acc1" --job-name "j1"
-      - name: Cancel job using Id
-        text: |-
-               az cosmosdb copy cancel --ids "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.DocumentDB/databaseAccounts/acc1/dataTransferJobs/j1"
-
 """
 
 helps['cosmosdb sql container merge'] = """
