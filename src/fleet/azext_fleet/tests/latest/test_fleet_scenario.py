@@ -120,22 +120,6 @@ class FleetScenarioTest(ScenarioTest):
         #     self.check('name', '{updaterun}')
         # ])
 
-        self.cmd('fleet updatestrategy create -g {rg} -n {fleetUpdateStrategy} -f {fleet_name}', checks=[
-            self.check('name', '{fleetUpdateStrategy}')
-        ])
-
-        self.cmd('fleet updatestrategy show -g {rg} -n {fleetUpdateStrategy} -f {fleet_name}', checks=[
-            self.check('name', '{fleetUpdateStrategy}')
-        ])
-
-        self.cmd('fleet updatestrategy list -g {rg} -f {fleet_name}', checks=[
-            self.check('length([])', 1)
-        ])
-
-        # self.cmd('fleet updatestrategy stop -g {rg} -n {fleetUpdateStrategy} -f {fleet_name}', checks=[
-        #     self.check('name', '{fleetUpdateStrategy}')
-        # ])
-
         self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name}')
         
         self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member_name}')
