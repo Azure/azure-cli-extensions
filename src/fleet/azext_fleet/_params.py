@@ -62,7 +62,7 @@ def load_arguments(self, _):
         c.argument('upgrade_type', validator=validate_upgrade_type)
         c.argument('kubernetes_version', validator=validate_kubernetes_version)
         c.argument('node_image_selection', validator=validate_node_image_selection)
-        c.argument('stages', type=file_type, completer=FilesCompleter())
+        c.argument('stages', type=file_type, completer=FilesCompleter(), help='Path to a json file that defines stages to upgrade a fleet. See examples for further reference.')
         c.argument('update_group')
 
     with self.argument_context('fleet updatestrategy') as c:
@@ -70,5 +70,5 @@ def load_arguments(self, _):
         c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Specify the fleet name.')
 
     with self.argument_context('fleet updatestrategy create') as c:
-        c.argument('stages', type=file_type, completer=FilesCompleter())
+        c.argument('stages', type=file_type, completer=FilesCompleter(), help='Path to a json file that defines stages to upgrade a fleet. See examples for further reference.')
 
