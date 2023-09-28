@@ -11,6 +11,7 @@ from azure.cli.testsdk import *
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 
+
 class BastionScenario(ScenarioTest):
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix="cli_test_bastion_host_", location="westus2")
