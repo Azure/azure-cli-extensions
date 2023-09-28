@@ -44,6 +44,7 @@ class FleetScenarioTest(ScenarioTest):
             'fleet_name': self.create_random_name(prefix='fl-', length=7),
             'member_name': self.create_random_name(prefix='flmc-', length=9),
             'updaterun': self.create_random_name(prefix='uprn-', length=9),
+            'updateStrategy_name': self.create_random_name(prefix='upstr', length=9)
             'enable_hub': True,
             'ssh_key_value': self.generate_ssh_keys()
         })
@@ -120,6 +121,20 @@ class FleetScenarioTest(ScenarioTest):
         # self.cmd('fleet updaterun stop -g {rg} -n {updaterun} -f {fleet_name}', checks=[
         #     self.check('name', '{updaterun}')
         # ])
+
+        self.cmd('fleet updatestrategy create -g {rg} -n {updateStrategy_name} -f {fleet_name}', checks=[
+            self.check('name', '{updateStrategy_name}')
+        ])
+
+        self.cmd('fleet updatestrategy show -g {rg} -n {updateStrategy_name} -f {fleet_name}', checks=[
+            self.check('name', '{updateStrategy_name}')
+        ])
+
+        self.cmd('fleet updatestrategy list -g {rg} -f {fleet_name}', checks=[
+            self.check('length([])', 1)
+        ])
+
+        self.cmd('fleet updatestrategy delete -g {rg} -f {fleet_name} -n {updateStrategy_name}')
 
         self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name}')
 
