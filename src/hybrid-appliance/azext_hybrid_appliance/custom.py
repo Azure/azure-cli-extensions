@@ -89,18 +89,9 @@ def validate_hybrid_appliance(cmd, resource_group_name, name, validate_connected
             cmd_show_arc= ['az', 'connectedk8s', 'show', '-n', name, '-g', resource_group_name, '-o', 'none']
             process = subprocess.Popen(cmd_show_arc, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if process.wait() == 0:
-                matches_current_cluster=False
-                if utils.check_microk8s():
-                    try:
-                        cm = utils.get_azure_clusterconfig_cm()
-                        utils.validate_cluster_resource_group_and_name(cm, resource_group_name, name)
-                        matches_current_cluster=True
-                    except:
-                        pass
-                if not matches_current_cluster:
-                    telemetry.set_exception(exception="An appliance with same name already exists in the resource group", fault_type=consts.Resource_Already_Exists_Fault_Type, summary="Appliance resource with same name already exists")
-                    logger.warning("The appliance name and resource group provided in the script already correspond to an existing connected cluster resource in Azure. Go to the portal and generate the script again with a different appliance name.")
-                    all_validations_passed = False
+                telemetry.set_exception(exception="An appliance with same name already exists in the resource group", fault_type=consts.Resource_Already_Exists_Fault_Type, summary="Appliance resource with same name already exists")
+                logger.warning("The appliance name and resource group provided in the script already correspond to an existing connected cluster resource in Azure. Go to the portal and generate the script again with a different appliance name.")
+                all_validations_passed = False
             stdout = process.stdout.read().decode()
             stderr = process.stderr.read().decode()
             if "ResourceGroupNotFound" in stdout or "ResourceGroupNotFound" in stderr:
