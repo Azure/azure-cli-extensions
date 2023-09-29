@@ -386,6 +386,13 @@ def create_fleet_update_strategy(cmd,
                       no_wait=False):
     update_run_strategy_model = get_update_run_strategy(cmd, stages)
 
+    fleet_update_strategy_model = cmd.get_models(
+        "FleetUpdateStrategy",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_update_strategies"
+    )
+    fleet_update_strategy = fleet_update_strategy_model(fleet_update_strategies)    
+    
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run_strategy_model)
 
 
