@@ -202,3 +202,32 @@ helps['fleet updaterun stop'] = """
     type: command
     short-summary: Stops a fleet update run.
 """
+
+helps['fleet updatestrategy'] = """
+    type: group
+    short-summary: Commands to manage a fleet update strategy.
+"""
+
+helps['fleet updatestrategy create'] = """
+    type: command
+    short-summary: Creates or updates a update strategy
+    parameters:
+        - name: --stages
+          type: string
+          short-summary: Path to a json file that defines the update strategy.
+"""
+
+helps['fleet updatestrategy show'] = """
+    type: command
+    short-summary: Shows a update strategy.
+"""
+
+helps['fleet updatestrategy list'] = """
+    type: command
+    short-summary: Lists the fleet's update strategies.
+"""
+
+helps['fleet updatestrategy delete'] = """
+    type: command
+    short-summary: Deletes a update strategy.
+"""

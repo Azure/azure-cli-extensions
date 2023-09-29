@@ -44,7 +44,7 @@ class FleetScenarioTest(ScenarioTest):
             'fleet_name': self.create_random_name(prefix='fl-', length=7),
             'member_name': self.create_random_name(prefix='flmc-', length=9),
             'updaterun': self.create_random_name(prefix='uprn-', length=9),
-            'updateStrategy_name': self.create_random_name(prefix='upstr', length=9)
+            'updateStrategy_name': self.create_random_name(prefix='upstr', length=9),
             'enable_hub': True,
             'ssh_key_value': self.generate_ssh_keys()
         })
@@ -71,7 +71,7 @@ class FleetScenarioTest(ScenarioTest):
         self.cmd('fleet list', checks=[
             self.greater_than('length([])', 0)
         ])
-        
+
         self.cmd('fleet get-credentials -g {rg} -n {fleet_name} --overwrite-existing')
 
         mc_id = self.cmd('aks create -g {rg} -n {member_name} --ssh-key-value={ssh_key_value}', checks=[
