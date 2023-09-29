@@ -254,11 +254,14 @@ def create_update_run(cmd,
                       node_image_selection,
                       kubernetes_version=None,
                       stages=None,
+                      update_strategy_id=None,
                       no_wait=False):
     if upgrade_type == "Full" and kubernetes_version is None:
         raise CLIError("Please set kubernetes version when upgrade type is 'Full'.")
     if upgrade_type == "NodeImageOnly" and kubernetes_version is not None:
         raise CLIError("Cannot set kubernetes version when upgrade type is 'NodeImageOnly'.")
+    if stages is not None and update_strategy_id is not None:
+        raise CLIError("Cannot set stages when update strategy id is set.")
 
     update_run_strategy = get_update_run_strategy(cmd, "update_runs", stages)
 
@@ -291,7 +294,10 @@ def create_update_run(cmd,
         upgrade=managed_cluster_upgrade_spec,
         nodeImageSelection=node_image_selection)
 
-    update_run = update_run_model(strategy=update_run_strategy, managed_cluster_update=managed_cluster_update)
+    update_run = update_run_model(
+        update_strategy_id=update_strategy_id,
+        strategy=update_run_strategy, 
+        managed_cluster_update=managed_cluster_update)
 
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run)
 
@@ -391,10 +397,6 @@ def create_fleet_update_strategy(cmd,
         operation_group="fleet_update_strategies"
     )
     fleet_update_strategy = fleet_update_strategy_model(strategy=update_run_strategy_model)
-
-    print(fleet_update_strategy)
-    print(update_run_strategy_model)
-    
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, fleet_update_strategy)
 
 

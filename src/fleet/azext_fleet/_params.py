@@ -12,7 +12,7 @@ from azure.cli.core.commands.parameters import (
     get_enum_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azext_fleet._validators import validate_member_cluster_id, validate_kubernetes_version, validate_apiserver_subnet_id, validate_agent_subnet_id, validate_assign_identity
+from azext_fleet._validators import validate_member_cluster_id, validate_kubernetes_version, validate_apiserver_subnet_id, validate_agent_subnet_id, validate_assign_identity, validate_update_strategy_id
 
 
 def load_arguments(self, _):
@@ -61,7 +61,7 @@ def load_arguments(self, _):
         c.argument('kubernetes_version', validator=validate_kubernetes_version)
         c.argument('node_image_selection', arg_type=get_enum_type(['Latest', 'Consistent']), help='Node Image Selection is an option that lets you choose how your clusters\' nodes are upgraded')
         c.argument('stages', type=file_type, completer=FilesCompleter(), help='Path to a json file that defines stages to upgrade a fleet. See examples for further reference.')
-        c.argument('update_group')
+        c.argument('update_strategy_id', validator=validate_update_strategy_id ,help='The ID of the update strategy to use for this update run. If not specified, the default update strategy will be used.')
 
     with self.argument_context('fleet updatestrategy') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify name for the fleet update strategy.')
