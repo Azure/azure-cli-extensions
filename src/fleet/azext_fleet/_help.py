@@ -134,12 +134,12 @@ helps['fleet updaterun create'] = """
           short-summary: Path to a json file that defines stages to upgrade a fleet. See examples for further reference.
     examples:
         - name: Create updaterun for a fleet with 'Full' upgrade type.
-          text: az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type Full --kubernetes-version 1.25.0
+          text: az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type Full --kubernetes-version 1.25.0 --node-image-selection Latest
         - name: Create updaterun for a fleet with 'NodeImageOnly' upgrade type.
-          text: az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type NodeImageOnly
+          text: az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type NodeImageOnly --node-image-selection Latest
         - name: Create updaterun for a fleet with 'Full' upgrade type & stages.
           text: |
-            az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type Full --kubernetes-version 1.25.0 --stages ./test/stages.json
+            az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type Full --kubernetes-version 1.25.0 --node-image-selection Latest --stages ./test/stages.json
 
                 A sample json to demonstrate the expected format. It takes a stages array. Each stage consists of the stage name, groups array and an optional afterStageWaitInSeconds integer.
                 Within groups, each group consists of group name, given to a fleet's member(s).
@@ -203,6 +203,12 @@ helps['fleet updaterun stop'] = """
     short-summary: Stops a fleet update run.
 """
 
+helps['fleet updaterun wait'] = """
+    type: command
+    short-summary: Wait for a fleet updateraun resource to reach a desired state.
+    long-summary: If an operation on fleet updateraun was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
+"""
+
 helps['fleet updatestrategy'] = """
     type: group
     short-summary: Commands to manage a fleet update strategy.
@@ -230,4 +236,10 @@ helps['fleet updatestrategy list'] = """
 helps['fleet updatestrategy delete'] = """
     type: command
     short-summary: Deletes a update strategy.
+"""
+
+helps['fleet updatestrategy wait'] = """
+    type: command
+    short-summary: Wait for a fleet updatestrategy resource to reach a desired state.
+    long-summary: If an operation on fleet updatestrategy was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
 """
