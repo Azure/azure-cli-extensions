@@ -65,7 +65,7 @@ class CnfNsdTest(LiveScenarioTest):
     which does not work when playing back from the recording.
     """
 
-    @ResourceGroupPreparer(name_prefix="cli_test_cnf_nsd_", location="westcentralus")
+    @ResourceGroupPreparer(name_prefix="cli_test_cnf_nsd_", location="swedensouth")
     def test_cnf_nsd_publish_and_delete(self, resource_group):
         """
         This test creates a cnf nfd and nsd, publishes them, and then deletes them.
