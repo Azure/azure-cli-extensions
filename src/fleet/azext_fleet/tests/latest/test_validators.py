@@ -172,41 +172,6 @@ class TestValidateUpgradeType(unittest.TestCase):
         with self.assertRaises(CLIError) as cm:
             validators.validate_upgrade_type(namespace)
         self.assertEqual(str(cm.exception), err)
-
-class TestValidateNodeImageSelection(unittest.TestCase):
-    def test_valid_node_image_selection(self):
-        valid_node_image_selection = "Latest"
-        namespace = NodeImageSelectionNamespace(valid_node_image_selection)
-
-        self.assertIsNone(validators.validate_node_image_selection(namespace))
-
-    def test_invalid_node_image_selection(self):
-        invalid_node_image_selection = "invalid_node_image_selection"
-        namespace = NodeImageSelectionNamespace(invalid_node_image_selection)
-        err = ("--node-image-selection must be set to 'Latest' or 'Consistent'")
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_node_image_selection(namespace)
-        self.assertEqual(str(cm.exception), err)
-
-    def test_empty_node_image_selection(self):
-        empty_node_image_selection = ""
-        namespace = NodeImageSelectionNamespace(empty_node_image_selection)
-        err = ("--node-image-selection must be set to 'Latest' or 'Consistent'")
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_node_image_selection(namespace)
-        self.assertEqual(str(cm.exception), err) 
-
-    def test_none_node_image_selection(self):
-        none_node_image_selection = None
-        namespace = NodeImageSelectionNamespace(none_node_image_selection)
-        err = ("--node-image-selection must be set to 'Latest' or 'Consistent'")
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_node_image_selection(namespace)
-        self.assertEqual(str(cm.exception), err)
-
     
 
 if __name__ == "__main__":

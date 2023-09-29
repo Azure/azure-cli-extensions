@@ -71,4 +71,3 @@ def load_arguments(self, _):
 
     with self.argument_context('fleet updatestrategy create') as c:
         c.argument('stages', type=file_type, completer=FilesCompleter(), help='Path to a json file that defines an update strategy.')
-

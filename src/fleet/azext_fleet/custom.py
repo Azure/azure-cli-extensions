@@ -31,7 +31,7 @@ def create_fleet(cmd,
                  enable_managed_identity=False,
                  assign_identity=None,
                  no_wait=False):
-    
+
     fleet_model = cmd.get_models(
         "Fleet",
         resource_type=CUSTOM_MGMT_FLEET,
@@ -83,11 +83,12 @@ def create_fleet(cmd,
             agent_subnet_id is not None:
             raise CLIError("The parameters for private cluster, vnet integration and subnet are only valid if hub is enabled.")
         fleet_hub_profile = None
-    
+        
+
     fleet_managed_service_identity_model = cmd.get_models(
-            "ManagedServiceIdentity",
-            resource_type=CUSTOM_MGMT_FLEET,
-            operation_group="fleets"
+        "ManagedServiceIdentity",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleets"
         )
     managed_service_identity = fleet_managed_service_identity_model(type="None")
     if enable_managed_identity:
@@ -283,11 +284,11 @@ def create_update_run(cmd,
     managed_cluster_upgrade_spec = managed_cluster_upgrade_spec_model(
         type=upgrade_type, kubernetes_version=kubernetes_version)
     node_image_selection = node_image_selection_model(type=node_image_selection)
-    
+
     managed_cluster_update = managed_cluster_update_model(
-        upgrade=managed_cluster_upgrade_spec, 
+        upgrade=managed_cluster_upgrade_spec,
         nodeImageSelection=node_image_selection)
-    
+
     update_run = update_run_model(strategy=update_run_strategy, managed_cluster_update=managed_cluster_update)
 
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run)
@@ -381,14 +382,6 @@ def create_fleet_update_strategy(cmd,
                                  stages=None,
                                  no_wait=False):
     update_run_strategy_model = get_update_run_strategy(cmd, stages)
-
-    fleet_update_strategy_model = cmd.get_models(
-        "FleetUpdateStrategy",
-        resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="fleet_update_strategies"
-    )
-    fleet_update_strategy = fleet_update_strategy_model(strategy=get_update_run_strategy(cmd, stages))    
-    
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run_strategy_model)
 
 
@@ -401,10 +394,10 @@ def show_fleet_update_strategy(cmd,  # pylint: disable=unused-argument
 
 
 def list_fleet_update_strategies(cmd,  # pylint: disable=unused-argument
-                    client,
-                    resource_group_name,
-                    fleet_name):
-    return client.list_by_fleet(resource_group_name, fleet_name)
+                                client,
+                                resource_group_name,
+                                fleet_name):
+     return client.list_by_fleet(resource_group_name, fleet_name)
 
 
 def delete_fleet_update_strategy(cmd,  # pylint: disable=unused-argument
