@@ -139,40 +139,5 @@ class TestValidateAssignIdentity(unittest.TestCase):
 
         self.assertIsNone(validators.validate_assign_identity(namespace))
 
-class TestValidateUpgradeType(unittest.TestCase):
-    def test_valid_upgrade_type(self):
-        valid_upgrade_type = "NodeImageOnly"
-        namespace = UpgradeTypeNamespace(valid_upgrade_type)
-
-        self.assertIsNone(validators.validate_upgrade_type(namespace))
-
-    def test_invalid_upgrade_type(self):
-        invalid_upgrade_type = "invalid_upgrade_type"
-        namespace = UpgradeTypeNamespace(invalid_upgrade_type)
-        err = ("--upgrade-type must be set to 'Full' or 'NodeImageOnly'")
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_upgrade_type(namespace)
-        self.assertEqual(str(cm.exception), err)
-
-    def test_empty_upgrade_type(self):
-        empty_upgrade_type = ""
-        namespace = UpgradeTypeNamespace(empty_upgrade_type)
-        err = ("--upgrade-type must be set to 'Full' or 'NodeImageOnly'")
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_upgrade_type(namespace)
-        self.assertEqual(str(cm.exception), err) 
-
-    def test_none_upgrade_type(self):
-        none_upgrade_type = None
-        namespace = UpgradeTypeNamespace(none_upgrade_type)
-        err = ("--upgrade-type must be set to 'Full' or 'NodeImageOnly'")
-
-        with self.assertRaises(CLIError) as cm:
-            validators.validate_upgrade_type(namespace)
-        self.assertEqual(str(cm.exception), err)
-    
-
 if __name__ == "__main__":
     unittest.main()
