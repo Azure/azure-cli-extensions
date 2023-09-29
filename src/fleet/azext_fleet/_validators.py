@@ -34,7 +34,7 @@ def validate_agent_subnet_id(namespace):
 
 
 def _validate_subnet_id(subnet_id, name):
-    if subnet_id is None or subnet_id == '':
+    if subnet_id is None:
         return
     from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(subnet_id):
@@ -42,10 +42,9 @@ def _validate_subnet_id(subnet_id, name):
 
 
 def validate_assign_identity(namespace):
-    if namespace.assign_identity is not None:
-        if namespace.assign_identity == '':
-            return
-        from msrestazure.tools import is_valid_resource_id
-        if not is_valid_resource_id(namespace.assign_identity):
-            raise CLIError(
-                "--assign-identity is not a valid Azure resource ID.")
+    if namespace.assign_identity is None:
+        return
+    from msrestazure.tools import is_valid_resource_id
+    if not is_valid_resource_id(namespace.assign_identity):
+        raise CLIError(
+            "--assign-identity is not a valid Azure resource ID.")
