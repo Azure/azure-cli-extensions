@@ -84,7 +84,7 @@ class VnfNsdTest(ScenarioTest):
             ],
         )
 
-    @ResourceGroupPreparer(name_prefix="cli_test_vnf_nsd_", location="swedensouth")
+    @ResourceGroupPreparer(name_prefix="cli_test_vnf_nsd_", location="uaenorth")
     def test_vnf_nsd_publish_and_delete(self, resource_group):
         """
         This test creates a vnf nfd and nsd, publishes them, and then deletes them.
