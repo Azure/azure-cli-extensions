@@ -13,7 +13,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 class BastionScenario(ScenarioTest):
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix="cli_test_bastion_host_", location="westus2")
+    @ResourceGroupPreparer(name_prefix="cli_test_bastion_host_", location="westus")
     def test_bastion_host_crud(self):
         self.kwargs.update({
             "vnet_name": self.create_random_name("vnet-", 12),
@@ -25,7 +25,7 @@ class BastionScenario(ScenarioTest):
         self.cmd("network vnet create -n {vnet_name} -g {rg} --subnet-name AzureBastionSubnet")
         self.cmd("network vnet subnet create -n {subnet_name} -g {rg} --vnet-name {vnet_name} --address-prefixes 10.0.2.0/24")
         self.cmd("network public-ip create -n {ip_name} -g {rg} --sku Standard")
-        self.cmd("vm create -n {vm_name} -g {rg} --vnet-name {vnet_name} --subnet {subnet_name} --nsg-rule None --image UbuntuLTS --authentication-type password --admin-username testadmin --admin-password TestPassword11!!")
+        self.cmd("vm create -n {vm_name} -g {rg} --vnet-name {vnet_name} --subnet {subnet_name} --size Standard_F8 --nsg-rule None --image UbuntuLTS --authentication-type password --admin-username testadmin --admin-password TestPassword11!!")
 
         self.cmd(
             "network bastion create -n {bastion_name} -g {rg} --public-ip-address {ip_name} --vnet-name {vnet_name} "
