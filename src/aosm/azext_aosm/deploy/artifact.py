@@ -88,28 +88,34 @@ class Artifact:
         :param cmd: command to run, in list format
         :raise CLIError: if the subprocess fails
         """
+        log_cmd = cmd.copy()
+        if "--password" in log_cmd:
+            # Do not log out passwords.
+            log_cmd[log_cmd.index("--password") + 1] = "[REDACTED]"
+
         try:
             called_process = subprocess.run(
                 cmd, encoding="utf-8", capture_output=True, text=True, check=True
             )
             logger.debug(
                 "Output from %s: %s. Error: %s",
-                cmd,
+                log_cmd,
                 called_process.stdout,
                 called_process.stderr,
             )
         except subprocess.CalledProcessError as error:
-            logger.debug("Failed to run %s with %s", cmd, error)
+            logger.debug("Failed to run %s with %s", log_cmd, error)
 
             all_output: str = (
-                f"Command: {'' ''.join(cmd)}\n"
+                f"Command: {'' ''.join(log_cmd)}\n"
                 f"Output: {error.stdout}\n"
                 f"Error output: {error.stderr}\n"
                 f"Return code: {error.returncode}"
             )
             logger.debug("All the output %s", all_output)
 
-            raise CLIError(all_output) from error
+            # Raise the error without the original exception, which may contain secrets.
+            raise CLIError(all_output) from None
 
     def _upload_helm_to_acr(
         self, artifact_config: HelmPackageConfig, use_manifest_permissions: bool
