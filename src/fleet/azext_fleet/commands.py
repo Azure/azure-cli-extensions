@@ -61,6 +61,7 @@ def load_command_table(self, _):
         g.custom_command("delete", "delete_update_run", supports_no_wait=True)
         g.custom_command("start", "start_update_run", supports_no_wait=True)
         g.custom_command("stop", "stop_update_run", supports_no_wait=True)
+        g.wait_command("wait")
 
     # fleet update strategies command group
     with self.command_group("fleet updatestrategy", fleet_update_strategy_sdk, client_factory=cf_fleet_update_strategies) as g:
@@ -68,3 +69,4 @@ def load_command_table(self, _):
         g.custom_show_command("show", "show_fleet_update_strategy")
         g.custom_command("list", "list_fleet_update_strategies")
         g.custom_command("delete", "delete_fleet_update_strategy", supports_no_wait=True)
+        g.wait_command("wait")

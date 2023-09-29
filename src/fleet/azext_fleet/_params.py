@@ -12,8 +12,6 @@ from azure.cli.core.commands.parameters import (
     get_enum_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-
-from azext_fleet._validators import validate_member_cluster_id, validate_kubernetes_version
 from azext_fleet._validators import validate_member_cluster_id, validate_kubernetes_version, validate_apiserver_subnet_id, validate_agent_subnet_id, validate_assign_identity
 
 

@@ -258,7 +258,7 @@ def create_update_run(cmd,
     if upgrade_type == "NodeImageOnly" and kubernetes_version is not None:
         raise CLIError("Cannot set kubernetes version when upgrade type is 'NodeImageOnly'.")
 
-    update_run_strategy = get_update_run_strategy(cmd, stages)
+    update_run_strategy = get_update_run_strategy(cmd, "update_runs", stages)
 
     managed_cluster_upgrade_spec_model = cmd.get_models(
         "ManagedClusterUpgradeSpec",
@@ -336,7 +336,7 @@ def stop_update_run(cmd,  # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.begin_stop, resource_group_name, fleet_name, name)
 
 
-def get_update_run_strategy(cmd, stages):
+def get_update_run_strategy(cmd, operation_group, stages):
     if stages is None:
         return None
 
@@ -347,17 +347,17 @@ def get_update_run_strategy(cmd, stages):
     update_group_model = cmd.get_models(
         "UpdateGroup",
         resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="update_runs"
+        operation_group=operation_group
     )
     update_stage_model = cmd.get_models(
         "UpdateStage",
         resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="update_runs"
+        operation_group=operation_group
     )
     update_run_strategy_model = cmd.get_models(
         "UpdateRunStrategy",
         resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="update_runs"
+        operation_group=operation_group
     )
 
     update_stages = []
@@ -379,10 +379,21 @@ def create_fleet_update_strategy(cmd,
                                  resource_group_name,
                                  fleet_name,
                                  name,
-                                 stages=None,
+                                 stages,
                                  no_wait=False):
-    update_run_strategy_model = get_update_run_strategy(cmd, stages)
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run_strategy_model)
+    update_run_strategy_model = get_update_run_strategy(cmd, "fleet_update_strategies", stages)
+
+    fleet_update_strategy_model = cmd.get_models(
+        "FleetUpdateStrategy",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_update_strategies"
+    )
+    fleet_update_strategy = fleet_update_strategy_model(strategy=update_run_strategy_model)
+
+    print(fleet_update_strategy)
+    print(update_run_strategy_model)
+    
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, fleet_update_strategy)
 
 
 def show_fleet_update_strategy(cmd,  # pylint: disable=unused-argument
