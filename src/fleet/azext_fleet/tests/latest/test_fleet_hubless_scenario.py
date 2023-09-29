@@ -44,12 +44,11 @@ class FleetScenarioTest(ScenarioTest):
             'fleet_name': self.create_random_name(prefix='fl-', length=7),
             'member_name': self.create_random_name(prefix='flmc-', length=9),
             'updaterun': self.create_random_name(prefix='uprn-', length=9),
-            'updateStrategy_name': self.create_random_name(prefix='upstr', length=9),
-            'enable_hub': True,
+            'updateStrategy_name': self.create_random_name(prefix='upstr-', length=10),
             'ssh_key_value': self.generate_ssh_keys()
         })
 
-        self.cmd('fleet create -g {rg} -n {fleet_name} --enable-hub {enable_hub}', checks=[
+        self.cmd('fleet create -g {rg} -n {fleet_name} --enable-managed-identity', checks=[
             self.check('name', '{fleet_name}')
         ])
 
@@ -71,8 +70,6 @@ class FleetScenarioTest(ScenarioTest):
         self.cmd('fleet list', checks=[
             self.greater_than('length([])', 0)
         ])
-
-        self.cmd('fleet get-credentials -g {rg} -n {fleet_name} --overwrite-existing')
 
         mc_id = self.cmd('aks create -g {rg} -n {member_name} --ssh-key-value={ssh_key_value}', checks=[
             self.check('name', '{member_name}')
@@ -102,7 +99,29 @@ class FleetScenarioTest(ScenarioTest):
 
         self.cmd('aks wait -g {rg} -n {member_name} --created', checks=[self.is_empty()])
 
-        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.25.0', checks=[
+        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.27.1 --stages ./stages.json', checks=[
+            self.check('name', '{updaterun}')
+        ])
+
+        self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name}')
+
+        update_strategy_id = self.cmd('fleet updatestrategy create -g {rg} -n {updateStrategy_name} -f {fleet_name} --stages ./stages.json', checks=[
+            self.check('name', '{updateStrategy_name}')
+        ]).get_output_in_json()['id']
+
+        self.cmd('fleet updatestrategy show -g {rg} -n {updateStrategy_name} -f {fleet_name}', checks=[
+            self.check('name', '{updateStrategy_name}')
+        ])
+
+        self.cmd('fleet updatestrategy list -g {rg} -f {fleet_name}', checks=[
+            self.check('length([])', 1)
+        ])
+
+        self.kwargs.update({
+            'update_strategy_id': update_strategy_id,
+        })
+
+        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.27.1 --update-strategy-id {update_strategy_id}', checks=[
             self.check('name', '{updaterun}')
         ])
 
@@ -118,25 +137,9 @@ class FleetScenarioTest(ScenarioTest):
             self.check('length([])', 1)
         ])
 
-        # self.cmd('fleet updaterun stop -g {rg} -n {updaterun} -f {fleet_name}', checks=[
-        #     self.check('name', '{updaterun}')
-        # ])
-
-        self.cmd('fleet updatestrategy create -g {rg} -n {updateStrategy_name} -f {fleet_name}', checks=[
-            self.check('name', '{updateStrategy_name}')
-        ])
-
-        self.cmd('fleet updatestrategy show -g {rg} -n {updateStrategy_name} -f {fleet_name}', checks=[
-            self.check('name', '{updateStrategy_name}')
-        ])
-
-        self.cmd('fleet updatestrategy list -g {rg} -f {fleet_name}', checks=[
-            self.check('length([])', 1)
-        ])
+        self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name}')
 
         self.cmd('fleet updatestrategy delete -g {rg} -f {fleet_name} -n {updateStrategy_name}')
-
-        self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name}')
 
         self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member_name}')
 
