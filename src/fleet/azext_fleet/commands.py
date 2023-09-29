@@ -30,7 +30,7 @@ def load_command_table(self, _):
 
     fleet_update_strategy_sdk = CliCommandType(
         operations_tmpl="azext_fleet.vendored_sdks.operations._fleet_update_strategies_operations#FleetUpdateStrategiesOperations.{}",
-        operation_group="update_strategies",
+        operation_group="fleet_update_strategies",
         client_factory=cf_fleet_update_strategies
     )
 
