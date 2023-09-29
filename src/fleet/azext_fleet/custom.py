@@ -20,16 +20,16 @@ def create_fleet(cmd,
                  client,
                  resource_group_name,
                  name,
-                 dns_name_prefix=None,
                  location=None,
                  tags=None,
-                 enable_private_cluster=None,
-                 enable_vnet_integration=None,
+                 enable_hub=None,
+                 dns_name_prefix=None,
+                 enable_private_cluster=False,
+                 enable_vnet_integration=False,
                  apiserver_subnet_id=None,
                  agent_subnet_id=None,
-                 enable_managed_identity=None,
+                 enable_managed_identity=False,
                  assign_identity=None,
-                 enable_hub=None,
                  no_wait=False):
     
     fleet_model = cmd.get_models(
@@ -38,7 +38,6 @@ def create_fleet(cmd,
         operation_group="fleets"
     )
 
-    fleet_hub_profile = None
     if enable_hub:
         fleet_hub_profile_model = cmd.get_models(
             "FleetHubProfile",
@@ -55,12 +54,6 @@ def create_fleet(cmd,
             resource_type=CUSTOM_MGMT_FLEET,
             operation_group="fleets"
         )
-        fleet_managed_service_identity_model = cmd.get_models(
-            "ManagedServiceIdentity",
-            resource_type=CUSTOM_MGMT_FLEET,
-            operation_group="fleets"
-        )
-
         if dns_name_prefix is None:
             subscription_id = get_subscription_id(cmd.cli_ctx)
             # Use subscription id to provide uniqueness and prevent DNS name clashes
@@ -83,19 +76,25 @@ def create_fleet(cmd,
             api_server_access_profile=api_server_access_profile,
             agent_profile=agent_profile)
     else:
-        if (dns_name_prefix is not None
-            or enable_private_cluster is not False
-            or enable_vnet_integration is not False
-            or apiserver_subnet_id is not None
-            or agent_subnet_id is not None):
-            raise CLIError("The parameters --enable-private-cluster, --enable-vnet-integration, --apiserver-subnet-id, and --agent-subnet-id are only valid if --enable-hub is set to true")
+        if dns_name_prefix is not None or \
+            enable_private_cluster or \
+            enable_vnet_integration or \
+            apiserver_subnet_id is not None or \
+            agent_subnet_id is not None:
+            raise CLIError("The parameters for private cluster, vnet integration and subnet are only valid if hub is enabled.")
+        fleet_hub_profile = None
     
+    fleet_managed_service_identity_model = cmd.get_models(
+            "ManagedServiceIdentity",
+            resource_type=CUSTOM_MGMT_FLEET,
+            operation_group="fleets"
+        )
     managed_service_identity = fleet_managed_service_identity_model(type="None")
-    if enable_managed_identity is True:
+    if enable_managed_identity:
         managed_service_identity.type = "SystemAssigned"
         if assign_identity is not None:
             managed_service_identity.type = "UserAssigned"
-            managed_service_identity.user_assigned_identities = {assign_identity, None}
+            managed_service_identity.user_assigned_identities = {assign_identity: None}
 
     fleet = fleet_model(
         location=location,
@@ -111,10 +110,10 @@ def update_fleet(cmd,
                  client,
                  resource_group_name,
                  name,
-                 enable_managed_identity=None,
+                 enable_managed_identity=False,
                  assign_identity=None,
-                 no_wait=False,
-                 tags=None):
+                 tags=None,
+                 no_wait=False):
     fleet_patch_model = cmd.get_models(
         "FleetPatch",
         resource_type=CUSTOM_MGMT_FLEET,
@@ -127,13 +126,11 @@ def update_fleet(cmd,
     )
 
     managed_service_identity = fleet_managed_service_identity_model(type="None")
-    if enable_managed_identity is True:
+    if enable_managed_identity:
         managed_service_identity.type = "SystemAssigned"
         if assign_identity is not None:
             managed_service_identity.type = "UserAssigned"
-            managed_service_identity.user_assigned_identities = {assign_identity, None}
-    else:
-        managed_service_identity.type = "None"
+            managed_service_identity.user_assigned_identities = {assign_identity: None}
 
     fleet_patch = fleet_patch_model(
         tags=tags,
@@ -202,7 +199,6 @@ def create_fleet_member(cmd,
         operation_group="fleet_members"
     )
     fleet_member = fleet_member_model(cluster_resource_id=member_cluster_id, group=update_group)
-    fleet_member = fleet_member_model(cluster_resource_id=member_cluster_id, group=update_group)
     return sdk_no_wait(no_wait, client.begin_create, resource_group_name, fleet_name, name, fleet_member)
 
 
@@ -252,8 +248,8 @@ def create_update_run(cmd,
                       fleet_name,
                       name,
                       upgrade_type,
+                      node_image_selection,
                       kubernetes_version=None,
-                      node_image_selection=None,
                       stages=None,
                       no_wait=False):
     if upgrade_type == "Full" and kubernetes_version is None:
@@ -286,11 +282,11 @@ def create_update_run(cmd,
 
     managed_cluster_upgrade_spec = managed_cluster_upgrade_spec_model(
         type=upgrade_type, kubernetes_version=kubernetes_version)
-    node_image_selection_obj = node_image_selection_model(type=node_image_selection)
+    node_image_selection = node_image_selection_model(type=node_image_selection)
     
     managed_cluster_update = managed_cluster_update_model(
         upgrade=managed_cluster_upgrade_spec, 
-        nodeImageSelection=node_image_selection_obj)
+        nodeImageSelection=node_image_selection)
     
     update_run = update_run_model(strategy=update_run_strategy, managed_cluster_update=managed_cluster_update)
 
@@ -378,12 +374,12 @@ def get_update_run_strategy(cmd, stages):
 
 
 def create_fleet_update_strategy(cmd,
-                      client,
-                      resource_group_name,
-                      fleet_name,
-                      name,
-                      stages=None,
-                      no_wait=False):
+                                 client,
+                                 resource_group_name,
+                                 fleet_name,
+                                 name,
+                                 stages=None,
+                                 no_wait=False):
     update_run_strategy_model = get_update_run_strategy(cmd, stages)
 
     fleet_update_strategy_model = cmd.get_models(
@@ -391,16 +387,16 @@ def create_fleet_update_strategy(cmd,
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleet_update_strategies"
     )
-    fleet_update_strategy = fleet_update_strategy_model(fleet_update_strategies)    
+    fleet_update_strategy = fleet_update_strategy_model(strategy=get_update_run_strategy(cmd, stages))    
     
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run_strategy_model)
 
 
 def show_fleet_update_strategy(cmd,  # pylint: disable=unused-argument
-                    client,
-                    resource_group_name,
-                    fleet_name,
-                    name):
+                               client,
+                               resource_group_name,
+                               fleet_name,
+                               name):
     return client.get(resource_group_name, fleet_name, name)
 
 
@@ -412,9 +408,9 @@ def list_fleet_update_strategies(cmd,  # pylint: disable=unused-argument
 
 
 def delete_fleet_update_strategy(cmd,  # pylint: disable=unused-argument
-                      client,
-                      resource_group_name,
-                      fleet_name,
-                      name,
-                      no_wait=False):
+                                 client,
+                                 resource_group_name,
+                                 fleet_name,
+                                 name,
+                                 no_wait=False):
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, fleet_name, name)

@@ -9,7 +9,7 @@ from azure.cli.core.commands.parameters import (
     tags_type,
     file_type,
     get_location_type,
-    get_three_state_flag
+    get_enum_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
@@ -26,17 +26,17 @@ def load_arguments(self, _):
     with self.argument_context('fleet create') as c:
         c.argument('tags', tags_type)
         c.argument('dns_name_prefix', options_list=['--dns-name-prefix', '-p'])
-        c.argument('enable_private_cluster', arg_type=get_three_state_flag(), is_preview=True, help='Whether to create the Fleet hub as a private cluster or not.')
-        c.argument('enable_vnet_integration', arg_type=get_three_state_flag(), is_preview=True, help='Whether to enable apiserver vnet integration for the Fleet hub or not.')
+        c.argument('enable_private_cluster', is_preview=True, help='Whether to create the Fleet hub as a private cluster or not.')
+        c.argument('enable_vnet_integration', is_preview=True, help='Whether to enable apiserver vnet integration for the Fleet hub or not.')
         c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True, help='The subnet to be used when apiserver vnet integration is enabled. It is required when creating a new Fleet with BYO vnet.')
         c.argument('agent_subnet_id', validator=validate_agent_subnet_id, is_preview=True, help='The ID of the subnet which the Fleet hub node will join on startup. If this is not specified, a vnet and subnet will be generated and used.')
-        c.argument('enable_managed_identity', arg_type=get_three_state_flag(), is_preview=True, help='Enable system assigned managed identity (MSI) on the Fleet resource.')
+        c.argument('enable_managed_identity', is_preview=True, help='Enable system assigned managed identity (MSI) on the Fleet resource.')
         c.argument('assign_identity', validator=validate_assign_identity, is_preview=True, help='With --enable-managed-identity, enable user assigned managed identity (MSI) on the Fleet resource. Specify the existing user assigned identity resource.')
-        c.argument('enable_hub', arg_type=get_three_state_flag(), is_preview=True, help='If set, the Fleet will be created with a hub cluster.')
+        c.argument('enable_hub', is_preview=True, help='If set, the Fleet will be created with a hub cluster.')
 
     with self.argument_context('fleet update') as c:
         c.argument('tags', tags_type)
-        c.argument('enable_managed_identity', arg_type=get_three_state_flag(), is_preview=True, help='Enable system assigned managed identity (MSI) on the Fleet resource.')
+        c.argument('enable_managed_identity', is_preview=True, help='Enable system assigned managed identity (MSI) on the Fleet resource.')
         c.argument('assign_identity', validator=validate_assign_identity, is_preview=True, help='With --enable-managed-identity, enable user assigned managed identity (MSI) on the Fleet resource. Specify the existing user assigned identity resource.')
 
     with self.argument_context('fleet get-credentials') as c:
@@ -59,9 +59,9 @@ def load_arguments(self, _):
         c.argument('fleet_name', options_list=['--fleet-name', '-f'], help='Specify the fleet name.')
 
     with self.argument_context('fleet updaterun create') as c:
-        c.argument('upgrade_type', validator=validate_upgrade_type)
+        c.argument('upgrade_type', arg_type=get_enum_type(['Full', 'NodeImageOnly']))
         c.argument('kubernetes_version', validator=validate_kubernetes_version)
-        c.argument('node_image_selection', validator=validate_node_image_selection, help='Node Image Selection is an option that lets you choose how your clusters\' nodes are upgraded')
+        c.argument('node_image_selection', arg_type=get_enum_type(['Latest', 'Consistent']), help='Node Image Selection is an option that lets you choose how your clusters\' nodes are upgraded')
         c.argument('stages', type=file_type, completer=FilesCompleter(), help='Path to a json file that defines stages to upgrade a fleet. See examples for further reference.')
         c.argument('update_group')
 

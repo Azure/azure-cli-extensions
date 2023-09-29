@@ -16,21 +16,6 @@ def validate_member_cluster_id(namespace):
         raise InvalidArgumentValueError(
             "--member-cluster-id is not a valid Azure resource ID.")
 
-
-def validate_upgrade_type(namespace):
-    upgrade_type = namespace.upgrade_type
-    if upgrade_type not in ("Full", "NodeImageOnly"):
-        raise InvalidArgumentValueError(
-            "--upgrade-type must be set to 'Full' or 'NodeImageOnly'")
-
-
-def validate_node_image_selection(namespace):
-    node_image_selection = namespace.node_image_selection
-    if node_image_selection not in ("Latest", "Consistent"):
-        raise InvalidArgumentValueError(
-            "--node-image-selection must be set to 'Latest' or 'Consistent'")
-
-
 def validate_kubernetes_version(namespace):
     try:
         if namespace.kubernetes_version:
