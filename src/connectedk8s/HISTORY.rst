@@ -3,6 +3,21 @@
 Release History
 ===============
 
+2.0.0
+++++++
+* Look up custom locations service principal application by object ID instead of display name.
+
+  Previous command
+    ``az connectedk8s enable-features -n <cluster name> -g <resource group name> --features custom-locations``
+  New command
+    ``az connectedk8s enable-features -n <cluster name> -g <resource group name> --features custom-locations --custom-locations-oid <custom locations object ID>``
+  Before
+    | Throws an error if it cannot retrieve the Custom Locations RP service principal application using the graph API.
+    | Error: ``Unable to fetch the Object ID of the Azure AD application used by Azure Arc service. Unable to enable the 'custom-locations' feature. Insufficient privileges to complete the operation.``
+  After
+    | Throws an error if the user didn't pass custom locations object ID.
+    | Error: ``Custom locations object ID was not passed. Please pass '--custom-locations-oid' to enable custom locations.``
+
 1.5.4
 ++++++
 * Log debug if 'arcConfigEndpoint' doesn't exist in 'dataplaneEndpoints' ARM metadata.
