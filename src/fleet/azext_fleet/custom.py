@@ -96,6 +96,8 @@ def create_fleet(cmd,
         if assign_identity is not None:
             managed_service_identity.type = "UserAssigned"
             managed_service_identity.user_assigned_identities = {assign_identity: None}
+    elif assign_identity is not None:
+        raise CLIError("Cannot assign identity without enabling managed identity.")
 
     fleet = fleet_model(
         location=location,
