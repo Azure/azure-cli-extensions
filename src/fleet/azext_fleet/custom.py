@@ -77,11 +77,11 @@ def create_fleet(cmd,
             agent_profile=agent_profile)
     else:
         if dns_name_prefix is not None or \
-            enable_private_cluster or \
-            enable_vnet_integration or \
-            apiserver_subnet_id is not None or \
-            agent_subnet_id is not None:
-                raise CLIError("The parameters for private cluster, vnet & subnet integration are only valid if hub is enabled.")
+           enable_private_cluster or \
+           enable_vnet_integration or \
+           apiserver_subnet_id is not None or \
+           agent_subnet_id is not None:
+            raise CLIError("The parameters for private cluster, vnet & subnet integration are only valid if hub is enabled.")
         fleet_hub_profile = None
 
     fleet_managed_service_identity_model = cmd.get_models(
