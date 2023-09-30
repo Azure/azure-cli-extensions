@@ -248,14 +248,18 @@ def update_k8s_extension(
     configuration_protected_settings_file=None,
     no_wait=False,
     yes=False,
+    ignore_warning_msg=False,
 ):
     """Patch an existing Extension Instance."""
 
     if (
-        configuration_settings
-        or configuration_protected_settings
-        or configuration_settings_file
-        or configuration_protected_settings_file
+        not ignore_warning_msg and
+        (
+            configuration_settings
+            or configuration_protected_settings
+            or configuration_settings_file
+            or configuration_protected_settings_file
+        )
     ):
         msg = (
             "Updating properties in --configuration-settings or --configuration-protected-settings may lead to undesirable state"

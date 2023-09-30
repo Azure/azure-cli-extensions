@@ -594,7 +594,18 @@ def aks_create(
     enable_windows_recording_rules=False,
     # metrics profile
     enable_cost_analysis=False,
+    # azure container storage
+    enable_azure_container_storage=False,
+    storage_pool_name=None,
+    storage_pool_type=None,
+    storage_pool_size=None,
+    storage_pool_sku=None,
+    storage_pool_option=None,
 ):
+    if enable_azure_container_storage:
+        from azext_aks_preview.azurecontainerstorage._validators import validate_azure_container_storage_params
+        validate_azure_container_storage_params(storage_pool_type, storage_pool_sku, storage_pool_option)
+
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 
@@ -629,7 +640,23 @@ def aks_create(
         return None
 
     # send request to create a real managed cluster
-    return aks_create_decorator.create_mc(mc)
+    cluster = aks_create_decorator.create_mc(mc)
+    if enable_azure_container_storage:
+        from azext_aks_preview.azurecontainerstorage.acstor_ops import perform_enable_azure_container_storage
+        perform_enable_azure_container_storage(
+            cmd,
+            client,
+            cluster,
+            storage_pool_name,
+            storage_pool_type,
+            storage_pool_size,
+            storage_pool_sku,
+            storage_pool_option,
+            disable_storage_pool_creation,
+            "nodepool1",
+        )
+
+    return cluster
 
 
 # pylint: disable=too-many-locals
@@ -764,7 +791,26 @@ def aks_update(
     # metrics profile
     enable_cost_analysis=False,
     disable_cost_analysis=False,
+    # azure container storage
+    enable_azure_container_storage=False,
+    disable_azure_container_storage=False,
+    storage_pool_name=None,
+    storage_pool_type=None,
+    storage_pool_size=None,
+    storage_pool_sku=None,
+    storage_pool_option=None,
+    azure_container_storage_nodepools=None,
 ):
+    if enable_azure_container_storage and disable_azure_container_storage:
+        raise MutuallyExclusiveArgumentError(
+            'Conflicting flags. Cannot set --enable-azure-container-storage'
+            'and --disable-azure-container-storage together.'
+        )
+
+    if enable_azure_container_storage:
+        from azext_aks_preview.azurecontainerstorage._validators import validate_azure_container_storage_params
+        validate_azure_container_storage_params(storage_pool_type, storage_pool_sku, storage_pool_option)
+
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
 
@@ -785,7 +831,29 @@ def aks_update(
         # exit gracefully
         return None
     # send request to update the real managed cluster
-    return aks_update_decorator.update_mc(mc)
+    cluster = aks_update_decorator.update_mc(mc)
+    if enable_azure_container_storage:
+        from azext_aks_preview.azurecontainerstorage.acstor_ops import perform_enable_azure_container_storage
+        perform_enable_azure_container_storage(
+            cmd,
+            client,
+            cluster,
+            storage_pool_name,
+            storage_pool_type,
+            storage_pool_size,
+            storage_pool_sku,
+            storage_pool_option,
+            azure_container_storage_nodepools,
+        )
+    else if disable_azure_container_storage:
+        from azext_aks_preview.azurecontainerstorage.acstor_ops import perform_disable_azure_container_storage
+        perform_disable_azure_container_storage(
+            cmd,
+            client,
+            cluster,
+        )
+
+    return cluster
 
 
 # pylint: disable=unused-argument
