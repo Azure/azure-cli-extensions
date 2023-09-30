@@ -8,7 +8,7 @@ import tempfile
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 
-class FleetScenarioTest(ScenarioTest):
+class FleetHubfulScenarioTest(ScenarioTest):
 
     @classmethod
     def generate_ssh_keys(cls):
@@ -38,7 +38,7 @@ class FleetScenarioTest(ScenarioTest):
         return pathname.replace('\\', '\\\\')
 
     @ResourceGroupPreparer(name_prefix='cli-', random_name_length=8)
-    def test_fleet(self):
+    def test_fleet_hubful(self):
 
         self.kwargs.update({
             'fleet_name': self.create_random_name(prefix='fl-', length=7),
