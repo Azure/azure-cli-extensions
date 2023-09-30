@@ -81,9 +81,9 @@ def create_fleet(cmd,
             enable_vnet_integration or \
             apiserver_subnet_id is not None or \
             agent_subnet_id is not None:
-            raise CLIError("The parameters for private cluster, vnet & subnet integration are only valid if hub is enabled.")
+            raise CLIError(
+                "The parameters for private cluster, vnet & subnet integration are only valid if hub is enabled.")
         fleet_hub_profile = None
-        
 
     fleet_managed_service_identity_model = cmd.get_models(
         "ManagedServiceIdentity",
@@ -296,7 +296,7 @@ def create_update_run(cmd,
 
     update_run = update_run_model(
         update_strategy_id=update_strategy_id,
-        strategy=update_run_strategy, 
+        strategy=update_run_strategy,
         managed_cluster_update=managed_cluster_update)
 
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run)
@@ -397,7 +397,8 @@ def create_fleet_update_strategy(cmd,
         operation_group="fleet_update_strategies"
     )
     fleet_update_strategy = fleet_update_strategy_model(strategy=update_run_strategy_model)
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, fleet_update_strategy)
+    return sdk_no_wait(
+        no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, fleet_update_strategy)
 
 
 def show_fleet_update_strategy(cmd,  # pylint: disable=unused-argument
@@ -409,10 +410,10 @@ def show_fleet_update_strategy(cmd,  # pylint: disable=unused-argument
 
 
 def list_fleet_update_strategies(cmd,  # pylint: disable=unused-argument
-                                client,
-                                resource_group_name,
-                                fleet_name):
-     return client.list_by_fleet(resource_group_name, fleet_name)
+                                 client,
+                                 resource_group_name,
+                                 fleet_name):
+    return client.list_by_fleet(resource_group_name, fleet_name)
 
 
 def delete_fleet_update_strategy(cmd,  # pylint: disable=unused-argument
