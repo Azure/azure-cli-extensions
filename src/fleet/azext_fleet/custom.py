@@ -81,15 +81,14 @@ def create_fleet(cmd,
             enable_vnet_integration or \
             apiserver_subnet_id is not None or \
             agent_subnet_id is not None:
-            raise CLIError(
-                "The parameters for private cluster, vnet & subnet integration are only valid if hub is enabled.")
+                raise CLIError("The parameters for private cluster, vnet & subnet integration are only valid if hub is enabled.")
         fleet_hub_profile = None
 
     fleet_managed_service_identity_model = cmd.get_models(
         "ManagedServiceIdentity",
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleets"
-        )
+    )
     managed_service_identity = fleet_managed_service_identity_model(type="None")
     if enable_managed_identity:
         managed_service_identity.type = "SystemAssigned"
