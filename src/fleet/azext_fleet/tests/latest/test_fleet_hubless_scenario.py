@@ -7,6 +7,9 @@ import tempfile
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
+def _get_test_data_file(filename):
+    curr_dir = os.path.dirname(os.path.realpath(__file__))
+    return os.path.join(curr_dir, 'data', filename)
 
 class FleetHublessScenarioTest(ScenarioTest):
 
@@ -45,7 +48,8 @@ class FleetHublessScenarioTest(ScenarioTest):
             'member_name': self.create_random_name(prefix='flmc-', length=9),
             'updaterun': self.create_random_name(prefix='uprn-', length=9),
             'updateStrategy_name': self.create_random_name(prefix='upstr-', length=10),
-            'ssh_key_value': self.generate_ssh_keys()
+            'ssh_key_value': self.generate_ssh_keys(),
+            'stages_file': _get_test_data_file('stages.json')
         })
 
         self.cmd('fleet create -g {rg} -n {fleet_name}', checks=[
@@ -99,13 +103,13 @@ class FleetHublessScenarioTest(ScenarioTest):
 
         self.cmd('aks wait -g {rg} -n {member_name} --created', checks=[self.is_empty()])
 
-        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.27.1 --stages ./stages.json', checks=[
+        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.27.1 --stages {stages_file}', checks=[
             self.check('name', '{updaterun}')
         ])
 
         self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name}')
 
-        update_strategy_id = self.cmd('fleet updatestrategy create -g {rg} -n {updateStrategy_name} -f {fleet_name} --stages ./stages.json', checks=[
+        update_strategy_id = self.cmd('fleet updatestrategy create -g {rg} -n {updateStrategy_name} -f {fleet_name} --stages {stages_file}', checks=[
             self.check('name', '{updateStrategy_name}')
         ]).get_output_in_json()['id']
 
