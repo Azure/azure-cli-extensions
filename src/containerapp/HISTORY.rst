@@ -3,6 +3,8 @@
 Release History
 ===============
 upcoming
+++++++
+* 'az containerapp service': add support for creation and deletion of milvus vector database as a dev service
 
 0.3.41
 ++++++
