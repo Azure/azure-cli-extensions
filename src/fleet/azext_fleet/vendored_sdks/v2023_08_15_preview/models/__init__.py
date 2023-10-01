@@ -20,10 +20,15 @@ from ._models_py3 import FleetMember
 from ._models_py3 import FleetMemberListResult
 from ._models_py3 import FleetMemberUpdate
 from ._models_py3 import FleetPatch
+from ._models_py3 import FleetUpdateStrategy
+from ._models_py3 import FleetUpdateStrategyListResult
 from ._models_py3 import ManagedClusterUpdate
 from ._models_py3 import ManagedClusterUpgradeSpec
 from ._models_py3 import ManagedServiceIdentity
 from ._models_py3 import MemberUpdateStatus
+from ._models_py3 import NodeImageSelection
+from ._models_py3 import NodeImageSelectionStatus
+from ._models_py3 import NodeImageVersion
 from ._models_py3 import Operation
 from ._models_py3 import OperationDisplay
 from ._models_py3 import OperationListResult
@@ -47,8 +52,10 @@ from ._container_service_fleet_mgmt_client_enums import ActionType
 from ._container_service_fleet_mgmt_client_enums import CreatedByType
 from ._container_service_fleet_mgmt_client_enums import FleetMemberProvisioningState
 from ._container_service_fleet_mgmt_client_enums import FleetProvisioningState
+from ._container_service_fleet_mgmt_client_enums import FleetUpdateStrategyProvisioningState
 from ._container_service_fleet_mgmt_client_enums import ManagedClusterUpgradeType
 from ._container_service_fleet_mgmt_client_enums import ManagedServiceIdentityType
+from ._container_service_fleet_mgmt_client_enums import NodeImageSelectionType
 from ._container_service_fleet_mgmt_client_enums import Origin
 from ._container_service_fleet_mgmt_client_enums import UpdateRunProvisioningState
 from ._container_service_fleet_mgmt_client_enums import UpdateState
@@ -71,10 +78,15 @@ __all__ = [
     "FleetMemberListResult",
     "FleetMemberUpdate",
     "FleetPatch",
+    "FleetUpdateStrategy",
+    "FleetUpdateStrategyListResult",
     "ManagedClusterUpdate",
     "ManagedClusterUpgradeSpec",
     "ManagedServiceIdentity",
     "MemberUpdateStatus",
+    "NodeImageSelection",
+    "NodeImageSelectionStatus",
+    "NodeImageVersion",
     "Operation",
     "OperationDisplay",
     "OperationListResult",
@@ -97,8 +109,10 @@ __all__ = [
     "CreatedByType",
     "FleetMemberProvisioningState",
     "FleetProvisioningState",
+    "FleetUpdateStrategyProvisioningState",
     "ManagedClusterUpgradeType",
     "ManagedServiceIdentityType",
+    "NodeImageSelectionType",
     "Origin",
     "UpdateRunProvisioningState",
     "UpdateState",

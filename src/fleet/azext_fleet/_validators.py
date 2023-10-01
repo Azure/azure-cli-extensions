@@ -17,13 +17,6 @@ def validate_member_cluster_id(namespace):
             "--member-cluster-id is not a valid Azure resource ID.")
 
 
-def validate_upgrade_type(namespace):
-    upgrade_type = namespace.upgrade_type
-    if upgrade_type not in ("Full", "NodeImageOnly"):
-        raise InvalidArgumentValueError(
-            "--upgrade-type must be set to 'Full' or 'NodeImageOnly'")
-
-
 def validate_kubernetes_version(namespace):
     try:
         if namespace.kubernetes_version:
@@ -39,6 +32,14 @@ def validate_apiserver_subnet_id(namespace):
 
 def validate_agent_subnet_id(namespace):
     _validate_subnet_id(namespace.agent_subnet_id, "--agent-subnet-id")
+
+
+def validate_update_strategy_id(namespace):
+    if namespace.update_strategy_id is not None:
+        from msrestazure.tools import is_valid_resource_id
+        if not is_valid_resource_id(namespace.update_strategy_id):
+            raise CLIError(
+                "--update-strategy-id is not a valid Azure resource ID.")
 
 
 def _validate_subnet_id(subnet_id, name):
