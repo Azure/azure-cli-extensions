@@ -15,10 +15,10 @@ def validate_azure_container_storage_params(
     storage_pool_sku,
     storage_pool_option,
 ):
-	if storage_pool_type != CONST_STORAGE_POOL_TYPE_AZURE_DISK and
+	if storage_pool_type != CONST_STORAGE_POOL_TYPE_AZURE_DISK and \
 		storage_pool_sku != None:
 		raise ArgumentUsageError('Cannot set --pool-sku when --pool-type is not azureDisk')
 
-	if storage_pool_type != CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
+	if storage_pool_type != CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
 		storage_pool_sku != None:
 		raise ArgumentUsageError('Cannot set --pool-option when --pool-type is not ephemeralDisk')

@@ -19,7 +19,7 @@ from azext_k8s_extension.custom import (
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
-    CONST_STORAGE_POOL_TYPE_AZURE_DISK
+    CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_NAME_PREFIX,
     CONST_STORAGE_POOL_OPTION_NVME,
     CONST_STORAGE_POOL_OPTION_TEMP,

@@ -183,6 +183,7 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_SKU_STANDARDSSD_ZRS,
     CONST_STORAGE_POOL_OPTION_NVME,
     CONST_STORAGE_POOL_OPTION_TEMP,
+    CONST_STORAGE_POOL_DEFAULT_SIZE,
 )
 from knack.arguments import CLIArgumentType
 

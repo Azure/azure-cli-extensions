@@ -845,7 +845,7 @@ def aks_update(
             storage_pool_option,
             azure_container_storage_nodepools,
         )
-    else if disable_azure_container_storage:
+    elif disable_azure_container_storage:
         from azext_aks_preview.azurecontainerstorage.acstor_ops import perform_disable_azure_container_storage
         perform_disable_azure_container_storage(
             cmd,
