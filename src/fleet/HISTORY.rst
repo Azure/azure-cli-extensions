@@ -44,4 +44,4 @@ Release History
 
 0.2.7
 ++++++
-* Fix for `az fleet update run --node-image-selection` argument.
+* Fix for `az fleet updaterun --node-image-selection` argument.
