@@ -42,3 +42,6 @@ Release History
 * Added support for Fleet Upgrade Strategy
 * Added argument for Node Image Selection.
 
+0.2.7
+++++++
+* Fix for `az fleet update run --node-image-selection` argument.
