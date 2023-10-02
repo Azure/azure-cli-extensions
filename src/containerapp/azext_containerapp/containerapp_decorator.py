@@ -899,11 +899,8 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                             volume_mount_def["mountPath"] = self.get_argument_secret_volume_mount()
 
                             if "volumes" not in self.new_containerapp["properties"]["template"] or self.new_containerapp["properties"]["template"]["volumes"] is None:
-                                print(volume_def)
                                 self.new_containerapp["properties"]["template"]["volumes"] = [volume_def]
                             else:
-                                raise ValidationError(
-                                                "test2")
                                 self.new_containerapp["properties"]["template"]["volumes"].append(volume_def)
                             c["volumeMounts"] = [volume_mount_def]
                         else:
@@ -971,7 +968,6 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                     volume_mount_def = VolumeMountModel
                     volume_def["name"] = _generate_secret_volume_name()
                     volume_def["storageType"] = "Secret"
-                    volume_def["subPath"] = ""
 
                     # mount the volume to the container
                     volume_mount_def["volumeName"] = volume_def["name"]
