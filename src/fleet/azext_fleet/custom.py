@@ -288,11 +288,11 @@ def create_update_run(cmd,
 
     managed_cluster_upgrade_spec = managed_cluster_upgrade_spec_model(
         type=upgrade_type, kubernetes_version=kubernetes_version)
-    node_image_selection = node_image_selection_model(type=node_image_selection)
+    node_image_selection_type = node_image_selection_model(type=node_image_selection)
 
     managed_cluster_update = managed_cluster_update_model(
         upgrade=managed_cluster_upgrade_spec,
-        nodeImageSelection=node_image_selection)
+        node_image_selection=node_image_selection_type)
 
     update_run = update_run_model(
         update_strategy_id=update_strategy_id,
