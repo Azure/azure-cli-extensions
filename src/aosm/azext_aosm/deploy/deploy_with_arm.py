@@ -226,7 +226,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
 
         for helm_package in self.config.helm_packages:
             # Go through the helm packages in the config that the user has provided
-            helm_package_name = helm_package.name
+            helm_package_name = helm_package.name  # type: ignore
 
             if helm_package_name not in artifact_dictionary:
                 # Helm package in the config file but not in the artifact manifest
@@ -240,7 +240,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
 
             # The artifact object will use the correct client (ORAS) to upload the
             # artifact
-            manifest_artifact.upload(helm_package, self.use_manifest_permissions)
+            manifest_artifact.upload(helm_package, self.use_manifest_permissions)  # type: ignore
 
             print(f"Finished uploading Helm package: {helm_package_name}")
 
@@ -258,7 +258,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
         # so we validate the config file here.
         if (
             len(artifact_dictionary.values()) > 1
-            and self.config.images.source_local_docker_image
+            and self.config.images.source_local_docker_image  # type: ignore
         ):
             raise ValidationError(
                 "Multiple image artifacts found to upload and a local docker image"
@@ -267,7 +267,7 @@ class DeployerViaArm:  # pylint: disable=too-many-instance-attributes
             )
         for artifact in artifact_dictionary.values():
             assert isinstance(artifact, Artifact)
-            artifact.upload(self.config.images, self.use_manifest_permissions)
+            artifact.upload(self.config.images, self.use_manifest_permissions)  # type: ignore
 
     def nfd_predeploy(self) -> bool:
         """
