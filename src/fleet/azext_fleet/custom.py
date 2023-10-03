@@ -118,7 +118,7 @@ def update_fleet(cmd,
                  client,
                  resource_group_name,
                  name,
-                 enable_managed_identity=False,
+                 enable_managed_identity=None,
                  assign_identity=None,
                  tags=None,
                  no_wait=False):
@@ -132,10 +132,13 @@ def update_fleet(cmd,
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleets"
     )
-
-    managed_service_identity = fleet_managed_service_identity_model(type="None")
-    if enable_managed_identity:
-        managed_service_identity.type = "SystemAssigned"
+    
+    if enable_managed_identity is None:
+        managed_service_identity = None
+    elif enable_managed_identity == False:
+        managed_service_identity = fleet_managed_service_identity_model(type="None")
+    else:
+        managed_service_identity = fleet_managed_service_identity_model(type="SystemAssigned")
         if assign_identity is not None:
             user_assigned_identity_model = cmd.get_models(
                 "UserAssignedIdentity",
@@ -150,7 +153,6 @@ def update_fleet(cmd,
         identity=managed_service_identity
     )
 
-    fleet_patch = fleet_patch_model(tags=tags)
     return sdk_no_wait(no_wait, client.begin_update, resource_group_name, name, fleet_patch)
 
 
