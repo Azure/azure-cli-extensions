@@ -445,6 +445,18 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool.node_taints = self.context.get_node_taints()
         return agentpool
 
+    def set_up_crg_id(self, agentpool: AgentPool) -> AgentPool:
+        """Set up capacity reservation group ID.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+        crg_id = self.context.get_crg_id()
+        if crg_id is not None:
+            agentpool.capacity_reservation_group_id = crg_id
+
+        return agentpool
+
     def construct_agentpool_profile_preview(self) -> AgentPool:
         """The overall controller used to construct the preview AgentPool profile.
 
@@ -468,6 +480,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_agentpool_network_profile(agentpool)
         # set up taints
         agentpool = self.set_up_taints(agentpool)
+        # set up crg id
+        agentpool = self.set_up_crg_id(agentpool)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         agentpool = self._restore_defaults_in_agentpool(agentpool)
         return agentpool
@@ -533,6 +547,15 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.network_profile.allowed_host_ports = allowed_host_ports
         return agentpool
 
+    # update_crg_id updates the crg_id from function get_crg_id()
+    def update_crg_id(self, agentpool: AgentPool) -> AgentPool:
+        self._ensure_agentpool(agentpool)
+
+        crg_id = self.context.get_crg_id()
+        if crg_id is not None:
+            agentpool.capacity_reservation_group_id = crg_id
+        return agentpool
+
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
 
@@ -549,5 +572,8 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update network profile
         agentpool = self.update_network_profile(agentpool)
+
+        # update capacity reservation group id
+        agentpool = self.update_crg_id(agentpool)
 
         return agentpool

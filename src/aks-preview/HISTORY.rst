@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.162
+++++++
+* Add support for agentpool updating with Capacity Reservation Group.
+    * `az aks nodepool update --crg-id`
+
 0.5.161
 +++++++
 * Support `premium` cluster sku tier in `az aks create` and `az aks update` commands
