@@ -45,3 +45,7 @@ Release History
 0.2.7
 ++++++
 * Fix for `az fleet updaterun --node-image-selection` argument.
+
+0.2.8
+++++++
+* Updates to Fleet identity options.

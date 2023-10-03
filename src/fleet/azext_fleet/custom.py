@@ -94,8 +94,13 @@ def create_fleet(cmd,
     if enable_managed_identity:
         managed_service_identity.type = "SystemAssigned"
         if assign_identity is not None:
+            empty_user_assigned_identity_model = cmd.get_models(
+                "UserAssignedIdentity",
+                resource_type=CUSTOM_MGMT_FLEET,
+                operation_group="fleets"
+            )
             managed_service_identity.type = "UserAssigned"
-            managed_service_identity.user_assigned_identities = {assign_identity: None}
+            managed_service_identity.user_assigned_identities = {assign_identity: empty_user_assigned_identity_model}
     elif assign_identity is not None:
         raise CLIError("Cannot assign identity without enabling managed identity.")
 
@@ -132,8 +137,13 @@ def update_fleet(cmd,
     if enable_managed_identity:
         managed_service_identity.type = "SystemAssigned"
         if assign_identity is not None:
+            empty_user_assigned_identity_model = cmd.get_models(
+                "UserAssignedIdentity",
+                resource_type=CUSTOM_MGMT_FLEET,
+                operation_group="fleets"
+            )
             managed_service_identity.type = "UserAssigned"
-            managed_service_identity.user_assigned_identities = {assign_identity: None}
+            managed_service_identity.user_assigned_identities = {assign_identity: empty_user_assigned_identity_model}
 
     fleet_patch = fleet_patch_model(
         tags=tags,
