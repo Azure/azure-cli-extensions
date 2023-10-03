@@ -49,3 +49,7 @@ Release History
 0.2.8
 ++++++
 * Updates to Fleet identity options.
+
+0.2.9
+++++++
+* Bug fixes on Fleet MSI

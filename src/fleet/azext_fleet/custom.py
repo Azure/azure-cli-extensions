@@ -133,8 +133,9 @@ def update_fleet(cmd,
         operation_group="fleets"
     )
 
-    managed_service_identity = None
-    if enable_managed_identity is False:
+    if managed_service_identity is None:
+        managed_service_identity = None
+    elif enable_managed_identity is False:
         managed_service_identity = fleet_managed_service_identity_model(type="None")
     else:
         managed_service_identity = fleet_managed_service_identity_model(type="SystemAssigned")
