@@ -160,7 +160,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     lowbandwidth = False
     lowbandwith_distros = ["aks_workload", "aks_management", "aks_edge_k3s", "aks_edge_k8s"]
 
-    if (infrastructure == 'azure_stack_hci') and (distribution in lowbandwith_distros):
+    if (infrastructure.lower() == 'azure_stack_hci') and (distribution.lower() in lowbandwith_distros):
         lowbandwidth = True
 
     # Install kubectl and helm
