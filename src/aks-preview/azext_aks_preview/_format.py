@@ -46,6 +46,24 @@ def aks_addon_show_table_format(result):
     return parser(result)
 
 
+def aks_machine_list_table_format(results):
+    return [aks_machine_show_table_format(r) for r in results]
+
+
+def aks_machine_show_table_format(result):
+    def parser(entry):
+        ip_addresses = ""
+        for k in entry["properties"]["network"]["ipAddresses"]:
+            ip_addresses += "ip:" + k["ip"] + "," + "family:" + k["family"] + ";"
+        entry["ip"] = ip_addresses
+        parsed = compile_jmes("""{
+                name: name,
+                ip: ip
+            }""")
+        return parsed.search(entry, Options(dict_cls=OrderedDict))
+    return parser(result)
+
+
 def aks_agentpool_show_table_format(result):
     """Format an agent pool as summary results for display with "-o table"."""
     return [_aks_agentpool_table_format(result)]

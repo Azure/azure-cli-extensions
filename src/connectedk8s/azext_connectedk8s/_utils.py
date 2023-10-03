@@ -569,8 +569,8 @@ def cleanup_release_install_namespace_if_exists():
 # DO NOT use this method for re-put scenarios. This method involves new NS creation for helm release. For re-put scenarios, brownfield scenario needs to be handled where helm release still stays in default NS
 def helm_install_release(resource_manager, chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name,
                          cluster_name, location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file, cloud_name, disable_auto_upgrade, enable_custom_locations,
-                         custom_locations_oid, helm_client_location, enable_private_link, arm_metadata, onboarding_timeout="600",
+                         kube_config, kube_context, no_wait, values_file, cloud_name, disable_auto_upgrade, custom_locations_oid,
+                         helm_client_location, enable_private_link, arm_metadata, onboarding_timeout="600",
                          container_log_path=None):
 
     cmd_helm_install = [helm_client_location, "upgrade", "--install", "azure-arc", chart_path,
@@ -611,7 +611,7 @@ def helm_install_release(resource_manager, chart_path, subscription_id, kubernet
         )
 
     # Add custom-locations related params
-    if enable_custom_locations and not enable_private_link:
+    if custom_locations_oid is not None and not enable_private_link:
         cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.enabled=true"])
         cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.oid={}".format(custom_locations_oid)])
     # Disable cluster connect if private link is enabled
@@ -826,7 +826,6 @@ def get_metadata(arm_endpoint, api_version="2022-09-01"):
         import requests
         session = requests.Session()
         metadata_endpoint = arm_endpoint + metadata_url_suffix
-        print(f"Retrieving ARM metadata from: {metadata_endpoint}")
         response = session.get(metadata_endpoint)
         if response.status_code == 200:
             return response.json()

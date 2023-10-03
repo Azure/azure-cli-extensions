@@ -27,6 +27,21 @@ class MemberClusterIDNamespace:
     def __init__(self, member_cluster_id):
         self.member_cluster_id = member_cluster_id
 
+class UpgradeTypeNamespace:
+
+    def __init__(self, upgrade_type):
+        self.upgrade_type = upgrade_type
+
+class NodeImageSelectionNamespace:
+
+    def __init__(self, node_image_selection):
+        self.node_image_selection = node_image_selection
+
+class UpdateStrategyNamespace:
+
+    def __init__(self, update_strategy_id):
+        self.update_strategy_id = update_strategy_id
+
 class TestValidateMemberClusterId(unittest.TestCase):
     def test_invalid_member_cluster_id(self):
         invalid_member_cluster_id = "dummy cluster id"
@@ -101,7 +116,7 @@ class TestValidateAgentSubnetID(unittest.TestCase):
 
         self.assertIsNone(validators.validate_agent_subnet_id(namespace))
 
-class TestAssignIdentity(unittest.TestCase):
+class TestValidateAssignIdentity(unittest.TestCase):
     def test_invalid_identity_id(self):
         invalid_identity_id = "an invalid identity id"
         namespace = AssignIdentityNamespace(invalid_identity_id)
@@ -128,6 +143,22 @@ class TestAssignIdentity(unittest.TestCase):
         namespace = AssignIdentityNamespace(empty_identity_id)
 
         self.assertIsNone(validators.validate_assign_identity(namespace))
+
+class TestValidateUpdateStrategyId(unittest.TestCase):
+    def test_invalid_update_strategy_id(self):
+        invalid_update_strategy_id = "dummy cluster id"
+        namespace = UpdateStrategyNamespace(update_strategy_id=invalid_update_strategy_id)
+        err = ("--update-strategy-id is not a valid Azure resource ID.")
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_update_strategy_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_valid_update_strategy_id(self):
+        valid_update_strategy_id = "/subscriptions/123/resourceGroups/abc/providers/Microsoft.ContainerService/fleets/fleet-1/updateStrategies/strategy-1"
+        namespace = UpdateStrategyNamespace(update_strategy_id=valid_update_strategy_id)
+
+        self.assertIsNone(validators.validate_update_strategy_id(namespace))
 
 if __name__ == "__main__":
     unittest.main()
