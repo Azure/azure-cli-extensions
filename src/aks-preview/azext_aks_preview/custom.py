@@ -1,4 +1,5 @@
 # --------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
@@ -48,6 +49,9 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_NODE_ADDON_NAME,
     CONST_VIRTUAL_NODE_SUBNET_NAME,
     CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
 )
 from azext_aks_preview._helpers import (
     get_cluster_snapshot_by_snapshot_id,
@@ -2553,7 +2557,7 @@ def aks_mesh_upgrade_start(
         resource_group_name,
         name,
         revision=revision,
-        mesh_upgrade_command="start")
+        mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START)
 
 
 def aks_mesh_upgrade_complete(
@@ -2566,7 +2570,7 @@ def aks_mesh_upgrade_complete(
         client,
         resource_group_name,
         name,
-        mesh_upgrade_command="complete")
+        mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE)
 
 
 def aks_mesh_upgrade_rollback(
@@ -2580,7 +2584,7 @@ def aks_mesh_upgrade_rollback(
         client,
         resource_group_name,
         name,
-        mesh_upgrade_command="rollback")
+        mesh_upgrade_command=CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK)
 
 
 def _aks_mesh_update(

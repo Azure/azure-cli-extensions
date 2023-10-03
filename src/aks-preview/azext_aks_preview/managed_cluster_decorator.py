@@ -61,6 +61,9 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_DATAPLANE_CILIUM,
     CONST_PRIVATE_DNS_ZONE_NONE,
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
 )
 from azext_aks_preview._helpers import (
     check_is_private_cluster,
@@ -2261,18 +2264,27 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         # deal with mesh upgrade commands
         if mesh_upgrade_command is not None:
-            if len(new_profile.istio.revisions) < 2 and mesh_upgrade_command != "start":
-                raise ArgumentUsageError('Azure Service Mesh upgrade is not in progress.')
             requested_revision = self.raw_param.get("revision", None)
-            if mesh_upgrade_command == "complete":
-                new_profile.istio.revisions.remove(min(new_profile.istio.revisions))
-            elif mesh_upgrade_command == "rollback":
-                new_profile.istio.revisions.remove(max(new_profile.istio.revisions))
-            elif mesh_upgrade_command == "start" and requested_revision is not None:
+            if mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE or mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK:
+                if len(new_profile.istio.revisions) < 2:
+                    raise ArgumentUsageError('Azure Service Mesh upgrade is not in progress.')
+                if mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE:
+                    revision_to_remove = min(new_profile.istio.revisions)
+                    revision_to_keep = max(new_profile.istio.revisions)
+                else:
+                    revision_to_remove = max(new_profile.istio.revisions)
+                    revision_to_keep = min(new_profile.istio.revisions)
+                msg = (f"This operation will remove Istio control plane for revision {revision_to_remove}. "
+                       f"Please ensure all data plane workloads have been rolled over to revision {revision_to_keep} so that they are still part of the mesh. "
+                       "\nAre you sure you want to proceed?")
+                if prompt_y_n(msg, default="y"):
+                    new_profile.istio.revisions.remove(revision_to_remove)
+                    updated = True
+            elif mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START and requested_revision is not None:
                 if new_profile.istio.revisions is None:
                     new_profile.istio.revisions = []
                 new_profile.istio.revisions.append(requested_revision)
-            updated = True
+                updated = True
 
         if updated:
             return new_profile

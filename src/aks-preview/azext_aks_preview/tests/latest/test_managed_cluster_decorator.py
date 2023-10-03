@@ -44,6 +44,9 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_NODE_SUBNET_NAME,
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
     CONST_CUSTOM_CA_TEST_CERT,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
 )
 from azext_aks_preview.agentpool_decorator import AKSPreviewAgentPoolContext
 from azext_aks_preview.managed_cluster_decorator import (
@@ -6361,7 +6364,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "mesh_upgrade_command": "start",
+                "mesh_upgrade_command": CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
                 "revision": "asm-1-18"
             },
             CUSTOM_MGMT_AKS_PREVIEW,
@@ -6393,7 +6396,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "mesh_upgrade_command": "complete"
+                "mesh_upgrade_command": CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -6424,7 +6427,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "mesh_upgrade_command": "rollback"
+                "mesh_upgrade_command": CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )

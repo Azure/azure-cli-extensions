@@ -33,6 +33,11 @@ from azext_aks_preview._format import (
     aks_mesh_revisions_table_format,
     aks_mesh_upgrades_table_format,
 )
+from azext_aks_preview._consts import (
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
+)
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -290,16 +295,14 @@ def load_command_table(self, _):
     # AKS mesh upgrade commands
     with self.command_group('aks mesh upgrade', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
         g.custom_command(
-            'start',
+            CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
             'aks_mesh_upgrade_start',
             supports_no_wait=True)
         g.custom_command(
-            'complete',
+            CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
             'aks_mesh_upgrade_complete',
-            supports_no_wait=True,
-            confirmation='Are you sure you want to complete the upgrade?')
+            supports_no_wait=True)
         g.custom_command(
-            'rollback',
+            CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
             'aks_mesh_upgrade_rollback',
-            supports_no_wait=True,
-            confirmation='Are you sure you want to rollback the upgrade?')
+            supports_no_wait=True)
