@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.5.1
+++++++
+* Skip onboarding pre-checks for AKS-HCI with additional distros : [aks_management, aks_edge_k8s, aks_edge_k3s]
 
 1.5.0
 ++++++
