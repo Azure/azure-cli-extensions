@@ -457,7 +457,7 @@ def load_arguments(self, _):
             'cosmosdb copy resume',
             'cosmosdb copy cancel']:
         with self.argument_context(scope) as c:
-            c.argument('account_name', options_list=["--account-name", "-a"], required=True, help='Azure Cosmos DB account name where the job is created. Use --dest-account value from create job command.')
+            c.argument('account_name', options_list=["--account-name", "-a"], id_part=None, required=True, help='Azure Cosmos DB account name where the job is created. Use --dest-account value from create job command.')
 
     for scope in [
             'cosmosdb copy show',
@@ -465,7 +465,7 @@ def load_arguments(self, _):
             'cosmosdb copy resume',
             'cosmosdb copy cancel']:
         with self.argument_context(scope) as c:
-            c.argument('job_name', help='Name of the container copy job.', id_part='child_name_1', required=True)
+            c.argument('job_name', help='Name of the container copy job.', required=True)
 
     max_throughput_type = CLIArgumentType(options_list=['--max-throughput'], help='The maximum throughput resource can scale to (RU/s). Provided when the resource is autoscale enabled. The minimum value can be 4000 (RU/s)')
 
