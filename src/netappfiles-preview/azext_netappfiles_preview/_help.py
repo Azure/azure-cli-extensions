@@ -224,7 +224,7 @@ helps['netappfiles volume'] = """
 
 helps['netappfiles volume create'] = """
     type: command
-    short-summary: Create a new Azure NetApp Files (ANF) volume.
+    short-summary: (extension method)Create a new Azure NetApp Files (ANF) volume.
     parameters:
         - name: --account-name -a
           type: string
