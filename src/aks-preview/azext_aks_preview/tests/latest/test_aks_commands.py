@@ -7602,7 +7602,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         revisions_cmd = 'aks mesh get-revisions -l westus2'
         revisions = self.cmd(revisions_cmd).get_output_in_json()
-        assert len(revisions["values"]) > 0
+        assert len(revisions[0]['properties']['meshRevisions']) > 0
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
@@ -7639,7 +7639,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         upgrades_cmd = 'aks mesh get-upgrades --resource-group={resource_group} --name={name}'
         upgrades = self.cmd(upgrades_cmd).get_output_in_json()
-        assert len(upgrades["compatibleWith"]) > 0
+        assert 'compatibleWith' in upgrades[0]['properties'] and len(upgrades[0]['properties']['compatibleWith']) > 0
 
         # delete the cluster
         delete_cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
