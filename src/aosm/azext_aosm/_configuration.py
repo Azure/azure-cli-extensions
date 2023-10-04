@@ -72,6 +72,16 @@ class Configuration(abc.ABC):
     acr_artifact_store_name: str = ""
     location: str = ""
 
+    def __post_init__(self):
+        """
+        Set defaults for resource group and ACR as the publisher name tagged with -rg or -acr
+        """
+        if self.publisher_name:
+            if not self.publisher_resource_group_name:
+                self.publisher_resource_group_name = f"{self.publisher_name}-rg"
+            if not self.acr_artifact_store_name:
+                self.acr_artifact_store_name = f"{self.publisher_name}-acr"
+
     @classmethod
     def helptext(cls):
         """
@@ -83,11 +93,12 @@ class Configuration(abc.ABC):
                 "Will be created if it does not exist."
             ),
             publisher_resource_group_name=(
-                "Resource group for the Publisher resource. "
-                "Will be created if it does not exist."
+                "Optional. Resource group for the Publisher resource. "
+                "Will be created if it does not exist (with a default name if none is supplied)."
             ),
             acr_artifact_store_name=(
-                "Name of the ACR Artifact Store resource. Will be created if it does not exist."
+                "Optional. Name of the ACR Artifact Store resource. "
+                "Will be created if it does not exist (with a default name if none is supplied)."
             ),
             location="Azure location to use when creating resources.",
         )
@@ -203,8 +214,8 @@ class VNFConfiguration(NFConfiguration):
         """
         return VNFConfiguration(
             blob_artifact_store_name=(
-                "Name of the storage account Artifact Store resource. Will be created if it "
-                "does not exist."
+                "Optional. Name of the storage account Artifact Store resource. Will be created if it "
+                "does not exist (with a default name if none is supplied)."
             ),
             image_name_parameter=(
                 "The parameter name in the VM ARM template which specifies the name of the "
@@ -221,6 +232,10 @@ class VNFConfiguration(NFConfiguration):
 
         Used when creating VNFConfiguration object from a loaded json config file.
         """
+        super().__post_init__()
+        if self.publisher_name and not self.blob_artifact_store_name:
+            self.blob_artifact_store_name = f"{self.publisher_name}-sa"
+
         if isinstance(self.arm_template, dict):
             self.arm_template["file_path"] = self.path_from_cli_dir(
                 self.arm_template["file_path"]
@@ -383,6 +398,7 @@ class CNFConfiguration(NFConfiguration):
 
         Used when creating CNFConfiguration object from a loaded json config file.
         """
+        super().__post_init__()
         for package_index, package in enumerate(self.helm_packages):
             if isinstance(package, dict):
                 package["path_to_chart"] = self.path_from_cli_dir(
@@ -580,6 +596,7 @@ class NSConfiguration(Configuration):
 
     def __post_init__(self):
         """Covert things to the correct format."""
+        super().__post_init__()
         if self.network_functions and isinstance(self.network_functions[0], dict):
             nf_ret_list = [
                 NFDRETConfiguration(**config) for config in self.network_functions

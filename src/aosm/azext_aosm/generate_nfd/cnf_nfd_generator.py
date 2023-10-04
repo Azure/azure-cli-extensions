@@ -709,12 +709,12 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                         final_values_mapping_dict[k].append(
                             self._replace_values_with_deploy_params(item, param_name)
                         )
-                    elif isinstance(v, (str, int, bool)) or not v:
+                    elif isinstance(item, (str, int, bool)) or not v:
                         replacement_value = f"{{deployParameters.{param_name}}}"
                         final_values_mapping_dict[k].append(replacement_value)
                     else:
                         raise ValueError(
-                            f"Found an unexpected type {type(v)} of key {k} in "
+                            f"Found an unexpected type {type(item)} of key {k} in "
                             "values.yaml, cannot generate values mapping file."
                         )
             elif not v:
