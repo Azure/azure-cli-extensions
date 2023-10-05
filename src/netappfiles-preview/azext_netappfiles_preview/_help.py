@@ -13,4 +13,3 @@ helps['netappfiles'] = """
     type: group
     short-summary: Manage Azure NetApp Files (ANF) Resources.
 """
-

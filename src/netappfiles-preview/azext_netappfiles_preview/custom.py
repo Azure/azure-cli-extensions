@@ -130,7 +130,7 @@ class VolumeCreate(_VolumeCreate):
             logger.debug("ANF-Extension log: rule: %s", rule)
 
         if (args.protocol_types is not None and any(x in ['NFSv3', 'NFSv4.1'] for x in args.protocol_types) and len(args.rules) == 0)\
-                and not ((len(args.protocol_types)== 1 and all(elem == "NFSv3" for elem in args.protocol_types)) and len(args.rules) == 0):
+                and not ((len(args.protocol_types) == 1 and all(elem == "NFSv3" for elem in args.protocol_types)) and len(args.rules) == 0):
             isNfs41 = False
             isNfs3 = False
             cifs = False
@@ -145,7 +145,7 @@ class VolumeCreate(_VolumeCreate):
                 isNfs3 = True
             if "CIFS" in args.protocol_types:
                 cifs = True
-            
+
             logger.debug("ANF-Extension log: Setting exportPolicy rule index: %s, %s, %s, %s", rule_index, isNfs3, isNfs41, cifs)
 
             args.rules[0]["rule_index"] = rule_index

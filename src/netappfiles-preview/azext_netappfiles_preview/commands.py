@@ -20,11 +20,11 @@ def load_command_table(self, _):
         exception_handler=netapp_exception_handler
     )
 
-    netappfiles_mount_targets_sdk = CliCommandType(
-        operations_tmpl='azext_netappfiles_preview.vendored_sdks.operations.mount_targets_operations#MountTargetsOperations.{}',
-        client_factory=mount_targets_mgmt_client_factory,
-        exception_handler=netapp_exception_handler
-    )
+    # netappfiles_mount_targets_sdk = CliCommandType(
+    #     operations_tmpl='azext_netappfiles_preview.vendored_sdks.operations.mount_targets_operations#MountTargetsOperations.{}',
+    #     client_factory=mount_targets_mgmt_client_factory,
+    #     exception_handler=netapp_exception_handler
+    # )
 
     # with self.command_group('netappfiles account', netappfiles_accounts_sdk) as g:
     #     g.show_command('show', 'get')
@@ -60,7 +60,7 @@ def load_command_table(self, _):
     #                              doc_string_source='azext_netappfiles_preview.vendored_sdks.models#CapacityPool',
     #                              exception_handler=netapp_exception_handler)
 
-    with self.command_group('netappfiles volume', netappfiles_volumes_sdk) as g:
+    with self.command_group('netappfiles volume', netappfiles_volumes_sdk):
         from .custom import VolumeCreate
         self.command_table["netappfiles volume create"] = VolumeCreate(loader=self)
     #     g.show_command('show', 'get')
