@@ -77,5 +77,5 @@ def load_command_table(self, _):
     #                              doc_string_source='azext_netappfiles_preview.vendored_sdks.models#VolumePatch',
     #                              exception_handler=netapp_exception_handler)
 
-    with self.command_group('netappfiles mount-target', netappfiles_mount_targets_sdk) as g:
-        g.command('list', 'list')
+    # with self.command_group('netappfiles mount-target', netappfiles_mount_targets_sdk) as g:
+    #     g.command('list', 'list')

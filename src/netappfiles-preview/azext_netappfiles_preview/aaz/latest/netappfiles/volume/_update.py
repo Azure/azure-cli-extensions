@@ -244,7 +244,7 @@ class Update(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.capacity_pool_resource_id = AAZStrArg(
-            options=["--capacity-pool-resource-id"],
+            options=["--pool-resource-id", "--capacity-pool-resource-id"],
             arg_group="Properties",
             help="Pool Resource Id used in case of creating a volume through volume group",
             nullable=True,
@@ -276,13 +276,13 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.default_group_quota_in_ki_bs = AAZIntArg(
-            options=["--default-group-quota-in-ki-bs"],
+            options=["--default-group-quota", "--default-group-quota-in-ki-bs"],
             arg_group="Properties",
             help="Default group quota for volume in KiBs. If isDefaultQuotaEnabled is set, the minimum value of 4 KiBs applies.",
             nullable=True,
         )
         _args_schema.default_user_quota_in_ki_bs = AAZIntArg(
-            options=["--default-user-quota-in-ki-bs"],
+            options=["--default-user-quota", "--default-user-quota-in-ki-bs"],
             arg_group="Properties",
             help="Default user quota for volume in KiBs. If isDefaultQuotaEnabled is set, the minimum value of 4 KiBs applies .",
             nullable=True,
@@ -301,7 +301,7 @@ class Update(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.is_default_quota_enabled = AAZBoolArg(
-            options=["--is-default-quota-enabled"],
+            options=["--default-quota-enabled", "--is-default-quota-enabled"],
             arg_group="Properties",
             help="Specifies if default quota is enabled for the volume.",
             nullable=True,
@@ -344,7 +344,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.proximity_placement_group = AAZStrArg(
-            options=["--proximity-placement-group"],
+            options=["--ppg", "--proximity-placement-group"],
             arg_group="Properties",
             help="Proximity placement group associated with the volume",
             nullable=True,
@@ -364,14 +364,14 @@ class Update(AAZCommand):
             enum={"Premium": "Premium", "Standard": "Standard", "StandardZRS": "StandardZRS", "Ultra": "Ultra"},
         )
         _args_schema.smb_access_based_enumeration = AAZStrArg(
-            options=["--smb-access-based-enumeration"],
+            options=["--smb-access-enumeration", "--smb-access-based-enumeration"],
             arg_group="Properties",
             help="Enables access based enumeration share property for SMB Shares. Only applicable for SMB/DualProtocol volume",
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.smb_continuously_available = AAZBoolArg(
-            options=["--smb-continuously-available"],
+            options=["--smb-ca", "--smb-continuously-available"],
             arg_group="Properties",
             help="Enables continuously available share property for smb volume. Only applicable for SMB volume",
             nullable=True,
@@ -390,7 +390,7 @@ class Update(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.snapshot_directory_visible = AAZBoolArg(
-            options=["--snapshot-directory-visible"],
+            options=["--snapshot-dir-visible", "--snapshot-directory-visible"],
             arg_group="Properties",
             help="If enabled (true) the volume will contain a read-only snapshot directory which provides access to each of the volume's snapshots (defaults to true).",
             nullable=True,
@@ -475,7 +475,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.remote_volume_resource_id = AAZStrArg(
-            options=["--remote-volume-resource-id"],
+            options=["--remote-volume-id", "--remote-volume-resource-id"],
             arg_group="Replication",
             help="The resource ID of the remote volume.",
         )
