@@ -6410,7 +6410,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             )
         )
         dec_6.context.attach_mc(mc_6)
-        dec_mc_6 = dec_6.update_azure_service_mesh_profile(mc_6)
+        with patch(
+                "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
+                return_value=True,
+        ):
+            dec_mc_6 = dec_6.update_azure_service_mesh_profile(mc_6)
         ground_truth_mc_6 = self.models.ManagedCluster(
             location="test_location",
             service_mesh_profile=self.models.ServiceMeshProfile(
@@ -6441,7 +6445,11 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             )
         )
         dec_7.context.attach_mc(mc_7)
-        dec_mc_7 = dec_7.update_azure_service_mesh_profile(mc_7)
+        with patch(
+                "azext_aks_preview.managed_cluster_decorator.prompt_y_n",
+                return_value=True,
+        ):
+            dec_mc_7 = dec_7.update_azure_service_mesh_profile(mc_7)
         ground_truth_mc_7 = self.models.ManagedCluster(
             location="test_location",
             service_mesh_profile=self.models.ServiceMeshProfile(
@@ -6458,7 +6466,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "mesh_upgrade_command": "rollback"
+                "mesh_upgrade_command": CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -6480,7 +6488,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             self.cmd,
             self.client,
             {
-                "mesh_upgrade_command": "complete"
+                "mesh_upgrade_command": CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
