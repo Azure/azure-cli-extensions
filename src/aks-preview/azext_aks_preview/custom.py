@@ -604,7 +604,14 @@ def aks_create(
 ):
     if enable_azure_container_storage:
         from azext_aks_preview.azurecontainerstorage._validators import validate_azure_container_storage_params
-        validate_azure_container_storage_params(storage_pool_type, storage_pool_sku, storage_pool_option)
+        validate_azure_container_storage_params(
+            True,
+            None,
+            storage_pool_type,
+            storage_pool_sku,
+            storage_pool_option,
+            storage_pool_size,
+        )
 
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -640,24 +647,7 @@ def aks_create(
         return None
 
     # send request to create a real managed cluster
-    cluster = aks_create_decorator.create_mc(mc)
-    if enable_azure_container_storage:
-        from azext_aks_preview.azurecontainerstorage.acstor_ops import perform_enable_azure_container_storage
-        perform_enable_azure_container_storage(
-            cmd,
-            client,
-            cluster,
-            storage_pool_name,
-            storage_pool_type,
-            storage_pool_size,
-            storage_pool_sku,
-            storage_pool_option,
-            disable_storage_pool_creation,
-            "nodepool1",
-        )
-
-    return cluster
-
+    return aks_create_decorator.create_mc(mc)
 
 # pylint: disable=too-many-locals
 def aks_update(
@@ -801,15 +791,16 @@ def aks_update(
     storage_pool_option=None,
     azure_container_storage_nodepools=None,
 ):
-    if enable_azure_container_storage and disable_azure_container_storage:
-        raise MutuallyExclusiveArgumentError(
-            'Conflicting flags. Cannot set --enable-azure-container-storage'
-            'and --disable-azure-container-storage together.'
-        )
 
-    if enable_azure_container_storage:
+    if enable_azure_container_storage or disable_azure_container_storage:
         from azext_aks_preview.azurecontainerstorage._validators import validate_azure_container_storage_params
-        validate_azure_container_storage_params(storage_pool_type, storage_pool_sku, storage_pool_option)
+        validate_azure_container_storage_params(
+            enable_azure_container_storage,
+            disable_azure_container_storage,
+            storage_pool_type, storage_pool_sku,
+            storage_pool_option,
+            storage_pool_size,
+        )
 
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

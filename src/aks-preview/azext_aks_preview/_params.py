@@ -494,8 +494,8 @@ def load_arguments(self, _):
         c.argument('enable_cost_analysis', is_preview=True, action='store_true')
         # azure container storage
         c.argument('enable_azure_container_storage', action='store_true')
-        c.argument('storage_pool_type', arg_type=get_enum_type(storage_pool_types), default=CONST_STORAGE_POOL_TYPE_AZURE_DISK)
-        c.argument('storage_pool_size', type=int, default=CONST_STORAGE_POOL_DEFAULT_SIZE)
+        c.argument('storage_pool_type', arg_type=get_enum_type(storage_pool_types))
+        c.argument('storage_pool_size', type=str)
         c.argument('storage_pool_sku', arg_type=get_enum_type(storage_pool_skus))
         c.argument('storage_pool_option', arg_type=get_enum_type(storage_pool_options))
 
@@ -629,10 +629,10 @@ def load_arguments(self, _):
         # azure container storage
         c.argument('enable_azure_container_storage', action='store_true')
         c.argument('disable_azure_container_storage', action='store_true')
-        c.argument('storage_pool_type', arg_type=get_enum_type(storage_pool_types), default=CONST_STORAGE_POOL_TYPE_AZURE_DISK)
-        c.argument('storage_pool_size', type=int, default=CONST_STORAGE_POOL_DEFAULT_SIZE)
-        c.argument('storage_pool_sku', arg_type=get_enum_type(storage_pool_skus), default=CONST_STORAGE_POOL_SKU_PREMIUM_LRS)
-        c.argument('storage_pool_option', arg_type=get_enum_type(storage_pool_options), default=CONST_STORAGE_POOL_OPTION_NVME)
+        c.argument('storage_pool_type', arg_type=get_enum_type(storage_pool_types))
+        c.argument('storage_pool_size', type=str)
+        c.argument('storage_pool_sku', arg_type=get_enum_type(storage_pool_skus))
+        c.argument('storage_pool_option', arg_type=get_enum_type(storage_pool_options))
         c.argument('azure_container_storage_nodepools', default='nodepool1')
 
     with self.argument_context('aks upgrade') as c:

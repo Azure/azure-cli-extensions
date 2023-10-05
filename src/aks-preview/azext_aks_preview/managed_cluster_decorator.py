@@ -30,6 +30,10 @@ from azure.cli.command_modules.acs._validators import (
 from azext_aks_preview.azuremonitormetrics.azuremonitorprofile import (
     ensure_azure_monitor_profile_prerequisites
 )
+from azext_aks_preview.azurecontainerstorage.acstor_ops import (
+    perform_enable_azure_container_storage,
+    perform_disable_azure_container_storage,
+)
 from azure.cli.command_modules.acs.managed_cluster_decorator import (
     AKSManagedClusterContext,
     AKSManagedClusterCreateDecorator,
@@ -164,6 +168,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             ] = ensure_azure_monitor_profile_prerequisites
             # temp workaround for the breaking change caused by default API version bump of the auth SDK
             external_functions["add_role_assignment"] = add_role_assignment
+            # azure container storage functions
+            external_functions["perform_enable_azure_container_storage"] = perform_enable_azure_container_storage
+            external_functions["perform_disable_azure_container_storage"] = perform_disable_azure_container_storage
             self.__external_functions = SimpleNamespace(**external_functions)
         return self.__external_functions
 
@@ -2791,6 +2798,17 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             self.context.set_intermediate("azuremonitormetrics_addon_enabled", True, overwrite_exists=True)
         return mc
 
+    def set_up_azure_container_storage(self, mc: ManagedCluster) -> None:
+        """Set up azure container storage for the Managed Cluster object
+        :return: None
+        """
+        self._ensure_mc(mc)
+        # read the azure container storage values passed
+        enable_azure_container_storage = self.context.raw_param.get("enable_azure_container_storage")
+        if enable_azure_container_storage:
+            # set intermediates
+            self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
+
     def set_up_auto_upgrade_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up auto upgrade profile for the ManagedCluster object.
         :return: the ManagedCluster object
@@ -2931,6 +2949,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_azure_monitor_profile(mc)
         # set up metrics profile
         mc = self.set_up_metrics_profile(mc)
+        # set up for azure container storage
+        self.set_up_azure_container_storage(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -2954,6 +2974,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         need_grant_vnet_permission_to_cluster_identity = self.context.get_intermediate(
             "need_post_creation_vnet_permission_granting", default_value=False
         )
+        enable_azure_container_storage = self.context.get_intermediate("enable_azure_container_storage", default_value=False)
 
         if (
             monitoring_addon_enabled or
@@ -2961,7 +2982,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             virtual_node_addon_enabled or
             azuremonitormetrics_addon_enabled or
             (enable_managed_identity and attach_acr) or
-            need_grant_vnet_permission_to_cluster_identity
+            need_grant_vnet_permission_to_cluster_identity or
+            enable_azure_container_storage
         ):
             return True
         return False
@@ -3086,6 +3108,48 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 self.__raw_parameters,
                 self.context.get_disable_azure_monitor_metrics(),
                 True
+            )
+
+        # enable azure container storage
+        enable_azure_container_storage = self.context.get_intermediate("enable_azure_container_storage")
+        if enable_azure_container_storage:
+            if cluster.identity_profile is None or cluster.identity_profile["kubeletidentity"] is None:
+                logger.warning(
+                    "Unexpected error getting kubelet's identity for the cluster."
+                    "Unable to perform the azure container storage operation."
+                )
+                return
+
+            # Get the node_resource_group from the cluster object since
+            # `mc` in `context` still doesn't have the updated node_resource_group.
+            if cluster.node_resource_group is None:
+                logger.warning(
+                    "Unexpected error getting cluster's node resource group."
+                    "Unable to perform the azure container storage operation."
+                )
+                return
+
+            pool_name = self.context.raw_param.get("storage_pool_name")
+            pool_type = self.context.raw_param.get("storage_pool_type")
+            pool_option = self.context.raw_param.get("storage_pool_option")
+            pool_sku = self.context.raw_param.get("storage_pool_sku")
+            pool_size = self.context.raw_param.get("storage_pool_size")
+            kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
+            node_resource_group = cluster.node_resource_group
+
+            self.context.external_functions.perform_enable_azure_container_storage(
+                self.cmd,
+                self.context.get_subscription_id(),
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+                node_resource_group,
+                kubelet_identity_object_id,
+                pool_name,
+                pool_type,
+                pool_size,
+                pool_sku,
+                pool_option,
+                "nodepool1",
             )
 
 
@@ -3213,6 +3277,22 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 enabled=network_observability
             )
         return mc
+
+    def update_azure_container_storage(self, mc: ManagedCluster) -> None:
+        """Update azure container storage for the Managed Cluster object
+        :return: None
+        """
+        self._ensure_mc(mc)
+        # read the azure container storage values passed
+        enable_azure_container_storage = self.context.raw_param.get("enable_azure_container_storage")
+        disable_azure_container_storage = self.context.raw_param.get("disable_azure_container_storage")
+        if enable_azure_container_storage:
+            # set intermediates
+            self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
+
+        if disable_azure_container_storage:
+            # set intermediate
+            self.context.set_intermediate("disable_azure_container_storage", True, overwrite_exists=True)
 
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update load balancer profile for the ManagedCluster object.
@@ -3889,5 +3969,74 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_k8s_support_plan(mc)
         # update metrics profile
         mc = self.update_metrics_profile(mc)
+        # update azure container storage
+        self.update_azure_container_storage(mc)
 
         return mc
+
+    def check_is_postprocessing_required(self, mc: ManagedCluster) -> bool:
+        """Helper function to check if postprocessing is required after sending a PUT request to create the cluster.
+
+        :return: bool
+        """
+        postprocessing_required = super().check_is_postprocessing_required(mc)
+        if not postprocessing_required:
+            enable_azure_container_storage = self.context.get_intermediate("enable_azure_container_storage", default_value=False)
+            disable_azure_container_storage = self.context.get_intermediate("disable_azure_container_storage", default_value=False)
+
+            if (enable_azure_container_storage or disable_azure_container_storage):
+                return True
+        return postprocessing_required
+
+    def postprocessing_after_mc_created(self, cluster: ManagedCluster) -> None:
+        """Postprocessing performed after the cluster is created.
+
+        :return: None
+        """
+        super().postprocessing_after_mc_created(cluster)
+        enable_azure_container_storage = self.context.get_intermediate("enable_azure_container_storage")
+        disable_azure_container_storage = self.context.get_intermediate("disable_azure_container_storage")
+
+        if enable_azure_container_storage or disable_azure_container_storage:
+            if cluster.identity_profile is None or cluster.identity_profile["kubeletidentity"] is None:
+                logger.warning(
+                    "Unexpected error getting kubelet's identity for the cluster."
+                    "Unable to perform azure container storage operation."
+                )
+                return
+
+        # enable azure container storage
+        if enable_azure_container_storage:
+            pool_name = self.context.raw_param.get("storage_pool_name")
+            pool_type = self.context.raw_param.get("storage_pool_type")
+            pool_option = self.context.raw_param.get("storage_pool_option")
+            pool_sku = self.context.raw_param.get("storage_pool_sku")
+            pool_size = self.context.raw_param.get("storage_pool_size")
+            nodepool_list = self.context.raw_param.get("azure_container_storage_nodepools")
+            kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
+            self.context.external_functions.perform_enable_azure_container_storage(
+                self.cmd,
+                self.context.get_subscription_id(),
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+                self.context.get_node_resource_group(),
+                kubelet_identity_object_id,
+                pool_name,
+                pool_type,
+                pool_size,
+                pool_sku,
+                pool_option,
+                nodepool_list,
+            )
+
+        # disable azure container storage
+        if disable_azure_container_storage:
+            kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
+            self.context.external_functions.perform_disable_azure_container_storage(
+                self.cmd,
+                self.context.get_subscription_id(),
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+                self.context.get_node_resource_group(),
+                kubelet_identity_object_id,
+            )
