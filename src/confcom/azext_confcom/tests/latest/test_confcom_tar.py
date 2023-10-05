@@ -242,7 +242,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"python:3.9"
+                "defaultValue":"python:3.6.14-slim-buster"
             },
             "containername2": {
                 "type": "string",
@@ -451,7 +451,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"rust:latest"
+                "defaultValue":"alpine:3.16"
             },
             "containername": {
                 "type": "string",
@@ -609,7 +609,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"rust:latest"
+                "defaultValue":"alpine:3.16"
             },
             "containername": {
                 "type": "string",
