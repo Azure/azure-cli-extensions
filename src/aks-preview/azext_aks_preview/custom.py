@@ -822,29 +822,7 @@ def aks_update(
         # exit gracefully
         return None
     # send request to update the real managed cluster
-    cluster = aks_update_decorator.update_mc(mc)
-    if enable_azure_container_storage:
-        from azext_aks_preview.azurecontainerstorage.acstor_ops import perform_enable_azure_container_storage
-        perform_enable_azure_container_storage(
-            cmd,
-            client,
-            cluster,
-            storage_pool_name,
-            storage_pool_type,
-            storage_pool_size,
-            storage_pool_sku,
-            storage_pool_option,
-            azure_container_storage_nodepools,
-        )
-    elif disable_azure_container_storage:
-        from azext_aks_preview.azurecontainerstorage.acstor_ops import perform_disable_azure_container_storage
-        perform_disable_azure_container_storage(
-            cmd,
-            client,
-            cluster,
-        )
-
-    return cluster
+    return aks_update_decorator.update_mc(mc)
 
 
 # pylint: disable=unused-argument
