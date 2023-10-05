@@ -13,7 +13,7 @@ class NetAppExtensionCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
         netapp_custom = CliCommandType(operations_tmpl='azext_netappfiles_preview.custom#{}')
         super().__init__(cli_ctx=cli_ctx,
-                                                            custom_command_type=netapp_custom)
+                         custom_command_type=netapp_custom)
 
     def load_command_table(self, args):
         super().load_command_table(args)

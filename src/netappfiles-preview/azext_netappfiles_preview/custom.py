@@ -44,10 +44,10 @@ def generate_tags(tag):
 
 #     return client.create_or_update(body, resource_group_name, account_name, pool_name, volume_name)
 
+
 # region volume
 class VolumeCreate(_VolumeCreate):
     @classmethod
-
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZStrArg, AAZIntArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -65,8 +65,8 @@ class VolumeCreate(_VolumeCreate):
         #                  "/applicationGateways/{gateway_name}/trustedClientCertificates/{}",
         #     ),
         # )
-        #args_schema.auth_configuration._registered = False
-        #args_schema.client_certificates._registered = False
+        # args_schema.auth_configuration._registered = False
+        # args_schema.client_certificates._registered = False
 
         args_schema.vnet = AAZStrArg(
             options=["--vnet"],
@@ -87,8 +87,8 @@ class VolumeCreate(_VolumeCreate):
         # )
 
         args_schema.usage_threshold.fmt = AAZIntArgFormat(
-                maximum=500,
-                minimum=100,
+            maximum=500,
+            minimum=100,
         )
 
         return args_schema
@@ -98,7 +98,7 @@ class VolumeCreate(_VolumeCreate):
         # RP expects bytes but CLI allows integer TiBs for ease of use
         # gib_scale = 1024 * 1024 * 1024
         # tib_scale = gib_scale * 1024
-        #args.usage_threshold = int(args.usage_threshold) * gib_scale
+        # args.usage_threshold = int(args.usage_threshold) * gib_scale
         # default the resource group of the subnet to the volume's rg unless the subnet is specified by id
         subnet_rg = args.resource_group
         subs_id = self.ctx.subscription_id
@@ -129,11 +129,12 @@ class VolumeCreate(_VolumeCreate):
         for rule in args.rules:
             logger.debug("ANF-Extension log: rule: %s", rule)
 
-        if (args.protocol_types is not None and any(x in ['NFSv3', 'NFSv4.1'] for x in args.protocol_types) and len(args.rules) ==0)\
-                and not ((len(args.protocol_types)==1 and all(elem =="NFSv3" for elem in args.protocol_types)) and len(args.rules) ==0):
+        if (args.protocol_types is not None and any(x in ['NFSv3', 'NFSv4.1'] for x in args.protocol_types) and len(args.rules) == 0)\
+                and not ((len(args.protocol_types)== 1 and all(elem == "NFSv3" for elem in args.protocol_types)) and len(args.rules) == 0):
             isNfs41 = False
             isNfs3 = False
-            cifs=False
+            cifs = False
+            rule_index = 1
             if "NFSv4.1" in args.protocol_types:
                 isNfs41 = True
                 if args.rules["allowed_clients"] is None:
@@ -144,22 +145,21 @@ class VolumeCreate(_VolumeCreate):
                 isNfs3 = True
             if "CIFS" in args.protocol_types:
                 cifs = True
+            
+            logger.debug("ANF-Extension log: Setting exportPolicy rule index: %s, %s, %s, %s", rule_index, isNfs3, isNfs41, cifs)
 
-            rule_index = 1
-            logger.debug("ANF-Extension log: Setting exportPolicy rule index: %s, %s, %s, %s", rule_index, isNfs3, isNfs41,cifs )
-
-            args.rules[0]["rule_index"]=rule_index
-            args.rules[0]["nfsv3"]=isNfs3
-            args.rules[0]["nfsv41"]=isNfs41
-            args.rules[0]["cifs"]=cifs
+            args.rules[0]["rule_index"] = rule_index
+            args.rules[0]["nfsv3"] = isNfs3
+            args.rules[0]["nfsv41"] = isNfs41
+            args.rules[0]["cifs"] = cifs
         else:
             logger.debug("Don't create export policy")
 
 # todo create export policy note no longer flatteneded
 
-## check if flattening dataprotection works
+# check if flattening dataprotection works
 
-## from example keep for reference for now
+# from example keep for reference for now
         # if has_value(args.client_auth_config):
         #     args.auth_configuration.verify_client_cert_issuer_dn = args.client_auth_config
         # args.client_certificates = assign_aaz_list_arg(

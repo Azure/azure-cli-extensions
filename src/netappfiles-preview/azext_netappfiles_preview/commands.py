@@ -26,7 +26,6 @@ def load_command_table(self, _):
         exception_handler=netapp_exception_handler
     )
 
-
     # with self.command_group('netappfiles account', netappfiles_accounts_sdk) as g:
     #     g.show_command('show', 'get')
     #     g.command('list', 'list')
