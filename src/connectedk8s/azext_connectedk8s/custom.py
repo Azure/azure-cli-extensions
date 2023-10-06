@@ -406,18 +406,15 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
     put_cc_response = LongRunningOperation(cmd.cli_ctx)(put_cc_response)
     print("Azure resource provisioning has finished.")
-
-    # Checking if custom locations rp is registered and verify passed-in cl_oid.
-    test_custom_location_requirements(cmd, cl_oid, subscription_id)
+    # Checking if custom locations rp is registered and fetching oid if it is registered
+    enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id)
 
     print("Starting to install Azure arc agents on the Kubernetes cluster.")
-
     # Install azure-arc agents
     utils.helm_install_release(cmd.cli_ctx.cloud.endpoints.resource_manager, chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                                location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
-                               kube_context, no_wait, values_file, azure_cloud, disable_auto_upgrade, cl_oid, helm_client_location,
-                               enable_private_link, arm_metadata, onboarding_timeout, container_log_path)
-
+                               kube_context, no_wait, values_file, azure_cloud, disable_auto_upgrade, enable_custom_locations,
+                               custom_locations_oid, helm_client_location, enable_private_link, arm_metadata, onboarding_timeout, container_log_path)
     return put_cc_response
 
 
@@ -1401,14 +1398,15 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         azrbac_skip_authz_check = escape_proxy_settings(azrbac_skip_authz_check)
 
     if enable_cl:
-        if cl_oid is None:
-            raise RequiredArgumentMissingError("Custom locations object id was not passed. Please pass '--custom-locations-oid' to enable custom locations.")
         subscription_id = os.getenv('AZURE_SUBSCRIPTION_ID') if custom_token_passed is True else get_subscription_id(cmd.cli_ctx)
-        # The following throws an error if custom location requirements are not met since user expects to use custom locations.
-        test_custom_location_requirements(cmd, cl_oid, subscription_id)
-        if not enable_cluster_connect:
+        enable_cl, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id)
+        if not enable_cluster_connect and enable_cl:
             enable_cluster_connect = True
             logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too.")
+        if not enable_cl:
+            features.remove("custom-locations")
+            if len(features) == 0:
+                raise ClientRequestError("Failed to enable 'custom-locations' feature.")
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
@@ -1489,7 +1487,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=true"])
     if enable_cl:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.enabled=true"])
-        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.oid={}".format(cl_oid)])
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.oid={}".format(custom_locations_oid)])
 
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
     _, error_helm_upgrade = response_helm_upgrade.communicate()
@@ -2164,47 +2162,56 @@ def client_side_proxy(cmd,
     return expiry, clientproxy_process
 
 
-def test_custom_location_requirements(cmd, cl_oid, subscription_id):
-    # Checking if custom locations rp is registered and verify passed-in cl_oid.
-    if cl_oid is not None:
-        if not extended_location_registered(cmd, subscription_id):
-            raise ResourceNotFoundError("Custom locations object id was passed, but Microsoft.ExtendedLocation is not registered. Please register it and run again.")
-        if not custom_locations_oid_valid(cmd, cl_oid):
-            raise InvalidArgumentValueError(f"Error looking up custom locations object id '{cl_oid}'. It might be invalid.")
-    else:
-        logger.warning("Won't enable custom locations feature as parameter '--custom-locations-oid' wasn't passed. Learn more at https://aka.ms/CustomLocationsObjectID")
-
-
-def extended_location_registered(cmd, subscription_id):
+def check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id):
+    enable_custom_locations = True
+    custom_locations_oid = ""
     try:
         rp_client = resource_providers_client(cmd.cli_ctx, subscription_id)
         cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
+        if cl_registration_state != "Registered":
+            enable_custom_locations = False
+            logger.warning("'Custom-locations' feature couldn't be enabled on this cluster as the pre-requisite registration of 'Microsoft.ExtendedLocation' was not met. More details for enabling this feature later on this cluster can be found here - https://aka.ms/EnableCustomLocations")
+        else:
+            custom_locations_oid = get_custom_locations_oid(cmd, cl_oid)
+            if custom_locations_oid == "":
+                enable_custom_locations = False
     except Exception as e:
-        logger.warning("Unable to fetch registration state of 'Microsoft.ExtendedLocation'. Failed to enable 'custom-locations' feature.")
+        enable_custom_locations = False
+        logger.warning("Unable to fetch registration state of 'Microsoft.ExtendedLocation'. Failed to enable 'custom-locations' feature. This is fine if not required. Proceeding with helm install.")
         telemetry.set_exception(exception=e, fault_type=consts.Custom_Locations_Registration_Check_Fault_Type,
                                 summary='Unable to fetch status of Custom Locations RP registration.')
-        raise
-    if cl_registration_state != "Registered":
-        logger.warning("Custom locations couldn't be enabled on this cluster as 'Microsoft.ExtendedLocation' is not registered. More details for enabling this feature can be found here: https://aka.ms/EnableCustomLocations")
-        return False
-    return True
+    return enable_custom_locations, custom_locations_oid
 
 
-def custom_locations_oid_valid(cmd, cl_oid):
-    if cl_oid is None:
-        raise RequiredArgumentMissingError("The passed in custom locations object id is None. Please pass in the custom locations object id to verify.")
+def get_custom_locations_oid(cmd, cl_oid):
     try:
         sp_graph_client = get_graph_client_service_principals(cmd.cli_ctx)
-        # Do not use display names for look-up as display names are not unique.
-        result = sp_graph_client.get(cl_oid)
-        logger.debug(f"Retrieved SP app named '{result.display_name}' for object id {cl_oid}")
-        return True
+        sub_filters = []
+        sub_filters.append("displayName eq '{}'".format("Custom Locations RP"))
+        result = list(sp_graph_client.list(filter=(' and '.join(sub_filters))))
+        if len(result) != 0:
+            if cl_oid is not None and cl_oid != result[0].object_id:
+                logger.debug("The 'Custom-locations' OID passed is different from the actual OID({}) of the Custom Locations RP app. Proceeding with the correct one...".format(result[0].object_id))
+            return result[0].object_id  # Using the fetched OID
+
+        if cl_oid is None:
+            logger.warning("Failed to enable Custom Locations feature on the cluster. Unable to fetch Object ID of Azure AD application used by Azure Arc service. Try enabling the feature by passing the --custom-locations-oid parameter directly. Learn more at https://aka.ms/CustomLocationsObjectID")
+            telemetry.set_exception(exception='Unable to fetch oid of custom locations app.', fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type,
+                                    summary='Unable to fetch oid for custom locations app.')
+            return ""
+        else:
+            return cl_oid
     except Exception as e:
-        error = f"Unable to get the custom locations service principal application using the object id {cl_oid}. Please verify the object id is valid."
-        logger.error(error + " " + str(e))
+        log_string = "Unable to fetch the Object ID of the Azure AD application used by Azure Arc service. "
         telemetry.set_exception(exception=e, fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type,
-                                summary=error)
-        return False
+                                summary='Unable to fetch oid for custom locations app.')
+        if cl_oid:
+            log_string += "Proceeding with the Object ID provided to enable the 'custom-locations' feature."
+            logger.warning(log_string)
+            return cl_oid
+        log_string += "Unable to enable the 'custom-locations' feature. " + str(e)
+        logger.warning(log_string)
+        return ""
 
 
 def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, no_wait=False, tags=None):
