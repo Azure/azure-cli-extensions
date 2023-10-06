@@ -351,7 +351,7 @@ def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatc
         '--maintenance-window-recur-every "Day" '
         '--maintenance-window-start-date-time "2024-04-30 08:00" '
         '--maintenance-window-time-zone "Pacific Standard Time" '
-        '--resource-group  {rg} '
+        '--resource-group {rg} '
         '--resource-name clitestmrpconfinguestdefault '
         '--extension-properties InGuestPatchMode=Platform '
         , checks=[])
@@ -366,15 +366,15 @@ def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatc
         '--maintenance-window-recur-every "Day" '
         f'--maintenance-window-start-date-time "{start_date.strftime("%Y-%m-%d %H:%M")}" '
         '--maintenance-window-time-zone "UTC" '
-        '--resource-group  {rg} '
-        '--resource-name  clitestmrpconfinguestadvancedforcancel '
+        '--resource-group {rg} '
+        '--resource-name clitestmrpconfinguestadvancedforcancel '
         '--linux-parameters "classifications-to-include-list=[Security,Critical]" '
         '--reboot-setting Always '
         '--extension-properties InGuestPatchMode=User '
         , checks=[])
     
 def step__maintenanceconfigurations_cancel_maintenanceconfigurations(test, start_date):
-    test.cmd(f'az maintenance apply-update create --apply-update-name "{start_date.strftime("%Y%m%d%H%M00")}" '
+    test.cmd(f'az maintenance applyupdate create-or-update --apply-update-name "{start_date.strftime("%Y%m%d%H%M00")}" '
         '--provider-name "Microsoft.Maintenance" '
         '--resource-group {rg} '
         '--resource-name clitestmrpconfinguestadvancedforcancel '

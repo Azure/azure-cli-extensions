@@ -12,14 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "maintenance apply-update update",
-    is_preview=True,
+    "maintenance applyupdate update",
 )
 class Update(AAZCommand):
     """Update maintenance updates to resource
 
     :example: ApplyUpdates_Update
-        az maintenance apply-update create --apply-update-name "20230901120000" --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdtest1" --resource-type "virtualMachineScaleSets" --status "Cancel"
+        az maintenance applyupdate update --apply-update-name "20230921151000" --provider-name "Microsoft.Maintenance" --resource-group "Maintenance-RG-1598" --resource-name "configuration1" --resource-type "maintenanceConfigurations" --status "Cancel"
     """
 
     _aaz_info = {

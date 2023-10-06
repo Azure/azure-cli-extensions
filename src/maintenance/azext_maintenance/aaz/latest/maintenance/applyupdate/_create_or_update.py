@@ -12,14 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "maintenance apply-update create",
-    is_preview=True,
+    "maintenance applyupdate create-or-update",
 )
-class Create(AAZCommand):
+class CreateOrUpdate(AAZCommand):
     """Create maintenance updates to resource
 
-    :example: ApplyUpdates_Create
-        az maintenance apply-update create --apply-update-name "20230901120000" --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdtest1" --resource-type "virtualMachineScaleSets" --status "Cancel"
+    :example: ApplyUpdates_CreateOrUpdate
+        az maintenance applyupdate create-or-update --apply-update-name "20230921151000" --provider-name "Microsoft.Maintenance" --resource-group "Maintenance-RG-1598" --resource-name "configuration1" --resource-type "maintenanceConfigurations" --status "Cancel"
     """
 
     _aaz_info = {
@@ -49,11 +48,13 @@ class Create(AAZCommand):
             options=["-n", "--name", "--apply-update-name"],
             help="ApplyUpdate name",
             required=True,
+            id_part="child_name_1",
         )
         _args_schema.provider_name = AAZStrArg(
             options=["--provider-name"],
             help="Resource provider name",
             required=True,
+            id_part="namespace",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -62,11 +63,13 @@ class Create(AAZCommand):
             options=["--resource-name"],
             help="Resource identifier",
             required=True,
+            id_part="name",
         )
         _args_schema.resource_type = AAZStrArg(
             options=["--resource-type"],
             help="Resource type",
             required=True,
+            id_part="type",
         )
 
         # define Arg Group "Properties"
@@ -269,8 +272,8 @@ class Create(AAZCommand):
             return cls._schema_on_200_201
 
 
-class _CreateHelper:
-    """Helper class for Create"""
+class _CreateOrUpdateHelper:
+    """Helper class for CreateOrUpdate"""
 
 
-__all__ = ["Create"]
+__all__ = ["CreateOrUpdate"]
