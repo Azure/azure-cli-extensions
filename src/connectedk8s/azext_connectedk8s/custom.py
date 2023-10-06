@@ -654,6 +654,10 @@ def get_kubernetes_distro(api_response):  # Heuristic
                 return "k3s"
             if annotations.get("rke.cattle.io/external-ip") or annotations.get("rke.cattle.io/internal-ip"):
                 return "rancher_rke"
+            if annotations.get("node.aksedge.io/distro: aks_edge_k3s"):
+                return "aks_edge_k3s"
+            if annotations.get("node.aksedge.io/distro: aks_edge_k8s"):
+                return "aks_edge_k8s"
         return "generic"
     except Exception as e:  # pylint: disable=broad-except
         logger.debug("Error occured while trying to fetch kubernetes distribution: " + str(e))
