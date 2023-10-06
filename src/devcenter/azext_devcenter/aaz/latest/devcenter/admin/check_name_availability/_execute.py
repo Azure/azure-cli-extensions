@@ -22,9 +22,9 @@ class Execute(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/checknameavailability", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/checknameavailability", "2023-10-01-preview"],
         ]
     }
 
@@ -115,7 +115,7 @@ class Execute(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }

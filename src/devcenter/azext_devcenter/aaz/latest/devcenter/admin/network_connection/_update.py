@@ -15,20 +15,19 @@ from azure.cli.core.aaz import *
     "devcenter admin network-connection update",
 )
 class Update(AAZCommand):
-    """Update a network connection.
-
-    :example: Update
-        az devcenter admin network-connection update --domain-password "New Password value for user" --name "{networkConnectionName}" --resource-group "rg1"
+    """Update a Network Connections resource
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2023-10-01-preview"],
         ]
     }
 
     AZ_SUPPORT_NO_WAIT = True
+
+    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -47,12 +46,16 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.network_connection_name = AAZStrArg(
             options=["-n", "--name", "--network-connection-name"],
-            help="Name of the network connection that can be applied to a pool.",
+            help="Name of the Network Connection that can be applied to a Pool.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -63,10 +66,13 @@ class Update(AAZCommand):
             options=["--tags"],
             arg_group="Body",
             help="Resource tags.",
+            nullable=True,
         )
 
         tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
+        tags.Element = AAZStrArg(
+            nullable=True,
+        )
 
         # define Arg Group "Properties"
 
@@ -74,36 +80,42 @@ class Update(AAZCommand):
         _args_schema.domain_name = AAZStrArg(
             options=["--domain-name"],
             arg_group="Properties",
-            help="Active Directory domain name.",
+            help="Active Directory domain name",
+            nullable=True,
         )
         _args_schema.domain_password = AAZStrArg(
             options=["--domain-password"],
             arg_group="Properties",
-            help="The password for the account used to join domain.",
-            blank=AAZPromptInput(
-                msg="Domain password:",
-            ),
+            help="The password for the account used to join domain",
+            nullable=True,
         )
         _args_schema.domain_username = AAZStrArg(
             options=["--domain-username"],
             arg_group="Properties",
             help="The username of an Active Directory account (user or service account) that has permissions to create computer objects in Active Directory. Required format: admin@contoso.com.",
+            nullable=True,
         )
         _args_schema.organization_unit = AAZStrArg(
             options=["--organization-unit"],
             arg_group="Properties",
-            help="Active Directory domain Organization Unit (OU).",
+            help="Active Directory domain Organization Unit (OU)",
+            nullable=True,
         )
         _args_schema.subnet_id = AAZStrArg(
             options=["--subnet-id"],
             arg_group="Properties",
-            help="The subnet to attach dev boxes to.",
+            help="The subnet to attach Virtual Machines to",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.NetworkConnectionsUpdate(ctx=self.ctx)()
+        self.NetworkConnectionsGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
+        self.InstanceUpdateByJson(ctx=self.ctx)()
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
+        yield self.NetworkConnectionsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -114,34 +126,26 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class NetworkConnectionsUpdate(AAZHttpOperation):
+    class NetworkConnectionsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
@@ -154,7 +158,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PATCH"
+            return "GET"
 
         @property
         def error_format(self):
@@ -182,7 +186,106 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-10-01-preview",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+            _UpdateHelper._build_schema_network_connection_read(cls._schema_on_200)
+
+            return cls._schema_on_200
+
+    class NetworkConnectionsCreateOrUpdate(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/networkConnections/{networkConnectionName}",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "PUT"
+
+        @property
+        def error_format(self):
+            return "ODataV4Format"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "networkConnectionName", self.ctx.args.network_connection_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -204,8 +307,41 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+                value=self.ctx.vars.instance,
+            )
+
+            return self.serialize_content(_content_value)
+
+        def on_200_201(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200_201
+            )
+
+        _schema_on_200_201 = None
+
+        @classmethod
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
+
+            cls._schema_on_200_201 = AAZObjectType()
+            _UpdateHelper._build_schema_network_connection_read(cls._schema_on_200_201)
+
+            return cls._schema_on_200_201
+
+    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance(self.ctx.vars.instance)
+
+        def _update_instance(self, instance):
+            _instance_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                value=instance,
+                typ=AAZObjectType
             )
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
@@ -216,114 +352,127 @@ class Update(AAZCommand):
                 properties.set_prop("domainPassword", AAZStrType, ".domain_password", typ_kwargs={"flags": {"secret": True}})
                 properties.set_prop("domainUsername", AAZStrType, ".domain_username")
                 properties.set_prop("organizationUnit", AAZStrType, ".organization_unit")
-                properties.set_prop("subnetId", AAZStrType, ".subnet_id")
+                properties.set_prop("subnetId", AAZStrType, ".subnet_id", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
                 tags.set_elements(AAZStrType, ".")
 
-            return self.serialize_content(_content_value)
+            return _instance_value
 
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
+    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
 
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
+        def __call__(self, *args, **kwargs):
+            self._update_instance_by_generic(
+                self.ctx.vars.instance,
+                self.ctx.generic_update_args
             )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.domain_join_type = AAZStrType(
-                serialized_name="domainJoinType",
-                flags={"required": True},
-            )
-            properties.domain_name = AAZStrType(
-                serialized_name="domainName",
-            )
-            properties.domain_password = AAZStrType(
-                serialized_name="domainPassword",
-                flags={"secret": True},
-            )
-            properties.domain_username = AAZStrType(
-                serialized_name="domainUsername",
-            )
-            properties.health_check_status = AAZStrType(
-                serialized_name="healthCheckStatus",
-            )
-            properties.networking_resource_group_name = AAZStrType(
-                serialized_name="networkingResourceGroupName",
-            )
-            properties.organization_unit = AAZStrType(
-                serialized_name="organizationUnit",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.subnet_id = AAZStrType(
-                serialized_name="subnetId",
-                flags={"required": True},
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
+
+    _schema_network_connection_read = None
+
+    @classmethod
+    def _build_schema_network_connection_read(cls, _schema):
+        if cls._schema_network_connection_read is not None:
+            _schema.id = cls._schema_network_connection_read.id
+            _schema.location = cls._schema_network_connection_read.location
+            _schema.name = cls._schema_network_connection_read.name
+            _schema.properties = cls._schema_network_connection_read.properties
+            _schema.system_data = cls._schema_network_connection_read.system_data
+            _schema.tags = cls._schema_network_connection_read.tags
+            _schema.type = cls._schema_network_connection_read.type
+            return
+
+        cls._schema_network_connection_read = _schema_network_connection_read = AAZObjectType()
+
+        network_connection_read = _schema_network_connection_read
+        network_connection_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        network_connection_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        network_connection_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        network_connection_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        network_connection_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        network_connection_read.tags = AAZDictType()
+        network_connection_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_network_connection_read.properties
+        properties.domain_join_type = AAZStrType(
+            serialized_name="domainJoinType",
+            flags={"required": True},
+        )
+        properties.domain_name = AAZStrType(
+            serialized_name="domainName",
+        )
+        properties.domain_password = AAZStrType(
+            serialized_name="domainPassword",
+            flags={"secret": True},
+        )
+        properties.domain_username = AAZStrType(
+            serialized_name="domainUsername",
+        )
+        properties.health_check_status = AAZStrType(
+            serialized_name="healthCheckStatus",
+        )
+        properties.networking_resource_group_name = AAZStrType(
+            serialized_name="networkingResourceGroupName",
+        )
+        properties.organization_unit = AAZStrType(
+            serialized_name="organizationUnit",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.subnet_id = AAZStrType(
+            serialized_name="subnetId",
+            flags={"required": True},
+        )
+
+        system_data = _schema_network_connection_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        tags = _schema_network_connection_read.tags
+        tags.Element = AAZStrType()
+
+        _schema.id = cls._schema_network_connection_read.id
+        _schema.location = cls._schema_network_connection_read.location
+        _schema.name = cls._schema_network_connection_read.name
+        _schema.properties = cls._schema_network_connection_read.properties
+        _schema.system_data = cls._schema_network_connection_read.system_data
+        _schema.tags = cls._schema_network_connection_read.tags
+        _schema.type = cls._schema_network_connection_read.type
 
 
 __all__ = ["Update"]

@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a dev box definition.
 
     :example: Create
-        az devcenter admin devbox-definition create --location "eastus" --image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.DevCenter/devcenters/Contoso/galleries/contosogallery/images/exampleImage/version/1.0.0" --os-storage-type "ssd_1024gb" --sku name="general_a_8c32gb1024ssd_v2" --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
+        az devcenter admin devbox-definition create --location "eastus" --image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.DevCenter/devcenters/Contoso/galleries/contosogallery/images/exampleImage/version/1.0.0" --os-storage-type "ssd_1024gb" --sku name="general_a_8c32gb_v1" --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -49,11 +49,21 @@ class Create(AAZCommand):
             options=["-n", "--name", "--devbox-definition-name"],
             help="The name of the dev box definition.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
             help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,25}$",
+                max_length=26,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -84,7 +94,6 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.hibernate_support = AAZStrArg(
             options=["--hibernate-support"],
-            is_preview=True,
             arg_group="Properties",
             help="Indicates whether dev boxes created with this definition are capable of hibernation. Not all images are capable of supporting hibernation. To find out more see https://aka.ms/devbox/hibernate",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
@@ -221,7 +230,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -343,10 +352,6 @@ class Create(AAZCommand):
             properties.sku = AAZObjectType(
                 flags={"required": True},
             )
-            properties.validation_error_details = AAZListType(
-                serialized_name="validationErrorDetails",
-                flags={"read_only": True},
-            )
             properties.validation_status = AAZStrType(
                 serialized_name="validationStatus",
             )
@@ -363,13 +368,6 @@ class Create(AAZCommand):
             )
             sku.size = AAZStrType()
             sku.tier = AAZStrType()
-
-            validation_error_details = cls._schema_on_200_201.properties.validation_error_details
-            validation_error_details.Element = AAZObjectType()
-
-            _element = cls._schema_on_200_201.properties.validation_error_details.Element
-            _element.code = AAZStrType()
-            _element.message = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
