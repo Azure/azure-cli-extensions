@@ -173,9 +173,14 @@ class Artifact:
                     acr_login_with_token_cmd, encoding="utf-8", text=True
                 ).strip()
             except subprocess.CalledProcessError as error:
-                if (" 401" or "unauthorized") in error.stderr or (
-                    " 401" or "unauthorized"
-                ) in error.stdout:
+                unauthorized = (
+                    error.stderr
+                    and (" 401" in error.stderr or "unauthorized" in error.stderr)
+                ) or (
+                    error.stdout
+                    and (" 401" in error.stdout or "unauthorized" in error.stdout)
+                )
+                if unauthorized:
                     # As we shell out the the subprocess, I think checking for these
                     # strings is the best check we can do for permission failures.
                     raise CLIError(
