@@ -589,6 +589,9 @@ def helm_install_release(resource_manager, chart_path, subscription_id, kubernet
                         "--create-namespace",
                         "--output", "json"]
 
+    print("DEBUGVALUE 1: This is the final Values file:", file=sys.stdout)
+    print(cmd_helm_install, file=sys.stdout)
+
     # Special configurations from 2022-09-01 ARM metadata.
     if "dataplaneEndpoints" in arm_metadata:
         notification_endpoint = arm_metadata["dataplaneEndpoints"]["arcGlobalNotificationServiceEndpoint"]
@@ -617,9 +620,18 @@ def helm_install_release(resource_manager, chart_path, subscription_id, kubernet
     # Disable cluster connect if private link is enabled
     if enable_private_link is True:
         cmd_helm_install.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=false"])
+    
+    print("DEBUGVALUE 2: This is the final Values file:", file=sys.stdout)
+    print(cmd_helm_install, file=sys.stdout)
+
     # To set some other helm parameters through file
     if values_file:
+        logger.warning("DEBUGVALUE 3: Values files detected. Overriding helm install with the values file={}".format(values_file))
         cmd_helm_install.extend(["-f", values_file])
+    
+    print("DEBUGVALUE 3 : This is the final Values file:", file=sys.stdout)
+    print(cmd_helm_install, file=sys.stdout)
+    
     if disable_auto_upgrade:
         cmd_helm_install.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}".format("false")])
     if https_proxy:
@@ -643,6 +655,8 @@ def helm_install_release(resource_manager, chart_path, subscription_id, kubernet
         # Change --timeout format for helm client to understand
         onboarding_timeout = onboarding_timeout + "s"
         cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)])
+    print("DEBUGVALUE 4: This is the final Values file:", file=sys.stdout)
+    print(cmd_helm_install, file=sys.stdout)
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
