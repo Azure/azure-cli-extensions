@@ -703,7 +703,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                     param_name = (
                         f"{param_prefix}_{k}_{index}"
                         if param_prefix
-                        else f"{k})_{index}"
+                        else f"{k}_{index}"
                     )
                     if isinstance(item, dict):
                         final_values_mapping_dict[k].append(
