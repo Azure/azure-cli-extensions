@@ -180,6 +180,7 @@ class Artifact:
                     error.stdout
                     and (" 401" in error.stdout or "unauthorized" in error.stdout)
                 )
+
                 if unauthorized:
                     # As we shell out the the subprocess, I think checking for these
                     # strings is the best check we can do for permission failures.
