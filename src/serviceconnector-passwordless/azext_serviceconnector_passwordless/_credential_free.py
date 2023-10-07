@@ -104,9 +104,8 @@ def get_enable_mi_for_db_linker_func(yes=False):
         elif auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserIdentity]:
             mi_client_id = auth_info.get('client_id')
             mi_sub_id = auth_info.get('subscription_id')
-            umi_info_list = run_cli_cmd(
-                f'az rest -u /subscriptions/{mi_sub_id}/providers/Microsoft.ManagedIdentity/userAssignedIdentities?api-version=2023-01-31')
-            umi_info = [umi for umi in umi_info_list.get('value', []) if umi.get('properties', {}).get('clientId') == mi_client_id]
+            umi_info = run_cli_cmd(
+                f'az identity list --subscription {mi_sub_id} --query "[?clientId==\'{mi_client_id}\']"')
             if umi_info is None or len(umi_info) == 0:
                 e = ResourceNotFoundError(
                     "No identity found for client id {}".format(mi_client_id))
