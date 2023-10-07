@@ -3,6 +3,8 @@
 Release History
 ===============
 upcoming
+++++++
+* 'az containerapp job create': Fix AttributeError when --trigger-type is None
 
 0.3.41
 ++++++
