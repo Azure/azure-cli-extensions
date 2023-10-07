@@ -6,6 +6,8 @@
 import os
 import time
 
+from msrestazure.tools import parse_resource_id
+
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
@@ -13,7 +15,8 @@ from azext_containerapp.tests.latest.common import (write_test_file, clean_up_te
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 from azext_containerapp.tests.latest.common import TEST_LOCATION
-from .utils import create_containerapp_env
+from .utils import prepare_containerapp_env_for_app_e2e_tests
+
 
 class ContainerAppJobsExecutionsTest(ScenarioTest):
     @AllowLargeResponse(8192)
@@ -23,18 +26,19 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env = self.create_random_name(prefix='env', length=24)
         job = self.create_random_name(prefix='job2', length=24)
 
-        create_containerapp_env(self, env, resource_group)
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
 
         # create a container app environment for a Container App Job resource
-        self.cmd('containerapp env show -n {} -g {}'.format(env, resource_group), checks=[
-            JMESPathCheck('name', env)            
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, env_rg), checks=[
+            JMESPathCheck('name', env_name)
         ])
 
         # create a Container App Job resource
-        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --replica-timeout 200 --replica-retry-limit 1 --trigger-type manual --replica-completion-count 1 --parallelism 1 --image mcr.microsoft.com/k8se/quickstart:latest --cpu '0.25' --memory '0.5Gi'".format(resource_group, job, env))
+        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --replica-timeout 200 --replica-retry-limit 1 --trigger-type manual --replica-completion-count 1 --parallelism 1 --image mcr.microsoft.com/k8se/quickstart:latest --cpu '0.25' --memory '0.5Gi'".format(resource_group, job, env_id))
 
         # wait for 60s for the job to be provisioned
         jobProvisioning = True
@@ -86,18 +90,19 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         TEST_LOCATION = "northcentralusstage"
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env = self.create_random_name(prefix='env', length=24)
         job = self.create_random_name(prefix='job3', length=24)
 
-        create_containerapp_env(self, env, resource_group)
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
 
         # create a container app environment for a Container App Job resource
-        self.cmd('containerapp env show -n {} -g {}'.format(env, resource_group), checks=[
-            JMESPathCheck('name', env)            
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, env_rg), checks=[
+            JMESPathCheck('name', env_name)
         ])
 
         # create a Container App Job resource
-        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --replica-timeout 200 --replica-retry-limit 1 --trigger-type manual --replica-completion-count 1 --parallelism 1 --image mcr.microsoft.com/k8se/quickstart:latest --cpu '0.25' --memory '0.5Gi'".format(resource_group, job, env))
+        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --replica-timeout 200 --replica-retry-limit 1 --trigger-type manual --replica-completion-count 1 --parallelism 1 --image mcr.microsoft.com/k8se/quickstart:latest --cpu '0.25' --memory '0.5Gi'".format(resource_group, job, env_id))
 
         # wait for 60s for the job to be provisioned
         jobProvisioning = True
