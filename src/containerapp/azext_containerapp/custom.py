@@ -4734,7 +4734,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
             f"Creating the Container Apps managed environment {managed_env_name} under {env_rg} in {location}.")
         managed_environment = create_containerapps_compose_environment(cmd,
                                                                        managed_env_name,
-                                                                       resource_group_name,
+                                                                       env_rg,
                                                                        tags=tags)
 
     compose_yaml = load_yaml_file(compose_file_path)
