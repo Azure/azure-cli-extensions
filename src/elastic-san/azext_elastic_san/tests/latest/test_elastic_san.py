@@ -149,6 +149,9 @@ class ElasticSanScenario(ScenarioTest):
                  '--x-ms-delete-snapshots true --x-ms-force-delete true')
         self.cmd('az elastic-san volume snapshot list -g {rg} -e {san_name} -v {vg_name}',
                  checks=[JMESPathCheck('length(@)', 0)])
+        self.cmd('az elastic-san volume-group delete -g {rg} -e {san_name} -n {vg_name} -y')
+        time.sleep(20)
+        self.cmd('az elastic-san delete -g {rg} -n {san_name} -y')
 
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.cmk.sai.')
     def test_elastic_san_customer_managed_key_system_assigned_identity_scenarios(self, resource_group):
@@ -196,6 +199,11 @@ class ElasticSanScenario(ScenarioTest):
                          JMESPathCheck('encryptionProperties.keyVaultProperties.keyVaultUri', self.kwargs.get("vault_uri")),
                          JMESPathCheck('encryptionProperties.keyVaultProperties.keyName', self.kwargs.get("key_name")),
                          ]).get_output_in_json()
+        self.cmd('az elastic-san volume create -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 2')
+        self.cmd('az elastic-san volume delete -g {rg} -e {san_name} -v {vg_name} -n {volume_name} -y')
+        self.cmd('az elastic-san volume-group delete -g {rg} -e {san_name} -n {vg_name} -y')
+        time.sleep(20)
+        self.cmd('az elastic-san delete -g {rg} -n {san_name} -y')
 
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.testelasticsan.cmk.uai.')
     def test_elastic_san_customer_managed_key_user_assigned_identity_scenarios(self, resource_group):
@@ -206,6 +214,7 @@ class ElasticSanScenario(ScenarioTest):
             "kv_name": self.create_random_name('keyvault', 24),
             "key_name": self.create_random_name('key', 24),
             "user_assigned_identity_name": self.create_random_name('uai', 24),
+            "user_assigned_identity_name_2": self.create_random_name('uai', 24),
             "logged_in_user": logged_in_user,
             "vnet_name": self.create_random_name('vnet', 24),
             "subnet_name": self.create_random_name('subnet', 24),
@@ -228,22 +237,50 @@ class ElasticSanScenario(ScenarioTest):
                  '--key-permissions get wrapkey unwrapkey ')
         self.cmd('az keyvault key create --vault-name {kv_name} -n {key_name} --protection software')
         # 2.PUT a volume group with CMK
-        vg = self.cmd("az elastic-san volume-group create -e {san_name} -n {vg_name} -g {rg} "
-                      "--encryption EncryptionAtRestWithCustomerManagedKey --protocol-type Iscsi --identity "
-                      "{{type:UserAssigned,user-assigned-identity:{uai_id}}} --encryption-properties "
-                      "\"{{key-vault-properties:{{key-name:{key_name},key-vault-uri:\'{vault_uri}\'}},"
-                      "identity:{{user-assigned-identity:{uai_id}}}}}\"",
-                      checks=[JMESPathCheck('encryption', "EncryptionAtRestWithCustomerManagedKey"),
-                              JMESPathCheck('encryptionProperties.keyVaultProperties.keyVaultUri',
-                                            self.kwargs.get("vault_uri")),
-                              JMESPathCheck('encryptionProperties.keyVaultProperties.keyName',
-                                            self.kwargs.get("key_name")),
-                              JMESPathCheck('identity.type', "UserAssigned"),
-                              JMESPathCheck('identity.userAssignedIdentities', {
-                                  self.kwargs.get("uai_id"): {
-                                      "principalId": self.kwargs.get("uai_principal_id"),
-                                      "clientId": self.kwargs.get("uai_client_id")
-                                  }}),
-                              JMESPathCheck('encryptionProperties.identity.userAssignedIdentity',
-                                            self.kwargs.get("uai_id")),
-                              ]).get_output_in_json()
+        self.cmd("az elastic-san volume-group create -e {san_name} -n {vg_name} -g {rg} "
+                 "--encryption EncryptionAtRestWithCustomerManagedKey --protocol-type Iscsi --identity "
+                 "{{type:UserAssigned,user-assigned-identity:{uai_id}}} --encryption-properties "
+                 "\"{{key-vault-properties:{{key-name:{key_name},key-vault-uri:\'{vault_uri}\'}},"
+                 "identity:{{user-assigned-identity:{uai_id}}}}}\"",
+                 checks=[JMESPathCheck('encryption', "EncryptionAtRestWithCustomerManagedKey"),
+                         JMESPathCheck('encryptionProperties.keyVaultProperties.keyVaultUri',
+                                       self.kwargs.get("vault_uri")),
+                         JMESPathCheck('encryptionProperties.keyVaultProperties.keyName',
+                                       self.kwargs.get("key_name")),
+                         JMESPathCheck('identity.type', "UserAssigned"),
+                         JMESPathCheck('identity.userAssignedIdentities', {
+                             self.kwargs.get("uai_id"): {
+                                 "principalId": self.kwargs.get("uai_principal_id"),
+                                 "clientId": self.kwargs.get("uai_client_id")
+                             }}),
+                         JMESPathCheck('encryptionProperties.identity.userAssignedIdentity',
+                                       self.kwargs.get("uai_id")),
+                         ]).get_output_in_json()
+        self.cmd('az elastic-san volume create -g {rg} -e {san_name} -v {vg_name} -n {volume_name} --size-gib 2')
+        # 3. Change to another user assigned identity
+        uai_2 = self.cmd('az identity create -g {rg} -n {user_assigned_identity_name_2}').get_output_in_json()
+        self.kwargs.update({"uai_2_principal_id": uai_2["principalId"],
+                            "uai_2_id": uai_2["id"],
+                            "uai_2_client_id": uai_2["clientId"]})
+        self.cmd('az keyvault set-policy -n {kv_name} --object-id {uai_2_principal_id} '
+                 '--key-permissions get wrapkey unwrapkey ')
+        self.cmd("az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} --identity "
+                 "{{type:UserAssigned,user-assigned-identity:{uai_2_id}}} --encryption-properties "
+                 "\"{{key-vault-properties:{{key-name:{key_name},key-vault-uri:\'{vault_uri}\'}},"
+                 "identity:{{user-assigned-identity:{uai_2_id}}}}}\"",
+                 checks=[JMESPathCheck('encryption', "EncryptionAtRestWithCustomerManagedKey"),
+                         JMESPathCheck('identity.userAssignedIdentities', {
+                             self.kwargs.get("uai_2_id"): {
+                                 "principalId": self.kwargs.get("uai_2_principal_id"),
+                                 "clientId": self.kwargs.get("uai_2_client_id")
+                             }}),
+                         JMESPathCheck('encryptionProperties.identity.userAssignedIdentity',
+                                       self.kwargs.get("uai_2_id")),
+                         ]).get_output_in_json()
+        # 4. Change to system assigned identity
+        # self.cmd("az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} --identity "
+        #          "{{type:SystemAssigned}}",
+        #          checks=[JMESPathCheck('encryption', "EncryptionAtRestWithCustomerManagedKey"),
+        #                  JMESPathCheck('identity.type', "SystemAssigned")
+        #                  ]).get_output_in_json()
+

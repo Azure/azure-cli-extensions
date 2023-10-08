@@ -65,3 +65,16 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
             args.identity["user_assigned_identities"] = {
                 uai_id: {}}
             del args.identity.user_assigned_identity_id
+
+    def pre_instance_update(self, instance):
+        args = self.ctx.args
+        if instance.identity and instance.identity.user_assigned_identities and \
+                args.identity and args.identity.user_assigned_identities:
+            uai_id_new = list(args.identity.user_assigned_identities.keys())[0]
+            uai_id_old = list(instance.identity.user_assigned_identities.keys())[0]
+            if uai_id_old != uai_id_new:
+                if instance.properties and instance.properties.encryption_properties and \
+                        instance.properties.encryption_properties.key_vault_properties and \
+                        args.encryption_properties and not args.encryption_properties.key_vault_properties:
+                    args.encryption_properties.key_vault_properties = \
+                        instance.properties.encryption_properties.key_vault_properties
