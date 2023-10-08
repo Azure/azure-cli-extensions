@@ -9,7 +9,7 @@ import time
 from msrestazure.tools import parse_resource_id
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))

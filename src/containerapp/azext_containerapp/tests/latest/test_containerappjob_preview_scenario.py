@@ -7,14 +7,13 @@ import os
 
 from msrestazure.tools import parse_resource_id
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 
 from azure.cli.testsdk.decorators import serial_test
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .common import TEST_LOCATION
 from .custom_preparers import ConnectedClusterPreparer
-from .utils import create_containerapp_env, create_extension_and_custom_location, \
-    prepare_containerapp_env_for_app_e2e_tests
+from .utils import create_extension_and_custom_location, prepare_containerapp_env_for_app_e2e_tests
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 

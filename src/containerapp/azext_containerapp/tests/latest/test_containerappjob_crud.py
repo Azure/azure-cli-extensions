@@ -4,12 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import time
 
 from msrestazure.tools import parse_resource_id
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -22,7 +21,6 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
     @ResourceGroupPreparer(location="northcentralus")
     # test for CRUD operations on Container App Job resource with trigger type as manual
     def test_containerapp_manualjob_crudoperations_e2e(self, resource_group):
-        import requests
         
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 

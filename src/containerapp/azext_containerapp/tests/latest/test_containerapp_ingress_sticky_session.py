@@ -4,12 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import time
 
 from msrestazure.tools import parse_resource_id
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -21,7 +20,6 @@ class ContainerAppIngressStickySessionsTest(ScenarioTest):
     @ResourceGroupPreparer(location="northcentralus")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_ingress_sticky_sessions_e2e(self, resource_group):
-        import requests
 
         app = self.create_random_name(prefix='app2', length=24)
 
