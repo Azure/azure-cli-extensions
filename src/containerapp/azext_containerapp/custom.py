@@ -4721,9 +4721,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
     # Validate managed environment
     parsed_managed_env = parse_resource_id(managed_env)
     managed_env_name = parsed_managed_env['name']
-    env_rg = resource_group_name
-    if parsed_managed_env.get('resource_group'):
-        env_rg = parsed_managed_env.get('resource_group')
+    env_rg = parsed_managed_env.get('resource_group', resource_group_name)
 
     try:
         managed_environment = show_managed_environment(cmd=cmd,
