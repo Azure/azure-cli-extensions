@@ -285,10 +285,14 @@ class ElasticSanScenario(ScenarioTest):
                          JMESPathCheck('encryptionProperties.identity.userAssignedIdentity',
                                        self.kwargs.get("uai_2_id")),
                          ]).get_output_in_json()
-        # 4. Change to system assigned identity
-        # self.cmd("az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} --identity "
-        #          "{{type:SystemAssigned}}",
-        #          checks=[JMESPathCheck('encryption', "EncryptionAtRestWithCustomerManagedKey"),
-        #                  JMESPathCheck('identity.type', "SystemAssigned")
-        #                  ]).get_output_in_json()
+        # 4. Change to pmk
+        self.cmd("az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} "
+                 "--encryption EncryptionAtRestWithPlatformKey",
+                 checks=[JMESPathCheck('encryption', "EncryptionAtRestWithPlatformKey"),
+                         ]).get_output_in_json()
 
+        # 5. Change to system assigned identity
+        self.cmd("az elastic-san volume-group update -e {san_name} -n {vg_name} -g {rg} "
+                 "--identity {{type:SystemAssigned}}",
+                 checks=[JMESPathCheck('identity.type', "SystemAssigned")
+                         ]).get_output_in_json()
