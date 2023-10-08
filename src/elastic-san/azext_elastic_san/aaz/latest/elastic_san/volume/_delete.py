@@ -20,6 +20,9 @@ class Delete(AAZCommand):
 
     :example: Delete a Volume.
         az elastic-san volume delete -g "rg" -e "san_name" -v "vg_name" -n "volume_name"
+
+    :example: Delete a volume with its snapshot
+        az elastic-san volume delete -g "rg" -e "san_name" -v "vg_name" -n "volume_name" -y --x-ms-delete-snapshots true --x-ms-force-delete true
     """
 
     _aaz_info = {

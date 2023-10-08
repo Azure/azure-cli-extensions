@@ -19,6 +19,18 @@ class Update(AAZCommand):
 
     :example: Update a Volume Group.
         az elastic-san volume-group update -e "san_name" -n "vg_name" -g "rg" --protocol-type None --network-acls '{virtual-network-rules:[{id:"subnet_id_2",action:Allow}]}'
+
+    :example: Update volume group to use CustomerManagedKey with keyvault details
+        az elastic-san volume-group update -e "san_name" -n "vg_name" -g "rg" --encryption EncryptionAtRestWithCustomerManagedKey --encryption-properties '{key-vault-properties:{key-name:"key_name",key-vault-uri:"vault_uri"}}'
+
+    :example: Update volume group to use another UserAssignedIdentity
+        az elastic-san volume-group update -e "san_name" -n "vg_name" -g "rg" --identity '{type:UserAssigned,user-assigned-identity:"uai_2_id"}' --encryption-properties '{key-vault-properties:{key-name:"key_name",key-vault-uri:"vault_uri"},identity:{user-assigned-identity:"uai_2_id"}}'
+
+    :example: Update volume group back to PlatformManagedKey
+        az elastic-san volume-group update -e "san_name" -n "vg_name" -g "rg" --encryption EncryptionAtRestWithPlatformKey
+
+    :example: Update volume group back to SystemAssignedIdentity
+        az elastic-san volume-group update -e "san_name" -n "vg_name" -g "rg" --identity '{type:SystemAssigned}'
     """
 
     _aaz_info = {

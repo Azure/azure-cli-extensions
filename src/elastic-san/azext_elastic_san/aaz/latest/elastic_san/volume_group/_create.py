@@ -17,8 +17,11 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a Volume Group.
 
-    :example: Create a Volume Group.
-        az elastic-san volume-group create -e "san_name" -n "vg_name" -g "rg" --tags '{key1910:bbbb}' --encryption EncryptionAtRestWithPlatformKey --protocol-type Iscsi --network-acls '{virtual-network-rules:[{id:"subnet_id",action:Allow}]}'
+    :example: Create a Volume Group with PlaformManagedkey and SystemAssignedIdentity
+        az elastic-san volume-group create -e "san_name" -n "vg_name" -g "rg" --tags '{key1910:bbbb}' --encryption EncryptionAtRestWithPlatformKey --protocol-type Iscsi --network-acls '{virtual-network-rules:[{id:"subnet_id",action:Allow}]}' --identity '{type:SystemAssigned}'
+
+    :example: Create a volume group with CustomerManagedKey and UserAssignedIdentity
+        az elastic-san volume-group create -e "san_name" -n "vg_name" -g "rg" --encryption EncryptionAtRestWithCustomerManagedKey --protocol-type Iscsi --identity '{type:UserAssigned,user-assigned-identity:"uai_id"}' --encryption-properties '{key-vault-properties:{key-name:"key_name",key-vault-uri:"vault_uri"},identity:{user-assigned-identity:"uai_id"}}'
     """
 
     _aaz_info = {
