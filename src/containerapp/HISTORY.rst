@@ -5,6 +5,7 @@ Release History
 upcoming
 ++++++
 * 'az containerapp update': fix bug for mounting secret volumes using --secret-volume-mount
+* 'az containerapp compose create': fixed an issue where the environment's resource group was not resolved from --environment when the input value was a resource id.
 
 0.3.41
 ++++++
