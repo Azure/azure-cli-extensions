@@ -3,6 +3,8 @@
 Release History
 ===============
 upcoming
+++++++
+* 'az containerapp update': fix bug for mounting secret volumes using --secret-volume-mount
 
 0.3.41
 ++++++
