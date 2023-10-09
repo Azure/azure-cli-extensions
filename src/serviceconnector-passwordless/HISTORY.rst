@@ -4,7 +4,7 @@ Release History
 ===============
 0.3.12
 ++++++
-* make some improvements.
+* make some improvements and support slot.
 
 0.3.11
 ++++++
