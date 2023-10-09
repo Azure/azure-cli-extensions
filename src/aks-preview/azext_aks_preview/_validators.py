@@ -802,5 +802,5 @@ def validate_azure_service_mesh_revision(namespace):
     asm_revision_regex = re.compile(r'^asm-\d+-\d+$')
     found = asm_revision_regex.findall(revision)
     if not found:
-        raise InvalidArgumentValueError(f"Revision {revision} Revision is not supported by the service mesh add-on.")
+        raise InvalidArgumentValueError(f"Revision {revision} is not supported by the service mesh add-on.")
 
