@@ -6,7 +6,10 @@
 import random
 import string
 
-from azure.cli.core.azclierror import UnknownError
+from azure.cli.core.azclierror import (
+    UnknownError,
+    CLIInternalError,
+)
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.command_modules.resource.custom import register_provider
 from azure.cli.command_modules.acs._roleassignments import (
@@ -21,8 +24,16 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_OPTION_NVME,
     CONST_STORAGE_POOL_OPTION_TEMP,
     CONST_STORAGE_POOL_RANDOM_LENGTH,
+    CONST_ACSTOR_K8S_EXTENSION_NAME,
+    CONST_EXT_INSTALLATION_NAME,
+    CONST_K8S_EXTENSION_NAME,
+    CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME,
+    CONST_K8S_EXTENSION_CUSTOM_MOD_NAME,
 )
+from knack.log import get_logger
 from knack.prompting import prompt_y_n
+
+logger = get_logger(__name__)
 
 def perform_enable_azure_container_storage(
     cmd,
@@ -59,32 +70,32 @@ def perform_enable_azure_container_storage(
     if storage_pool_name is None:
         storage_pool_name = _generate_random_storage_pool_name()
     config_settings = [
-        {"cli.storagePool.poolName": storage_pool_name},
-        {"cli.storagePool.poolSize": storage_pool_size},
-        {"cli.storagePool.poolType": storage_pool_type},
+        {"cli.storagePool.name": storage_pool_name},
+        {"cli.storagePool.size": storage_pool_size},
+        {"cli.storagePool.type": storage_pool_type},
         {"cli.node.nodepools": nodepool_name},
     ]
 
     if storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK:
-        config_settings.append({"cli.storagePool.azureDiskPoolSku": storage_pool_sku})
+        config_settings.append({"cli.storagePool.azureDiskSku": storage_pool_sku})
     if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
         pool_option = CONST_STORAGE_POOL_OPTION_TEMP
         if storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME:
             pool_option = "nvme"
-        config_settings.append({"cli.storagePool.ephemeralPoolOption": pool_option})
+        config_settings.append({"cli.storagePool.ephemeralDiskOption": pool_option})
 
-    from azext_k8s_extension._client_factory import cf_k8s_extension_operation
-    from azext_k8s_extension.custom import create_k8s_extension
+    client_factory = _get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
 
-    client = cf_k8s_extension_operation(cmd.cli_ctx)
-    result = create_k8s_extension(
+    k8s_extension_custom_mod = _get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+    result = k8s_extension_custom_mod.create_k8s_extension(
         cmd,
         client,
         resource_group,
         cluster_name,
-        "azurecontainerstorage",
+        CONST_EXT_INSTALLATION_NAME,
         "managedClusters",
-        "microsoft.azstor",
+        CONST_ACSTOR_K8S_EXTENSION_NAME,
         auto_upgrade_minor_version=True,
         release_train="logtest",
         scope="cluster",
@@ -92,9 +103,7 @@ def perform_enable_azure_container_storage(
         configuration_settings=config_settings,
     )
 
-    arc_result = LongRunningOperation(cmd.cli_ctx)(result)
-
-    print (op)
+    return LongRunningOperation(cmd.cli_ctx)(result)
 
 def perform_disable_azure_container_storage(
     cmd,
@@ -104,54 +113,57 @@ def perform_disable_azure_container_storage(
     node_resource_group,
     kubelet_identity_object_id,
 ):
-    from azext_k8s_extension._client_factory import cf_k8s_extension_operation
-    client = cf_k8s_extension_operation(cmd.cli_ctx)
+    client_factory = _get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
     # Step 1: Check if show_k8s_extension returns an extension already installed
-    from azext_k8s_extension.custom import show_k8s_extension
+    k8s_extension_custom_mod = _get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
     try:
-        extension = show_k8s_extension(
+        extension = k8s_extension_custom_mod.show_k8s_extension(
             client,
             resource_group,
             cluster_name,
-            "azurecontainerstorage",
+            CONST_EXT_INSTALLATION_NAME,
             "managedClusters",
         )
 
         extension_type = extension.extension_type.lower()
-        print (extension_type)
-        if extension_type != "microsoft.azstor":
-            raise UnknownError('The extension returned is not of the type microsoft.azurecontainerstorage')
+        if extension_type != CONST_ACSTOR_K8S_EXTENSION_NAME:
+            raise UnknownError("The extension returned is not of the type {}. Aborting operation.".format(CONST_ACSTOR_K8S_EXTENSION_NAME))
     except:
-        raise UnknownError('Extension type microsoft.azurecontainerstorage not installed on cluster')
+        raise UnknownError("Extension type {} not installed on cluster.".format(CONST_ACSTOR_K8S_EXTENSION_NAME))
 
     # Step 2: Add a prompt to ensure if we want to skip validation of existing storagepool
     msg = 'Disabling Azure Container Storage will delete all the storagepools on the cluster. Do you want to validate before disabling?'
     if not prompt_y_n(msg, default="y"):
         config_settings = [{"cli.storagePool.validateBeforeUninstall": False}]
         from azext_k8s_extension.custom import update_k8s_extension
-        update_k8s_extension(
+        update_result = k8s_extension_custom_mod.update_k8s_extension(
             cmd,
             client,
             resource_group,
             cluster_name,
-            "azurecontainerstorage",
+            CONST_EXT_INSTALLATION_NAME,
             "managedClusters",
             configuration_settings=config_settings,
             ignore_warning_msg=True,
         )
 
+        update_long_op_result = LongRunningOperation(cmd.cli_ctx)(update_result)
+
     # Step 3: If the extension is installed, call delete_k8s_extension
     from azext_k8s_extension.custom import delete_k8s_extension
-    result = delete_k8s_extension(
+    delete_result = delete_k8s_extension(
         cmd,
         client,
         resource_group,
         cluster_name,
-        "azurecontainerstorage",
+        CONST_EXT_INSTALLATION_NAME,
         "managedClusters",
+        yes=True,
+        no_wait=False,
     )
-    arc_result = LongRunningOperation(cmd.cli_ctx)(result)
-    print (op)
+
+    delete_long_op_result = LongRunningOperation(cmd.cli_ctx)(delete_result)
 
     # Revoke AKS cluster's node identity the following 
     # roles on the AKS managed resource group:
@@ -179,8 +191,10 @@ def _perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_g
                 scope=managed_rg_role_scope,
             )
         else:
+            # NOTE: delete_role_assignments accepts cli_ctx
+            # instead of cmd unlike add_role_assignment.
             delete_role_assignments(
-                cmd,
+                cmd.cli_ctx,
                 role,
                 kubelet_identity_object_id,
                 scope=managed_rg_role_scope,
@@ -188,5 +202,17 @@ def _perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_g
 
 
 def _generate_random_storage_pool_name():
-    random_name = CONST_STORAGE_POOL_NAME_PREFIX + ''.join(random.choices(string.ascii_letters, k=CONST_STORAGE_POOL_RANDOM_LENGTH))
+    random_name = CONST_STORAGE_POOL_NAME_PREFIX + ''.join(random.choices(string.ascii_lowercase, k=CONST_STORAGE_POOL_RANDOM_LENGTH))
     return random_name
+
+def _get_k8s_extension_module(module_name):
+    try:
+        # adding the installed extension in the path
+        from azure.cli.core.extension.operations import add_extension_to_path
+        add_extension_to_path(CONST_K8S_EXTENSION_NAME)
+        # import the extension module
+        from importlib import import_module
+        azext_custom = import_module(module_name)
+        return azext_custom
+    except ImportError as ie:
+        raise CLIInternalError(ie) from ie

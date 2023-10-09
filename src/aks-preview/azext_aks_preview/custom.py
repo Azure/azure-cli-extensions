@@ -607,6 +607,7 @@ def aks_create(
         validate_azure_container_storage_params(
             True,
             None,
+            storage_pool_name,
             storage_pool_type,
             storage_pool_sku,
             storage_pool_option,
@@ -797,7 +798,9 @@ def aks_update(
         validate_azure_container_storage_params(
             enable_azure_container_storage,
             disable_azure_container_storage,
-            storage_pool_type, storage_pool_sku,
+            storage_pool_name,
+            storage_pool_type,
+            storage_pool_sku,
             storage_pool_option,
             storage_pool_size,
         )
