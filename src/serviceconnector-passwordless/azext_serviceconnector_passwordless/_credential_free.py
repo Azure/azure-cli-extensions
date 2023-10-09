@@ -992,23 +992,36 @@ class SpringHandler(SourceHandler):
 
 
 class WebappHandler(SourceHandler):
-    def get_identity_name(self):
+    def __init__(self, source_id, source_type: RESOURCE):
+        super().__init__(source_id, source_type)
         segments = parse_resource_id(self.source_id)
-        app_name = segments.get('name')
-        return app_name
+        self.app_name = segments.get('name')
+        self.slot_name = segments.get('child_name_1', None)
+
+    def get_identity_name(self):
+        if self.slot_name is not None:
+            return self.app_name + '/slots/' + self.slot_name
+        return self.app_name
 
     def get_identity_pid(self):
         logger.warning('Checking if WebApp enables System Identity...')
         identity = run_cli_cmd(
-            'az webapp identity show --ids {}'.format(self.source_id))
+            'az webapp identity show --ids {}'.format(self.source_id)) if self.slot_name is None else run_cli_cmd(
+            'az webapp identity show --ids {} --slot {}'.format(self.source_id, self.slot_name))
         if (identity is None or "SystemAssigned" not in identity.get('type')):
             # assign system identity for spring-cloud
             logger.warning('Enabling WebApp System Identity...')
-            run_cli_cmd(
+            if self.slot_name is None:
+                run_cli_cmd(
                 'az webapp identity assign --ids {}'.format(self.source_id))
 
-            identity = run_cli_cmd(
-                'az webapp identity show --ids {}'.format(self.source_id), 15, 5, output_is_none)
+                identity = run_cli_cmd(
+                    'az webapp identity show --ids {}'.format(self.source_id), 15, 5, output_is_none)
+            else:
+                run_cli_cmd(
+                    'az webapp identity assign --ids {} --slot {}'.format(self.source_id, self.slot_name))
+                identity = run_cli_cmd(
+                    'az webapp identity show --ids {} --slot {}'.format(self.source_id, self.slot_name), 15, 5, output_is_none)
 
         if identity is None:
             ex = CLIInternalError(
