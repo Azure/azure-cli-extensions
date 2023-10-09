@@ -494,11 +494,15 @@ def load_arguments(self, _):
         c.argument('enable_windows_recording_rules', action='store_true')
         c.argument('enable_cost_analysis', is_preview=True, action='store_true')
         # azure container storage
-        c.argument('enable_azure_container_storage', action='store_true')
-        c.argument('storage_pool_type', arg_type=get_enum_type(storage_pool_types))
-        c.argument('storage_pool_size', type=str)
-        c.argument('storage_pool_sku', arg_type=get_enum_type(storage_pool_skus))
-        c.argument('storage_pool_option', arg_type=get_enum_type(storage_pool_options))
+        c.argument('enable_azure_container_storage', action='store_true',
+                   help='Flag to enable azure container storage')
+        c.argument('storage_pool_type', arg_type=get_enum_type(storage_pool_types),
+                   help='set storage pool type for azure container storage')
+        c.argument('storage_pool_size', type=str, help='set storage pool size for azure container storage')
+        c.argument('storage_pool_sku', arg_type=get_enum_type(storage_pool_skus),
+                   help='set azure disk type storage pool sku for azure container storage')
+        c.argument('storage_pool_option', arg_type=get_enum_type(storage_pool_options),
+                   help='set ephemeral disk storage pool option for azure container storage')
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
@@ -628,13 +632,19 @@ def load_arguments(self, _):
         c.argument('enable_cost_analysis', is_preview=True, action='store_true')
         c.argument('disable_cost_analysis', is_preview=True, action='store_true')
         # azure container storage
-        c.argument('enable_azure_container_storage', action='store_true')
-        c.argument('disable_azure_container_storage', action='store_true')
-        c.argument('storage_pool_type', arg_type=get_enum_type(storage_pool_types))
-        c.argument('storage_pool_size', type=str)
-        c.argument('storage_pool_sku', arg_type=get_enum_type(storage_pool_skus))
-        c.argument('storage_pool_option', arg_type=get_enum_type(storage_pool_options))
-        c.argument('azure_container_storage_nodepools', default='nodepool1')
+        c.argument('enable_azure_container_storage', action='store_true',
+                   help='Flag to enable azure container storage')
+        c.argument('disable_azure_container_storage', action='store_true',
+                   help='Flag to disable azure container storage')
+        c.argument('storage_pool_type', arg_type=get_enum_type(storage_pool_types),
+                   help='set storage pool type for azure container storage')
+        c.argument('storage_pool_size', type=str, help='set storage pool size for azure container storage')
+        c.argument('storage_pool_sku', arg_type=get_enum_type(storage_pool_skus),
+                   help='set azure disk type storage pool sku for azure container storage')
+        c.argument('storage_pool_option', arg_type=get_enum_type(storage_pool_options),
+                   help='set ephemeral disk storage pool option for azure container storage')
+        c.argument('azure_container_storage_nodepools', default='nodepool1',
+                   help='define the comma separated nodepool list to install azure container storage')
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
