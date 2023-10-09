@@ -279,7 +279,7 @@ storage_pool_types = [
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
 ]
 
-storage_pool_skus=[
+storage_pool_skus = [
     CONST_STORAGE_POOL_SKU_PREMIUM_LRS,
     CONST_STORAGE_POOL_SKU_STANDARD_LRS,
     CONST_STORAGE_POOL_SKU_STANDARDSSD_LRS,
@@ -289,10 +289,11 @@ storage_pool_skus=[
     CONST_STORAGE_POOL_SKU_STANDARDSSD_ZRS,
 ]
 
-storage_pool_options=[
+storage_pool_options = [
     CONST_STORAGE_POOL_OPTION_NVME,
     CONST_STORAGE_POOL_OPTION_TEMP,
 ]
+
 
 def load_arguments(self, _):
 

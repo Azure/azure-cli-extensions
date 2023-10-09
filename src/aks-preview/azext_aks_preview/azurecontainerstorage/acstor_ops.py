@@ -35,6 +35,7 @@ from knack.prompting import prompt_y_n
 
 logger = get_logger(__name__)
 
+
 def perform_enable_azure_container_storage(
     cmd,
     subscription_id,
@@ -105,6 +106,7 @@ def perform_enable_azure_container_storage(
 
     return LongRunningOperation(cmd.cli_ctx)(result)
 
+
 def perform_disable_azure_container_storage(
     cmd,
     subscription_id,
@@ -145,10 +147,24 @@ def perform_disable_azure_container_storage(
             CONST_EXT_INSTALLATION_NAME,
             "managedClusters",
             configuration_settings=config_settings,
-            ignore_warning_msg=True,
+            yes=True,
+            no_wait=False,
         )
 
         update_long_op_result = LongRunningOperation(cmd.cli_ctx)(update_result)
+
+        if result.provisioning_state == "Succeeded":
+            logger.info("Azure Container Storage successfully installed")
+        else:
+            if result.error_info is None:
+                logger.error("Error setting up Azure Container Storage")
+            else:
+                logger.error(
+                    "Azure Container Storage failed to uninstall "
+                    "with the following error in updating ", result.error_info
+                )
+            raise UnknownError("Azure Container Storage failed to uninstall.")
+
 
     # Step 3: If the extension is installed, call delete_k8s_extension
     from azext_k8s_extension.custom import delete_k8s_extension
@@ -178,6 +194,7 @@ def _register_dependent_rps(cmd):
     register_provider(cmd, 'Microsoft.KubernetesConfiguration', wait=True)
     register_provider(cmd, 'Microsoft.ExtendedLocation', wait=True)
 
+
 def _perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_group, kubelet_identity_object_id, assign):
     managed_rg_role_scope = build_role_scope(node_resource_group, None, subscription_id)
     roles = ["Reader", "Network Contributor", "Elastic SAN Owner", "Elastic SAN Volume Group Owner"]
@@ -204,6 +221,7 @@ def _perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_g
 def _generate_random_storage_pool_name():
     random_name = CONST_STORAGE_POOL_NAME_PREFIX + ''.join(random.choices(string.ascii_lowercase, k=CONST_STORAGE_POOL_RANDOM_LENGTH))
     return random_name
+
 
 def _get_k8s_extension_module(module_name):
     try:

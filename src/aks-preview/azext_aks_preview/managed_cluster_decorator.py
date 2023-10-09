@@ -4050,6 +4050,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         "Azure Container Storage failed to install "
                         "with the following error", result.error_info
                     )
+                raise UnknownError("Azure Container Storage failed to install")
 
         # disable azure container storage
         if disable_azure_container_storage:

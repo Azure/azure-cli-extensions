@@ -16,6 +16,7 @@ from azure.cli.core.azclierror import (
 
 import re
 
+
 def validate_azure_container_storage_params(
     enable_azure_container_storage,
     disable_azure_container_storage,
@@ -30,7 +31,6 @@ def validate_azure_container_storage_params(
             'Conflicting flags. Cannot set --enable-azure-container-storage '
             'and --disable-azure-container-storage together.'
         )
-
 
     if disable_azure_container_storage:
         _validate_disable_azure_container_storage_params(
@@ -49,6 +49,7 @@ def validate_azure_container_storage_params(
             storage_pool_option,
             storage_pool_size,
         )
+
 
 def _validate_disable_azure_container_storage_params(
     storage_pool_name,
@@ -86,6 +87,7 @@ def _validate_disable_azure_container_storage_params(
             'Conflicting flags. Cannot define --storage-pool-option value '
             'when --disable-azure-container-storage is set.'
         )
+
 
 def _validate_enable_azure_container_storage_params(
     storage_pool_name,
