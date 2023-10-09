@@ -2428,7 +2428,7 @@ def aks_trustedaccess_role_binding_update(cmd, client, resource_group_name, clus
 
 
 def aks_trustedaccess_role_binding_delete(cmd, client, resource_group_name, cluster_name, role_binding_name):
-    return client.delete(resource_group_name, cluster_name, role_binding_name)
+    return client.begin_delete(resource_group_name, cluster_name, role_binding_name)
 
 
 def aks_mesh_enable(
