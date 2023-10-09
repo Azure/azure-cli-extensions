@@ -6,14 +6,17 @@
 import os
 import time
 
+from msrestazure.tools import parse_resource_id
+
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 from azext_containerapp.tests.latest.common import TEST_LOCATION
-from .utils import create_containerapp_env
+from .utils import create_containerapp_env, prepare_containerapp_env_for_app_e2e_tests
+
 
 class ContainerAppJobsExecutionsTest(ScenarioTest):
     @AllowLargeResponse(8192)
@@ -260,11 +263,12 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
     def test_containerappjob_eventtriggered_create_with_yaml(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env = self.create_random_name(prefix='env', length=24)
         job = self.create_random_name(prefix='yaml', length=24)
 
-        create_containerapp_env(self, env, resource_group)
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(env_rg, env_name)).get_output_in_json()
 
         user_identity_name = self.create_random_name(prefix='containerapp-user', length=24)
         user_identity = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
@@ -341,7 +345,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         containerappjob_file_name = f"{self._testMethodName}_containerappjob.yml"
 
         write_test_file(containerappjob_file_name, containerappjob_yaml_text)
-        self.cmd(f'containerapp job create -n {job} -g {resource_group} --environment {env} --yaml {containerappjob_file_name}')
+        self.cmd(f'containerapp job create -n {job} -g {resource_group} --environment {env_id} --yaml {containerappjob_file_name}')
 
         self.cmd(f'containerapp job show -g {resource_group} -n {job}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),

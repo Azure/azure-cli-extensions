@@ -3,9 +3,9 @@
 Release History
 ===============
 
-1.5.0
+1.5.2
 ++++++
-* Enforce valid custom locations service principal application object id passed in by the user for enabling custom locations feature.
+* Skip onboarding pre-checks for AKS-HCI with additional distros : [aks_management, aks_edge_k8s, aks_edge_k3s]
 
 1.4.2
 ++++++
