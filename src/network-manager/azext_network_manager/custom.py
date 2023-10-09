@@ -15,6 +15,7 @@ from .aaz.latest.network.manager.scope_connection import Create as _ScopeConnect
 from .aaz.latest.network.manager.connection.management_group import Create as _ConnectionManagementGroupCreate
 from .aaz.latest.network.manager.connection.subscription import Create as _ConnectionSubscriptionCreate
 
+
 def network_manager_create(cmd,
                            resource_group_name,
                            network_manager_name,
@@ -182,10 +183,10 @@ def network_manager_admin_rule_create(cmd,
     rule['configuration_name'] = configuration_name
     rule['rule_collection_name'] = rule_collection_name
     rule['rule_name'] = rule_name
-    if kind == "Default":
+    if kind == "Default" or flag is not None:
         rule['default'] = {}
         rule['default']['flag'] = flag
-    elif kind == "Custom":
+    else:
         rule['custom'] = {}
         rule['custom']['description'] = description
         rule['custom']['protocol'] = protocol
@@ -223,11 +224,11 @@ def network_manager_admin_rule_update(cmd,
     rule['configuration_name'] = configuration_name
     rule['rule_collection_name'] = rule_collection_name
     rule['rule_name'] = rule_name
-    if kind == "Default":
+    if kind == "Default" or flag is not None:
         rule['default'] = {}
         if flag is not None:
             rule['default']['flag'] = flag
-    elif kind == "Custom":
+    else:
         rule['custom'] = {}
         if description is not None:
             rule['custom']['description'] = description
