@@ -5,7 +5,7 @@ Release History
 
 0.1.4
 +++++++++
-- Add support new enterprise SKU's E5, E200, E400
+- Added support for new enterprise SKU's E5, E200, E400
 
 0.1.3
 ++++++
