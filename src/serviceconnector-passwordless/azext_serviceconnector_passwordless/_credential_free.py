@@ -7,7 +7,6 @@ import struct
 import sys
 import re
 from knack.log import get_logger
-from knack.util import todict
 from msrestazure.tools import parse_resource_id
 from azure.cli.core import telemetry
 from azure.cli.core.azclierror import (
@@ -105,10 +104,8 @@ def get_enable_mi_for_db_linker_func(yes=False):
         elif auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserIdentity]:
             mi_client_id = auth_info.get('client_id')
             mi_sub_id = auth_info.get('subscription_id')
-            from azure.cli.command_modules.identity._client_factory import _msi_client_factory
-            client = _msi_client_factory(cmd.cli_ctx)
-            umi_info_list = list(client.user_assigned_identities.list_by_subscription())
-            umi_info = [todict(umi) for umi in umi_info_list if todict(umi).get('clientId') == mi_client_id]
+            umi_info = run_cli_cmd(
+                f'az identity list --subscription {mi_sub_id} --query "[?clientId==\'{mi_client_id}\']"')
             if umi_info is None or len(umi_info) == 0:
                 e = ResourceNotFoundError(
                     "No identity found for client id {}".format(mi_client_id))
