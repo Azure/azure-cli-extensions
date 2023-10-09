@@ -325,9 +325,11 @@ def convert_yaml_to_test(data):
     logger.debug("Converted yaml to test body: %s", new_body)
     return new_body
 
+
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-statements
-def create_or_update_test_with_config(test_id,
+def create_or_update_test_with_config(
+    test_id,
     body,
     yaml_test_body,
     display_name=None,
@@ -338,16 +340,20 @@ def create_or_update_test_with_config(test_id,
     certificate=None,
     key_vault_reference_identity=None,
     subnet_id=None,
-    split_csv=None,):
-    logger.info("Creating a request body for create or update test using config and parameters.")
+    split_csv=None,
+):
+    logger.info(
+        "Creating a request body for create or update test using config and parameters."
+    )
     new_body = {}
     new_body["displayName"] = (
-        display_name or yaml_test_body.get("displayName") or body.get("displayName") or test_id
+        display_name
+        or yaml_test_body.get("displayName")
+        or body.get("displayName")
+        or test_id
     )
 
-    test_description = (
-        test_description or yaml_test_body.get("description")
-    )
+    test_description = test_description or yaml_test_body.get("description")
     if test_description:
         new_body["description"] = test_description
 
@@ -366,20 +372,19 @@ def create_or_update_test_with_config(test_id,
         if new_body["keyvaultReferenceIdentityId"].casefold() in ["null", "none"]:
             new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
             new_body.pop("keyvaultReferenceIdentityId")
-
     subnet_id = subnet_id or yaml_test_body.get("subnetId")
     if subnet_id:
         new_body["subnetId"] = subnet_id
-
     new_body["environmentVariables"] = {}
     if body.get("environmentVariables") is not None:
         for key in body.get("environmentVariables"):
             new_body["environmentVariables"].update({key: None})
     if yaml_test_body.get("environmentVariables") is not None:
-        new_body["environmentVariables"].update(yaml_test_body.get("environmentVariables", {}))
+        new_body["environmentVariables"].update(
+            yaml_test_body.get("environmentVariables", {})
+        )
     if env is not None:
         new_body["environmentVariables"].update(env)
-
     new_body["secrets"] = {}
     if body.get("secrets") is not None:
         for key in body.get("secrets", {}):
@@ -426,9 +431,11 @@ def create_or_update_test_with_config(test_id,
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
 
+
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-statements
-def create_or_update_test_without_config(test_id,
+def create_or_update_test_without_config(
+    test_id,
     body,
     display_name=None,
     test_description=None,
@@ -438,15 +445,14 @@ def create_or_update_test_without_config(test_id,
     certificate=None,
     key_vault_reference_identity=None,
     subnet_id=None,
-    split_csv=None,):
-    logger.info("Creating a request body for test using parameters and old test body (in case of update).")
+    split_csv=None,
+):
+    logger.info(
+        "Creating a request body for test using parameters and old test body (in case of update)."
+    )
     new_body = {}
-    new_body["displayName"] = (
-        display_name or body.get("displayName") or test_id
-    )
-    test_description = (
-        test_description or body.get("description")
-    )
+    new_body["displayName"] = display_name or body.get("displayName") or test_id
+    test_description = test_description or body.get("description")
     if test_description:
         new_body["description"] = test_description
     new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
@@ -501,9 +507,9 @@ def create_or_update_test_without_config(test_id,
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
 
+
 # pylint: enable=too-many-branches
 # pylint: enable=too-many-statements
-
 def create_or_update_test_run_body(
     test_id,
     display_name=None,
