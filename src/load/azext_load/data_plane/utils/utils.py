@@ -373,17 +373,19 @@ def create_or_update_test_with_config(test_id,
     if subnet_id:
         new_body["subnetId"] = subnet_id
 
-    for key in body.get("environmentVariables", {}):
-        new_body["environmentVariables"][key] = None
+    new_body["environmentVariables"] = {}
+    if body.get("environmentVariables") is not None:    
+        for key in body.get("environmentVariables"):
+            new_body["environmentVariables"].update({key: None})
     if yaml_test_body.get("environmentVariables") is not None:
-        new_body["environmentVariables"] = yaml_test_body.get("environmentVariables", {})
-        
+        new_body["environmentVariables"].update(yaml_test_body.get("environmentVariables", {}))
     if env is not None:
         new_body["environmentVariables"].update(env)
 
     new_body["secrets"] = {}
-    for key in body.get("secrets", {}):
-        new_body["secrets"][key] = None
+    if body.get("secrets") is not None:
+        for key in body.get("secrets", {}):
+            new_body["secrets"].update({key: None})
     if yaml_test_body.get("secrets") is not None:
         new_body["secrets"].update(yaml_test_body.get("secrets", {}))
     if secrets is not None:
