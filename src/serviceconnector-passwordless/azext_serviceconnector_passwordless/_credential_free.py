@@ -1013,7 +1013,7 @@ class WebappHandler(SourceHandler):
             logger.warning('Enabling WebApp System Identity...')
             if self.slot_name is None:
                 run_cli_cmd(
-                'az webapp identity assign --ids {}'.format(self.source_id))
+                    'az webapp identity assign --ids {}'.format(self.source_id))
 
                 identity = run_cli_cmd(
                     'az webapp identity show --ids {}'.format(self.source_id), 15, 5, output_is_none)
