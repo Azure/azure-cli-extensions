@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.162
++++++++
+* Replace Image Cleaner related functions with stable version.
+
 0.5.161
 +++++++
 * Support `premium` cluster sku tier in `az aks create` and `az aks update` commands
