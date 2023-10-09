@@ -731,24 +731,11 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         """
         logger.debug("Replacing values with deploy parameters")
         final_values_mapping_dict: Dict[Any, Any] = {}
-        for k, v in values_yaml_dict.items():
+        for k, v in values_yaml_dict.items():  # pylint: disable=too-many-nested-blocks
             # if value is a string and contains deployParameters.
             logger.debug("Processing key %s", k)
             param_name = k if param_prefix is None else f"{param_prefix}_{k}"
-            if isinstance(v, (str, int, bool)):
-                # Replace the parameter with {deploymentParameter.keyname}
-                if self.interactive:
-                    # Interactive mode. Prompt user to include or exclude parameters
-                    # This requires the enter key after the y/n input which isn't ideal
-                    if not input_ack("y", f"Expose parameter {param_name}? y/n "):
-                        logger.debug("Excluding parameter %s", param_name)
-                        final_values_mapping_dict.update({k: v})
-                        continue
-                replacement_value = f"{{deployParameters.{param_name}}}"
-
-                # add the schema for k (from the big schema) to the (smaller) schema
-                final_values_mapping_dict.update({k: replacement_value})
-            elif isinstance(v, dict):
+            if isinstance(v, dict):
                 final_values_mapping_dict[k] = self._replace_values_with_deploy_params(
                     v, param_name
                 )
@@ -764,7 +751,14 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                         final_values_mapping_dict[k].append(
                             self._replace_values_with_deploy_params(item, param_name)
                         )
-                    elif isinstance(item, (str, int, bool)) or not v:
+                    elif isinstance(item, (str, int, bool)) or not item:
+                        if self.interactive:
+                            if not input_ack(
+                                "y", f"Expose parameter {param_name}? y/n "
+                            ):
+                                logger.debug("Excluding parameter %s", param_name)
+                                final_values_mapping_dict[k].append(item)
+                                continue
                         replacement_value = f"{{deployParameters.{param_name}}}"
                         final_values_mapping_dict[k].append(replacement_value)
                     else:
@@ -772,10 +766,10 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                             f"Found an unexpected type {type(item)} of key {k} in "
                             "values.yaml, cannot generate values mapping file."
                         )
-            elif not v:
-                # V is blank so we don't know what type it is. Assuming it is an
-                # empty string (but do this after checking for dict and list)
+            elif isinstance(v, (str, int, bool)) or not v:
                 # Replace the parameter with {deploymentParameter.keyname}
+                # If v is blank we don't know what type it is. Assuming it is an
+                # empty string (but do this after checking for dict and list)
                 if self.interactive:
                     # Interactive mode. Prompt user to include or exclude parameters
                     # This requires the enter key after the y/n input which isn't ideal
