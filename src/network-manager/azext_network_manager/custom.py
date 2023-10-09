@@ -11,7 +11,9 @@
 # pylint: disable=unused-argument
 from knack.util import CLIError
 from .aaz.latest.network.manager.group.static_member import Create as _GroupStaticMemberCreate
-
+from .aaz.latest.network.manager.scope_connection import Create as _ScopeConnectionCreate
+from .aaz.latest.network.manager.connection.management_group import Create as _ConnectionManagementGroupCreate
+from .aaz.latest.network.manager.connection.subscription import Create as _ConnectionSubscriptionCreate
 
 def network_manager_create(cmd,
                            resource_group_name,
@@ -256,4 +258,30 @@ class GroupStaticMemberCreate(_GroupStaticMemberCreate):
         args_schema.resource_id._fmt = AAZResourceIdArgFormat(
             template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{}",
         )
+        args_schema.resource_id._required = True
+        return args_schema
+
+
+class ScopeConnectionCreate(_ScopeConnectionCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.resource_id._required = True
+        args_schema.tenant_id._required = True
+        return args_schema
+
+
+class ConnectionSubscriptionCreate(_ConnectionSubscriptionCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.network_manager_id._required = True
+        return args_schema
+
+
+class ConnectionManagementGroupCreate(_ConnectionManagementGroupCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.network_manager_id._required = True
         return args_schema
