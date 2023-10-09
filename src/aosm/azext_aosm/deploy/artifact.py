@@ -600,7 +600,7 @@ class Artifact:
             self._call_subprocess_raise_output(acr_import_image_cmd)
         except CLIError as error:
             logger.debug(error, exc_info=True)
-            if (" 401" or "Unauthorized") in str(error):
+            if (" 401" in str(error)) or ("Unauthorized" in str(error)):
                 # As we shell out the the subprocess, I think checking for these strings
                 # is the best check we can do for permission failures.
                 raise CLIError(
