@@ -3,6 +3,9 @@
 Release History
 ===============
 
+1.4.6
+* microsoft.kubernetes.azuredefender: Fixed installation bug where LogAnalytics Workspace details were not being fetched correctly.
+++++++++++++++++++
 1.4.5
 ++++++++++++++++++
 * fix bugs while dropping 'azure-mgmt-relay'
