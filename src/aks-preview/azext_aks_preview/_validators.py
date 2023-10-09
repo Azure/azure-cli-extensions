@@ -792,3 +792,15 @@ def validate_os_sku(namespace):
             CONST_OS_SKU_CBLMARINER,
             CONST_OS_SKU_MARINER,
         )
+
+
+def validate_azure_service_mesh_revision(namespace):
+    """Validates the user provided revision parameter for azure service mesh commands."""
+    if not hasattr(namespace, 'revision'):
+        return
+    revision = namespace.revision
+    asm_revision_regex = re.compile(r'^asm-\d+-\d+$')
+    found = asm_revision_regex.findall(revision)
+    if not found:
+        raise InvalidArgumentValueError(f"Revision {revision} Revision is not supported by the service mesh add-on.")
+

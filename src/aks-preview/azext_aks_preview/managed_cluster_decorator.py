@@ -6,6 +6,7 @@
 import copy
 import datetime
 import os
+import semver
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
@@ -2271,12 +2272,14 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             if mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE or mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK:
                 if len(new_profile.istio.revisions) < 2:
                     raise ArgumentUsageError('Azure Service Mesh upgrade is not in progress.')
+
+                sorted_revisons = self._sort_revisions(new_profile.istio.revisions)
                 if mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE:
-                    revision_to_remove = min(new_profile.istio.revisions)
-                    revision_to_keep = max(new_profile.istio.revisions)
+                    revision_to_remove = sorted_revisons[0]
+                    revision_to_keep = sorted_revisons[-1]
                 else:
-                    revision_to_remove = max(new_profile.istio.revisions)
-                    revision_to_keep = min(new_profile.istio.revisions)
+                    revision_to_remove = sorted_revisons[-1]
+                    revision_to_keep = sorted_revisons[0]
                 msg = (f"This operation will remove Istio control plane for revision {revision_to_remove}. "
                        f"Please ensure all data plane workloads have been rolled over to revision {revision_to_keep} so that they are still part of the mesh. "
                        "\nAre you sure you want to proceed?")
@@ -2293,6 +2296,17 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return new_profile
         else:
             return self.mc.service_mesh_profile
+
+    def _sort_revisions(self, revisions):
+        def _convert_revision_to_semver(rev):
+            sr = rev.replace("asm-", "")
+            sv = sr.replace("-", ".", 1)
+            # Add a custom patch version of 0
+            sv += ".0"
+            return semver.VersionInfo.parse(sv)
+
+        sorted_revisions = sorted(revisions, key=_convert_revision_to_semver)
+        return sorted_revisions
 
     def _get_k8s_support_plan(self) -> KubernetesSupportPlan:
         support_plan = self.raw_param.get("k8s_support_plan")
