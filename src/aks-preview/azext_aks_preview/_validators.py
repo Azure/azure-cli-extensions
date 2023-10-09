@@ -796,7 +796,7 @@ def validate_os_sku(namespace):
 
 def validate_azure_service_mesh_revision(namespace):
     """Validates the user provided revision parameter for azure service mesh commands."""
-    if not hasattr(namespace, 'revision'):
+    if namespace.revision is None:
         return
     revision = namespace.revision
     asm_revision_regex = re.compile(r'^asm-\d+-\d+$')
