@@ -2268,6 +2268,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         # deal with mesh upgrade commands
         if mesh_upgrade_command is not None:
+            if new_profile is None or new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_DISABLED:
+                raise ArgumentUsageError(
+                    "Istio has not been enabled for this cluster, please refer to https://aka.ms/asm-aks-addon-docs "
+                    "for more details on enabling Azure Service Mesh."
+                )
             requested_revision = self.raw_param.get("revision", None)
             if mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE or mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK:
                 if len(new_profile.istio.revisions) < 2:
