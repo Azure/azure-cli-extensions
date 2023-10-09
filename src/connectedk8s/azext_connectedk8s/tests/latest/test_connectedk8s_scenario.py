@@ -434,7 +434,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         assert(updated_cmd1["systemDefaultValues"]['azureArcAgents']['autoUpdate'] == bool(0))
 
         self.cmd('connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin')
-        response= requests.post('https://{location}.dp.kubernetesconfiguration.azure.com/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview&releaseTrain=stable')
+        response= requests.post(f'https://{CONFIG["location"]}.dp.kubernetesconfiguration.azure.com/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview&releaseTrain=stable')
         jsonData = json.loads(response.text)
         repo_path=jsonData['repositoryPath']
         index_value = 0
