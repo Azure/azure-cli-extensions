@@ -325,7 +325,6 @@ def convert_yaml_to_test(data):
     logger.debug("Converted yaml to test body: %s", new_body)
     return new_body
 
-
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-statements
 def create_or_update_test_with_config(test_id,
@@ -363,7 +362,6 @@ def create_or_update_test_with_config(test_id,
         new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
     else:
         new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
-    
     if new_body["keyvaultReferenceIdentityType"] == IdentityType.UserAssigned:
         if new_body["keyvaultReferenceIdentityId"].casefold() in ["null", "none"]:
             new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
@@ -374,7 +372,7 @@ def create_or_update_test_with_config(test_id,
         new_body["subnetId"] = subnet_id
 
     new_body["environmentVariables"] = {}
-    if body.get("environmentVariables") is not None:    
+    if body.get("environmentVariables") is not None:
         for key in body.get("environmentVariables"):
             new_body["environmentVariables"].update({key: None})
     if yaml_test_body.get("environmentVariables") is not None:
@@ -410,7 +408,6 @@ def create_or_update_test_with_config(test_id,
         ]["engineInstances"]
     else:
         new_body["loadTestConfiguration"]["engineInstances"] = 1
-    
     # quick test is not supported in CLI
     new_body["loadTestConfiguration"]["quickStartTest"] = False
 
@@ -418,7 +415,6 @@ def create_or_update_test_with_config(test_id,
         new_body["passFailCriteria"][key] = None
     if yaml_test_body.get("passFailCriteria") is not None:
         new_body["passFailCriteria"] = yaml_test_body.get("passFailCriteria", {})
-    
     if split_csv is not None:
         new_body["loadTestConfiguration"]["splitAllCSVs"] = split_csv
     elif (
@@ -427,10 +423,8 @@ def create_or_update_test_with_config(test_id,
         new_body["loadTestConfiguration"]["splitAllCSVs"] = yaml_test_body[
             "loadTestConfiguration"
         ]["splitAllCSVs"]
-    
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
-
 
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-statements
@@ -445,18 +439,16 @@ def create_or_update_test_without_config(test_id,
     key_vault_reference_identity=None,
     subnet_id=None,
     split_csv=None,):
-    logger.info("Creating a request body for create or update test using parameters and old test body (in case of update).")
+    logger.info("Creating a request body for test using parameters and old test body (in case of update).")
     new_body = {}
     new_body["displayName"] = (
         display_name or body.get("displayName") or test_id
     )
-
     test_description = (
         test_description or body.get("description")
     )
     if test_description:
         new_body["description"] = test_description
-
     new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
     if key_vault_reference_identity is not None:
         new_body["keyvaultReferenceIdentityId"] = key_vault_reference_identity
@@ -468,35 +460,29 @@ def create_or_update_test_without_config(test_id,
         new_body["keyvaultReferenceIdentityType"] = body.get(
             "keyvaultReferenceIdentityType", IdentityType.UserAssigned
         )
-
     if new_body["keyvaultReferenceIdentityType"] == IdentityType.UserAssigned:
         if new_body["keyvaultReferenceIdentityId"].casefold() in ["null", "none"]:
             new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
             new_body.pop("keyvaultReferenceIdentityId")
-    
     subnet_id = subnet_id or body.get("subnetId")
     if subnet_id:
         new_body["subnetId"] = subnet_id
-
     if body.get("environmentVariables") is not None:
         new_body["environmentVariables"] = body.get("environmentVariables", {})
     else:
         new_body["environmentVariables"] = {}
     if env is not None:
         new_body["environmentVariables"].update(env)
-    
     if body.get("secrets") is not None:
         new_body["secrets"] = body.get("secrets", {})
     else:
         new_body["secrets"] = {}
     if secrets is not None:
         new_body["secrets"].update(secrets)
-    
     if certificate is not None:
         new_body["certificate"] = certificate
     elif body.get("certificate"):
         new_body["certificate"] = body.get("certificate")
-
     new_body["loadTestConfiguration"] = body.get("loadTestConfiguration", {})
     if engine_instances:
         new_body["loadTestConfiguration"]["engineInstances"] = engine_instances
@@ -504,10 +490,8 @@ def create_or_update_test_without_config(test_id,
         new_body["loadTestConfiguration"]["engineInstances"] = body.get(
             "loadTestConfiguration", {}
         ).get("engineInstances", 1)
-    
     # quick test is not supported in CLI
     new_body["loadTestConfiguration"]["quickStartTest"] = False
-    
     if split_csv is not None:
         new_body["loadTestConfiguration"]["splitAllCSVs"] = split_csv
     elif body.get("loadTestConfiguration", {}).get("splitAllCSVs") is not None:
@@ -519,7 +503,6 @@ def create_or_update_test_without_config(test_id,
 
 # pylint: enable=too-many-branches
 # pylint: enable=too-many-statements
-
 
 def create_or_update_test_run_body(
     test_id,

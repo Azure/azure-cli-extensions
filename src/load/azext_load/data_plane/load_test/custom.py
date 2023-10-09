@@ -53,7 +53,7 @@ def create_test(
         msg = f"Test with given test ID : {test_id} already exist."
         logger.debug(msg)
         raise InvalidArgumentValueError(msg)
-    body = {}    
+    body = {}
     yaml, yaml_test_body = None, None
     if split_csv is None:
         split_csv = False
