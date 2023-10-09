@@ -65,8 +65,8 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
           deployParametersMappingRuleProfile: {
             applicationEnablement: 'Enabled'
             helmMappingRuleProfile: {
-              releaseNamespace: '{{ configuration.chartName }}'
-              releaseName: '{{ configuration.chartName }}'
+              releaseNamespace: '{{ configuration.releaseName }}'
+              releaseName: '{{ configuration.releaseName }}'
               helmPackageVersion: '{{ configuration.chartVersion }}'
               values: string(loadJsonContent('configMappings/{{ configuration.valueMappingsFile }}'))
             }
