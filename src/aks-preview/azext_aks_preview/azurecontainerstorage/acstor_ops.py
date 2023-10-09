@@ -56,7 +56,7 @@ def perform_enable_azure_container_storage(
     # 3. Microsoft.ExtendedLocation
     _register_dependent_rps(cmd)
 
-    # Step 2: Grant AKS cluster's node identity the following 
+    # Step 2: Grant AKS cluster's node identity the following
     # roles on the AKS managed resource group:
     # 1. Reader
     # 2. Network Contributor
@@ -153,18 +153,17 @@ def perform_disable_azure_container_storage(
 
         update_long_op_result = LongRunningOperation(cmd.cli_ctx)(update_result)
 
-        if result.provisioning_state == "Succeeded":
+        if update_long_op_result.provisioning_state == "Succeeded":
             logger.info("Azure Container Storage successfully installed")
         else:
-            if result.error_info is None:
+            if update_long_op_result.error_info is None:
                 logger.error("Error setting up Azure Container Storage")
             else:
                 logger.error(
                     "Azure Container Storage failed to uninstall "
-                    "with the following error in updating ", result.error_info
+                    "with the following error in updating ", update_long_op_result.error_info
                 )
             raise UnknownError("Azure Container Storage failed to uninstall.")
-
 
     # Step 3: If the extension is installed, call delete_k8s_extension
     from azext_k8s_extension.custom import delete_k8s_extension
@@ -180,14 +179,18 @@ def perform_disable_azure_container_storage(
     )
 
     delete_long_op_result = LongRunningOperation(cmd.cli_ctx)(delete_result)
+    if delete_long_op_result is not None:
+        logger.error("Uninstallation of {} failed".CONST_EXT_INSTALLATION_NAME)
+        raise UnknownError("Azure Container Storage failed to uninstall.")
 
-    # Revoke AKS cluster's node identity the following 
+    # Revoke AKS cluster's node identity the following
     # roles on the AKS managed resource group:
     # 1. Reader
     # 2. Network Contributor
     # 3. Elastic SAN Owner
     # 4. Elastic SAN Volume Group Owner
     _perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_group, kubelet_identity_object_id, False)
+
 
 def _register_dependent_rps(cmd):
     register_provider(cmd, 'Microsoft.Kubernetes', wait=True)
