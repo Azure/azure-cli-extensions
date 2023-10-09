@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "elastic-san volume-group update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a Volume Group.

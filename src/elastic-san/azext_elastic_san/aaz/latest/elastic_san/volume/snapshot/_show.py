@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "elastic-san volume snapshot show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get a Volume Snapshot.

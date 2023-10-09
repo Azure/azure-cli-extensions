@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "elastic-san update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update an Elastic SAN.

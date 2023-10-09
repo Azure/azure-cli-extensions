@@ -3,9 +3,9 @@
 Release History
 ===============
 
-1.0.0
+1.0.0b2
 ++++++
-* GA support 2023-01-01 api-version
+* Support 2023-01-01 api-version as preview
 * Add `az elastic-san volume-group snapshot` command group
 * Support CMK for volume-group
 

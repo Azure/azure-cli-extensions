@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "elastic-san list-sku",
+    is_preview=True,
 )
 class ListSku(AAZCommand):
     """Get a list of Elastic SAN skus.

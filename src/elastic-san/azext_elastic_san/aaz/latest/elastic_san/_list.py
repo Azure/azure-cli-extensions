@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "elastic-san list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """Get a list of Elastic SANs in a subscription.
