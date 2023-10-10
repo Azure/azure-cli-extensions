@@ -185,9 +185,6 @@ class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
         validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait())
         if self.get_argument_yaml() is None:
 
-            if self.get_argument_trigger_type() is None:
-                raise RequiredArgumentMissingError('Usage error: --trigger-type is required')
-
             if self.get_argument_managed_env() is None:
                 raise RequiredArgumentMissingError('Usage error: --environment is required if not using --yaml')
 
@@ -259,7 +256,7 @@ class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
             self.set_augument_workload_profile_name(workload_profile_name)
 
         manualTriggerConfig_def = None
-        if self.get_argument_trigger_type() is not None and self.get_argument_trigger_type().lower() == "manual":
+        if self.get_argument_trigger_type().lower() == "manual":
             manualTriggerConfig_def = ManualTriggerModel
             manualTriggerConfig_def[
                 "replicaCompletionCount"] = 0 if self.get_argument_replica_completion_count() is None else self.get_argument_replica_completion_count()
@@ -496,6 +493,11 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
     def construct_payload(self):
         super().construct_payload()
         self.set_up_extended_location()
+
+    def validate_arguments(self):
+        if self.get_argument_trigger_type() is None:
+            raise RequiredArgumentMissingError('Usage error: --trigger-type is required')
+        return super().validate_arguments()
 
     def set_up_extended_location(self):
         if self.get_argument_environment_type() == CONNECTED_ENVIRONMENT_TYPE:
