@@ -17,6 +17,10 @@ Pending
     * `az aks trustedaccess rolebinding update`
     * `az aks trustedaccess rolebinding delete`
 
+0.5.162
++++++++
+* Replace Image Cleaner related functions with stable version.
+
 0.5.161
 +++++++
 * Support `premium` cluster sku tier in `az aks create` and `az aks update` commands
