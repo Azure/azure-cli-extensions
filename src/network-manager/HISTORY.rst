@@ -2,6 +2,12 @@
 
 Release History
 ===============
+1.0.0
++++++
+* Fix example and help info (Fix #6788)
+* BREAKING CHANGE: Make params required and remove non-updatable params (Fix #6786)
+* Fix `az network manager security-admin-config rule-collection rule update`: Fix to respect params provided. (Fix #6787)
+
 1.0.0b2
 +++++
 * `az network manager group static-member create`: Fix cross-tenant --resource-id

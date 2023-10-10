@@ -642,16 +642,6 @@ def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
         raise InvalidArgumentValueError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
 
 
-def validate_image_cleaner_enable_disable_mutually_exclusive(namespace):
-    enable_image_cleaner = namespace.enable_image_cleaner
-    disable_image_cleaner = namespace.disable_image_cleaner
-
-    if enable_image_cleaner and disable_image_cleaner:
-        raise MutuallyExclusiveArgumentError(
-            "Cannot specify --enable-image-cleaner and --disable-image-cleaner at the same time."
-        )
-
-
 def validate_enable_custom_ca_trust(namespace):
     """Validates Custom CA Trust can only be used on Linux."""
     if namespace.enable_custom_ca_trust:

@@ -7,8 +7,29 @@ import time
 import requests
 from azext_containerapp.tests.latest.common import TEST_LOCATION
 from azure.cli.core.azclierror import MutuallyExclusiveArgumentError, RequiredArgumentMissingError, InvalidArgumentValueError
+from msrestazure.tools import parse_resource_id
+
 from azure.cli.testsdk import (JMESPathCheck)
 
+
+def prepare_containerapp_env_for_app_e2e_tests(test_cls):
+    from azure.cli.core.azclierror import CLIInternalError
+    from .common import TEST_LOCATION
+    rg_name = f'client.env_rg_{TEST_LOCATION}'.lower().replace(" ", "").replace("(", "").replace(")", "")
+    env_name = f'env-{TEST_LOCATION}'.lower().replace(" ", "").replace("(", "").replace(")", "")
+    managed_env = None
+    try:
+        managed_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
+    except CLIInternalError as e:
+        if e.error_msg.__contains__('ResourceGroupNotFound') or e.error_msg.__contains__('ResourceNotFound'):
+            test_cls.cmd(f'group create -n {rg_name}')
+            test_cls.cmd(f'containerapp env create -g {rg_name} -n {env_name} --logs-destination none')
+            managed_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
+
+            while managed_env["properties"]["provisioningState"].lower() == "waiting":
+                time.sleep(5)
+                managed_env = test_cls.cmd('containerapp env show -g {} -n {}'.format(rg_name, env_name)).get_output_in_json()
+    return managed_env["id"]
 
 
 def create_containerapp_env(test_cls, env_name, resource_group, location=None):
@@ -102,7 +123,8 @@ def create_extension_and_custom_location(test_cls, resource_group, connected_clu
         test_cls.cmd(f'az customlocation create -g {resource_group} -n {custom_location_name} -l {TEST_LOCATION} --host-resource-id {connected_cluster_id} --namespace appplat-ns -c {extension["id"]}')
     except:
         pass
-      
+
+
 def verify_containerapp_create_exception(
             test_cls,
             resource_group,
@@ -120,9 +142,10 @@ def verify_containerapp_create_exception(
         test_cls.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         # Ensure that the Container App environment is created
+        env_id = None
         if env_name is None:
-            env_name = test_cls.create_random_name(prefix='env', length=24)
-            create_containerapp_env(test_cls, env_name, resource_group)
+            env_id = prepare_containerapp_env_for_app_e2e_tests(test_cls)
+            env_name = parse_resource_id(env_id).get('name')
 
         if app_name is None:
             # Generate a name for the Container App
@@ -130,7 +153,7 @@ def verify_containerapp_create_exception(
 
         # Construct the 'az containerapp create' command
         create_cmd = 'containerapp create -g {} -n {} --environment {}'.format(
-            resource_group, app_name, env_name)
+            resource_group, app_name, env_id or env_name)
         if source_path:
             create_cmd += f" --source \"{source_path}\""
         if repo:
@@ -172,6 +195,7 @@ def verify_containerapp_create_exception(
             JMESPathCheck('length(@)', 0),
         ])
 
+
 def create_and_verify_containerapp_create_and_update(
             test_cls,
             resource_group,
@@ -188,9 +212,10 @@ def create_and_verify_containerapp_create_and_update(
         test_cls.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         # Ensure that the Container App environment is created
+        env_id = None
         if env_name is None:
-           env_name = test_cls.create_random_name(prefix='env', length=24)
-           test_cls.cmd(f'containerapp env create -g {resource_group} -n {env_name} -l {TEST_LOCATION}')
+            env_id = prepare_containerapp_env_for_app_e2e_tests(test_cls)
+            env_name = parse_resource_id(env_id).get('name')
 
         if app_name is None:
             # Generate a name for the Container App
@@ -212,7 +237,7 @@ def create_and_verify_containerapp_create_and_update(
 
         # Construct the 'az containerapp create' command without registry username and password
         create_cmd = 'containerapp create -g {} -n {} --environment {} --registry-server {}'.format(
-            resource_group, app_name, env_name, registry_server)
+            resource_group, app_name, env_id or env_name, registry_server)
         if source_path:
             create_cmd += f" --source \"{source_path}\""
         if image:
@@ -236,7 +261,7 @@ def create_and_verify_containerapp_create_and_update(
 
         # Re-construct the 'az containerapp create' command with registry username and password
         create_cmd = 'containerapp create -g {} -n {} --environment {} --registry-username {} --registry-server {} --registry-password {}'.format(
-            resource_group, app_name, env_name, registry_user, registry_server, registry_pass)
+            resource_group, app_name, env_id or env_name, registry_user, registry_server, registry_pass)
         if source_path:
             create_cmd += f" --source \"{source_path}\""
         if image:
@@ -288,6 +313,7 @@ def create_and_verify_containerapp_create_and_update(
         test_cls.cmd('containerapp env list -g {}'.format(resource_group), checks=[
             JMESPathCheck('length(@)', 0),
         ])
+
 
 def _reformat_image(image):
     image = image.split("/")[-1]
