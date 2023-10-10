@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.26.0
+* Add spoort for Priority Based Execution
+* Added support for cross account container copy
+
 0.25.0
 * Add support for performing database merge for Sql and MongoDB database account.
 
