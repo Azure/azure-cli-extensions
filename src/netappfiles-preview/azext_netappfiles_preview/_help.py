@@ -17,4 +17,3 @@ helps.pop('netappfiles volume create', None)
 
 helps.pop('netappfiles volume update', None)
 
-helps['netappfiles volume update'] = None

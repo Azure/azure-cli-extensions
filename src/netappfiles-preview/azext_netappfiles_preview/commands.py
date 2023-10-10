@@ -7,8 +7,7 @@
 
 from azure.cli.core.commands import CliCommandType
 from ._client_factory import (
-    volumes_mgmt_client_factory,
-    mount_targets_mgmt_client_factory)
+    volumes_mgmt_client_factory)
 from ._exception_handler import netapp_exception_handler
 
 
