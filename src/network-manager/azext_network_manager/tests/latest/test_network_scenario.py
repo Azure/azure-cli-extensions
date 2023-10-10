@@ -215,10 +215,20 @@ class NetworkScenarioTest(ScenarioTest):
 
 
         self.cmd('network manager security-admin-config rule-collection rule create -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} '
-                 '--rule-name {rule_name} --kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound"')
+                 '--rule-name {rule_name} --kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound"',
+                 checks=[self.check('access', 'Allow'),
+                         self.check('direction', 'Inbound'),
+                         self.check('kind', 'Custom'),
+                         self.check('priority', '32'),
+                         self.check('protocol', 'Tcp')])
         self.cmd('network manager security-admin-config rule-collection rule show -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name}')
         self.cmd('network manager security-admin-config rule-collection rule update -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} '
-                 '--access "Deny"')
+                 '--access "Deny"',
+                 checks=[self.check('access', 'Deny'),
+                         self.check('direction', 'Inbound'),
+                         self.check('kind', 'Custom'),
+                         self.check('priority', '32'),
+                         self.check('protocol', 'Tcp')])
         self.cmd('network manager security-admin-config rule-collection rule list -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name}')
         self.cmd('network manager security-admin-config rule-collection rule delete -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} --force --yes')
 
