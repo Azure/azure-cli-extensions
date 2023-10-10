@@ -54,7 +54,7 @@ class AzExtensionHelper:
         check_call(cmd, shell=True)
 
     def add_from_url(self, url):
-        self._cmd('az extension add -s {} -y'.format(url))
+        self._cmd('az extension add -s {} -y --debug'.format(url))
 
     def remove(self):
         self._cmd('az extension remove -n {}'.format(self.extension_name))
