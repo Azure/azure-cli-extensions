@@ -27,7 +27,7 @@ from azext_aosm.util.constants import (
     VNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
     VNF_MANIFEST_BICEP_TEMPLATE_FILENAME,
 )
-from azext_aosm.util.utils import input_ack
+from azext_aosm.util.utils import input_ack, snake_case_to_camel_case
 
 logger = get_logger(__name__)
 
@@ -61,7 +61,9 @@ class VnfNfdGenerator(NFDGenerator):
                          exposed.
     """
 
-    def __init__(self, config: VNFConfiguration, order_params: bool, interactive: bool):
+    def __init__(
+        self, config: VNFConfiguration, order_params: bool, interactive: bool
+    ):
         self.config = config
 
         assert isinstance(self.config.arm_template, ArtifactConfig)
@@ -93,7 +95,9 @@ class VnfNfdGenerator(NFDGenerator):
 
             self._create_parameter_files()
             self._copy_to_output_directory()
-            print(f"Generated NFD bicep templates created in {self.output_directory}")
+            print(
+                f"Generated NFD bicep templates created in {self.output_directory}"
+            )
             print(
                 "Please review these templates. When you are happy with them run "
                 "`az aosm nfd publish` with the same arguments."
@@ -141,7 +145,8 @@ class VnfNfdGenerator(NFDGenerator):
             # Order parameters into those with and without defaults
             has_default_field = "defaultValue" in self.vm_parameters[key]
             has_default = (
-                has_default_field and not self.vm_parameters[key]["defaultValue"] == ""
+                has_default_field
+                and not self.vm_parameters[key]["defaultValue"] == ""
             )
 
             if has_default:
@@ -176,7 +181,9 @@ class VnfNfdGenerator(NFDGenerator):
         vm_parameters_to_exclude = []
 
         vm_parameters = (
-            self.vm_parameters_ordered if self.order_params else self.vm_parameters
+            self.vm_parameters_ordered
+            if self.order_params
+            else self.vm_parameters
         )
 
         for key in vm_parameters:
@@ -188,7 +195,8 @@ class VnfNfdGenerator(NFDGenerator):
             # Order parameters into those without and then with defaults
             has_default_field = "defaultValue" in self.vm_parameters[key]
             has_default = (
-                has_default_field and not self.vm_parameters[key]["defaultValue"] == ""
+                has_default_field
+                and not self.vm_parameters[key]["defaultValue"] == ""
             )
 
             if self.interactive and has_default:
@@ -240,7 +248,9 @@ class VnfNfdGenerator(NFDGenerator):
                     optional_deployment_parameters_path, "w", encoding="utf-8"
                 ) as _file:
                     _file.write(OPTIONAL_DEPLOYMENT_PARAMETERS_HEADING)
-                    _file.write(json.dumps(nfd_parameters_with_default, indent=4))
+                    _file.write(
+                        json.dumps(nfd_parameters_with_default, indent=4)
+                    )
                 print(
                     "Optional ARM parameters detected. Created "
                     f"{OPTIONAL_DEPLOYMENT_PARAMETERS_FILENAME} to help you choose which "
@@ -255,7 +265,9 @@ class VnfNfdGenerator(NFDGenerator):
         """
         logger.debug("Create %s", TEMPLATE_PARAMETERS_FILENAME)
         vm_parameters = (
-            self.vm_parameters_ordered if self.order_params else self.vm_parameters
+            self.vm_parameters_ordered
+            if self.order_params
+            else self.vm_parameters
         )
 
         template_parameters = {}
@@ -280,9 +292,15 @@ class VnfNfdGenerator(NFDGenerator):
 
         :param directory: The directory to put this file in.
         """
+        vhd_config = self.config.vhd
         vhd_parameters = {
             "imageName": self.image_name,
             "azureDeployLocation": "{deployParameters.location}",
+            **{
+                snake_case_to_camel_case(key): value
+                for key, value in vhd_config.__dict__.items()
+                if key.startswith("image") and value is not None
+            },
         }
 
         vhd_parameters_path = directory / VHD_PARAMETERS_FILENAME
