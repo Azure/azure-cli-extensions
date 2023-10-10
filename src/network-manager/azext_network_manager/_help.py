@@ -55,9 +55,9 @@ helps['network manager connect-config create'] = """
             Usage: --applies-to-groups network-group-id=XX use-hub-gateway=XX is-global=XX group-connectivity=XX
 
             network-group-id: Network group Id.
-            use-hub-gateway: Flag if need to use hub gateway.
-            is-global: Flag if global is supported.
-            group-connectivity: Group connectivity type. Allowed values: None, DirectlyConnected
+            use-hub-gateway: Flag if need to use hub gateway. Only required if topology is Hub and Spoke.
+            is-global: Flag if global is supported. Only required if topology is Hub and Spoke.
+            group-connectivity: Group connectivity type. Only required if topology is Hub and Spoke. Allowed values: None, DirectlyConnected
 
             Multiple actions can be specified by using more than one --applies-to-groups argument.
       - name: --hub
@@ -66,7 +66,7 @@ helps['network manager connect-config create'] = """
             Usage: --hub resource-id=XX resource-type=XX
 
             resource-id: Resource ID
-            resource-type: Resource Type
+            resource-type: Resource type, suggested value(s): 'Microsoft.Network/virtualNetworks'
 
     examples:
       - name: Create/Update Azure Virtual Network Manager Connectivity Configuration
@@ -90,9 +90,9 @@ helps['network manager connect-config update'] = """
             Usage: --applies-to-groups network-group-id=XX use-hub-gateway=XX is-global=XX group-connectivity=XX
 
             network-group-id: Network group Id.
-            use-hub-gateway: Flag if need to use hub gateway.
-            is-global: Flag if global is supported.
-            group-connectivity: Group connectivity type. Allowed values: None, DirectlyConnected
+            use-hub-gateway: Flag if need to use hub gateway. Only required if topology is Hub and Spoke.
+            is-global: Flag if global is supported. Only required if topology is Hub and Spoke.
+            group-connectivity: Group connectivity type. Only required if topology is Hub and Spoke. Allowed values: None, DirectlyConnected
 
             Multiple actions can be specified by using more than one --applies-to-groups argument.
       - name: --hub
@@ -101,7 +101,7 @@ helps['network manager connect-config update'] = """
             Usage: --hub resource-id=XX resource-type=XX
 
             resource-id: Resource ID
-            resource-type: Resource Type
+            resource-type: Resource type, suggested value(s): 'Microsoft.Network/virtualNetworks'
 """
 
 helps['network manager security-admin-config rule-collection create'] = """
