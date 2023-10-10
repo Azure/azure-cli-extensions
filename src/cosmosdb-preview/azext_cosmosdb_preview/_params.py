@@ -465,7 +465,7 @@ def load_arguments(self, _):
             'cosmosdb copy resume',
             'cosmosdb copy cancel']:
         with self.argument_context(scope) as c:
-            c.argument('job_name', help='Name of the container copy job.', required=True)
+            c.argument('job_name', options_list=['--job-name', '-n'], help='Name of the container copy job.', required=True)
 
     max_throughput_type = CLIArgumentType(options_list=['--max-throughput'], help='The maximum throughput resource can scale to (RU/s). Provided when the resource is autoscale enabled. The minimum value can be 4000 (RU/s)')
 
