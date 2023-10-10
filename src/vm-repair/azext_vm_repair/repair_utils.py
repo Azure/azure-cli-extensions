@@ -529,6 +529,8 @@ def _select_distro_linux(distro):
         'oracle8': 'Oracle:Oracle-Linux:ol82:latest',
         'sles12': _suse_image_selector('sles-12'),
         'sles15': _suse_image_selector('sles-15')
+        'sles12':  'SUSE:sles-12-sp5:gen1:latest',
+        'sles15':  'SUSE:sles-15-sp3:gen1:latest'
     }
     if distro in image_lookup:
         os_image_urn = image_lookup[distro]
@@ -578,6 +580,8 @@ def _select_distro_linux_gen2(distro):
         'oracle8': 'Oracle:Oracle-Linux:ol82-gen2:latest',
         'sles12': _suse_image_selector_gen2('sles-12'),
         'sles15': _suse_image_selector_gen2('sles-15')
+        'sles12':  'SUSE:sles-12-sp5:gen2:latest',
+        'sles15':  'SUSE:sles-15-sp3:gen2:latest'
     }
     if distro in image_lookup:
         os_image_urn = image_lookup[distro]
