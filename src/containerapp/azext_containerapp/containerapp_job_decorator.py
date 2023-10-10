@@ -218,7 +218,7 @@ class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
             r = self.create()
 
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not self.get_argument_no_wait():
-            not self.get_argument_disable_warnings() and logger.warning('Containerapp job creation in progress. Please monitor the creation using `az containerapp job show -n {} -g {}`'.format(self.get_argument_name, self.get_argument_resource_group_name()))
+            not self.get_argument_disable_warnings() and logger.warning('Containerapp job creation in progress. Please monitor the creation using `az containerapp job show -n {} -g {}`'.format(self.get_argument_name(), self.get_argument_resource_group_name()))
 
         return r
 
@@ -256,14 +256,14 @@ class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
             self.set_augument_workload_profile_name(workload_profile_name)
 
         manualTriggerConfig_def = None
-        if self.get_argument_trigger_type().lower() == "manual":
+        if self.get_argument_trigger_type() is not None and self.get_argument_trigger_type().lower() == "manual":
             manualTriggerConfig_def = ManualTriggerModel
             manualTriggerConfig_def[
                 "replicaCompletionCount"] = 0 if self.get_argument_replica_completion_count() is None else self.get_argument_replica_completion_count()
             manualTriggerConfig_def["parallelism"] = 0 if self.get_argument_parallelism() is None else self.get_argument_parallelism()
 
         scheduleTriggerConfig_def = None
-        if self.get_argument_trigger_type is not None and self.get_argument_trigger_type().lower() == "schedule":
+        if self.get_argument_trigger_type() is not None and self.get_argument_trigger_type().lower() == "schedule":
             scheduleTriggerConfig_def = ScheduleTriggerModel
             scheduleTriggerConfig_def[
                 "replicaCompletionCount"] = 0 if self.get_argument_replica_completion_count() is None else self.get_argument_replica_completion_count()
@@ -271,7 +271,7 @@ class ContainerAppJobCreateDecorator(ContainerAppJobDecorator):
             scheduleTriggerConfig_def["cronExpression"] = self.get_argument_cron_expression()
 
         eventTriggerConfig_def = None
-        if self.get_argument_trigger_type is not None and self.get_argument_trigger_type().lower() == "event":
+        if self.get_argument_trigger_type() is not None and self.get_argument_trigger_type().lower() == "event":
             scale_def = None
             if self.get_argument_min_executions() or self.get_argument_max_executions() or self.get_argument_polling_interval():
                 scale_def = JobScaleModel
