@@ -445,7 +445,6 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('job_name', options_list=['--job-name', '-n'], help='Name of the Data Transfer Job.', required=True)
 
-
     with self.argument_context('cosmosdb copy create') as c:
         c.argument('job_name', job_name_type)
         c.argument('src_account', help='Name of the Azure Cosmos DB source database account.', completer=get_resource_name_completion_list('Microsoft.DocumentDb/databaseAccounts'), id_part='name')
