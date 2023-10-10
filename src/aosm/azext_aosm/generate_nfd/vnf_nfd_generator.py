@@ -280,18 +280,9 @@ class VnfNfdGenerator(NFDGenerator):
 
         :param directory: The directory to put this file in.
         """
-        azureDeployLocation: str
-        if self.vm_parameters.get("location"):
-            # Location can be passed in as deploy parameter
-            azureDeployLocation = "{deployParameters.location}"
-        else:
-            # Couldn't find a location parameter in the source template, so hard code to
-            # the location we are deploying the publisher to.
-            azureDeployLocation = self.config.location
-
         vhd_parameters = {
             "imageName": self.image_name,
-            "azureDeployLocation": azureDeployLocation,
+            "azureDeployLocation": "{deployParameters.location}",
         }
 
         vhd_parameters_path = directory / VHD_PARAMETERS_FILENAME
