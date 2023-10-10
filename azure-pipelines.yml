@@ -136,9 +136,9 @@ jobs:
     name: 'pool-ubuntu-2004'
   steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.7'
+      displayName: 'Use Python 3.8'
       inputs:
-        versionSpec: 3.7
+        versionSpec: 3.8
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
         #!/usr/bin/env bash
