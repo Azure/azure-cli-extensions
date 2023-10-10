@@ -17,14 +17,14 @@ Pending
     * `az aks trustedaccess rolebinding update`
     * `az aks trustedaccess rolebinding delete`
 
-0.5.162
-+++++++
-* Replace Image Cleaner related functions with stable version.
-
-0.5.162
+0.5.163
 +++++++
 * Add `get-upgrades` and `get-revisions` to the `az aks mesh` command.
 * Add `az aks mesh upgrade` commands to manage upgrades for Azure Service Mesh.
+
+0.5.162
++++++++
+* Replace Image Cleaner related functions with stable version.
 
 0.5.161
 +++++++
