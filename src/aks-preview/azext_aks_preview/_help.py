@@ -302,6 +302,9 @@ helps['aks create'] = """
         - name: --node-resource-group
           type: string
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
+        - name: --k8s-support-plan
+          type: string
+          short-summary: Choose from "KubernetesOfficial" or "AKSLongTermSupport", with "AKSLongTermSupport" you get 1 extra year of CVE patchs.
         - name: --nrg-lockdown-restriction-level
           type: string
           short-summary: Restriction level on the managed node resource group.
@@ -829,6 +832,9 @@ helps['aks update'] = """
         - name: --enable-workload-identity
           type: bool
           short-summary: (PREVIEW) Enable Workload Identity addon for cluster.
+        - name: --disable-workload-identity
+          type: bool
+          short-summary: (PREVIEW) Disable Workload Identity addon for cluster.
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
@@ -838,6 +844,9 @@ helps['aks update'] = """
         - name: --rotation-poll-interval
           type: string
           short-summary: Set interval of rotation poll. Use with azure-keyvault-secrets-provider addon.
+        - name: --k8s-support-plan
+          type: string
+          short-summary: Choose from "KubernetesOfficial" or "AKSLongTermSupport", with "AKSLongTermSupport" you get 1 extra year of CVE patchs.
         - name: --enable-disk-driver
           type: bool
           short-summary: Enable AzureDisk CSI Driver.
@@ -1804,6 +1813,44 @@ helps['aks nodepool operation-abort'] = """
           text: az aks nodepool operation-abort -g myResourceGroup --nodepool-name nodepool1 --cluster-name myAKSCluster
 """
 
+helps['aks machine'] = """
+   type: group
+   short-summary: Get information about machines in a nodepool of a managed clusters
+"""
+
+helps['aks machine list'] = """
+   type: command
+   short-summary: Get information about IP Addresses, Hostname for all machines in an agentpool
+   parameters:
+       - name: --cluster-name
+         type: string
+         short-summary: Name of the managed cluster
+       - name: --nodepool-name
+         type: string
+         short-summary: Name of the agentpool of a managed cluster
+   exmaples:
+       - name: Get information about IP Addresses, Hostname for all machines in an agentpool
+         text: az aks machine list --cluster-name <clusterName> --nodepool-name <apName>
+"""
+
+helps['aks machine show'] = """
+   type: command
+   short-summary: Show IP Addresses, Hostname for a specific machine in an agentpool for a managedcluster.
+   parameters:
+       - name: --cluster-name
+         type: string
+         short-summary: Name of the managed cluster
+       - name: --nodepool-name
+         type: string
+         short-summary: Name of the agentpool of a managed cluster
+       - name: --machine-name
+         type: string
+         short-summary: Get IP Addresses, Hostname for a specific machine in an agentpool
+   exmaples:
+       - name: Get IP Addresses, Hostname for a specific machine in an agentpool
+         text: az aks machine show --cluster-name <clusterName> --nodepool-name <apName> --machine-name <machineName>
+"""
+
 helps['aks operation-abort'] = """
     type: command
     short-summary: Abort last running operation on managed cluster.
@@ -2604,7 +2651,7 @@ helps['aks mesh enable'] = """
       - name: Enable Azure Service Mesh with selfsigned CA.
         text: az aks mesh enable --resource-group MyResourceGroup --name MyManagedCluster
       - name: Enable Azure Service Mesh with plugin CA.
-        text: az aks mesh enable --resource-group MyResourceGroup --name MyManagedCluster --key-vault-id my-akv-id --ca-cert-object-name my-ca-cert --ca-key-object-name my-ca-key --cert-chain-object-name my-cert-chain --root-cert-object-name my-root-cert
+        text: az aks mesh enable --resource-group MyResourceGroup --name MyManagedCluster --key-vault-id /subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo --ca-cert-object-name my-ca-cert --ca-key-object-name my-ca-key --cert-chain-object-name my-cert-chain --root-cert-object-name my-root-cert
 
 """
 
@@ -2642,19 +2689,24 @@ helps['aks mesh disable-ingress-gateway'] = """
         text: az aks mesh disable-ingress-gateway --resource-group MyResourceGroup --name MyManagedCluster --ingress-gateway-type Internal
 """
 
-helps['aks copilot'] = """
+helps['aks mesh enable-egress-gateway'] = """
     type: command
-    short-summary: Start a chat with the Azure Kubernetes Service expert. API keys for OpenAI or Azure are required.
-    long-summary: |-
-                This command initiates a chat assistant with expertise in Azure Kubernetes Service, offering guidance on troubleshooting issues using az commands.
-                You have two options,
-                OpenAI option,
-                    sign in to https://www.openai.com/, navigate to the API key section in your account dashboard (https://platform.openai.com/signup), follow the instructions to create a new API key, and choose models from https://platform.openai.com/docs/models/.
-                    export OPENAI_API_KEY=xxx, export OPENAI_API_MODEL=gpt-3.5-turbo
-                Azure OpenAI option,
-                    after creating a new Cognitive Services resource (https://azure.microsoft.com/en-us/services/cognitive-services/), you can find the OPENAI_API_KEY and OPENAI_API_BASE in the "Keys and Endpoint" section of the resource's management page on the Azure portal (https://portal.azure.com/). OPENAI_API_DEPLOYMENT can be found in the "Model deployments" section, and OPENAI_API_TYPE should be "azure" for this option.
-                    export OPENAI_API_KEY=xxx, export OPENAI_API_BASE=https://xxxinstance.openai.azure.com/, export OPENAI_API_DEPLOYMENT=gpt-4-32k-0314, export OPENAI_API_TYPE=azure
+    short-summary: Enable an Azure Service Mesh egress gateway.
+    long-summary: This command enables an Azure Service Mesh egress gateway in given cluster.
+    parameters:
+      - name: --egress-gateway-nodeselector --egx-gtw-ns
+        type: string
+        short-summary: Specify the node selector for the egress gateway with space-separated, key-value pairs (key1=value1 key2=value2).
     examples:
-        - name: How to create a AKS private cluster.
-          text: az aks copilot -p "How to create a private cluster"
+      - name: Enable an egress gateway.
+        text: az aks mesh enable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster --egress-gateway-nodeselector istio=egress
+"""
+
+helps['aks mesh disable-egress-gateway'] = """
+    type: command
+    short-summary: Disable an Azure Service Mesh egress gateway.
+    long-summary: This command disables an Azure Service Mesh egress gateway in given cluster.
+    examples:
+      - name: Disable an egress gateway.
+        text: az aks mesh disable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster
 """

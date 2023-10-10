@@ -13,6 +13,7 @@ from azext_aks_preview._client_factory import (
     cf_nodepool_snapshots,
     cf_trustedaccess_role,
     cf_trustedaccess_role_binding,
+    cf_machines
 )
 from azext_aks_preview._format import (
     aks_addon_list_available_table_format,
@@ -20,6 +21,8 @@ from azext_aks_preview._format import (
     aks_addon_show_table_format,
     aks_agentpool_list_table_format,
     aks_agentpool_show_table_format,
+    aks_machine_list_table_format,
+    aks_machine_show_table_format,
     aks_list_nodepool_snapshot_table_format,
     aks_list_snapshot_table_format,
     aks_list_table_format,
@@ -88,6 +91,12 @@ def load_command_table(self, _):
         client_factory=cf_managed_clusters
     )
 
+    machines_sdk = CliCommandType(
+        operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
+                        'operations._machine_operations#MachinesOperations.{}',
+        client_factory=cf_managed_clusters
+    )
+
     maintenance_configuration_sdk = CliCommandType(
         operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
                         'operations._maintenance_configurations_operations#MaintenanceConfigurationsOperations.{}',
@@ -146,10 +155,6 @@ def load_command_table(self, _):
         g.custom_command('get-os-options', 'aks_get_os_options')
         g.custom_command('operation-abort', 'aks_operation_abort', supports_no_wait=True)
 
-    # AKS Copilot commands
-    with self.command_group('aks') as g:
-        g.custom_command('copilot', 'start_chat')
-
     # AKS maintenance configuration commands
     with self.command_group('aks maintenanceconfiguration', maintenance_configuration_sdk, client_factory=cf_maintenance_configurations) as g:
         g.custom_command('list', 'aks_maintenanceconfiguration_list')
@@ -188,6 +193,12 @@ def load_command_table(self, _):
         g.custom_command('stop', 'aks_agentpool_stop', supports_no_wait=True)
         g.custom_command('start', 'aks_agentpool_start', supports_no_wait=True)
         g.custom_command('operation-abort', 'aks_agentpool_operation_abort', supports_no_wait=True)
+
+    with self.command_group('aks machine', machines_sdk, client_factory=cf_machines) as g:
+        g.custom_command('list', 'aks_machine_list',
+                         table_transformer=aks_machine_list_table_format)
+        g.custom_show_command('show', 'aks_machine_show',
+                              table_transformer=aks_machine_show_table_format)
 
     # AKS draft commands
     with self.command_group('aks draft', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
@@ -267,7 +278,16 @@ def load_command_table(self, _):
             'aks_mesh_enable_ingress_gateway',
             supports_no_wait=True)
         g.custom_command(
+            'enable-egress-gateway',
+            'aks_mesh_enable_egress_gateway',
+            supports_no_wait=True)
+        g.custom_command(
             'disable-ingress-gateway',
             'aks_mesh_disable_ingress_gateway',
+            supports_no_wait=True,
+            confirmation=True)
+        g.custom_command(
+            'disable-egress-gateway',
+            'aks_mesh_disable_egress_gateway',
             supports_no_wait=True,
             confirmation=True)
