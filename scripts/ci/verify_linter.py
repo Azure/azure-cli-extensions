@@ -76,7 +76,7 @@ class AzdevExtensionHelper:
         self._cmd('azdev extension remove {}'.format(self.extension_name))
 
     def linter(self):
-        self._cmd('azdev linter --include-whl-extensions {}'.format(self.extension_name))
+        self._cmd('azdev linter --include-whl-extensions --debug {}'.format(self.extension_name))
 
     def build(self):
         pass
