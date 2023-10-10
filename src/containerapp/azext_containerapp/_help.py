@@ -261,6 +261,18 @@ helps['containerapp replica show'] = """
           az containerapp replica show -n MyContainerapp -g MyResourceGroup --replica MyReplica --revision MyRevision
 """
 
+helps['containerapp replica count'] = """
+    type: command
+    short-summary: Count of a container app's replica(s)
+    examples:
+    - name: Count replicas of a particular revision
+      text: |
+          az containerapp replica count -n MyContainerapp -g MyResourceGroup --revision MyRevision
+    - name: Count replicas of the latest revision
+      text: |
+          az containerapp replica count -n MyContainerapp -g MyResourceGroup
+"""
+
 # Revision Commands
 helps['containerapp revision'] = """
     type: group
