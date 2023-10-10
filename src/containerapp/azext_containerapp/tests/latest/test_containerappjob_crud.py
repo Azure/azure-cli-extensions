@@ -170,24 +170,23 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     # test for CRUD operations on Container App Job resource with trigger type as manual
-    def test_containerapp_manualjob_defaults_e2e(self, resource_group):
-        import requests
-        
+    def test_containerapp_manualjob_defaults_e2e(self, resource_group): 
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        env = self.create_random_name(prefix='env', length=24)
-        job = self.create_random_name(prefix='job1', length=24)
+        job = self.create_random_name(prefix='job2', length=24)
 
-        create_containerapp_env(self, env, resource_group)
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
 
         # create a container app environment for a Container App Job resource
-        self.cmd('containerapp env show -n {} -g {}'.format(env, resource_group), checks=[
-            JMESPathCheck('name', env)            
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, env_rg), checks=[
+            JMESPathCheck('name', env_name)
         ])
 
         ## test for CRUD operations on Container App Job resource with trigger type as manual
         # create a Container App Job resource with trigger type as manual
-        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --trigger-type event".format(resource_group, job, env))
+        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --trigger-type event".format(resource_group, job, env_id))
 
         # verify the container app job resource
         self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job), checks=[
@@ -197,7 +196,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
             JMESPathCheck('properties.configuration.eventTriggerConfig.parallelism', 1),
             JMESPathCheck('properties.configuration.eventTriggerConfig.replicaCompletionCount', 1),
             JMESPathCheck('properties.configuration.eventTriggerConfig.scale.minExecutions', 0),
-            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.maxExecutions', 10),
+            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.maxExecutions', 100),
             JMESPathCheck('properties.configuration.eventTriggerConfig.scale.pollingInterval', 30),
             JMESPathCheck('properties.configuration.triggerType', "event", case_sensitive=False),
         ])
