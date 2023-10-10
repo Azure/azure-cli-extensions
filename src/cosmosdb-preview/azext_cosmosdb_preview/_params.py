@@ -426,7 +426,7 @@ def load_arguments(self, _):
     with self.argument_context('cosmosdb dts') as c:
         c.argument('account_name', account_name_type, id_part=None, help='Name of the CosmosDB database account.')
 
-    job_name_type = CLIArgumentType(options_list=['--job-name', '-n'], help='Name of the copy job. A random job name will be generated if not passed.')
+    job_name_type = CLIArgumentType(options_list=['--job-name', '-n'], help='Name of the Data Transfer Job. A random job name will be generated if not passed.')
     with self.argument_context('cosmosdb dts copy') as c:
         c.argument('job_name', job_name_type)
         c.argument('source_cassandra_table', nargs='+', action=AddCassandraTableAction, help='Source cassandra table')
@@ -436,6 +436,14 @@ def load_arguments(self, _):
         c.argument('dest_mongo', nargs='+', action=AddMongoCollectionAction, help='Destination mongo collection')
         c.argument('dest_sql_container', nargs='+', action=AddSqlContainerAction, help='Destination sql container')
         c.argument('worker_count', type=int, help='Worker count')
+
+    for scope in [
+            'cosmosdb dts show',
+            'cosmosdb dts pause',
+            'cosmosdb dts resume',
+            'cosmosdb dts cancel']:
+        with self.argument_context(scope) as c:
+            c.argument('job_name', options_list=['--job-name', '-n'], help='Name of the Data Transfer Job.', required=True)
 
     with self.argument_context('cosmosdb copy create') as c:
         c.argument('job_name', job_name_type)
@@ -465,7 +473,7 @@ def load_arguments(self, _):
             'cosmosdb copy resume',
             'cosmosdb copy cancel']:
         with self.argument_context(scope) as c:
-            c.argument('job_name', help='Name of the container copy job.', required=True)
+            c.argument('job_name', options_list=['--job-name', '-n'], help='Name of the container copy job.', required=True)
 
     max_throughput_type = CLIArgumentType(options_list=['--max-throughput'], help='The maximum throughput resource can scale to (RU/s). Provided when the resource is autoscale enabled. The minimum value can be 4000 (RU/s)')
 
