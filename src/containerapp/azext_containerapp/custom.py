@@ -249,7 +249,7 @@ def delete_qdrant_service(cmd, service_name, resource_group_name, no_wait=False)
     return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_QDRANT_SERVICE_TYPE)
 
 
-def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_revision=None, no_wait=False):
+def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_revision=None, no_wait=False, show_sensitive_values=False):
     yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
 
     if not yaml_containerapp.get('name'):
@@ -325,7 +325,7 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
 
     try:
         r = ContainerAppClient.update(
-            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait, show_sensitive_values=show_sensitive_values)
 
         if not no_wait and "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting":
             logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(
@@ -337,7 +337,7 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
         handle_raw_exception(e)
 
 
-def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=False):
+def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=False, show_sensitive_values=False):
     yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
 
     if not yaml_containerapp.get('name'):
@@ -411,7 +411,7 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
 
     try:
         r = ContainerAppClient.create_or_update(
-            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait, show_sensitive_values=show_sensitive_values)
 
         if r["properties"] and r["properties"]["provisioningState"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
             logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(
@@ -539,7 +539,8 @@ def update_containerapp_logic(cmd,
                               registry_user=None,
                               registry_pass=None,
                               secret_volume_mount=None,
-                              source=None):
+                              source=None,
+                              show_sensitive_values=False):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -586,7 +587,8 @@ def update_containerapp(cmd,
                         termination_grace_period=None,
                         no_wait=False,
                         secret_volume_mount=None,
-                        source=None):
+                        source=None,
+                        show_sensitive_values=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -618,10 +620,11 @@ def update_containerapp(cmd,
                                      termination_grace_period=termination_grace_period,
                                      no_wait=no_wait,
                                      secret_volume_mount=secret_volume_mount,
-                                     source=source)
+                                     source=source,
+                                     show_sensitive_values=show_sensitive_values)
 
 
-def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
+def show_containerapp(cmd, name, resource_group_name, show_secrets=False, show_sensitive_values=False):
     raw_parameters = locals()
     containerapp_base_decorator = BaseContainerAppDecorator(
         cmd=cmd,
@@ -854,7 +857,7 @@ def create_containerappsjob(cmd,
     return r
 
 
-def show_containerappsjob(cmd, name, resource_group_name):
+def show_containerappsjob(cmd, name, resource_group_name, show_sensitive_values=False):
     raw_parameters = locals()
     containerapp_job_decorator = ContainerAppJobDecorator(
         cmd=cmd,
@@ -921,7 +924,8 @@ def update_containerappsjob(cmd,
                             max_executions=None,
                             tags=None,
                             workload_profile_name=None,
-                            no_wait=False):
+                            no_wait=False,
+                            show_sensitive_values=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerappsjob_logic(cmd=cmd,
@@ -952,7 +956,8 @@ def update_containerappsjob(cmd,
                                          polling_interval=polling_interval,
                                          min_executions=min_executions,
                                          max_executions=max_executions,
-                                         no_wait=no_wait)
+                                         no_wait=no_wait,
+                                         show_sensitive_values=show_sensitive_values)
 
 
 def update_containerappsjob_logic(cmd,
@@ -986,7 +991,8 @@ def update_containerappsjob_logic(cmd,
                                   no_wait=False,
                                   registry_server=None,
                                   registry_user=None,
-                                  registry_pass=None):
+                                  registry_pass=None,
+                                  show_sensitive_values=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     if yaml:
@@ -994,11 +1000,11 @@ def update_containerappsjob_logic(cmd,
            set_env_vars or remove_env_vars or replace_env_vars or remove_all_env_vars or cpu or memory or\
            startup_command or args or tags:
             logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
-        return update_containerappjob_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
+        return update_containerappjob_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait, show_sensitive_values=show_sensitive_values)
 
     containerappsjob_def = None
     try:
-        containerappsjob_def = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        containerappsjob_def = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name, show_sensitive_values=show_sensitive_values)
     except:
         pass
 
@@ -1284,7 +1290,7 @@ def update_containerappsjob_logic(cmd,
 
     try:
         r = ContainerAppsJobClient.update(
-            cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=new_containerappsjob, no_wait=no_wait)
+            cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=new_containerappsjob, no_wait=no_wait, show_sensitive_values=show_sensitive_values)
 
         if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
             logger.warning('Containerapps job update in progress. Please monitor the update using `az containerapp job show -n {} -g {}`'.format(name, resource_group_name))
@@ -1448,7 +1454,7 @@ def update_containerappjob_yaml(cmd, name, resource_group_name, file_name, from_
 
     try:
         r = ContainerAppsJobClient.update(
-            cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappsjob_def, no_wait=no_wait)
+            cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappsjob_def, no_wait=no_wait, show_sensitive_values=show_sensitive_values)
 
         if not no_wait and "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting":
             logger.warning('Containerapp job creation in progress. Please monitor the creation using `az containerapp job show -n {} -g {}`'.format(

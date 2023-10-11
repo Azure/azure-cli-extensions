@@ -39,7 +39,7 @@ class BaseResource:
 
     def show(self):
         try:
-            return self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+            return self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name(), show_sensitive_values=self.get_argument_show_sensitive_values())
         except CLIError as e:
             handle_raw_exception(e)
 
@@ -63,3 +63,6 @@ class BaseResource:
 
     def get_argument_no_wait(self):
         return self.get_param("no_wait")
+    
+    def get_argument_show_sensitive_values(self):
+        return self.get_param("show_sensitive_values")
