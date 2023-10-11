@@ -6776,9 +6776,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.not_exists('azureMonitorProfile.metrics'),
         ])
 
-        # add k8s-extension extension for azurecontainerstorage operations.
-        self.cmd('extension add --name k8s-extension')
-
         # update: enable-azure-monitor-metrics
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
                      '--enable-azure-monitor-metrics --enable-managed-identity --enable-windows-recording-rules'
@@ -6819,6 +6816,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
         ])
+
+        # add k8s-extension extension for azurecontainerstorage operations.
+        self.cmd('extension add --name k8s-extension')
 
         # enabling or disabling azurecontainerstorage will not affect any field in the cluster.
         # the only check we should perform is to verify that the cluster is provisioned successfully.
