@@ -627,7 +627,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
 
     def test_disable_flag_with_storage_pool_name(self):
         storage_pool_name = "pool-name"
-        err = 'Conflicting flags. Cannot define --storage-pool-name value '
+        err = 'Conflicting flags. Cannot define --storage-pool-name value '\
               'when --disable-azure-container-storage is set.'
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             acstor_validator.validate_azure_container_storage_params(None, True, storage_pool_name, None, None, None, None, None)
@@ -635,7 +635,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
 
     def test_disable_flag_with_storage_pool_type(self):
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
-        err = 'Conflicting flags. Cannot define --storage-pool-type value '
+        err = 'Conflicting flags. Cannot define --storage-pool-type value ' \
               'when --disable-azure-container-storage is set.'
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             acstor_validator.validate_azure_container_storage_params(None, True, None, storage_pool_type, None, None, None, None)
@@ -643,7 +643,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
 
     def test_disable_flag_with_storage_pool_sku(self):
         storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
-        err = 'Conflicting flags. Cannot define --storage-pool-sku value '
+        err = 'Conflicting flags. Cannot define --storage-pool-sku value ' \
               'when --disable-azure-container-storage is set.'
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             acstor_validator.validate_azure_container_storage_params(None, True, None, None, storage_pool_sku, None, None, None)
@@ -651,7 +651,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
 
     def test_disable_flag_with_storage_pool_size(self):
         storage_pool_size = "5Gi"
-        err = 'Conflicting flags. Cannot define --storage-pool-size value '
+        err = 'Conflicting flags. Cannot define --storage-pool-size value ' \
               'when --disable-azure-container-storage is set.'
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             acstor_validator.validate_azure_container_storage_params(None, True, None, None, None, None, storage_pool_size, None)
@@ -659,7 +659,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
 
     def test_disable_flag_with_storage_pool_option(self):
         storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
-        err = 'Conflicting flags. Cannot define --storage-pool-option value '
+        err = 'Conflicting flags. Cannot define --storage-pool-option value ' \
               'when --disable-azure-container-storage is set.'
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             acstor_validator.validate_azure_container_storage_params(None, True, None, None, None, storage_pool_option, None, None)
