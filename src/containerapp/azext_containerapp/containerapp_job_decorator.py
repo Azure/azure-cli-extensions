@@ -495,9 +495,10 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
         self.set_up_extended_location()
 
     def validate_arguments(self):
-        if self.get_argument_trigger_type() is None:
-            raise RequiredArgumentMissingError('Usage error: --trigger-type is required')
-        return super().validate_arguments()
+        super().validate_arguments()
+        if self.get_argument_yaml() is None:
+            if self.get_argument_trigger_type() is None:
+                raise RequiredArgumentMissingError('Usage error: --trigger-type is required')
 
     def set_up_extended_location(self):
         if self.get_argument_environment_type() == CONNECTED_ENVIRONMENT_TYPE:
