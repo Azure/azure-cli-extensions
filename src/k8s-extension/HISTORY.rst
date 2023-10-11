@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.5.0
+++++++++++++++++++
+* add support for extensionsType api
+* Breaking change introduced with API version 2023-05-01 adds validation will begin rejecting calls (PUT and PATCH) that provide a version for the extension and also set autoUpgradeMinorVersion to true
+* microsoft.openservicemesh: Update OSM-Arc version check for beta and CI tags
+
 1.4.5
 ++++++++++++++++++
 * fix bugs while dropping 'azure-mgmt-relay'
