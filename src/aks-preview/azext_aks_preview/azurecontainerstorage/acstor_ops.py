@@ -198,7 +198,7 @@ def perform_disable_azure_container_storage(
 
     # Step 3: If the extension is installed, call delete_k8s_extension
     try:
-        delete_op_result = delete_k8s_extension(
+        delete_op_result = k8s_extension_custom_mod.delete_k8s_extension(
             cmd,
             client,
             resource_group,
@@ -212,7 +212,7 @@ def perform_disable_azure_container_storage(
         if not no_wait_delete_op:
             LongRunningOperation(cmd.cli_ctx)(delete_op_result)
     except Exception as delete_ex:
-        raise UnknownError("Failure observed while disabling Azure Container Storage.\nError: {0}".format(delet_ex.message))
+        raise UnknownError("Failure observed while disabling Azure Container Storage.\nError: {0}".format(delete_ex.message))
 
     logger.warn("Azure Container Storage has been disabled.")
     # Revoke AKS cluster's node identity the following
