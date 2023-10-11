@@ -2717,6 +2717,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 pool_size,
                 None,
             )
+
             # set intermediates
             self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
 
@@ -3216,6 +3217,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 pool_size,
                 nodepool_list,
             )
+
         if enable_azure_container_storage:
             # set intermediates
             self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
