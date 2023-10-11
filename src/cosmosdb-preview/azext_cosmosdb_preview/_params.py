@@ -338,7 +338,7 @@ def load_arguments(self, _):
             c.argument('continuous_tier', arg_type=get_enum_type(ContinuousTier), help="The tier of Continuous backup", arg_group='Backup Policy')
             c.argument('enable_materialized_views', options_list=['--enable-materialized-views', '--enable-mv'], arg_type=get_three_state_flag(), help="Flag to enable MaterializedViews on the account.", is_preview=True)
             c.argument('enable_burst_capacity', arg_type=get_three_state_flag(), help="Flag to enable burst capacity on the account.", is_preview=True)
-            c.argument('enable_priority_based_execution', arg_type=get_three_state_flag(), help="Flag to enable priority based execution on the account.", is_preview=True)
+            c.argument('enable_priority_based_execution', options_list=['--enable-priority-based-execution', '--enable-pbe'], arg_type=get_three_state_flag(), help="Flag to enable priority based execution on the account.", is_preview=True)
             c.argument('default_priority_level', arg_type=get_enum_type(DefaultPriorityLevel), help="Default Priority Level of Request if not specified.", is_preview=True)
 
     with self.argument_context('cosmosdb update') as c:
