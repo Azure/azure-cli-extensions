@@ -16,22 +16,29 @@ helps['fleet create'] = """
     type: command
     short-summary: Creates or updates a Fleet.
     parameters:
-        - name: --tags
-          type: string
-          short-summary: The tags of the managed cluster. The managed cluster instance and all resources managed by the cloud provider will be tagged.
         - name: --dns-name-prefix -p
           type: string
           short-summary: Prefix for hostnames that are created. If not specified, generate a hostname using the
                          managed cluster and resource group names.
+    examples:
+        - name: Create a hubless fleet
+          text: az fleet create -g MyResourceGroup -l MyLocation -n MyFleetName --tags "TagKey=TagValue"
+        - name: Create a hubful fleet
+          text: az fleet create -g MyResourceGroup -l MyLocation -n MyFleetName --enable-hub --tags "TagKey=TagValue"
+
 """
 
 helps['fleet update'] = """
     type: command
     short-summary: Patches a fleet resource.
     parameters:
-        - name: --tags
-          type: string
-          short-summary: The tags of the managed cluster. The managed cluster instance and all resources managed by the cloud provider will be tagged.
+    examples:
+        - name: Update a Fleet's tags
+          text: az fleet update -g MyResourceGroup -n MyFleetName --tags Key=Value
+        - name: Update a Fleet to use a system assigned managed service identity.
+          text: az fleet update -g MyResourceGroup -n MyFleetName --enable-managed-identity --tags Key=Value
+        - name: Update a Fleet to use a user assigned managed service identity.
+          text: az fleet update -g MyResourceGroup -n MyFleetName --enable-managed-identity --assign-identity "/subscription/00000000-0000-0000-0000-000000000000/resourcegroup/MyResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MyIdentity" --tags Key=Value
 """
 
 helps['fleet show'] = """
