@@ -302,7 +302,9 @@ def cli_cosmosdb_managed_cassandra_cluster_create(client,
                                                   cassandra_version=None,
                                                   authentication_method=None,
                                                   hours_between_backups=None,
-                                                  repair_enabled=None):
+                                                  repair_enabled=None,
+                                                  cluster_type='Production',
+                                                  extensions=None):
 
     """Creates an Azure Managed Cassandra Cluster"""
 
@@ -323,7 +325,9 @@ def cli_cosmosdb_managed_cassandra_cluster_create(client,
         cassandra_version=cassandra_version,
         authentication_method=authentication_method,
         hours_between_backups=hours_between_backups,
-        repair_enabled=repair_enabled)
+        repair_enabled=repair_enabled,
+        cluster_type=cluster_type,
+        extensions=extensions)
 
     managed_service_identity_parameter = ManagedCassandraManagedServiceIdentity(
         type=identity_type
@@ -349,7 +353,9 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
                                                   cassandra_version=None,
                                                   authentication_method=None,
                                                   hours_between_backups=None,
-                                                  repair_enabled=None):
+                                                  repair_enabled=None,
+                                                  cluster_type=None,
+                                                  extensions=None):
 
     """Updates an Azure Managed Cassandra Cluster"""
 
@@ -384,6 +390,16 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
     if identity_type is not None:
         identity = ManagedCassandraManagedServiceIdentity(type=identity_type)
 
+    if cluster_type is None:
+        cluster_type = cluster_resource.properties.cluster_type
+
+    if extensions is None:
+        extensions = cluster_resource.properties.extensions
+
+    # to remove extension
+    if len(extensions) == 1 and extensions[0] == '':
+        extensions = None
+
     cluster_properties = ClusterResourceProperties(
         provisioning_state=cluster_resource.properties.provisioning_state,
         restore_from_backup_id=cluster_resource.properties.restore_from_backup_id,
@@ -398,7 +414,9 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
         external_gossip_certificates=external_gossip_certificates,
         gossip_certificates=cluster_resource.properties.gossip_certificates,
         external_seed_nodes=cluster_resource.properties.external_seed_nodes,
-        seed_nodes=cluster_resource.properties.seed_nodes
+        seed_nodes=cluster_resource.properties.seed_nodes,
+        cluster_type=cluster_type,
+        extensions=extensions
     )
 
     cluster_resource_create_update_parameters = ClusterResource(
@@ -426,6 +444,15 @@ def cli_cosmosdb_managed_cassandra_cluster_list_backup(client,
                                                        cluster_name):
     """List Azure Managed Cassandra Backup"""
     return client.list_backups(resource_group_name, cluster_name)
+
+
+def cli_cosmosdb_managed_cassandra_cluster_deallocate(client,
+                                                      resource_group_name,
+                                                      cluster_name,
+                                                      force=False):
+
+    """Deallocate Azure Managed Cassandra Cluster"""
+    return client.begin_deallocate(resource_group_name, cluster_name, force)
 
 
 def cli_cosmosdb_managed_cassandra_cluster_show_backup(client,
