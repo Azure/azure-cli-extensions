@@ -650,6 +650,7 @@ def aks_create(
     # send request to create a real managed cluster
     return aks_create_decorator.create_mc(mc)
 
+
 # pylint: disable=too-many-locals
 def aks_update(
     cmd,

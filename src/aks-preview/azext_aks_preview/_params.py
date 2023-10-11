@@ -643,7 +643,7 @@ def load_arguments(self, _):
                    help='set azure disk type storage pool sku for azure container storage')
         c.argument('storage_pool_option', arg_type=get_enum_type(storage_pool_options),
                    help='set ephemeral disk storage pool option for azure container storage')
-        c.argument('azure_container_storage_nodepools', default='nodepool1',
+        c.argument('azure_container_storage_nodepools',
                    help='define the comma separated nodepool list to install azure container storage')
 
     with self.argument_context('aks upgrade') as c:

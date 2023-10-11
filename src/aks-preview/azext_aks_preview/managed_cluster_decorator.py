@@ -3137,7 +3137,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
             node_resource_group = cluster.node_resource_group
 
-            result = self.context.external_functions.perform_enable_azure_container_storage(
+            self.context.external_functions.perform_enable_azure_container_storage(
                 self.cmd,
                 self.context.get_subscription_id(),
                 self.context.get_resource_group_name(),
@@ -3150,19 +3150,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 pool_sku,
                 pool_option,
                 "nodepool1",
+                True,
             )
-
-            if result.provisioning_state == "Succeeded":
-                logger.info("Azure Container Storage successfully installed")
-            else:
-                if result.error_info is None:
-                    logger.error("Error setting up Azure Container Storage")
-                else:
-                    logger.error(
-                        "Azure Container Storage failed to install "
-                        "with the following error", result.error_info
-                    )
-                raise UnknownError("Azure Container Storage failed to install.")
 
 
 class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
@@ -4026,7 +4015,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             pool_size = self.context.raw_param.get("storage_pool_size")
             nodepool_list = self.context.raw_param.get("azure_container_storage_nodepools")
             kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
-            result = self.context.external_functions.perform_enable_azure_container_storage(
+            self.context.external_functions.perform_enable_azure_container_storage(
                 self.cmd,
                 self.context.get_subscription_id(),
                 self.context.get_resource_group_name(),
@@ -4039,19 +4028,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 pool_sku,
                 pool_option,
                 nodepool_list,
+                False,
             )
-
-            if result.provisioning_state == "Succeeded":
-                logger.info("Azure Container Storage successfully installed")
-            else:
-                if result.error_info is None:
-                    logger.error("Error setting up Azure Container Storage")
-                else:
-                    logger.error(
-                        "Azure Container Storage failed to install "
-                        "with the following error", result.error_info
-                    )
-                raise UnknownError("Azure Container Storage failed to install")
 
         # disable azure container storage
         if disable_azure_container_storage:
@@ -4063,4 +4041,5 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 self.context.get_name(),
                 self.context.get_node_resource_group(),
                 kubelet_identity_object_id,
+                self.context.get_yes(),
             )
