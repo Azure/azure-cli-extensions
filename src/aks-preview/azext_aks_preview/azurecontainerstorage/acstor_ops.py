@@ -3,34 +3,28 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import random
-import string
-
 from azure.cli.core.azclierror import (
     UnknownError,
     CLIInternalError,
 )
 from azure.cli.core.commands import LongRunningOperation
-from azure.cli.command_modules.resource.custom import register_provider
-from azure.cli.command_modules.acs._roleassignments import (
-    add_role_assignment,
-    build_role_scope,
-    delete_role_assignments,
-)
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_K8S_EXTENSION_NAME,
     CONST_EXT_INSTALLATION_NAME,
-    CONST_K8S_EXTENSION_NAME,
     CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME,
     CONST_K8S_EXTENSION_CUSTOM_MOD_NAME,
     CONST_STORAGE_POOL_DEFAULT_SIZE,
-    CONST_STORAGE_POOL_NAME_PREFIX,
     CONST_STORAGE_POOL_OPTION_NVME,
     CONST_STORAGE_POOL_OPTION_TEMP,
-    CONST_STORAGE_POOL_RANDOM_LENGTH,
     CONST_STORAGE_POOL_SKU_STANDARD_LRS,
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
+)
+from azext_aks_preview.azurecontainerstorage._helpers import (
+    _generate_random_storage_pool_name,
+    _get_k8s_extension_module,
+    _perform_role_operations_on_managed_rg,
+    _register_dependent_rps,
 )
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
@@ -228,53 +222,3 @@ def perform_disable_azure_container_storage(
     # 3. Elastic SAN Owner
     # 4. Elastic SAN Volume Group Owner
     _perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_group, kubelet_identity_object_id, False)
-
-
-def _register_dependent_rps(cmd):
-    register_provider(cmd, 'Microsoft.Kubernetes', wait=True)
-    register_provider(cmd, 'Microsoft.KubernetesConfiguration', wait=True)
-    register_provider(cmd, 'Microsoft.ExtendedLocation', wait=True)
-
-
-def _perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_group, kubelet_identity_object_id, assign):
-    managed_rg_role_scope = build_role_scope(node_resource_group, None, subscription_id)
-    roles = ["Reader", "Network Contributor", "Elastic SAN Owner", "Elastic SAN Volume Group Owner"]
-
-    for role in roles:
-        if assign:
-            add_role_assignment(
-                cmd,
-                role,
-                kubelet_identity_object_id,
-                scope=managed_rg_role_scope,
-            )
-        else:
-            # NOTE: delete_role_assignments accepts cli_ctx
-            # instead of cmd unlike add_role_assignment.
-            delete_role_assignments(
-                cmd.cli_ctx,
-                role,
-                kubelet_identity_object_id,
-                scope=managed_rg_role_scope,
-            )
-
-
-def _generate_random_storage_pool_name():
-    random_name = CONST_STORAGE_POOL_NAME_PREFIX + ''.join(random.choices(string.ascii_lowercase, k=CONST_STORAGE_POOL_RANDOM_LENGTH))
-    return random_name
-
-
-def _get_k8s_extension_module(module_name):
-    try:
-        # adding the installed extension in the path
-        from azure.cli.core.extension.operations import add_extension_to_path
-        add_extension_to_path(CONST_K8S_EXTENSION_NAME)
-        # import the extension module
-        from importlib import import_module
-        azext_custom = import_module(module_name)
-        return azext_custom
-    except ImportError as ie:
-        raise UnknownError(
-            "Please add CLI extension `k8s-extension` for performing Azure Container Storage operations.\n"
-            "Run command `az extension --name k8s-extension`"
-        )
