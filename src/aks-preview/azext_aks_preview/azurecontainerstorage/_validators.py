@@ -115,11 +115,11 @@ def _validate_enable_azure_container_storage_params(
 
     if storage_pool_type != CONST_STORAGE_POOL_TYPE_AZURE_DISK and \
        storage_pool_sku is not None:
-        raise ArgumentUsageError('Cannot set --storage-pool-sku when --storage-pool-type is not azureDisk')
+        raise ArgumentUsageError('Cannot set --storage-pool-sku when --storage-pool-type is not azureDisk.')
 
     if storage_pool_type != CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
        storage_pool_option is not None:
-        raise ArgumentUsageError('Cannot set --storage-pool-option when --storage-pool-type is not ephemeralDisk')
+        raise ArgumentUsageError('Cannot set --storage-pool-option when --storage-pool-type is not ephemeralDisk.')
 
     if storage_pool_size is not None:
         pattern = r'^\d+(?:Gi|Ti)$'
@@ -127,5 +127,5 @@ def _validate_enable_azure_container_storage_params(
         if match is None:
             raise ArgumentUsageError(
                 'Value for --storage-pool-size should be defined '
-                'with size followed by Gi or Ti. e.g. 512Gi or 2Ti'
+                'with size followed by Gi or Ti e.g. 512Gi or 2Ti.'
             )

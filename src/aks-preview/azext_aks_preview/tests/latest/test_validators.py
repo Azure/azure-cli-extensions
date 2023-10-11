@@ -667,7 +667,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
 
     def test_disable_flag_with_nodepool_list(self):
         nodepool_list = "test,test1"
-        err = 'Conflicting flags. Cannot define --azure-container-storage-nodepools value '
+        err = 'Conflicting flags. Cannot define --azure-container-storage-nodepools value ' \
               'when --disable-azure-container-storage is set.'
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             acstor_validator.validate_azure_container_storage_params(None, True, None, None, None, None, None, nodepool_list)
@@ -689,7 +689,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
         storage_pool_name = "valid-name"
         storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK
-        err = 'Cannot set --storage-pool-sku when --storage-pool-type is not azureDisk'
+        err = 'Cannot set --storage-pool-sku when --storage-pool-type is not azureDisk.'
         with self.assertRaises(ArgumentUsageError) as cm:
             acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, storage_pool_type, storage_pool_sku, None, None, None)
         self.assertEqual(str(cm.exception), err)
@@ -698,7 +698,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
         storage_pool_name = "valid-name"
         storage_pool_option = acstor_consts.CONST_STORAGE_POOL_OPTION_NVME
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
-        err = 'Cannot set --storage-pool-option when --storage-pool-type is not ephemeralDisk'
+        err = 'Cannot set --storage-pool-option when --storage-pool-type is not ephemeralDisk.'
         with self.assertRaises(ArgumentUsageError) as cm:
             acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, storage_pool_type, None, storage_pool_option, None, None)
         self.assertEqual(str(cm.exception), err)
@@ -706,7 +706,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
     def test_enable_with_invalid_storage_pool_size(self):
         storage_pool_name = "valid-name"
         storage_pool_size = "5"
-        err = 'Value for --storage-pool-size should be defined with size followed by Gi or Ti. e.g. 512Gi or 2Ti'
+        err = 'Value for --storage-pool-size should be defined with size followed by Gi or Ti e.g. 512Gi or 2Ti.'
         with self.assertRaises(ArgumentUsageError) as cm:
             acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, None, None, None, storage_pool_size, None)
         self.assertEqual(str(cm.exception), err)
