@@ -114,7 +114,7 @@ def load_arguments(self, _):
             'managed-cassandra cluster backup show']:
         with self.argument_context(scope) as c:
             c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
-        
+
         # Managed Cassandra Cluster
         with self.argument_context('managed-cassandra cluster deallocate') as c:
             c.argument('force', options_list=['--force', '-f'], help="Force to deallocate the cluster", required=False)
