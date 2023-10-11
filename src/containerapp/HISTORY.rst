@@ -8,6 +8,11 @@ upcoming
 * 'az containerapp update': fix bug for mounting secret volumes using --secret-volume-mount
 * 'az containerapp compose create': fixed an issue where the environment's resource group was not resolved from --environment when the input value was a resource id.
 * 'az containerapp replica count', returns the replica count of a container app
+* BREAKING CHANGE: 'az containerapp show' hides values of environment vars and scale rules metadata by default, re-enable with --show-sensitive-values
+* BREAKING CHANGE: 'az containerapp update' hides values of environment vars and scale rules metadata by default, re-enable with --show-sensitive-values
+* BREAKING CHANGE: 'az containerapp job show' hides values of environment vars by default, re-enable with --show-sensitive-values
+* BREAKING CHANGE: 'az containerapp job update' hides values of environment vars by default, re-enable with --show-sensitive-values
+
 
 0.3.41
 ++++++
