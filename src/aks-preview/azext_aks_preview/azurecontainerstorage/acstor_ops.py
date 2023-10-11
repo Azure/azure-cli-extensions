@@ -75,6 +75,8 @@ def perform_enable_azure_container_storage(
         storage_pool_name = _generate_random_storage_pool_name()
     if storage_pool_size is None:
         storage_pool_size = CONST_STORAGE_POOL_DEFAULT_SIZE
+    if nodepool_name is None:
+        nodepool_name = "nodepool1"
     config_settings = [
         {"cli.storagePool.name": storage_pool_name},
         {"cli.storagePool.size": storage_pool_size},
