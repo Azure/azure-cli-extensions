@@ -21,10 +21,9 @@ class ContainerappComposePreviewReplicasScenarioTest(ContainerappComposePreviewS
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_replicas_global_scale(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='composescale', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     ports: 8080:80
     scale: 4
@@ -46,9 +45,10 @@ services:
         command_string += ' --environment {environment}'
 
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`{app}`].properties.template.scale.minReplicas', [1]),
-            self.check(f'[?name==`{app}`].properties.template.scale.maxReplicas', [1]),
+            self.check(f'[?name==`foo`].properties.template.scale.minReplicas', [1]),
+            self.check(f'[?name==`foo`].properties.template.scale.maxReplicas', [1]),
         ])
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
 
@@ -56,10 +56,9 @@ services:
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_replicas_replicated_mode(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='composescale', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     ports: 8080:80
     deploy:
@@ -80,8 +79,9 @@ services:
         command_string += ' --environment {environment}'
 
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`{app}`].properties.template.scale.minReplicas', [6]),
-            self.check(f'[?name==`{app}`].properties.template.scale.maxReplicas', [6]),
+            self.check(f'[?name==`foo`].properties.template.scale.minReplicas', [6]),
+            self.check(f'[?name==`foo`].properties.template.scale.maxReplicas', [6]),
         ])
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)

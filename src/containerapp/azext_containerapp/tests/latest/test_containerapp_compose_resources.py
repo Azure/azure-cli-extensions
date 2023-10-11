@@ -21,10 +21,9 @@ class ContainerappComposePreviewResourceSettingsScenarioTest(ContainerappCompose
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_resources_from_service_cpus(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='composewithres', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     cpus: 1.25
     expose:
@@ -44,8 +43,9 @@ services:
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`{app}`].properties.template.containers[0].resources.cpu', [1.25]),
+            self.check(f'[?name==`foo`].properties.template.containers[0].resources.cpu', [1.25]),
         ])
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
 
@@ -56,7 +56,7 @@ services:
         app = self.create_random_name(prefix='composewithres', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     deploy:
       resources:
@@ -79,8 +79,9 @@ services:
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`{app}`].properties.template.containers[0].resources.cpu', [1.25]),
+            self.check(f'[?name==`foo`].properties.template.containers[0].resources.cpu', [1.25]),
         ])
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
 
@@ -88,10 +89,9 @@ services:
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_resources_from_both_cpus_and_deploy_cpu(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='composewithres', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     cpus: 0.75
     deploy:
@@ -115,7 +115,8 @@ services:
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`{app}`].properties.template.containers[0].resources.cpu', [1.25]),
+            self.check(f'[?name==`foo`].properties.template.containers[0].resources.cpu', [1.25]),
         ])
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
