@@ -686,7 +686,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
               "Accepted values are lowercase alphanumeric characters, " \
               "'-' or '.', and must start and end with an alphanumeric character."
         with self.assertRaises(InvalidArgumentValueError) as cm:
-            acstor_validator.validate_azure_container_storage_params(True, None, None, None, None, None, None, None)
+            acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, None, None, None, None, None)
         self.assertEqual(str(cm.exception), err)
 
     def test_enable_with_sku_and_non_azure_disk_pool(self):

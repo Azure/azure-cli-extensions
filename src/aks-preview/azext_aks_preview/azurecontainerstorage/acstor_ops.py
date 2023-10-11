@@ -150,12 +150,12 @@ def perform_disable_azure_container_storage(
 
     no_wait_delete_op = False
     # Step 2: Add a prompt to ensure if we want to skip validation of existing storagepool
-    msg = 'Disabling Azure Container Storage will delete all the storagepools on the cluster and ' \
-          'affect the applications using these storagepools. Do you want to validate whether any of ' \
+    msg = 'Disabling Azure Container Storage will forcefully delete all the storagepools on the cluster and ' \
+          'affect the applications using these storagepools. Forceful deletion of storagepools can also lead to ' \
+          'leaking of storage resources which are being consumed. Do you want to validate whether any of ' \
           'the storagepools are being used before disabling Azure Container Storage?'
     if yes or prompt_y_n(msg, default="y"):
         config_settings = [{"cli.storagePool.uninstallValidation": True}]
-        from azext_k8s_extension.custom import update_k8s_extension
         try:
             update_result = k8s_extension_custom_mod.update_k8s_extension(
                 cmd,
@@ -175,6 +175,7 @@ def perform_disable_azure_container_storage(
 
             # Since, pre uninstall validation will ensure deletion of storagepools,
             # we don't need to long wait while performing the delete operation.
+            # Setting no_wait_delete_op = True.
             no_wait_delete_op = True
         except Exception as ex:
             config_settings = [{"cli.storagePool.uninstallValidation": False}]
@@ -196,22 +197,24 @@ def perform_disable_azure_container_storage(
                 raise UnknownError("Validation failed. Unable to disable Azure Container Storage. Reseting cluster state.")
 
     # Step 3: If the extension is installed, call delete_k8s_extension
-    from azext_k8s_extension.custom import delete_k8s_extension
-    delete_op_result = delete_k8s_extension(
-        cmd,
-        client,
-        resource_group,
-        cluster_name,
-        CONST_EXT_INSTALLATION_NAME,
-        "managedClusters",
-        yes=True,
-        no_wait=no_wait_delete_op,
-    )
+    try:
+        delete_op_result = delete_k8s_extension(
+            cmd,
+            client,
+            resource_group,
+            cluster_name,
+            CONST_EXT_INSTALLATION_NAME,
+            "managedClusters",
+            yes=True,
+            no_wait=no_wait_delete_op,
+        )
 
-    if not no_wait_delete_op:
-        LongRunningOperation(cmd.cli_ctx)(delete_op_result)
+        if not no_wait_delete_op:
+            LongRunningOperation(cmd.cli_ctx)(delete_op_result)
+    except Exception as delete_ex:
+        raise UnknownError("Failure observed while disabling Azure Container Storage.\nError: {0}".format(delet_ex.message))
 
-    logger.warn("Azure Container Storage disabled")
+    logger.warn("Azure Container Storage has been disabled.")
     # Revoke AKS cluster's node identity the following
     # roles on the AKS managed resource group:
     # 1. Reader
