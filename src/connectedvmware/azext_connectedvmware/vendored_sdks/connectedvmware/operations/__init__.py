@@ -7,7 +7,6 @@
 # --------------------------------------------------------------------------
 
 from ._operations import Operations
-from ._virtual_machines_operations import VirtualMachinesOperations
 from ._resource_pools_operations import ResourcePoolsOperations
 from ._clusters_operations import ClustersOperations
 from ._hosts_operations import HostsOperations
@@ -16,17 +15,12 @@ from ._vcenters_operations import VCentersOperations
 from ._virtual_machine_templates_operations import VirtualMachineTemplatesOperations
 from ._virtual_networks_operations import VirtualNetworksOperations
 from ._inventory_items_operations import InventoryItemsOperations
-from ._hybrid_identity_metadata_operations import HybridIdentityMetadataOperations
-from ._machine_extensions_operations import MachineExtensionsOperations
-from ._azure_arc_vmware_management_service_api_operations import AzureArcVMwareManagementServiceAPIOperationsMixin
-from ._guest_agents_operations import GuestAgentsOperations
 from ._virtual_machine_instances_operations import VirtualMachineInstancesOperations
 from ._vm_instance_hybrid_identity_metadata_operations import VmInstanceHybridIdentityMetadataOperations
 from ._vm_instance_guest_agents_operations import VMInstanceGuestAgentsOperations
 
 __all__ = [
     'Operations',
-    'VirtualMachinesOperations',
     'ResourcePoolsOperations',
     'ClustersOperations',
     'HostsOperations',
@@ -35,10 +29,6 @@ __all__ = [
     'VirtualMachineTemplatesOperations',
     'VirtualNetworksOperations',
     'InventoryItemsOperations',
-    'HybridIdentityMetadataOperations',
-    'MachineExtensionsOperations',
-    'AzureArcVMwareManagementServiceAPIOperationsMixin',
-    'GuestAgentsOperations',
     'VirtualMachineInstancesOperations',
     'VmInstanceHybridIdentityMetadataOperations',
     'VMInstanceGuestAgentsOperations',

@@ -47,13 +47,6 @@ class FirmwareType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     BIOS = "bios"
     EFI = "efi"
 
-class IdentityType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """The type of managed service identity.
-    """
-
-    NONE = "None"
-    SYSTEM_ASSIGNED = "SystemAssigned"
-
 class InventoryType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """The inventory type.
     """
@@ -96,43 +89,6 @@ class OsType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     LINUX = "Linux"
     OTHER = "Other"
 
-class OsTypeUM(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """The operating system type of the machine.
-    """
-
-    WINDOWS = "Windows"
-    LINUX = "Linux"
-
-class PatchOperationStartedBy(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """Indicates if operation was triggered by user or by platform.
-    """
-
-    USER = "User"
-    PLATFORM = "Platform"
-
-class PatchOperationStatus(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """The overall success or failure status of the operation. It remains "InProgress" until the
-    operation completes. At that point it will become "Unknown", "Failed", "Succeeded", or
-    "CompletedWithWarnings."
-    """
-
-    UNKNOWN = "Unknown"
-    IN_PROGRESS = "InProgress"
-    FAILED = "Failed"
-    SUCCEEDED = "Succeeded"
-    COMPLETED_WITH_WARNINGS = "CompletedWithWarnings"
-
-class PatchServiceUsed(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """Specifies the patch service used for the operation.
-    """
-
-    UNKNOWN = "Unknown"
-    WU = "WU"
-    WU_WSUS = "WU_WSUS"
-    YUM = "YUM"
-    APT = "APT"
-    ZYPPER = "Zypper"
-
 class PowerOnBootOption(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Defines the options for power on boot.
     """
@@ -170,22 +126,6 @@ class SCSIControllerType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     PVSCSI = "pvscsi"
     LSILOGICSAS = "lsilogicsas"
 
-class StatusLevelTypes(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """The level code.
-    """
-
-    INFO = "Info"
-    WARNING = "Warning"
-    ERROR = "Error"
-
-class StatusTypes(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """The status of the hybrid machine agent.
-    """
-
-    CONNECTED = "Connected"
-    DISCONNECTED = "Disconnected"
-    ERROR = "Error"
-
 class VirtualSCSISharing(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """Defines the sharing mode for sharing the SCSI bus.
     """
@@ -193,39 +133,3 @@ class VirtualSCSISharing(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     NO_SHARING = "noSharing"
     PHYSICAL_SHARING = "physicalSharing"
     VIRTUAL_SHARING = "virtualSharing"
-
-class VMGuestPatchClassificationLinux(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-
-    CRITICAL = "Critical"
-    SECURITY = "Security"
-    OTHER = "Other"
-
-class VMGuestPatchClassificationWindows(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-
-    CRITICAL = "Critical"
-    SECURITY = "Security"
-    UPDATE_ROLL_UP = "UpdateRollUp"
-    FEATURE_PACK = "FeaturePack"
-    SERVICE_PACK = "ServicePack"
-    DEFINITION = "Definition"
-    TOOLS = "Tools"
-    UPDATES = "Updates"
-
-class VMGuestPatchRebootSetting(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """Defines when it is acceptable to reboot a VM during a software update operation.
-    """
-
-    IF_REQUIRED = "IfRequired"
-    NEVER = "Never"
-    ALWAYS = "Always"
-
-class VMGuestPatchRebootStatus(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """The reboot state of the VM following completion of the operation.
-    """
-
-    UNKNOWN = "Unknown"
-    NOT_NEEDED = "NotNeeded"
-    REQUIRED = "Required"
-    STARTED = "Started"
-    FAILED = "Failed"
-    COMPLETED = "Completed"
