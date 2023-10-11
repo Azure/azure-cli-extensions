@@ -38,7 +38,9 @@ def create_fleet(cmd,
         operation_group="fleets"
     )
 
+    poll_interval = 5
     if enable_hub:
+        poll_interval = 30
         fleet_hub_profile_model = cmd.get_models(
             "FleetHubProfile",
             resource_type=CUSTOM_MGMT_FLEET,
@@ -110,8 +112,8 @@ def create_fleet(cmd,
         hub_profile=fleet_hub_profile,
         identity=managed_service_identity
     )
-
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, fleet)
+    
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, fleet, polling_interval = poll_interval)
 
 
 def update_fleet(cmd,
@@ -176,7 +178,7 @@ def delete_fleet(cmd,  # pylint: disable=unused-argument
                  resource_group_name,
                  name,
                  no_wait=False):
-    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name)
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, name, polling_interval=5)
 
 
 def get_credentials(cmd,  # pylint: disable=unused-argument
@@ -263,17 +265,17 @@ def create_update_run(cmd,
                       fleet_name,
                       name,
                       upgrade_type,
-                      node_image_selection,
+                      node_image_selection=None,
                       kubernetes_version=None,
                       stages=None,
-                      update_strategy_id=None,
+                      update_strategy_name=None,
                       no_wait=False):
     if upgrade_type == "Full" and kubernetes_version is None:
         raise CLIError("Please set kubernetes version when upgrade type is 'Full'.")
     if upgrade_type == "NodeImageOnly" and kubernetes_version is not None:
         raise CLIError("Cannot set kubernetes version when upgrade type is 'NodeImageOnly'.")
-    if stages is not None and update_strategy_id is not None:
-        raise CLIError("Cannot set stages when update strategy id is set.")
+    if stages is not None and update_strategy_name is not None:
+        raise CLIError("Cannot set stages when update strategy name is set.")
 
     update_run_strategy = get_update_run_strategy(cmd, "update_runs", stages)
 
@@ -300,17 +302,23 @@ def create_update_run(cmd,
 
     managed_cluster_upgrade_spec = managed_cluster_upgrade_spec_model(
         type=upgrade_type, kubernetes_version=kubernetes_version)
+    if node_image_selection == None:
+        node_image_selection = "Latest"
     node_image_selection_type = node_image_selection_model(type=node_image_selection)
 
     managed_cluster_update = managed_cluster_update_model(
         upgrade=managed_cluster_upgrade_spec,
         node_image_selection=node_image_selection_type)
+    
+    subId=get_subscription_id(cmd.cli_ctx)
+    updateStrategyId = f"/subscriptions/{subId}/resourceGroups/{resource_group_name}1/providers/Microsoft.ContainerService/fleets/{fleet_name}/updateStrategies/{name}"
 
     update_run = update_run_model(
-        update_strategy_id=update_strategy_id,
+        update_strategy_id=updateStrategyId,
         strategy=update_run_strategy,
         managed_cluster_update=managed_cluster_update)
-
+    
+    print("After successfully creating the run, you need to use the following command to start the run: az fleet updaterun start --resource-group={resource_group_name} --fleet={fleet_name} --name={name}")
     return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run)
 
 
