@@ -22,10 +22,9 @@ class ContainerappComposeBaseScenarioTest(ContainerappComposePreviewScenarioTest
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_basic_no_existing_resources(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='compose', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: smurawski/printenv:latest
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"
@@ -42,8 +41,8 @@ services:
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check('[].name', [app]),
+            self.check('[].name', ['foo']),
             self.check('[] | length(@)', 1),
         ])
-
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
         clean_up_test_file(compose_file_name)

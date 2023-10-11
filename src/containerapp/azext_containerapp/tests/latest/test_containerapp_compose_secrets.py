@@ -21,10 +21,9 @@ class ContainerappComposePreviewSecretsScenarioTest(ContainerappComposePreviewSc
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_secrets(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='composesecret', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     secrets:
       - source: my_secret
@@ -57,10 +56,11 @@ secrets:
         command_string += ' --environment {environment}'
 
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`{app}`].properties.configuration.secrets[0].name', ["redis-secret"]),
-            self.check(f'[?name==`{app}`].properties.template.containers[0].env[0].name', ["redis-secret"]),
-            self.check(f'[?name==`{app}`].properties.template.containers[0].env[0].secretRef', ["redis-secret"])  # pylint: disable=C0301
+            self.check(f'[?name==`foo`].properties.configuration.secrets[0].name', ["redis-secret"]),
+            self.check(f'[?name==`foo`].properties.template.containers[0].env[0].name', ["redis-secret"]),
+            self.check(f'[?name==`foo`].properties.template.containers[0].env[0].secretRef', ["redis-secret"])  # pylint: disable=C0301
         ])
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
         clean_up_test_file(secrets_file_name)
@@ -69,10 +69,9 @@ secrets:
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_secrets_and_existing_environment(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='composescale', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     environment:
       database__client: mysql
@@ -111,8 +110,9 @@ secrets:
         command_string += ' --environment {environment}'
 
         self.cmd(command_string, checks=[
-            self.check(f'length([?name==`{app}`].properties.template.containers[0].env[].name)', 6),
+            self.check(f'length([?name==`foo`].properties.template.containers[0].env[].name)', 6),
         ])
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
         clean_up_test_file(secrets_file_name)
@@ -121,10 +121,9 @@ secrets:
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_secrets_and_existing_environment_conflict(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='composescale', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     environment:
       database--client: mysql
@@ -154,6 +153,7 @@ secrets:
 
         # This test fails with duplicate environment variable names
         self.cmd(command_string, expect_failure=True)
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
         clean_up_test_file(secrets_file_name)
