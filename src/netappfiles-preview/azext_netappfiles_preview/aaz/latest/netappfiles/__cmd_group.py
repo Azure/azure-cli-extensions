@@ -16,9 +16,9 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage backups under a Backup Vault
+    """Manage Azure NetApp Files (ANF) Resources
 
-    ANF backups are manged in a BackupVault independent from volumes
+    Manage Azure NetApp Files (ANF) Resources.
     """
     pass
 
