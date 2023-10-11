@@ -69,7 +69,7 @@ class VmInstanceHybridIdentityMetadataOperations:
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
 
         
         request = build_get_request(
@@ -122,7 +122,7 @@ class VmInstanceHybridIdentityMetadataOperations:
          ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.connectedvmware.models.VmInstanceHybridIdentityMetadataList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
 
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VmInstanceHybridIdentityMetadataList"]
         error_map = {
