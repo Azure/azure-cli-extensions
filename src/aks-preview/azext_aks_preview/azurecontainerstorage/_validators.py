@@ -25,6 +25,7 @@ def validate_azure_container_storage_params(
     storage_pool_sku,
     storage_pool_option,
     storage_pool_size,
+    nodepool_list,
 ):
     if enable_azure_container_storage and disable_azure_container_storage:
         raise MutuallyExclusiveArgumentError(
@@ -39,6 +40,7 @@ def validate_azure_container_storage_params(
             storage_pool_sku,
             storage_pool_option,
             storage_pool_size,
+            nodepool_list,
         )
 
     elif enable_azure_container_storage:
@@ -57,6 +59,7 @@ def _validate_disable_azure_container_storage_params(
     storage_pool_sku,
     storage_pool_option,
     storage_pool_size,
+    nodepool_list,
 ):
     if storage_pool_name is not None:
         raise MutuallyExclusiveArgumentError(
@@ -88,6 +91,11 @@ def _validate_disable_azure_container_storage_params(
             'when --disable-azure-container-storage is set.'
         )
 
+    if nodepool_list is not None:
+        raise MutuallyExclusiveArgumentError(
+            'Conflicting flags. Cannot define --azure-container-storage-nodepools value '
+            'when --disable-azure-container-storage is set.'
+        )
 
 def _validate_enable_azure_container_storage_params(
     storage_pool_name,

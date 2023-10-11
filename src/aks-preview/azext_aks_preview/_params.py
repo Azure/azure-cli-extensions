@@ -498,8 +498,8 @@ def load_arguments(self, _):
                    help='Flag to enable azure container storage')
         c.argument('storage_pool_type', arg_type=get_enum_type(storage_pool_types),
                    help='set storage pool type for azure container storage')
-        c.argument('storage_pool_name', type=str, help='set storage pool name for azure container storage')
-        c.argument('storage_pool_size', type=str, help='set storage pool size for azure container storage')
+        c.argument('storage_pool_name', help='set storage pool name for azure container storage')
+        c.argument('storage_pool_size', help='set storage pool size for azure container storage')
         c.argument('storage_pool_sku', arg_type=get_enum_type(storage_pool_skus),
                    help='set azure disk type storage pool sku for azure container storage')
         c.argument('storage_pool_option', arg_type=get_enum_type(storage_pool_options),
@@ -639,8 +639,8 @@ def load_arguments(self, _):
                    help='Flag to disable azure container storage')
         c.argument('storage_pool_type', arg_type=get_enum_type(storage_pool_types),
                    help='set storage pool type for azure container storage')
-        c.argument('storage_pool_name', type=str, help='set storage pool name for azure container storage')
-        c.argument('storage_pool_size', type=str, help='set storage pool size for azure container storage')
+        c.argument('storage_pool_name', help='set storage pool name for azure container storage')
+        c.argument('storage_pool_size', help='set storage pool size for azure container storage')
         c.argument('storage_pool_sku', arg_type=get_enum_type(storage_pool_skus),
                    help='set azure disk type storage pool sku for azure container storage')
         c.argument('storage_pool_option', arg_type=get_enum_type(storage_pool_options),

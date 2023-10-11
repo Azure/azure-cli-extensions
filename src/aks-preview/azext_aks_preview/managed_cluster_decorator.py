@@ -2701,6 +2701,22 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # read the azure container storage values passed
         enable_azure_container_storage = self.context.raw_param.get("enable_azure_container_storage")
         if enable_azure_container_storage:
+            pool_name = self.context.raw_param.get("storage_pool_name")
+            pool_type = self.context.raw_param.get("storage_pool_type")
+            pool_option = self.context.raw_param.get("storage_pool_option")
+            pool_sku = self.context.raw_param.get("storage_pool_sku")
+            pool_size = self.context.raw_param.get("storage_pool_size")
+            from azext_aks_preview.azurecontainerstorage._validators import validate_azure_container_storage_params
+            validate_azure_container_storage_params(
+                True,
+                None,
+                pool_name,
+                pool_type,
+                pool_sku,
+                pool_option,
+                pool_size,
+                None,
+            )
             # set intermediates
             self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
 
@@ -3182,6 +3198,24 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # read the azure container storage values passed
         enable_azure_container_storage = self.context.raw_param.get("enable_azure_container_storage")
         disable_azure_container_storage = self.context.raw_param.get("disable_azure_container_storage")
+        if enable_azure_container_storage or disable_azure_container_storage:
+            pool_name = self.context.raw_param.get("storage_pool_name")
+            pool_type = self.context.raw_param.get("storage_pool_type")
+            pool_option = self.context.raw_param.get("storage_pool_option")
+            pool_sku = self.context.raw_param.get("storage_pool_sku")
+            pool_size = self.context.raw_param.get("storage_pool_size")
+            nodepool_list = self.context.raw_param.get("azure_container_storage_nodepools")
+            from azext_aks_preview.azurecontainerstorage._validators import validate_azure_container_storage_params
+            validate_azure_container_storage_params(
+                enable_azure_container_storage,
+                disable_azure_container_storage,
+                pool_name,
+                pool_type,
+                pool_sku,
+                pool_option,
+                pool_size,
+                nodepool_list,
+            )
         if enable_azure_container_storage:
             # set intermediates
             self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)

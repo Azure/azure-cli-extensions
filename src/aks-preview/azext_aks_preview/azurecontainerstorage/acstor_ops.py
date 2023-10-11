@@ -274,4 +274,7 @@ def _get_k8s_extension_module(module_name):
         azext_custom = import_module(module_name)
         return azext_custom
     except ImportError as ie:
-        raise CLIInternalError(ie) from ie
+        raise UnknownError(
+            "Please add CLI extension `k8s-extension` for performing Azure Container Storage operations.\n"
+            "Run command `az extension --name k8s-extension`"
+        )
