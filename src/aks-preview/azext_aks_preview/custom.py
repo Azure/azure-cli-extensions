@@ -2411,7 +2411,7 @@ def aks_trustedaccess_role_binding_create(cmd, client, resource_group_name, clus
 
     roleList = roles.split(',')
     roleBinding = TrustedAccessRoleBinding(source_resource_id=source_resource_id, roles=roleList)
-    return client.create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)
+    return client.begin_create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)
 
 
 def aks_trustedaccess_role_binding_update(cmd, client, resource_group_name, cluster_name, role_binding_name, roles):
@@ -2424,11 +2424,11 @@ def aks_trustedaccess_role_binding_update(cmd, client, resource_group_name, clus
 
     roleList = roles.split(',')
     roleBinding = TrustedAccessRoleBinding(source_resource_id=existedBinding.source_resource_id, roles=roleList)
-    return client.create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)
+    return client.begin_create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)
 
 
 def aks_trustedaccess_role_binding_delete(cmd, client, resource_group_name, cluster_name, role_binding_name):
-    return client.delete(resource_group_name, cluster_name, role_binding_name)
+    return client.begin_delete(resource_group_name, cluster_name, role_binding_name)
 
 
 def aks_mesh_enable(
