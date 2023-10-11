@@ -11,8 +11,15 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Vendor new SDK and bump API version to 2023-08-02-preview.
+* Update the operation/method used in following commands as the put/delete operations have been changed to long running operations
+    * `az aks trustedaccess rolebinding create`
+    * `az aks trustedaccess rolebinding update`
+    * `az aks trustedaccess rolebinding delete`
+
 0.5.162
 +++++++
+* Replace Image Cleaner related functions with stable version.
 * Add option `--enable-azure-container-storage` and supporting options `--storage-pool-name`, `--storage-pool-type`, `--storage-pool-sku`, `--storage-pool-size` for `az aks create` and `az aks update`. `az aks update` also supports `--azure-container-storage-nodepools` option.
 * Add option `--disable-azure-container-storage` to `az aks create` and `az aks update`.
 

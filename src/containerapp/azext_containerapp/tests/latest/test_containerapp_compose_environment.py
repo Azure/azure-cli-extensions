@@ -21,10 +21,9 @@ class ContainerappComposePreviewEnvironmentSettingsScenarioTest(ContainerappComp
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_environment(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='composewithenv', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     environment:
       - RACK_ENV=development
@@ -45,14 +44,15 @@ services:
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`{app}`].properties.template.containers[0].env[0].name', ["RACK_ENV"]),
-            self.check(f'[?name==`{app}`].properties.template.containers[0].env[0].value', ["development"]),
-            self.check(f'[?name==`{app}`].properties.template.containers[0].env[1].name', ["SHOW"]),
-            self.check(f'[?name==`{app}`].properties.template.containers[0].env[1].value', ["true"]),
-            self.check(f'[?name==`{app}`].properties.template.containers[0].env[2].name', ["BAZ"]),
-            self.check(f'[?name==`{app}`].properties.template.containers[0].env[2].value', ['"snafu"'])
+            self.check(f'[?name==`foo`].properties.template.containers[0].env[0].name', ["RACK_ENV"]),
+            self.check(f'[?name==`foo`].properties.template.containers[0].env[0].value', ["development"]),
+            self.check(f'[?name==`foo`].properties.template.containers[0].env[1].name', ["SHOW"]),
+            self.check(f'[?name==`foo`].properties.template.containers[0].env[1].value', ["true"]),
+            self.check(f'[?name==`foo`].properties.template.containers[0].env[2].name', ["BAZ"]),
+            self.check(f'[?name==`foo`].properties.template.containers[0].env[2].value', ['"snafu"'])
         ])
 
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
         clean_up_test_file(compose_file_name)
 
 
@@ -62,10 +62,9 @@ class ContainerappComposePreviewEnvironmentSettingsExpectedExceptionScenarioTest
     def test_containerapp_compose_create_with_environment_prompt(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        app = self.create_random_name(prefix='composewithenv', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     environment:
       - LOREM=
@@ -85,5 +84,6 @@ services:
 
         # This test fails because prompts are not supported in NoTTY environments
         self.cmd(command_string, expect_failure=True)
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
 
         clean_up_test_file(compose_file_name)
