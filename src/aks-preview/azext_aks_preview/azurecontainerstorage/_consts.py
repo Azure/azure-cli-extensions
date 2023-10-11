@@ -18,7 +18,7 @@ CONST_STORAGE_POOL_OPTION_TEMP = "temp"
 CONST_STORAGE_POOL_NAME_PREFIX = "mypool-"
 CONST_STORAGE_POOL_DEFAULT_SIZE = "512Gi"
 CONST_EXT_INSTALLATION_NAME = "azurecontainerstorage"
-CONST_ACSTOR_K8S_EXTENSION_NAME = "microsoft.azstor"
+CONST_ACSTOR_K8S_EXTENSION_NAME = "microsoft.azurecontainerstorage"
 
 CONST_K8S_EXTENSION_NAME = "k8s-extension"
 CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME = "azext_k8s_extension._client_factory"
