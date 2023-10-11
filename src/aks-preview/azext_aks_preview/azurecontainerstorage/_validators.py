@@ -97,6 +97,7 @@ def _validate_disable_azure_container_storage_params(
             'when --disable-azure-container-storage is set.'
         )
 
+
 def _validate_enable_azure_container_storage_params(
     storage_pool_name,
     storage_pool_type,

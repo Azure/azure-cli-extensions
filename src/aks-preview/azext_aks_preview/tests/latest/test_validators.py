@@ -6,7 +6,11 @@ import unittest
 from types import SimpleNamespace
 
 from azure.cli.core.util import CLIError
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import (
+    ArgumentUsageError,
+    InvalidArgumentValueError,
+    MutuallyExclusiveArgumentError,
+)
 import azext_aks_preview._validators as validators
 from azext_aks_preview._consts import ADDONS
 import azext_aks_preview.azurecontainerstorage._validators as acstor_validator

@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from azure.cli.core.azclierror import UnknownError
 from azure.cli.command_modules.resource.custom import register_provider
 from azure.cli.command_modules.acs._roleassignments import (
     add_role_assignment,
@@ -10,12 +11,13 @@ from azure.cli.command_modules.acs._roleassignments import (
     delete_role_assignments,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
-	CONST_K8S_EXTENSION_NAME,
-	CONST_STORAGE_POOL_NAME_PREFIX,
-	CONST_STORAGE_POOL_RANDOM_LENGTH,
+    CONST_K8S_EXTENSION_NAME,
+    CONST_STORAGE_POOL_NAME_PREFIX,
+    CONST_STORAGE_POOL_RANDOM_LENGTH,
 )
 import random
 import string
+
 
 def _register_dependent_rps(cmd):
     register_provider(cmd, 'Microsoft.Kubernetes', wait=True)

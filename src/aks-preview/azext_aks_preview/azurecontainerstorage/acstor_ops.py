@@ -3,10 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.azclierror import (
-    UnknownError,
-    CLIInternalError,
-)
+from azure.cli.core.azclierror import UnknownError
 from azure.cli.core.commands import LongRunningOperation
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_K8S_EXTENSION_NAME,
