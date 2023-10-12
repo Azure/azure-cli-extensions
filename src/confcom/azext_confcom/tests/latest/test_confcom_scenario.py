@@ -28,7 +28,7 @@ class MountEnforcement(unittest.TestCase):
         "version": "1.0",
         "containers": [
             {
-                "containerImage": "rust:1.52.1",
+                "containerImage": "alpine:3.16",
                 "environmentVariables": [
                     {
                         "name": "PATH",
@@ -51,7 +51,7 @@ class MountEnforcement(unittest.TestCase):
                 ]
             },
             {
-                "containerImage": "python:3.6.14-slim-buster",
+                "containerImage": "nginx:1.24",
                 "environmentVariables": [],
                 "command": ["echo", "hello"],
                 "workingDir": "/customized/absolute/path",
@@ -76,7 +76,7 @@ class MountEnforcement(unittest.TestCase):
             (
                 img
                 for img in self.aci_policy.get_images()
-                if isinstance(img, UserContainerImage) and img.base == "rust"
+                if isinstance(img, UserContainerImage) and img.base == "alpine"
             ),
             None,
         )
@@ -115,7 +115,7 @@ class MountEnforcement(unittest.TestCase):
             (
                 img
                 for img in self.aci_policy.get_images()
-                if isinstance(img, UserContainerImage) and img.base == "python"
+                if isinstance(img, UserContainerImage) and img.base == "nginx"
             ),
             None,
         )
