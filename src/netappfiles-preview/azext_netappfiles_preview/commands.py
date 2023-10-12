@@ -60,8 +60,9 @@ def load_command_table(self, _):
     #                              exception_handler=netapp_exception_handler)
 
     with self.command_group('netappfiles volume', netappfiles_volumes_sdk):
-        from .custom import VolumeCreate
+        from .custom import VolumeCreate, VolumeUpdate
         self.command_table["netappfiles volume create"] = VolumeCreate(loader=self)
+        self.command_table["netappfiles volume update"] = VolumeUpdate(loader=self)
     #     g.show_command('show', 'get')
     #     g.command('list', 'list')
     #     g.command('delete', 'delete')

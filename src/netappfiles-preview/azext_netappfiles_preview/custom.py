@@ -3,12 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long
+# pylint: disable=protected-access,line-too-long
 
 from knack.log import get_logger
 from azure.cli.core.azclierror import ValidationError
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
-from .aaz.latest.netappfiles.volume import Create as _VolumeCreate
+from .aaz.latest.netappfiles.volume import Create as _VolumeCreate, Update as _VolumeUpdate
 
 logger = get_logger(__name__)
 
@@ -49,43 +49,14 @@ def generate_tags(tag):
 class VolumeCreate(_VolumeCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg, AAZIntArg, AAZIntArgFormat
+        from azure.cli.core.aaz import AAZStrArg, AAZIntArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        # args_schema.client_auth_config = AAZBoolArg(
-        #     options=["--client-auth-configuration", "--client-auth-config"],
-        #     help="Client authentication configuration of the application gateway resource.",
-        # )
-        # args_schema.trusted_client_certs = AAZListArg(
-        #     options=["--trusted-client-certificates", "--trusted-client-cert"],
-        #     help="Array of references to application gateway trusted client certificates.",
-        # )
-        # args_schema.trusted_client_certs.Element = AAZResourceIdArg(
-        #     fmt=AAZResourceIdArgFormat(
-        #         template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
-        #                  "/applicationGateways/{gateway_name}/trustedClientCertificates/{}",
-        #     ),
-        # )
-        # args_schema.auth_configuration._registered = False
-        # args_schema.client_certificates._registered = False
-
         args_schema.vnet = AAZStrArg(
             options=["--vnet"],
             arg_group="Properties",
             help="Name or Resource ID of the vnet. If you want to use a vnet in other resource group or subscription, please provide the Resource ID instead of the name of the vnet.",
             required=True,
         )
-        
-        # args_schema.usage_thresholdTibs = AAZIntArg(
-        #     options=["--usage-threshold"],
-        #     arg_group="Properties",
-        #     help="Maximum storage quota allowed for a file system as integer number of GiB. Min 100 GiB, max 500TiB. This is a soft quota used for alerting only. Minimum size is 100 GiB. Upper limit is 100TiB, 500Tib for LargeVolume.",
-        #     required=True,
-        #     default=100,
-        #     fmt=AAZIntArgFormat(
-        #         maximum=500,
-        #         minimum=100,
-        #     ),
-        # )
 
         args_schema.usage_threshold._fmt = AAZIntArgFormat(
             maximum=500,
@@ -97,10 +68,9 @@ class VolumeCreate(_VolumeCreate):
     def pre_operations(self):
         args = self.ctx.args
         # RP expects bytes but CLI allows integer TiBs for ease of use
-        logger.debug(f"ANF-Extension log: usage_threshold: {args.usage_threshold}")
+        logger.debug("ANF-Extension log: usage_threshold: %s",args.usage_threshold)
         if args.usage_threshold is not None:
             gib_scale = 1024 * 1024 * 1024
-            tib_scale = gib_scale * 1024
             args.usage_threshold = int(args.usage_threshold.to_serialized_data()) * gib_scale
 
         # default the resource group of the subnet to the volume's rg unless the subnet is specified by id
@@ -163,12 +133,32 @@ class VolumeCreate(_VolumeCreate):
 
 # check if flattening dataprotection works
 
-# from example keep for reference for now
-        # if has_value(args.client_auth_config):
-        #     args.auth_configuration.verify_client_cert_issuer_dn = args.client_auth_config
-        # args.client_certificates = assign_aaz_list_arg(
-        #     args.client_certificates,
-        #     args.trusted_client_certs,
-        #     element_transformer=lambda _, cert_id: {"id": cert_id}
-        # )
+
+class VolumeUpdate(_VolumeUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg, AAZIntArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.vnet = AAZStrArg(
+            options=["--vnet"],
+            arg_group="Properties",
+            help="Name or Resource ID of the vnet. If you want to use a vnet in other resource group or subscription, please provide the Resource ID instead of the name of the vnet.",
+            required=False,
+        )
+        args_schema.usage_threshold._fmt = AAZIntArgFormat(
+            maximum=500,
+            minimum=100,
+        )
+
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        # RP expects bytes but CLI allows integer TiBs for ease of use
+        logger.debug("ANF-Extension log: VolumeUpdate")
+        logger.debug("ANF-Extension log: usage_threshold: %s",args.usage_threshold)
+        if args.usage_threshold is not None:
+            gib_scale = 1024 * 1024 * 1024
+            args.usage_threshold = int(args.usage_threshold.to_serialized_data()) * gib_scale
+
 # endregion
