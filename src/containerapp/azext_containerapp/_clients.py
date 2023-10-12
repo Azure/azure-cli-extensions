@@ -109,7 +109,7 @@ def poll_status(cmd, request_url):  # pylint: disable=inconsistent-return-statem
     return
 
 
-def poll_results(cmd, request_url):  # pylint: disable=inconsistent-return-statements
+def poll_results(cmd, request_url, show_sensitive_values=False):  # pylint: disable=inconsistent-return-statements
     if not request_url:
         raise AzureResponseError(f"Http response lack of necessary header: '{HEADER_LOCATION}'")
 
@@ -128,8 +128,26 @@ def poll_results(cmd, request_url):  # pylint: disable=inconsistent-return-state
 
     animation.flush()
     if r.text:
-        return json.loads(r.text)
+        clean_json = clean_sensitive_values(r, show_sensitive_values)
+        return clean_json
 
+def clean_sensitive_values(r, show_sensitive_values): 
+    response_json = r.json()
+    if show_sensitive_values:
+        return response_json
+    
+    for container in response_json["properties"]["template"]["containers"]:
+        if "env" in container:
+            for env in container["env"]:
+                del env["value"]
+
+    if "scale" in response_json["properties"]["template"]:
+        for rule in response_json["properties"]["template"]["scale"]["rules"]:
+            for (key, val) in rule.items():
+                if key != "name":
+                    val["metadata"] = dict((k,"") for k,v in val["metadata"].items())
+
+    return response_json
 
 def _extract_delay(response):
     try:
@@ -150,7 +168,7 @@ class ContainerAppClient():
     api_version = CURRENT_API_VERSION
 
     @classmethod
-    def create_or_update(cls, cmd, resource_group_name, name, container_app_envelope, no_wait=False):
+    def create_or_update(cls, cmd, resource_group_name, name, container_app_envelope, no_wait=False, show_sensitive_values=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}"
@@ -164,7 +182,8 @@ class ContainerAppClient():
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(container_app_envelope))
 
         if no_wait:
-            return r.json()
+            clean_json = clean_sensitive_values(r, show_sensitive_values)
+            return clean_json
         elif r.status_code == 201:
             operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
             poll_status(cmd, operation_url)
@@ -177,10 +196,11 @@ class ContainerAppClient():
                 cls.api_version)
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
-        return r.json()
+        clean_json = clean_sensitive_values(r, show_sensitive_values)
+        return clean_json
 
     @classmethod
-    def update(cls, cmd, resource_group_name, name, container_app_envelope, no_wait=False):
+    def update(cls, cmd, resource_group_name, name, container_app_envelope, no_wait=False, show_sensitive_values=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
 
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -198,13 +218,14 @@ class ContainerAppClient():
             return
         elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
-            response = poll_results(cmd, operation_url)
+            response = poll_results(cmd, operation_url, show_sensitive_values=show_sensitive_values)
             if response is None:
                 raise ResourceNotFoundError("Could not find a container app")
             else:
                 return response
-
-        return r.json()
+            
+        clean_json = clean_sensitive_values(r, show_sensitive_values)
+        return clean_json
 
     @classmethod
     def delete(cls, cmd, resource_group_name, name, no_wait=False):
@@ -229,7 +250,7 @@ class ContainerAppClient():
                 logger.warning('Containerapp successfully deleted')
 
     @classmethod
-    def show(cls, cmd, resource_group_name, name):
+    def show(cls, cmd, resource_group_name, name, show_sensitive_values=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}"
@@ -241,7 +262,10 @@ class ContainerAppClient():
             cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
-        return r.json()
+
+        clean_json = clean_sensitive_values(r, show_sensitive_values)
+        return clean_json
+
 
     @classmethod
     def list_by_subscription(cls, cmd, formatter=lambda x: x):
@@ -876,7 +900,7 @@ class ContainerAppsJobClient():
     api_version = CURRENT_API_VERSION
 
     @classmethod
-    def create_or_update(cls, cmd, resource_group_name, name, containerapp_job_envelope, no_wait=False):
+    def create_or_update(cls, cmd, resource_group_name, name, containerapp_job_envelope, no_wait=False, show_sensitive_values=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}?api-version={}"
@@ -890,7 +914,8 @@ class ContainerAppsJobClient():
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(containerapp_job_envelope))
 
         if no_wait:
-            return r.json()
+            clean_json = clean_sensitive_values(r, show_sensitive_values)
+            return clean_json
         elif r.status_code == 201:
             url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}?api-version={}"
             request_url = url_fmt.format(
@@ -901,10 +926,11 @@ class ContainerAppsJobClient():
                 cls.api_version)
             return poll(cmd, request_url, "inprogress")
 
-        return r.json()
+        clean_json = clean_sensitive_values(r, show_sensitive_values)
+        return clean_json
 
     @classmethod
-    def update(cls, cmd, resource_group_name, name, containerapp_job_envelope, no_wait=False):
+    def update(cls, cmd, resource_group_name, name, containerapp_job_envelope, no_wait=False, show_sensitive_values=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
 
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -919,7 +945,8 @@ class ContainerAppsJobClient():
         r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(containerapp_job_envelope))
 
         if no_wait:
-            return r.json()
+            clean_json = clean_sensitive_values(r, show_sensitive_values)
+            return clean_json
         elif r.status_code == 202:
             url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}?api-version={}"
             request_url = url_fmt.format(
@@ -928,16 +955,17 @@ class ContainerAppsJobClient():
                 resource_group_name,
                 name,
                 cls.api_version)
-            response = poll_results(cmd, request_url)
+            response = poll_results(cmd, request_url, show_sensitive_values=show_sensitive_values)
             if response is None:
                 raise ResourceNotFoundError("Could not find a container App Job")
             else:
                 return response
 
-        return r.json()
+        clean_json = clean_sensitive_values(r, show_sensitive_values)
+        return clean_json
 
     @classmethod
-    def show(cls, cmd, resource_group_name, name):
+    def show(cls, cmd, resource_group_name, name, show_sensitive_values=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}?api-version={}"
@@ -949,7 +977,8 @@ class ContainerAppsJobClient():
             cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
-        return r.json()
+        clean_json = clean_sensitive_values(r, show_sensitive_values)
+        return clean_json
 
     @classmethod
     def list_by_subscription(cls, cmd, formatter=lambda x: x):

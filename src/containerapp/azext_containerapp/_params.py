@@ -149,10 +149,12 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp show') as c:
         c.argument('show_secrets', help="Show Containerapp secrets.", action='store_true')
+        c.argument('show_sensitive_values', help="Show potentially sensitive environment variable and scale rules.", action='store_true')
 
     # Source
     with self.argument_context('containerapp update') as c:
         c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md.", is_preview=True)
+        c.argument('show_sensitive_values', help="Show potentially sensitive environment variable and scale rules.", action='store_true')
 
     with self.argument_context('containerapp update', arg_group='Container') as c:
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
@@ -370,6 +372,7 @@ def load_arguments(self, _):
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
         c.argument('browse', help='Open the app in a web browser after creation and deployment, if possible.')
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
+        c.argument('show_sensitive_values', help="Show potentially sensitive environment variable and scale rules.", action='store_true')
 
     with self.argument_context('containerapp up', arg_group='Log Analytics (Environment)') as c:
         c.argument('logs_customer_id', options_list=['--logs-workspace-id'], help='Workspace ID of the Log Analytics workspace to send diagnostics logs to. You can use \"az monitor log-analytics workspace create\" to create one. Extra billing may apply.')
@@ -493,6 +496,7 @@ def load_arguments(self, _):
         c.argument('min_executions', type=int, help="Minimum number of job executions that are created for a trigger, default 0.")
         c.argument('max_executions', type=int, help="Maximum number of job executions that are created for a trigger, default 100.")
         c.argument('polling_interval', type=int, help="Interval to check each event source in seconds. Defaults to 30s.", default=30)
+        c.argument('show_sensitive_values', help="Show potentially sensitive environment variables.", action='store_true')
 
     with self.argument_context('containerapp job create') as c:
         c.argument('system_assigned', options_list=['--mi-system-assigned', c.deprecate(target='--system-assigned', redirect='--mi-system-assigned', hide=True)], help='Boolean indicating whether to assign system-assigned identity.', action='store_true')

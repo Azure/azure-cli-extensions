@@ -319,6 +319,9 @@ class BaseContainerAppDecorator(BaseResource):
 
     def get_argument_show_values(self):
         return self.get_param("show_values")
+    
+    def get_argument_show_sensitive_values(self):
+        return self.get_param("show_sensitive_values")
 
     def get_argument_set_env_vars(self):
         return self.get_param("set_env_vars")
@@ -550,7 +553,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         try:
             r = self.client.create_or_update(
                 cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name(), container_app_envelope=self.containerapp_def,
-                no_wait=self.get_argument_no_wait())
+                no_wait=self.get_argument_no_wait(), show_sensitive_values=self.get_argument_show_sensitive_values())
 
             return r
         except Exception as e:
@@ -559,7 +562,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
     def construct_for_post_process(self, r):
         if is_registry_msi_system(self.get_argument_registry_identity()):
             while r["properties"]["provisioningState"] == "InProgress":
-                r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
+                r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name(), show_sensitive_values=self.get_argument_show_sensitive_values())
                 time.sleep(10)
             logger.info("Creating an acrpull role assignment for the system identity")
             system_sp = r["identity"]["principalId"]
@@ -741,7 +744,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         try:
             r = self.client.update(
                 cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name(), container_app_envelope=self.new_containerapp,
-                no_wait=self.get_argument_no_wait())
+                no_wait=self.get_argument_no_wait(), show_sensitive_values=self.get_argument_show_sensitive_values())
             if not self.get_argument_no_wait() and "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting":
                 logger.warning('Containerapp update in progress. Please monitor the update using `az containerapp show -n {} -g {}`'.format(self.get_argument_name(), self.get_argument_resource_group_name()))
             return r
@@ -752,7 +755,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         if self.get_argument_from_revision():
             r = None
             try:
-                r = self.client.show_revision(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), container_app_name=self.get_argument_name(), name=self.get_argument_from_revision())
+                r = self.client.show_revision(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), container_app_name=self.get_argument_name(), name=self.get_argument_from_revision(), show_sensitive_values=self.get_argument_show_sensitive_values())
             except CLIError as e:
                 handle_non_404_status_code_exception(e)
 
@@ -769,7 +772,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
         self.containerapp_def = None
         try:
-            self.containerapp_def = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+            self.containerapp_def = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name(), show_sensitive_values=self.get_argument_show_sensitive_values())
         except Exception as e:
             handle_non_404_status_code_exception(e)
 
@@ -1130,7 +1133,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
         # Check if containerapp exists
         try:
-            self.new_containerapp = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+            self.new_containerapp = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name(), show_sensitive_values=self.get_argument_show_sensitive_values())
         except Exception as e:
             handle_non_404_status_code_exception(e)
 
@@ -1161,7 +1164,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
         # Change which revision we update from
         if self.get_argument_from_revision():
-            r = self.client.show_revision(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), container_app_name=name, name=self.get_argument_from_revision())
+            r = self.client.show_revision(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), container_app_name=name, name=self.get_argument_from_revision(), show_sensitive_values=self.get_argument_show_sensitive_values())
             _update_revision_env_secretrefs(r["properties"]["template"]["containers"], name)
             self.new_containerapp["properties"]["template"] = r["properties"]["template"]
 
@@ -1255,7 +1258,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
     def _get_containerapp_if_exists(self):
         try:
-            return self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+            return self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name(), show_sensitive_values=self.get_argument_show_sensitive_values())
         except Exception as e:
             handle_non_404_status_code_exception(e)
             return None
@@ -1268,7 +1271,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         _create_github_action(app, env, self.get_argument_service_principal_client_id(), self.get_argument_service_principal_client_secret(),
                               self.get_argument_service_principal_tenant_id(), self.get_argument_branch(), token, self.get_argument_repo(), self.get_argument_context_path())
         cache_github_token(self.cmd, token, self.get_argument_repo())
-        return self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+        return self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name(), show_sensitive_values=self.get_argument_show_sensitive_values())
 
     def _construct_app_and_env_for_source_or_repo(self):
         from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image, get_token, _has_dockerfile, _get_dockerfile_content, _get_ingress_and_target_port, _get_registry_details, _create_github_action)
@@ -1331,7 +1334,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
             for item in self.get_argument_service_connectors_def_list():
                 while r is not None and r["properties"]["provisioningState"].lower() == "inprogress":
-                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
+                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name(), show_sensitive_values=self.get_argument_show_sensitive_values())
                     time.sleep(1)
                 linker_client.linker.begin_create_or_update(resource_uri=r["id"],
                                                             parameters=item["parameters"],
@@ -1513,7 +1516,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
             linker_client = get_linker_client(self.cmd)
             for item in self.get_argument_unbind_service_bindings():
                 while r["properties"]["provisioningState"].lower() == "inprogress":
-                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
+                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name(), show_sensitive_values=self.get_argument_show_sensitive_values())
                     time.sleep(1)
                 linker_client.linker.begin_delete(resource_uri=r["id"], linker_name=item).result()
 
@@ -1522,7 +1525,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
             linker_client = get_linker_client(self.cmd) if linker_client is None else linker_client
             for item in self.get_argument_service_connectors_def_list():
                 while r["properties"]["provisioningState"].lower() == "inprogress":
-                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name())
+                    r = self.client.show(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name(), show_sensitive_values=self.get_argument_show_sensitive_values())
                     time.sleep(1)
                 linker_client.linker.begin_create_or_update(resource_uri=r["id"],
                                                             parameters=item["parameters"],
