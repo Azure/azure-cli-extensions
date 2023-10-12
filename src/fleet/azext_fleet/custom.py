@@ -310,8 +310,9 @@ def create_update_run(cmd,
         upgrade=managed_cluster_upgrade_spec,
         node_image_selection=node_image_selection_type)
     
-    subId=get_subscription_id(cmd.cli_ctx)
-    updateStrategyId = f"/subscriptions/{subId}/resourceGroups/{resource_group_name}1/providers/Microsoft.ContainerService/fleets/{fleet_name}/updateStrategies/{name}"
+    if update_strategy_name is not None:
+        subId=get_subscription_id(cmd.cli_ctx)
+        updateStrategyId = f"/subscriptions/{subId}/resourceGroups/{resource_group_name}/providers/Microsoft.ContainerService/fleets/{fleet_name}/updateStrategies/{update_strategy_name}"
 
     update_run = update_run_model(
         update_strategy_id=updateStrategyId,

@@ -34,12 +34,11 @@ def validate_agent_subnet_id(namespace):
     _validate_subnet_id(namespace.agent_subnet_id, "--agent-subnet-id")
 
 
-def validate_update_strategy_id(namespace):
-    if namespace.update_strategy_id is not None:
-        from msrestazure.tools import is_valid_resource_id
-        if not is_valid_resource_id(namespace.update_strategy_id):
+def validate_update_strategy_name(namespace):
+    print(namespace.update_strategy_name)
+    if namespace.update_strategy_name is not None and not namespace.update_strategy_name.strip():
             raise CLIError(
-                "--update-strategy-id is not a valid Azure resource ID.")
+                "--update-strategy-name is not a valid name")
 
 
 def _validate_subnet_id(subnet_id, name):
