@@ -34,8 +34,6 @@ from azext_aks_preview._consts import (
     CONST_ABSOLUTEMONTHLY_MAINTENANCE_SCHEDULE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE,
     CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC,
-    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
-    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
     CONST_CREDENTIAL_FORMAT_AZURE,
     CONST_CREDENTIAL_FORMAT_EXEC,
     CONST_DAILY_MAINTENANCE_SCHEDULE,
@@ -158,7 +156,8 @@ from azext_aks_preview._validators import (
     validate_utc_offset,
     validate_vm_set_type,
     validate_vnet_subnet_id,
-    validate_force_upgrade_disable_and_enable_parameters
+    validate_force_upgrade_disable_and_enable_parameters,
+    validate_azure_service_mesh_revision
 )
 from azure.cli.core.commands.parameters import (
     edge_zone_type,
@@ -936,11 +935,18 @@ def load_arguments(self, _):
                    options_list=["--egress-gateway-nodeselector", "--egx-gtw-ns"])
 
     with self.argument_context('aks mesh enable') as c:
+        c.argument('revision', validator=validate_azure_service_mesh_revision)
         c.argument('key_vault_id')
         c.argument('ca_cert_object_name')
         c.argument('ca_key_object_name')
         c.argument('root_cert_object_name')
         c.argument('cert_chain_object_name')
+
+    with self.argument_context('aks mesh get-revisions') as c:
+        c.argument('location', required=True, help='Location in which to discover available Azure Service Mesh revisions.')
+
+    with self.argument_context('aks mesh upgrade start') as c:
+        c.argument('revision', validator=validate_azure_service_mesh_revision, required=True)
 
 
 def _get_default_install_location(exe_name):
