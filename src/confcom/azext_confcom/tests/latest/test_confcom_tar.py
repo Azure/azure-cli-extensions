@@ -10,7 +10,7 @@ import pytest
 import deepdiff
 import json
 import docker
-import shutil
+
 import threading
 from azext_confcom.security_policy import (
     OutputType,
