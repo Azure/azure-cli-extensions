@@ -12,6 +12,7 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     ValidationError)
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.command_modules.containerapp.base_resource import BaseResource
 
 from knack.log import get_logger
 
@@ -22,7 +23,6 @@ from ._decorator_utils import process_loaded_yaml, load_yaml_file, create_deseri
 from ._constants import HELLO_WORLD_IMAGE, CONTAINER_APPS_RP, CONNECTED_ENVIRONMENT_RESOURCE_TYPE, \
     MANAGED_ENVIRONMENT_TYPE, CONNECTED_ENVIRONMENT_TYPE
 from ._validators import validate_create
-from .base_resource import BaseResource
 from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient
 from ._client_factory import handle_raw_exception, handle_non_404_exception
 
