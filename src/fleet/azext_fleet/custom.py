@@ -137,6 +137,8 @@ def update_fleet(cmd,
 
     if enable_managed_identity is None:
         managed_service_identity = None
+        if assign_identity is not None:
+            raise CLIError("Cannot assign identity without enabling managed identity.")
     elif enable_managed_identity is False:
         managed_service_identity = fleet_managed_service_identity_model(type="None")
     else:
@@ -155,7 +157,7 @@ def update_fleet(cmd,
         identity=managed_service_identity
     )
 
-    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, name, fleet_patch)
+    return sdk_no_wait(no_wait, client.begin_update, resource_group_name, name, fleet_patch, polling_interval=5)
 
 
 def show_fleet(cmd,  # pylint: disable=unused-argument
@@ -310,6 +312,7 @@ def create_update_run(cmd,
         upgrade=managed_cluster_upgrade_spec,
         node_image_selection=node_image_selection_type)
     
+    updateStrategyId = None
     if update_strategy_name is not None:
         subId=get_subscription_id(cmd.cli_ctx)
         updateStrategyId = f"/subscriptions/{subId}/resourceGroups/{resource_group_name}/providers/Microsoft.ContainerService/fleets/{fleet_name}/updateStrategies/{update_strategy_name}"
