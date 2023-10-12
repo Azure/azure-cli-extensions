@@ -17,6 +17,11 @@ Pending
     * `az aks trustedaccess rolebinding update`
     * `az aks trustedaccess rolebinding delete`
 
+0.5.163
++++++++
+* Add `get-upgrades` and `get-revisions` to the `az aks mesh` command.
+* Add `az aks mesh upgrade` commands to manage upgrades for Azure Service Mesh.
+
 0.5.162
 +++++++
 * Replace Image Cleaner related functions with stable version.
@@ -65,7 +70,7 @@ Pending
 
 0.5.152
 ++++++
-* move loadbalancer/natgateway util functions to azure-cli and update reference in aks-preview project. 
+* move loadbalancer/natgateway util functions to azure-cli and update reference in aks-preview project.
 * Update the minimum required cli core version to `2.49.0`.
 * Add plugin CA support for `az aks mesh enable` commands for Azure Service Mesh.
 

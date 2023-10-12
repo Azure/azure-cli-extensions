@@ -6,6 +6,7 @@
 import copy
 import datetime
 import os
+import semver
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
@@ -64,6 +65,9 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_DATAPLANE_CILIUM,
     CONST_PRIVATE_DNS_ZONE_NONE,
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
 )
 from azext_aks_preview._helpers import (
     check_is_private_cluster,
@@ -2008,7 +2012,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: updated service mesh profile
         """
-
         updated = False
         new_profile = self.models.ServiceMeshProfile(mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED) \
             if self.mc.service_mesh_profile is None else copy.deepcopy(self.mc.service_mesh_profile)
@@ -2016,6 +2019,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # enable/disable
         enable_asm = self.raw_param.get("enable_azure_service_mesh", False)
         disable_asm = self.raw_param.get("disable_azure_service_mesh", False)
+        mesh_upgrade_command = self.raw_param.get("mesh_upgrade_command", None)
 
         if enable_asm and disable_asm:
             raise MutuallyExclusiveArgumentError(
@@ -2023,12 +2027,25 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
 
         if disable_asm:
+            if new_profile is None or new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_DISABLED:
+                raise ArgumentUsageError(
+                    "Istio has not been enabled for this cluster, please refer to https://aka.ms/asm-aks-addon-docs "
+                    "for more details on enabling Azure Service Mesh."
+                )
             new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_DISABLED
             updated = True
         elif enable_asm:
+            if new_profile is not None and new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_ISTIO:
+                raise ArgumentUsageError(
+                    "Istio has already been enabled for this cluster, please refer to https://aka.ms/asm-aks-upgrade-docs "
+                    "for more details on updating the mesh profile."
+                )
+            requested_revision = self.raw_param.get("revision", None)
             new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
             if new_profile.istio is None:
                 new_profile.istio = self.models.IstioServiceMesh()
+            if mesh_upgrade_command is None and requested_revision is not None:
+                new_profile.istio.revisions = [requested_revision]
             updated = True
 
         enable_ingress_gateway = self.raw_param.get("enable_ingress_gateway", False)
@@ -2169,10 +2186,52 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             new_profile.istio.certificate_authority.plugin.cert_chain_object_name = cert_chain_object_name
             updated = True
 
+        # deal with mesh upgrade commands
+        if mesh_upgrade_command is not None:
+            if new_profile is None or new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_DISABLED:
+                raise ArgumentUsageError(
+                    "Istio has not been enabled for this cluster, please refer to https://aka.ms/asm-aks-addon-docs "
+                    "for more details on enabling Azure Service Mesh."
+                )
+            requested_revision = self.raw_param.get("revision", None)
+            if mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE or mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK:
+                if len(new_profile.istio.revisions) < 2:
+                    raise ArgumentUsageError('Azure Service Mesh upgrade is not in progress.')
+
+                sorted_revisons = self._sort_revisions(new_profile.istio.revisions)
+                if mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE:
+                    revision_to_remove = sorted_revisons[0]
+                    revision_to_keep = sorted_revisons[-1]
+                else:
+                    revision_to_remove = sorted_revisons[-1]
+                    revision_to_keep = sorted_revisons[0]
+                msg = (f"This operation will remove Istio control plane for revision {revision_to_remove}. "
+                       f"Please ensure all data plane workloads have been rolled over to revision {revision_to_keep} so that they are still part of the mesh. "
+                       "\nAre you sure you want to proceed?")
+                if prompt_y_n(msg, default="y"):
+                    new_profile.istio.revisions.remove(revision_to_remove)
+                    updated = True
+            elif mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START and requested_revision is not None:
+                if new_profile.istio.revisions is None:
+                    new_profile.istio.revisions = []
+                new_profile.istio.revisions.append(requested_revision)
+                updated = True
+
         if updated:
             return new_profile
         else:
             return self.mc.service_mesh_profile
+
+    def _sort_revisions(self, revisions):
+        def _convert_revision_to_semver(rev):
+            sr = rev.replace("asm-", "")
+            sv = sr.replace("-", ".", 1)
+            # Add a custom patch version of 0
+            sv += ".0"
+            return semver.VersionInfo.parse(sv)
+
+        sorted_revisions = sorted(revisions, key=_convert_revision_to_semver)
+        return sorted_revisions
 
     def _get_k8s_support_plan(self) -> KubernetesSupportPlan:
         support_plan = self.raw_param.get("k8s_support_plan")
