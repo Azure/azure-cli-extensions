@@ -49,7 +49,7 @@ def generate_tags(tag):
 class VolumeCreate(_VolumeCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg, AAZIntArgFormat
+        from azure.cli.core.aaz import AAZStrArg, AAZIntArg, AAZIntArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         # args_schema.client_auth_config = AAZBoolArg(
         #     options=["--client-auth-configuration", "--client-auth-config"],
@@ -74,10 +74,11 @@ class VolumeCreate(_VolumeCreate):
             help="Name or Resource ID of the vnet. If you want to use a vnet in other resource group or subscription, please provide the Resource ID instead of the name of the vnet.",
             required=True,
         )
-        # args_schema.usage_threshold = AAZIntArg(
+        
+        # args_schema.usage_thresholdTibs = AAZIntArg(
         #     options=["--usage-threshold"],
         #     arg_group="Properties",
-        #     help="Maximum storage quota allowed for a file system in bytes. This is a soft quota used for alerting only. Minimum size is 100 GiB. Upper limit is 100TiB, 500Tib for LargeVolume. Specified in bytes.",
+        #     help="Maximum storage quota allowed for a file system as integer number of GiB. Min 100 GiB, max 500TiB. This is a soft quota used for alerting only. Minimum size is 100 GiB. Upper limit is 100TiB, 500Tib for LargeVolume.",
         #     required=True,
         #     default=100,
         #     fmt=AAZIntArgFormat(
@@ -86,7 +87,7 @@ class VolumeCreate(_VolumeCreate):
         #     ),
         # )
 
-        args_schema.usage_threshold.fmt = AAZIntArgFormat(
+        args_schema.usage_threshold._fmt = AAZIntArgFormat(
             maximum=500,
             minimum=100,
         )
@@ -96,9 +97,12 @@ class VolumeCreate(_VolumeCreate):
     def pre_operations(self):
         args = self.ctx.args
         # RP expects bytes but CLI allows integer TiBs for ease of use
-        # gib_scale = 1024 * 1024 * 1024
-        # tib_scale = gib_scale * 1024
-        # args.usage_threshold = int(args.usage_threshold) * gib_scale
+        logger.debug(f"ANF-Extension log: usage_threshold: {args.usage_threshold}")
+        if args.usage_threshold is not None:
+            gib_scale = 1024 * 1024 * 1024
+            tib_scale = gib_scale * 1024
+            args.usage_threshold = int(args.usage_threshold.to_serialized_data()) * gib_scale
+
         # default the resource group of the subnet to the volume's rg unless the subnet is specified by id
         subnet_rg = args.resource_group
         subs_id = self.ctx.subscription_id

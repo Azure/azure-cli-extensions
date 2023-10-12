@@ -7,7 +7,7 @@ from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
 # POOL_DEFAULT = "--service-level 'Premium' --size 4398046511104"
 POOL_DEFAULT = "--service-level 'Premium' --size 4"
-VOLUME_DEFAULT = "--service-level 'Premium' --usage-threshold 107374182400"
+VOLUME_DEFAULT = "--service-level 'Premium' --usage-threshold 100"
 RG_LOCATION = "westus2"
 # No tidy up of tests required. The resource group is automatically removed
 
@@ -103,9 +103,8 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
         tags = "Tag1=Value2"
 
         volume = self.create_volume(account_name, pool_name, volume_name, '{rg}')
-        assert volume['name'] == account_name + '/' + pool_name + '/' + volume_name
-        GIB_SCALE = 1024 * 1024 * 1024
-        usage = 200 * GIB_SCALE
+        assert volume['name'] == account_name + '/' + pool_name + '/' + volume_name        
+        usage = 200
         volume = self.cmd("az netappfiles volume update --resource-group {rg} -a %s -p %s -v %s --tags %s --usage-threshold %s" % (account_name, pool_name, volume_name, tags, usage)).get_output_in_json()
         assert volume['name'] == account_name + '/' + pool_name + '/' + volume_name
         assert volume['serviceLevel'] == "Premium"  # unchanged
