@@ -68,7 +68,7 @@ class VolumeCreate(_VolumeCreate):
     def pre_operations(self):
         args = self.ctx.args
         # RP expects bytes but CLI allows integer TiBs for ease of use
-        logger.debug("ANF-Extension log: usage_threshold: %s",args.usage_threshold)
+        logger.debug("ANF-Extension log: usage_threshold: %s", args.usage_threshold)
         if args.usage_threshold is not None:
             gib_scale = 1024 * 1024 * 1024
             args.usage_threshold = int(args.usage_threshold.to_serialized_data()) * gib_scale
@@ -156,7 +156,7 @@ class VolumeUpdate(_VolumeUpdate):
         args = self.ctx.args
         # RP expects bytes but CLI allows integer TiBs for ease of use
         logger.debug("ANF-Extension log: VolumeUpdate")
-        logger.debug("ANF-Extension log: usage_threshold: %s",args.usage_threshold)
+        logger.debug("ANF-Extension log: usage_threshold: %s", args.usage_threshold)
         if args.usage_threshold is not None:
             gib_scale = 1024 * 1024 * 1024
             args.usage_threshold = int(args.usage_threshold.to_serialized_data()) * gib_scale
