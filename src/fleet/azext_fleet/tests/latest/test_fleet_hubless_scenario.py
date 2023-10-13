@@ -107,7 +107,7 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('name', '{updaterun}')
         ])
 
-        self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name}')
+        self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name} --yes')
 
         update_strategy_name = self.cmd('fleet updatestrategy create -g {rg} -n {updateStrategy_name} -f {fleet_name} --stages {stages_file}', checks=[
             self.check('name', '{updateStrategy_name}')
@@ -143,7 +143,7 @@ class FleetHublessScenarioTest(ScenarioTest):
 
         self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name} --yes')
 
-        self.cmd('fleet updatestrategy delete -g {rg} -f {fleet_name} -n {updateStrategy_name}')
+        self.cmd('fleet updatestrategy delete -g {rg} -f {fleet_name} -n {updateStrategy_name} --yes')
 
         self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member_name} --yes')
 
