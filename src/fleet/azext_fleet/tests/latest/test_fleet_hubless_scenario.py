@@ -109,7 +109,7 @@ class FleetHublessScenarioTest(ScenarioTest):
 
         self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name}')
 
-        update_strategy_id = self.cmd('fleet updatestrategy create -g {rg} -n {updateStrategy_name} -f {fleet_name} --stages {stages_file}', checks=[
+        update_strategy_name = self.cmd('fleet updatestrategy create -g {rg} -n {updateStrategy_name} -f {fleet_name} --stages {stages_file}', checks=[
             self.check('name', '{updateStrategy_name}')
         ]).get_output_in_json()['id']
 
@@ -122,10 +122,10 @@ class FleetHublessScenarioTest(ScenarioTest):
         ])
 
         self.kwargs.update({
-            'update_strategy_id': update_strategy_id,
+            'update_strategy_name': update_strategy_name,
         })
 
-        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.27.1 --update-strategy-id {update_strategy_id}', checks=[
+        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.27.1 --update-strategy-name {update_strategy_name}', checks=[
             self.check('name', '{updaterun}')
         ])
 
@@ -141,10 +141,10 @@ class FleetHublessScenarioTest(ScenarioTest):
             self.check('length([])', 1)
         ])
 
-        self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name}')
+        self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name} --yes')
 
         self.cmd('fleet updatestrategy delete -g {rg} -f {fleet_name} -n {updateStrategy_name}')
 
-        self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member_name}')
+        self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member_name} --yes')
 
-        self.cmd('fleet delete -g {rg} -n {fleet_name}')
+        self.cmd('fleet delete -g {rg} -n {fleet_name} --yes')
