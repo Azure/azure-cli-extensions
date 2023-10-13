@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create an admin rule collection.
 
     :example: Create security admin rule collections
-        az network manager security-admin-config rule-collection create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager"  -g "rg1" --rule-collection-name "myTestCollection" --description "A sample description" --applies-to-groups network-group-id="/subscriptions/sub_id/resourceGroups/rgid/providers/Microsoft.Network/networkManagers/TestNetworkManager/networkGroups/TestNetworkGroup"
+        az network manager security-admin-config rule-collection create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager"  -g "rg1" --rule-collection-name "myTestCollection" --description "A sample description" --applies-to-groups network-group-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/networkManagers/testNetworkManager/networkGroups/testNetworkGroup"
     """
 
     _aaz_info = {

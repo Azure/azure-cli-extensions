@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update an admin rule collection.
 
     :example: Update security admin rule collection
-        az network manager security-admin-config rule-collection update --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection"
+        az network manager security-admin-config rule-collection update --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --description "Updated description." --applies-to-groups network-group-id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Network/networkManagers/testNetworkManager/networkGroups/testNetworkGroup"
     """
 
     _aaz_info = {
