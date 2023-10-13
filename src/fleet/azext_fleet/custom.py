@@ -15,6 +15,7 @@ from azure.cli.core.util import sdk_no_wait
 from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
 from azext_fleet._helpers import print_or_merge_credentials
 
+
 # pylint: disable=too-many-locals
 def create_fleet(cmd,
                  client,
@@ -118,7 +119,7 @@ def create_fleet(cmd,
                        resource_group_name,
                        name,
                        fleet,
-                       polling_interval = poll_interval)
+                       polling_interval=poll_interval)
 
 
 def update_fleet(cmd,
@@ -319,9 +320,11 @@ def create_update_run(cmd,
 
     updateStrategyId = None
     if update_strategy_name is not None:
-        subId=get_subscription_id(cmd.cli_ctx)
-        updateStrategyId = f"/subscriptions/{subId}/resourceGroups/{resource_group_name}" \
-            "/providers/Microsoft.ContainerService/fleets/{fleet_name}/updateStrategies/{update_strategy_name}"
+        subId = get_subscription_id(cmd.cli_ctx)
+        updateStrategyId = (
+            f"/subscriptions/{subId}/resourceGroups/{resource_group_name}"
+            f"/providers/Microsoft.ContainerService/fleets/{fleet_name}/updateStrategies/{update_strategy_name}"
+        )
 
     update_run = update_run_model(
         update_strategy_id=updateStrategyId,
@@ -331,8 +334,10 @@ def create_update_run(cmd,
     result = None
     try:
         result = sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run)
-        print("After successfully creating the run, you need to use the following command to start the run:" \
-          "az fleet updaterun start --resource-group={resource_group_name} --fleet={fleet_name} --name={name}")
+        print(
+                "After successfully creating the run, you need to use the following command to start the run:"
+                f"az fleet updaterun start --resource-group={resource_group_name} --fleet={fleet_name} --name={name}"
+            )
     except Exception as e:
         return e
 
