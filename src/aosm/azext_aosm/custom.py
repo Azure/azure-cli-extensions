@@ -61,9 +61,11 @@ def build_definition(
 
     :param definition_type: VNF or CNF
     :param config_file: path to the file
-    :param definition_type: VNF, CNF
-    :param interactive - whether to prompt for input when creating deploy parameters
-                         mapping files
+    :param order_params: VNF definition_type only - ignored for CNF. Order
+        deploymentParameters schema and configMappings to have the parameters without
+        default values at the top.
+    :param interactive: Whether to prompt for input when creating deploy parameters
+        mapping files
     :param force: force the build even if the design has already been built
     """
 
@@ -95,6 +97,8 @@ def generate_definition_config(definition_type: str, output_file: str = "input.j
         config = CNFConfiguration.helptext()
     elif definition_type == VNF:
         config = VNFConfiguration.helptext()
+    else:
+        raise ValueError("definition_type must be CNF or VNF")
 
     _generate_config(configuration=config, output_file=output_file)
 
@@ -104,8 +108,8 @@ def _get_config_from_file(config_file: str, configuration_type: str) -> Configur
     Read input config file JSON and turn it into a Configuration object.
 
     :param config_file: path to the file
-    :param definition_type: VNF, CNF or NSD
-    :rtype: Configuration
+    :param configuration_type: VNF, CNF or NSD
+    :returns: The Configuration object
     """
 
     if not os.path.exists(config_file):
@@ -248,12 +252,6 @@ def publish_definition(
         aosm_client=client,
         resource_client=cf_resources(cmd.cli_ctx),
     )
-
-    if definition_type not in (VNF, CNF):
-        raise ValueError(
-            "Definition type must be either 'vnf' or 'cnf'. Definition type"
-            f" '{definition_type}' is not valid for network function definitions."
-        )
 
     config = _get_config_from_file(
         config_file=config_file, configuration_type=definition_type
