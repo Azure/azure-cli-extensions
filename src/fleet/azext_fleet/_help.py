@@ -31,7 +31,6 @@ helps['fleet create'] = """
 helps['fleet update'] = """
     type: command
     short-summary: Patches a fleet resource.
-    parameters:
     examples:
         - name: Update a Fleet's tags
           text: az fleet update -g MyResourceGroup -n MyFleetName --tags Key=Value
