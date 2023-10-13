@@ -299,7 +299,7 @@ def create_update_run(cmd,
     node_image_selection_model = cmd.get_models(
         "NodeImageSelection",
         resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="update_runs" 
+        operation_group="update_runs"
     )
     update_run_model = cmd.get_models(
         "UpdateRun",
