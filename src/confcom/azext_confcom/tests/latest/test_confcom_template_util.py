@@ -489,16 +489,17 @@ LmZyYW1ld29yay5lcnJvcnN9Cg=="""
             }
         }
         """
+        filename = "test_template.json"
         # write template to file for testing
-        with open("test_template.json", "w") as f:
+        with open(filename, "w") as f:
             f.write(template)
 
         with self.assertRaises(SystemExit) as exc_info:
-            acipolicygen_confcom(None, "test_template.json", None, None, None, None)
+            acipolicygen_confcom(None, filename, None, None, None, None)
 
         self.assertEqual(exc_info.exception.code, 0)
 
-        with open("test_template.json", "r") as f:
+        with open(filename, "r") as f:
             template_with_policy = load_json_from_str(f.read())
 
             # check if template contains confidential compute policy
@@ -528,4 +529,4 @@ LmZyYW1ld29yay5lcnJvcnN9Cg=="""
                 > 0
             )
         # delete test file
-        os.remove("test_template.json")
+        os.remove(filename)
