@@ -4,14 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import tempfile
 import unittest
 import pytest
 import deepdiff
 import json
 import docker
 
-import threading
 from azext_confcom.security_policy import (
     OutputType,
     load_policy_from_arm_template_str,
@@ -21,7 +19,6 @@ from azext_confcom.errors import (
 )
 import azext_confcom.config as config
 
-sem = threading.Semaphore(4)
 # @unittest.skip("not in use")
 @pytest.mark.run(order=11)
 class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
@@ -30,24 +27,16 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
         # this is simulating the output of the "load_tar_mapping_from_file" output
         path = os.path.dirname(__file__)
         image_path = os.path.join(path, "./nginx.tar")
-
         cls.path = path
-
         cls.image_path = image_path
-        client = docker.from_env()
-        image = client.images.get("nginx:1.22")
-        f = open(image_path, "wb")
-        for chunk in image.save(named=True):
-            f.write(chunk)
-        f.close()
-        client.close()
-
-    @classmethod
-    def tearDownClass(cls) -> None:
-        # delete the tar file once all the tests are done
-        if not sem.acquire(blocking=False) and os.path.isfile(cls.image_path):
-            os.remove(cls.image_path)
-
+        if not os.path.isfile(image_path):
+            client = docker.from_env()
+            image = client.images.get("nginx:1.22")
+            f = open(image_path, "wb")
+            for chunk in image.save(named=True):
+                f.write(chunk)
+            f.close()
+            client.close()
 
     def test_arm_template_with_parameter_file_clean_room_tar(self):
         custom_arm_json_default_value = """
@@ -189,7 +178,6 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             clean_room_image.populate_policy_content_for_all_images(
                 tar_mapping=tar_mapping_file
             )
-            sem.release()
         except Exception as e:
             print(e)
             raise AccContainerError("Could not get image from tar file")
@@ -392,7 +380,6 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
         clean_room_image.populate_policy_content_for_all_images(
             tar_mapping=image_path
             )
-        sem.release()
 
         regular_image_json = json.loads(
             regular_image.get_serialized_output(output_type=OutputType.RAW, rego_boilerplate=False)
@@ -548,7 +535,6 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             clean_room_image.populate_policy_content_for_all_images(
                 tar_mapping=image_path
             )
-            sem.release()
             raise AccContainerError("getting image should fail")
         except:
             pass
@@ -687,5 +673,4 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             )
             raise AccContainerError("getting image should fail")
         except FileNotFoundError:
-            sem.release()
             pass
