@@ -18,6 +18,7 @@ from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 from azext_aosm.util.constants import (
     CONFIG_MAPPINGS_DIR_NAME,
     DEPLOYMENT_PARAMETERS_FILENAME,
+    EXTRA_VHD_PARAMETERS,
     OPTIONAL_DEPLOYMENT_PARAMETERS_FILENAME,
     OPTIONAL_DEPLOYMENT_PARAMETERS_HEADING,
     SCHEMA_PREFIX,
@@ -299,7 +300,7 @@ class VnfNfdGenerator(NFDGenerator):
             **{
                 snake_case_to_camel_case(key): value
                 for key, value in vhd_config.__dict__.items()
-                if key.startswith("image") and value is not None
+                if key in EXTRA_VHD_PARAMETERS and value is not None
             },
         }
 

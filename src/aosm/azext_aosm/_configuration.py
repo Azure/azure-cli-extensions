@@ -74,8 +74,6 @@ class ArtifactConfig:
 @dataclass
 class VhdArtifactConfig(ArtifactConfig):
     image_disk_size_GB: Optional[Union[str, int]] = None
-    image_os_state: Optional[str] = None
-    image_os_type: Optional[str] = None
     image_hyper_v_generation: Optional[str] = None
     image_api_version: Optional[str] = None
 
@@ -99,19 +97,13 @@ class VhdArtifactConfig(ArtifactConfig):
                 "Optional. Specifies the size of empty data disks in gigabytes. "
                 "This value cannot be larger than 1023 GB."
             ),
-            image_os_state=(
-                "Optional. The OS State. For managed images, use Generalized."
-            ),
-            image_os_type=(
-                "Optional. This property allows you to specify the type of the "
-                "OS that is included in the disk if creating a VM from a custom image."
-            ),
             image_hyper_v_generation=(
                 "Optional. Specifies the HyperVGenerationType of the VirtualMachine "
-                "created from the image."
+                "created from the image. Valid values are V1 and V2. V1 is the default if "
+                "not specified."
             ),
             image_api_version=(
-                "Optional. The ARM API version used to create the image resource."
+                "Optional. The ARM API version used to create the Microsoft.Compute/images resource."
             ),
             **asdict(ArtifactConfig.helptext()),
         )

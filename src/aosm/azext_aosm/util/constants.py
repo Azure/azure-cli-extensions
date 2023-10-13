@@ -38,7 +38,9 @@ NSD_DEFINITION_JINJA2_SOURCE_TEMPLATE = "nsd_template.bicep.j2"
 NSD_BICEP_FILENAME = "nsd_definition.bicep"
 NSD_OUTPUT_BICEP_PREFIX = "nsd-bicep-templates"
 NSD_ARTIFACT_MANIFEST_BICEP_FILENAME = "artifact_manifest.bicep"
-NSD_ARTIFACT_MANIFEST_SOURCE_TEMPLATE_FILENAME = "artifact_manifest_template.bicep"
+NSD_ARTIFACT_MANIFEST_SOURCE_TEMPLATE_FILENAME = (
+    "artifact_manifest_template.bicep"
+)
 
 VNF_DEFINITION_BICEP_TEMPLATE_FILENAME = "vnfdefinition.bicep"
 VNF_MANIFEST_BICEP_TEMPLATE_FILENAME = "vnfartifactmanifests.bicep"
@@ -78,6 +80,14 @@ SCHEMA_PREFIX = {
     "type": "object",
     "properties": {},
 }
+
+# For VNF NFD Generator
+# To check whether extra VHD parameters have been provided
+EXTRA_VHD_PARAMETERS = [
+    "image_disk_size_GB",
+    "image_hyper_v_generation",
+    "image_api_version",
+]
 
 # For CNF NFD Generator
 # To match the image path if image: is present in the yaml file
