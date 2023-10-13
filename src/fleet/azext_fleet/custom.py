@@ -15,7 +15,7 @@ from azure.cli.core.util import sdk_no_wait
 from azext_fleet._client_factory import CUSTOM_MGMT_FLEET
 from azext_fleet._helpers import print_or_merge_credentials
 
-
+# pylint: disable=too-many-locals
 def create_fleet(cmd,
                  client,
                  resource_group_name,
@@ -112,8 +112,13 @@ def create_fleet(cmd,
         hub_profile=fleet_hub_profile,
         identity=managed_service_identity
     )
-    
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, name, fleet, polling_interval = poll_interval)
+
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name,
+                       name,
+                       fleet,
+                       polling_interval = poll_interval)
 
 
 def update_fleet(cmd,
@@ -294,7 +299,7 @@ def create_update_run(cmd,
     node_image_selection_model = cmd.get_models(
         "NodeImageSelection",
         resource_type=CUSTOM_MGMT_FLEET,
-        operation_group="update_runs"
+        operation_group="update_runs" 
     )
     update_run_model = cmd.get_models(
         "UpdateRun",
@@ -304,26 +309,34 @@ def create_update_run(cmd,
 
     managed_cluster_upgrade_spec = managed_cluster_upgrade_spec_model(
         type=upgrade_type, kubernetes_version=kubernetes_version)
-    if node_image_selection == None:
+    if node_image_selection is None:
         node_image_selection = "Latest"
     node_image_selection_type = node_image_selection_model(type=node_image_selection)
 
     managed_cluster_update = managed_cluster_update_model(
         upgrade=managed_cluster_upgrade_spec,
         node_image_selection=node_image_selection_type)
-    
+
     updateStrategyId = None
     if update_strategy_name is not None:
         subId=get_subscription_id(cmd.cli_ctx)
-        updateStrategyId = f"/subscriptions/{subId}/resourceGroups/{resource_group_name}/providers/Microsoft.ContainerService/fleets/{fleet_name}/updateStrategies/{update_strategy_name}"
+        updateStrategyId = f"/subscriptions/{subId}/resourceGroups/{resource_group_name}" \
+            "/providers/Microsoft.ContainerService/fleets/{fleet_name}/updateStrategies/{update_strategy_name}"
 
     update_run = update_run_model(
         update_strategy_id=updateStrategyId,
         strategy=update_run_strategy,
         managed_cluster_update=managed_cluster_update)
-    
-    print("After successfully creating the run, you need to use the following command to start the run: az fleet updaterun start --resource-group={resource_group_name} --fleet={fleet_name} --name={name}")
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run)
+
+    result = None
+    try:
+        result = sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, update_run)
+        print("After successfully creating the run, you need to use the following command to start the run:" \
+          "az fleet updaterun start --resource-group={resource_group_name} --fleet={fleet_name} --name={name}")
+    except Exception as e:
+        return e
+
+    return result
 
 
 def show_update_run(cmd,  # pylint: disable=unused-argument
