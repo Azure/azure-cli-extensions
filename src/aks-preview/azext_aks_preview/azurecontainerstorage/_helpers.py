@@ -4,49 +4,99 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.azclierror import UnknownError
-from azure.cli.command_modules.resource.custom import register_provider
 from azure.cli.command_modules.acs._roleassignments import (
     add_role_assignment,
     build_role_scope,
     delete_role_assignments,
 )
+from azext_aks_preview._client_factory import get_providers_client_factory
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_K8S_EXTENSION_NAME,
     CONST_STORAGE_POOL_NAME_PREFIX,
     CONST_STORAGE_POOL_RANDOM_LENGTH,
+    RP_REGISTRATION_POLLING_INTERVAL_IN_SEC,
 )
+
+from datetime import datetime
 import random
 import string
 
 
-def _register_dependent_rps(cmd):
-    register_provider(cmd, 'Microsoft.Kubernetes', wait=True)
-    register_provider(cmd, 'Microsoft.KubernetesConfiguration', wait=True)
-    register_provider(cmd, 'Microsoft.ExtendedLocation', wait=True)
+def _register_dependent_rps(cmd, subscription_id):
+    required_rps = ['Microsoft.Kubernetes', 'Microsoft.KubernetesConfiguration', 'Microsoft.ExtendedLocation']
+    from azure.mgmt.resource.resources.models import ProviderRegistrationRequest, ProviderConsentDefinition
 
+    for rp in required_rps:
+        properties = ProviderRegistrationRequest(third_party_provider_consent=ProviderConsentDefinition(consent_to_authorization=False))
+        client = get_providers_client_factory(cmd.cli_ctx)
+        try:
+            is_registered = _is_rp_registered(cmd, rp, subscription_id)
+            if is_registered:
+                continue
+            client.register(rp, properties=properties)
+            # wait for registration to finish
+            timeout_secs = 120
+            start = datetime.utcnow()
+            is_registered = _is_rp_registered(cmd, rp, subscription_id)
+            while not is_registered:
+                is_registered = _is_rp_registered(cmd, rp, subscription_id)
+                time.sleep(RP_REGISTRATION_POLLING_INTERVAL_IN_SEC)
+                if (datetime.utcnow() - start).seconds >= timeout_secs:
+                    raise UnknownError("Timed out while waiting for the {0} resource provider to be registered.".format(rp))
+
+        except Exception as e:
+            rp_str = ", ".join(required_rps)
+            raise UnknownError(
+                "Installation of Azure Container Storage requires registering to the following resource providers: {0}. "
+                "We were unable to perform the registration on your behalf. "
+                "The following error was received: {1}\n"
+                "Please check with your admin on permissions, "
+                "or try running registration manually with: `az provider register` command."
+                .format(rp_str, e.msg)
+            )
+
+def _is_rp_registered(cmd, rp, subscription_id):
+    registered = False
+    try:
+        providers_client = get_providers_client_factory(cmd.cli_ctx, subscription_id)
+        registration_state = getattr(providers_client.get(rp), 'registration_state', "NotRegistered")
+
+        registered = (registration_state and registration_state.lower() == 'registered')
+    except Exception:  # pylint: disable=broad-except
+        pass
+    return registered
 
 def _perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_group, kubelet_identity_object_id, assign):
     managed_rg_role_scope = build_role_scope(node_resource_group, None, subscription_id)
     roles = ["Reader", "Network Contributor", "Elastic SAN Owner", "Elastic SAN Volume Group Owner"]
+    exception = False
 
     for role in roles:
-        if assign:
-            add_role_assignment(
-                cmd,
-                role,
-                kubelet_identity_object_id,
-                scope=managed_rg_role_scope,
-            )
-        else:
-            # NOTE: delete_role_assignments accepts cli_ctx
-            # instead of cmd unlike add_role_assignment.
-            delete_role_assignments(
-                cmd.cli_ctx,
-                role,
-                kubelet_identity_object_id,
-                scope=managed_rg_role_scope,
-            )
+        try:
+            if assign:
+                add_role_assignment(
+                    cmd,
+                    role,
+                    kubelet_identity_object_id,
+                    scope=managed_rg_role_scope,
+                )
+            else:
+                # NOTE: delete_role_assignments accepts cli_ctx
+                # instead of cmd unlike add_role_assignment.
+                delete_role_assignments(
+                    cmd.cli_ctx,
+                    role,
+                    kubelet_identity_object_id,
+                    scope=managed_rg_role_scope,
+                )
+        except Exception as ex:
+            exception = True
 
+    if assign and exception:
+        logger.warning(
+            "Unable to add Role Assignments needed for Elastic SAN storagepools to be functional. "
+            "Going ahead with the installation of Azure Container Storage..."
+        )
 
 def _generate_random_storage_pool_name():
     random_name = CONST_STORAGE_POOL_NAME_PREFIX + ''.join(random.choices(string.ascii_lowercase, k=CONST_STORAGE_POOL_RANDOM_LENGTH))

@@ -3027,7 +3027,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if enable_azure_container_storage:
             if cluster.identity_profile is None or cluster.identity_profile["kubeletidentity"] is None:
                 logger.warning(
-                    "Unexpected error getting kubelet's identity for the cluster."
+                    "Unexpected error getting kubelet's identity for the cluster. "
                     "Unable to perform the azure container storage operation."
                 )
                 return
@@ -3036,7 +3036,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             # `mc` in `context` still doesn't have the updated node_resource_group.
             if cluster.node_resource_group is None:
                 logger.warning(
-                    "Unexpected error getting cluster's node resource group."
+                    "Unexpected error getting cluster's node resource group. "
                     "Unable to perform the azure container storage operation."
                 )
                 return

@@ -44,11 +44,11 @@ def perform_enable_azure_container_storage(
     nodepool_name,
     is_cluster_create,
 ):
-    # Step 1: Register the dependent providers i.e.
+    # Step 1: Check and register the dependent providers i.e.
     # 1. Microsoft.Kubernetes
     # 2. Microsoft.KubernetesConfiguration
     # 3. Microsoft.ExtendedLocation
-    _register_dependent_rps(cmd)
+    _register_dependent_rps(cmd, subscription_id)
 
     # Step 2: Grant AKS cluster's node identity the following
     # roles on the AKS managed resource group:
