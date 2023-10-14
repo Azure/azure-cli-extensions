@@ -18,8 +18,12 @@ from azext_aks_preview.azurecontainerstorage._consts import (
 )
 
 from datetime import datetime
+from knack.log import get_logger
 import random
 import string
+import time
+
+logger = get_logger(__name__)
 
 
 def _register_dependent_rps(cmd, subscription_id):
@@ -53,6 +57,7 @@ def _register_dependent_rps(cmd, subscription_id):
             .format(required_rp, e.msg)
         )
 
+
 def _is_rp_registered(cmd, required_rp, subscription_id):
     registered = False
     try:
@@ -63,6 +68,7 @@ def _is_rp_registered(cmd, required_rp, subscription_id):
     except Exception:  # pylint: disable=broad-except
         pass
     return registered
+
 
 def _perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_group, kubelet_identity_object_id, assign):
     managed_rg_role_scope = build_role_scope(node_resource_group, None, subscription_id)
@@ -95,6 +101,7 @@ def _perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_g
             "Unable to add Role Assignments needed for Elastic SAN storagepools to be functional. "
             "Going ahead with the installation of Azure Container Storage..."
         )
+
 
 def _generate_random_storage_pool_name():
     random_name = CONST_STORAGE_POOL_NAME_PREFIX + ''.join(random.choices(string.ascii_lowercase, k=CONST_STORAGE_POOL_RANDOM_LENGTH))
