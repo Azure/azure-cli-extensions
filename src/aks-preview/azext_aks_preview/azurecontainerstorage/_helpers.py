@@ -23,43 +23,41 @@ import string
 
 
 def _register_dependent_rps(cmd, subscription_id):
-    required_rps = ['Microsoft.Kubernetes', 'Microsoft.KubernetesConfiguration', 'Microsoft.ExtendedLocation']
+    required_rp = 'Microsoft.KubernetesConfiguration'
     from azure.mgmt.resource.resources.models import ProviderRegistrationRequest, ProviderConsentDefinition
 
-    for rp in required_rps:
-        properties = ProviderRegistrationRequest(third_party_provider_consent=ProviderConsentDefinition(consent_to_authorization=False))
-        client = get_providers_client_factory(cmd.cli_ctx)
-        try:
-            is_registered = _is_rp_registered(cmd, rp, subscription_id)
-            if is_registered:
-                continue
-            client.register(rp, properties=properties)
-            # wait for registration to finish
-            timeout_secs = 120
-            start = datetime.utcnow()
-            is_registered = _is_rp_registered(cmd, rp, subscription_id)
-            while not is_registered:
-                is_registered = _is_rp_registered(cmd, rp, subscription_id)
-                time.sleep(RP_REGISTRATION_POLLING_INTERVAL_IN_SEC)
-                if (datetime.utcnow() - start).seconds >= timeout_secs:
-                    raise UnknownError("Timed out while waiting for the {0} resource provider to be registered.".format(rp))
+    properties = ProviderRegistrationRequest(third_party_provider_consent=ProviderConsentDefinition(consent_to_authorization=False))
+    client = get_providers_client_factory(cmd.cli_ctx)
+    try:
+        is_registered = _is_rp_registered(cmd, required_rp, subscription_id)
+        if is_registered:
+            return
+        client.register(required_rp, properties=properties)
+        # wait for registration to finish
+        timeout_secs = 120
+        start = datetime.utcnow()
+        is_registered = _is_rp_registered(cmd, required_rp, subscription_id)
+        while not is_registered:
+            is_registered = _is_rp_registered(cmd, required_rp, subscription_id)
+            time.sleep(RP_REGISTRATION_POLLING_INTERVAL_IN_SEC)
+            if (datetime.utcnow() - start).seconds >= timeout_secs:
+                raise UnknownError("Timed out while waiting for the {0} resource provider to be registered.".format(required_rp))
 
-        except Exception as e:
-            rp_str = ", ".join(required_rps)
-            raise UnknownError(
-                "Installation of Azure Container Storage requires registering to the following resource providers: {0}. "
-                "We were unable to perform the registration on your behalf. "
-                "The following error was received: {1}\n"
-                "Please check with your admin on permissions, "
-                "or try running registration manually with: `az provider register` command."
-                .format(rp_str, e.msg)
-            )
+    except Exception as e:
+        raise UnknownError(
+            "Installation of Azure Container Storage requires registering to the following resource providers: {0}. "
+            "We were unable to perform the registration on your behalf. "
+            "The following error was received: {1}\n"
+            "Please check with your admin on permissions, "
+            "or try running registration manually with: `az provider register --namespace {0}` command."
+            .format(required_rp, e.msg)
+        )
 
-def _is_rp_registered(cmd, rp, subscription_id):
+def _is_rp_registered(cmd, required_rp, subscription_id):
     registered = False
     try:
         providers_client = get_providers_client_factory(cmd.cli_ctx, subscription_id)
-        registration_state = getattr(providers_client.get(rp), 'registration_state', "NotRegistered")
+        registration_state = getattr(providers_client.get(required_rp), 'registration_state', "NotRegistered")
 
         registered = (registration_state and registration_state.lower() == 'registered')
     except Exception:  # pylint: disable=broad-except
