@@ -111,11 +111,11 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
     def test_parse_blob_url(self):
         sas = "sv=2018-03-28&sr=c&sig=some-sig&sp=racwl"
-        url = f"https://getest2.blob.core.windows.net/qio/rawOutputData?{sas}"
+        url = f"https://accountname.blob.core.windows.net/containername/rawOutputData?{sas}"
         args = _parse_blob_url(url)
 
-        self.assertEquals(args['account_name'], "getest2")
-        self.assertEquals(args['container'], "qio")
+        self.assertEquals(args['account_name'], "accountname")
+        self.assertEquals(args['container'], "containername")
         self.assertEquals(args['blob'], "rawOutputData")
         self.assertEquals(args['sas_token'], sas)
 
@@ -264,7 +264,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         test_location = get_test_workspace_location()
         test_resource_group = get_test_resource_group()
         test_workspace_temp = get_test_workspace_random_name()
-        test_provider_sku_list = "qci/qci-freepreview,rigetti/azure-quantum-credits,ionq/pay-as-you-go-cred,Microsoft/DZH3178M639F"
+        test_provider_sku_list = "qci/qci-freepreview,rigetti/azure-quantum-credits,ionq/pay-as-you-go-cred,microsoft-qc/learn-and-develop"
         test_storage = get_test_workspace_storage()
 
         self.cmd(f"az quantum workspace create -g {test_resource_group} -w {test_workspace_temp} -l {test_location} -a {test_storage} -r {test_provider_sku_list}")
@@ -277,14 +277,5 @@ class QuantumJobsScenarioTest(ScenarioTest):
         # Run a Qiskit pass-through job on IonQ
         results = self.cmd("az quantum run -t ionq.simulator --shots 100 --job-input-format ionq.circuit.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/Qiskit-3-qubit-GHZ-circuit.json --job-output-format ionq.quantum-results.v1 --job-params count=100 content-type=application/json -o json").get_output_in_json()
         self.assertIn("histogram", results)
-
-        # Unexplained behavior: upload_blob fails with on the next two tests, but the same commands succeed when run interactively.
-        # # Run a QIR job on QCI
-        # results = self.cmd("az quantum run -t qci.simulator --shots 100 --job-input-format qir.v1 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/Qrng.bc --entry-point Qrng__SampleQuantumRandomNumberGenerator -o json")
-        # self.assertIn("Histogram", results)
-        #
-        # # Run a QIO job
-        # results = self.cmd("az quantum run -t microsoft.paralleltempering-parameterfree.cpu --job-input-format microsoft.qio.v2 --job-input-file src/quantum/azext_quantum/tests/latest/input_data/QIO-Problem-2.json -o json").get_output_in_json()
-        # self.assertIn("solutions", results)
 
         self.cmd(f'az quantum workspace delete -g {test_resource_group} -w {test_workspace_temp}')

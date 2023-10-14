@@ -1,0 +1,94 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric npb list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.0 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/networkPacketBrokers?api-version=2023-06-15
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/op2lab-nf01/providers/microsoft.managednetworkfabric/networkpacketbrokers/default","name":"default","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-08-14T06:55:20.5042377Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-08-15T15:52:57.5733744Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/op2lab-nf01/providers/Microsoft.ManagedNetworkFabric/networkFabrics/op2labnf001","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/op2lab-nf01/providers/Microsoft.ManagedNetworkFabric/networkDevices/op2labnf001-AggrRack-NPB1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/op2lab-nf01/providers/Microsoft.ManagedNetworkFabric/networkDevices/op2labnf001-AggrRack-NPB2"],"networkTapIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/op2lab-nf01/providers/microsoft.managednetworkfabric/networktaps/vprobetap","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/op2lab-nf01/providers/microsoft.managednetworkfabric/networktaps/vprobetaptesting"]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1419'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Aug 2023 15:08:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 35d3be1a-47d1-4d05-9920-5c8c1e398089
+      - 47fc2a07-0404-4887-9b40-37f18f2aaf99
+      - ea03d7dc-2d0a-4d86-a21b-80020fa70746
+      - e5e15848-5204-4637-b435-3d5a56b94e70
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric npb list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.0 Python/3.8.10 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/op2lab-nf01/providers/Microsoft.ManagedNetworkFabric/networkPacketBrokers?api-version=2023-06-15
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/op2lab-nf01/providers/microsoft.managednetworkfabric/networkpacketbrokers/default","name":"default","type":"microsoft.managednetworkfabric/networkpacketbrokers","location":"eastus","systemData":{"createdBy":"a893dadc-5c8e-47f4-8379-6afb34bdbe12","createdByType":"Application","createdAt":"2023-08-14T06:55:20.5042377Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-08-15T15:52:57.5733744Z"},"properties":{"networkFabricId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/op2lab-nf01/providers/Microsoft.ManagedNetworkFabric/networkFabrics/op2labnf001","provisioningState":"Succeeded","networkDeviceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/op2lab-nf01/providers/Microsoft.ManagedNetworkFabric/networkDevices/op2labnf001-AggrRack-NPB1","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/op2lab-nf01/providers/Microsoft.ManagedNetworkFabric/networkDevices/op2labnf001-AggrRack-NPB2"],"networkTapIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/op2lab-nf01/providers/microsoft.managednetworkfabric/networktaps/vprobetap","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/op2lab-nf01/providers/microsoft.managednetworkfabric/networktaps/vprobetaptesting"]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1419'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 17 Aug 2023 15:08:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ca3fc631-8467-4b6f-8c33-d03c4594a8a9
+      - ebf90826-95a5-4c4d-bbd8-3a4da11e8056
+      - 2b9aa895-edcc-42ff-841d-1958528b6a1d
+      - ab855e6b-db20-4bdc-af93-9b96be240654
+    status:
+      code: 200
+      message: OK
+version: 1

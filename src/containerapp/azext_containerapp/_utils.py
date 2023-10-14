@@ -41,16 +41,22 @@ from azure.mgmt.servicelinker import ServiceLinkerManagementClient
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
 
-from ._clients import ContainerAppClient, ManagedEnvironmentClient, WorkloadProfileClient, ContainerAppsJobClient
-from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
+from ._clients import ContainerAppClient, ManagedEnvironmentClient, WorkloadProfileClient, ContainerAppsJobClient, \
+    ConnectedEnvCertificateClient
+from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, \
+    log_analytics_client_factory, log_analytics_shared_key_client_factory, custom_location_client_factory, \
+    k8s_extension_client_factory
+
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
-                         LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX,
-                         LOGS_STRING, PENDING_STATUS, SUCCEEDED_STATUS, UPDATING_STATUS, DEV_SERVICE_LIST)
+                         LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE,
+                         ACR_IMAGE_SUFFIX,
+                         LOGS_STRING, PENDING_STATUS, SUCCEEDED_STATUS, UPDATING_STATUS, DEV_SERVICE_LIST,
+                         MANAGED_ENVIRONMENT_RESOURCE_TYPE, CONTAINER_APP_EXTENSION_TYPE,
+                         CONNECTED_ENV_CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE)
 from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel,
-                      ManagedCertificateEnvelop as ManagedCertificateEnvelopModel,
-                      ServiceConnector as ServiceConnectorModel)
+                      ManagedCertificateEnvelop as ManagedCertificateEnvelopModel)
 from ._models import OryxMarinerRunImgTagProperty
-from ._managed_service_utils import ManagedRedisUtils, ManagedCosmosDBUtils, ManagedPostgreSQLUtils
+from ._managed_service_utils import ManagedRedisUtils, ManagedCosmosDBUtils, ManagedPostgreSQLFlexibleUtils, ManagedMySQLFlexibleUtils
 
 
 class AppType(Enum):
@@ -439,9 +445,14 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
                                                                               name, binding_name))
             elif service["type"] == "Microsoft.DBforPostgreSQL/flexibleServers":
                 service_connector_def_list.append(
-                    ManagedPostgreSQLUtils.build_postgresql_service_connector_def(subscription_id, resource_group_name,
-                                                                                  service_name, arg_dict,
-                                                                                  name, binding_name))
+                    ManagedPostgreSQLFlexibleUtils.build_postgresql_service_connector_def(subscription_id, resource_group_name,
+                                                                                          service_name, arg_dict,
+                                                                                          name, binding_name))
+            elif service["type"] == "Microsoft.DBforMySQL/flexibleServers":
+                service_connector_def_list.append(
+                    ManagedMySQLFlexibleUtils.build_mysql_service_connector_def(subscription_id, resource_group_name,
+                                                                                service_name, arg_dict,
+                                                                                name, binding_name))
             elif service["type"] == "Microsoft.App/containerApps":
                 containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name,
                                                            name=service_name)
@@ -538,7 +549,10 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
 
         if not validate_binding_name(binding_name):
             raise InvalidArgumentValueError("The Binding Name can only contain letters, numbers (0-9), periods ('.'), "
-                                            "and underscores ('_'). The length must not be more than 60 characters.")
+                                            "and underscores ('_'). The length must not be more than 60 characters. "
+                                            "By default, the binding name is the same as the service name you specified "
+                                            "[my-aca-pgaddon], but you can override the default and specify your own "
+                                            "compliant binding name like this --bind my-aca-pgaddon[:my_aca_pgaddon].")
 
         resource_client = get_mgmt_service_client(cmd.cli_ctx, ResourceManagementClient)
 
@@ -600,14 +614,6 @@ def parse_auth_flags(auth_list):
         })
 
     return auth_def
-
-
-def _update_revision_env_secretrefs(containers, name):
-    for container in containers:
-        if "env" in container:
-            for var in container["env"]:
-                if "secretRef" in var:
-                    var["secretRef"] = var["secretRef"].replace("{}-".format(name), "")
 
 
 def _update_revision_env_secretrefs(containers, name):
@@ -1612,6 +1618,17 @@ def check_cert_name_availability(cmd, resource_group_name, name, cert_name):
     return r
 
 
+def connected_env_check_cert_name_availability(cmd, resource_group_name, name, cert_name):
+    name_availability_request = {}
+    name_availability_request["name"] = cert_name
+    name_availability_request["type"] = CONNECTED_ENV_CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE
+    try:
+        r = ConnectedEnvCertificateClient.check_name_availability(cmd, resource_group_name, name, name_availability_request)
+    except CLIError as e:
+        handle_raw_exception(e)
+    return r
+
+
 def prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method, location=None):
     certificate_envelop = ManagedCertificateEnvelopModel
     certificate_envelop["location"] = location
@@ -1780,14 +1797,14 @@ def is_registry_msi_system(identity):
     return identity.lower() == "system"
 
 
-def validate_environment_location(cmd, location):
-    res_locations = list_environment_locations(cmd)
+def validate_environment_location(cmd, location, resource_type=MANAGED_ENVIRONMENT_RESOURCE_TYPE):
+    res_locations = list_environment_locations(cmd, resource_type=resource_type)
 
     allowed_locs = ", ".join(res_locations)
 
     if location:
         try:
-            _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
+            _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, resource_type)
 
             return location
         except Exception as e:  # pylint: disable=broad-except
@@ -1796,12 +1813,12 @@ def validate_environment_location(cmd, location):
         return res_locations[0]
 
 
-def list_environment_locations(cmd):
+def list_environment_locations(cmd, resource_type=MANAGED_ENVIRONMENT_RESOURCE_TYPE):
     providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
     resource_types = getattr(providers_client.get(CONTAINER_APPS_RP), 'resource_types', [])
     res_locations = []
     for res in resource_types:
-        if res and getattr(res, 'resource_type', "") == "managedEnvironments":
+        if res and getattr(res, 'resource_type', "") == resource_type:
             res_locations = getattr(res, 'locations', [])
 
     res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
@@ -1893,7 +1910,7 @@ def _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, l
 
 
 def certificate_location_matches(certificate_object, location=None):
-    return certificate_object["location"] == location or not location
+    return format_location(certificate_object["location"]) == format_location(location) or not location
 
 
 def certificate_thumbprint_matches(certificate_object, thumbprint=None):
@@ -2083,3 +2100,53 @@ def parse_oryx_mariner_tag(tag: str) -> OryxMarinerRunImgTagProperty:
     else:
         tag_obj = None
     return tag_obj
+
+
+def get_custom_location(cmd, custom_location_id):
+    parsed_custom_loc = parse_resource_id(custom_location_id)
+    subscription_id = parsed_custom_loc.get("subscription")
+    custom_loc_name = parsed_custom_loc.get("name")
+    custom_loc_rg = parsed_custom_loc.get("resource_group")
+    custom_location = None
+    try:
+        custom_location = custom_location_client_factory(cmd.cli_ctx, subscription_id=subscription_id).get(resource_group_name=custom_loc_rg, resource_name=custom_loc_name)
+    except ResourceNotFoundError:
+        pass
+    return custom_location
+
+
+def get_cluster_extension(cmd, cluster_extension_id=None):
+    parsed_extension = parse_resource_id(cluster_extension_id)
+    subscription_id = parsed_extension.get("subscription")
+    cluster_rg = parsed_extension.get("resource_group")
+    cluster_rp = parsed_extension.get("namespace")
+    cluster_type = parsed_extension.get("type")
+    cluster_name = parsed_extension.get("name")
+    resource_name = parsed_extension.get("resource_name")
+
+    return k8s_extension_client_factory(cmd.cli_ctx, subscription_id=subscription_id).get(
+        resource_group_name=cluster_rg,
+        cluster_rp=cluster_rp,
+        cluster_resource_name=cluster_type,
+        cluster_name=cluster_name,
+        extension_name=resource_name)
+
+
+def validate_custom_location(cmd, custom_location=None):
+    if not is_valid_resource_id(custom_location):
+        raise ValidationError('{} is not a valid Azure resource ID.'.format(custom_location))
+
+    r = get_custom_location(cmd=cmd, custom_location_id=custom_location)
+    if r is None:
+        raise ResourceNotFoundError("Cannot find custom location with custom location ID {}".format(custom_location))
+
+    # check extension type
+    extension_existing = False
+    for extension_id in r.cluster_extension_ids:
+        extension = get_cluster_extension(cmd, extension_id)
+        if extension.extension_type.lower() == CONTAINER_APP_EXTENSION_TYPE.lower():
+            extension_existing = True
+            break
+    if not extension_existing:
+        raise ValidationError('There is no Microsoft.App.Environment extension found associated with custom location {}'.format(custom_location))
+    return r.location

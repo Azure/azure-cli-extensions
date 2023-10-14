@@ -182,7 +182,3 @@ az communication rooms participant remove --room "roomId" --participants "8:acs:
 ```
 az communication email send --sender "NoReply@contoso.com" --subject "Contoso Update" --to "user1@user1-domain.com" "user2@user2-domain.com" --text "Hello valued client. There is an update."
 ```
-##### Get-Email-Status #####
-```
-az communication email status get --message-id "01234567-89ab-cdef-0123-012345678901"
-```

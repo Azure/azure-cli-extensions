@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "networkfabric controller delete",
 )
 class Delete(AAZCommand):
-    """Delete the Network Fabric Controller resource.
+    """Delete the Network Fabric Controller resource
 
     :example: Delete the Network Fabric Controller
         az networkfabric controller delete --resource-group "example-rg" --resource-name "example-nfc"
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers/{}", "2023-06-15"],
         ]
     }
 
@@ -47,7 +47,7 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the Network Fabric Controller",
+            help="Name of the Network Fabric Controller.",
             required=True,
             id_part="name",
         )
@@ -143,7 +143,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }

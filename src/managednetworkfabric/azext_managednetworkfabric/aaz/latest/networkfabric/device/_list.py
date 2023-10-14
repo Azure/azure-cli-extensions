@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "networkfabric device list",
 )
 class List(AAZCommand):
-    """List all Network Devices in the provided resource group or subscription.
+    """List all Network Devices in the provided resource group or subscription
 
     :example: List the Network Devices for Resource Group
         az networkfabric device list --resource-group "example-rg"
@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkdevices", "2023-02-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/networkdevices", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkdevices", "2023-06-15"],
         ]
     }
 
@@ -119,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -171,7 +171,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -183,17 +183,32 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
             properties.host_name = AAZStrType(
                 serialized_name="hostName",
             )
+            properties.management_ipv4_address = AAZStrType(
+                serialized_name="managementIpv4Address",
+                flags={"read_only": True},
+            )
+            properties.management_ipv6_address = AAZStrType(
+                serialized_name="managementIpv6Address",
+                flags={"read_only": True},
+            )
             properties.network_device_role = AAZStrType(
                 serialized_name="networkDeviceRole",
-                flags={"required": True},
+                flags={"read_only": True},
             )
             properties.network_device_sku = AAZStrType(
                 serialized_name="networkDeviceSku",
-                flags={"required": True},
             )
             properties.network_rack_id = AAZStrType(
                 serialized_name="networkRackId",
@@ -276,7 +291,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -328,7 +343,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -340,17 +355,32 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
             properties.host_name = AAZStrType(
                 serialized_name="hostName",
             )
+            properties.management_ipv4_address = AAZStrType(
+                serialized_name="managementIpv4Address",
+                flags={"read_only": True},
+            )
+            properties.management_ipv6_address = AAZStrType(
+                serialized_name="managementIpv6Address",
+                flags={"read_only": True},
+            )
             properties.network_device_role = AAZStrType(
                 serialized_name="networkDeviceRole",
-                flags={"required": True},
+                flags={"read_only": True},
             )
             properties.network_device_sku = AAZStrType(
                 serialized_name="networkDeviceSku",
-                flags={"required": True},
             )
             properties.network_rack_id = AAZStrType(
                 serialized_name="networkRackId",

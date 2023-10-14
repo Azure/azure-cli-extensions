@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.1.0
+++++++
+* `az databox job create`: Add new parameters `--transfer-all-blobs` and `--transfer-all-files` to support setting transfer all details
+
 1.0.0
 ++++++
 * `az databox job create`: Add new parameter `--transfer-type` `--transfer-configuration-type` `--transfer-filter-details` `--data-box-customer-disk` to support managing import or export` jobs

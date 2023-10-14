@@ -12,7 +12,8 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
 
 from ._validators import (validate_memory, validate_cpu, validate_managed_env_name_or_id, validate_registry_server,
                           validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress,
-                          validate_storage_name_or_id, validate_cors_max_age)
+                          validate_storage_name_or_id, validate_cors_max_age, validate_env_name_or_id,
+                          validate_allow_insecure, validate_custom_location_name_or_id)
 from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION, MAXIMUM_CONTAINER_APP_NAME_LENGTH, LOG_TYPE_CONSOLE, LOG_TYPE_SYSTEM
 
 
@@ -115,12 +116,14 @@ def load_arguments(self, _):
         c.argument('target_port', type=int, validator=validate_target_port, help="The application port used for ingress traffic.")
         c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2', 'tcp']), help="The transport protocol used for ingress traffic.")
         c.argument('exposed_port', type=int, help="Additional exposed port. Only supported by tcp transport protocol. Must be unique per environment if the app ingress is external.")
+        c.argument('allow_insecure', validator=validate_allow_insecure, arg_type=get_three_state_flag(), help='Allow insecure connections for ingress traffic.')
 
     with self.argument_context('containerapp create') as c:
         c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
-        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="Name of the workload profile to run the app on.", is_preview=True)
-        c.argument('secret_volume_mount', help="Path to mount all secrets e.g. mnt/secrets", is_preview=True)
-        c.argument('termination_grace_period', type=int, options_list=['--termination-grace-period', '--tgp'], help="Duration in seconds a replica is given to gracefully shut down before it is forcefully terminated. (Default: 30)", is_preview=True)
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="Name of the workload profile to run the app on.")
+        c.argument('secret_volume_mount', help="Path to mount all secrets e.g. mnt/secrets")
+        c.argument('termination_grace_period', type=int, options_list=['--termination-grace-period', '--tgp'], help="Duration in seconds a replica is given to gracefully shut down before it is forcefully terminated. (Default: 30)")
+        c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md.", is_preview=True)
 
     with self.argument_context('containerapp create', arg_group='Identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities to be assigned.")
@@ -135,14 +138,27 @@ def load_arguments(self, _):
         c.argument('service_type', help="The service information for dev services.")
         c.ignore('service_type')
 
+    with self.argument_context('containerapp create', arg_group='GitHub Repository', is_preview=True) as c:
+        c.argument('repo', help='Create an app via GitHub Actions in the format: https://github.com/<owner>/<repository-name> or <owner>/<repository-name>')
+        c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line. If not provided or not found in the cache (and using --repo), a browser page will be opened to authenticate with Github.')
+        c.argument('branch', options_list=['--branch', '-b'], help='Branch in the provided GitHub repository. Assumed to be the GitHub repository\'s default branch if not specified.')
+        c.argument('context_path', help='Path in the repository to run docker build. Defaults to "./". Dockerfile is assumed to be named "Dockerfile" and in this directory.')
+        c.argument('service_principal_client_id', help='The service principal client ID. Used by GitHub Actions to authenticate with Azure.', options_list=["--service-principal-client-id", "--sp-cid"])
+        c.argument('service_principal_client_secret', help='The service principal client secret. Used by GitHub Actions to authenticate with Azure.', options_list=["--service-principal-client-secret", "--sp-sec"])
+        c.argument('service_principal_tenant_id', help='The service principal tenant ID. Used by GitHub Actions to authenticate with Azure.', options_list=["--service-principal-tenant-id", "--sp-tid"])
+
     with self.argument_context('containerapp show') as c:
         c.argument('show_secrets', help="Show Containerapp secrets.", action='store_true')
 
+    # Source
+    with self.argument_context('containerapp update') as c:
+        c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md.", is_preview=True)
+
     with self.argument_context('containerapp update', arg_group='Container') as c:
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
-        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile', is_preview=True)
-        c.argument('secret_volume_mount', help="Path to mount all secrets e.g. mnt/secrets", is_preview=True)
-        c.argument('termination_grace_period', type=int, options_list=['--termination-grace-period', '--tgp'], help="Duration in seconds a replica is given to gracefully shut down before it is forcefully terminated. (Default: 30)", is_preview=True)
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
+        c.argument('secret_volume_mount', help="Path to mount all secrets e.g. mnt/secrets")
+        c.argument('termination_grace_period', type=int, options_list=['--termination-grace-period', '--tgp'], help="Duration in seconds a replica is given to gracefully shut down before it is forcefully terminated. (Default: 30)")
 
     # Springboard
     with self.argument_context('containerapp update', arg_group='Service Binding') as c:
@@ -175,6 +191,7 @@ def load_arguments(self, _):
         c.argument('platform_reserved_cidr', options_list=['--platform-reserved-cidr'], help='IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other Subnet IP ranges')
         c.argument('platform_reserved_dns_ip', options_list=['--platform-reserved-dns-ip'], help='An IP address from the IP range defined by Platform Reserved CIDR that will be reserved for the internal DNS server.')
         c.argument('internal_only', arg_type=get_three_state_flag(), options_list=['--internal-only'], help='Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource, therefore must provide infrastructureSubnetResourceId if enabling this property')
+        c.argument('infrastructure_resource_group', options_list=['--infrastructure-resource-group', '-i'], help='Name for resource group that will contain infrastructure resources. If not provided, a resource group name will be generated.', is_preview=True)
     with self.argument_context('containerapp env', arg_group='Custom Domain') as c:
         c.argument('hostname', options_list=['--custom-domain-dns-suffix', '--dns-suffix'], help='The DNS suffix for the environment\'s custom domain.')
         c.argument('certificate_file', options_list=['--custom-domain-certificate-file', '--certificate-file'], help='The filepath of the certificate file (.pfx or .pem) for the environment\'s custom domain. To manage certificates for container apps, use `az containerapp env certificate`.')
@@ -190,7 +207,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env create') as c:
         c.argument('zone_redundant', options_list=["--zone-redundant", "-z"], help="Enable zone redundancy on the environment. Cannot be used without --infrastructure-subnet-resource-id. If used with --location, the subnet's location must match")
-        c.argument('enable_workload_profiles', action='store_true', options_list=["--enable-workload-profiles", "-w"], help="Allow this environment to have workload profiles", is_preview=True)
+        c.argument('enable_workload_profiles', arg_type=get_three_state_flag(), options_list=["--enable-workload-profiles", "-w"], help="Boolean indicating if the environment is enabled to have workload profiles")
 
     with self.argument_context('containerapp env update') as c:
         c.argument('name', name_type, help='Name of the Container Apps environment.')
@@ -270,7 +287,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp revision copy') as c:
         c.argument('from_revision', help='Revision to copy from. Default: latest revision.')
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
-        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile', is_preview=True)
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
 
     with self.argument_context('containerapp revision label') as c:
         c.argument('name', id_part=None)
@@ -321,11 +338,9 @@ def load_arguments(self, _):
         c.ignore('disable_max_length')
 
     with self.argument_context('containerapp env dapr-component') as c:
-        c.argument('dapr_app_id', help="The Dapr app ID.")
-        c.argument('dapr_app_port', help="The port of your app.")
-        c.argument('dapr_app_protocol', help="Tell Dapr which protocol your application is using.  Allowed values: grpc, http.")
         c.argument('dapr_component_name', help="The Dapr component name.")
         c.argument('environment_name', options_list=['--name', '-n'], help="The environment name.")
+        c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a Dapr component. All other parameters will be ignored. For an example, see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema')
 
     with self.argument_context('containerapp revision set-mode') as c:
         c.argument('mode', arg_type=get_enum_type(['single', 'multiple']), help="The active revisions mode for the container app.")
@@ -392,6 +407,10 @@ def load_arguments(self, _):
         c.argument('consumer_secret_setting_name', options_list=['--consumer-secret-name', '--secret-name'], help='The consumer secret name that contains the app secret.')
         c.argument('provider_name', required=True, help='The name of the custom OpenID Connect provider.')
         c.argument('openid_configuration', help='The endpoint that contains all the configuration endpoints for the provider.')
+        c.argument('token_store', arg_type=get_three_state_flag(), help='Boolean indicating if token store is enabled for the app.', is_preview=True)
+        c.argument('sas_url_secret', help='The blob storage SAS URL to be used for token store.', is_preview=True)
+        c.argument('sas_url_secret_name', help='The secret name that contains blob storage SAS URL to be used for token store.', is_preview=True)
+
         # auth update
         c.argument('set_string', options_list=['--set'], help='Value of a specific field within the configuration settings for the Azure App Service Authentication / Authorization feature.')
         c.argument('config_file_path', help='The path of the config file containing auth settings if they come from a file.')
@@ -417,7 +436,7 @@ def load_arguments(self, _):
         c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
         c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
         c.argument('environment', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
-        c.argument('validation_method', options_list=['--validation-method', '-v'], help='Validation method of custom domain ownership.', is_preview=True)
+        c.argument('validation_method', options_list=['--validation-method', '-v'], help='Validation method of custom domain ownership.')
 
     with self.argument_context('containerapp hostname add') as c:
         c.argument('hostname', help='The custom domain name.')
@@ -466,19 +485,26 @@ def load_arguments(self, _):
         c.argument('name', name_type, metavar='NAME', id_part='name', help=f"The name of the Container Apps Job. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_CONTAINER_APP_NAME_LENGTH} characters.")
         c.argument('cron_expression', help='Cron expression. Only supported for trigger type "Schedule"')
         c.argument('image', help="Container image, e.g. publisher/image-name:tag.")
-        c.argument('replica_completion_count', type=int, options_list=['--replica-completion-count', '--rcc'], help='Number of replicas that need to complete successfully for execution to succeed.')
-        c.argument('replica_retry_limit', type=int, help='Maximum number of retries before the replica fails.')
-        c.argument('replica_timeout', type=int, help='Maximum number of seconds a replica can execute.')
-        c.argument('parallelism', type=int, help='Maximum number of replicas to run per execution.')
+        c.argument('replica_completion_count', type=int, options_list=['--replica-completion-count', '--rcc'], help='Number of replicas that need to complete successfully for execution to succeed')
+        c.argument('replica_retry_limit', type=int, help='Maximum number of retries before the replica fails')
+        c.argument('replica_timeout', type=int, help='Maximum number of seconds a replica can execute')
+        c.argument('parallelism', type=int, help='Maximum number of replicas to run per execution')
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
-        c.argument('min_executions', type=int, help="Minimum number of job executions that are created for a trigger, default 0.")
-        c.argument('max_executions', type=int, help="Maximum number of job executions that are created for a trigger, default 100.")
-        c.argument('polling_interval', type=int, help="Interval to check each event source in seconds. Defaults to 30s.", default=30)
+        c.argument('min_executions', type=int, help="Minimum number of job executions that are created for a trigger")
+        c.argument('max_executions', type=int, help="Maximum number of job executions that are created for a trigger")
+        c.argument('polling_interval', type=int, help="Interval to check each event source in seconds.")
 
     with self.argument_context('containerapp job create') as c:
         c.argument('system_assigned', options_list=['--mi-system-assigned', c.deprecate(target='--system-assigned', redirect='--mi-system-assigned', hide=True)], help='Boolean indicating whether to assign system-assigned identity.', action='store_true')
         c.argument('trigger_type', help='Trigger type. Schedule | Event | Manual')
         c.argument('user_assigned', options_list=['--mi-user-assigned', c.deprecate(target='--user-assigned', redirect='--mi-user-assigned', hide=True)], nargs='+', help='Space-separated user identities to be assigned.')
+        c.argument('replica_completion_count', type=int, options_list=['--replica-completion-count', '--rcc'], help='Number of replicas that need to complete successfully for execution to succeed', default=1)
+        c.argument('replica_retry_limit', type=int, help='Maximum number of retries before the replica fails. Default: 0.', default=0)
+        c.argument('replica_timeout', type=int, help='Maximum number of seconds a replica can execute', default=1800)
+        c.argument('parallelism', type=int, help='Maximum number of replicas to run per execution', default=1)
+        c.argument('min_executions', type=int, help="Minimum number of job executions that are created for a trigger. Default: 0.", default=0)
+        c.argument('max_executions', type=int, help="Maximum number of job executions that are created for a trigger", default=100)
+        c.argument('polling_interval', type=int, help="Interval to check each event source in seconds.", default=30)
 
     with self.argument_context('containerapp job', arg_group='Scale') as c:
         c.argument('min_executions', type=int, help="Minimum number of job executions to run per polling interval.")
@@ -508,3 +534,44 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp job identity remove') as c:
         c.argument('user_assigned', nargs='*', help="Space-separated user identities. If no user identities are specified, all user identities will be removed.")
+
+    # params for preview
+    with self.argument_context('containerapp') as c:
+        c.argument('managed_env', validator=validate_env_name_or_id, options_list=['--environment'], help="Name or resource ID of the container app's environment.")
+        c.argument('environment_type', arg_type=get_enum_type(["managed", "connected"]), help="Type of environment.", is_preview=True)
+
+    with self.argument_context('containerapp connected-env') as c:
+        c.argument('name', name_type, help='Name of the Container Apps connected environment.')
+        c.argument('resource_group_name', arg_type=resource_group_name_type)
+        c.argument('tags', arg_type=tags_type)
+        c.argument('custom_location', help="Resource ID of custom location. List using 'az customlocation list'.", validator=validate_custom_location_name_or_id)
+        c.argument('dapr_ai_connection_string', options_list=['--dapr-ai-connection-string', '-d'], help='Application Insights connection string used by Dapr to export Service to Service communication telemetry.')
+        c.argument('static_ip', help='Static IP of the connectedEnvironment.')
+
+    with self.argument_context('containerapp connected-env certificate upload') as c:
+        c.argument('certificate_file', options_list=['--certificate-file', '-f'], help='The filepath of the .pfx or .pem file')
+        c.argument('certificate_name', options_list=['--certificate-name', '-c'], help='Name of the certificate which should be unique within the Container Apps connected environment.')
+        c.argument('certificate_password', options_list=['--password', '-p'], help='The certificate file password')
+        c.argument('prompt', options_list=['--show-prompt'], action='store_true', help='Show prompt to upload an existing certificate.')
+
+    with self.argument_context('containerapp connected-env certificate list') as c:
+        c.argument('name', id_part=None)
+        c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
+        c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
+
+    with self.argument_context('containerapp connected-env certificate delete') as c:
+        c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
+        c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
+
+    with self.argument_context('containerapp connected-env storage') as c:
+        c.argument('name', id_part=None)
+        c.argument('storage_name', help="Name of the storage.")
+        c.argument('access_mode', id_part=None, arg_type=get_enum_type(["ReadWrite", "ReadOnly"]), help="Access mode for the AzureFile storage.")
+        c.argument('azure_file_account_key', options_list=["--azure-file-account-key", "--storage-account-key", "-k"], help="Key of the AzureFile storage account.")
+        c.argument('azure_file_share_name', options_list=["--azure-file-share-name", "--file-share", "-f"], help="Name of the share on the AzureFile storage.")
+        c.argument('azure_file_account_name', options_list=["--azure-file-account-name", "--account-name", "-a"], help="Name of the AzureFile storage account.")
+
+    with self.argument_context('containerapp connected-env dapr-component') as c:
+        c.argument('dapr_component_name', help="The Dapr component name.")
+        c.argument('environment_name', options_list=['--name', '-n'], help="The environment name.")
+        c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a Dapr component. All other parameters will be ignored. For an example, see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema')

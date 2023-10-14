@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "networkcloud rack",
-    is_experimental=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage rack

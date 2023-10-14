@@ -66,11 +66,6 @@ def load_arguments(self, _):
         c.argument('allow_remote_vnet_to_use_hub_vnet_gateways', arg_type=get_three_state_flag(), options_list='--use-hub-vnet-gateways', deprecate_info=c.deprecate(target='--use-hub-vnet-gateways'), help='Allow remote VNet to use hub\'s VNet gateways.')
         c.argument('enable_internet_security', arg_type=get_three_state_flag(), options_list='--internet-security', help='Enable internet security and default is enabled.', default=True)
 
-    for item in ['network vhub connection create', 'network vhub connection update']:
-        with self.argument_context(item) as c:
-            c.argument('associated_inbound_routemap', help='Resource uri of inbound routemap for this connection’s routing configuration')
-            c.argument('associated_outbound_routemap', help='Resource uri of outbound routemap for this connection’s routing configuration')
-
     with self.argument_context('network vhub connection list') as c:
         c.argument('virtual_hub_name', vhub_name_type, id_part=None)
 

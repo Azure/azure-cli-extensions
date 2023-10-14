@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "networkfabric ipextendedcommunity list",
 )
 class List(AAZCommand):
-    """List all Ip Extended Communities in the provided resource group or subscription.
+    """List all Ip Extended Communities in the provided resource group or subscription
 
     :example: List the Ip Extended Communities for Resource Group
         az networkfabric ipextendedcommunity list --resource-group "example-rg"
@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities", "2023-02-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipextendedcommunities", "2023-06-15"],
         ]
     }
 
@@ -119,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -171,7 +171,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -183,20 +183,41 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.action = AAZStrType(
-                flags={"required": True},
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
             )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            properties.ip_extended_community_rules = AAZListType(
+                serialized_name="ipExtendedCommunityRules",
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.route_targets = AAZListType(
+
+            ip_extended_community_rules = cls._schema_on_200.value.Element.properties.ip_extended_community_rules
+            ip_extended_community_rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.ip_extended_community_rules.Element
+            _element.action = AAZStrType(
+                flags={"required": True},
+            )
+            _element.route_targets = AAZListType(
                 serialized_name="routeTargets",
                 flags={"required": True},
             )
+            _element.sequence_number = AAZIntType(
+                serialized_name="sequenceNumber",
+                flags={"required": True},
+            )
 
-            route_targets = cls._schema_on_200.value.Element.properties.route_targets
+            route_targets = cls._schema_on_200.value.Element.properties.ip_extended_community_rules.Element.route_targets
             route_targets.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
@@ -264,7 +285,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -316,7 +337,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -328,20 +349,41 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.action = AAZStrType(
-                flags={"required": True},
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
             )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
+            properties.ip_extended_community_rules = AAZListType(
+                serialized_name="ipExtendedCommunityRules",
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.route_targets = AAZListType(
+
+            ip_extended_community_rules = cls._schema_on_200.value.Element.properties.ip_extended_community_rules
+            ip_extended_community_rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.ip_extended_community_rules.Element
+            _element.action = AAZStrType(
+                flags={"required": True},
+            )
+            _element.route_targets = AAZListType(
                 serialized_name="routeTargets",
                 flags={"required": True},
             )
+            _element.sequence_number = AAZIntType(
+                serialized_name="sequenceNumber",
+                flags={"required": True},
+            )
 
-            route_targets = cls._schema_on_200.value.Element.properties.route_targets
+            route_targets = cls._schema_on_200.value.Element.properties.ip_extended_community_rules.Element.route_targets
             route_targets.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data

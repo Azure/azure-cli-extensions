@@ -212,6 +212,7 @@ class List(AAZCommand):
             )
             properties.network_security_perimeters = AAZListType(
                 serialized_name="networkSecurityPerimeters",
+                flags={"read_only": True},
             )
             properties.phone_numbers = AAZListType(
                 serialized_name="phoneNumbers",
@@ -235,7 +236,9 @@ class List(AAZCommand):
             network_security_perimeters.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element.properties.network_security_perimeters.Element
-            _element.id = AAZStrType()
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.location = AAZStrType(
                 flags={"read_only": True},
             )

@@ -10,9 +10,10 @@
 Provides VirtualMachineCreate customization
 """
 
+from azext_networkcloud.aaz.latest.networkcloud.virtualmachine import Create as _Create
 from azure.cli.core.aaz import register_callback
 from knack.log import get_logger
-from azext_networkcloud.aaz.latest.networkcloud.virtualmachine import Create as _Create
+
 from ..common_ssh import CustomSshOptions
 
 logger = get_logger(__name__)

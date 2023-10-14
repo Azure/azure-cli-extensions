@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=wrong-import-order
-from .vendored_sdks.appplatform.v2023_05_01_preview import models
+from .vendored_sdks.appplatform.v2023_09_01_preview import models
 from azure.cli.core.azclierror import ArgumentUsageError
 from ._utils import convert_argument_to_parameter_list
 
@@ -46,6 +46,40 @@ class JarSource(BaseSource):
         return {
             'jvm_options': jvm_options if jvm_options is not None else original_source.jvm_options,
             'runtime_version': runtime_version or original_source.runtime_version,
+            'version': original_source.version,
+            'deployable_path': original_source.relative_path
+        }
+
+
+class WarSource(BaseSource):
+    def validate_source(self, **kwargs):
+        invalid_input = {k: v for k, v in kwargs.items() if k in ['main_entry', 'target_module'] and v is not None}
+        if any(invalid_input):
+            invalid_input_str = convert_argument_to_parameter_list(invalid_input.keys())
+            runtime_version = kwargs.get('runtime_version') or kwargs.get('deployment_resource').properties.source.runtime_version
+            raise ArgumentUsageError('{} cannot be set when --runtime-version is {}.'
+                                     .format(invalid_input_str, runtime_version))
+
+    def format_source(self, deployable_path=None, runtime_version=None, server_version=None, version=None, jvm_options=None, **_):
+        if all(x is None for x in [deployable_path, runtime_version, server_version, version, jvm_options]):
+            return
+        return models.WarUploadedUserSourceInfo(
+            relative_path=deployable_path,
+            jvm_options=jvm_options,
+            runtime_version=runtime_version or 'Java_11',
+            server_version=server_version or 'Tomcat_9',
+            version=version
+        )
+
+    def fulfilled_options_from_original_source_info(self, deployment_resource,
+                                                    jvm_options=None, runtime_version=None, server_version=None, **_):
+        if all(x is None for x in [jvm_options, runtime_version]):
+            return {}
+        original_source = deployment_resource.properties.source
+        return {
+            'jvm_options': jvm_options if jvm_options is not None else original_source.jvm_options,
+            'runtime_version': runtime_version or original_source.runtime_version,
+            'server_version': server_version or original_source.server_version,
             'version': original_source.version,
             'deployable_path': original_source.relative_path
         }
@@ -163,4 +197,6 @@ def source_selector(source_type=None, **_):
         return NetCoreZipSource()
     if source_type == 'BuildResult':
         return BuildResult()
+    if source_type == 'War':
+        return WarSource()
     return JarSource()

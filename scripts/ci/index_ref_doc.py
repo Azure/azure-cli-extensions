@@ -50,20 +50,14 @@ for extension_name, exts in get_index_data()['extensions'].items():
 class TestIndexRefDocsMeta(type):
     def __new__(mcs, name, bases, _dict):
 
-        def gen_test(ext_name, ext_url, filename, dep_url):
+        def gen_test(ext_name, ext_url, filename):
             def test(self):
-                if dep_url.get(ext_name):
-                    dep_file = get_whl_from_url(dep_url[ext_name][0], dep_url[ext_name][1], self.whl_dir)
-                else:
-                    dep_file = None
                 ext_file = get_whl_from_url(ext_url, filename, self.whl_dir)
                 ref_doc_out_dir = os.path.join(REF_DOC_OUT_DIR, ext_name)
                 if not os.path.isdir(ref_doc_out_dir):
                     os.mkdir(ref_doc_out_dir)
                 script_args = [sys.executable, REF_GEN_SCRIPT, '--extension-file', ext_file, '--output-dir',
                                ref_doc_out_dir]
-                if dep_file:
-                    script_args.extend(['--dependent-file', dep_file])
                 try:
                     check_call(script_args)
                 except CalledProcessError as e:
@@ -71,14 +65,9 @@ class TestIndexRefDocsMeta(type):
                     raise e
             return test
 
-        dep_url = {}
         for ext_name, ext_url, filename in ALL_TESTS:
             test_name = "test_ref_doc_%s" % ext_name
-            # The containerapp-preview extension is a special case,
-            # it must depend on the continerapp extension and cannot run independently.
-            if ext_name == 'containerapp':
-                dep_url['containerapp-preview'] = [ext_url, filename]
-            _dict[test_name] = gen_test(ext_name, ext_url, filename, dep_url)
+            _dict[test_name] = gen_test(ext_name, ext_url, filename)
         return type.__new__(mcs, name, bases, _dict)
 
 

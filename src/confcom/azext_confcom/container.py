@@ -11,7 +11,8 @@ from azext_confcom.template_util import (
     case_insensitive_dict_get,
     replace_params_and_vars,
     str_to_sha256,
-    process_seccomp_policy
+    process_seccomp_policy,
+    translate_signals
 )
 from azext_confcom import config
 from azext_confcom.errors import eprint
@@ -575,6 +576,10 @@ class ContainerImage:
     def get_working_dir(self) -> str:
         return self._workingDir
 
+    def set_signals(self, signals: List) -> None:
+        signals = translate_signals([signals] if not isinstance(signals, list) else signals)
+        self._signals = signals
+
     def set_working_dir(self, workingDir: str) -> None:
         self._workingDir = workingDir
 
@@ -688,6 +693,7 @@ class ContainerImage:
         return mounts
 
     def _populate_policy_json_elements(self) -> Dict[str, Any]:
+
         elements = {
             config.POLICY_FIELD_CONTAINERS_ID: self._identifier,
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_LAYERS: self._layers,

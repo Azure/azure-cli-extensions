@@ -3,132 +3,6 @@ interactions:
     body: null
     headers:
       Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.27.1
-    method: GET
-    uri: https://aka.ms/azure-cli-extension-index-v1
-  response:
-    body:
-      string: ''
-    headers:
-      cache-control:
-      - max-age=0, no-cache, no-store
-      connection:
-      - keep-alive
-      content-length:
-      - '0'
-      date:
-      - Fri, 27 May 2022 17:09:20 GMT
-      expires:
-      - Fri, 27 May 2022 17:09:20 GMT
-      location:
-      - https://azcliextensionsync.blob.core.windows.net/index1/index.json
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:7d63747b-487e-492a-872d-762362f77974
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000 ; includeSubDomains
-      x-response-cache-status:
-      - 'True'
-    status:
-      code: 301
-      message: Moved Permanently
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.27.1
-    method: GET
-    uri: https://aka.ms/azure-cli-extension-index-v1
-  response:
-    body:
-      string: ''
-    headers:
-      cache-control:
-      - max-age=0, no-cache, no-store
-      connection:
-      - keep-alive
-      content-length:
-      - '0'
-      date:
-      - Fri, 27 May 2022 17:09:24 GMT
-      expires:
-      - Fri, 27 May 2022 17:09:24 GMT
-      location:
-      - https://azcliextensionsync.blob.core.windows.net/index1/index.json
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:b47e5e27-bf85-45ba-a97c-0377ce0e5779
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000 ; includeSubDomains
-      x-response-cache-status:
-      - 'True'
-    status:
-      code: 301
-      message: Moved Permanently
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.27.1
-    method: GET
-    uri: https://aka.ms/azure-cli-extension-index-v1
-  response:
-    body:
-      string: ''
-    headers:
-      cache-control:
-      - max-age=0, no-cache, no-store
-      connection:
-      - keep-alive
-      content-length:
-      - '0'
-      date:
-      - Fri, 27 May 2022 17:09:25 GMT
-      expires:
-      - Fri, 27 May 2022 17:09:25 GMT
-      location:
-      - https://azcliextensionsync.blob.core.windows.net/index1/index.json
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:b47e5e27-bf85-45ba-a97c-0377ce0e5779
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000 ; includeSubDomains
-      x-response-cache-status:
-      - 'True'
-    status:
-      code: 301
-      message: Moved Permanently
-- request:
-    body: null
-    headers:
-      Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
@@ -139,24 +13,24 @@ interactions:
       ParameterSetName:
       - -g -w -l
       User-Agent:
-      - AZURECLI/2.36.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.10.1 (Windows-10-10.0.22000-SP0)
-        az-cli-ext/0.15.0.8
+      - AZURECLI/2.50.0 azsdk-python-mgmt-quantum/1.0.0b1 Python/3.9.16 (Windows-10-10.0.22621-SP0)
+        az-cli-ext/0.19.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-qsharp-tests?api-version=2022-01-10-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-qsharp-tests","name":"e2e-qsharp-tests","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"anpaz@microsoft.com","createdByType":"User","createdAt":"2021-04-13T19:10:58.0366776Z","lastModifiedBy":"anpaz@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-04-14T16:49:38.6414588Z"},"identity":{"principalId":"0dbdbf52-26d4-470c-9234-bfa298dcda68","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"Microsoft","providerSku":"DZH3178M639F","applicationName":"e2e-qsharp-tests-Microsoft","provisioningState":"Succeeded"},{"providerId":"toshiba","providerSku":"toshiba-solutionseconds","applicationName":"e2e-qsharp-tests-toshiba","provisioningState":"Succeeded","resourceUsageId":"528149b6-fc29-4fcc-8cd6-c4cf345af146"},{"providerId":"honeywell","providerSku":"test1","applicationName":"e2e-qsharp-tests-honeywell","provisioningState":"Succeeded","resourceUsageId":"6d1769a8-a82e-4e5e-b1c8-1585dfa15467"},{"providerId":"Microsoft.Simulator","providerSku":"Basic","applicationName":"e2e-qsharp-tests-Microsoft.Simulator","provisioningState":"Succeeded"},{"providerId":"1qbit","providerSku":"1qbit-internal-free-plan","applicationName":"e2e-qsharp-tests-1qbit","provisioningState":"Succeeded"},{"providerId":"ionq","providerSku":"aq-internal-testing","applicationName":"e2e-qsharp-tests-ionq","provisioningState":"Succeeded","resourceUsageId":"45ad12c0-48b2-4339-b31b-c0e34b8fce4a"},{"providerId":"quantinuum","providerSku":"test1","applicationName":"e2e-qsharp-tests-quantinuum","provisioningState":"Succeeded","resourceUsageId":"9cbc9cad-9837-4fae-be4b-53909ad7277f"},{"providerId":"rigetti","providerSku":"rigetti-private-beta","applicationName":"e2e-qsharp-tests-rigetti","provisioningState":"Succeeded"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests","endpointUri":"https://e2e-qsharp-tests.westus2.quantum.azure.com"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/Workspaces/e2e-qsharp-tests","name":"e2e-qsharp-tests","type":"microsoft.quantum/workspaces","location":"westus2","tags":{},"systemData":{"createdBy":"anpaz@microsoft.com","createdByType":"User","createdAt":"2021-04-13T19:10:58.0366776Z","lastModifiedBy":"masenol@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-11-17T01:14:12.3926177Z"},"identity":{"principalId":"0dbdbf52-26d4-470c-9234-bfa298dcda68","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"properties":{"providers":[{"providerId":"Microsoft","providerSku":"DZH3178M639F","applicationName":"e2e-qsharp-tests-Microsoft","provisioningState":"Succeeded"},{"providerId":"toshiba","providerSku":"toshiba-solutionseconds","applicationName":"e2e-qsharp-tests-toshiba","provisioningState":"Succeeded","resourceUsageId":"528149b6-fc29-4fcc-8cd6-c4cf345af146"},{"providerId":"honeywell","providerSku":"test1","applicationName":"e2e-qsharp-tests-honeywell","provisioningState":"Succeeded","resourceUsageId":"6d1769a8-a82e-4e5e-b1c8-1585dfa15467"},{"providerId":"Microsoft.Simulator","providerSku":"Basic","applicationName":"e2e-qsharp-tests-Microsoft.Simulator","provisioningState":"Succeeded"},{"providerId":"1qbit","providerSku":"1qbit-internal-free-plan","applicationName":"e2e-qsharp-tests-1qbit","provisioningState":"Succeeded"},{"providerId":"ionq","providerSku":"aq-internal-testing","applicationName":"e2e-qsharp-tests-ionq","provisioningState":"Succeeded","resourceUsageId":"45ad12c0-48b2-4339-b31b-c0e34b8fce4a"},{"providerId":"quantinuum","providerSku":"test1","applicationName":"e2e-qsharp-tests-quantinuum","provisioningState":"Succeeded","resourceUsageId":"9cbc9cad-9837-4fae-be4b-53909ad7277f"},{"providerId":"rigetti","providerSku":"rigetti-private-beta","applicationName":"e2e-qsharp-tests-rigetti","provisioningState":"Succeeded"},{"providerId":"qci","providerSku":"qci-syspreview-free","applicationName":"e2e-qsharp-tests-qci","provisioningState":"Succeeded","resourceUsageId":"94665882-218a-4768-a53b-d9e2cf7fe07e"},{"providerId":"Microsoft.Test","providerSku":"sample-plan-3","applicationName":"e2e-qsharp-tests-Microsoft.Test","provisioningState":"Succeeded","resourceUsageId":"109f8e05-dbff-429d-89da-170409fe03a8"}],"provisioningState":"Succeeded","usable":"Yes","storageAccount":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Storage/storageAccounts/e2etests","endpointUri":"https://e2e-qsharp-tests.westus2.quantum.azure.com"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2227'
+      - '2619'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 27 May 2022 17:09:29 GMT
+      - Sun, 23 Jul 2023 15:13:15 GMT
       etag:
-      - '"6000c54b-0000-0800-0000-6258510c0000"'
+      - '"1503c024-0000-0800-0000-63758b4b0000"'
       expires:
       - '-1'
       pragma:
@@ -184,28 +58,33 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - az-cli-ext/0.15.0.8 azsdk-python-quantum/0.0.0.1 Python/3.10.1 (Windows-10-10.0.22000-SP0)
+      - az-cli-ext/0.19.0 azsdk-python-quantum/0.0.0.1 Python/3.9.16 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://westus2.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/e2e-scenarios/providers/Microsoft.Quantum/workspaces/e2e-qsharp-tests/providerStatus
   response:
     body:
-      string: '{"value":[{"id":"Microsoft","currentAvailability":"Available","targets":[{"id":"microsoft.paralleltempering-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.paralleltempering.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.tabu-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.tabu.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.qmc.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.populationannealing.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.populationannealing-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.substochasticmontecarlo.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.substochasticmontecarlo-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]},{"id":"toshiba","currentAvailability":"Available","targets":[{"id":"toshiba.sbm.ising","currentAvailability":"Available","averageQueueTime":4,"statusPage":"https://aq-sbm.net/v1/service_monitor/index.html"}]},{"id":"honeywell","currentAvailability":"Degraded","targets":[{"id":"honeywell.hqs-lt-s1","currentAvailability":"Degraded","averageQueueTime":190070,"statusPage":"https://www.honeywell.com/en-us/company/quantum"},{"id":"honeywell.hqs-lt-s1-apival","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.honeywell.com/en-us/company/quantum"},{"id":"honeywell.hqs-lt-s2","currentAvailability":"Available","averageQueueTime":44761,"statusPage":"https://www.honeywell.com/en-us/company/quantum"},{"id":"honeywell.hqs-lt-s2-apival","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.honeywell.com/en-us/company/quantum"},{"id":"honeywell.hqs-lt-s1-sim","currentAvailability":"Available","averageQueueTime":10,"statusPage":"https://www.honeywell.com/en-us/company/quantum"},{"id":"honeywell.hqs-lt","currentAvailability":"Available","averageQueueTime":44761,"statusPage":"https://www.honeywell.com/en-us/company/quantum"}]},{"id":"Microsoft.Simulator","currentAvailability":"Available","targets":[{"id":"microsoft.simulator.fullstate","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]},{"id":"1qbit","currentAvailability":"Available","targets":[{"id":"1qbit.tabu","currentAvailability":"Available","averageQueueTime":0,"statusPage":"http://status.1qbit.com/"},{"id":"1qbit.pathrelinking","currentAvailability":"Available","averageQueueTime":0,"statusPage":"http://status.1qbit.com/"},{"id":"1qbit.pticm","currentAvailability":"Available","averageQueueTime":0,"statusPage":"http://status.1qbit.com/"}]},{"id":"ionq","currentAvailability":"Available","targets":[{"id":"ionq.qpu","currentAvailability":"Available","averageQueueTime":668,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":2,"statusPage":"https://status.ionq.co"}]},{"id":"quantinuum","currentAvailability":"Degraded","targets":[{"id":"quantinuum.hqs-lt-s1","currentAvailability":"Degraded","averageQueueTime":190070,"statusPage":"https://www.quantinuum.com/products/h1"},{"id":"quantinuum.hqs-lt-s1-apival","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/products/h1"},{"id":"quantinuum.hqs-lt-s2","currentAvailability":"Available","averageQueueTime":44761,"statusPage":"https://www.quantinuum.com/products/h1"},{"id":"quantinuum.hqs-lt-s2-apival","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/products/h1"},{"id":"quantinuum.hqs-lt-s1-sim","currentAvailability":"Available","averageQueueTime":10,"statusPage":"https://www.quantinuum.com/products/h1"},{"id":"quantinuum.hqs-lt-s2-sim","currentAvailability":"Available","averageQueueTime":9,"statusPage":"https://www.quantinuum.com/products/h1"},{"id":"quantinuum.hqs-lt","currentAvailability":"Available","averageQueueTime":44761,"statusPage":"https://www.quantinuum.com/products/h1"}]},{"id":"rigetti","currentAvailability":"Available","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.aspen-11","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.aspen-m-1","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]}],"nextLink":null}'
+      string: '{"value":[{"id":"toshiba","currentAvailability":"Available","targets":[{"id":"toshiba.sbm.ising","currentAvailability":"Available","averageQueueTime":4,"statusPage":"https://aq-sbm.net/v1/service_monitor/index.html"}]},{"id":"1qbit","currentAvailability":"Unavailable","targets":[{"id":"1qbit.tabu","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":null},{"id":"1qbit.pathrelinking","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":null},{"id":"1qbit.pticm","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":null}]},{"id":"ionq","currentAvailability":"Degraded","targets":[{"id":"ionq.qpu","currentAvailability":"Unavailable","averageQueueTime":599843,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-1","currentAvailability":"Unavailable","averageQueueTime":151182,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu-preview","currentAvailability":"Unavailable","averageQueueTime":599843,"statusPage":"https://status.ionq.co"},{"id":"ionq.qpu.aria-1-preview","currentAvailability":"Unavailable","averageQueueTime":151182,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator-preview","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://status.ionq.co"}]},{"id":"quantinuum","currentAvailability":"Degraded","targets":[{"id":"quantinuum.hqs-lt-s1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s1-apival","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s2","currentAvailability":"Degraded","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s2-apival","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s1-sim","currentAvailability":"Available","averageQueueTime":9,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.hqs-lt-s2-sim","currentAvailability":"Available","averageQueueTime":6,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.qpu.h1-1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1sc","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.qpu.h1-2","currentAvailability":"Degraded","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-2sc","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1e","currentAvailability":"Available","averageQueueTime":9,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-2e","currentAvailability":"Available","averageQueueTime":6,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.qpu.h2-1","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h2"},{"id":"quantinuum.sim.h2-1sc","currentAvailability":"Available","averageQueueTime":2,"statusPage":"https://www.quantinuum.com/hardware/h2"},{"id":"quantinuum.sim.h2-1e","currentAvailability":"Available","averageQueueTime":125,"statusPage":"https://www.quantinuum.com/hardware/h2"},{"id":"quantinuum.sim.h1-1sc-preview","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-2sc-preview","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-1e-preview","currentAvailability":"Available","averageQueueTime":9,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.sim.h1-2e-preview","currentAvailability":"Available","averageQueueTime":6,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.qpu.h1-1-preview","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"},{"id":"quantinuum.qpu.h1-2-preview","currentAvailability":"Degraded","averageQueueTime":0,"statusPage":"https://www.quantinuum.com/hardware/h1"}]},{"id":"rigetti","currentAvailability":"Degraded","targets":[{"id":"rigetti.sim.qvm","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.aspen-m-2","currentAvailability":"Unavailable","averageQueueTime":0,"statusPage":"https://rigetti.statuspage.io/"},{"id":"rigetti.qpu.aspen-m-3","currentAvailability":"Available","averageQueueTime":5,"statusPage":"https://rigetti.statuspage.io/"}]},{"id":"qci","currentAvailability":"Degraded","targets":[{"id":"qci.simulator","currentAvailability":"Available","averageQueueTime":1,"statusPage":"https://quantumcircuits.com"},{"id":"qci.machine1","currentAvailability":"Unavailable","averageQueueTime":1,"statusPage":"https://quantumcircuits.com"},{"id":"qci.simulator.noisy","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://quantumcircuits.com"}]},{"id":"Microsoft.Test","currentAvailability":"Available","targets":[{"id":"echo-rigetti","currentAvailability":"Available","averageQueueTime":1,"statusPage":""},{"id":"echo-quantinuum","currentAvailability":"Available","averageQueueTime":1,"statusPage":""},{"id":"echo-qci","currentAvailability":"Available","averageQueueTime":1,"statusPage":""},{"id":"echo-ionq","currentAvailability":"Available","averageQueueTime":1,"statusPage":""},{"id":"sparse-sim-rigetti","currentAvailability":"Available","averageQueueTime":1,"statusPage":""},{"id":"sparse-sim-quantinuum","currentAvailability":"Available","averageQueueTime":1,"statusPage":""},{"id":"sparse-sim-qci","currentAvailability":"Available","averageQueueTime":1,"statusPage":""},{"id":"sparse-sim-ionq","currentAvailability":"Available","averageQueueTime":1,"statusPage":""},{"id":"echo-output","currentAvailability":"Available","averageQueueTime":1,"statusPage":""}]}],"nextLink":null}'
     headers:
+      connection:
+      - keep-alive
       content-length:
-      - '4992'
+      - '6262'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 27 May 2022 17:09:30 GMT
+      - Sun, 23 Jul 2023 15:13:17 GMT
       mise-correlation-id:
-      - ef4c3832-e30a-4c42-91a5-daf5265093fb
+      - 4d9e131c-6450-4325-bbe9-5373fa5472d1
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
       - Microsoft-IIS/10.0
       set-cookie:
-      - ARRAffinity=a80c7c3a42bc29f88c9055a7e2789984b224746994993027ab866c65455cca24;Path=/;HttpOnly;Secure;Domain=westus2.quantum.azure.com
-      - ARRAffinitySameSite=a80c7c3a42bc29f88c9055a7e2789984b224746994993027ab866c65455cca24;Path=/;HttpOnly;SameSite=None;Secure;Domain=westus2.quantum.azure.com
+      - ApplicationGatewayAffinityCORS=f41f4d84e6de1cfe7357bf648ccde6bc; Path=/; SameSite=None;
+        Secure
+      - ApplicationGatewayAffinity=f41f4d84e6de1cfe7357bf648ccde6bc; Path=/
+      - ARRAffinity=f08099ddc6d1b5b480ee26565f489b862c28fda9abd95391f75b0cea107d6318;Path=/;HttpOnly;Secure;Domain=app-jobscheduler-westus2-003.ase-jobscheduler-westus2-003.appserviceenvironment.net
+      - ARRAffinitySameSite=f08099ddc6d1b5b480ee26565f489b862c28fda9abd95391f75b0cea107d6318;Path=/;HttpOnly;SameSite=None;Secure;Domain=app-jobscheduler-westus2-003.ase-jobscheduler-westus2-003.appserviceenvironment.net
       strict-transport-security:
       - max-age=2592000; includeSubDomains
       transfer-encoding:

@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "networkfabric internalnetwork delete",
 )
 class Delete(AAZCommand):
-    """Delete the Internal Network resource.
+    """Delete the Internal Network resource
 
     :example: Delete the Internal Network
         az networkfabric internalnetwork delete --resource-group "example-rg" --l3domain "example-l3domain" --resource-name "example-internalnetwork"
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/internalnetworks/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/l3isolationdomains/{}/internalnetworks/{}", "2023-06-15"],
         ]
     }
 
@@ -47,13 +47,13 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.resource_name = AAZStrArg(
             options=["--resource-name"],
-            help="Name of the InternalNetwork",
+            help="Name of the Internal Network.",
             required=True,
             id_part="child_name_1",
         )
         _args_schema.l3_isolation_domain_name = AAZStrArg(
             options=["--l3domain", "--l3-isolation-domain-name"],
-            help="Name of the L3IsolationDomain",
+            help="Name of the L3 Isolation Domain.",
             required=True,
             id_part="name",
         )
@@ -153,7 +153,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }

@@ -4,6 +4,10 @@ Release History
 ===============
 
 =======
+0.6.1
+++++++
+* Added parameter to help gather telemetry in command `az datamigration tde-migration`.
+
 0.6.0
 ++++++
 * [NEW COMMAND] `az datamigration sql-server-schema` : Migrate database schema objects to the target Azure Sql Servers.

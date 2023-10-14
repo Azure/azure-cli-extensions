@@ -5,24 +5,21 @@
 
 import os
 import time
-import yaml
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
 
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
 from .common import TEST_LOCATION
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-from .utils import create_containerapp_env
 
 class ContainerAppWorkloadProfilesTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_env_workload_profiles_e2e(self, resource_group):
-        import requests
 
         env = self.create_random_name(prefix='env', length=24)
         vnet = self.create_random_name(prefix='name', length=24)
@@ -92,7 +89,6 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
     @ResourceGroupPreparer(location="eastus")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_env_workload_profiles_delete(self, resource_group):
-        import requests
 
         env = self.create_random_name(prefix='env', length=24)
         vnet = self.create_random_name(prefix='name', length=24)
@@ -141,6 +137,37 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
 
         profiles = self.cmd("az containerapp env workload-profile list -g {} -n {}".format(resource_group, env)).get_output_in_json()
         self.assertEqual(len(profiles), 1)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus")
+    def test_containerapp_create_enable_workload_profiles_three_state_flag(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        env = self.create_random_name(prefix='env', length=24)
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none --enable-workload-profiles false'.format(resource_group, env), expect_failure=False, checks=[
+            JMESPathCheck("name", env),
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.workloadProfiles", None),
+        ])
+        env2 = self.create_random_name(prefix='env2', length=24)
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none --enable-workload-profiles'.format(
+            resource_group, env2), expect_failure=False, checks=[
+            JMESPathCheck("name", env2),
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("length(properties.workloadProfiles)", 1),
+            JMESPathCheck('properties.workloadProfiles[0].name', "Consumption", case_sensitive=False),
+            JMESPathCheck('properties.workloadProfiles[0].workloadProfileType', "Consumption", case_sensitive=False),
+        ])
+
+        env3 = self.create_random_name(prefix='env3', length=24)
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none --enable-workload-profiles true'.format(
+            resource_group, env3), expect_failure=False, checks=[
+            JMESPathCheck("name", env3),
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("length(properties.workloadProfiles)", 1),
+            JMESPathCheck('properties.workloadProfiles[0].name', "Consumption", case_sensitive=False),
+            JMESPathCheck('properties.workloadProfiles[0].workloadProfileType', "Consumption", case_sensitive=False),
+        ])
+
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
@@ -247,7 +274,6 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
     def test_containerapp_env_workload_profiles_e2e_no_waits(self, resource_group):
-        import requests
 
         env = self.create_random_name(prefix='env', length=24)
         vnet = self.create_random_name(prefix='name', length=24)

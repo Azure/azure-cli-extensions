@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "networkfabric ipprefix list",
 )
 class List(AAZCommand):
-    """List all Ip Prefixes in the provided resource group or subscription.
+    """List all Ip Prefixes in the provided resource group or subscription
 
     :example: List the Ip Prefixes for Resource Group
         az networkfabric ipprefix list --resource-group "example-rg"
@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2023-06-15",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/ipprefixes", "2023-02-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipprefixes", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.managednetworkfabric/ipprefixes", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/ipprefixes", "2023-06-15"],
         ]
     }
 
@@ -119,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -183,7 +183,15 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
             properties.ip_prefix_rules = AAZListType(
                 serialized_name="ipPrefixRules",
                 flags={"required": True},
@@ -209,7 +217,7 @@ class List(AAZCommand):
                 serialized_name="sequenceNumber",
                 flags={"required": True},
             )
-            _element.subnet_mask_length = AAZIntType(
+            _element.subnet_mask_length = AAZStrType(
                 serialized_name="subnetMaskLength",
             )
 
@@ -278,7 +286,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2023-06-15",
                     required=True,
                 ),
             }
@@ -342,7 +350,15 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.administrative_state = AAZStrType(
+                serialized_name="administrativeState",
+                flags={"read_only": True},
+            )
             properties.annotation = AAZStrType()
+            properties.configuration_state = AAZStrType(
+                serialized_name="configurationState",
+                flags={"read_only": True},
+            )
             properties.ip_prefix_rules = AAZListType(
                 serialized_name="ipPrefixRules",
                 flags={"required": True},
@@ -368,7 +384,7 @@ class List(AAZCommand):
                 serialized_name="sequenceNumber",
                 flags={"required": True},
             )
-            _element.subnet_mask_length = AAZIntType(
+            _element.subnet_mask_length = AAZStrType(
                 serialized_name="subnetMaskLength",
             )
 
