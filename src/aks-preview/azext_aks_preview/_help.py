@@ -2632,6 +2632,9 @@ helps['aks mesh enable'] = """
     short-summary: Enable Azure Service Mesh.
     long-summary: This command enables Azure Service Mesh in given cluster.
     parameters:
+      - name: --revision
+        type: string
+        short-summary: Azure Service Mesh revision to install.
       - name: --key-vault-id
         type: string
         short-summary: The Azure Keyvault id with plugin CA info.
@@ -2687,6 +2690,62 @@ helps['aks mesh disable-ingress-gateway'] = """
     examples:
       - name: Disable an internal ingress gateway.
         text: az aks mesh disable-ingress-gateway --resource-group MyResourceGroup --name MyManagedCluster --ingress-gateway-type Internal
+"""
+
+helps['aks mesh get-revisions'] = """
+    type: command
+    short-summary: Discover available Azure Service Mesh revisions and their compatibility.
+    long-summary: This command discovers available Azure Service Mesh revisions and their compatibility information for the given location.
+    examples:
+      - name: Discover Azure Service Mesh revisions.
+        text: az aks mesh get-revisions --location westus2
+        crafted: true
+"""
+
+helps['aks mesh get-upgrades'] = """
+    type: command
+    short-summary: Discover available Azure Service Mesh upgrades.
+    long-summary: This command discovers available Azure Service Mesh upgrades for the mesh revision installed on the cluster.
+    examples:
+      - name: Discover Azure Service Mesh upgrades.
+        text: az aks mesh get-upgrades --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+helps['aks mesh upgrade start'] = """
+    type: command
+    short-summary: Initiate Azure Service Mesh upgrade.
+    long-summary: This command initiates upgrade of Azure Service Mesh to the specified revision.
+    parameters:
+      - name: --revision
+        type: string
+        short-summary: Azure Service Mesh revision to upgrade to.
+    examples:
+      - name: Initiate Azure Service Mesh upgrade.
+        text: az aks mesh upgrade start --resource-group MyResourceGroup --name MyManagedCluster --revision asm-1-18
+"""
+
+helps['aks mesh upgrade'] = """
+    type: group
+    short-summary: Commands to manage the upgrades for Azure Service Mesh.
+    long-summary: A group of commands to manage the upgrades for Azure Service Mesh in given cluster.
+"""
+
+helps['aks mesh upgrade complete'] = """
+    type: command
+    short-summary: Complete Azure Service Mesh upgrade.
+    long-summary: This command completes Azure Service Mesh canary upgrade by removing the previous revision.
+    examples:
+      - name: Complete Azure Service Mesh upgrade.
+        text: az aks mesh upgrade complete --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+helps['aks mesh upgrade rollback'] = """
+    type: command
+    short-summary: Rollback Azure Service Mesh upgrade.
+    long-summary: This command rolls back Azure Service Mesh upgrade to the previous stable revision.
+    examples:
+      - name: Rollback Azure Service Mesh upgrade.
+        text: az aks mesh upgrade rollback --resource-group MyResourceGroup --name MyManagedCluster
 """
 
 helps['aks mesh enable-egress-gateway'] = """
