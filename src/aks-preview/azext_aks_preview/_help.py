@@ -573,6 +573,9 @@ helps['aks create'] = """
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
+        - name: --enable-app-routing
+          type: bool
+          short-summary: Enable Application Routing addon.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -2709,4 +2712,85 @@ helps['aks mesh disable-egress-gateway'] = """
     examples:
       - name: Disable an egress gateway.
         text: az aks mesh disable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+helps['aks approuting'] = """
+    type: group
+    short-summary: Commands to manage App Routing aadon.
+    long-summary: A group of commands to manage App Routing addon in given cluster.
+"""
+
+helps['aks approuting enable'] = """
+    type: command
+    short-summary: Enable App Routing addon.
+    long-summary: This command enables App Routing addon in given cluster.
+    parameters:
+      - name: --enable-kv
+        type: bool
+        short-summary: Enables the keyvault-secrets-provider addon.
+        long-summary: This optional command enables the keyvault-secrets-provider addon in given cluster. This is required for most App Routing use-cases.
+"""
+
+helps['aks approuting disable'] = """
+    type: command
+    short-summary: Disable App Routing addon.
+    long-summary: This command disables App Routing in given cluster.
+"""
+
+helps['aks approuting update'] = """
+    type: command
+    short-summary: Update App Routing addon.
+    long-summary: This command is used to update keyvault id in App Routing addon.
+    parameters:
+      - name: --attach-kv
+        type: string
+        short-summary: Attach a keyvault id to the cluster to access secrets and certificates..
+"""
+
+helps['aks approuting zone'] = """
+    type: group
+    short-summary: Commands to manage App Routing DNS Zones.
+    long-summary: A group of commands to manage App Routing DNS zones in given cluster.
+"""
+
+helps['aks approuting zone add'] = """  
+    type: command
+    short-summary: Add DNS Zone(s) to App Routing.
+    long-summary: This command adds multiple DNS zone resource IDs to App Routing.
+    parameters:
+      - name: --ids
+        type: string
+        short-summary: Comma-separated list of DNS zone resource IDs to add to App Routing.
+      - name: --attach-zones
+        type: bool
+        short-summary: Grants DNS zone Contributor permissions on all zone IDs specified in --ids. 
+"""
+
+helps['aks approuting zone delete'] = """ 
+    type: command
+    short-summary: Delete DNS Zone(s) from App Routing.
+    long-summary: This command deletes DNS zone resource IDs from App Routing in given cluster.
+    parameters:
+      - name: --ids
+        type: string
+        short-summary: Comma-separated list of DNS zone resource IDs to delete from App Routing.
+"""
+
+helps['aks approuting zone update'] = """
+    type: command
+    short-summary: Replace DNS Zone(s) in App Routing.
+    long-summary: This command replaces the DNS zone resource IDs used in App Routing.
+    parameters:
+      - name: --ids
+        type: string
+        short-summary: Comma-separated list of DNS zone resource IDs to replace in App Routing.
+      - name: --attach-zones
+        type: bool
+        short-summary: Grants DNS zone Contributor permissions on all zone IDs specified in --ids.
+"""
+
+helps['aks approuting zone list'] = """
+    type: command
+    short-summary: List DNS zone IDs in App Routing.
+    long-summary: This command lists the resource IDs of the DNS zone resource in App Routing.
 """
