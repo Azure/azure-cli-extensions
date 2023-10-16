@@ -695,7 +695,7 @@ class VMAEM(ScenarioTest):
         self.kwargs.update({
             'vm': 'vm1',
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image centos --generate-ssh-keys')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image OpenLogic:CentOS:7.5:latest --generate-ssh-keys')
         self.cmd('vm aem set -g {rg} -n {vm} --verbose')
         self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
         self.cmd('vm aem delete -g {rg} -n {vm} --verbose')
@@ -713,7 +713,7 @@ class VMAEM(ScenarioTest):
         self.kwargs.update({
             'vm': 'vm1',
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image centos --generate-ssh-keys')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image OpenLogic:CentOS:7.5:latest --generate-ssh-keys')
         self.cmd('vm aem set -g {rg} -n {vm} --install-new-extension --verbose')
         self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
         self.cmd('vm aem delete -g {rg} -n {vm} --verbose')
@@ -731,7 +731,7 @@ class VMAEM(ScenarioTest):
         self.kwargs.update({
             'vm': 'vm1',
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image centos --generate-ssh-keys')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image OpenLogic:CentOS:7.5:latest --generate-ssh-keys')
         self.cmd('vm aem set -g {rg} -n {vm} --install-new-extension --set-access-to-individual-resources --verbose')
         self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
         self.cmd('vm aem delete -g {rg} -n {vm} --verbose')
@@ -748,7 +748,7 @@ class VMAEM(ScenarioTest):
         self.kwargs.update({
             'vm': 'vm1',
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image centos --generate-ssh-keys')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image OpenLogic:CentOS:7.5:latest --generate-ssh-keys')
         self.cmd('vm aem set -g {rg} -n {vm} --install-new-extension --proxy-uri http://proxyhost:8080 --verbose')
         self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
         self.cmd('vm aem delete -g {rg} -n {vm} --verbose')

@@ -87,7 +87,7 @@ class AutomanageScenario(ScenarioTest):
         profile_id = self.cmd('az automanage configuration-profile create -n {profile_name} -g {rg} '
                               '--configuration {{\\\"Antimalware/Enable\\\":true}}').get_output_in_json()["id"]
         self.kwargs.update({'profile_id': profile_id})
-        vm_id = self.cmd('az vm create -n {vm_name} -g {rg} --image UbuntuLTS --generate-ssh-keys '
+        vm_id = self.cmd('az vm create -n {vm_name} -g {rg} --image Canonical:UbuntuServer:18.04-LTS:latest --generate-ssh-keys '
                          '--public-ip-sku Standard').get_output_in_json()["id"]
         self.cmd('az automanage configuration-profile-assignment vm create -n default -g {rg} '
                  '--vm-name {vm_name} --configuration-profile {profile_id}')

@@ -404,7 +404,7 @@ def setup_scenario(test, rg):
         "--level 200 --sku CapacityReservation").get_output_in_json()
     test.kwargs['workspace3_id'] = workspace3_json['id']
 
-    vm_json = test.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-password TestPassword11!! '
+    vm_json = test.cmd('vm create -g {rg} -n {vm} --image Canonical:UbuntuServer:18.04-LTS:latest --admin-password TestPassword11!! '
                        '--admin-username testadmin --authentication-type password').get_output_in_json()
     test.kwargs['vm_id'] = vm_json['id']
 

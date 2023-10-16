@@ -30,7 +30,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
             'action_group2': self.create_random_name('clitest', 20)
         })
         with mock.patch('azure.cli.command_modules.vm.custom._gen_guid', side_effect=self.create_guid):
-            vm = self.cmd('vm create -n {vm} -g {rg} --image UbuntuLTS --nsg-rule None --workspace {ws} --generate-ssh-keys').get_output_in_json()
+            vm = self.cmd('vm create -n {vm} -g {rg} --image Canonical:UbuntuServer:18.04-LTS:latest --nsg-rule None --workspace {ws} --generate-ssh-keys').get_output_in_json()
         self.kwargs.update({
             'vm_id': vm['id'],
             'rg_id': resource_id(subscription=self.get_subscription_id(),
