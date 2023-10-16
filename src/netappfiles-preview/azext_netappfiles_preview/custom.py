@@ -111,7 +111,7 @@ class VolumeCreate(_VolumeCreate):
             rule_index = 1
             if "NFSv4.1" in args.protocol_types:
                 isNfs41 = True
-                if args.rules["allowed_clients"] is None:
+                if not has_value(args.rules["allowed_clients"]):
                     raise ValidationError("Parameter allowed-clients needs to be set when protocol-type is NFSv4.1")
                 if rule_index is None:
                     raise ValidationError("Parameter rule-index needs to be set when protocol-type is NFSv4.1")
