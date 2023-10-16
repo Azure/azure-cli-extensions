@@ -33,8 +33,9 @@ class VolumeGroupCreate(_VolumeGroupCreate):
         return args_schema
 
     def pre_operations(self):
+        from azure.cli.core.aaz import has_value
         args = self.ctx.args
-        if args.identity.user_assigned_identity_id:
+        if has_value(args.identity.user_assigned_identity_id):
             uai_id = str(args.identity.user_assigned_identity_id)
             args.identity["user_assigned_identities"] = {
                 uai_id: {}}
@@ -59,22 +60,25 @@ class VolumeGroupUpdate(_VolumeGroupUpdate):
         return args_schema
 
     def pre_operations(self):
+        from azure.cli.core.aaz import has_value
         args = self.ctx.args
-        if args.identity.user_assigned_identity_id:
+        if has_value(args.identity.user_assigned_identity_id):
             uai_id = str(args.identity.user_assigned_identity_id)
             args.identity["user_assigned_identities"] = {
                 uai_id: {}}
             del args.identity.user_assigned_identity_id
 
     def pre_instance_update(self, instance):
+        from azure.cli.core.aaz import has_value
         args = self.ctx.args
-        if instance.identity and instance.identity.user_assigned_identities and \
-                args.identity and args.identity.user_assigned_identities:
+        if has_value(instance.identity) and has_value(instance.identity.user_assigned_identities) and \
+                has_value(args.identity) and has_value(args.identity.user_assigned_identities):
             uai_id_new = list(args.identity.user_assigned_identities.keys())[0]
             uai_id_old = list(instance.identity.user_assigned_identities.keys())[0]
             if uai_id_old != uai_id_new:
-                if instance.properties and instance.properties.encryption_properties and \
-                        instance.properties.encryption_properties.key_vault_properties and \
-                        args.encryption_properties and not args.encryption_properties.key_vault_properties:
+                if has_value(instance.properties) and has_value(instance.properties.encryption_properties) and \
+                        has_value(instance.properties.encryption_properties.key_vault_properties) and \
+                        has_value(args.encryption_properties) and not has_value(
+                        args.encryption_properties.key_vault_properties):
                     args.encryption_properties.key_vault_properties = \
                         instance.properties.encryption_properties.key_vault_properties
