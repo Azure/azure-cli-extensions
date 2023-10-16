@@ -56,37 +56,22 @@ from ._models import (
     ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
     AzureFileProperties as AzureFilePropertiesModel)
 
-from ._utils import (_validate_subscription_registered,
-                     parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
-                     _get_existing_secrets,
-                     _convert_object_from_snake_to_camel_case,
-                     _object_to_dict, _add_or_update_secrets, _remove_additional_attributes,
-                     _remove_readonly_attributes,
-                     _add_or_update_env_vars, _add_or_update_tags, _update_revision_weights, _append_label_weights,
-                     _get_app_from_revision, raise_missing_token_suggestion,
-                     _remove_registry_secret, _remove_secret,
-                     _ensure_identity_resource_id, _remove_dapr_readonly_attributes, _remove_env_vars,
-                     _validate_traffic_sum,
-                     _update_revision_env_secretrefs, _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
-                     validate_container_app_name, _update_weights, register_provider_if_needed,
-                     generate_randomized_cert_name, _get_name, load_cert_file, check_cert_name_availability,
-                     validate_hostname, patch_new_custom_domain, get_custom_domains, _validate_revision_name,
-                     set_managed_identity,
-                     is_registry_msi_system, clean_null_values, _populate_secret_values,
-                     safe_set, parse_metadata_flags, parse_auth_flags,
-                     set_ip_restrictions, certificate_location_matches, certificate_matches,
-                     generate_randomized_managed_cert_name,
-                     check_managed_cert_name_availability, prepare_managed_certificate_envelop,
-                     ensure_workload_profile_supported,
-                     get_current_mariner_tags, patchable_check, get_pack_exec_path, is_docker_running, trigger_workflow,
-                     AppType,
-                     format_location, connected_env_check_cert_name_availability)
-from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
-                         SSH_BACKUP_ENCODING)
-from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, FACEBOOK_SECRET_SETTING_NAME, GITHUB_SECRET_SETTING_NAME,
-                         GOOGLE_SECRET_SETTING_NAME, TWITTER_SECRET_SETTING_NAME, APPLE_SECRET_SETTING_NAME, CONTAINER_APPS_RP,
-                         NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, HELLO_WORLD_IMAGE, LOG_TYPE_SYSTEM, LOG_TYPE_CONSOLE,
-                         MANAGED_CERTIFICATE_RT, PRIVATE_CERTIFICATE_RT, PENDING_STATUS, SUCCEEDED_STATUS, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
+from azure.cli.command_modules.containerapp._utils import (_validate_subscription_registered,
+                                                           _convert_object_from_snake_to_camel_case,
+                                                           _object_to_dict, _remove_additional_attributes,
+                                                           raise_missing_token_suggestion,
+                                                           _remove_dapr_readonly_attributes,
+                                                           _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
+                                                           validate_container_app_name, register_provider_if_needed,
+                                                           generate_randomized_cert_name, load_cert_file,
+                                                           generate_randomized_managed_cert_name,
+                                                           check_managed_cert_name_availability, prepare_managed_certificate_envelop,
+                                                           get_current_mariner_tags, patchable_check, get_pack_exec_path, is_docker_running, trigger_workflow,
+                                                           AppType)
+from ._utils import connected_env_check_cert_name_availability
+
+from ._constants import (CONTAINER_APPS_RP,
+                         NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
                          DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
                          DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_QDRANT_IMAGE,
                          DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME)
@@ -635,6 +620,32 @@ def show_containerappsjob(cmd, name, resource_group_name):
     containerapp_job_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
     return containerapp_job_decorator.show()
+
+
+def list_containerappsjob(cmd, resource_group_name=None):
+    raw_parameters = locals()
+    containerapp_job_decorator = ContainerAppJobDecorator(
+        cmd=cmd,
+        client=ContainerAppsJobPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_job_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+
+    return containerapp_job_decorator.list()
+
+
+def delete_containerappsjob(cmd, name, resource_group_name, no_wait=False):
+    raw_parameters = locals()
+    containerapp_job_decorator = ContainerAppJobDecorator(
+        cmd=cmd,
+        client=ContainerAppsJobPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_job_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+
+    return containerapp_job_decorator.delete()
 
 
 def create_or_update_github_action(cmd,
