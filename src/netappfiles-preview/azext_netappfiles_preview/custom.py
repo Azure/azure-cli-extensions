@@ -157,7 +157,7 @@ class VolumeUpdate(_VolumeUpdate):
         # RP expects bytes but CLI allows integer TiBs for ease of use
         logger.debug("ANF-Extension log: VolumeUpdate")
         logger.debug("ANF-Extension log: usage_threshold: %s", args.usage_threshold)
-        if has_value(args.usage_threshold) and args.usage_threshold.to_serialized_data() is not None :
+        if has_value(args.usage_threshold) and args.usage_threshold.to_serialized_data() is not None:
             gib_scale = 1024 * 1024 * 1024
             args.usage_threshold = int(args.usage_threshold.to_serialized_data()) * gib_scale
 
