@@ -50,7 +50,7 @@ helps['aks create'] = """
                          size of its node pool with `az aks scale`.
         - name: --node-osdisk-size
           type: int
-          short-summary: Size in GB of the OS disk for each node in the node pool. Minimum 30 GB.
+          short-summary: Size in GiB of the OS disk for each node in the node pool. Minimum 30 GiB.
         - name: --node-osdisk-type
           type: string
           short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Managed'. May not be changed for this pool after creation.
@@ -1524,7 +1524,7 @@ helps['aks nodepool add'] = """
           - "`az aks get-versions`"
         - name: --node-osdisk-size
           type: int
-          short-summary: Size in GB of the OS disk for each node in the agent pool. Minimum 30 GB.
+          short-summary: Size in GiB of the OS disk for each node in the agent pool. Minimum 30 GiB.
         - name: --node-osdisk-type
           type: string
           short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Managed'. May not be changed for this pool after creation.
