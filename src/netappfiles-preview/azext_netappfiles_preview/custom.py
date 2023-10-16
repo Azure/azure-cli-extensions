@@ -7,8 +7,10 @@
 
 from knack.log import get_logger
 from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.aaz import has_value
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from .aaz.latest.netappfiles.volume import Create as _VolumeCreate, Update as _VolumeUpdate
+
 
 logger = get_logger(__name__)
 
@@ -113,8 +115,6 @@ class VolumeCreate(_VolumeCreate):
                 isNfs41 = True
                 if not has_value(args.rules["allowed_clients"]):
                     raise ValidationError("Parameter allowed-clients needs to be set when protocol-type is NFSv4.1")
-                if rule_index is None:
-                    raise ValidationError("Parameter rule-index needs to be set when protocol-type is NFSv4.1")
             if "NFSv3" in args.protocol_types:
                 isNfs3 = True
             if "CIFS" in args.protocol_types:
