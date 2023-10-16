@@ -6,6 +6,7 @@
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
+    CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
 )
 
 from azure.cli.core.azclierror import (
@@ -130,3 +131,16 @@ def _validate_enable_azure_container_storage_params(
                 'Value for --storage-pool-size should be defined '
                 'with size followed by Gi or Ti e.g. 512Gi or 2Ti.'
             )
+
+        else:
+            if storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
+                pool_size_qty = float(storage_pool_size[:-2])
+                pool_size_unit = storage_pool_size[-2:]
+
+                if (
+                    (pool_size_unit == "Gi" and pool_size_qty < 1024) or \
+                    (pool_size_unit == "Ti" and pool_size_qty < 1)
+                ):
+                    raise ArgumentUsageError(
+                        'Value for --storage-pool-size must be at least 1Ti when '
+                        '--storage-pool-type is elasticSan.')

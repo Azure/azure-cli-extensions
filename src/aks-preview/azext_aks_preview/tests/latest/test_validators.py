@@ -715,6 +715,15 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
             acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, None, None, None, storage_pool_size, None)
         self.assertEqual(str(cm.exception), err)
 
+    def test_enable_with_invalid_size_for_esan_storage_pool(self):
+        storage_pool_name = "valid-name"
+        storage_pool_size = "512Gi"
+        storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_ELASTIC_SAN
+        err = 'Value for --storage-pool-size must be at least 1Ti when --storage-pool-type is elasticSan.'
+        with self.assertRaises(ArgumentUsageError) as cm:
+            acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, None, None, None, storage_pool_size, None)
+        self.assertEqual(str(cm.exception), err)
+
     def test_valid_enable_for_azure_disk_pool(self):
         storage_pool_name = "valid-name"
         storage_pool_size = "5Ti"
