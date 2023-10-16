@@ -6,6 +6,7 @@
 from typing import Dict, Any
 from urllib.parse import urlparse
 
+from azure.cli.command_modules.containerapp._validators import validate_revision_suffix
 from azure.cli.core.commands import AzCliCommand
 
 import time
@@ -17,6 +18,17 @@ from azure.cli.core.azclierror import (
     ResourceNotFoundError,
     MutuallyExclusiveArgumentError)
 from azure.cli.command_modules.containerapp.containerapp_decorator import BaseContainerAppDecorator, ContainerAppCreateDecorator
+from azure.cli.command_modules.containerapp._github_oauth import cache_github_token
+from azure.cli.command_modules.containerapp._utils import (store_as_secret_and_return_secret_ref, parse_env_var_flags,
+                                                           _convert_object_from_snake_to_camel_case,
+                                                           _object_to_dict, _remove_additional_attributes,
+                                                           _remove_readonly_attributes,
+                                                           is_registry_msi_system,
+                                                           safe_set, parse_metadata_flags, parse_auth_flags,
+                                                           ensure_workload_profile_supported, _generate_secret_volume_name,
+                                                           check_unique_bindings, get_linker_client,
+                                                           safe_get, _update_revision_env_secretrefs, _add_or_update_tags, _populate_secret_values,
+                                                           clean_null_values, _add_or_update_env_vars, _remove_env_vars, _get_acr_cred)
 
 from knack.log import get_logger
 from knack.util import CLIError
@@ -39,17 +51,8 @@ from ._models import (
 from ._decorator_utils import (create_deserializer,
                                process_loaded_yaml,
                                load_yaml_file)
-from ._utils import (store_as_secret_and_return_secret_ref, parse_env_var_flags,
-                     _convert_object_from_snake_to_camel_case,
-                     _object_to_dict, _remove_additional_attributes,
-                     _remove_readonly_attributes,
-                     is_registry_msi_system,
-                     safe_set, parse_metadata_flags, parse_auth_flags,
-                     ensure_workload_profile_supported, _generate_secret_volume_name,
-                     parse_service_bindings, check_unique_bindings, get_linker_client,
-                     safe_get, _update_revision_env_secretrefs, _add_or_update_tags, _populate_secret_values,
-                     clean_null_values, _add_or_update_env_vars, _remove_env_vars, _get_acr_cred)
-from ._validators import validate_create, validate_revision_suffix
+from ._utils import parse_service_bindings
+from ._validators import validate_create
 
 from ._constants import (HELLO_WORLD_IMAGE,
                          CONNECTED_ENVIRONMENT_TYPE,
@@ -57,7 +60,6 @@ from ._constants import (HELLO_WORLD_IMAGE,
                          MANAGED_ENVIRONMENT_TYPE,
                          MANAGED_ENVIRONMENT_RESOURCE_TYPE, ACR_IMAGE_SUFFIX)
 
-from ._github_oauth import cache_github_token
 
 logger = get_logger(__name__)
 

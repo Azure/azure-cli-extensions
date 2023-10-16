@@ -6,14 +6,9 @@
 # pylint: disable=line-too-long, too-many-statements, bare-except
 # from azure.cli.core.commands import CliCommandType
 # from msrestazure.tools import is_valid_resource_id, parse_resource_id
-from azext_containerapp._client_factory import ex_handler_factory
-from ._validators import validate_ssh
-from ._transformers import (transform_containerapp_output,
-                            transform_containerapp_list_output,
-                            transform_job_execution_list_output,
-                            transform_job_execution_show_output,
-                            transform_revision_list_output,
-                            transform_revision_output, transform_usages_output)
+from azure.cli.command_modules.containerapp._client_factory import ex_handler_factory
+from azure.cli.command_modules.containerapp._transformers import (transform_containerapp_output, transform_containerapp_list_output)
+from ._transformers import transform_usages_output
 
 
 def load_command_table(self, _):
@@ -45,9 +40,6 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_containerappsjob')
         g.custom_command('create', 'create_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('delete', 'delete_containerappsjob', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
-        g.custom_command('update', 'update_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
-        g.custom_command('start', 'start_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
-        g.custom_command('stop', 'stop_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp env certificate') as g:
         g.custom_command('create', 'create_managed_certificate', is_preview=True)
@@ -85,10 +77,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_auth_config', exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp hostname') as g:
-        g.custom_command('add', 'add_hostname', exception_handler=ex_handler_factory())
         g.custom_command('bind', 'bind_hostname', exception_handler=ex_handler_factory())
-        g.custom_command('list', 'list_hostname')
-        g.custom_command('delete', 'delete_hostname', confirmation=True, exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp compose') as g:
         g.custom_command('create', 'create_containerapps_from_compose')

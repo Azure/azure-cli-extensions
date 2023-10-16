@@ -5,7 +5,7 @@
 from knack.log import get_logger
 
 from azure.cli.core.azclierror import RequiredArgumentMissingError
-from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvCreateDecorator, ContainerAppEnvDecorator
+from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvCreateDecorator
 
 logger = get_logger(__name__)
 

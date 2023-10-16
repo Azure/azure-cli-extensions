@@ -8,10 +8,11 @@ from azure.cli.core.commands import AzCliCommand
 
 from ._client_factory import handle_raw_exception
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
+from azure.cli.command_modules.containerapp._utils import validate_environment_location
 
 from ._constants import CONNECTED_ENVIRONMENT_RESOURCE_TYPE
 from ._models import ConnectedEnvironment as ConnectedEnvironmentModel, ExtendedLocation as ExtendedLocationModel
-from ._utils import validate_environment_location, validate_custom_location
+from ._utils import validate_custom_location
 
 
 class ConnectedEnvironmentDecorator(BaseResource):

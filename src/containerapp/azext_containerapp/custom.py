@@ -20,7 +20,24 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
     InvalidArgumentValueError)
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser
+from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser, create_deserializer
+from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobDecorator
+from azure.cli.command_modules.containerapp.containerapp_decorator import BaseContainerAppDecorator
+from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvUpdateDecorator, ContainerAppEnvDecorator
+from azure.cli.command_modules.containerapp._decorator_utils import load_yaml_file
+from azure.cli.command_modules.containerapp._github_oauth import get_github_access_token
+from azure.cli.command_modules.containerapp._utils import (_validate_subscription_registered,
+                                                           _convert_object_from_snake_to_camel_case,
+                                                           _object_to_dict, _remove_additional_attributes,
+                                                           raise_missing_token_suggestion,
+                                                           _remove_dapr_readonly_attributes,
+                                                           _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
+                                                           validate_container_app_name, register_provider_if_needed,
+                                                           generate_randomized_cert_name, load_cert_file,
+                                                           generate_randomized_managed_cert_name,
+                                                           check_managed_cert_name_availability, prepare_managed_certificate_envelop,
+                                                           get_current_mariner_tags, trigger_workflow,
+                                                           AppType)
 
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
@@ -29,10 +46,10 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
-from .containerapp_job_decorator import ContainerAppJobDecorator, ContainerAppJobPreviewCreateDecorator
-from .containerapp_env_decorator import ContainerAppEnvDecorator, ContainerappEnvPreviewCreateDecorator
+from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
+from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
-from .containerapp_decorator import BaseContainerAppDecorator, ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
+from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from ._client_factory import handle_raw_exception
 from ._clients import (
     GitHubActionClient,
@@ -47,7 +64,6 @@ from ._clients import (
     ConnectedEnvCertificateClient
 )
 from ._dev_service_utils import DevServiceUtils
-from ._github_oauth import get_github_access_token
 from ._models import (
     GitHubActionConfiguration,
     RegistryInfo as RegistryInfoModel,
@@ -56,19 +72,7 @@ from ._models import (
     ContainerAppCertificateEnvelope as ContainerAppCertificateEnvelopeModel,
     AzureFileProperties as AzureFilePropertiesModel)
 
-from azure.cli.command_modules.containerapp._utils import (_validate_subscription_registered,
-                                                           _convert_object_from_snake_to_camel_case,
-                                                           _object_to_dict, _remove_additional_attributes,
-                                                           raise_missing_token_suggestion,
-                                                           _remove_dapr_readonly_attributes,
-                                                           _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
-                                                           validate_container_app_name, register_provider_if_needed,
-                                                           generate_randomized_cert_name, load_cert_file,
-                                                           generate_randomized_managed_cert_name,
-                                                           check_managed_cert_name_availability, prepare_managed_certificate_envelop,
-                                                           get_current_mariner_tags, patchable_check, get_pack_exec_path, is_docker_running, trigger_workflow,
-                                                           AppType)
-from ._utils import connected_env_check_cert_name_availability
+from ._utils import connected_env_check_cert_name_availability, patchable_check, get_pack_exec_path, is_docker_running
 
 from ._constants import (CONTAINER_APPS_RP,
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
@@ -77,75 +81,6 @@ from ._constants import (CONTAINER_APPS_RP,
                          DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME)
 
 logger = get_logger(__name__)
-
-
-# These properties should be under the "properties" attribute. Move the properties under "properties" attribute
-def process_loaded_yaml(yaml_containerapp):
-    if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
-    if not yaml_containerapp.get('properties'):
-        yaml_containerapp['properties'] = {}
-
-    if yaml_containerapp.get('identity') and yaml_containerapp['identity'].get('userAssignedIdentities'):
-        for identity in yaml_containerapp['identity']['userAssignedIdentities']:
-            # properties (principalId and clientId) are readonly and create (PUT) will throw error if they are provided
-            # Update (PATCH) ignores them so it's okay to remove them as well
-            yaml_containerapp['identity']['userAssignedIdentities'][identity] = {}
-
-    nested_properties = ["provisioningState",
-                         "managedEnvironmentId",
-                         "environmentId",
-                         "latestRevisionName",
-                         "latestRevisionFqdn",
-                         "customDomainVerificationId",
-                         "configuration",
-                         "template",
-                         "outboundIPAddresses",
-                         "workloadProfileName",
-                         "latestReadyRevisionName",
-                         "eventStreamEndpoint"]
-    for nested_property in nested_properties:
-        tmp = yaml_containerapp.get(nested_property)
-        if nested_property in yaml_containerapp:
-            yaml_containerapp['properties'][nested_property] = tmp
-            del yaml_containerapp[nested_property]
-
-    if "managedEnvironmentId" in yaml_containerapp['properties']:
-        tmp = yaml_containerapp['properties']['managedEnvironmentId']
-        if tmp:
-            yaml_containerapp['properties']["environmentId"] = tmp
-        del yaml_containerapp['properties']['managedEnvironmentId']
-
-    return yaml_containerapp
-
-
-def load_yaml_file(file_name):
-    import yaml
-    import errno
-
-    try:
-        with open(file_name) as stream:  # pylint: disable=unspecified-encoding
-            return yaml.safe_load(stream.read().replace('\x00', ''))
-    except (IOError, OSError) as ex:
-        if getattr(ex, 'errno', 0) == errno.ENOENT:
-            raise ValidationError('{} does not exist'.format(file_name)) from ex
-        raise
-    except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
-        raise ValidationError('Error parsing {} ({})'.format(file_name, str(ex))) from ex
-
-
-def create_deserializer():
-    from ._sdk_models import ContainerApp  # pylint: disable=unused-import
-    from msrest import Deserializer
-    import inspect
-
-    sdkClasses = inspect.getmembers(sys.modules[CONTAINER_APPS_SDK_MODELS])
-    deserializer = {}
-
-    for sdkClass in sdkClasses:
-        deserializer[sdkClass[0]] = sdkClass[1]
-
-    return Deserializer(deserializer)
 
 
 def list_all_services(cmd, environment_name, resource_group_name):
@@ -515,6 +450,38 @@ def create_managed_environment(cmd,
     return r
 
 
+def update_managed_environment(cmd,
+                               name,
+                               resource_group_name,
+                               logs_destination=None,
+                               storage_account=None,
+                               logs_customer_id=None,
+                               logs_key=None,
+                               hostname=None,
+                               certificate_file=None,
+                               certificate_password=None,
+                               tags=None,
+                               workload_profile_type=None,
+                               workload_profile_name=None,
+                               min_nodes=None,
+                               max_nodes=None,
+                               mtls_enabled=None,
+                               no_wait=False):
+    raw_parameters = locals()
+    containerapp_env_update_decorator = ContainerAppEnvUpdateDecorator(
+        cmd=cmd,
+        client=ManagedEnvironmentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_env_update_decorator.validate_arguments()
+    containerapp_env_update_decorator.construct_payload()
+    r = containerapp_env_update_decorator.update()
+    r = containerapp_env_update_decorator.post_process(r)
+
+    return r
+
+
 def show_managed_environment(cmd, name, resource_group_name):
     raw_parameters = locals()
     containerapp_env_decorator = ContainerAppEnvDecorator(
@@ -842,7 +809,7 @@ def containerapp_up(cmd,
                             ResourceGroup, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
                             _get_registry_details, _create_github_action, _set_up_defaults, up_output,
                             check_env_name_on_rg, get_token, _has_dockerfile)
-    from ._github_oauth import cache_github_token
+    from azure.cli.command_modules.containerapp._github_oauth import cache_github_token
     HELLOWORLD = "mcr.microsoft.com/k8se/quickstart"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 

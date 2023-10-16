@@ -8,7 +8,7 @@ from azure.cli.core.commands import AzCliCommand
 from knack.util import CLIError
 
 from ._client_factory import handle_raw_exception
-from ._utils import register_provider_if_needed, _validate_subscription_registered
+from azure.cli.command_modules.containerapp._utils import register_provider_if_needed, _validate_subscription_registered
 
 
 class BaseResource:

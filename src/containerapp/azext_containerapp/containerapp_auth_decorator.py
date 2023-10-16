@@ -5,9 +5,9 @@
 from typing import Any, Dict
 
 from azure.cli.command_modules.containerapp.containerapp_auth_decorator import ContainerAppAuthDecorator
+from azure.cli.command_modules.containerapp._utils import safe_set
 
 from ._constants import BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME
-from ._utils import safe_set
 from knack.prompting import prompt_y_n
 from azure.cli.core.azclierror import ArgumentUsageError
 
