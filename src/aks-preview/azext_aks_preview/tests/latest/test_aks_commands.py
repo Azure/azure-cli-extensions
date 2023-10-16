@@ -6720,6 +6720,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.is_empty(),
         ])
 
+    # live only due to downloading k8s-extension extension
+    @live_only()
     @AllowLargeResponse(8192)
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_azurecontainerstorage(self, resource_group, resource_group_location):
@@ -6798,6 +6800,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.is_empty(),
         ])
 
+    # live only due to downloading k8s-extension extension
+    # @live_only()
     # Introduce this test back once v1.0.3-preview version of Azure container storage is released
     # @AllowLargeResponse(8192)
     # @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
