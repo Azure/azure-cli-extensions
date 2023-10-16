@@ -95,6 +95,7 @@ def _perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_g
                 )
         except Exception as ex:
             exception = True
+            break
 
     if assign and exception:
         logger.warning(
@@ -120,5 +121,5 @@ def _get_k8s_extension_module(module_name):
     except ImportError as ie:
         raise UnknownError(
             "Please add CLI extension `k8s-extension` for performing Azure Container Storage operations.\n"
-            "Run command `az extension --name k8s-extension`"
+            "Run command `az extension add --name k8s-extension`"
         )
