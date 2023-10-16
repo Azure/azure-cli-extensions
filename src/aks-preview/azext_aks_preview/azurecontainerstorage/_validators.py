@@ -124,7 +124,7 @@ def _validate_enable_azure_container_storage_params(
         raise ArgumentUsageError('Cannot set --storage-pool-option when --storage-pool-type is not ephemeralDisk.')
 
     if storage_pool_size is not None:
-        pattern = r'^\d+(?:Gi|Ti)$'
+        pattern = r'^\d+(\.\d+)?[GT]i$'
         match = re.match(pattern, storage_pool_size)
         if match is None:
             raise ArgumentUsageError(

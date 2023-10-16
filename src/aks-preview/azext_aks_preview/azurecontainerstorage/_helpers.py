@@ -74,34 +74,45 @@ def _perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_g
     managed_rg_role_scope = build_role_scope(node_resource_group, None, subscription_id)
     roles = ["Reader", "Network Contributor", "Elastic SAN Owner", "Elastic SAN Volume Group Owner"]
     exception = False
+    result = True
 
     for role in roles:
         try:
             if assign:
-                add_role_assignment(
+                result = add_role_assignment(
                     cmd,
                     role,
                     kubelet_identity_object_id,
                     scope=managed_rg_role_scope,
+                    delay=0,
                 )
             else:
                 # NOTE: delete_role_assignments accepts cli_ctx
                 # instead of cmd unlike add_role_assignment.
-                delete_role_assignments(
+                result = delete_role_assignments(
                     cmd.cli_ctx,
                     role,
                     kubelet_identity_object_id,
                     scope=managed_rg_role_scope,
+                    delay=0,
                 )
+
+            if not result:
+                break
         except Exception as ex:
             exception = True
             break
 
-    if assign and exception:
-        logger.warning(
-            "Unable to add Role Assignments needed for Elastic SAN storagepools to be functional. "
-            "Going ahead with the installation of Azure Container Storage..."
-        )
+    if (not result or exception):
+        if assign:
+            logger.warning(
+                "\nUnable to add Role Assignments needed for Elastic SAN storagepools to be functional. "
+                "Going ahead with the installation of Azure Container Storage..."
+            )
+        else:
+            logger.warning(
+                "\nUnable to revoke Role Assignments, if any, added for Azure Container Storage."
+            )
 
 
 def _generate_random_storage_pool_name():
