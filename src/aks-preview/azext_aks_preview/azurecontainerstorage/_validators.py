@@ -138,7 +138,7 @@ def _validate_enable_azure_container_storage_params(
                 pool_size_unit = storage_pool_size[-2:]
 
                 if (
-                    (pool_size_unit == "Gi" and pool_size_qty < 1024) or \
+                    (pool_size_unit == "Gi" and pool_size_qty < 1024) or
                     (pool_size_unit == "Ti" and pool_size_qty < 1)
                 ):
                     raise ArgumentUsageError(
