@@ -103,7 +103,7 @@ class VolumeCreate(_VolumeCreate):
         for rule in args.rules:
             logger.debug("ANF-Extension log: rule: %s", rule)
 
-        if (args.protocol_types is not None and any(x in ['NFSv3', 'NFSv4.1'] for x in args.protocol_types) and len(args.rules) == 0)\
+        if (has_value(args.protocol_types) and any(x in ['NFSv3', 'NFSv4.1'] for x in args.protocol_types) and len(args.rules) == 0)\
                 and not ((len(args.protocol_types) == 1 and all(elem == "NFSv3" for elem in args.protocol_types)) and len(args.rules) == 0):
             isNfs41 = False
             isNfs3 = False
