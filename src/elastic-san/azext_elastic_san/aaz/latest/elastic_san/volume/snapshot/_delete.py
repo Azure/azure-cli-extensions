@@ -12,21 +12,21 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "elastic-san volume-group delete",
+    "elastic-san volume snapshot delete",
     is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a Volume Group.
+    """Delete a Volume Snapshot.
 
-    :example: Delete a Volume Group.
-        az elastic-san volume-group delete -g "rg" -e "san_name" -n "vg_name"
+    :example: snapshot delete
+        az elastic-san volume snapshot delete -g "rg" -e "san_name" -v "vg_name" -n "snapshot_name"
     """
 
     _aaz_info = {
         "version": "2023-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/snapshots/{}", "2023-01-01"],
         ]
     }
 
@@ -61,8 +61,19 @@ class Delete(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+        _args_schema.snapshot_name = AAZStrArg(
+            options=["-n", "--name", "--snapshot-name"],
+            help="The name of the volume snapshot within the given volume group.",
+            required=True,
+            id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-z0-9]+(?:[._-][a-z0-9]+)*$",
+                max_length=80,
+                min_length=1,
+            ),
+        )
         _args_schema.volume_group_name = AAZStrArg(
-            options=["-n", "--name", "--volume-group-name"],
+            options=["-v", "--volume-group", "--volume-group-name"],
             help="The name of the VolumeGroup.",
             required=True,
             id_part="child_name_1",
@@ -76,7 +87,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.VolumeGroupsDelete(ctx=self.ctx)()
+        yield self.VolumeSnapshotsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -87,7 +98,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class VolumeGroupsDelete(AAZHttpOperation):
+    class VolumeSnapshotsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -126,7 +137,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans/{elasticSanName}/volumegroups/{volumeGroupName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans/{elasticSanName}/volumegroups/{volumeGroupName}/snapshots/{snapshotName}",
                 **self.url_parameters
             )
 
@@ -147,6 +158,10 @@ class Delete(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "snapshotName", self.ctx.args.snapshot_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

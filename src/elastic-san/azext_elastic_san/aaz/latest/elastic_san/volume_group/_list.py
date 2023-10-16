@@ -19,13 +19,13 @@ class List(AAZCommand):
     """List Volume Groups.
 
     :example: List Volume Groups.
-        az elastic-san volume-group list -g {rg} -e {san_name}
+        az elastic-san volume-group list -g "rg" -e "san_name"
     """
 
     _aaz_info = {
-        "version": "2022-12-01-preview",
+        "version": "2023-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups", "2022-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups", "2023-01-01"],
         ]
     }
 
@@ -47,7 +47,7 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["-e", "--elastic-san-name"],
+            options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -127,7 +127,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01-preview",
+                    "api-version", "2023-01-01",
                     required=True,
                 ),
             }
@@ -173,6 +173,7 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.identity = AAZObjectType()
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -188,8 +189,40 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.value.Element.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.value.Element.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.value.Element.properties
             properties.encryption = AAZStrType()
+            properties.encryption_properties = AAZObjectType(
+                serialized_name="encryptionProperties",
+            )
             properties.network_acls = AAZObjectType(
                 serialized_name="networkAcls",
             )
@@ -205,6 +238,40 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
+            encryption_properties = cls._schema_on_200.value.Element.properties.encryption_properties
+            encryption_properties.identity = AAZObjectType()
+            encryption_properties.key_vault_properties = AAZObjectType(
+                serialized_name="keyVaultProperties",
+            )
+
+            identity = cls._schema_on_200.value.Element.properties.encryption_properties.identity
+            identity.user_assigned_identity = AAZStrType(
+                serialized_name="userAssignedIdentity",
+            )
+
+            key_vault_properties = cls._schema_on_200.value.Element.properties.encryption_properties.key_vault_properties
+            key_vault_properties.current_versioned_key_expiration_timestamp = AAZStrType(
+                serialized_name="currentVersionedKeyExpirationTimestamp",
+                flags={"read_only": True},
+            )
+            key_vault_properties.current_versioned_key_identifier = AAZStrType(
+                serialized_name="currentVersionedKeyIdentifier",
+                flags={"read_only": True},
+            )
+            key_vault_properties.key_name = AAZStrType(
+                serialized_name="keyName",
+            )
+            key_vault_properties.key_vault_uri = AAZStrType(
+                serialized_name="keyVaultUri",
+            )
+            key_vault_properties.key_version = AAZStrType(
+                serialized_name="keyVersion",
+            )
+            key_vault_properties.last_key_rotation_timestamp = AAZStrType(
+                serialized_name="lastKeyRotationTimestamp",
+                flags={"read_only": True},
+            )
+
             network_acls = cls._schema_on_200.value.Element.properties.network_acls
             network_acls.virtual_network_rules = AAZListType(
                 serialized_name="virtualNetworkRules",
@@ -217,9 +284,6 @@ class List(AAZCommand):
             _element.action = AAZStrType()
             _element.id = AAZStrType(
                 flags={"required": True},
-            )
-            _element.state = AAZStrType(
-                flags={"read_only": True},
             )
 
             private_endpoint_connections = cls._schema_on_200.value.Element.properties.private_endpoint_connections

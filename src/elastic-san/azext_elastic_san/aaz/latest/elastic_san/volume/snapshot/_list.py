@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "elastic-san volume list",
+    "elastic-san volume snapshot list",
     is_preview=True,
 )
 class List(AAZCommand):
-    """List Volumes in a Volume Group.
+    """List Snapshots in a VolumeGroup or List Snapshots by Volume (name) in a VolumeGroup using filter
 
-    :example: List Volumes in a Volume Group.
-        az elastic-san volume list -g "rg" -e "san_name" -v "vg_name"
+    :example: snapshot list
+        az elastic-san volume snapshot list -g "rg" -e "san_name" -v "vg_name"
     """
 
     _aaz_info = {
         "version": "2023-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/snapshots", "2023-01-01"],
         ]
     }
 
@@ -69,11 +69,15 @@ class List(AAZCommand):
                 min_length=3,
             ),
         )
+        _args_schema.filter = AAZStrArg(
+            options=["--filter"],
+            help="Specify $filter='volumeName eq <volume name>' to filter on volume.",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.VolumesListByVolumeGroup(ctx=self.ctx)()
+        self.VolumeSnapshotsListByVolumeGroup(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -89,7 +93,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class VolumesListByVolumeGroup(AAZHttpOperation):
+    class VolumeSnapshotsListByVolumeGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -103,7 +107,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans/{elasticSanName}/volumegroups/{volumeGroupName}/volumes",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ElasticSan/elasticSans/{elasticSanName}/volumegroups/{volumeGroupName}/snapshots",
                 **self.url_parameters
             )
 
@@ -140,6 +144,9 @@ class List(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
+                **self.serialize_query_param(
+                    "$filter", self.ctx.args.filter,
+                ),
                 **self.serialize_query_param(
                     "api-version", "2023-01-01",
                     required=True,
@@ -204,57 +211,25 @@ class List(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.creation_data = AAZObjectType(
                 serialized_name="creationData",
-            )
-            properties.managed_by = AAZObjectType(
-                serialized_name="managedBy",
+                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.size_gi_b = AAZIntType(
-                serialized_name="sizeGiB",
-                flags={"required": True},
-            )
-            properties.storage_target = AAZObjectType(
-                serialized_name="storageTarget",
+            properties.source_volume_size_gi_b = AAZIntType(
+                serialized_name="sourceVolumeSizeGiB",
                 flags={"read_only": True},
             )
-            properties.volume_id = AAZStrType(
-                serialized_name="volumeId",
+            properties.volume_name = AAZStrType(
+                serialized_name="volumeName",
                 flags={"read_only": True},
             )
 
             creation_data = cls._schema_on_200.value.Element.properties.creation_data
-            creation_data.create_source = AAZStrType(
-                serialized_name="createSource",
-            )
             creation_data.source_id = AAZStrType(
                 serialized_name="sourceId",
-            )
-
-            managed_by = cls._schema_on_200.value.Element.properties.managed_by
-            managed_by.resource_id = AAZStrType(
-                serialized_name="resourceId",
-            )
-
-            storage_target = cls._schema_on_200.value.Element.properties.storage_target
-            storage_target.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            storage_target.status = AAZStrType()
-            storage_target.target_iqn = AAZStrType(
-                serialized_name="targetIqn",
-                flags={"read_only": True},
-            )
-            storage_target.target_portal_hostname = AAZStrType(
-                serialized_name="targetPortalHostname",
-                flags={"read_only": True},
-            )
-            storage_target.target_portal_port = AAZIntType(
-                serialized_name="targetPortalPort",
-                flags={"read_only": True},
+                flags={"required": True},
             )
 
             system_data = cls._schema_on_200.value.Element.system_data
