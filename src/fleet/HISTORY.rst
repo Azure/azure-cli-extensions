@@ -50,6 +50,8 @@ Release History
 ++++++
 * Updates to Fleet identity options.
 
-0.2.9
+0.3.0
 ++++++
-* Bug fixes on Fleet MSI
+* Resolved issues related to system & user assigned MSI.
+* UpdateRun now takes a Strategy name in lieu of resource Id, e.g., `az fleet updaterun create --update_strategy_name UpdateStrategyName`
+* Deletes now require confirmation.
