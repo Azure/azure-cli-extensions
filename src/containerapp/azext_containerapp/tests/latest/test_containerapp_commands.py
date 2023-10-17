@@ -738,19 +738,19 @@ class ContainerappServiceBindingTests(ScenarioTest):
         self.cmd('containerapp service milvus create -g {} -n {} --environment {}'.format(
             resource_group, milvus_ca_name, env_name))
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
-            resource_group, ca_name, env_name, image), checks=[
+        self.cmd('containerapp create -g {} -n {} --environment {} --bind postgres:postgres_binding redis'.format(
+            resource_group, ca_name, env_name), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "postgres_binding"),
             JMESPathCheck('properties.template.serviceBinds[1].name', "redis")
         ])
 
         self.cmd('containerapp update -g {} -n {} --unbind postgres_binding'.format(
-            resource_group, ca_name, image), checks=[
+            resource_group, ca_name), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
         ])
 
         self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka mariadb qdrant milvus'.format(
-            resource_group, ca_name, image), checks=[
+            resource_group, ca_name), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
             JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding"),
             JMESPathCheck('properties.template.serviceBinds[2].name', "kafka"),
