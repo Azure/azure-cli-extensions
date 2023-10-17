@@ -296,7 +296,6 @@ class VnfNfdGenerator(NFDGenerator):
         vhd_config = self.config.vhd
         vhd_parameters = {
             "imageName": self.image_name,
-            "azureDeployLocation": "{deployParameters.location}",
             **{
                 snake_case_to_camel_case(key): value
                 for key, value in vhd_config.__dict__.items()

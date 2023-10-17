@@ -15,10 +15,7 @@ mock_vnf_folder = ((Path(__file__).parent) / "mock_vnf").resolve()
 
 INPUT_WITH_SAS_VHD_PARAMS = {
     "imageName": "ubuntu-vmImage",
-    "azureDeployLocation": "{deployParameters.location}",
     "imageDiskSizeGB": 30,
-    "imageOsState": "Generalized",
-    "imageOsType": "Linux",
     "imageHyperVGeneration": "V1",
     "imageApiVersion": "2023-03-01",
 }
