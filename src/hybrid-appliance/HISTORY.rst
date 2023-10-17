@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.1.5
+++++++
+* Fixed prechecks in case of existing cluster
+* Updated delete to not error out in case there is no cluster on that server
+
 0.1.4
 ++++++
 * Updated prechecks and onboarding to not fail if appliance already exists with same name and rg.

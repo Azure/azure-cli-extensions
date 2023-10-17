@@ -199,12 +199,27 @@ def validate_cluster_resource_group_and_name(azure_clusterconfig_cm, resource_gr
     try:
         if azure_clusterconfig_cm.data["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm.data["AZURE_RESOURCE_NAME"] != name:
             telemetry.set_exception()
-            raise ValidationError("The parameters passed do not correspond to this appliance. Please check the resource group name and appliance name")
+            raise ValidationError()
     except KeyError:
         raise KeyError("The required entries were not found in the config map")
+    except ValidationError as ex:
+        current_appliance_name=azure_clusterconfig_cm.data["AZURE_RESOURCE_NAME"]
+        current_resource_group=azure_clusterconfig_cm.data["AZURE_RESOURCE_GROUP"]
+        raise ValidationError(f"The supplied values (appliance_name={name} and resource_group_name={resource_group_name}) don't match the values of the appliance currently onboarded (appliance_name={current_appliance_name}, resource_group_name={current_resource_group})")
     except Exception as ex:
         raise CLIInternalError("Failed to validate the configmap: {}".format(str(ex)))
         
+def check_if_same_cluster(name, resource_group):
+    if not check_if_microk8s_is_installed():
+        return False
+    cm = get_azure_clusterconfig_cm()
+    if cm is None:
+        return False
+    try:
+        validate_cluster_resource_group_and_name(cm, resource_group, name)
+    except Exception as e:
+        return False
+    return True
 
 def troubleshoot_connectedk8s(resource_group_name, name, filepath):
     os.environ["TROUBLESHOOT_DIRECTORY"] = filepath

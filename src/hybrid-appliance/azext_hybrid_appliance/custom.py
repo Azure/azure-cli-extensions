@@ -32,6 +32,13 @@ def validate_hybrid_appliance(cmd, resource_group_name, name, validate_connected
 
     all_validations_passed = True
 
+    # Check if there is already a microk8s cluster running
+    if utils.check_if_microk8s_is_installed():
+        if not utils.check_if_same_cluster(name, resource_group_name):
+            all_validations_passed=False
+            telemetry.set_exception(exception="User's machine already has microk8s cluster running", fault_type=consts.Non_Linux_Machine, summary="User's machine is not linux machine")
+            logger.warning("This server already has a microk8s cluster running. Please run the script in delete mode before attempting to onboard again. Learn more: https://go.microsoft.com/fwlink/?linkid=2241241")
+
     # Check if the operating system is Linux
     if not psutil.LINUX:
         all_validations_passed = False
@@ -43,14 +50,14 @@ def validate_hybrid_appliance(cmd, resource_group_name, name, validate_connected
     if disk_usage.total < consts.Disk_Threshold * 1024 * 1024 * 1024:
         all_validations_passed = False
         telemetry.set_exception(exception="Machine doesn't meet min {}GB disk space requirement".format(consts.Disk_Threshold), fault_type=consts.DiskSpace_Validation_Failed, summary="Machine doesn't meen min disk space threshold")
-        logger.warning("The appliance requires at least {} GB of disk space to perform its operations. ".format(consts.Disk_Threshold))
+        logger.warning("The appliance requires at least {} GB of disk space in the root partition to perform its operations. ".format(consts.Disk_Threshold))
 
     # Check if the memory is at least 4GB
     memory = psutil.virtual_memory()
     if memory.total < consts.Memory_Threshold * 1024 * 1024 * 1024:
         all_validations_passed = False
         telemetry.set_exception(exception="Machine doesn't meet min {} GB memory requirement".format(consts.Memory_Threshold), fault_type=consts.Memory_Validation_Failed, summary="Machine doesn't meet min memory threshold")
-        logger.warning("The appliance requires at least {} GB of memory to perform its operations. ".format(consts.Memory_Threshold))
+        logger.warning("The appliance requires at least {} GB of free memory to perform its operations. ".format(consts.Memory_Threshold))
     
     # Check if the machine has at least 4 cores of CPU
     try:
@@ -78,7 +85,7 @@ def validate_hybrid_appliance(cmd, resource_group_name, name, validate_connected
         except requests.exceptions.RequestException:
             all_validations_passed = False
             endpoints_reachability_check = False
-            logger.warning("Failed to check connectivity to the Azure endpoint: {}. Please check network connectivity from the server. If a proxy is blocking connectivity, please provide proxy server details. Learn more: <URL> ".format(endpoint))
+            logger.warning("Failed to check connectivity to the Azure endpoint: {}. Please check network connectivity from the server. If a proxy is blocking connectivity, please provide proxy server details. Learn more: https://go.microsoft.com/fwlink/?linkid=2241241".format(endpoint))
     if endpoints_reachability_check is False:
         telemetry.set_exception(exception="Pre-requisite endpoints reachability validation failed", fault_type=consts.Endpoints_Reachability_Validation_Failed, summary="Pre-requisite endpoints reachability validation failed")
     # Install specific version of connectedk8s
@@ -89,9 +96,10 @@ def validate_hybrid_appliance(cmd, resource_group_name, name, validate_connected
             cmd_show_arc= ['az', 'connectedk8s', 'show', '-n', name, '-g', resource_group_name, '-o', 'none']
             process = subprocess.Popen(cmd_show_arc, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if process.wait() == 0:
-                telemetry.set_exception(exception="An appliance with same name already exists in the resource group", fault_type=consts.Resource_Already_Exists_Fault_Type, summary="Appliance resource with same name already exists")
-                logger.warning("The appliance name and resource group provided in the script already correspond to an existing connected cluster resource in Azure. Go to the portal and generate the script again with a different appliance name.")
-                all_validations_passed = False
+                if not utils.check_if_same_cluster(name, resource_group_name):
+                    telemetry.set_exception(exception="An appliance with same name already exists in the resource group", fault_type=consts.Resource_Already_Exists_Fault_Type, summary="Appliance resource with same name already exists")
+                    logger.warning("The appliance name and resource group provided in the script already correspond to an existing connected cluster resource in Azure. Go to the portal and generate the script again with a different appliance name.")
+                    all_validations_passed = False
             stdout = process.stdout.read().decode()
             stderr = process.stderr.read().decode()
             if "ResourceGroupNotFound" in stdout or "ResourceGroupNotFound" in stderr:
@@ -112,17 +120,11 @@ def validate_hybrid_appliance(cmd, resource_group_name, name, validate_connected
         print("All pre-requisite validations have passed successfully")
 
 def create_hybrid_appliance(cmd, resource_group_name, name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None, tags=None, custom_locations_oid=""):
-    if utils.check_microk8s(throw_on_subprocess_exception=False):
-        matches_current_cluster=False
-        try:
-            cm = utils.get_azure_clusterconfig_cm()
-            utils.validate_cluster_resource_group_and_name(cm, resource_group_name, name)
-            matches_current_cluster=True
-        except:
-            pass
-        if matches_current_cluster:
+    if utils.check_microk8s(throw_on_subprocess_exception=False) 
+        if not utils.check_if_same_cluster(name, resource_group_name):
+            raise ValidationError("A MicroK8s cluster is already running on this server. Run the script in “delete” mode to clean-up any existing components and execute the script again. Learn more: https://go.microsoft.com/fwlink/?linkid=2241241")
+        else:
             return
-        raise ValidationError("A MicroK8s cluster is already running on this server. Run the script in “delete” mode to clean-up any existing components and execute the script again. Learn more: <URL>")
 
     kubeconfig_path = utils.get_kubeconfig_path()
     kubectl_client_location = utils.install_kubectl_client()
@@ -209,7 +211,7 @@ def upgrade_hybrid_appliance(resource_group_name, name):
     try:
         azure_clusterconfig_cm = utils.get_azure_clusterconfig_cm()
     except:
-        raise ValidationError("Failed to connect the cluster to Azure Arc. Run the script in “delete” mode to clean-up any existing components and execute the script again. Learn more: <URL>")
+        raise ValidationError("Failed to connect the cluster to Azure Arc. Run the script in “delete” mode to clean-up any existing components and execute the script again. Learn more: https://go.microsoft.com/fwlink/?linkid=2241241")
             
     try:
         if azure_clusterconfig_cm.data["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm.data["AZURE_RESOURCE_NAME"] != name:
@@ -271,8 +273,7 @@ def delete_hybrid_appliance(resource_group_name, name):
     delete_cc = True
     kubeconfig_path = utils.get_kubeconfig_path()
     if not utils.check_if_microk8s_is_installed():
-        telemetry.set_exception()
-        raise ValidationError("There is no microk8s cluster running on this server. Please ensure you are running the server on the machine where the cluster is running.")
+        return
     
     try:
         azure_clusterconfig_cm = utils.get_azure_clusterconfig_cm()
@@ -313,7 +314,6 @@ def collect_logs(cmd, resource_group_name, name):
     try:
         validate_hybrid_appliance(cmd, resource_group_name, name, validate_connectedk8s_exists=False)
     except Exception as ex:
-        logger.warning(ex.with_traceback())
         logger.warning("One or more of the required prechecks have failed. Please ensure all the pre-requisites are met.")
 
     troubleshoot_connectedk8s = True
