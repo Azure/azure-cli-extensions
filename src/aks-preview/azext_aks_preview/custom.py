@@ -1079,6 +1079,7 @@ def aks_agentpool_add(
     node_osdisk_type=None,
     node_osdisk_size=0,
     max_surge=None,
+    drain_timeout=None,
     node_soak_duration=None,
     mode=CONST_NODEPOOL_MODE_USER,
     scale_down_mode=CONST_SCALE_DOWN_MODE_DELETE,
@@ -1145,6 +1146,7 @@ def aks_agentpool_update(
     tags=None,
     node_taints=None,
     max_surge=None,
+    drain_timeout=None,
     node_soak_duration=None,
     mode=None,
     scale_down_mode=None,
@@ -1281,7 +1283,7 @@ def aks_agentpool_upgrade(cmd,
         instance.upgrade_settings.drain_timeout_in_minutes = drain_timeout
     if node_soak_duration:
         instance.upgrade_settings.node_soak_duration_in_minutes = node_soak_duration
-        
+
     # custom headers
     aks_custom_headers = extract_comma_separated_string(
         aks_custom_headers,
