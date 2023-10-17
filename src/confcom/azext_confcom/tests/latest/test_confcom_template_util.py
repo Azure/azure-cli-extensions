@@ -5,7 +5,6 @@
 
 import os
 import unittest
-import pytest
 from azext_confcom.custom import acipolicygen_confcom
 import azext_confcom.config as config
 from azext_confcom.template_util import (
@@ -13,13 +12,9 @@ from azext_confcom.template_util import (
     extract_confidential_properties,
 )
 from azext_confcom.os_util import load_json_from_str
-import pytest
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
-
-# @unittest.skip("not in use")
-@pytest.mark.run(order=1)
 class TemplateUtil(unittest.TestCase):
     def test_case_insensitive_dict_get(self):
         test_dict = {"key1": "value1", "key2": "value2", "KEY3": "value3"}
