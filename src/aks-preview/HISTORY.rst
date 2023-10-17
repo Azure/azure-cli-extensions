@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.164
++++++++
+* Add `--node-soak-duration` to the `az aks nodepool add/update/upgrade` commands.
+
 0.5.163
 +++++++
 * Add `get-upgrades` and `get-revisions` to the `az aks mesh` command.
