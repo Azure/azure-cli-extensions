@@ -327,6 +327,26 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return node_taints
 
+    def get_node_soak_duration(self):
+        """Obtain the value of node_soak_duration.
+
+        :return: int
+        """
+        # read the original value passed by the command
+        node_soak_duration = self.raw_param.get("node_soak_duration")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.upgrade_settings and
+                self.agentpool.upgrade_settings.node_soak_duration_in_minutes is not None
+            ):
+                node_soak_duration = self.agentpool.upgrade_settings.node_soak_duration_in_minutes
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return node_soak_duration
+
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -473,6 +493,29 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         return agentpool
 
 
+    def set_up_upgrade_settings(self, agentpool: AgentPool) -> AgentPool:
+        """Set up upgrade settings for the AgentPool object.
+
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        upgrade_settings = self.models.AgentPoolUpgradeSettings()
+        max_surge = self.context.get_max_surge()
+        if max_surge:
+            upgrade_settings.max_surge = max_surge
+
+        drain_timeout = self.context.get_drain_timeout()
+        if drain_timeout:
+            upgrade_settings.drain_timeout_in_minutes = drain_timeout
+
+        node_soak_duration = self.context.get_node_soak_duration()
+        if node_soak_duration:
+            upgrade_settings.node_soak_duration_in_minutes = node_soak_duration
+
+        agentpool.upgrade_settings = upgrade_settings
+        return agentpool
+
 class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
     def __init__(
         self,
@@ -549,5 +592,34 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update network profile
         agentpool = self.update_network_profile(agentpool)
+
+        return agentpool
+
+    def update_upgrade_settings(self, agentpool: AgentPool) -> AgentPool:
+        """Update upgrade settings for the Agentpool object.
+
+        :return: the Agentpool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        upgrade_settings = agentpool.upgrade_settings
+        if upgrade_settings is None:
+            upgrade_settings = self.models.AgentPoolUpgradeSettings()
+
+        max_surge = self.context.get_max_surge()
+        if max_surge:
+            upgrade_settings.max_surge = max_surge
+            # why not always set this? so we don't wipe out a preview feaure in upgrade settigns like NodeSoakDuration?
+            agentpool.upgrade_settings = upgrade_settings
+
+        drain_timeout = self.context.get_drain_timeout()
+        if drain_timeout:
+            upgrade_settings.drain_timeout_in_minutes = drain_timeout
+            agentpool.upgrade_settings = upgrade_settings
+
+        node_soak_duration = self.context.get_node_soak_duration()
+        if node_soak_duration:
+            upgrade_settings.node_soak_duration_in_minutes = node_soak_duration
+            agentpool.upgrade_settings = upgrade_settings
 
         return agentpool
