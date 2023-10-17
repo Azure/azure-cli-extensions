@@ -189,18 +189,20 @@ def __to_room_participant(presenters, attendees, consumers):
 
     return participants
 
+
 def __to_room_pstn_dial_out_enabled(pstn_dial_out_enabled):
     pstn_enabled_str = pstn_dial_out_enabled
 
-    if pstn_enabled_str is None :
+    if pstn_enabled_str is None:
         return pstn_enabled_str
 
-    if pstn_dial_out_enabled.lower() == "false" :
+    if pstn_dial_out_enabled.lower() == "false":
         pstn_enabled_str = "False"
-    elif pstn_dial_out_enabled.lower() == "true" :
+    elif pstn_dial_out_enabled.lower() == "true":
         pstn_enabled_str = "True"
 
     return pstn_enabled_str
+
 
 def communication_rooms_get_room(client, room_id):
     try:
@@ -222,7 +224,7 @@ def communication_rooms_create_room(client,
         room_participants = __to_room_participant(presenters, attendees, consumers)
         pstn_dialed_out_enabled_str = __to_room_pstn_dial_out_enabled(pstn_dial_out_enabled)
 
-        if pstn_dialed_out_enabled_str is None :
+        if pstn_dialed_out_enabled_str is None:
             pstn_dialed_out_enabled_str = "False"
 
         pstn_enabled = ast.literal_eval(pstn_dialed_out_enabled_str)
@@ -255,7 +257,7 @@ def communication_rooms_update_room(client, room_id,
         pstn_dialed_out_enabled_str = __to_room_pstn_dial_out_enabled(pstn_dial_out_enabled)
         pstn_enabled = None
 
-        if pstn_dialed_out_enabled_str is not None :
+        if pstn_dialed_out_enabled_str is not None:
             pstn_enabled = ast.literal_eval(pstn_dialed_out_enabled_str)
 
         return client.update_room(
