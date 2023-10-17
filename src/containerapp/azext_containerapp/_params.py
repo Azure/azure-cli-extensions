@@ -20,10 +20,6 @@ def load_arguments(self, _):
     name_type = CLIArgumentType(options_list=['--name', '-n'])
 
     with self.argument_context('containerapp create') as c:
-        c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
-        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="Name of the workload profile to run the app on.")
-        c.argument('secret_volume_mount', help="Path to mount all secrets e.g. mnt/secrets")
-        c.argument('termination_grace_period', type=int, options_list=['--termination-grace-period', '--tgp'], help="Duration in seconds a replica is given to gracefully shut down before it is forcefully terminated. (Default: 30)")
         c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md.", is_preview=True)
 
     with self.argument_context('containerapp create', arg_group='GitHub Repository', is_preview=True) as c:
@@ -64,11 +60,6 @@ def load_arguments(self, _):
         c.argument('managed_certificates_only', options_list=['--managed-certificates-only', '-m'], help='List managed certificates only.')
         c.argument('private_key_certificates_only', options_list=['--private-key-certificates-only', '-p'], help='List private-key certificates only.')
 
-    with self.argument_context('containerapp up', arg_group='Log Analytics (Environment)') as c:
-        c.argument('logs_customer_id', options_list=['--logs-workspace-id'], help='Workspace ID of the Log Analytics workspace to send diagnostics logs to. You can use \"az monitor log-analytics workspace create\" to create one. Extra billing may apply.')
-        c.argument('logs_key', options_list=['--logs-workspace-key'], help='Log Analytics workspace key to configure your Log Analytics workspace. You can use \"az monitor log-analytics workspace get-shared-keys\" to retrieve the key.')
-        c.ignore('no_wait')
-
     with self.argument_context('containerapp up', arg_group='Github Repo') as c:
         c.argument('repo', help='Create an app via Github Actions. In the format: https://github.com/<owner>/<repository-name> or <owner>/<repository-name>')
         c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line. If not provided or not found in the cache (and using --repo), a browser page will be opened to authenticate with Github.')
@@ -83,20 +74,6 @@ def load_arguments(self, _):
         c.argument('token_store', arg_type=get_three_state_flag(), help='Boolean indicating if token store is enabled for the app.', is_preview=True)
         c.argument('sas_url_secret', help='The blob storage SAS URL to be used for token store.', is_preview=True)
         c.argument('sas_url_secret_name', help='The secret name that contains blob storage SAS URL to be used for token store.', is_preview=True)
-
-    with self.argument_context('containerapp ssl upload') as c:
-        c.argument('hostname', help='The custom domain name.')
-        c.argument('environment', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
-        c.argument('certificate_file', options_list=['--certificate-file', '-f'], help='The filepath of the .pfx or .pem file')
-        c.argument('certificate_password', options_list=['--password', '-p'], help='The certificate file password')
-        c.argument('certificate_name', options_list=['--certificate-name', '-c'], help='Name of the certificate which should be unique within the Container Apps environment.')
-
-    with self.argument_context('containerapp hostname bind') as c:
-        c.argument('hostname', help='The custom domain name.')
-        c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
-        c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
-        c.argument('environment', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
-        c.argument('validation_method', options_list=['--validation-method', '-v'], help='Validation method of custom domain ownership.')
 
     # Patch
     with self.argument_context('containerapp patch') as c:
