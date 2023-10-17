@@ -232,9 +232,9 @@ def _load_rooms_arguments(self):
                    help='The timestamp from when the room can no longer be joined, in ISO8601 format, '
                    'ex: 2023-06-31T10:21. Should be used together with --valid-from. Optional.')
         c.argument('pstn_dial_out_enabled',
-                    help='Set this flag to true if, at the time of the call, '
-                   'dial out to a PSTN number is enabled in a particular room. '
-                   'By default, this flag is set to false. Optional.')
+                        help='Set this flag to true if, at the time of the call, '
+                        'dial out to a PSTN number is enabled in a particular room. '
+                        'By default, this flag is set to false. Optional.')
 
     with self.argument_context('communication rooms participant get') as c:
         c.argument('room_id', options_list=['--room'],
