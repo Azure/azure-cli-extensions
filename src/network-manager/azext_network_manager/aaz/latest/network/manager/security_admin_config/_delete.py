@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete a network manager security admin configuration.
 
     :example: Delete a network manager security admin configuration.
-        az network manager security-admin-config delete --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" --resource-group "rg1" --force
+        az network manager security-admin-config delete --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" --resource-group "rg1" --force n
     """
 
     _aaz_info = {

@@ -28,3 +28,19 @@ def load_command_table(self, _):
     with self.command_group('network manager security-admin-config rule-collection') as g:
         g.custom_command('create', 'network_manager_admin_rule_collection_create')
         g.custom_command('update', 'network_manager_admin_rule_collection_update')
+
+    with self.command_group("network manager group static-member"):
+        from .custom import GroupStaticMemberCreate
+        self.command_table["network manager group static-member create"] = GroupStaticMemberCreate(loader=self)
+
+    with self.command_group("network manager scope-connection"):
+        from .custom import ScopeConnectionCreate
+        self.command_table["network manager scope-connection create"] = ScopeConnectionCreate(loader=self)
+
+    with self.command_group("network manager connection subscription"):
+        from .custom import ConnectionSubscriptionCreate
+        self.command_table["network manager connection subscription create"] = ConnectionSubscriptionCreate(loader=self)
+
+    with self.command_group("network manager connection management-group"):
+        from .custom import ConnectionManagementGroupCreate
+        self.command_table["network manager connection management-group create"] = ConnectionManagementGroupCreate(loader=self)

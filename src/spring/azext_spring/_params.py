@@ -31,7 +31,7 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_acs_ssh_or_warn, validate_apm_properties, validate_apm_secrets,
                                      validate_apm_not_exist, validate_apm_update, validate_apm_reference,
                                      validate_apm_reference_and_enterprise_tier, validate_cert_reference,
-                                     validate_build_cert_reference, validate_acs_create)
+                                     validate_build_cert_reference, validate_acs_create, not_support_enterprise)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
@@ -258,6 +258,9 @@ def load_arguments(self, _):
     with self.argument_context('spring test-endpoint renew-key') as c:
         c.argument('type', type=str, arg_type=get_enum_type(
             TestKeyType), help='Type of test-endpoint key')
+
+    with self.argument_context('spring list-support-server-versions') as c:
+            c.argument('service', service_name_type, validator=not_support_enterprise)
 
     with self.argument_context('spring app') as c:
         c.argument('service', service_name_type)
@@ -528,7 +531,7 @@ def load_arguments(self, _):
             c.argument('build_certificates', nargs='*',
                        help='(Enterprise Tier Only) Space-separated certificate names, the certificates are used during build time.',
                        validator=validate_build_cert_reference)
-            c.argument('server_version', help='(Standard and Basic Tiers Only) Tomcat server version. This feature is in public preview.', validator=validate_server_version)
+            c.argument('server_version', help='(Standard and Basic Tiers Only) Tomcat server version. List all supported server versions by running `az spring list-support-server-versions -o table`. This feature is in public preview.', validator=validate_server_version)
 
     with self.argument_context('spring app deploy') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)
@@ -677,6 +680,12 @@ def load_arguments(self, _):
                    help='If true, only import public certificate part from key vault.', default=False)
         c.argument('public_certificate_file', options_list=['--public-certificate-file', '-f'],
                    help='A file path for the public certificate to be uploaded')
+        c.argument('enable_auto_sync', arg_type=get_three_state_flag(),
+                   help='Whether to automatically synchronize certificate from key vault', default=False)
+
+    with self.argument_context('spring certificate update') as c:
+        c.argument('enable_auto_sync', arg_type=get_three_state_flag(),
+                   help='Whether to automatically synchronize certificate from key vault')
 
     with self.argument_context('spring certificate list') as c:
         c.argument('certificate_type', help='Type of uploaded certificate',

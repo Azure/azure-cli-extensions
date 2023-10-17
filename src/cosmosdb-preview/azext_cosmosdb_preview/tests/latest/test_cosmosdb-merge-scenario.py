@@ -52,7 +52,7 @@ class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
 
         self.kwargs.update({
             'rg':'cosmosTest',
-            'acc': 'mergetest3',
+            'acc': 'mergetest2',
             'db_name': db_name,
             'col': col,
             'loc': 'westus',

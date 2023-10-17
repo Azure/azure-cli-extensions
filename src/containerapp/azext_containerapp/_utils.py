@@ -41,18 +41,20 @@ from azure.mgmt.servicelinker import ServiceLinkerManagementClient
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
 
-from ._clients import ContainerAppClient, ManagedEnvironmentClient, WorkloadProfileClient, ContainerAppsJobClient
+from ._clients import ContainerAppClient, ManagedEnvironmentClient, WorkloadProfileClient, ContainerAppsJobClient, \
+    ConnectedEnvCertificateClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, \
     log_analytics_client_factory, log_analytics_shared_key_client_factory, custom_location_client_factory, \
     k8s_extension_client_factory
+
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
                          LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE,
                          ACR_IMAGE_SUFFIX,
                          LOGS_STRING, PENDING_STATUS, SUCCEEDED_STATUS, UPDATING_STATUS, DEV_SERVICE_LIST,
-                         MANAGED_ENVIRONMENT_RESOURCE_TYPE, CONTAINER_APP_EXTENSION_TYPE)
+                         MANAGED_ENVIRONMENT_RESOURCE_TYPE, CONTAINER_APP_EXTENSION_TYPE,
+                         CONNECTED_ENV_CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE)
 from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel,
-                      ManagedCertificateEnvelop as ManagedCertificateEnvelopModel,
-                      ServiceConnector as ServiceConnectorModel)
+                      ManagedCertificateEnvelop as ManagedCertificateEnvelopModel)
 from ._models import OryxMarinerRunImgTagProperty
 from ._managed_service_utils import ManagedRedisUtils, ManagedCosmosDBUtils, ManagedPostgreSQLFlexibleUtils, ManagedMySQLFlexibleUtils
 
@@ -1611,6 +1613,17 @@ def check_cert_name_availability(cmd, resource_group_name, name, cert_name):
     name_availability_request["type"] = CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE
     try:
         r = ManagedEnvironmentClient.check_name_availability(cmd, resource_group_name, name, name_availability_request)
+    except CLIError as e:
+        handle_raw_exception(e)
+    return r
+
+
+def connected_env_check_cert_name_availability(cmd, resource_group_name, name, cert_name):
+    name_availability_request = {}
+    name_availability_request["name"] = cert_name
+    name_availability_request["type"] = CONNECTED_ENV_CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE
+    try:
+        r = ConnectedEnvCertificateClient.check_name_availability(cmd, resource_group_name, name, name_availability_request)
     except CLIError as e:
         handle_raw_exception(e)
     return r

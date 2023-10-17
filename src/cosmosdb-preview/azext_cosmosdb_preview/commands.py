@@ -57,6 +57,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'cli_cosmosdb_managed_cassandra_cluster_list')
         g.show_command('show', 'get')
         g.command('delete', 'begin_delete', confirmation=True, supports_no_wait=True)
+        g.custom_command('deallocate', 'cli_cosmosdb_managed_cassandra_cluster_deallocate', supports_no_wait=True, confirmation=True)
 
     with self.command_group('managed-cassandra datacenter', cosmosdb_managed_cassandra_datacenter_sdk, client_factory=cf_cassandra_data_center) as g:
         g.custom_command('create', 'cli_cosmosdb_managed_cassandra_datacenter_create', supports_no_wait=True)
@@ -189,8 +190,22 @@ def load_command_table(self, _):
         client_factory=cf_data_transfer_job
     )
 
-    with self.command_group('cosmosdb dts', cosmosdb_data_transfer_job, client_factory=cf_data_transfer_job, is_preview=True) as g:
+    with self.command_group('cosmosdb dts', cosmosdb_data_transfer_job, client_factory=cf_data_transfer_job, is_preview=True, deprecate_info=self.deprecate(redirect='cosmosdb copy', hide=True)) as g:
         g.custom_command('copy', 'cosmosdb_data_transfer_copy_job')
+        g.command('list', 'list_by_database_account')
+        g.show_command('show', 'get')
+        g.command('pause', 'pause')
+        g.command('resume', 'resume')
+        g.command('cancel', 'cancel')
+
+    # Data Transfer Service
+    cosmosdb_copy_job = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations._data_transfer_jobs_operations#DataTransferJobsOperations.{}',
+        client_factory=cf_data_transfer_job
+    )
+
+    with self.command_group('cosmosdb copy', cosmosdb_copy_job, client_factory=cf_data_transfer_job, is_preview=True) as g:
+        g.custom_command('create', 'cosmosdb_copy_job')
         g.command('list', 'list_by_database_account')
         g.show_command('show', 'get')
         g.command('pause', 'pause')
