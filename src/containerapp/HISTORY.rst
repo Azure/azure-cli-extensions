@@ -9,6 +9,10 @@ upcoming
 * 'az containerapp compose create': fixed an issue where the environment's resource group was not resolved from --environment when the input value was a resource id.
 * 'az containerapp replica count', returns the replica count of a container app
 * [Breaking Change] 'az containerapp job create': add default values for container app job properties --replica-completion-count, --replica-retry-limit, --replica-timeout, --parallelism, --min-executions, --max-executions, --polling-interval
+* 'az containerapp create': hide environment variables
+* 'az containerapp update': hide environment variables
+* 'az containerapp job create': hide environment variables
+* 'az containerapp job update': hide environment variables
 
 0.3.41
 ++++++
