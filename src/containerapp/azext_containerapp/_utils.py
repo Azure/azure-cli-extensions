@@ -17,7 +17,7 @@ import packaging.version as SemVer
 
 from urllib.request import urlopen
 
-from azure.cli.command_modules.containerapp._utils import safe_get
+from azure.cli.command_modules.containerapp._utils import safe_get, _ensure_location_allowed
 from azure.cli.command_modules.containerapp._client_factory import handle_raw_exception
 from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError, CLIError, InvalidArgumentValueError)
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
@@ -28,10 +28,11 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
 from ._managed_service_utils import ManagedRedisUtils, ManagedCosmosDBUtils, ManagedPostgreSQLFlexibleUtils, ManagedMySQLFlexibleUtils
 from ._clients import ConnectedEnvCertificateClient, ContainerAppPreviewClient
-from ._client_factory import custom_location_client_factory, k8s_extension_client_factory
+from ._client_factory import custom_location_client_factory, k8s_extension_client_factory, providers_client_factory
 from ._models import OryxMarinerRunImgTagProperty
 from ._constants import (CONTAINER_APP_EXTENSION_TYPE,
-                         CONNECTED_ENV_CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, DEV_SERVICE_LIST)
+                         CONNECTED_ENV_CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, DEV_SERVICE_LIST,
+                         MANAGED_ENVIRONMENT_RESOURCE_TYPE, CONTAINER_APPS_RP)
 
 logger = get_logger(__name__)
 
@@ -322,6 +323,35 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
                         name, binding_name, service_connector_def_list, service_bindings_def_list)
 
     return service_connector_def_list, service_bindings_def_list
+
+
+def validate_environment_location(cmd, location, resource_type=MANAGED_ENVIRONMENT_RESOURCE_TYPE):
+    res_locations = list_environment_locations(cmd, resource_type=resource_type)
+
+    allowed_locs = ", ".join(res_locations)
+
+    if location:
+        try:
+            _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, resource_type)
+
+            return location
+        except Exception as e:  # pylint: disable=broad-except
+            raise ValidationError("You cannot create a Containerapp environment in location {}. List of eligible locations: {}.".format(location, allowed_locs)) from e
+    else:
+        return res_locations[0]
+
+
+def list_environment_locations(cmd, resource_type=MANAGED_ENVIRONMENT_RESOURCE_TYPE):
+    providers_client = providers_client_factory(cmd.cli_ctx, get_subscription_id(cmd.cli_ctx))
+    resource_types = getattr(providers_client.get(CONTAINER_APPS_RP), 'resource_types', [])
+    res_locations = []
+    for res in resource_types:
+        if res and getattr(res, 'resource_type', "") == resource_type:
+            res_locations = getattr(res, 'locations', [])
+
+    res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
+
+    return res_locations
 
 
 def connected_env_check_cert_name_availability(cmd, resource_group_name, name, cert_name):

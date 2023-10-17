@@ -45,6 +45,7 @@ from ._models import (
     Scale as ScaleModel,
     Container as ContainerModel,
     ScaleRule as ScaleRuleModel,
+    Service as ServiceModel,
     Volume as VolumeModel,
     VolumeMount as VolumeMountModel)
 
@@ -577,6 +578,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     ):
         super().__init__(cmd, client, raw_parameters, models)
 
+    def get_argument_service_type(self):
+        return self.get_param("service_type")
+
     def get_argument_service_bindings(self):
         return self.get_param("service_bindings")
 
@@ -588,6 +592,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
     def construct_payload(self):
         super().construct_payload()
+        self.set_up_service_type()
         self.set_up_service_binds()
         self.set_up_extended_location()
         self.set_up_source()
@@ -741,6 +746,13 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                 env_rg = parsed_env['resource_group']
                 env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
                 self.containerapp_def["extendedLocation"] = env_info["extendedLocation"]
+
+    def set_up_service_type(self):
+        service_def = None
+        if self.get_argument_service_type():
+            service_def = ServiceModel
+            service_def["type"] = self.get_argument_service_type()
+        safe_set(self.containerapp_def, "properties", "configuration", "service", value=service_def)
 
     def set_up_service_binds(self):
         if self.get_argument_service_bindings() is not None:

@@ -22,6 +22,12 @@ def load_arguments(self, _):
     with self.argument_context('containerapp create') as c:
         c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md.", is_preview=True)
 
+    # Springboard
+    with self.argument_context('containerapp create', arg_group='Service Binding') as c:
+        c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services(bindings) to be connected to this app. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
+        c.argument('service_type', help="The service information for dev services.")
+        c.ignore('service_type')
+
     with self.argument_context('containerapp create', arg_group='GitHub Repository', is_preview=True) as c:
         c.argument('repo', help='Create an app via GitHub Actions in the format: https://github.com/<owner>/<repository-name> or <owner>/<repository-name>')
         c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line. If not provided or not found in the cache (and using --repo), a browser page will be opened to authenticate with Github.')

@@ -963,20 +963,20 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                       tags=None):
     from pycomposefile import ComposeFile
 
-    from ._compose_utils import (create_containerapps_compose_environment,
-                                 build_containerapp_from_compose_service,
-                                 check_supported_platform,
-                                 warn_about_unsupported_elements,
-                                 resolve_ingress_and_target_port,
-                                 resolve_registry_from_cli_args,
-                                 resolve_transport_from_cli_args,
-                                 resolve_service_startup_command,
-                                 validate_memory_and_cpu_setting,
-                                 resolve_cpu_configuration_from_service,
-                                 resolve_memory_configuration_from_service,
-                                 resolve_replicas_from_service,
-                                 resolve_environment_from_service,
-                                 resolve_secret_from_service)
+    from azure.cli.command_modules.containerapp._compose_utils import (create_containerapps_compose_environment,
+                                                                       build_containerapp_from_compose_service,
+                                                                       check_supported_platform,
+                                                                       warn_about_unsupported_elements,
+                                                                       resolve_ingress_and_target_port,
+                                                                       resolve_registry_from_cli_args,
+                                                                       resolve_transport_from_cli_args,
+                                                                       resolve_service_startup_command,
+                                                                       validate_memory_and_cpu_setting,
+                                                                       resolve_cpu_configuration_from_service,
+                                                                       resolve_memory_configuration_from_service,
+                                                                       resolve_replicas_from_service,
+                                                                       resolve_environment_from_service,
+                                                                       resolve_secret_from_service)
 
     # Validate managed environment
     parsed_managed_env = parse_resource_id(managed_env)
@@ -1017,7 +1017,8 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
         startup_command, startup_args = resolve_service_startup_command(service)
         cpu, memory = validate_memory_and_cpu_setting(
             resolve_cpu_configuration_from_service(service),
-            resolve_memory_configuration_from_service(service)
+            resolve_memory_configuration_from_service(service),
+            managed_environment
         )
         replicas = resolve_replicas_from_service(service)
         environment = resolve_environment_from_service(service)
@@ -1071,7 +1072,6 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                 max_replicas=replicas, )
         )
     return containerapps_from_compose
-
 
 
 def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
