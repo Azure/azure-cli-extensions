@@ -249,6 +249,7 @@ def create_qdrant_service(cmd, service_name, environment_name, resource_group_na
 def delete_qdrant_service(cmd, service_name, resource_group_name, no_wait=False):
     return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_QDRANT_SERVICE_TYPE)
 
+
 def create_milvus_service(cmd, service_name, environment_name, resource_group_name, no_wait=False,
                           disable_warnings=True):
     return DevServiceUtils.create_service(cmd, service_name, environment_name, resource_group_name, no_wait,
