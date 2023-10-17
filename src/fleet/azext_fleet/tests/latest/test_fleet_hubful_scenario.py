@@ -76,6 +76,6 @@ class FleetHubfulScenarioTest(ScenarioTest):
 
         self.cmd('fleet member wait -g {rg} --fleet-name {fleet_name} --fleet-member-name {member_name} --created', checks=[self.is_empty()])
 
-        self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member_name}')
+        self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member_name} --yes')
 
-        self.cmd('fleet delete -g {rg} -n {fleet_name}')
+        self.cmd('fleet delete -g {rg} -n {fleet_name} --yes')
