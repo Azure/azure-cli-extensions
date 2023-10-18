@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create the specific troubleshooter action under a resource or subscription.
 
     :example: Create Troubleshooter at Resource Level
-        az self-help troubleshooter create --troubleshooter-name {troubleshooter-name} --solution-id {solution-id} --parameters {ResourceURI:subscriptions/mySubscription/resourcegroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-rp} --scope {scope}
+        az self-help troubleshooter create --troubleshooter-name {troubleshooter-name} --solution-id {solution-id} --parameters {parameters} --scope {scope}
     """
 
     _aaz_info = {

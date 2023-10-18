@@ -509,7 +509,7 @@ class Update(AAZCommand):
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        yield self.SolutionCreate(ctx=self.ctx)()
+        yield self.SolutionUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -612,7 +612,7 @@ class Update(AAZCommand):
 
             return cls._schema_on_200
 
-    class SolutionCreate(AAZHttpOperation):
+    class SolutionUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -648,7 +648,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):

@@ -18,7 +18,7 @@ from azure.cli.core.aaz import *
 class Restart(AAZCommand):
     """Restarts the troubleshooter API using applicable troubleshooter resource name as the input.
 
-    :example: End Troubleshooter at Resource Level
+    :example: Restart Troubleshooter at Resource Level
         az self-help troubleshooter restart --troubleshooter-name {troubleshooter-name} --scope {scope}
     """
 

@@ -121,7 +121,9 @@ class SelfHelpScenario(ScenarioTest):
                                  type='vaults'),
             'solution-name': solution_name,
             'trigger-criteria': "[{name:solutionid,value:Demo2InsightV2}]",
-            'parameters': "{}"
+            'update-trigger-criteria': "[{name:ReplacementKey,value:<!--56ee7509-92e1-4b9e-97c2-dda53065294c-->}]",
+            'parameters': '{}',
+            'update-parameters': '{SearchText:CanNotRDP,SymptomId:KeyVaultVaultNotFoundInsight}'
         })
 
         create_solution_result = self.cmd(
@@ -142,6 +144,16 @@ class SelfHelpScenario(ScenarioTest):
         self.assertTrue(get_solution_result is not None)
         self.assertTrue(get_solution_result["id"] is not None)
         self.assertTrue(get_solution_result["name"] is not None)
+
+        # Update solution for keyVault resource.
+        update_solution_result = self.cmd(
+            "self-help solution update --solution-name {solution-name} --trigger-criteria {update-trigger-criteria} --parameters {update-parameters} --scope {scope}", checks=[
+                self.check('name', '{solution-name}'),
+                self.check('type', 'Microsoft.Help/Solutions')])
+        update_solution_result = update_solution_result.get_output_in_json()
+        self.assertTrue(update_solution_result is not None)
+        self.assertTrue(update_solution_result["id"] is not None)
+        self.assertTrue(update_solution_result["name"] is not None)
 
 
     @ResourceGroupPreparer()
