@@ -489,7 +489,6 @@ def _fetch_compatible_windows_os_urn(source_vm):
     return urns[0]
 
 
-
 def _select_distro_linux(distro):
     image_lookup = {
         'rhel6': 'RedHat:RHEL:6.10:latest',
@@ -503,8 +502,8 @@ def _select_distro_linux(distro):
         'oracle6': 'Oracle:Oracle-Linux:6.10:latest',
         'oracle7': 'Oracle:Oracle-Linux:ol79:latest',
         'oracle8': 'Oracle:Oracle-Linux:ol82:latest',
-        'sles12':  'SUSE:sles-12-sp5:gen1:latest',
-        'sles15':  'SUSE:sles-15-sp3:gen1:latest'
+        'sles12': 'SUSE:sles-12-sp5:gen1:latest',
+        'sles15': 'SUSE:sles-15-sp3:gen1:latest',
     }
     if distro in image_lookup:
         os_image_urn = image_lookup[distro]
@@ -552,8 +551,8 @@ def _select_distro_linux_gen2(distro):
         'oracle6': 'Oracle:Oracle-Linux:ol79-gen2:latest',
         'oracle7': 'Oracle:Oracle-Linux:ol79-gen2:latest',
         'oracle8': 'Oracle:Oracle-Linux:ol82-gen2:latest',
-        'sles12':  'SUSE:sles-12-sp5:gen2:latest',
-        'sles15':  'SUSE:sles-15-sp3:gen2:latest'
+        'sles12': 'SUSE:sles-12-sp5:gen2:latest',
+        'sles15': 'SUSE:sles-15-sp3:gen2:latest',
     }
     if distro in image_lookup:
         os_image_urn = image_lookup[distro]
