@@ -5,7 +5,6 @@
 
 import os
 import unittest
-import pytest
 import json
 import deepdiff
 import docker
@@ -19,9 +18,6 @@ import azext_confcom.config as config
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
-
-# @unittest.skip("not in use")
-@pytest.mark.run(order=1)
 class PolicyGeneratingImage(unittest.TestCase):
     custom_json = """
         {
@@ -53,9 +49,6 @@ class PolicyGeneratingImage(unittest.TestCase):
         # deep diff the output policies from the regular policy.json and the single image
         self.assertEqual(self.aci_policy.get_serialized_output(), self.custom_policy.get_serialized_output())
 
-
-# @unittest.skip("not in use")
-@pytest.mark.run(order=2)
 class PolicyGeneratingImageSidecar(unittest.TestCase):
     custom_json = """
         {
@@ -89,9 +82,6 @@ class PolicyGeneratingImageSidecar(unittest.TestCase):
     def test_sidecar_image_policy(self):
         self.assertEqual(self.aci_policy.get_serialized_output(), self.custom_policy.get_serialized_output())
 
-
-# @unittest.skip("not in use")
-@pytest.mark.run(order=3)
 class PolicyGeneratingImageInvalid(unittest.TestCase):
     def test_invalid_image_policy(self):
 
@@ -102,9 +92,6 @@ class PolicyGeneratingImageInvalid(unittest.TestCase):
             policy.populate_policy_content_for_all_images(individual_image=True)
         self.assertEqual(exc_info.exception.code, 1)
 
-
-# @unittest.skip("not in use")
-@pytest.mark.run(order=4)
 class PolicyGeneratingImageCleanRoom(unittest.TestCase):
     def test_clean_room_policy(self):
         client = docker.from_env()

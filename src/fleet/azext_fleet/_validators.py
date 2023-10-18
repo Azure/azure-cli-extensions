@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import semver
+import re
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.util import CLIError
@@ -18,12 +18,12 @@ def validate_member_cluster_id(namespace):
 
 
 def validate_kubernetes_version(namespace):
-    try:
-        if namespace.kubernetes_version:
-            semver.VersionInfo.parse(namespace.kubernetes_version)
-    except ValueError:
-        raise InvalidArgumentValueError(
-            "--kubernetes-version must be set as version x.x.x (eg. 1.2.3)")
+    if namespace.kubernetes_version:
+        k8s_release_regex = re.compile(r'^[v|V]?(\d+\.\d+(?:\.\d+)?)$')
+        found = k8s_release_regex.findall(namespace.kubernetes_version)
+        if not found:
+            raise InvalidArgumentValueError(
+                '--kubernetes-version should be the full version number or alias minor version, such as "1.7.12" or "1.7"')
 
 
 def validate_apiserver_subnet_id(namespace):
@@ -34,12 +34,9 @@ def validate_agent_subnet_id(namespace):
     _validate_subnet_id(namespace.agent_subnet_id, "--agent-subnet-id")
 
 
-def validate_update_strategy_id(namespace):
-    if namespace.update_strategy_id is not None:
-        from msrestazure.tools import is_valid_resource_id
-        if not is_valid_resource_id(namespace.update_strategy_id):
-            raise CLIError(
-                "--update-strategy-id is not a valid Azure resource ID.")
+def validate_update_strategy_name(namespace):
+    if namespace.update_strategy_name is not None and not namespace.update_strategy_name.strip():
+            raise CLIError("--update-strategy-name is not a valid name")
 
 
 def _validate_subnet_id(subnet_id, name):
