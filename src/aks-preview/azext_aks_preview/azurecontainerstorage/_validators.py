@@ -137,8 +137,8 @@ def _validate_enable_azure_container_storage_params(
         if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
             raise ArgumentUsageError('Cannot set --storage-pool-sku when --enable-azure-container-storage is ephemeralDisk.')
         elif storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN and \
-           storage_pool_sku not in elastic_san_supported_skus:
-           supported_skus_str = ", ".join(elastic_san_supported_skus)
+          storage_pool_sku not in elastic_san_supported_skus:
+            supported_skus_str = ", ".join(elastic_san_supported_skus)
             raise ArgumentUsageError(
                 'Invalid --storage-pool-sku value. '
                 'Supported value for --storage-pool-sku are {0} '

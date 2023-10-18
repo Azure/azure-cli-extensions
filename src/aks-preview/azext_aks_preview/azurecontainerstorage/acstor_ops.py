@@ -13,7 +13,7 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_DEFAULT_SIZE,
     CONST_STORAGE_POOL_DEFAULT_SIZE_ESAN,
     CONST_STORAGE_POOL_OPTION_NVME,
-    CONST_STORAGE_POOL_SKU_STANDARD_LRS,
+    CONST_STORAGE_POOL_SKU_PREMIUM_LRS,
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
@@ -115,7 +115,7 @@ def perform_enable_azure_container_storage(
             config_settings.append({"cli.storagePool.ephemeralDiskOption": storage_pool_option.lower()})
         else:
             if storage_pool_sku is None:
-                storage_pool_sku = CONST_STORAGE_POOL_SKU_STANDARD_LRS
+                storage_pool_sku = CONST_STORAGE_POOL_SKU_PREMIUM_LRS
             config_settings.append({"cli.storagePool.sku": storage_pool_sku})
     else:
         config_settings.append({"cli.storagePool.create": False})
