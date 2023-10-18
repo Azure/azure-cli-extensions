@@ -20,13 +20,16 @@ class Delete(AAZCommand):
     """Delete a Volume.
 
     :example: Delete a Volume.
-        az elastic-san volume delete -g {rg} -e {san_name} -v {vg_name} -n {volume_name}
+        az elastic-san volume delete -g "rg" -e "san_name" -v "vg_name" -n "volume_name"
+
+    :example: Delete a volume with its snapshot
+        az elastic-san volume delete -g "rg" -e "san_name" -v "vg_name" -n "volume_name" -y --x-ms-delete-snapshots true --x-ms-force-delete true
     """
 
     _aaz_info = {
-        "version": "2022-12-01-preview",
+        "version": "2023-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2022-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elasticsan/elasticsans/{}/volumegroups/{}/volumes/{}", "2023-01-01"],
         ]
     }
 
@@ -47,8 +50,18 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.x_ms_delete_snapshots = AAZStrArg(
+            options=["--x-ms-delete-snapshots"],
+            help="Optional, used to delete snapshots under volume. Allowed value are only true or false. Default value is false.",
+            enum={"false": "false", "true": "true"},
+        )
+        _args_schema.x_ms_force_delete = AAZStrArg(
+            options=["--x-ms-force-delete"],
+            help="Optional, used to delete volume if active sessions present. Allowed value are only true or false. Default value is false.",
+            enum={"false": "false", "true": "true"},
+        )
         _args_schema.elastic_san_name = AAZStrArg(
-            options=["-e", "--elastic-san-name"],
+            options=["-e", "--elastic-san", "--elastic-san-name"],
             help="The name of the ElasticSan.",
             required=True,
             id_part="name",
@@ -62,7 +75,7 @@ class Delete(AAZCommand):
             required=True,
         )
         _args_schema.volume_group_name = AAZStrArg(
-            options=["-v", "--volume-group-name"],
+            options=["-v", "--volume-group", "--volume-group-name"],
             help="The name of the VolumeGroup.",
             required=True,
             id_part="child_name_1",
@@ -179,8 +192,20 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01-preview",
+                    "api-version", "2023-01-01",
                     required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "x-ms-delete-snapshots", self.ctx.args.x_ms_delete_snapshots,
+                ),
+                **self.serialize_header_param(
+                    "x-ms-force-delete", self.ctx.args.x_ms_force_delete,
                 ),
             }
             return parameters

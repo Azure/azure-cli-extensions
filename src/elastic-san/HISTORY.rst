@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.0.0b2
+++++++
+* Support 2023-01-01 api-version as preview
+* Add `az elastic-san volume-group snapshot` command group
+* Support CMK for volume-group
+
 1.0.0b1
 ++++++
 * Support private endpoint

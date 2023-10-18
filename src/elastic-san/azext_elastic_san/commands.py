@@ -12,4 +12,7 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    with self.command_group('elastic-san volume-group'):
+        from .custom import VolumeGroupCreate, VolumeGroupUpdate
+        self.command_table['elastic-san volume-group create'] = VolumeGroupCreate(loader=self)
+        self.command_table['elastic-san volume-group update'] = VolumeGroupUpdate(loader=self)
