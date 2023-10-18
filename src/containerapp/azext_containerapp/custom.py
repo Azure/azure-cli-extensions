@@ -807,10 +807,10 @@ def create_containerappsjob(cmd,
                             container_name=None,
                             managed_env=None,
                             trigger_type=None,
-                            replica_timeout=None,
-                            replica_retry_limit=None,
-                            replica_completion_count=None,
-                            parallelism=None,
+                            replica_timeout=1800,
+                            replica_retry_limit=0,
+                            replica_completion_count=1,
+                            parallelism=1,
                             cron_expression=None,
                             secrets=None,
                             env_vars=None,
@@ -825,9 +825,9 @@ def create_containerappsjob(cmd,
                             scale_rule_name=None,
                             scale_rule_type=None,
                             scale_rule_auth=None,
-                            polling_interval=None,
-                            min_executions=None,
-                            max_executions=None,
+                            polling_interval=30,
+                            min_executions=0,
+                            max_executions=10,
                             tags=None,
                             no_wait=False,
                             system_assigned=False,
@@ -3347,24 +3347,53 @@ def remove_dapr_component(cmd, resource_group_name, dapr_component_name, environ
 
 
 def list_replicas(cmd, resource_group_name, name, revision=None):
-    app = ContainerAppClient.show(cmd, resource_group_name, name)
-    if not revision:
-        revision = app["properties"]["latestRevisionName"]
-    return ContainerAppClient.list_replicas(cmd=cmd,
-                                            resource_group_name=resource_group_name,
-                                            container_app_name=name,
-                                            revision_name=revision)
+
+    try:
+        app = ContainerAppClient.show(cmd, resource_group_name, name)
+        if not revision:
+            revision = app["properties"]["latestRevisionName"]
+        return ContainerAppClient.list_replicas(cmd=cmd,
+                                                resource_group_name=resource_group_name,
+                                                container_app_name=name,
+                                                revision_name=revision)
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def count_replicas(cmd, resource_group_name, name, revision=None):
+
+    try:
+        app = ContainerAppClient.show(cmd, resource_group_name, name)
+        if not revision:
+            revision = safe_get(app, "properties", "latestRevisionName")
+            if not revision:
+                raise ValidationError("No revision found for containerapp.")
+    except Exception as e:
+        handle_raw_exception(e)
+
+    try:
+        count = len(ContainerAppClient.list_replicas(cmd=cmd,
+                                                     resource_group_name=resource_group_name,
+                                                     container_app_name=name,
+                                                     revision_name=revision))
+        return count
+    except Exception as e:
+        handle_raw_exception(e)
 
 
 def get_replica(cmd, resource_group_name, name, replica, revision=None):
-    app = ContainerAppClient.show(cmd, resource_group_name, name)
-    if not revision:
-        revision = app["properties"]["latestRevisionName"]
-    return ContainerAppClient.get_replica(cmd=cmd,
-                                          resource_group_name=resource_group_name,
-                                          container_app_name=name,
-                                          revision_name=revision,
-                                          replica_name=replica)
+
+    try:
+        app = ContainerAppClient.show(cmd, resource_group_name, name)
+        if not revision:
+            revision = app["properties"]["latestRevisionName"]
+        return ContainerAppClient.get_replica(cmd=cmd,
+                                              resource_group_name=resource_group_name,
+                                              container_app_name=name,
+                                              revision_name=revision,
+                                              replica_name=replica)
+    except Exception as e:
+        handle_raw_exception(e)
 
 
 def containerapp_ssh(cmd, resource_group_name, name, container=None, revision=None, replica=None, startup_command="sh"):
@@ -4721,18 +4750,18 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
     # Validate managed environment
     parsed_managed_env = parse_resource_id(managed_env)
     managed_env_name = parsed_managed_env['name']
-
-    logger.info(  # pylint: disable=W1203
-        f"Creating the Container Apps managed environment {managed_env_name} under {resource_group_name} in {location}.")
+    env_rg = parsed_managed_env.get('resource_group', resource_group_name)
 
     try:
         managed_environment = show_managed_environment(cmd=cmd,
                                                        name=managed_env_name,
-                                                       resource_group_name=resource_group_name)
+                                                       resource_group_name=env_rg)
     except CLIInternalError:  # pylint: disable=W0702
+        logger.info(  # pylint: disable=W1203
+            f"Creating the Container Apps managed environment {managed_env_name} under {env_rg} in {location}.")
         managed_environment = create_containerapps_compose_environment(cmd,
                                                                        managed_env_name,
-                                                                       resource_group_name,
+                                                                       env_rg,
                                                                        tags=tags)
 
     compose_yaml = load_yaml_file(compose_file_path)

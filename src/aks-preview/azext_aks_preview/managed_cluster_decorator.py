@@ -6,6 +6,7 @@
 import copy
 import datetime
 import os
+import semver
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
@@ -64,6 +65,9 @@ from azext_aks_preview._consts import (
     CONST_NETWORK_DATAPLANE_CILIUM,
     CONST_PRIVATE_DNS_ZONE_NONE,
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE,
+    CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK,
 )
 from azext_aks_preview._helpers import (
     check_is_private_cluster,
@@ -1028,86 +1032,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 )
 
         return profile
-
-    def get_enable_image_cleaner(self) -> bool:
-        """Obtain the value of enable_image_cleaner.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        enable_image_cleaner = self.raw_param.get("enable_image_cleaner")
-
-        return enable_image_cleaner
-
-    def get_disable_image_cleaner(self) -> bool:
-        """Obtain the value of disable_image_cleaner.
-
-        This function supports the option of enable_validation. When enabled, if both enable_image_cleaner and
-        disable_image_cleaner are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        disable_image_cleaner = self.raw_param.get("disable_image_cleaner")
-
-        return disable_image_cleaner
-
-    def _get_image_cleaner_interval_hours(self, enable_validation: bool = False) -> Union[int, None]:
-        """Internal function to obtain the value of image_cleaner_interval_hours according to the context.
-
-        This function supports the option of enable_validation. When enabled
-          1. In Create mode
-            a. if image_cleaner_interval_hours is specified but enable_image_cleaner is missed, raise a RequiredArgumentMissingError.
-          2. In update mode
-            b. if image_cleaner_interval_hours is specified and image cleaner wat not enabled, raise a RequiredArgumentMissingError.
-            c. if image_cleaner_interval_hours is specified and disable_image_cleaner is specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: int or None
-        """
-        # read the original value passed by the command
-        image_cleaner_interval_hours = self.raw_param.get("image_cleaner_interval_hours")
-
-        if image_cleaner_interval_hours is not None and enable_validation:
-
-            enable_image_cleaner = self.get_enable_image_cleaner()
-            disable_image_cleaner = self.get_disable_image_cleaner()
-
-            if self.decorator_mode == DecoratorMode.CREATE:
-                if not enable_image_cleaner:
-                    raise RequiredArgumentMissingError(
-                        '"--image-cleaner-interval-hours" requires "--enable-image-cleaner" in create mode.')
-
-            elif self.decorator_mode == DecoratorMode.UPDATE:
-                if not enable_image_cleaner and (
-                    not self.mc or
-                    not self.mc.security_profile or
-                    not self.mc.security_profile.image_cleaner or
-                    not self.mc.security_profile.image_cleaner.enabled
-                ):
-                    raise RequiredArgumentMissingError(
-                        'Update "--image-cleaner-interval-hours" requires specifying "--enable-image-cleaner" or ImageCleaner enabled on managed cluster.')
-
-                if disable_image_cleaner:
-                    raise MutuallyExclusiveArgumentError(
-                        'Cannot specify --image-cleaner-interval-hours and --disable-image-cleaner at the same time.')
-
-        return image_cleaner_interval_hours
-
-    def get_image_cleaner_interval_hours(self) -> Union[int, None]:
-        """Obtain the value of image_cleaner_interval_hours.
-
-        This function supports the option of enable_validation. When enabled
-          1. In Create mode
-            a. if image_cleaner_interval_hours is specified but enable_image_cleaner is missed, raise a RequiredArgumentMissingError.
-          2. In update mode
-            b. if image_cleaner_interval_hours is specified and image cleaner wat not enabled, raise a RequiredArgumentMissingError.
-            c. if image_cleaner_interval_hours is specified and disable_image_cleaner is specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: int or None
-        """
-        interval_hours = self._get_image_cleaner_interval_hours(enable_validation=True)
-
-        return interval_hours
 
     def get_disable_image_integrity(self) -> bool:
         """Obtain the value of disable_image_integrity.
@@ -2088,7 +2012,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: updated service mesh profile
         """
-
         updated = False
         new_profile = self.models.ServiceMeshProfile(mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED) \
             if self.mc.service_mesh_profile is None else copy.deepcopy(self.mc.service_mesh_profile)
@@ -2096,6 +2019,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # enable/disable
         enable_asm = self.raw_param.get("enable_azure_service_mesh", False)
         disable_asm = self.raw_param.get("disable_azure_service_mesh", False)
+        mesh_upgrade_command = self.raw_param.get("mesh_upgrade_command", None)
 
         if enable_asm and disable_asm:
             raise MutuallyExclusiveArgumentError(
@@ -2103,12 +2027,25 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
 
         if disable_asm:
+            if new_profile is None or new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_DISABLED:
+                raise ArgumentUsageError(
+                    "Istio has not been enabled for this cluster, please refer to https://aka.ms/asm-aks-addon-docs "
+                    "for more details on enabling Azure Service Mesh."
+                )
             new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_DISABLED
             updated = True
         elif enable_asm:
+            if new_profile is not None and new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_ISTIO:
+                raise ArgumentUsageError(
+                    "Istio has already been enabled for this cluster, please refer to https://aka.ms/asm-aks-upgrade-docs "
+                    "for more details on updating the mesh profile."
+                )
+            requested_revision = self.raw_param.get("revision", None)
             new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
             if new_profile.istio is None:
                 new_profile.istio = self.models.IstioServiceMesh()
+            if mesh_upgrade_command is None and requested_revision is not None:
+                new_profile.istio.revisions = [requested_revision]
             updated = True
 
         enable_ingress_gateway = self.raw_param.get("enable_ingress_gateway", False)
@@ -2249,10 +2186,52 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             new_profile.istio.certificate_authority.plugin.cert_chain_object_name = cert_chain_object_name
             updated = True
 
+        # deal with mesh upgrade commands
+        if mesh_upgrade_command is not None:
+            if new_profile is None or new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_DISABLED:
+                raise ArgumentUsageError(
+                    "Istio has not been enabled for this cluster, please refer to https://aka.ms/asm-aks-addon-docs "
+                    "for more details on enabling Azure Service Mesh."
+                )
+            requested_revision = self.raw_param.get("revision", None)
+            if mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE or mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_ROLLBACK:
+                if len(new_profile.istio.revisions) < 2:
+                    raise ArgumentUsageError('Azure Service Mesh upgrade is not in progress.')
+
+                sorted_revisons = self._sort_revisions(new_profile.istio.revisions)
+                if mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_COMPLETE:
+                    revision_to_remove = sorted_revisons[0]
+                    revision_to_keep = sorted_revisons[-1]
+                else:
+                    revision_to_remove = sorted_revisons[-1]
+                    revision_to_keep = sorted_revisons[0]
+                msg = (f"This operation will remove Istio control plane for revision {revision_to_remove}. "
+                       f"Please ensure all data plane workloads have been rolled over to revision {revision_to_keep} so that they are still part of the mesh. "
+                       "\nAre you sure you want to proceed?")
+                if prompt_y_n(msg, default="y"):
+                    new_profile.istio.revisions.remove(revision_to_remove)
+                    updated = True
+            elif mesh_upgrade_command == CONST_AZURE_SERVICE_MESH_UPGRADE_COMMAND_START and requested_revision is not None:
+                if new_profile.istio.revisions is None:
+                    new_profile.istio.revisions = []
+                new_profile.istio.revisions.append(requested_revision)
+                updated = True
+
         if updated:
             return new_profile
         else:
             return self.mc.service_mesh_profile
+
+    def _sort_revisions(self, revisions):
+        def _convert_revision_to_semver(rev):
+            sr = rev.replace("asm-", "")
+            sv = sr.replace("-", ".", 1)
+            # Add a custom patch version of 0
+            sv += ".0"
+            return semver.VersionInfo.parse(sv)
+
+        sorted_revisions = sorted(revisions, key=_convert_revision_to_semver)
+        return sorted_revisions
 
     def _get_k8s_support_plan(self) -> KubernetesSupportPlan:
         support_plan = self.raw_param.get("k8s_support_plan")
@@ -2605,31 +2584,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if mc.security_profile is None:
                 mc.security_profile = self.models.ManagedClusterSecurityProfile()
             mc.security_profile.workload_identity = profile
-
-        return mc
-
-    def set_up_image_cleaner(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up security profile imageCleaner for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        interval_hours = self.context.get_image_cleaner_interval_hours()
-
-        if self.context.get_enable_image_cleaner():
-
-            if mc.security_profile is None:
-                mc.security_profile = self.models.ManagedClusterSecurityProfile()
-
-            if not interval_hours:
-                # default value for intervalHours - one week
-                interval_hours = 24 * 7
-
-            mc.security_profile.image_cleaner = self.models.ManagedClusterSecurityProfileImageCleaner(
-                enabled=True,
-                interval_hours=interval_hours,
-            )
 
         return mc
 
@@ -3397,45 +3351,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 raise RequiredArgumentMissingError("Long term support is only available for premium tier clusters.")
 
         mc.support_plan = support_plan
-        return mc
-
-    def update_image_cleaner(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update security profile imageCleaner for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        enable_image_cleaner = self.context.get_enable_image_cleaner()
-        disable_image_cleaner = self.context.get_disable_image_cleaner()
-        interval_hours = self.context.get_image_cleaner_interval_hours()
-
-        # no image cleaner related changes
-        if not enable_image_cleaner and not disable_image_cleaner and interval_hours is None:
-            return mc
-
-        if mc.security_profile is None:
-            mc.security_profile = self.models.ManagedClusterSecurityProfile()
-
-        image_cleaner_profile = mc.security_profile.image_cleaner
-
-        if image_cleaner_profile is None:
-            image_cleaner_profile = self.models.ManagedClusterSecurityProfileImageCleaner()
-            mc.security_profile.image_cleaner = image_cleaner_profile
-
-            # init the image cleaner profile
-            image_cleaner_profile.enabled = False
-            image_cleaner_profile.interval_hours = 7 * 24
-
-        if enable_image_cleaner:
-            image_cleaner_profile.enabled = True
-
-        if disable_image_cleaner:
-            image_cleaner_profile.enabled = False
-
-        if interval_hours is not None:
-            image_cleaner_profile.interval_hours = interval_hours
-
         return mc
 
     def update_image_integrity(self, mc: ManagedCluster) -> ManagedCluster:
