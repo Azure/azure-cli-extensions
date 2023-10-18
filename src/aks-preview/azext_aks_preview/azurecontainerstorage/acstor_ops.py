@@ -69,7 +69,7 @@ def perform_enable_azure_container_storage(
 
     validate_nodepool_names_with_cluster_nodepools(nodepool_names, agentpool_details)
 
-    # Step 3: Validate if storagepool should be created. 
+    # Step 3: Validate if storagepool should be created.
     # Depends on the following:
     #   3a: Grant AKS cluster's node identity the following
     #       roles on the AKS managed resource group:
@@ -99,8 +99,8 @@ def perform_enable_azure_container_storage(
             storage_pool_name = generate_random_storage_pool_name()
         if storage_pool_size is None:
             storage_pool_size = CONST_STORAGE_POOL_DEFAULT_SIZE_ESAN if \
-            storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN else \
-            CONST_STORAGE_POOL_DEFAULT_SIZE
+                storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN else \
+                CONST_STORAGE_POOL_DEFAULT_SIZE
         config_settings.extend(
             [
                 {"cli.storagePool.create": True},
@@ -119,7 +119,6 @@ def perform_enable_azure_container_storage(
             config_settings.append({"cli.storagePool.sku": storage_pool_sku})
     else:
         config_settings.append({"cli.storagePool.create": False})
-
 
     # Step 5: Install the k8s_extension 'microsoft.azurecontainerstorage'
     client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)

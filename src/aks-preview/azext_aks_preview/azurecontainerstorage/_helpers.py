@@ -83,7 +83,7 @@ def should_create_storagepool(
         if storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN:
             msg += "\nThis command will not create an Elastic SAN storagepool after installation."
             return_val = False
-        msg +="\nGoing ahead with the installation of Azure Container Storage..."
+        msg += "\nGoing ahead with the installation of Azure Container Storage..."
         logger.warning(msg)
 
     if not return_val:

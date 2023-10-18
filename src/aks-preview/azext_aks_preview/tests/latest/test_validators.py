@@ -694,7 +694,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
         storage_pool_name = "valid-name"
         storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUMV2_LRS
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_ELASTIC_SAN
-        supported_skus = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS, + ", " + \
+        supported_skus = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS + ", " + \
             acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_ZRS
         err = 'Invalid --storage-pool-sku value. ' \
               'Supported value for --storage-pool-sku are {supported_skus} ' \
