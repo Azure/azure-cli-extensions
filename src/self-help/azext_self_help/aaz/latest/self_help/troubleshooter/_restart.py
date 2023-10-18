@@ -12,22 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "self-help check-name-availability",
+    "self-help troubleshooter restart",
     is_preview=True,
 )
-class CheckNameAvailability(AAZCommand):
-    """This API is used to check the uniqueness of a resource name used for a diagnostic, troubleshooter or solutions
+class Restart(AAZCommand):
+    """Restarts the troubleshooter API using applicable troubleshooter resource name as the input.
 
-    :example: Check Resource Uniqueness
-        az self-help check-name-availability --scope subscriptions/{subId} --name {diagnostic-name} --type 'Microsoft.Help/diagnostics'
-        az self-help check-name-availability --scope subscriptions/{subId} --name {solution-name} --type 'Microsoft.Help/solutions'
-        az self-help check-name-availability --scope subscriptions/{subId} --name {troubleshooter-name} --type 'Microsoft.Help/troubleshooters'
+    :example: End Troubleshooter at Resource Level
+        az self-help troubleshooter restart --troubleshooter-name {troubleshooter-name} --scope {scope}
     """
 
     _aaz_info = {
         "version": "2023-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/{scope}/providers/microsoft.help/checknameavailability", "2023-09-01-preview"],
+            ["mgmt-plane", "/{scope}/providers/microsoft.help/troubleshooters/{}/restart", "2023-09-01-preview"],
         ]
     }
 
@@ -52,25 +50,21 @@ class CheckNameAvailability(AAZCommand):
             help="This is an extension resource provider and only resource level extension is supported at the moment.",
             required=True,
         )
-
-        # define Arg Group "CheckNameAvailabilityRequest"
-
-        _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["--name"],
-            arg_group="CheckNameAvailabilityRequest",
-            help="The name of the resource for which availability needs to be checked.",
-        )
-        _args_schema.type = AAZStrArg(
-            options=["--type"],
-            arg_group="CheckNameAvailabilityRequest",
-            help="The resource type.",
+        _args_schema.troubleshooter_name = AAZStrArg(
+            options=["--troubleshooter-name"],
+            help="Troubleshooter resource Name.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="([A-Za-z0-9]+(-[A-Za-z0-9]+)+)",
+                max_length=100,
+                min_length=1,
+            ),
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.CheckNameAvailabilityPost(ctx=self.ctx)()
+        self.TroubleshootersRestart(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -85,7 +79,7 @@ class CheckNameAvailability(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class CheckNameAvailabilityPost(AAZHttpOperation):
+    class TroubleshootersRestart(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -99,7 +93,7 @@ class CheckNameAvailability(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/{scope}/providers/Microsoft.Help/checkNameAvailability",
+                "/{scope}/providers/Microsoft.Help/troubleshooters/{troubleshooterName}/restart",
                 **self.url_parameters
             )
 
@@ -119,6 +113,10 @@ class CheckNameAvailability(AAZCommand):
                     skip_quote=True,
                     required=True,
                 ),
+                **self.serialize_url_param(
+                    "troubleshooterName", self.ctx.args.troubleshooter_name,
+                    required=True,
+                ),
             }
             return parameters
 
@@ -136,25 +134,10 @@ class CheckNameAvailability(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"client_flatten": True}}
-            )
-            _builder.set_prop("name", AAZStrType, ".name")
-            _builder.set_prop("type", AAZStrType, ".type")
-
-            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -174,17 +157,16 @@ class CheckNameAvailability(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.message = AAZStrType()
-            _schema_on_200.name_available = AAZBoolType(
-                serialized_name="nameAvailable",
+            _schema_on_200.troubleshooter_resource_name = AAZStrType(
+                serialized_name="troubleshooterResourceName",
+                flags={"read_only": True},
             )
-            _schema_on_200.reason = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _CheckNameAvailabilityHelper:
-    """Helper class for CheckNameAvailability"""
+class _RestartHelper:
+    """Helper class for Restart"""
 
 
-__all__ = ["CheckNameAvailability"]
+__all__ = ["Restart"]

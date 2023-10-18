@@ -12,29 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "self-help check-name-availability",
+    "self-help troubleshooter continue",
     is_preview=True,
 )
-class CheckNameAvailability(AAZCommand):
-    """This API is used to check the uniqueness of a resource name used for a diagnostic, troubleshooter or solutions
+class Continue(AAZCommand):
+    """Uses stepId and responses as the trigger to continue the troubleshooting steps for the respective troubleshooter resource name.
 
-    :example: Check Resource Uniqueness
-        az self-help check-name-availability --scope subscriptions/{subId} --name {diagnostic-name} --type 'Microsoft.Help/diagnostics'
-        az self-help check-name-availability --scope subscriptions/{subId} --name {solution-name} --type 'Microsoft.Help/solutions'
-        az self-help check-name-availability --scope subscriptions/{subId} --name {troubleshooter-name} --type 'Microsoft.Help/troubleshooters'
+    :example: Continue Troubleshooter at Resource Level
+        az self-help troubleshooter continue --troubleshooter-name {troubleshooter-name} --step-id {step-id} --responses [] --scope {scope}
     """
 
     _aaz_info = {
         "version": "2023-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/{scope}/providers/microsoft.help/checknameavailability", "2023-09-01-preview"],
+            ["mgmt-plane", "/{scope}/providers/microsoft.help/troubleshooters/{}/continue", "2023-09-01-preview"],
         ]
     }
 
     def _handler(self, command_args):
         super()._handler(command_args)
         self._execute_operations()
-        return self._output()
+        return None
 
     _args_schema = None
 
@@ -52,25 +50,52 @@ class CheckNameAvailability(AAZCommand):
             help="This is an extension resource provider and only resource level extension is supported at the moment.",
             required=True,
         )
+        _args_schema.troubleshooter_name = AAZStrArg(
+            options=["--troubleshooter-name"],
+            help="Troubleshooter resource Name.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="([A-Za-z0-9]+(-[A-Za-z0-9]+)+)",
+                max_length=100,
+                min_length=1,
+            ),
+        )
 
-        # define Arg Group "CheckNameAvailabilityRequest"
+        # define Arg Group "ContinueRequestBody"
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["--name"],
-            arg_group="CheckNameAvailabilityRequest",
-            help="The name of the resource for which availability needs to be checked.",
+        _args_schema.responses = AAZListArg(
+            options=["--responses"],
+            arg_group="ContinueRequestBody",
         )
-        _args_schema.type = AAZStrArg(
-            options=["--type"],
-            arg_group="CheckNameAvailabilityRequest",
-            help="The resource type.",
+        _args_schema.step_id = AAZStrArg(
+            options=["--step-id"],
+            arg_group="ContinueRequestBody",
+            help="Unique id of the result.",
+        )
+
+        responses = cls._args_schema.responses
+        responses.Element = AAZObjectArg()
+
+        _element = cls._args_schema.responses.Element
+        _element.question_id = AAZStrArg(
+            options=["question-id"],
+            help="id of the question.",
+        )
+        _element.question_type = AAZStrArg(
+            options=["question-type"],
+            help="Text Input. Will be a single line input.",
+            enum={"Dropdown": "Dropdown", "MultiLineInfoBox": "MultiLineInfoBox", "RadioButton": "RadioButton", "TextInput": "TextInput"},
+        )
+        _element.response = AAZStrArg(
+            options=["response"],
+            help="Response key for SingleInput. For Multi-line test/open ended question it is free form text",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.CheckNameAvailabilityPost(ctx=self.ctx)()
+        self.TroubleshootersContinue(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -81,25 +106,21 @@ class CheckNameAvailability(AAZCommand):
     def post_operations(self):
         pass
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
-
-    class CheckNameAvailabilityPost(AAZHttpOperation):
+    class TroubleshootersContinue(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
+            if session.http_response.status_code in [204]:
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/{scope}/providers/Microsoft.Help/checkNameAvailability",
+                "/{scope}/providers/Microsoft.Help/troubleshooters/{troubleshooterName}/continue",
                 **self.url_parameters
             )
 
@@ -117,6 +138,10 @@ class CheckNameAvailability(AAZCommand):
                 **self.serialize_url_param(
                     "scope", self.ctx.args.scope,
                     skip_quote=True,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "troubleshooterName", self.ctx.args.troubleshooter_name,
                     required=True,
                 ),
             }
@@ -138,9 +163,6 @@ class CheckNameAvailability(AAZCommand):
                 **self.serialize_header_param(
                     "Content-Type", "application/json",
                 ),
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
             }
             return parameters
 
@@ -151,40 +173,27 @@ class CheckNameAvailability(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
-            _builder.set_prop("name", AAZStrType, ".name")
-            _builder.set_prop("type", AAZStrType, ".type")
+            _builder.set_prop("responses", AAZListType, ".responses")
+            _builder.set_prop("stepId", AAZStrType, ".step_id")
+
+            responses = _builder.get(".responses")
+            if responses is not None:
+                responses.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".responses[]")
+            if _elements is not None:
+                _elements.set_prop("questionId", AAZStrType, ".question_id")
+                _elements.set_prop("questionType", AAZStrType, ".question_type")
+                _elements.set_prop("response", AAZStrType, ".response")
 
             return self.serialize_content(_content_value)
 
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.message = AAZStrType()
-            _schema_on_200.name_available = AAZBoolType(
-                serialized_name="nameAvailable",
-            )
-            _schema_on_200.reason = AAZStrType()
-
-            return cls._schema_on_200
+        def on_204(self, session):
+            pass
 
 
-class _CheckNameAvailabilityHelper:
-    """Helper class for CheckNameAvailability"""
+class _ContinueHelper:
+    """Helper class for Continue"""
 
 
-__all__ = ["CheckNameAvailability"]
+__all__ = ["Continue"]
