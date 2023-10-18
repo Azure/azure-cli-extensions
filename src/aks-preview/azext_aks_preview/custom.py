@@ -1222,17 +1222,17 @@ def aks_agentpool_upgrade(cmd,
     )
     if kubernetes_version != '' and node_image_only:
         raise MutuallyExclusiveArgumentError(
-            'Conflicting flags. Unable to specify max-surge/drain-timeout/node-soak-duration with node-image-only.'
-            'If you want to use max-surge/drain-timeout/node-soak-duration with a node image upgrade, please first '
-            'update max-surge/drain-timeout/node-soak-duration using "az aks nodepool update --max-surge/--drain-timeout/--node-soak-duration".'
+            'Conflicting flags. Upgrading the Kubernetes version will also '
+            'upgrade node image version. If you only want to upgrade the '
+            'node version please use the "--node-image-only" option only.'
         )
 
     # Note: we exclude this option because node image upgrade can't accept nodepool put fields like max surge
     if (max_surge or drain_timeout or node_soak_duration) and node_image_only::
         raise MutuallyExclusiveArgumentError(
-            'Conflicting flags. Unable to specify max-surge with node-image-only.'
-            'If you want to use max-surge with a node image upgrade, please first '
-            'update max-surge using "az aks nodepool update --max-surge".'
+            'Conflicting flags. Unable to specify max-surge/drain-timeout/node-soak-duration with node-image-only.'
+            'If you want to use max-surge/drain-timeout/node-soak-duration with a node image upgrade, please first '
+            'update max-surge/drain-timeout/node-soak-duration using "az aks nodepool update --max-surge/--drain-timeout/--node-soak-duration".'
         )
 
     if node_image_only:
