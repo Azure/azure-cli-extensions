@@ -694,7 +694,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
         storage_pool_name = "valid-name"
         storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUMV2_LRS
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_ELASTIC_SAN
-        supported_skus = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS, + ", " \
+        supported_skus = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS, + ", " + \
             acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_ZRS
         err = 'Invalid --storage-pool-sku value. ' \
               'Supported value for --storage-pool-sku are {supported_skus} ' \
@@ -755,8 +755,8 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
     def test_missing_nodepool_from_cluster_nodepool_list(self):
         nodepool_list = "pool1,pool2"
         agentpools = {"nodepool1": "NODEPOOL1", "nodepool2": "NODEPOOL2"}
-        err = 'Nodepool: pool1 not found. Please provide existing nodepool names in --azure-container-storage-nodepools. ' \
-              '\nUse command `az nodepool list` to get the list of nodepools in the cluster. ' \
+        err = 'Nodepool: pool1 not found. Please provide existing nodepool names in --azure-container-storage-nodepools.' \
+              '\nUse command `az nodepool list` to get the list of nodepools in the cluster.' \
               '\nAborting installation of Azure Container Storage.'
         with self.assertRaises(ArgumentUsageError) as cm:
             acstor_validator.validate_nodepool_names_with_cluster_nodepools(nodepool_list, agentpools)

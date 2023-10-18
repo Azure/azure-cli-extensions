@@ -55,7 +55,11 @@ def perform_enable_azure_container_storage(
 
     # Step 2: Check if extension already installed incase of an update call
     if not is_cluster_create and check_if_extension_is_installed(cmd, resource_group, cluster_name):
-        raise UnknownError("Extension type {0} already installed on cluster. Aborting installation.".format(CONST_ACSTOR_K8S_EXTENSION_NAME))
+        raise UnknownError(
+            "Extension type {0} already installed on cluster."
+            "\nAborting installation of Azure Container Storage."
+            .format(CONST_ACSTOR_K8S_EXTENSION_NAME)
+        )
 
     if nodepool_names is None:
         nodepool_names = "nodepool1"
@@ -164,7 +168,11 @@ def perform_disable_azure_container_storage(
 ):
     # Step 1: Check if show_k8s_extension returns an extension already installed
     if not check_if_extension_is_installed(cmd, resource_group, cluster_name):
-        raise UnknownError("Extension type {0} not installed on cluster. Aborting disable operation.".format(CONST_ACSTOR_K8S_EXTENSION_NAME))
+        raise UnknownError(
+            "Extension type {0} not installed on cluster."
+            "\nAborting disabling of Azure Container Storage."
+            .format(CONST_ACSTOR_K8S_EXTENSION_NAME)
+        )
 
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
     try:
@@ -178,9 +186,17 @@ def perform_disable_azure_container_storage(
 
         extension_type = extension.extension_type.lower()
         if extension_type != CONST_ACSTOR_K8S_EXTENSION_NAME:
-            raise UnknownError("The extension returned is not of the type {0}. Aborting disable operation.".format(CONST_ACSTOR_K8S_EXTENSION_NAME))
+            raise UnknownError(
+                "The extension returned is not of the type {0}."
+                "\nAborting disabling of Azure Container Storage."
+                .format(CONST_ACSTOR_K8S_EXTENSION_NAME)
+            )
     except:
-        raise UnknownError("Extension type {0} not installed on cluster. Aborting disable operation.".format(CONST_ACSTOR_K8S_EXTENSION_NAME))
+        raise UnknownError(
+            "Extension type {0} not installed on cluster."
+            "\nAborting disable of Azure Container Storage."
+            .format(CONST_ACSTOR_K8S_EXTENSION_NAME)
+        )
 
     no_wait_delete_op = False
     # Step 2: Add a prompt to ensure if we want to skip validation of existing storagepool
@@ -227,7 +243,12 @@ def perform_disable_azure_container_storage(
             )
 
             if ex.message.__contains__("pre-upgrade hooks failed"):
-                raise UnknownError("Validation failed. Please ensure that storagepools are not being used. Unable to disable of Azure Container Storage. Reseting cluster state.")
+                raise UnknownError(
+                    "Validation failed. "
+                    "Please ensure that storagepools are not being used. "
+                    "Unable to disable Azure Container Storage. "
+                    "Reseting cluster state."
+                )
             else:
                 raise UnknownError("Validation failed. Unable to disable Azure Container Storage. Reseting cluster state.")
 

@@ -99,7 +99,7 @@ def should_create_storagepool(
         else:
             logger.warning(
                 "\nNo supporting nodepool found which can support ephemeral NVMe disk "
-                "so this command will not create an ephemeral NVMe disk storage pool after installation. "
+                "so this command will not create an ephemeral NVMe disk storage pool after installation."
                 "\nGoing ahead with the installation of Azure Container Storage..."
             )
             return_val = False

@@ -35,8 +35,8 @@ def validate_nodepool_names_with_cluster_nodepools(nodepool_names, agentpool_det
         if nodepool not in agentpool_details:
             raise InvalidArgumentValueError(
                 'Nodepool: {} not found. '
-                'Please provide existing nodepool names in --azure-container-storage-nodepools. '
-                '\nUse command `az nodepool list` to get the list of nodepools in the cluster. '
+                'Please provide existing nodepool names in --azure-container-storage-nodepools.'
+                '\nUse command `az nodepool list` to get the list of nodepools in the cluster.'
                 '\nAborting installation of Azure Container Storage.'
                 .format(nodepool)
             )
