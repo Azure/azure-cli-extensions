@@ -1228,7 +1228,7 @@ def aks_agentpool_upgrade(cmd,
         )
 
     # Note: we exclude this option because node image upgrade can't accept nodepool put fields like max surge
-    if (max_surge or drain_timeout or node_soak_duration) and node_image_only::
+    if (max_surge or drain_timeout or node_soak_duration) and node_image_only:
         raise MutuallyExclusiveArgumentError(
             'Conflicting flags. Unable to specify max-surge/drain-timeout/node-soak-duration with node-image-only.'
             'If you want to use max-surge/drain-timeout/node-soak-duration with a node image upgrade, please first '
