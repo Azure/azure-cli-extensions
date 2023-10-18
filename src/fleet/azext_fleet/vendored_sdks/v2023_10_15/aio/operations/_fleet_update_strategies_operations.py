@@ -48,7 +48,7 @@ class FleetUpdateStrategiesOperations:
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.mgmt.containerservicefleet.v2023_08_15_preview.aio.ContainerServiceFleetMgmtClient`'s
+        :class:`~azure.mgmt.containerservicefleet.v2023_10_15.aio.ContainerServiceFleetMgmtClient`'s
         :attr:`fleet_update_strategies` attribute.
     """
 
@@ -76,15 +76,13 @@ class FleetUpdateStrategiesOperations:
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either FleetUpdateStrategy or the result of cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetUpdateStrategy]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.v2023_10_15.models.FleetUpdateStrategy]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2023-08-15-preview")
-        )
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-10-15"))
         cls: ClsType[_models.FleetUpdateStrategyListResult] = kwargs.pop("cls", None)
 
         error_map = {
@@ -172,7 +170,7 @@ class FleetUpdateStrategiesOperations:
         :type update_strategy_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: FleetUpdateStrategy or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetUpdateStrategy
+        :rtype: ~azure.mgmt.containerservicefleet.v2023_10_15.models.FleetUpdateStrategy
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map = {
@@ -186,9 +184,7 @@ class FleetUpdateStrategiesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2023-08-15-preview")
-        )
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-10-15"))
         cls: ClsType[_models.FleetUpdateStrategy] = kwargs.pop("cls", None)
 
         request = build_get_request(
@@ -248,9 +244,7 @@ class FleetUpdateStrategiesOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2023-08-15-preview")
-        )
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-10-15"))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.FleetUpdateStrategy] = kwargs.pop("cls", None)
 
@@ -333,8 +327,7 @@ class FleetUpdateStrategiesOperations:
         :param update_strategy_name: The name of the UpdateStrategy resource. Required.
         :type update_strategy_name: str
         :param resource: Resource create parameters. Required.
-        :type resource:
-         ~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetUpdateStrategy
+        :type resource: ~azure.mgmt.containerservicefleet.v2023_10_15.models.FleetUpdateStrategy
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -355,7 +348,7 @@ class FleetUpdateStrategiesOperations:
         :return: An instance of AsyncLROPoller that returns either FleetUpdateStrategy or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetUpdateStrategy]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2023_10_15.models.FleetUpdateStrategy]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -403,7 +396,7 @@ class FleetUpdateStrategiesOperations:
         :return: An instance of AsyncLROPoller that returns either FleetUpdateStrategy or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetUpdateStrategy]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2023_10_15.models.FleetUpdateStrategy]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -429,8 +422,7 @@ class FleetUpdateStrategiesOperations:
         :type update_strategy_name: str
         :param resource: Resource create parameters. Is either a FleetUpdateStrategy type or a IO type.
          Required.
-        :type resource:
-         ~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetUpdateStrategy or IO
+        :type resource: ~azure.mgmt.containerservicefleet.v2023_10_15.models.FleetUpdateStrategy or IO
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -451,15 +443,13 @@ class FleetUpdateStrategiesOperations:
         :return: An instance of AsyncLROPoller that returns either FleetUpdateStrategy or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetUpdateStrategy]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2023_10_15.models.FleetUpdateStrategy]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2023-08-15-preview")
-        )
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-10-15"))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.FleetUpdateStrategy] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -529,9 +519,7 @@ class FleetUpdateStrategiesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2023-08-15-preview")
-        )
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-10-15"))
         cls: ClsType[None] = kwargs.pop("cls", None)
 
         request = build_delete_request(
@@ -608,9 +596,7 @@ class FleetUpdateStrategiesOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2023-08-15-preview")
-        )
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-10-15"))
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)

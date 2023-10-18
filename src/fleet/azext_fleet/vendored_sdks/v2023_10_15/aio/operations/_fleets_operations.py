@@ -31,11 +31,13 @@ from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
 from ..._vendor import _convert_request
-from ...operations._fleet_members_operations import (
-    build_create_request,
+from ...operations._fleets_operations import (
+    build_create_or_update_request,
     build_delete_request,
     build_get_request,
-    build_list_by_fleet_request,
+    build_list_by_resource_group_request,
+    build_list_by_subscription_request,
+    build_list_credentials_request,
     build_update_request,
 )
 
@@ -43,14 +45,14 @@ T = TypeVar("T")
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
 
-class FleetMembersOperations:
+class FleetsOperations:
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.mgmt.containerservicefleet.v2023_08_15_preview.aio.ContainerServiceFleetMgmtClient`'s
-        :attr:`fleet_members` attribute.
+        :class:`~azure.mgmt.containerservicefleet.v2023_10_15.aio.ContainerServiceFleetMgmtClient`'s
+        :attr:`fleets` attribute.
     """
 
     models = _models
@@ -64,29 +66,20 @@ class FleetMembersOperations:
         self._api_version = input_args.pop(0) if input_args else kwargs.pop("api_version")
 
     @distributed_trace
-    def list_by_fleet(
-        self, resource_group_name: str, fleet_name: str, **kwargs: Any
-    ) -> AsyncIterable["_models.FleetMember"]:
-        """List FleetMember resources by Fleet.
+    def list_by_subscription(self, **kwargs: Any) -> AsyncIterable["_models.Fleet"]:
+        """Lists fleets in the specified subscription.
 
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param fleet_name: The name of the Fleet resource. Required.
-        :type fleet_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either FleetMember or the result of cls(response)
+        :return: An iterator like instance of either Fleet or the result of cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetMember]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.v2023_10_15.models.Fleet]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2023-08-15-preview")
-        )
-        cls: ClsType[_models.FleetMemberListResult] = kwargs.pop("cls", None)
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-10-15"))
+        cls: ClsType[_models.FleetListResult] = kwargs.pop("cls", None)
 
         error_map = {
             401: ClientAuthenticationError,
@@ -99,12 +92,10 @@ class FleetMembersOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_list_by_fleet_request(
-                    resource_group_name=resource_group_name,
-                    fleet_name=fleet_name,
+                request = build_list_by_subscription_request(
                     subscription_id=self._config.subscription_id,
                     api_version=api_version,
-                    template_url=self.list_by_fleet.metadata["url"],
+                    template_url=self.list_by_subscription.metadata["url"],
                     headers=_headers,
                     params=_params,
                 )
@@ -130,7 +121,7 @@ class FleetMembersOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize("FleetMemberListResult", pipeline_response)
+            deserialized = self._deserialize("FleetListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
@@ -154,26 +145,110 @@ class FleetMembersOperations:
 
         return AsyncItemPaged(get_next, extract_data)
 
-    list_by_fleet.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/members"
+    list_by_subscription.metadata = {
+        "url": "/subscriptions/{subscriptionId}/providers/Microsoft.ContainerService/fleets"
+    }
+
+    @distributed_trace
+    def list_by_resource_group(self, resource_group_name: str, **kwargs: Any) -> AsyncIterable["_models.Fleet"]:
+        """Lists fleets in the specified subscription and resource group.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: An iterator like instance of either Fleet or the result of cls(response)
+        :rtype:
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.v2023_10_15.models.Fleet]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-10-15"))
+        cls: ClsType[_models.FleetListResult] = kwargs.pop("cls", None)
+
+        error_map = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        def prepare_request(next_link=None):
+            if not next_link:
+
+                request = build_list_by_resource_group_request(
+                    resource_group_name=resource_group_name,
+                    subscription_id=self._config.subscription_id,
+                    api_version=api_version,
+                    template_url=self.list_by_resource_group.metadata["url"],
+                    headers=_headers,
+                    params=_params,
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
+
+            else:
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
+                request.method = "GET"
+            return request
+
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize("FleetListResult", pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)  # type: ignore
+            return deserialized.next_link or None, AsyncList(list_of_elem)
+
+        async def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            _stream = False
+            pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+                request, stream=_stream, **kwargs
+            )
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return AsyncItemPaged(get_next, extract_data)
+
+    list_by_resource_group.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets"
     }
 
     @distributed_trace_async
-    async def get(
-        self, resource_group_name: str, fleet_name: str, fleet_member_name: str, **kwargs: Any
-    ) -> _models.FleetMember:
-        """Get a FleetMember.
+    async def get(self, resource_group_name: str, fleet_name: str, **kwargs: Any) -> _models.Fleet:
+        """Gets a Fleet.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param fleet_member_name: The name of the Fleet member resource. Required.
-        :type fleet_member_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: FleetMember or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetMember
+        :return: Fleet or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservicefleet.v2023_10_15.models.Fleet
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map = {
@@ -187,15 +262,12 @@ class FleetMembersOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2023-08-15-preview")
-        )
-        cls: ClsType[_models.FleetMember] = kwargs.pop("cls", None)
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-10-15"))
+        cls: ClsType[_models.Fleet] = kwargs.pop("cls", None)
 
         request = build_get_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
-            fleet_member_name=fleet_member_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             template_url=self.get.metadata["url"],
@@ -217,7 +289,7 @@ class FleetMembersOperations:
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("FleetMember", pipeline_response)
+        deserialized = self._deserialize("Fleet", pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -225,19 +297,18 @@ class FleetMembersOperations:
         return deserialized
 
     get.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/members/{fleetMemberName}"
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}"
     }
 
-    async def _create_initial(
+    async def _create_or_update_initial(
         self,
         resource_group_name: str,
         fleet_name: str,
-        fleet_member_name: str,
-        resource: Union[_models.FleetMember, IO],
+        resource: Union[_models.Fleet, IO],
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         **kwargs: Any
-    ) -> _models.FleetMember:
+    ) -> _models.Fleet:
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -249,11 +320,9 @@ class FleetMembersOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2023-08-15-preview")
-        )
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-10-15"))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.FleetMember] = kwargs.pop("cls", None)
+        cls: ClsType[_models.Fleet] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -261,12 +330,11 @@ class FleetMembersOperations:
         if isinstance(resource, (IOBase, bytes)):
             _content = resource
         else:
-            _json = self._serialize.body(resource, "FleetMember")
+            _json = self._serialize.body(resource, "Fleet")
 
-        request = build_create_request(
+        request = build_create_or_update_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
-            fleet_member_name=fleet_member_name,
             subscription_id=self._config.subscription_id,
             if_match=if_match,
             if_none_match=if_none_match,
@@ -274,7 +342,7 @@ class FleetMembersOperations:
             content_type=content_type,
             json=_json,
             content=_content,
-            template_url=self._create_initial.metadata["url"],
+            template_url=self._create_or_update_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
@@ -295,46 +363,43 @@ class FleetMembersOperations:
 
         response_headers = {}
         if response.status_code == 200:
-            deserialized = self._deserialize("FleetMember", pipeline_response)
+            deserialized = self._deserialize("Fleet", pipeline_response)
 
         if response.status_code == 201:
             response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
-            deserialized = self._deserialize("FleetMember", pipeline_response)
+            deserialized = self._deserialize("Fleet", pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, response_headers)  # type: ignore
 
         return deserialized  # type: ignore
 
-    _create_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/members/{fleetMemberName}"
+    _create_or_update_initial.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}"
     }
 
     @overload
-    async def begin_create(
+    async def begin_create_or_update(
         self,
         resource_group_name: str,
         fleet_name: str,
-        fleet_member_name: str,
-        resource: _models.FleetMember,
+        resource: _models.Fleet,
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.FleetMember]:
-        """Create a FleetMember.
+    ) -> AsyncLROPoller[_models.Fleet]:
+        """Creates or updates a Fleet.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param fleet_member_name: The name of the Fleet member resource. Required.
-        :type fleet_member_name: str
         :param resource: Resource create parameters. Required.
-        :type resource: ~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetMember
+        :type resource: ~azure.mgmt.containerservicefleet.v2023_10_15.models.Fleet
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -352,35 +417,31 @@ class FleetMembersOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
-        :return: An instance of AsyncLROPoller that returns either FleetMember or the result of
-         cls(response)
+        :return: An instance of AsyncLROPoller that returns either Fleet or the result of cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetMember]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2023_10_15.models.Fleet]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
     @overload
-    async def begin_create(
+    async def begin_create_or_update(
         self,
         resource_group_name: str,
         fleet_name: str,
-        fleet_member_name: str,
         resource: IO,
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.FleetMember]:
-        """Create a FleetMember.
+    ) -> AsyncLROPoller[_models.Fleet]:
+        """Creates or updates a Fleet.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param fleet_member_name: The name of the Fleet member resource. Required.
-        :type fleet_member_name: str
         :param resource: Resource create parameters. Required.
         :type resource: IO
         :param if_match: The request should only proceed if an entity matches this string. Default
@@ -400,36 +461,31 @@ class FleetMembersOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
-        :return: An instance of AsyncLROPoller that returns either FleetMember or the result of
-         cls(response)
+        :return: An instance of AsyncLROPoller that returns either Fleet or the result of cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetMember]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2023_10_15.models.Fleet]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
     @distributed_trace_async
-    async def begin_create(
+    async def begin_create_or_update(
         self,
         resource_group_name: str,
         fleet_name: str,
-        fleet_member_name: str,
-        resource: Union[_models.FleetMember, IO],
+        resource: Union[_models.Fleet, IO],
         if_match: Optional[str] = None,
         if_none_match: Optional[str] = None,
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.FleetMember]:
-        """Create a FleetMember.
+    ) -> AsyncLROPoller[_models.Fleet]:
+        """Creates or updates a Fleet.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param fleet_member_name: The name of the Fleet member resource. Required.
-        :type fleet_member_name: str
-        :param resource: Resource create parameters. Is either a FleetMember type or a IO type.
-         Required.
-        :type resource: ~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetMember or IO
+        :param resource: Resource create parameters. Is either a Fleet type or a IO type. Required.
+        :type resource: ~azure.mgmt.containerservicefleet.v2023_10_15.models.Fleet or IO
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -447,28 +503,24 @@ class FleetMembersOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
-        :return: An instance of AsyncLROPoller that returns either FleetMember or the result of
-         cls(response)
+        :return: An instance of AsyncLROPoller that returns either Fleet or the result of cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetMember]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2023_10_15.models.Fleet]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2023-08-15-preview")
-        )
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-10-15"))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.FleetMember] = kwargs.pop("cls", None)
+        cls: ClsType[_models.Fleet] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = await self._create_initial(
+            raw_result = await self._create_or_update_initial(
                 resource_group_name=resource_group_name,
                 fleet_name=fleet_name,
-                fleet_member_name=fleet_member_name,
                 resource=resource,
                 if_match=if_match,
                 if_none_match=if_none_match,
@@ -482,7 +534,7 @@ class FleetMembersOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("FleetMember", pipeline_response)
+            deserialized = self._deserialize("Fleet", pipeline_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})
             return deserialized
@@ -505,19 +557,18 @@ class FleetMembersOperations:
             )
         return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    begin_create.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/members/{fleetMemberName}"
+    begin_create_or_update.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}"
     }
 
     async def _update_initial(
         self,
         resource_group_name: str,
         fleet_name: str,
-        fleet_member_name: str,
-        properties: Union[_models.FleetMemberUpdate, IO],
+        properties: Union[_models.FleetPatch, IO],
         if_match: Optional[str] = None,
         **kwargs: Any
-    ) -> Optional[_models.FleetMember]:
+    ) -> Optional[_models.Fleet]:
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -529,11 +580,9 @@ class FleetMembersOperations:
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2023-08-15-preview")
-        )
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-10-15"))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[Optional[_models.FleetMember]] = kwargs.pop("cls", None)
+        cls: ClsType[Optional[_models.Fleet]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
@@ -541,12 +590,11 @@ class FleetMembersOperations:
         if isinstance(properties, (IOBase, bytes)):
             _content = properties
         else:
-            _json = self._serialize.body(properties, "FleetMemberUpdate")
+            _json = self._serialize.body(properties, "FleetPatch")
 
         request = build_update_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
-            fleet_member_name=fleet_member_name,
             subscription_id=self._config.subscription_id,
             if_match=if_match,
             api_version=api_version,
@@ -575,7 +623,7 @@ class FleetMembersOperations:
         deserialized = None
         response_headers = {}
         if response.status_code == 200:
-            deserialized = self._deserialize("FleetMember", pipeline_response)
+            deserialized = self._deserialize("Fleet", pipeline_response)
 
         if response.status_code == 202:
             response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
@@ -587,7 +635,7 @@ class FleetMembersOperations:
         return deserialized
 
     _update_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/members/{fleetMemberName}"
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}"
     }
 
     @overload
@@ -595,25 +643,21 @@ class FleetMembersOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        fleet_member_name: str,
-        properties: _models.FleetMemberUpdate,
+        properties: _models.FleetPatch,
         if_match: Optional[str] = None,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.FleetMember]:
-        """Update a FleetMember.
+    ) -> AsyncLROPoller[_models.Fleet]:
+        """Update a Fleet.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param fleet_member_name: The name of the Fleet member resource. Required.
-        :type fleet_member_name: str
         :param properties: The resource properties to be updated. Required.
-        :type properties:
-         ~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetMemberUpdate
+        :type properties: ~azure.mgmt.containerservicefleet.v2023_10_15.models.FleetPatch
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -628,10 +672,9 @@ class FleetMembersOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
-        :return: An instance of AsyncLROPoller that returns either FleetMember or the result of
-         cls(response)
+        :return: An instance of AsyncLROPoller that returns either Fleet or the result of cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetMember]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2023_10_15.models.Fleet]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -640,22 +683,19 @@ class FleetMembersOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        fleet_member_name: str,
         properties: IO,
         if_match: Optional[str] = None,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.FleetMember]:
-        """Update a FleetMember.
+    ) -> AsyncLROPoller[_models.Fleet]:
+        """Update a Fleet.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param fleet_member_name: The name of the Fleet member resource. Required.
-        :type fleet_member_name: str
         :param properties: The resource properties to be updated. Required.
         :type properties: IO
         :param if_match: The request should only proceed if an entity matches this string. Default
@@ -672,10 +712,9 @@ class FleetMembersOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
-        :return: An instance of AsyncLROPoller that returns either FleetMember or the result of
-         cls(response)
+        :return: An instance of AsyncLROPoller that returns either Fleet or the result of cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetMember]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2023_10_15.models.Fleet]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -684,24 +723,20 @@ class FleetMembersOperations:
         self,
         resource_group_name: str,
         fleet_name: str,
-        fleet_member_name: str,
-        properties: Union[_models.FleetMemberUpdate, IO],
+        properties: Union[_models.FleetPatch, IO],
         if_match: Optional[str] = None,
         **kwargs: Any
-    ) -> AsyncLROPoller[_models.FleetMember]:
-        """Update a FleetMember.
+    ) -> AsyncLROPoller[_models.Fleet]:
+        """Update a Fleet.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param fleet_member_name: The name of the Fleet member resource. Required.
-        :type fleet_member_name: str
-        :param properties: The resource properties to be updated. Is either a FleetMemberUpdate type or
-         a IO type. Required.
-        :type properties:
-         ~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetMemberUpdate or IO
+        :param properties: The resource properties to be updated. Is either a FleetPatch type or a IO
+         type. Required.
+        :type properties: ~azure.mgmt.containerservicefleet.v2023_10_15.models.FleetPatch or IO
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -716,20 +751,17 @@ class FleetMembersOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
-        :return: An instance of AsyncLROPoller that returns either FleetMember or the result of
-         cls(response)
+        :return: An instance of AsyncLROPoller that returns either Fleet or the result of cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.FleetMember]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2023_10_15.models.Fleet]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2023-08-15-preview")
-        )
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-10-15"))
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.FleetMember] = kwargs.pop("cls", None)
+        cls: ClsType[_models.Fleet] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
@@ -737,7 +769,6 @@ class FleetMembersOperations:
             raw_result = await self._update_initial(
                 resource_group_name=resource_group_name,
                 fleet_name=fleet_name,
-                fleet_member_name=fleet_member_name,
                 properties=properties,
                 if_match=if_match,
                 api_version=api_version,
@@ -750,7 +781,7 @@ class FleetMembersOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("FleetMember", pipeline_response)
+            deserialized = self._deserialize("Fleet", pipeline_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})
             return deserialized
@@ -773,16 +804,11 @@ class FleetMembersOperations:
         return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     begin_update.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/members/{fleetMemberName}"
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}"
     }
 
     async def _delete_initial(  # pylint: disable=inconsistent-return-statements
-        self,
-        resource_group_name: str,
-        fleet_name: str,
-        fleet_member_name: str,
-        if_match: Optional[str] = None,
-        **kwargs: Any
+        self, resource_group_name: str, fleet_name: str, if_match: Optional[str] = None, **kwargs: Any
     ) -> None:
         error_map = {
             401: ClientAuthenticationError,
@@ -795,15 +821,12 @@ class FleetMembersOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2023-08-15-preview")
-        )
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-10-15"))
         cls: ClsType[None] = kwargs.pop("cls", None)
 
         request = build_delete_request(
             resource_group_name=resource_group_name,
             fleet_name=fleet_name,
-            fleet_member_name=fleet_member_name,
             subscription_id=self._config.subscription_id,
             if_match=if_match,
             api_version=api_version,
@@ -835,27 +858,20 @@ class FleetMembersOperations:
             return cls(pipeline_response, None, response_headers)
 
     _delete_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/members/{fleetMemberName}"
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}"
     }
 
     @distributed_trace_async
     async def begin_delete(
-        self,
-        resource_group_name: str,
-        fleet_name: str,
-        fleet_member_name: str,
-        if_match: Optional[str] = None,
-        **kwargs: Any
+        self, resource_group_name: str, fleet_name: str, if_match: Optional[str] = None, **kwargs: Any
     ) -> AsyncLROPoller[None]:
-        """Delete a FleetMember.
+        """Delete a Fleet.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :param fleet_name: The name of the Fleet resource. Required.
         :type fleet_name: str
-        :param fleet_member_name: The name of the Fleet member resource. Required.
-        :type fleet_member_name: str
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -874,9 +890,7 @@ class FleetMembersOperations:
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2023-08-15-preview")
-        )
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-10-15"))
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
@@ -885,7 +899,6 @@ class FleetMembersOperations:
             raw_result = await self._delete_initial(  # type: ignore
                 resource_group_name=resource_group_name,
                 fleet_name=fleet_name,
-                fleet_member_name=fleet_member_name,
                 if_match=if_match,
                 api_version=api_version,
                 cls=lambda x, y, z: x,
@@ -917,5 +930,70 @@ class FleetMembersOperations:
         return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     begin_delete.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/members/{fleetMemberName}"
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}"
+    }
+
+    @distributed_trace_async
+    async def list_credentials(
+        self, resource_group_name: str, fleet_name: str, **kwargs: Any
+    ) -> _models.FleetCredentialResults:
+        """Lists the user credentials of a Fleet.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param fleet_name: The name of the Fleet resource. Required.
+        :type fleet_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: FleetCredentialResults or the result of cls(response)
+        :rtype: ~azure.mgmt.containerservicefleet.v2023_10_15.models.FleetCredentialResults
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        error_map = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-10-15"))
+        cls: ClsType[_models.FleetCredentialResults] = kwargs.pop("cls", None)
+
+        request = build_list_credentials_request(
+            resource_group_name=resource_group_name,
+            fleet_name=fleet_name,
+            subscription_id=self._config.subscription_id,
+            api_version=api_version,
+            template_url=self.list_credentials.metadata["url"],
+            headers=_headers,
+            params=_params,
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize("FleetCredentialResults", pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+
+    list_credentials.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ContainerService/fleets/{fleetName}/listCredentials"
     }

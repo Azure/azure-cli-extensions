@@ -6,15 +6,12 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._models_py3 import APIServerAccessProfile
-from ._models_py3 import AgentProfile
 from ._models_py3 import ErrorAdditionalInfo
 from ._models_py3 import ErrorDetail
 from ._models_py3 import ErrorResponse
 from ._models_py3 import Fleet
 from ._models_py3 import FleetCredentialResult
 from ._models_py3 import FleetCredentialResults
-from ._models_py3 import FleetHubProfile
 from ._models_py3 import FleetListResult
 from ._models_py3 import FleetMember
 from ._models_py3 import FleetMemberListResult
@@ -64,15 +61,12 @@ from ._patch import *  # pylint: disable=unused-wildcard-import
 from ._patch import patch_sdk as _patch_sdk
 
 __all__ = [
-    "APIServerAccessProfile",
-    "AgentProfile",
     "ErrorAdditionalInfo",
     "ErrorDetail",
     "ErrorResponse",
     "Fleet",
     "FleetCredentialResult",
     "FleetCredentialResults",
-    "FleetHubProfile",
     "FleetListResult",
     "FleetMember",
     "FleetMemberListResult",

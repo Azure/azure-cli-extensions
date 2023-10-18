@@ -40,7 +40,7 @@ def build_list_request(**kwargs: Any) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-08-15-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2023-10-15"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -61,7 +61,7 @@ class Operations:
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.mgmt.containerservicefleet.v2023_08_15_preview.ContainerServiceFleetMgmtClient`'s
+        :class:`~azure.mgmt.containerservicefleet.v2023_10_15.ContainerServiceFleetMgmtClient`'s
         :attr:`operations` attribute.
     """
 
@@ -82,15 +82,13 @@ class Operations:
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either Operation or the result of cls(response)
         :rtype:
-         ~azure.core.paging.ItemPaged[~azure.mgmt.containerservicefleet.v2023_08_15_preview.models.Operation]
+         ~azure.core.paging.ItemPaged[~azure.mgmt.containerservicefleet.v2023_10_15.models.Operation]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-        api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2023-08-15-preview")
-        )
+        api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-10-15"))
         cls: ClsType[_models.OperationListResult] = kwargs.pop("cls", None)
 
         error_map = {
