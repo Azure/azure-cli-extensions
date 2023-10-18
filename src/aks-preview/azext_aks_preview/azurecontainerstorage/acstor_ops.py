@@ -153,7 +153,7 @@ def perform_enable_azure_container_storage(
                 "to enable Azure Container Storage."
             )
         else:
-            raise UnknownError("AKS update to enable Azure Container Storage failed.\nError: {0}".format(ex.message))
+            logger.error("AKS update to enable Azure Container Storage failed.\nError: {0}".format(ex.message))
 
 
 def perform_disable_azure_container_storage(
