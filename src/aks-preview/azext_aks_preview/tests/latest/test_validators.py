@@ -697,8 +697,9 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
         supported_skus = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS + ", " + \
             acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_ZRS
         err = 'Invalid --storage-pool-sku value. ' \
-              'Supported value for --storage-pool-sku are {supported_skus} ' \
-              'when --enable-azure-container-storage is set to elasticSan.'
+              'Supported value for --storage-pool-sku are {0} ' \
+              'when --enable-azure-container-storage is set to elasticSan.' \
+              .format(supported_skus)
         with self.assertRaises(ArgumentUsageError) as cm:
             acstor_validator.validate_azure_container_storage_params(True, None, storage_pool_name, storage_pool_type, storage_pool_sku, None, None, None)
         self.assertEqual(str(cm.exception), err)
