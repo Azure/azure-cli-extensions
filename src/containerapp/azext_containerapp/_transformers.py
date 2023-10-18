@@ -29,7 +29,7 @@ def clean_up_sensitive_values(response_json):
             for (key, val) in rule.items():
                 if key != "name":
                     val["metadata"] = dict((k, "") for k, v in val["metadata"].items())
-                    
+
     return response_json
 
 
@@ -37,7 +37,7 @@ def transform_sensitive_values_wrapper():
 
     def transform_sensitive_values(response_json):
         return clean_up_sensitive_values(response_json)
-
+    
     return transform_sensitive_values
 
 
@@ -45,7 +45,7 @@ def transform_sensitive_values_list_output_wrapper():
 
     def transform_sensitive_values_list_output(apps):
         return [clean_up_sensitive_values(a) for a in apps]
-
+    
     return transform_sensitive_values_list_output
 
 

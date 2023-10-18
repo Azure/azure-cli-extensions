@@ -15,8 +15,7 @@ from ._transformers import (transform_containerapp_output,
                             transform_revision_list_output,
                             transform_revision_output, 
                             transform_usages_output,
-                            transform_sensitive_values_wrapper,
-                            transform_sensitive_values_list_output_wrapper)
+                            transform_sensitive_values_wrapper)
 
 
 def load_command_table(self, _):
