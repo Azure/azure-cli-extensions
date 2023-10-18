@@ -738,9 +738,9 @@ def list_replicas(cmd, resource_group_name, name, revision=None):
         if not revision:
             revision = app["properties"]["latestRevisionName"]
         return ContainerAppPreviewClient.list_replicas(cmd=cmd,
-                                                resource_group_name=resource_group_name,
-                                                container_app_name=name,
-                                                revision_name=revision)
+                                                       resource_group_name=resource_group_name,
+                                                       container_app_name=name,
+                                                       revision_name=revision)
     except Exception as e:
         handle_raw_exception(e)
 
@@ -758,9 +758,9 @@ def count_replicas(cmd, resource_group_name, name, revision=None):
 
     try:
         count = len(ContainerAppPreviewClient.list_replicas(cmd=cmd,
-                                                     resource_group_name=resource_group_name,
-                                                     container_app_name=name,
-                                                     revision_name=revision))
+                                                            resource_group_name=resource_group_name,
+                                                            container_app_name=name,
+                                                            revision_name=revision))
         return count
     except Exception as e:
         handle_raw_exception(e)
@@ -773,10 +773,10 @@ def get_replica(cmd, resource_group_name, name, replica, revision=None):
         if not revision:
             revision = app["properties"]["latestRevisionName"]
         return ContainerAppPreviewClient.get_replica(cmd=cmd,
-                                              resource_group_name=resource_group_name,
-                                              container_app_name=name,
-                                              revision_name=revision,
-                                              replica_name=replica)
+                                                     resource_group_name=resource_group_name,
+                                                     container_app_name=name,
+                                                     revision_name=revision,
+                                                     replica_name=replica)
     except Exception as e:
         handle_raw_exception(e)
 

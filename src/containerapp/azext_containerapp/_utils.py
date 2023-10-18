@@ -238,8 +238,7 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
                                                                                 service_name, arg_dict,
                                                                                 name, binding_name))
             elif service["type"] == "Microsoft.App/containerApps":
-                containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name,
-                                                           name=service_name)
+                containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=service_name)
 
                 if not containerapp_def:
                     raise ResourceNotFoundError(f"The service '{service_name}' does not exist")

@@ -177,7 +177,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:20 GMT
+      - Wed, 18 Oct 2023 06:24:40 GMT
       expires:
       - '-1'
       pragma:
@@ -223,7 +223,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:22 GMT
+      - Wed, 18 Oct 2023 06:24:41 GMT
       expires:
       - '-1'
       pragma:
@@ -421,7 +421,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:23 GMT
+      - Wed, 18 Oct 2023 06:24:42 GMT
       expires:
       - '-1'
       pragma:
@@ -467,7 +467,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:23 GMT
+      - Wed, 18 Oct 2023 06:24:42 GMT
       expires:
       - '-1'
       pragma:
@@ -665,7 +665,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:23 GMT
+      - Wed, 18 Oct 2023 06:24:43 GMT
       expires:
       - '-1'
       pragma:
@@ -689,8 +689,12 @@ interactions:
       null}, "template": {"revisionSuffix": null, "containers": [{"image": "mcr.microsoft.com/k8se/quickstart:latest",
       "name": "capp000002", "command": null, "args": null, "env": null, "resources":
       null, "volumeMounts": null}], "initContainers": null, "scale": {"minReplicas":
-      1, "maxReplicas": null, "rules": []}, "volumes": null, "serviceBinds": null},
-      "workloadProfileName": null}, "tags": null}'
+      1, "maxReplicas": null, "rules": [{"name": "my-datadog-rule", "azureQueue":
+      null, "custom": {"type": "datadog", "metadata": {"queryValue": "7", "age": "120",
+      "metricUnavailableValue": "0"}, "auth": [{"triggerParameter": "apiKey", "secretRef":
+      "api-key"}, {"triggerParameter": "appKey", "secretRef": "app-key"}]}, "http":
+      null}]}, "volumes": null, "serviceBinds": null}, "workloadProfileName": null},
+      "tags": null}'
     headers:
       Accept:
       - '*/*'
@@ -701,7 +705,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '994'
+      - '1286'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -713,21 +717,21 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerapps/capp000002","name":"capp000002","type":"Microsoft.App/containerApps","location":"East
-        US","systemData":{"createdBy":"xinyupang@microsoft.com","createdByType":"User","createdAt":"2023-10-07T06:58:26.1876234Z","lastModifiedBy":"xinyupang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-07T06:58:26.1876234Z"},"properties":{"provisioningState":"InProgress","runningStatus":"Running","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"outboundIpAddresses":["52.191.234.23"],"latestRevisionName":"","latestReadyRevisionName":"","latestRevisionFqdn":"","customDomainVerificationId":"D3F71C85EB6552E36A89A3E4A080C3CFB00181670B659B0003264FC673AA9B00","configuration":{"secrets":null,"activeRevisionsMode":"Single","ingress":{"fqdn":"capp000002.livelypebble-4bdc8f59.eastus.azurecontainerapps.io","external":true,"targetPort":80,"exposedPort":0,"transport":"Auto","traffic":[{"weight":100,"latestRevision":true}],"customDomains":null,"allowInsecure":false,"ipSecurityRestrictions":null,"corsPolicy":null,"clientCertificateMode":null,"stickySessions":null,"additionalPortMappings":null},"registries":null,"dapr":null,"maxInactiveRevisions":null,"service":null},"template":{"revisionSuffix":"","terminationGracePeriodSeconds":null,"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"capp000002","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"scale":{"minReplicas":1,"maxReplicas":10,"rules":null},"volumes":null,"serviceBinds":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/eventstream"},"identity":{"type":"None"}}'
+        US","systemData":{"createdBy":"xinyupang@microsoft.com","createdByType":"User","createdAt":"2023-10-18T06:24:45.1688914Z","lastModifiedBy":"xinyupang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-18T06:24:45.1688914Z"},"properties":{"provisioningState":"InProgress","runningStatus":"Running","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"outboundIpAddresses":["52.191.234.23"],"latestRevisionName":"","latestReadyRevisionName":"","latestRevisionFqdn":"","customDomainVerificationId":"D3F71C85EB6552E36A89A3E4A080C3CFB00181670B659B0003264FC673AA9B00","configuration":{"secrets":null,"activeRevisionsMode":"Single","ingress":{"fqdn":"capp000002.livelypebble-4bdc8f59.eastus.azurecontainerapps.io","external":true,"targetPort":80,"exposedPort":0,"transport":"Auto","traffic":[{"weight":100,"latestRevision":true}],"customDomains":null,"allowInsecure":false,"ipSecurityRestrictions":null,"corsPolicy":null,"clientCertificateMode":null,"stickySessions":null,"additionalPortMappings":null},"registries":null,"dapr":null,"maxInactiveRevisions":null,"service":null},"template":{"revisionSuffix":"","terminationGracePeriodSeconds":null,"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"capp000002","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"scale":{"minReplicas":1,"maxReplicas":10,"rules":[{"name":"my-datadog-rule","custom":{"type":"datadog","metadata":{"age":"120","metricUnavailableValue":"0","queryValue":"7"},"auth":[{"secretRef":"api-key","triggerParameter":"apiKey"},{"secretRef":"app-key","triggerParameter":"appKey"}]}}]},"volumes":null,"serviceBinds":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/eventstream"},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
         2023-04-01-preview, 2023-05-01, 2023-05-02-preview, 2023-08-01-preview
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/a970e8e9-b258-470d-99d8-e4536616bf8b?api-version=2023-05-02-preview&azureAsyncOperation=true&t=638322587068439389&c=MIIHADCCBeigAwIBAgITHgMiVmbNs9bo9g1GbQAAAyJWZjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAyMTgwNDI4WhcNMjQwNzI3MTgwNDI4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMIcvxD_0PMhdmLk48iFdsDWY8xHwqf15PiuUxm56-DgFD_DTCio04a553Ilp6PhEzp-BqQUXZ8lOvewwSndfEiD0zKouzAK7ygeNzS10EFTSWbnBDNo4QPM7FM4bFhDUNl-AU1M7DrJCQPA8UGawTxFUgABTHaRYxMKeEyJ2IzdSmH0TjTgxv5pQDBP-QEJ-Rpdso9m_Yu2YfFRTCBiBNtQ4g-sojuHpOc3ULsGhK35Ua1gXYl44t0qnX1y-DiMbk0PPQ8_gop4DdSYd0NTBv-xBnqlom2ceJG8oCE4GCEXT3L6yOC3TvKvZ-7-r2cOWqPAolMtfZ4kIa7fp3zX-QUCAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBS8HoebCKQVIYtc1_REbe-XAGi3HjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAB6b3-2IDHqiKHidm1sv2adgnlW7o5teHg5_6JuYXETz89EHAOvxAis3i3YzHc79kO_nmk5RcVHDydZ-zI8JDlC8n3v75Zt4KNDYid-qMTOeyQogLcB2Cq3iRGRTjaG_abh0F1ifWL0QBhzujNxastu--5-ozxOHa7CTiseyWTxaCRv103DUxZ7-lNrBKHFJRQV_X5G_oVNKU2WvTmSTWNzCXpyLhKdoBAyf_4QsisR7IFsL1aNWE8fHvLUv96vSpwRelX1cVuab3bBG_qJTzD1TMk8V37gxq4OTAHXZOmheCepyVhUEawvCvCTaFwQf5kHPZFdLhd7qh8jEr2C06sM&s=Eju7SfbtcHeZN9Pdi76i35zWkmPmYLdv1We8sUvx0jcxZt4yn-Moz2ODcEDWN00W5ewwT91qLKIkFbo61oEr-f6mVfHicd_0-nhFL_729tJXlbAjeehbexMzwl0m7vsfPL8uzBAZKhtC3jeSIwbNPC6KtlbT8DdS9TdGotd2L-L_UAQhpcOx_uR5WY3nFJzRw0ZXl_scl-Mc9jJCMoBmGJWBVmeOB0bvBYgAB_2WHhLKIEP8jCBAgEi_bNRGxYQ1wUY8yYUZ8f7lPB6-EWxMR36EMxrHiUSlHZJvWCWFRSfB8Sm4YJQNHYn9ANsZrsaheEymI_9KYSqJumsxdudQ1A&h=v8JFGHzXJ7jCXj1n25fYakbKd9HF3ZQFgPNZrnUsMt4
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/5a87137e-ba19-4314-8536-e259f49fe7ae?api-version=2023-05-02-preview&azureAsyncOperation=true&t=638332070858563478&c=MIIHHjCCBgagAwIBAgITfwHPGb2PGVTN4z3FUwAEAc8ZvTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjMwODAyMDYzNjM2WhcNMjQwNzI3MDYzNjM2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALA8WMmmEO1CwTnKvAtvibQoh9fKt-nYVdbvRtzIlm4z19BYYfDibvj6l1viYhNR3bs53c9d8fIWknmMKcHdJpnnDk-sfLAVWjMNWlp_buwQ0wqnDDMi-_nqhutQ0ONUbruFxD0-bGPA3RLD9MxnV3XQGNGjXFzj7hqAQauMfHafpxwgDIEYAcWfBtE32aGB9_bxZrY8E2slVewgeS6yws88svVeMAmGPQEGqIrOrqphrXLbmWMcWg6Ixey-FyuliVC6n2ECOpeUOnI3zd3u2YXwLZrTeYxh6zaRuU-ht2zLmkisse4EaaJvcnYB1ET9IBE-LI8SxLbutQtDAe4kiSkCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQBTTHZD8UzTofzBwHZRpdtw5XpXjAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD3Zm_z6dHneGOQPVVe1FxHrV2xvtqbjaKZAuH5rSpWUw_DJdOSV4cWnP6mHzxkPNq64LVAwgyif18NOtR825NodQN7r_Il0fGIykE4rt-M_xIqddJaoXHzIGUQ0uCofzHWG-wdvSYVhlbFFtTckqYtEA9-qW-eTU2K1wu1OQ8ry_XahL8OpgJsribT6ANlH0I5odhgLdzGhwvBWfM1-xaqN8ieQA5l7FdmYeOrZYwzX4Lc-478HHPVhkKgLr6pn1L-WJJ1mMn_PPXo4c6q34Uw6i0kyVgPeot9rO0FSHhj-YxHTde4eXuk4k1VEx6v56KK89p9N2LCqwkWf75r3Vdk&s=TtSXo6SgUj8c7QDDgx9B3TyB0iOrXElXCZ1f_-e99h4Xxk2lxoulrCXcjbmsdf06rKiclBxCevthgJg9xx4YgTan6bcL6UioLen3rmYzeFdj1SJM3O4h6FSB-wIDkjqNvF4gEcAw0UWGqlrKmMCwDgtoa7wIWHXLm7sp-pwL95oHfOb7L6Yb1Yra_MKGPT5U82nJNhJWthuCjdMkSMc8SEbDhE6F7SCzxCUOpEmFQbTzJPzmK1ZfjTGx5GaykUsvDfgw7LxhJWDOciPLWD1prVaDb-lm13KLaWUnzTgfZiOX6R_5JZba1LfYWttMsjd09-Zeki1akObwK-qqON-FMA&h=NVM2stfz8Bjti-DnRGsdDOcC7j10xeQtIT7WmTYXeNc
       cache-control:
       - no-cache
       content-length:
-      - '2152'
+      - '2388'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:26 GMT
+      - Wed, 18 Oct 2023 06:24:45 GMT
       expires:
       - '-1'
       pragma:
@@ -763,10 +767,10 @@ interactions:
       User-Agent:
       - python/3.10.11 (Windows-10-10.0.22621-SP0) AZURECLI/2.53.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/a970e8e9-b258-470d-99d8-e4536616bf8b?api-version=2023-05-02-preview&azureAsyncOperation=true&t=638322587068439389&c=MIIHADCCBeigAwIBAgITHgMiVmbNs9bo9g1GbQAAAyJWZjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAyMTgwNDI4WhcNMjQwNzI3MTgwNDI4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMIcvxD_0PMhdmLk48iFdsDWY8xHwqf15PiuUxm56-DgFD_DTCio04a553Ilp6PhEzp-BqQUXZ8lOvewwSndfEiD0zKouzAK7ygeNzS10EFTSWbnBDNo4QPM7FM4bFhDUNl-AU1M7DrJCQPA8UGawTxFUgABTHaRYxMKeEyJ2IzdSmH0TjTgxv5pQDBP-QEJ-Rpdso9m_Yu2YfFRTCBiBNtQ4g-sojuHpOc3ULsGhK35Ua1gXYl44t0qnX1y-DiMbk0PPQ8_gop4DdSYd0NTBv-xBnqlom2ceJG8oCE4GCEXT3L6yOC3TvKvZ-7-r2cOWqPAolMtfZ4kIa7fp3zX-QUCAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBS8HoebCKQVIYtc1_REbe-XAGi3HjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAB6b3-2IDHqiKHidm1sv2adgnlW7o5teHg5_6JuYXETz89EHAOvxAis3i3YzHc79kO_nmk5RcVHDydZ-zI8JDlC8n3v75Zt4KNDYid-qMTOeyQogLcB2Cq3iRGRTjaG_abh0F1ifWL0QBhzujNxastu--5-ozxOHa7CTiseyWTxaCRv103DUxZ7-lNrBKHFJRQV_X5G_oVNKU2WvTmSTWNzCXpyLhKdoBAyf_4QsisR7IFsL1aNWE8fHvLUv96vSpwRelX1cVuab3bBG_qJTzD1TMk8V37gxq4OTAHXZOmheCepyVhUEawvCvCTaFwQf5kHPZFdLhd7qh8jEr2C06sM&s=Eju7SfbtcHeZN9Pdi76i35zWkmPmYLdv1We8sUvx0jcxZt4yn-Moz2ODcEDWN00W5ewwT91qLKIkFbo61oEr-f6mVfHicd_0-nhFL_729tJXlbAjeehbexMzwl0m7vsfPL8uzBAZKhtC3jeSIwbNPC6KtlbT8DdS9TdGotd2L-L_UAQhpcOx_uR5WY3nFJzRw0ZXl_scl-Mc9jJCMoBmGJWBVmeOB0bvBYgAB_2WHhLKIEP8jCBAgEi_bNRGxYQ1wUY8yYUZ8f7lPB6-EWxMR36EMxrHiUSlHZJvWCWFRSfB8Sm4YJQNHYn9ANsZrsaheEymI_9KYSqJumsxdudQ1A&h=v8JFGHzXJ7jCXj1n25fYakbKd9HF3ZQFgPNZrnUsMt4
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/5a87137e-ba19-4314-8536-e259f49fe7ae?api-version=2023-05-02-preview&azureAsyncOperation=true&t=638332070858563478&c=MIIHHjCCBgagAwIBAgITfwHPGb2PGVTN4z3FUwAEAc8ZvTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjMwODAyMDYzNjM2WhcNMjQwNzI3MDYzNjM2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALA8WMmmEO1CwTnKvAtvibQoh9fKt-nYVdbvRtzIlm4z19BYYfDibvj6l1viYhNR3bs53c9d8fIWknmMKcHdJpnnDk-sfLAVWjMNWlp_buwQ0wqnDDMi-_nqhutQ0ONUbruFxD0-bGPA3RLD9MxnV3XQGNGjXFzj7hqAQauMfHafpxwgDIEYAcWfBtE32aGB9_bxZrY8E2slVewgeS6yws88svVeMAmGPQEGqIrOrqphrXLbmWMcWg6Ixey-FyuliVC6n2ECOpeUOnI3zd3u2YXwLZrTeYxh6zaRuU-ht2zLmkisse4EaaJvcnYB1ET9IBE-LI8SxLbutQtDAe4kiSkCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQBTTHZD8UzTofzBwHZRpdtw5XpXjAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD3Zm_z6dHneGOQPVVe1FxHrV2xvtqbjaKZAuH5rSpWUw_DJdOSV4cWnP6mHzxkPNq64LVAwgyif18NOtR825NodQN7r_Il0fGIykE4rt-M_xIqddJaoXHzIGUQ0uCofzHWG-wdvSYVhlbFFtTckqYtEA9-qW-eTU2K1wu1OQ8ry_XahL8OpgJsribT6ANlH0I5odhgLdzGhwvBWfM1-xaqN8ieQA5l7FdmYeOrZYwzX4Lc-478HHPVhkKgLr6pn1L-WJJ1mMn_PPXo4c6q34Uw6i0kyVgPeot9rO0FSHhj-YxHTde4eXuk4k1VEx6v56KK89p9N2LCqwkWf75r3Vdk&s=TtSXo6SgUj8c7QDDgx9B3TyB0iOrXElXCZ1f_-e99h4Xxk2lxoulrCXcjbmsdf06rKiclBxCevthgJg9xx4YgTan6bcL6UioLen3rmYzeFdj1SJM3O4h6FSB-wIDkjqNvF4gEcAw0UWGqlrKmMCwDgtoa7wIWHXLm7sp-pwL95oHfOb7L6Yb1Yra_MKGPT5U82nJNhJWthuCjdMkSMc8SEbDhE6F7SCzxCUOpEmFQbTzJPzmK1ZfjTGx5GaykUsvDfgw7LxhJWDOciPLWD1prVaDb-lm13KLaWUnzTgfZiOX6R_5JZba1LfYWttMsjd09-Zeki1akObwK-qqON-FMA&h=NVM2stfz8Bjti-DnRGsdDOcC7j10xeQtIT7WmTYXeNc
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/a970e8e9-b258-470d-99d8-e4536616bf8b","name":"a970e8e9-b258-470d-99d8-e4536616bf8b","status":"InProgress","startTime":"2023-10-07T06:58:26.3199139"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/5a87137e-ba19-4314-8536-e259f49fe7ae","name":"5a87137e-ba19-4314-8536-e259f49fe7ae","status":"InProgress","startTime":"2023-10-18T06:24:45.3364348"}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
@@ -778,7 +782,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:26 GMT
+      - Wed, 18 Oct 2023 06:24:47 GMT
       expires:
       - '-1'
       pragma:
@@ -814,10 +818,10 @@ interactions:
       User-Agent:
       - python/3.10.11 (Windows-10-10.0.22621-SP0) AZURECLI/2.53.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/a970e8e9-b258-470d-99d8-e4536616bf8b?api-version=2023-05-02-preview&azureAsyncOperation=true&t=638322587068439389&c=MIIHADCCBeigAwIBAgITHgMiVmbNs9bo9g1GbQAAAyJWZjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAyMTgwNDI4WhcNMjQwNzI3MTgwNDI4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMIcvxD_0PMhdmLk48iFdsDWY8xHwqf15PiuUxm56-DgFD_DTCio04a553Ilp6PhEzp-BqQUXZ8lOvewwSndfEiD0zKouzAK7ygeNzS10EFTSWbnBDNo4QPM7FM4bFhDUNl-AU1M7DrJCQPA8UGawTxFUgABTHaRYxMKeEyJ2IzdSmH0TjTgxv5pQDBP-QEJ-Rpdso9m_Yu2YfFRTCBiBNtQ4g-sojuHpOc3ULsGhK35Ua1gXYl44t0qnX1y-DiMbk0PPQ8_gop4DdSYd0NTBv-xBnqlom2ceJG8oCE4GCEXT3L6yOC3TvKvZ-7-r2cOWqPAolMtfZ4kIa7fp3zX-QUCAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBS8HoebCKQVIYtc1_REbe-XAGi3HjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAB6b3-2IDHqiKHidm1sv2adgnlW7o5teHg5_6JuYXETz89EHAOvxAis3i3YzHc79kO_nmk5RcVHDydZ-zI8JDlC8n3v75Zt4KNDYid-qMTOeyQogLcB2Cq3iRGRTjaG_abh0F1ifWL0QBhzujNxastu--5-ozxOHa7CTiseyWTxaCRv103DUxZ7-lNrBKHFJRQV_X5G_oVNKU2WvTmSTWNzCXpyLhKdoBAyf_4QsisR7IFsL1aNWE8fHvLUv96vSpwRelX1cVuab3bBG_qJTzD1TMk8V37gxq4OTAHXZOmheCepyVhUEawvCvCTaFwQf5kHPZFdLhd7qh8jEr2C06sM&s=Eju7SfbtcHeZN9Pdi76i35zWkmPmYLdv1We8sUvx0jcxZt4yn-Moz2ODcEDWN00W5ewwT91qLKIkFbo61oEr-f6mVfHicd_0-nhFL_729tJXlbAjeehbexMzwl0m7vsfPL8uzBAZKhtC3jeSIwbNPC6KtlbT8DdS9TdGotd2L-L_UAQhpcOx_uR5WY3nFJzRw0ZXl_scl-Mc9jJCMoBmGJWBVmeOB0bvBYgAB_2WHhLKIEP8jCBAgEi_bNRGxYQ1wUY8yYUZ8f7lPB6-EWxMR36EMxrHiUSlHZJvWCWFRSfB8Sm4YJQNHYn9ANsZrsaheEymI_9KYSqJumsxdudQ1A&h=v8JFGHzXJ7jCXj1n25fYakbKd9HF3ZQFgPNZrnUsMt4
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/5a87137e-ba19-4314-8536-e259f49fe7ae?api-version=2023-05-02-preview&azureAsyncOperation=true&t=638332070858563478&c=MIIHHjCCBgagAwIBAgITfwHPGb2PGVTN4z3FUwAEAc8ZvTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjMwODAyMDYzNjM2WhcNMjQwNzI3MDYzNjM2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALA8WMmmEO1CwTnKvAtvibQoh9fKt-nYVdbvRtzIlm4z19BYYfDibvj6l1viYhNR3bs53c9d8fIWknmMKcHdJpnnDk-sfLAVWjMNWlp_buwQ0wqnDDMi-_nqhutQ0ONUbruFxD0-bGPA3RLD9MxnV3XQGNGjXFzj7hqAQauMfHafpxwgDIEYAcWfBtE32aGB9_bxZrY8E2slVewgeS6yws88svVeMAmGPQEGqIrOrqphrXLbmWMcWg6Ixey-FyuliVC6n2ECOpeUOnI3zd3u2YXwLZrTeYxh6zaRuU-ht2zLmkisse4EaaJvcnYB1ET9IBE-LI8SxLbutQtDAe4kiSkCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQBTTHZD8UzTofzBwHZRpdtw5XpXjAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD3Zm_z6dHneGOQPVVe1FxHrV2xvtqbjaKZAuH5rSpWUw_DJdOSV4cWnP6mHzxkPNq64LVAwgyif18NOtR825NodQN7r_Il0fGIykE4rt-M_xIqddJaoXHzIGUQ0uCofzHWG-wdvSYVhlbFFtTckqYtEA9-qW-eTU2K1wu1OQ8ry_XahL8OpgJsribT6ANlH0I5odhgLdzGhwvBWfM1-xaqN8ieQA5l7FdmYeOrZYwzX4Lc-478HHPVhkKgLr6pn1L-WJJ1mMn_PPXo4c6q34Uw6i0kyVgPeot9rO0FSHhj-YxHTde4eXuk4k1VEx6v56KK89p9N2LCqwkWf75r3Vdk&s=TtSXo6SgUj8c7QDDgx9B3TyB0iOrXElXCZ1f_-e99h4Xxk2lxoulrCXcjbmsdf06rKiclBxCevthgJg9xx4YgTan6bcL6UioLen3rmYzeFdj1SJM3O4h6FSB-wIDkjqNvF4gEcAw0UWGqlrKmMCwDgtoa7wIWHXLm7sp-pwL95oHfOb7L6Yb1Yra_MKGPT5U82nJNhJWthuCjdMkSMc8SEbDhE6F7SCzxCUOpEmFQbTzJPzmK1ZfjTGx5GaykUsvDfgw7LxhJWDOciPLWD1prVaDb-lm13KLaWUnzTgfZiOX6R_5JZba1LfYWttMsjd09-Zeki1akObwK-qqON-FMA&h=NVM2stfz8Bjti-DnRGsdDOcC7j10xeQtIT7WmTYXeNc
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/a970e8e9-b258-470d-99d8-e4536616bf8b","name":"a970e8e9-b258-470d-99d8-e4536616bf8b","status":"InProgress","startTime":"2023-10-07T06:58:26.3199139"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/5a87137e-ba19-4314-8536-e259f49fe7ae","name":"5a87137e-ba19-4314-8536-e259f49fe7ae","status":"InProgress","startTime":"2023-10-18T06:24:45.3364348"}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
@@ -829,7 +833,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:29 GMT
+      - Wed, 18 Oct 2023 06:24:50 GMT
       expires:
       - '-1'
       pragma:
@@ -865,10 +869,10 @@ interactions:
       User-Agent:
       - python/3.10.11 (Windows-10-10.0.22621-SP0) AZURECLI/2.53.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/a970e8e9-b258-470d-99d8-e4536616bf8b?api-version=2023-05-02-preview&azureAsyncOperation=true&t=638322587068439389&c=MIIHADCCBeigAwIBAgITHgMiVmbNs9bo9g1GbQAAAyJWZjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAyMTgwNDI4WhcNMjQwNzI3MTgwNDI4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMIcvxD_0PMhdmLk48iFdsDWY8xHwqf15PiuUxm56-DgFD_DTCio04a553Ilp6PhEzp-BqQUXZ8lOvewwSndfEiD0zKouzAK7ygeNzS10EFTSWbnBDNo4QPM7FM4bFhDUNl-AU1M7DrJCQPA8UGawTxFUgABTHaRYxMKeEyJ2IzdSmH0TjTgxv5pQDBP-QEJ-Rpdso9m_Yu2YfFRTCBiBNtQ4g-sojuHpOc3ULsGhK35Ua1gXYl44t0qnX1y-DiMbk0PPQ8_gop4DdSYd0NTBv-xBnqlom2ceJG8oCE4GCEXT3L6yOC3TvKvZ-7-r2cOWqPAolMtfZ4kIa7fp3zX-QUCAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBS8HoebCKQVIYtc1_REbe-XAGi3HjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAB6b3-2IDHqiKHidm1sv2adgnlW7o5teHg5_6JuYXETz89EHAOvxAis3i3YzHc79kO_nmk5RcVHDydZ-zI8JDlC8n3v75Zt4KNDYid-qMTOeyQogLcB2Cq3iRGRTjaG_abh0F1ifWL0QBhzujNxastu--5-ozxOHa7CTiseyWTxaCRv103DUxZ7-lNrBKHFJRQV_X5G_oVNKU2WvTmSTWNzCXpyLhKdoBAyf_4QsisR7IFsL1aNWE8fHvLUv96vSpwRelX1cVuab3bBG_qJTzD1TMk8V37gxq4OTAHXZOmheCepyVhUEawvCvCTaFwQf5kHPZFdLhd7qh8jEr2C06sM&s=Eju7SfbtcHeZN9Pdi76i35zWkmPmYLdv1We8sUvx0jcxZt4yn-Moz2ODcEDWN00W5ewwT91qLKIkFbo61oEr-f6mVfHicd_0-nhFL_729tJXlbAjeehbexMzwl0m7vsfPL8uzBAZKhtC3jeSIwbNPC6KtlbT8DdS9TdGotd2L-L_UAQhpcOx_uR5WY3nFJzRw0ZXl_scl-Mc9jJCMoBmGJWBVmeOB0bvBYgAB_2WHhLKIEP8jCBAgEi_bNRGxYQ1wUY8yYUZ8f7lPB6-EWxMR36EMxrHiUSlHZJvWCWFRSfB8Sm4YJQNHYn9ANsZrsaheEymI_9KYSqJumsxdudQ1A&h=v8JFGHzXJ7jCXj1n25fYakbKd9HF3ZQFgPNZrnUsMt4
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/5a87137e-ba19-4314-8536-e259f49fe7ae?api-version=2023-05-02-preview&azureAsyncOperation=true&t=638332070858563478&c=MIIHHjCCBgagAwIBAgITfwHPGb2PGVTN4z3FUwAEAc8ZvTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjMwODAyMDYzNjM2WhcNMjQwNzI3MDYzNjM2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALA8WMmmEO1CwTnKvAtvibQoh9fKt-nYVdbvRtzIlm4z19BYYfDibvj6l1viYhNR3bs53c9d8fIWknmMKcHdJpnnDk-sfLAVWjMNWlp_buwQ0wqnDDMi-_nqhutQ0ONUbruFxD0-bGPA3RLD9MxnV3XQGNGjXFzj7hqAQauMfHafpxwgDIEYAcWfBtE32aGB9_bxZrY8E2slVewgeS6yws88svVeMAmGPQEGqIrOrqphrXLbmWMcWg6Ixey-FyuliVC6n2ECOpeUOnI3zd3u2YXwLZrTeYxh6zaRuU-ht2zLmkisse4EaaJvcnYB1ET9IBE-LI8SxLbutQtDAe4kiSkCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQBTTHZD8UzTofzBwHZRpdtw5XpXjAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD3Zm_z6dHneGOQPVVe1FxHrV2xvtqbjaKZAuH5rSpWUw_DJdOSV4cWnP6mHzxkPNq64LVAwgyif18NOtR825NodQN7r_Il0fGIykE4rt-M_xIqddJaoXHzIGUQ0uCofzHWG-wdvSYVhlbFFtTckqYtEA9-qW-eTU2K1wu1OQ8ry_XahL8OpgJsribT6ANlH0I5odhgLdzGhwvBWfM1-xaqN8ieQA5l7FdmYeOrZYwzX4Lc-478HHPVhkKgLr6pn1L-WJJ1mMn_PPXo4c6q34Uw6i0kyVgPeot9rO0FSHhj-YxHTde4eXuk4k1VEx6v56KK89p9N2LCqwkWf75r3Vdk&s=TtSXo6SgUj8c7QDDgx9B3TyB0iOrXElXCZ1f_-e99h4Xxk2lxoulrCXcjbmsdf06rKiclBxCevthgJg9xx4YgTan6bcL6UioLen3rmYzeFdj1SJM3O4h6FSB-wIDkjqNvF4gEcAw0UWGqlrKmMCwDgtoa7wIWHXLm7sp-pwL95oHfOb7L6Yb1Yra_MKGPT5U82nJNhJWthuCjdMkSMc8SEbDhE6F7SCzxCUOpEmFQbTzJPzmK1ZfjTGx5GaykUsvDfgw7LxhJWDOciPLWD1prVaDb-lm13KLaWUnzTgfZiOX6R_5JZba1LfYWttMsjd09-Zeki1akObwK-qqON-FMA&h=NVM2stfz8Bjti-DnRGsdDOcC7j10xeQtIT7WmTYXeNc
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/a970e8e9-b258-470d-99d8-e4536616bf8b","name":"a970e8e9-b258-470d-99d8-e4536616bf8b","status":"InProgress","startTime":"2023-10-07T06:58:26.3199139"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/5a87137e-ba19-4314-8536-e259f49fe7ae","name":"5a87137e-ba19-4314-8536-e259f49fe7ae","status":"InProgress","startTime":"2023-10-18T06:24:45.3364348"}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
@@ -880,7 +884,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:33 GMT
+      - Wed, 18 Oct 2023 06:24:53 GMT
       expires:
       - '-1'
       pragma:
@@ -916,10 +920,10 @@ interactions:
       User-Agent:
       - python/3.10.11 (Windows-10-10.0.22621-SP0) AZURECLI/2.53.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/a970e8e9-b258-470d-99d8-e4536616bf8b?api-version=2023-05-02-preview&azureAsyncOperation=true&t=638322587068439389&c=MIIHADCCBeigAwIBAgITHgMiVmbNs9bo9g1GbQAAAyJWZjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjMwODAyMTgwNDI4WhcNMjQwNzI3MTgwNDI4WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMIcvxD_0PMhdmLk48iFdsDWY8xHwqf15PiuUxm56-DgFD_DTCio04a553Ilp6PhEzp-BqQUXZ8lOvewwSndfEiD0zKouzAK7ygeNzS10EFTSWbnBDNo4QPM7FM4bFhDUNl-AU1M7DrJCQPA8UGawTxFUgABTHaRYxMKeEyJ2IzdSmH0TjTgxv5pQDBP-QEJ-Rpdso9m_Yu2YfFRTCBiBNtQ4g-sojuHpOc3ULsGhK35Ua1gXYl44t0qnX1y-DiMbk0PPQ8_gop4DdSYd0NTBv-xBnqlom2ceJG8oCE4GCEXT3L6yOC3TvKvZ-7-r2cOWqPAolMtfZ4kIa7fp3zX-QUCAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBS8HoebCKQVIYtc1_REbe-XAGi3HjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAB6b3-2IDHqiKHidm1sv2adgnlW7o5teHg5_6JuYXETz89EHAOvxAis3i3YzHc79kO_nmk5RcVHDydZ-zI8JDlC8n3v75Zt4KNDYid-qMTOeyQogLcB2Cq3iRGRTjaG_abh0F1ifWL0QBhzujNxastu--5-ozxOHa7CTiseyWTxaCRv103DUxZ7-lNrBKHFJRQV_X5G_oVNKU2WvTmSTWNzCXpyLhKdoBAyf_4QsisR7IFsL1aNWE8fHvLUv96vSpwRelX1cVuab3bBG_qJTzD1TMk8V37gxq4OTAHXZOmheCepyVhUEawvCvCTaFwQf5kHPZFdLhd7qh8jEr2C06sM&s=Eju7SfbtcHeZN9Pdi76i35zWkmPmYLdv1We8sUvx0jcxZt4yn-Moz2ODcEDWN00W5ewwT91qLKIkFbo61oEr-f6mVfHicd_0-nhFL_729tJXlbAjeehbexMzwl0m7vsfPL8uzBAZKhtC3jeSIwbNPC6KtlbT8DdS9TdGotd2L-L_UAQhpcOx_uR5WY3nFJzRw0ZXl_scl-Mc9jJCMoBmGJWBVmeOB0bvBYgAB_2WHhLKIEP8jCBAgEi_bNRGxYQ1wUY8yYUZ8f7lPB6-EWxMR36EMxrHiUSlHZJvWCWFRSfB8Sm4YJQNHYn9ANsZrsaheEymI_9KYSqJumsxdudQ1A&h=v8JFGHzXJ7jCXj1n25fYakbKd9HF3ZQFgPNZrnUsMt4
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/5a87137e-ba19-4314-8536-e259f49fe7ae?api-version=2023-05-02-preview&azureAsyncOperation=true&t=638332070858563478&c=MIIHHjCCBgagAwIBAgITfwHPGb2PGVTN4z3FUwAEAc8ZvTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjMwODAyMDYzNjM2WhcNMjQwNzI3MDYzNjM2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALA8WMmmEO1CwTnKvAtvibQoh9fKt-nYVdbvRtzIlm4z19BYYfDibvj6l1viYhNR3bs53c9d8fIWknmMKcHdJpnnDk-sfLAVWjMNWlp_buwQ0wqnDDMi-_nqhutQ0ONUbruFxD0-bGPA3RLD9MxnV3XQGNGjXFzj7hqAQauMfHafpxwgDIEYAcWfBtE32aGB9_bxZrY8E2slVewgeS6yws88svVeMAmGPQEGqIrOrqphrXLbmWMcWg6Ixey-FyuliVC6n2ECOpeUOnI3zd3u2YXwLZrTeYxh6zaRuU-ht2zLmkisse4EaaJvcnYB1ET9IBE-LI8SxLbutQtDAe4kiSkCAwEAAaOCBAswggQHMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBQBTTHZD8UzTofzBwHZRpdtw5XpXjAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAD3Zm_z6dHneGOQPVVe1FxHrV2xvtqbjaKZAuH5rSpWUw_DJdOSV4cWnP6mHzxkPNq64LVAwgyif18NOtR825NodQN7r_Il0fGIykE4rt-M_xIqddJaoXHzIGUQ0uCofzHWG-wdvSYVhlbFFtTckqYtEA9-qW-eTU2K1wu1OQ8ry_XahL8OpgJsribT6ANlH0I5odhgLdzGhwvBWfM1-xaqN8ieQA5l7FdmYeOrZYwzX4Lc-478HHPVhkKgLr6pn1L-WJJ1mMn_PPXo4c6q34Uw6i0kyVgPeot9rO0FSHhj-YxHTde4eXuk4k1VEx6v56KK89p9N2LCqwkWf75r3Vdk&s=TtSXo6SgUj8c7QDDgx9B3TyB0iOrXElXCZ1f_-e99h4Xxk2lxoulrCXcjbmsdf06rKiclBxCevthgJg9xx4YgTan6bcL6UioLen3rmYzeFdj1SJM3O4h6FSB-wIDkjqNvF4gEcAw0UWGqlrKmMCwDgtoa7wIWHXLm7sp-pwL95oHfOb7L6Yb1Yra_MKGPT5U82nJNhJWthuCjdMkSMc8SEbDhE6F7SCzxCUOpEmFQbTzJPzmK1ZfjTGx5GaykUsvDfgw7LxhJWDOciPLWD1prVaDb-lm13KLaWUnzTgfZiOX6R_5JZba1LfYWttMsjd09-Zeki1akObwK-qqON-FMA&h=NVM2stfz8Bjti-DnRGsdDOcC7j10xeQtIT7WmTYXeNc
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/a970e8e9-b258-470d-99d8-e4536616bf8b","name":"a970e8e9-b258-470d-99d8-e4536616bf8b","status":"Succeeded","startTime":"2023-10-07T06:58:26.3199139"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/5a87137e-ba19-4314-8536-e259f49fe7ae","name":"5a87137e-ba19-4314-8536-e259f49fe7ae","status":"Succeeded","startTime":"2023-10-18T06:24:45.3364348"}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
@@ -931,7 +935,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:35 GMT
+      - Wed, 18 Oct 2023 06:24:56 GMT
       expires:
       - '-1'
       pragma:
@@ -971,7 +975,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerapps/capp000002","name":"capp000002","type":"Microsoft.App/containerApps","location":"East
-        US","systemData":{"createdBy":"xinyupang@microsoft.com","createdByType":"User","createdAt":"2023-10-07T06:58:26.1876234","lastModifiedBy":"xinyupang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-07T06:58:26.1876234"},"properties":{"provisioningState":"Succeeded","runningStatus":"Running","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"outboundIpAddresses":["52.191.234.23"],"latestRevisionName":"capp000002--01eict2","latestReadyRevisionName":"capp000002--01eict2","latestRevisionFqdn":"capp000002--01eict2.livelypebble-4bdc8f59.eastus.azurecontainerapps.io","customDomainVerificationId":"D3F71C85EB6552E36A89A3E4A080C3CFB00181670B659B0003264FC673AA9B00","configuration":{"secrets":null,"activeRevisionsMode":"Single","ingress":{"fqdn":"capp000002.livelypebble-4bdc8f59.eastus.azurecontainerapps.io","external":true,"targetPort":80,"exposedPort":0,"transport":"Auto","traffic":[{"weight":100,"latestRevision":true}],"customDomains":null,"allowInsecure":false,"ipSecurityRestrictions":null,"corsPolicy":null,"clientCertificateMode":null,"stickySessions":null,"additionalPortMappings":null},"registries":null,"dapr":null,"maxInactiveRevisions":null,"service":null},"template":{"revisionSuffix":"","terminationGracePeriodSeconds":null,"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"capp000002","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"scale":{"minReplicas":1,"maxReplicas":10,"rules":null},"volumes":null,"serviceBinds":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/eventstream"},"identity":{"type":"None"}}'
+        US","systemData":{"createdBy":"xinyupang@microsoft.com","createdByType":"User","createdAt":"2023-10-18T06:24:45.1688914","lastModifiedBy":"xinyupang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-18T06:24:45.1688914"},"properties":{"provisioningState":"Succeeded","runningStatus":"Running","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"outboundIpAddresses":["52.191.234.23"],"latestRevisionName":"capp000002--zcj35p0","latestReadyRevisionName":"capp000002--zcj35p0","latestRevisionFqdn":"capp000002--zcj35p0.livelypebble-4bdc8f59.eastus.azurecontainerapps.io","customDomainVerificationId":"D3F71C85EB6552E36A89A3E4A080C3CFB00181670B659B0003264FC673AA9B00","configuration":{"secrets":null,"activeRevisionsMode":"Single","ingress":{"fqdn":"capp000002.livelypebble-4bdc8f59.eastus.azurecontainerapps.io","external":true,"targetPort":80,"exposedPort":0,"transport":"Auto","traffic":[{"weight":100,"latestRevision":true}],"customDomains":null,"allowInsecure":false,"ipSecurityRestrictions":null,"corsPolicy":null,"clientCertificateMode":null,"stickySessions":null,"additionalPortMappings":null},"registries":null,"dapr":null,"maxInactiveRevisions":null,"service":null},"template":{"revisionSuffix":"","terminationGracePeriodSeconds":null,"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"capp000002","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"scale":{"minReplicas":1,"maxReplicas":10,"rules":[{"name":"my-datadog-rule","custom":{"type":"datadog","metadata":{"age":"120","metricUnavailableValue":"0","queryValue":"7"},"auth":[{"secretRef":"api-key","triggerParameter":"apiKey"},{"secretRef":"app-key","triggerParameter":"appKey"}]}}]},"volumes":null,"serviceBinds":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/eventstream"},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
@@ -979,11 +983,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '2257'
+      - '2493'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:36 GMT
+      - Wed, 18 Oct 2023 06:24:58 GMT
       expires:
       - '-1'
       pragma:
@@ -1023,7 +1027,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerapps/capp000002","name":"capp000002","type":"Microsoft.App/containerApps","location":"East
-        US","systemData":{"createdBy":"xinyupang@microsoft.com","createdByType":"User","createdAt":"2023-10-07T06:58:26.1876234","lastModifiedBy":"xinyupang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-07T06:58:26.1876234"},"properties":{"provisioningState":"Succeeded","runningStatus":"Running","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"outboundIpAddresses":["52.191.234.23"],"latestRevisionName":"capp000002--01eict2","latestReadyRevisionName":"capp000002--01eict2","latestRevisionFqdn":"capp000002--01eict2.livelypebble-4bdc8f59.eastus.azurecontainerapps.io","customDomainVerificationId":"D3F71C85EB6552E36A89A3E4A080C3CFB00181670B659B0003264FC673AA9B00","configuration":{"secrets":null,"activeRevisionsMode":"Single","ingress":{"fqdn":"capp000002.livelypebble-4bdc8f59.eastus.azurecontainerapps.io","external":true,"targetPort":80,"exposedPort":0,"transport":"Auto","traffic":[{"weight":100,"latestRevision":true}],"customDomains":null,"allowInsecure":false,"ipSecurityRestrictions":null,"corsPolicy":null,"clientCertificateMode":null,"stickySessions":null},"registries":null,"dapr":null,"maxInactiveRevisions":null,"service":null},"template":{"revisionSuffix":"","terminationGracePeriodSeconds":null,"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"capp000002","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"scale":{"minReplicas":1,"maxReplicas":10,"rules":null},"volumes":null,"serviceBinds":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/eventstream"},"identity":{"type":"None"}}'
+        US","systemData":{"createdBy":"xinyupang@microsoft.com","createdByType":"User","createdAt":"2023-10-18T06:24:45.1688914","lastModifiedBy":"xinyupang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-18T06:24:45.1688914"},"properties":{"provisioningState":"Succeeded","runningStatus":"Running","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"outboundIpAddresses":["52.191.234.23"],"latestRevisionName":"capp000002--zcj35p0","latestReadyRevisionName":"capp000002--zcj35p0","latestRevisionFqdn":"capp000002--zcj35p0.livelypebble-4bdc8f59.eastus.azurecontainerapps.io","customDomainVerificationId":"D3F71C85EB6552E36A89A3E4A080C3CFB00181670B659B0003264FC673AA9B00","configuration":{"secrets":null,"activeRevisionsMode":"Single","ingress":{"fqdn":"capp000002.livelypebble-4bdc8f59.eastus.azurecontainerapps.io","external":true,"targetPort":80,"exposedPort":0,"transport":"Auto","traffic":[{"weight":100,"latestRevision":true}],"customDomains":null,"allowInsecure":false,"ipSecurityRestrictions":null,"corsPolicy":null,"clientCertificateMode":null,"stickySessions":null},"registries":null,"dapr":null,"maxInactiveRevisions":null,"service":null},"template":{"revisionSuffix":"","terminationGracePeriodSeconds":null,"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"capp000002","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"scale":{"minReplicas":1,"maxReplicas":10,"rules":[{"name":"my-datadog-rule","custom":{"type":"datadog","metadata":{"age":"120","metricUnavailableValue":"0","queryValue":"7"},"auth":[{"secretRef":"api-key","triggerParameter":"apiKey"},{"secretRef":"app-key","triggerParameter":"appKey"}]}}]},"volumes":null,"serviceBinds":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/eventstream"},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
@@ -1031,11 +1035,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '2227'
+      - '2463'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:38 GMT
+      - Wed, 18 Oct 2023 06:25:00 GMT
       expires:
       - '-1'
       pragma:
@@ -1122,9 +1126,9 @@ interactions:
         \                    </div>\n                    <div id=\"infodiv\" style=\"\
         display: none;\">\n                        <br />\n                      \
         \  <div id=subText class=sub-text> Your current replica is <strong>\n    \
-        \                            capp000002--01eict2-574d5788c9-xswqx\n      \
+        \                            capp000002--zcj35p0-7b55ddc995-h95fm\n      \
         \                      </strong>\n                            in revision\
-        \ <strong>\n                                capp000002--01eict2\n        \
+        \ <strong>\n                                capp000002--zcj35p0\n        \
         \                    </strong>\n                            in the app <strong>\n\
         \                                capp000002\n                            </strong>\n\
         \                        </div>\n                    </div>\n            \
@@ -1208,7 +1212,7 @@ interactions:
       content-type:
       - text/html; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:40 GMT
+      - Wed, 18 Oct 2023 06:25:07 GMT
       transfer-encoding:
       - chunked
     status:
@@ -1230,11 +1234,11 @@ interactions:
       User-Agent:
       - python/3.10.11 (Windows-10-10.0.22621-SP0) AZURECLI/2.53.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--01eict2/replicas?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--zcj35p0/replicas?api-version=2023-05-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--01eict2/replicas/capp000002--01eict2-574d5788c9-xswqx","name":"capp000002--01eict2-574d5788c9-xswqx","type":"Microsoft.App/containerapps/revisions/replicas","properties":{"createdTime":"2023-10-07T06:58:27Z","runningState":"Running","runningStateDetails":"","containers":[{"name":"capp000002","containerId":"containerd://d94f1380c62b0c6687c4c27824d1f264aa57e8434bd33d831ec36e2d96e7de2f","ready":true,"started":true,"restartCount":0,"runningState":"Running","runningStateDetails":"Container
-        started at: 10/7/2023 6:58:30 AM.","logStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/revisions/capp000002--01eict2/replicas/capp000002--01eict2-574d5788c9-xswqx/containers/capp000002/logstream","execEndpoint":"wss://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/revisions/capp000002--01eict2/replicas/capp000002--01eict2-574d5788c9-xswqx/containers/capp000002/exec"}],"initContainers":[]}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--zcj35p0/replicas/capp000002--zcj35p0-7b55ddc995-h95fm","name":"capp000002--zcj35p0-7b55ddc995-h95fm","type":"Microsoft.App/containerapps/revisions/replicas","properties":{"createdTime":"2023-10-18T06:24:46Z","runningState":"Running","runningStateDetails":"","containers":[{"name":"capp000002","containerId":"containerd://ca0bc36ff07e3e65470ed6f0971f4ce804412149733e5bb32fa900dd57c8a5af","ready":true,"started":true,"restartCount":0,"runningState":"Running","runningStateDetails":"Container
+        started at: 10/18/2023 6:25:00 AM.","logStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/revisions/capp000002--zcj35p0/replicas/capp000002--zcj35p0-7b55ddc995-h95fm/containers/capp000002/logstream","execEndpoint":"wss://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/revisions/capp000002--zcj35p0/replicas/capp000002--zcj35p0-7b55ddc995-h95fm/containers/capp000002/exec"}],"initContainers":[]}}]}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
@@ -1242,11 +1246,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '1262'
+      - '1263'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:41 GMT
+      - Wed, 18 Oct 2023 06:25:08 GMT
       expires:
       - '-1'
       pragma:
@@ -1282,10 +1286,10 @@ interactions:
       User-Agent:
       - python/3.10.11 (Windows-10-10.0.22621-SP0) AZURECLI/2.53.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--01eict2?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--zcj35p0?api-version=2023-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--01eict2","name":"capp000002--01eict2","type":"Microsoft.App/containerapps/revisions","properties":{"createdTime":"2023-10-07T06:58:26+00:00","fqdn":"capp000002--01eict2.livelypebble-4bdc8f59.eastus.azurecontainerapps.io","template":{"revisionSuffix":null,"terminationGracePeriodSeconds":null,"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"capp000002","resources":{"cpu":0.500,"memory":"1Gi"},"probes":[]}],"initContainers":null,"scale":{"minReplicas":1,"maxReplicas":10,"rules":null},"volumes":null,"serviceBinds":null},"active":true,"replicas":1,"trafficWeight":100,"healthState":"Healthy","provisioningState":"Provisioned","runningState":"Running"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--zcj35p0","name":"capp000002--zcj35p0","type":"Microsoft.App/containerapps/revisions","properties":{"createdTime":"2023-10-18T06:24:45+00:00","fqdn":"capp000002--zcj35p0.livelypebble-4bdc8f59.eastus.azurecontainerapps.io","template":{"revisionSuffix":null,"terminationGracePeriodSeconds":null,"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"capp000002","resources":{"cpu":0.500,"memory":"1Gi"},"probes":[]}],"initContainers":null,"scale":{"minReplicas":1,"maxReplicas":10,"rules":[{"name":"my-datadog-rule","custom":{"type":"datadog","metadata":{"age":"120","metricUnavailableValue":"0","queryValue":"7"},"auth":[{"secretRef":"api-key","triggerParameter":"apiKey"},{"secretRef":"app-key","triggerParameter":"appKey"}]}}]},"volumes":null,"serviceBinds":null},"active":true,"replicas":1,"trafficWeight":100,"healthState":"Healthy","provisioningState":"Provisioned","runningState":"Running"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
@@ -1293,11 +1297,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '840'
+      - '1076'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:42 GMT
+      - Wed, 18 Oct 2023 06:25:09 GMT
       expires:
       - '-1'
       pragma:
@@ -1333,10 +1337,10 @@ interactions:
       User-Agent:
       - python/3.10.11 (Windows-10-10.0.22621-SP0) AZURECLI/2.53.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--01eict2?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--zcj35p0?api-version=2023-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--01eict2","name":"capp000002--01eict2","type":"Microsoft.App/containerapps/revisions","properties":{"createdTime":"2023-10-07T06:58:26+00:00","fqdn":"capp000002--01eict2.livelypebble-4bdc8f59.eastus.azurecontainerapps.io","template":{"revisionSuffix":null,"terminationGracePeriodSeconds":null,"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"capp000002","resources":{"cpu":0.500,"memory":"1Gi"},"probes":[]}],"initContainers":null,"scale":{"minReplicas":1,"maxReplicas":10,"rules":null},"volumes":null,"serviceBinds":null},"active":true,"replicas":1,"trafficWeight":100,"healthState":"Healthy","provisioningState":"Provisioned","runningState":"Running"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--zcj35p0","name":"capp000002--zcj35p0","type":"Microsoft.App/containerapps/revisions","properties":{"createdTime":"2023-10-18T06:24:45+00:00","fqdn":"capp000002--zcj35p0.livelypebble-4bdc8f59.eastus.azurecontainerapps.io","template":{"revisionSuffix":null,"terminationGracePeriodSeconds":null,"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"capp000002","resources":{"cpu":0.500,"memory":"1Gi"},"probes":[]}],"initContainers":null,"scale":{"minReplicas":1,"maxReplicas":10,"rules":[{"name":"my-datadog-rule","custom":{"type":"datadog","metadata":{"age":"120","metricUnavailableValue":"0","queryValue":"7"},"auth":[{"secretRef":"api-key","triggerParameter":"apiKey"},{"secretRef":"app-key","triggerParameter":"appKey"}]}}]},"volumes":null,"serviceBinds":null},"active":true,"replicas":1,"trafficWeight":100,"healthState":"Healthy","provisioningState":"Provisioned","runningState":"Running"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
@@ -1344,11 +1348,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '840'
+      - '1076'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:43 GMT
+      - Wed, 18 Oct 2023 06:25:10 GMT
       expires:
       - '-1'
       pragma:
@@ -1384,11 +1388,11 @@ interactions:
       User-Agent:
       - python/3.10.11 (Windows-10-10.0.22621-SP0) AZURECLI/2.53.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--01eict2/replicas/capp000002--01eict2-574d5788c9-xswqx/?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--zcj35p0/replicas/capp000002--zcj35p0-7b55ddc995-h95fm/?api-version=2023-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--01eict2/replicas/capp000002--01eict2-574d5788c9-xswqx","name":"capp000002--01eict2-574d5788c9-xswqx","type":"Microsoft.App/containerapps/revisions/replicas","properties":{"createdTime":"2023-10-07T06:58:27Z","runningState":"Running","runningStateDetails":"","containers":[{"name":"capp000002","containerId":"containerd://d94f1380c62b0c6687c4c27824d1f264aa57e8434bd33d831ec36e2d96e7de2f","ready":true,"started":true,"restartCount":0,"runningState":"Running","runningStateDetails":"Container
-        started at: 10/7/2023 6:58:30 AM.","logStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/revisions/capp000002--01eict2/replicas/capp000002--01eict2-574d5788c9-xswqx/containers/capp000002/logstream","execEndpoint":"wss://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/revisions/capp000002--01eict2/replicas/capp000002--01eict2-574d5788c9-xswqx/containers/capp000002/exec"}],"initContainers":[]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--zcj35p0/replicas/capp000002--zcj35p0-7b55ddc995-h95fm","name":"capp000002--zcj35p0-7b55ddc995-h95fm","type":"Microsoft.App/containerapps/revisions/replicas","properties":{"createdTime":"2023-10-18T06:24:46Z","runningState":"Running","runningStateDetails":"","containers":[{"name":"capp000002","containerId":"containerd://ca0bc36ff07e3e65470ed6f0971f4ce804412149733e5bb32fa900dd57c8a5af","ready":true,"started":true,"restartCount":0,"runningState":"Running","runningStateDetails":"Container
+        started at: 10/18/2023 6:25:00 AM.","logStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/revisions/capp000002--zcj35p0/replicas/capp000002--zcj35p0-7b55ddc995-h95fm/containers/capp000002/logstream","execEndpoint":"wss://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/revisions/capp000002--zcj35p0/replicas/capp000002--zcj35p0-7b55ddc995-h95fm/containers/capp000002/exec"}],"initContainers":[]}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
@@ -1396,11 +1400,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '1250'
+      - '1251'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:44 GMT
+      - Wed, 18 Oct 2023 06:25:12 GMT
       expires:
       - '-1'
       pragma:
@@ -1436,11 +1440,11 @@ interactions:
       User-Agent:
       - python/3.10.11 (Windows-10-10.0.22621-SP0) AZURECLI/2.53.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--01eict2/replicas/capp000002--01eict2-574d5788c9-xswqx/?api-version=2023-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--zcj35p0/replicas/capp000002--zcj35p0-7b55ddc995-h95fm/?api-version=2023-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--01eict2/replicas/capp000002--01eict2-574d5788c9-xswqx","name":"capp000002--01eict2-574d5788c9-xswqx","type":"Microsoft.App/containerapps/revisions/replicas","properties":{"createdTime":"2023-10-07T06:58:27Z","runningState":"Running","runningStateDetails":"","containers":[{"name":"capp000002","containerId":"containerd://d94f1380c62b0c6687c4c27824d1f264aa57e8434bd33d831ec36e2d96e7de2f","ready":true,"started":true,"restartCount":0,"runningState":"Running","runningStateDetails":"Container
-        started at: 10/7/2023 6:58:30 AM.","logStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/revisions/capp000002--01eict2/replicas/capp000002--01eict2-574d5788c9-xswqx/containers/capp000002/logstream","execEndpoint":"wss://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/revisions/capp000002--01eict2/replicas/capp000002--01eict2-574d5788c9-xswqx/containers/capp000002/exec"}],"initContainers":[]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/revisions/capp000002--zcj35p0/replicas/capp000002--zcj35p0-7b55ddc995-h95fm","name":"capp000002--zcj35p0-7b55ddc995-h95fm","type":"Microsoft.App/containerapps/revisions/replicas","properties":{"createdTime":"2023-10-18T06:24:46Z","runningState":"Running","runningStateDetails":"","containers":[{"name":"capp000002","containerId":"containerd://ca0bc36ff07e3e65470ed6f0971f4ce804412149733e5bb32fa900dd57c8a5af","ready":true,"started":true,"restartCount":0,"runningState":"Running","runningStateDetails":"Container
+        started at: 10/18/2023 6:25:00 AM.","logStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/revisions/capp000002--zcj35p0/replicas/capp000002--zcj35p0-7b55ddc995-h95fm/containers/capp000002/logstream","execEndpoint":"wss://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/revisions/capp000002--zcj35p0/replicas/capp000002--zcj35p0-7b55ddc995-h95fm/containers/capp000002/exec"}],"initContainers":[]}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
@@ -1448,11 +1452,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '1250'
+      - '1251'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:45 GMT
+      - Wed, 18 Oct 2023 06:25:14 GMT
       expires:
       - '-1'
       pragma:
@@ -1493,7 +1497,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/capp000002/getAuthToken?api-version=2023-05-01
   response:
     body:
-      string: '{"location":"East US","properties":{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYXBwX3N1YiI6IjIzZjk1ZjBlLWU3ODItNDdiZS05Zjk3LTU2MDM1ZWMxMGU0MiIsImNhcHBfcmciOiJjbGl0ZXN0LnJnNGxoMnh1N291eWEycWt1Zmw1MnEzemQ3bzN1N2dsbzd1c3l3dngybDdkeDRiazRmaWtwdmZpZmF2c3ppaG1lb24iLCJjYXBwX25hbWUiOiJjYXBwY3Zyb2IzeHFvcXdwdTJmZzI2ZHciLCJjYXBwX2ppdF9leHBpcnkiOiIyMDIzLTEwLTA3VDA3OjU4OjQ2LjgyMDQyMzFaIiwibmJmIjoxNjk2NjYxOTI2LCJleHAiOjE2OTY2NjU1MjYsImlhdCI6MTY5NjY2MTkyNiwiaXNzIjoiQXp1cmVDb250YWluZXJBcHBzIiwiYXVkIjoiaHR0cHM6Ly9lYXN0dXMuYXp1cmVjb250YWluZXJhcHBzLmRldiJ9.u8Nqf6QlOdWRjA-EG7mpQMGdAbREngx_TV51TudbWig","expires":"2023-10-07T07:58:46.8204231Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerapps/capp000002","name":"capp000002","type":"Microsoft.App/containerApps/accesstoken"}'
+      string: '{"location":"East US","properties":{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYXBwX3N1YiI6IjIzZjk1ZjBlLWU3ODItNDdiZS05Zjk3LTU2MDM1ZWMxMGU0MiIsImNhcHBfcmciOiJjbGl0ZXN0LnJnc3ZqNjZma2NudWlha2U3eDRjNXdta2dqemVpc21zazdqZXl5aHBtMzN1dXk1NzRnbDRja2hkbW56bXN2YXF3bXQiLCJjYXBwX25hbWUiOiJjYXBwZXlqZGt6N2toM21zN2hkbXdhNHUiLCJjYXBwX2ppdF9leHBpcnkiOiIyMDIzLTEwLTE4VDA3OjI1OjE1LjUzOTE2MzhaIiwibmJmIjoxNjk3NjEwMzE1LCJleHAiOjE2OTc2MTM5MTUsImlhdCI6MTY5NzYxMDMxNSwiaXNzIjoiQXp1cmVDb250YWluZXJBcHBzIiwiYXVkIjoiaHR0cHM6Ly9lYXN0dXMuYXp1cmVjb250YWluZXJhcHBzLmRldiJ9.wMw8WweU2KnHGZ35s3aVD2ZhOUihQ946L_O0XoUxVdU","expires":"2023-10-18T07:25:15.5391638Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerapps/capp000002","name":"capp000002","type":"Microsoft.App/containerApps/accesstoken"}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
@@ -1505,7 +1509,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:46 GMT
+      - Wed, 18 Oct 2023 06:25:15 GMT
       expires:
       - '-1'
       pragma:
@@ -1521,7 +1525,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1198'
       x-powered-by:
       - ASP.NET
     status:
@@ -1547,7 +1551,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerapps/capp000002","name":"capp000002","type":"Microsoft.App/containerApps","location":"East
-        US","systemData":{"createdBy":"xinyupang@microsoft.com","createdByType":"User","createdAt":"2023-10-07T06:58:26.1876234","lastModifiedBy":"xinyupang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-07T06:58:26.1876234"},"properties":{"provisioningState":"Succeeded","runningStatus":"Running","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"outboundIpAddresses":["52.191.234.23"],"latestRevisionName":"capp000002--01eict2","latestReadyRevisionName":"capp000002--01eict2","latestRevisionFqdn":"capp000002--01eict2.livelypebble-4bdc8f59.eastus.azurecontainerapps.io","customDomainVerificationId":"D3F71C85EB6552E36A89A3E4A080C3CFB00181670B659B0003264FC673AA9B00","configuration":{"secrets":null,"activeRevisionsMode":"Single","ingress":{"fqdn":"capp000002.livelypebble-4bdc8f59.eastus.azurecontainerapps.io","external":true,"targetPort":80,"exposedPort":0,"transport":"Auto","traffic":[{"weight":100,"latestRevision":true}],"customDomains":null,"allowInsecure":false,"ipSecurityRestrictions":null,"corsPolicy":null,"clientCertificateMode":null,"stickySessions":null},"registries":null,"dapr":null,"maxInactiveRevisions":null,"service":null},"template":{"revisionSuffix":"","terminationGracePeriodSeconds":null,"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"capp000002","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"scale":{"minReplicas":1,"maxReplicas":10,"rules":null},"volumes":null,"serviceBinds":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/eventstream"},"identity":{"type":"None"}}'
+        US","systemData":{"createdBy":"xinyupang@microsoft.com","createdByType":"User","createdAt":"2023-10-18T06:24:45.1688914","lastModifiedBy":"xinyupang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-18T06:24:45.1688914"},"properties":{"provisioningState":"Succeeded","runningStatus":"Running","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus","workloadProfileName":null,"outboundIpAddresses":["52.191.234.23"],"latestRevisionName":"capp000002--zcj35p0","latestReadyRevisionName":"capp000002--zcj35p0","latestRevisionFqdn":"capp000002--zcj35p0.livelypebble-4bdc8f59.eastus.azurecontainerapps.io","customDomainVerificationId":"D3F71C85EB6552E36A89A3E4A080C3CFB00181670B659B0003264FC673AA9B00","configuration":{"secrets":null,"activeRevisionsMode":"Single","ingress":{"fqdn":"capp000002.livelypebble-4bdc8f59.eastus.azurecontainerapps.io","external":true,"targetPort":80,"exposedPort":0,"transport":"Auto","traffic":[{"weight":100,"latestRevision":true}],"customDomains":null,"allowInsecure":false,"ipSecurityRestrictions":null,"corsPolicy":null,"clientCertificateMode":null,"stickySessions":null},"registries":null,"dapr":null,"maxInactiveRevisions":null,"service":null},"template":{"revisionSuffix":"","terminationGracePeriodSeconds":null,"containers":[{"image":"mcr.microsoft.com/k8se/quickstart:latest","name":"capp000002","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"scale":{"minReplicas":1,"maxReplicas":10,"rules":[{"name":"my-datadog-rule","custom":{"type":"datadog","metadata":{"age":"120","metricUnavailableValue":"0","queryValue":"7"},"auth":[{"secretRef":"api-key","triggerParameter":"apiKey"},{"secretRef":"app-key","triggerParameter":"appKey"}]}}]},"volumes":null,"serviceBinds":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/eventstream"},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
@@ -1555,11 +1559,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '2227'
+      - '2463'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 07 Oct 2023 06:58:47 GMT
+      - Wed, 18 Oct 2023 06:25:16 GMT
       expires:
       - '-1'
       pragma:
@@ -1591,23 +1595,23 @@ interactions:
       User-Agent:
       - python-requests/2.31.0
     method: GET
-    uri: https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/revisions/capp000002--01eict2/replicas/capp000002--01eict2-574d5788c9-xswqx/containers/capp000002/logstream?follow=false&output=json&tailLines=20
+    uri: https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/capp000002/revisions/capp000002--zcj35p0/replicas/capp000002--zcj35p0-7b55ddc995-h95fm/containers/capp000002/logstream?follow=false&output=json&tailLines=20
   response:
     body:
-      string: '{"TimeStamp":"2023-10-07T06:58:49.38903","Log":"Connecting to the container
+      string: '{"TimeStamp":"2023-10-18T06:25:19.02662","Log":"Connecting to the container
         \u0027capp000002\u0027..."}
 
-        {"TimeStamp":"2023-10-07T06:58:49.40506","Log":"Successfully Connected to
-        container: \u0027capp000002\u0027 [Revision: \u0027capp000002--01eict2\u0027,
-        Replica: \u0027capp000002--01eict2-574d5788c9-xswqx\u0027]"}
+        {"TimeStamp":"2023-10-18T06:25:19.04579","Log":"Successfully Connected to
+        container: \u0027capp000002\u0027 [Revision: \u0027capp000002--zcj35p0\u0027,
+        Replica: \u0027capp000002--zcj35p0-7b55ddc995-h95fm\u0027]"}
 
-        {"TimeStamp":"2023-10-07T06:58:30.4168991+00:00","Log":"06:58:30 Listening
+        {"TimeStamp":"2023-10-18T06:25:00.0983057+00:00","Log":"06:25:00 Listening
         on :80..."}
 
         '
     headers:
       date:
-      - Sat, 07 Oct 2023 06:58:49 GMT
+      - Wed, 18 Oct 2023 06:25:19 GMT
       server:
       - Microsoft-IIS/10.0
       transfer-encoding:
