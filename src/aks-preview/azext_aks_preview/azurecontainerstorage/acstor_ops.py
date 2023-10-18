@@ -174,6 +174,8 @@ def perform_disable_azure_container_storage(
             .format(CONST_ACSTOR_K8S_EXTENSION_NAME)
         )
 
+    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
     no_wait_delete_op = False
     # Step 2: Perform validation if accepted by user
