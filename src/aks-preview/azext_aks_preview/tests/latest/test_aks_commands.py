@@ -6744,7 +6744,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd('extension add --name k8s-extension')
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} ' \
-                     '--node-count 3 --enable-managed-identity --enable-azure-container-storage --output=json'
+                     '--node-count 3 --enable-managed-identity --enable-azure-container-storage azureDisk --output=json'
 
         # enabling azurecontainerstorage will not affect any field in the cluster.
         # the only check we should perform is to verify that the cluster is provisioned successfully.
@@ -6830,7 +6830,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     #     # update: enable-azure-container-storage
     #     update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
-    #                  '--enable-azure-container-storage'
+    #                  '--enable-azure-container-storage azureDisk'
     #     self.cmd(update_cmd, checks=[
     #         self.check('provisioningState', 'Succeeded'),
     #     ])
