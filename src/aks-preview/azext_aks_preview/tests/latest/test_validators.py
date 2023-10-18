@@ -758,7 +758,7 @@ class TestValidateAzureContainerStorage(unittest.TestCase):
         err = 'Nodepool: pool1 not found. Please provide existing nodepool names in --azure-container-storage-nodepools.' \
               '\nUse command `az nodepool list` to get the list of nodepools in the cluster.' \
               '\nAborting installation of Azure Container Storage.'
-        with self.assertRaises(ArgumentUsageError) as cm:
+        with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_nodepool_names_with_cluster_nodepools(nodepool_list, agentpools)
         self.assertEqual(str(cm.exception), err)
 

@@ -164,7 +164,7 @@ def perform_disable_azure_container_storage(
     cluster_name,
     node_resource_group,
     kubelet_identity_object_id,
-    yes,
+    perform_validation,
 ):
     # Step 1: Check if show_k8s_extension returns an extension already installed
     if not check_if_extension_is_installed(cmd, resource_group, cluster_name):
@@ -175,37 +175,9 @@ def perform_disable_azure_container_storage(
         )
 
     k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
-    try:
-        extension = k8s_extension_custom_mod.show_k8s_extension(
-            client,
-            resource_group,
-            cluster_name,
-            CONST_EXT_INSTALLATION_NAME,
-            "managedClusters",
-        )
-
-        extension_type = extension.extension_type.lower()
-        if extension_type != CONST_ACSTOR_K8S_EXTENSION_NAME:
-            raise UnknownError(
-                "The extension returned is not of the type {0}."
-                "\nAborting disabling of Azure Container Storage."
-                .format(CONST_ACSTOR_K8S_EXTENSION_NAME)
-            )
-    except:
-        raise UnknownError(
-            "Extension type {0} not installed on cluster."
-            "\nAborting disable of Azure Container Storage."
-            .format(CONST_ACSTOR_K8S_EXTENSION_NAME)
-        )
-
     no_wait_delete_op = False
-    # Step 2: Add a prompt to ensure if we want to skip validation of existing storagepool
-    # and perform the validation in the update_k8s_extension call
-    msg = 'Disabling Azure Container Storage will forcefully delete all the storagepools on the cluster and ' \
-          'affect the applications using these storagepools. Forceful deletion of storagepools can also lead to ' \
-          'leaking of storage resources which are being consumed. Do you want to validate whether any of ' \
-          'the storagepools are being used before disabling Azure Container Storage?'
-    if yes or prompt_y_n(msg, default="y"):
+    # Step 2: Perform validation if accepted by user
+    if perform_validation:
         config_settings = [{"cli.storagePool.uninstallValidation": True}]
         try:
             update_result = k8s_extension_custom_mod.update_k8s_extension(

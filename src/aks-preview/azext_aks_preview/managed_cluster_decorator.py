@@ -3286,8 +3286,17 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
 
         if disable_azure_container_storage:
+            pre_uninstall_validate = False
+            msg = 'Disabling Azure Container Storage will forcefully delete all the storagepools on the cluster and ' \
+                  'affect the applications using these storagepools. Forceful deletion of storagepools can also lead to ' \
+                  'leaking of storage resources which are being consumed. Do you want to validate whether any of ' \
+                  'the storagepools are being used before disabling Azure Container Storage?'
+            if self.context.get_yes() or prompt_y_n(msg, default="y"):
+                pre_uninstall_validate = True
+
             # set intermediate
             self.context.set_intermediate("disable_azure_container_storage", True, overwrite_exists=True)
+            self.context.set_intermediate("pre_uninstall_validate_azure_container_storage", pre_uninstall_validate, overwrite_exists=True)
 
     def update_load_balancer_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update load balancer profile for the ManagedCluster object.
@@ -3994,6 +4003,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # disable azure container storage
         if disable_azure_container_storage:
             kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
+            pre_uninstall_validate = self.context.get_intermediate("pre_uninstall_validate_azure_container_storage")
             self.context.external_functions.perform_disable_azure_container_storage(
                 self.cmd,
                 self.context.get_subscription_id(),
@@ -4001,5 +4011,5 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 self.context.get_name(),
                 self.context.get_node_resource_group(),
                 kubelet_identity_object_id,
-                self.context.get_yes(),
+                pre_uninstall_validate,
             )

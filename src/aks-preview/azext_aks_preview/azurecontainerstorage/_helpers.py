@@ -184,7 +184,6 @@ def check_if_extension_is_installed(cmd, resource_group, cluster_name) -> bool:
         extension_type = extension.extension_type.lower()
         if extension_type != CONST_ACSTOR_K8S_EXTENSION_NAME:
             return_val = False
-            raise UnknownError("The extension returned is not of the type {0}. Aborting disable operation.".format(CONST_ACSTOR_K8S_EXTENSION_NAME))
     except:
         return_val = False
 
