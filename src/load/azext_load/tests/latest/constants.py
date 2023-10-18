@@ -36,7 +36,7 @@ class LoadConstants:
     SPLIT_CSV_FALSE = "false"
 
     INVALID_SUBNET_ID = r"/subscriptions/invalid/resource/id"
-    KEYVAULT_REFERENCE_ID = r"/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi"
+    KEYVAULT_REFERENCE_ID = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi"
     # App Component constants
     APP_COMPONENT_ID = r"/subscriptions/0a00b000-0aa0-0aa0-aaa0-000000000/resourceGroups/sample-rg/providers/Microsoft.Compute/virtualMachineScaleSets/sample-vmss"
     APP_COMPONENT_TYPE = r"Microsoft.Compute/virtualMachineScaleSets"
