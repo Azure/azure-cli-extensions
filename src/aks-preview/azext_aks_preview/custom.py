@@ -599,9 +599,8 @@ def aks_create(
     # metrics profile
     enable_cost_analysis=False,
     # azure container storage
-    enable_azure_container_storage=False,
+    enable_azure_container_storage=None,
     storage_pool_name=None,
-    storage_pool_type=None,
     storage_pool_size=None,
     storage_pool_sku=None,
     storage_pool_option=None,
@@ -776,10 +775,9 @@ def aks_update(
     enable_cost_analysis=False,
     disable_cost_analysis=False,
     # azure container storage
-    enable_azure_container_storage=False,
+    enable_azure_container_storage=None,
     disable_azure_container_storage=False,
     storage_pool_name=None,
-    storage_pool_type=None,
     storage_pool_size=None,
     storage_pool_sku=None,
     storage_pool_option=None,

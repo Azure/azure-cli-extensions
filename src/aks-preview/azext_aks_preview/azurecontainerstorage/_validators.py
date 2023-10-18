@@ -4,6 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 from azext_aks_preview.azurecontainerstorage._consts import (
+    CONST_STORAGE_POOL_OPTION_SSD,
+    CONST_STORAGE_POOL_SKU_PREMIUM_LRS,
+    CONST_STORAGE_POOL_SKU_PREMIUM_ZRS,
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
@@ -15,7 +18,28 @@ from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
 )
 
+from knack.log import get_logger
 import re
+
+elastic_san_supported_skus = [
+    CONST_STORAGE_POOL_SKU_PREMIUM_LRS,
+    CONST_STORAGE_POOL_SKU_PREMIUM_ZRS,
+]
+
+logger = get_logger(__name__)
+
+
+def validate_nodepool_names_with_cluster_nodepools(nodepool_names, agentpool_details):
+    nodepool_list = nodepool_names.split(',')
+    for nodepool in nodepool_list:
+        if nodepool not in agentpool_details:
+            raise InvalidArgumentValueError(
+                'Nodepool: {} not found. '
+                'Please provide existing nodepool names in --azure-container-storage-nodepools. '
+                '\nUse command `az nodepool list` to get the list of nodepools in the cluster. '
+                '\nAborting installation of Azure Container Storage.'
+                .format(nodepool)
+            )
 
 
 def validate_azure_container_storage_params(
@@ -68,12 +92,6 @@ def _validate_disable_azure_container_storage_params(
             'when --disable-azure-container-storage is set.'
         )
 
-    if storage_pool_type is not None:
-        raise MutuallyExclusiveArgumentError(
-            'Conflicting flags. Cannot define --storage-pool-type value '
-            'when --disable-azure-container-storage is set.'
-        )
-
     if storage_pool_sku is not None:
         raise MutuallyExclusiveArgumentError(
             'Conflicting flags. Cannot define --storage-pool-sku value '
@@ -111,17 +129,32 @@ def _validate_enable_azure_container_storage_params(
         is_pool_name_valid = re.fullmatch(pattern, storage_pool_name)
         if not is_pool_name_valid:
             raise InvalidArgumentValueError(
-                "Invalid --storage-pool-name values. "
+                "Invalid --storage-pool-name value. "
                 "Accepted values are lowercase alphanumeric characters, "
                 "'-' or '.', and must start and end with an alphanumeric character.")
 
-    if storage_pool_type != CONST_STORAGE_POOL_TYPE_AZURE_DISK and \
-       storage_pool_sku is not None:
-        raise ArgumentUsageError('Cannot set --storage-pool-sku when --storage-pool-type is not azureDisk.')
+    if storage_pool_sku is not None:
+        if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
+            raise ArgumentUsageError('Cannot set --storage-pool-sku when --enable-azure-container-storage is ephemeralDisk.')
+        elif storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN and \
+            storage_pool_sku not in elastic_san_supported_skus:
+            supported_skus_str = ", ".join(elastic_san_supported_skus)
+            raise ArgumentUsageError(
+                'Invalid --storage-pool-sku value. '
+                'Supported value for --storage-pool-sku are {0} '
+                'when --enable-azure-container-storage is set to elasticSan.'
+                .format(supported_skus_str)
+            )
 
     if storage_pool_type != CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
        storage_pool_option is not None:
-        raise ArgumentUsageError('Cannot set --storage-pool-option when --storage-pool-type is not ephemeralDisk.')
+        raise ArgumentUsageError('Cannot set --storage-pool-option when --enable-azure-container-storage is not ephemeralDisk.')
+
+    if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
+        storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD:
+        raise ArgumentUsageError(
+            '--storage-pool-option Temp storage (SSD) currently not supported.'
+        )
 
     if storage_pool_size is not None:
         pattern = r'^\d+(\.\d+)?[GT]i$'
@@ -143,4 +176,10 @@ def _validate_enable_azure_container_storage_params(
                 ):
                     raise ArgumentUsageError(
                         'Value for --storage-pool-size must be at least 1Ti when '
-                        '--storage-pool-type is elasticSan.')
+                        '--enable-azure-container-storage is elasticSan.')
+
+            elif storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
+                logger.warning(
+                    'Storage pools using Ephemeral disk use all capacity available on the local device. '
+                    ' --storage-pool-size will be ignored.'
+                )

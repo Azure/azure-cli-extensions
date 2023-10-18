@@ -11,18 +11,22 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME,
     CONST_K8S_EXTENSION_CUSTOM_MOD_NAME,
     CONST_STORAGE_POOL_DEFAULT_SIZE,
+    CONST_STORAGE_POOL_DEFAULT_SIZE_ESAN,
     CONST_STORAGE_POOL_OPTION_NVME,
-    CONST_STORAGE_POOL_OPTION_TEMP,
     CONST_STORAGE_POOL_SKU_STANDARD_LRS,
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
+    CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
 )
 from azext_aks_preview.azurecontainerstorage._helpers import (
-    _generate_random_storage_pool_name,
-    _get_k8s_extension_module,
-    _perform_role_operations_on_managed_rg,
-    _register_dependent_rps,
+    check_if_extension_is_installed,
+    generate_random_storage_pool_name,
+    get_k8s_extension_module,
+    perform_role_operations_on_managed_rg,
+    register_dependent_rps,
+    should_create_storagepool,
 )
+from azext_aks_preview.azurecontainerstorage._validators import validate_nodepool_names_with_cluster_nodepools
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 
@@ -41,52 +45,83 @@ def perform_enable_azure_container_storage(
     storage_pool_size,
     storage_pool_sku,
     storage_pool_option,
-    nodepool_name,
+    nodepool_names,
+    agentpool_details,
     is_cluster_create,
 ):
     # Step 1: Check and register the dependent provider for ManagedClusters i.e.
     # Microsoft.KubernetesConfiguration
-    _register_dependent_rps(cmd, subscription_id)
+    register_dependent_rps(cmd, subscription_id)
 
-    # Step 2: Grant AKS cluster's node identity the following
-    # roles on the AKS managed resource group:
-    # 1. Reader
-    # 2. Network Contributor
-    # 3. Elastic SAN Owner
-    # 4. Elastic SAN Volume Group Owner
-    _perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_group, kubelet_identity_object_id, True)
+    # Step 2: Check if extension already installed incase of an update call
+    if not is_cluster_create and check_if_extension_is_installed(cmd, resource_group, cluster_name):
+        raise UnknownError("Extension type {0} already installed on cluster. Aborting installation.".format(CONST_ACSTOR_K8S_EXTENSION_NAME))
 
-    if storage_pool_type is None:
-        storage_pool_type = CONST_STORAGE_POOL_TYPE_AZURE_DISK
-
-    # Step 3: Install the k8s_extension 'microsoft.azurecontainerstorage'
-    if storage_pool_name is None:
-        storage_pool_name = _generate_random_storage_pool_name()
-    if storage_pool_size is None:
-        storage_pool_size = CONST_STORAGE_POOL_DEFAULT_SIZE
-    if nodepool_name is None:
-        nodepool_name = "nodepool1"
-    config_settings = [
-        {"cli.storagePool.name": storage_pool_name},
-        {"cli.storagePool.size": storage_pool_size},
-        {"cli.storagePool.type": storage_pool_type},
-        {"cli.node.nodepools": nodepool_name},
-    ]
-
-    if storage_pool_type == CONST_STORAGE_POOL_TYPE_AZURE_DISK:
-        if storage_pool_sku is None:
-            storage_pool_sku = CONST_STORAGE_POOL_SKU_STANDARD_LRS
-        config_settings.append({"cli.storagePool.azureDiskSku": storage_pool_sku})
+    if nodepool_names is None:
+        nodepool_names = "nodepool1"
     if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
-        pool_option = CONST_STORAGE_POOL_OPTION_TEMP
-        if storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME:
-            pool_option = "nvme"
-        config_settings.append({"cli.storagePool.ephemeralDiskOption": pool_option})
+        if storage_pool_option is None:
+            storage_pool_option = CONST_STORAGE_POOL_OPTION_NVME
 
-    client_factory = _get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
+    validate_nodepool_names_with_cluster_nodepools(nodepool_names, agentpool_details)
+
+    # Step 3: Validate if storagepool should be created. 
+    # Depends on the following:
+    #   3a: Grant AKS cluster's node identity the following
+    #       roles on the AKS managed resource group:
+    #       1. Reader
+    #       2. Network Contributor
+    #       3. Elastic SAN Owner
+    #       4. Elastic SAN Volume Group Owner
+    #       Ensure grant was successful if creation of
+    #       Elastic SAN storagepool is requested.
+    #   3b: Ensure Ls series nodepool is present if creation
+    #       of Ephemeral NVMe Disk storagepool is requested.
+    create_storage_pool = should_create_storagepool(
+        cmd,
+        subscription_id,
+        node_resource_group,
+        kubelet_identity_object_id,
+        storage_pool_type,
+        storage_pool_option,
+        agentpool_details,
+        nodepool_names,
+    )
+
+    # Step 4: Configure the storagepool parameters
+    config_settings = []
+    if create_storage_pool:
+        if storage_pool_name is None:
+            storage_pool_name = generate_random_storage_pool_name()
+        if storage_pool_size is None:
+            storage_pool_size = CONST_STORAGE_POOL_DEFAULT_SIZE_ESAN if \
+            storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN else \
+            CONST_STORAGE_POOL_DEFAULT_SIZE
+        config_settings.extend(
+            [
+                {"cli.storagePool.create": True},
+                {"cli.storagePool.name": storage_pool_name},
+                {"cli.storagePool.size": storage_pool_size},
+                {"cli.storagePool.type": storage_pool_type},
+                {"cli.node.nodepools": nodepool_names},
+            ]
+        )
+
+        if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
+            config_settings.append({"cli.storagePool.ephemeralDiskOption": storage_pool_option.lower()})
+        else:
+            if storage_pool_sku is None:
+                storage_pool_sku = CONST_STORAGE_POOL_SKU_STANDARD_LRS
+            config_settings.append({"cli.storagePool.sku": storage_pool_sku})
+    else:
+        config_settings.append({"cli.storagePool.create": False})
+
+
+    # Step 5: Install the k8s_extension 'microsoft.azurecontainerstorage'
+    client_factory = get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
     client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
 
-    k8s_extension_custom_mod = _get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
     try:
         result = k8s_extension_custom_mod.create_k8s_extension(
             cmd,
@@ -109,7 +144,7 @@ def perform_enable_azure_container_storage(
     except Exception as ex:
         if is_cluster_create:
             logger.error("Azure Container Storage failed to install.\nError: {0}".format(ex.message))
-            logger.warn(
+            logger.warning(
                 "AKS cluster is created. "
                 "Please run `az aks update` along with `--enable-azure-container-storage` "
                 "to enable Azure Container Storage."
@@ -127,10 +162,11 @@ def perform_disable_azure_container_storage(
     kubelet_identity_object_id,
     yes,
 ):
-    client_factory = _get_k8s_extension_module(CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME)
-    client = client_factory.cf_k8s_extension_operation(cmd.cli_ctx)
     # Step 1: Check if show_k8s_extension returns an extension already installed
-    k8s_extension_custom_mod = _get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
+    if not check_if_extension_is_installed(cmd, resource_group, cluster_name):
+        raise UnknownError("Extension type {0} not installed on cluster. Aborting disable operation.".format(CONST_ACSTOR_K8S_EXTENSION_NAME))
+
+    k8s_extension_custom_mod = get_k8s_extension_module(CONST_K8S_EXTENSION_CUSTOM_MOD_NAME)
     try:
         extension = k8s_extension_custom_mod.show_k8s_extension(
             client,
@@ -148,6 +184,7 @@ def perform_disable_azure_container_storage(
 
     no_wait_delete_op = False
     # Step 2: Add a prompt to ensure if we want to skip validation of existing storagepool
+    # and perform the validation in the update_k8s_extension call
     msg = 'Disabling Azure Container Storage will forcefully delete all the storagepools on the cluster and ' \
           'affect the applications using these storagepools. Forceful deletion of storagepools can also lead to ' \
           'leaking of storage resources which are being consumed. Do you want to validate whether any of ' \
@@ -169,7 +206,7 @@ def perform_disable_azure_container_storage(
 
             update_long_op_result = LongRunningOperation(cmd.cli_ctx)(update_result)
             if update_long_op_result.provisioning_state == "Succeeded":
-                logger.warn("Validation succeeded. Disabling Azure Container Storage...")
+                logger.warning("Validation succeeded. Disabling Azure Container Storage...")
 
             # Since, pre uninstall validation will ensure deletion of storagepools,
             # we don't need to long wait while performing the delete operation.
@@ -194,7 +231,7 @@ def perform_disable_azure_container_storage(
             else:
                 raise UnknownError("Validation failed. Unable to disable Azure Container Storage. Reseting cluster state.")
 
-    # Step 3: If the extension is installed, call delete_k8s_extension
+    # Step 3: If the extension is installed and validation succeeded or skipped, call delete_k8s_extension
     try:
         delete_op_result = k8s_extension_custom_mod.delete_k8s_extension(
             cmd,
@@ -212,11 +249,12 @@ def perform_disable_azure_container_storage(
     except Exception as delete_ex:
         raise UnknownError("Failure observed while disabling Azure Container Storage.\nError: {0}".format(delete_ex.message))
 
-    logger.warn("Azure Container Storage has been disabled.")
-    # Revoke AKS cluster's node identity the following
+    logger.warning("Azure Container Storage has been disabled.")
+
+    # Step 4: Revoke AKS cluster's node identity the following
     # roles on the AKS managed resource group:
     # 1. Reader
     # 2. Network Contributor
     # 3. Elastic SAN Owner
     # 4. Elastic SAN Volume Group Owner
-    _perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_group, kubelet_identity_object_id, False)
+    perform_role_operations_on_managed_rg(cmd, subscription_id, node_resource_group, kubelet_identity_object_id, False)

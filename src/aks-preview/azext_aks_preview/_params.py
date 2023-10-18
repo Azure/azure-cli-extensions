@@ -181,7 +181,7 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_STORAGE_POOL_SKU_PREMIUMV2_ZRS,
     CONST_STORAGE_POOL_SKU_STANDARDSSD_ZRS,
     CONST_STORAGE_POOL_OPTION_NVME,
-    CONST_STORAGE_POOL_OPTION_TEMP,
+    CONST_STORAGE_POOL_OPTION_SSD,
     CONST_STORAGE_POOL_DEFAULT_SIZE,
 )
 from knack.arguments import CLIArgumentType
@@ -271,7 +271,6 @@ ingress_gateway_types = [
 ]
 
 # azure container storage
-
 storage_pool_types = [
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
@@ -290,7 +289,7 @@ storage_pool_skus = [
 
 storage_pool_options = [
     CONST_STORAGE_POOL_OPTION_NVME,
-    CONST_STORAGE_POOL_OPTION_TEMP,
+    CONST_STORAGE_POOL_OPTION_SSD,
 ]
 
 
@@ -493,10 +492,8 @@ def load_arguments(self, _):
         c.argument('enable_windows_recording_rules', action='store_true')
         c.argument('enable_cost_analysis', is_preview=True, action='store_true')
         # azure container storage
-        c.argument('enable_azure_container_storage', action='store_true',
-                   help='Flag to enable azure container storage')
-        c.argument('storage_pool_type', arg_type=get_enum_type(storage_pool_types),
-                   help='set storage pool type for azure container storage')
+        c.argument('enable_azure_container_storage', arg_type=get_enum_type(storage_pool_types),
+                   help='enable azure container storage and define storage pool type')
         c.argument('storage_pool_name', help='set storage pool name for azure container storage')
         c.argument('storage_pool_size', help='set storage pool size for azure container storage')
         c.argument('storage_pool_sku', arg_type=get_enum_type(storage_pool_skus),
@@ -632,12 +629,10 @@ def load_arguments(self, _):
         c.argument('enable_cost_analysis', is_preview=True, action='store_true')
         c.argument('disable_cost_analysis', is_preview=True, action='store_true')
         # azure container storage
-        c.argument('enable_azure_container_storage', action='store_true',
-                   help='Flag to enable azure container storage')
+        c.argument('enable_azure_container_storage', arg_type=get_enum_type(storage_pool_types),
+                   help='enable azure container storage and define storage pool type')
         c.argument('disable_azure_container_storage', action='store_true',
                    help='Flag to disable azure container storage')
-        c.argument('storage_pool_type', arg_type=get_enum_type(storage_pool_types),
-                   help='set storage pool type for azure container storage')
         c.argument('storage_pool_name', help='set storage pool name for azure container storage')
         c.argument('storage_pool_size', help='set storage pool size for azure container storage')
         c.argument('storage_pool_sku', arg_type=get_enum_type(storage_pool_skus),

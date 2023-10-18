@@ -2758,10 +2758,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """
         self._ensure_mc(mc)
         # read the azure container storage values passed
-        enable_azure_container_storage = self.context.raw_param.get("enable_azure_container_storage")
+        pool_type = self.context.raw_param.get("enable_azure_container_storage")
+        enable_azure_container_storage = pool_type is not None
         if enable_azure_container_storage:
             pool_name = self.context.raw_param.get("storage_pool_name")
-            pool_type = self.context.raw_param.get("storage_pool_type")
             pool_option = self.context.raw_param.get("storage_pool_option")
             pool_sku = self.context.raw_param.get("storage_pool_sku")
             pool_size = self.context.raw_param.get("storage_pool_size")
@@ -3101,12 +3101,15 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 return
 
             pool_name = self.context.raw_param.get("storage_pool_name")
-            pool_type = self.context.raw_param.get("storage_pool_type")
+            pool_type = self.context.raw_param.get("enable_azure_container_storage")
             pool_option = self.context.raw_param.get("storage_pool_option")
             pool_sku = self.context.raw_param.get("storage_pool_sku")
             pool_size = self.context.raw_param.get("storage_pool_size")
             kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
             node_resource_group = cluster.node_resource_group
+            agent_pool_details = {}
+            for agentpool_profile in cluster.agent_pool_profiles:
+                agent_pool_details[agentpool_profile.name] = agentpool_profile.vm_size
 
             self.context.external_functions.perform_enable_azure_container_storage(
                 self.cmd,
@@ -3121,6 +3124,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 pool_sku,
                 pool_option,
                 "nodepool1",
+                agent_pool_details,
                 True,
             )
 
@@ -3256,11 +3260,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
         # read the azure container storage values passed
-        enable_azure_container_storage = self.context.raw_param.get("enable_azure_container_storage")
+        pool_type = self.context.raw_param.get("enable_azure_container_storage")
         disable_azure_container_storage = self.context.raw_param.get("disable_azure_container_storage")
+        enable_azure_container_storage = pool_type is not None
         if enable_azure_container_storage or disable_azure_container_storage:
             pool_name = self.context.raw_param.get("storage_pool_name")
-            pool_type = self.context.raw_param.get("storage_pool_type")
             pool_option = self.context.raw_param.get("storage_pool_option")
             pool_sku = self.context.raw_param.get("storage_pool_sku")
             pool_size = self.context.raw_param.get("storage_pool_size")
@@ -3960,12 +3964,16 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # enable azure container storage
         if enable_azure_container_storage:
             pool_name = self.context.raw_param.get("storage_pool_name")
-            pool_type = self.context.raw_param.get("storage_pool_type")
+            pool_type = self.context.raw_param.get("enable_azure_container_storage")
             pool_option = self.context.raw_param.get("storage_pool_option")
             pool_sku = self.context.raw_param.get("storage_pool_sku")
             pool_size = self.context.raw_param.get("storage_pool_size")
             nodepool_list = self.context.raw_param.get("azure_container_storage_nodepools")
             kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
+            agent_pool_details = {}
+            for agentpool_profile in cluster.agent_pool_profiles:
+                agent_pool_details[agentpool_profile.name] = agentpool_profile.vm_size
+
             self.context.external_functions.perform_enable_azure_container_storage(
                 self.cmd,
                 self.context.get_subscription_id(),
@@ -3979,6 +3987,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 pool_sku,
                 pool_option,
                 nodepool_list,
+                agent_pool_details,
                 False,
             )
 
