@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
+import json
 import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -37,6 +38,11 @@ class TestCNF(unittest.TestCase):
                     "cnf", str(mock_cnf_folder / "input-nfconfigchart.json")
                 )
                 assert os.path.exists("nfd-bicep-nginx-basic-test")
+                # Confirm that the generated schema file correctly handles array deployment params.
+                assert os.path.exists("nfd-bicep-nginx-basic-test/schemas/deploymentParameters.json")
+                with open("nfd-bicep-nginx-basic-test/schemas/deploymentParameters.json") as f:
+                    schema = json.load(f)
+                    assert schema["properties"]["imagePullSecrets_0"]["type"] == "string"
             finally:
                 os.chdir(starting_directory)
 

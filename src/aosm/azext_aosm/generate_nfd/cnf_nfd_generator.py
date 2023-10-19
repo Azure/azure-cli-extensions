@@ -706,10 +706,25 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                     no_schema_list.append(deploy_param)
                     new_schema.update({deploy_param: {"type": "string"}})
             if deploy_param not in new_schema:
-                new_schema.update({deploy_param: {"type": node.get("type", None)}})
+                param_type = node.get("type", None)
+                if param_type == "array":
+                    # If the type is an array, we need to get the type of the items.
+                    # (This currently only supports a single type, not a list of types.
+                    #  If a list is provided, we default to string.)
+                    array_item_schema = node.get("items", {})
+                    if type(array_item_schema) is dict:
+                        param_type = array_item_schema.get("type", None)
+                    else:
+                        logger.debug("Array item schema is not a dict (probably a list)")
+                        param_type = None
+                if not param_type:
+                    logger.debug("No type found for %s", deploy_param)
+                    no_schema_list.append(deploy_param)
+                    param_type = "string"
+                new_schema.update({deploy_param: {"type": param_type}})
         if no_schema_list:
             logger.warning(
-                "No schema found for deployment parameter(s): %s", no_schema_list
+                "No schema or type found for deployment parameter(s): %s", no_schema_list
             )
             logger.warning(
                 "We default these parameters to type string. "
